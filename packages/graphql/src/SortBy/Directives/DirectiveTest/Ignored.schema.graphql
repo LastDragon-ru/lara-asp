@@ -1,0 +1,72 @@
+type Query {
+    a(order: A @sortBy): A! @all
+    b(order: _ @sortBy): B! @all
+}
+
+input A {
+    # Should be processed
+    "Not ignored"
+    a: String!
+
+    "List"
+    b: [String!]
+
+    # Should be ignored
+    "Marked by @sortByIgnored"
+    c: IgnoredInput!
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+    g: String @sortByIgnored
+}
+
+interface B {
+    # Should be processed
+    "Not ignored"
+    a: String!
+
+    # Should be ignored
+    "List"
+    b: [String!]
+
+    "Marked by @sortByIgnored"
+    c: IgnoredType!
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+    g: String @sortByIgnored
+
+    "Resolver"
+    h: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    "Arguments"
+    i(arg: String): Int!
+
+    "Union"
+    j: ObjectUnion
+    k: [ObjectUnion!]
+}
+
+input IgnoredInput @sortByIgnored {
+    id: ID
+}
+
+scalar IgnoredDate
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@sortByIgnored
+
+enum IgnoredEnum @sortByIgnored {
+    One
+}
+
+union ObjectUnion = ObjectA | ObjectB
+
+type ObjectA {
+    id: ID!
+}
+
+type ObjectB {
+    id: ID!
+}

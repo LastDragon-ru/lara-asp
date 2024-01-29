@@ -24,6 +24,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
@@ -436,7 +437,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): StreamValue {
             // Offset
             $manipulator = $this->getAstManipulator(new DocumentAST());
-            $source      = new ObjectFieldSource($manipulator, $info->parentType, $info->fieldDefinition);
+            $source      = (new ObjectSource($manipulator, $info->parentType))->getField($info->fieldDefinition);
             $offset      = $this->getFieldValue(StreamOffsetDirective::class, $manipulator, $source, $info, $args);
 
             // Builder

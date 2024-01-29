@@ -136,7 +136,9 @@ input SortByClauseUsersSort {
 
 type Comment {
     text: String
+
     user: User
+    @belongsTo
 }
 
 type Query {

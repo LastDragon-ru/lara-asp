@@ -39,6 +39,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Mockery\MockInterface;
+use Nuwave\Lighthouse\Pagination\PaginationServiceProvider as LighthousePaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
@@ -46,6 +47,7 @@ use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_merge;
 use function config;
 use function implode;
 use function is_array;
@@ -61,15 +63,27 @@ final class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
 
+    // <editor-fold desc="Prepare">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getPackageProviders(mixed $app): array {
+        return array_merge(parent::getPackageProviders($app), [
+            LighthousePaginationServiceProvider::class,
+        ]);
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
      * @dataProvider dataProviderManipulateArgDefinition
      *
-     * @param Closure(static): GraphQLExpected $expected
-     * @param Closure(static): void|null       $prepare
+     * @param Closure(static): void|null $prepare
      */
-    public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+    public function testManipulateArgDefinition(string $expected, string $graphql, ?Closure $prepare = null): void {
         if ($prepare) {
             $prepare($this);
         }
@@ -79,7 +93,7 @@ final class DirectiveTest extends TestCase {
         );
 
         self::assertGraphQLSchemaEquals(
-            $expected($this),
+            new GraphQLExpected(self::getTestData()->file($expected)),
         );
     }
 
@@ -98,96 +112,11 @@ final class DirectiveTest extends TestCase {
             ->setResolved('search', SearchDirective::class);
 
         $this->useGraphQLSchema(
-            self::getTestData()->file('~scout.graphql'),
+            self::getTestData()->file('Scout.schema.graphql'),
         );
 
         self::assertGraphQLSchemaEquals(
-            self::getTestData()->file('~scout-expected.graphql'),
-        );
-    }
-
-    public function testManipulateArgDefinitionTypeRegistry(): void {
-        $i = new class([
-            'name'   => 'I',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::string(),
-                ],
-            ],
-        ]) extends InputObjectType implements Ignored {
-            // empty
-        };
-        $a = new InputObjectType([
-            'name'   => 'A',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::string(),
-                ],
-                [
-                    'name' => 'flag',
-                    'type' => Type::nonNull(Type::boolean()),
-                ],
-                [
-                    'name' => 'ignored',
-                    'type' => Type::nonNull($i),
-                ],
-            ],
-        ]);
-        $b = new InputObjectType([
-            'name'   => 'B',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::string(),
-                ],
-                [
-                    'name' => 'child',
-                    'type' => $a,
-                ],
-            ],
-        ]);
-        $c = new ObjectType([
-            'name'   => 'C',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::string(),
-                ],
-                [
-                    'name' => 'flag',
-                    'type' => Type::nonNull(Type::boolean()),
-                ],
-                [
-                    'name' => 'list',
-                    'type' => Type::nonNull(Type::listOf(Type::nonNull(Type::boolean()))),
-                ],
-            ],
-        ]);
-        $d = new ObjectType([
-            'name'   => 'D',
-            'fields' => [
-                [
-                    'name' => 'child',
-                    'type' => Type::nonNull($c),
-                ],
-            ],
-        ]);
-
-        $registry = Container::getInstance()->make(TypeRegistry::class);
-        $registry->register($a);
-        $registry->register($b);
-        $registry->register($c);
-        $registry->register($d);
-        $registry->register($i);
-
-        $this->useGraphQLSchema(
-            self::getTestData()->file('~registry.graphql'),
-        );
-
-        self::assertGraphQLSchemaEquals(
-            self::getTestData()->file('~registry-expected.graphql'),
+            self::getTestData()->file('Scout.expected.graphql'),
         );
     }
 
@@ -419,37 +348,155 @@ final class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<string,array{Closure(self): GraphQLExpected, string}>
+     * @return array<string,array{string, string, Closure(static): void|null}>
      */
     public static function dataProviderManipulateArgDefinition(): array {
         return [
-            'full'    => [
-                static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~full-expected.graphql'),
-                    ));
-                },
-                '~full.graphql',
+            'Explicit'          => [
+                'Explicit.expected.graphql',
+                'Explicit.schema.graphql',
+                null,
+            ],
+            'Implicit'          => [
+                'Implicit.expected.graphql',
+                'Implicit.schema.graphql',
+                null,
+            ],
+            'Query'             => [
+                'Query.expected.graphql',
+                'Query.schema.graphql',
+                null,
+            ],
+            'AllowedDirectives' => [
+                'AllowedDirectives.expected.graphql',
+                'AllowedDirectives.schema.graphql',
                 static function (): void {
-                    $package = Package::Name;
-
                     config([
-                        "{$package}.sort_by.operators" => [
-                            Operators::Extra => [
-                                Operators::Extra,
-                                SortByOperatorRandomDirective::class,
-                            ],
+                        Package::Name.'.sort_by.operators.'.Operators::Extra => [
+                            // empty
                         ],
                     ]);
                 },
             ],
-            'example' => [
-                static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~example-expected.graphql'),
-                    ));
+            'Ignored'           => [
+                'Ignored.expected.graphql',
+                'Ignored.schema.graphql',
+                static function (): void {
+                    config([
+                        Package::Name.'.sort_by.operators.'.Operators::Extra => [
+                            // empty
+                        ],
+                    ]);
+
+                    Container::getInstance()->make(TypeRegistry::class)->register(
+                        new class([
+                            'name'   => 'IgnoredType',
+                            'fields' => [
+                                [
+                                    'name' => 'name',
+                                    'type' => Type::nonNull(Type::string()),
+                                ],
+                            ],
+                        ]) extends InputObjectType implements Ignored {
+                            // empty
+                        },
+                    );
                 },
-                '~example.graphql',
+            ],
+            'InterfaceUpdate'   => [
+                'InterfaceUpdate.expected.graphql',
+                'InterfaceUpdate.schema.graphql',
+                static function (): void {
+                    config([
+                        Package::Name.'.sort_by.operators.'.Operators::Extra => [
+                            // empty
+                        ],
+                    ]);
+                },
+            ],
+            'TypeRegistry'      => [
+                'Example.expected.graphql',
+                'Example.schema.graphql',
+                static function (): void {
+                    $i = new class([
+                        'name'   => 'I',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::string(),
+                            ],
+                        ],
+                    ]) extends InputObjectType implements Ignored {
+                        // empty
+                    };
+                    $a = new InputObjectType([
+                        'name'   => 'A',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::string(),
+                            ],
+                            [
+                                'name' => 'flag',
+                                'type' => Type::nonNull(Type::boolean()),
+                            ],
+                            [
+                                'name' => 'ignored',
+                                'type' => Type::nonNull($i),
+                            ],
+                        ],
+                    ]);
+                    $b = new InputObjectType([
+                        'name'   => 'B',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::string(),
+                            ],
+                            [
+                                'name' => 'child',
+                                'type' => $a,
+                            ],
+                        ],
+                    ]);
+                    $c = new ObjectType([
+                        'name'   => 'C',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::string(),
+                            ],
+                            [
+                                'name' => 'flag',
+                                'type' => Type::nonNull(Type::boolean()),
+                            ],
+                            [
+                                'name' => 'list',
+                                'type' => Type::nonNull(Type::listOf(Type::nonNull(Type::boolean()))),
+                            ],
+                        ],
+                    ]);
+                    $d = new ObjectType([
+                        'name'   => 'D',
+                        'fields' => [
+                            [
+                                'name' => 'child',
+                                'type' => Type::nonNull($c),
+                            ],
+                        ],
+                    ]);
+
+                    $registry = Container::getInstance()->make(TypeRegistry::class);
+                    $registry->register($a);
+                    $registry->register($b);
+                    $registry->register($c);
+                    $registry->register($d);
+                    $registry->register($i);
+                },
+            ],
+            'example'           => [
+                'Example.expected.graphql',
+                'Example.schema.graphql',
                 null,
             ],
         ];
@@ -817,6 +864,16 @@ final class DirectiveTest extends TestCase {
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__Resolver {
+    public function __invoke(): mixed {
+        throw new Exception('Should not be called.');
+    }
+}
 
 /**
  * @internal

@@ -1,0 +1,103 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+input A {
+    id: ID!
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `type B` (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+}
+
+interface QueryInterface
+implements
+    & QueryInterfaceA
+    & QueryInterfaceB
+{
+    a(
+        order: [SortByClauseA!]
+    ): A!
+
+    b(
+        order: [SortByClauseB!]
+    ): B!
+}
+
+interface QueryInterfaceA {
+    a(
+        order: [SortByClauseA!]
+    ): A!
+}
+
+interface QueryInterfaceB {
+    b(
+        order: [SortByClauseB!]
+    ): B!
+}
+
+type B {
+    id: ID!
+}
+
+type Query
+implements
+    & QueryInterface
+{
+    a(
+        order: [SortByClauseA!]
+        @sortBy
+    ): A!
+    @all
+
+    b(
+        order: [SortByClauseB!]
+        @sortBy
+    ): B!
+    @all
+}

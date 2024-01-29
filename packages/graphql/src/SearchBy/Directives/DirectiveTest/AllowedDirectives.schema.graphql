@@ -1,0 +1,12 @@
+type Query {
+    a(where: A @searchBy): A! @all
+    b(where: _ @searchBy): B! @all
+}
+
+type A {
+    a: String! @rename(attribute: "renamed")
+}
+
+interface B {
+    b: String! @rename(attribute: "renamed")
+}

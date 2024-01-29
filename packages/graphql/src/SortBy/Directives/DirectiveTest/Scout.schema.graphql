@@ -9,7 +9,7 @@ type Query implements Eloquent & Scout {
 
     placeholder(order: _ @sortBy): Object! @all
 
-    interface(order: ObjectInterface @sortBy): Object! @all
+    interface(order: _ @sortBy): ObjectInterface! @all
 }
 
 interface Eloquent implements Placeholder {
@@ -81,8 +81,8 @@ enum EnumIgnored @sortByIgnored {
 interface ObjectInterface {
     idScalar: ID
     idScalarNotNull: ID!
-    nested: ObjectNested
-    nestedNotNull: ObjectNested!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
     enum: Value
     enumNotNull: Value!
     enumIgnored: EnumIgnored
@@ -116,8 +116,8 @@ interface ObjectInterface {
 type Object implements ObjectInterface {
     idScalar: ID
     idScalarNotNull: ID!
-    nested: ObjectNested
-    nestedNotNull: ObjectNested!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
     enum: Value
     enumNotNull: Value!
     enumIgnored: EnumIgnored

@@ -2,26 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Override;
 
 /**
- * @template TType of (TypeDefinitionNode&Node)|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type
+ * @template TType of (TypeDefinitionNode&Node)|(TypeNode&Node)|Type
+ * @template TParent of TypeSource|null
  */
 class Source implements TypeSource {
     /**
-     * @param TType $type
+     * @param TType   $type
+     * @param TParent $parent
      */
     public function __construct(
         private AstManipulator $manipulator,
-        private TypeDefinitionNode|Node|Type $type,
+        private TypeDefinitionNode|TypeNode|Type $type,
+        private TypeSource|null $parent = null,
     ) {
         // empty
     }
@@ -31,6 +32,13 @@ class Source implements TypeSource {
     protected function getManipulator(): AstManipulator {
         return $this->manipulator;
     }
+
+    /**
+     * @return TParent
+     */
+    public function getParent(): ?TypeSource {
+        return $this->parent;
+    }
     // </editor-fold>
 
     // <editor-fold desc="API">
@@ -39,7 +47,7 @@ class Source implements TypeSource {
      * @return TType
      */
     #[Override]
-    public function getType(): TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type {
+    public function getType(): TypeDefinitionNode|TypeNode|Type {
         return $this->type;
     }
 
@@ -53,12 +61,7 @@ class Source implements TypeSource {
      */
     #[Override]
     public function getTypeDefinition(): TypeDefinitionNode|Type {
-        $type       = $this->getType();
-        $definition = !($type instanceof TypeDefinitionNode)
-            ? $this->getManipulator()->getTypeDefinition($type)
-            : $type;
-
-        return $definition;
+        return $this->getManipulator()->getTypeDefinition($this->getType());
     }
 
     #[Override]
@@ -74,6 +77,11 @@ class Source implements TypeSource {
     #[Override]
     public function isUnion(): bool {
         return $this->getManipulator()->isUnion($this->getType());
+    }
+
+    #[Override]
+    public function isObject(): bool {
+        return $this->getManipulator()->isObject($this->getType());
     }
 
     #[Override]

@@ -28,6 +28,8 @@ use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
+use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -41,6 +43,7 @@ use stdClass;
 
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function assert;
 use function is_string;
 
@@ -51,6 +54,19 @@ use function is_string;
  */
 #[CoversClass(AstManipulator::class)]
 final class AstManipulatorTest extends TestCase {
+    // <editor-fold desc="Prepare">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getPackageProviders(mixed $app): array {
+        return array_merge(parent::getPackageProviders($app), [
+            PaginationServiceProvider::class,
+        ]);
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testGetInterfaces(): void {
@@ -557,6 +573,27 @@ final class AstManipulatorTest extends TestCase {
         self::assertEquals('c', $typeField->name);
     }
 
+    /**
+     * @dataProvider dataProviderGetOriginType
+     */
+    public function testGetOriginType(string $expected, string $graphql): void {
+        $ast         = Mockery::mock(DocumentAST::class);
+        $types       = Container::getInstance()->make(TypeRegistry::class);
+        $directives  = Container::getInstance()->make(DirectiveLocator::class);
+        $manipulator = new AstManipulator($directives, $ast, $types);
+
+        $schema = $this->useGraphQLSchema($graphql)->getGraphQLSchema();
+        $query  = $schema->getType('Query');
+        $field  = $query instanceof ObjectType
+            ? $query->getField('field')->astNode
+            : null;
+
+        self::assertNotNull($field);
+
+        $type = $manipulator->getOriginType($field);
+
+        self::assertGraphQLPrintableEquals($expected, $type);
+    }
     //</editor-fold>
 
     // <editor-fold desc="Helpers">
@@ -1166,6 +1203,149 @@ final class AstManipulatorTest extends TestCase {
                 self::getFieldFactory('a'),
                 self::getArgumentFactory('a'),
                 Type::boolean(),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string,string}>
+     */
+    public static function dataProviderGetOriginType(): array {
+        return [
+            'field nullable'              => [
+                'Test',
+                <<<'GRAPHQL'
+                type Query {
+                    field: Test @mock
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            'field not null'              => [
+                'Test!',
+                <<<'GRAPHQL'
+                type Query {
+                    field: Test! @mock
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            'list'                        => [
+                '[Test]',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test] @mock
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@paginate(type: PAGINATOR)'  => [
+                '[Test!]!',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @paginate(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        type: PAGINATOR
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@paginate(type: SIMPLE)'     => [
+                '[Test!]!',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @paginate(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        type: SIMPLE
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@paginate(type: CONNECTION)' => [
+                '[Test!]!',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @paginate(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        type: CONNECTION
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@hasOne'                     => [
+                '[Test!]',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @hasOne(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@hasMany(type: PAGINATOR)'   => [
+                '[Test!]!',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @hasMany(
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        type: PAGINATOR
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
+            ],
+            '@stream'                     => [
+                '[Test!]!',
+                <<<'GRAPHQL'
+                type Query {
+                    field: [Test!]
+                    @stream(
+                        key: "id"
+                        searchable: false
+                        sortable: false
+                        builder: {
+                            model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        }
+                    )
+                }
+
+                type Test {
+                    field: Int
+                }
+                GRAPHQL,
             ],
         ];
     }

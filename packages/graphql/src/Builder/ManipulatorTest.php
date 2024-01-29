@@ -3,9 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Type\Definition\CustomScalarType;
-use GraphQL\Type\Definition\ObjectType;
 use Illuminate\Container\Container;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -15,11 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
-use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
-use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Override;
@@ -27,7 +23,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 use function array_map;
-use function array_merge;
 use function is_a;
 
 /**
@@ -35,72 +30,8 @@ use function is_a;
  */
 #[CoversClass(Manipulator::class)]
 final class ManipulatorTest extends TestCase {
-    // <editor-fold desc="Prepare">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getPackageProviders(mixed $app): array {
-        return array_merge(parent::getPackageProviders($app), [
-            PaginationServiceProvider::class,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderGetPlaceholderTypeDefinitionNode
-     */
-    public function testGetPlaceholderTypeDefinitionNode(?string $expected, string $graphql): void {
-        $ast         = Mockery::mock(DocumentAST::class);
-        $types       = Container::getInstance()->make(TypeRegistry::class);
-        $directives  = Container::getInstance()->make(DirectiveLocator::class);
-        $manipulator = new class($directives, $types, $ast) extends Manipulator {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct(
-                protected DirectiveLocator $directiveLocator,
-                protected TypeRegistry $types,
-                protected DocumentAST $document,
-            ) {
-                // empty
-            }
-
-            #[Override]
-            protected function getDirectiveLocator(): DirectiveLocator {
-                return $this->directiveLocator;
-            }
-
-            #[Override]
-            public function getDocument(): DocumentAST {
-                return $this->document;
-            }
-
-            #[Override]
-            protected function getTypes(): TypeRegistry {
-                return $this->types;
-            }
-        };
-
-        $schema = $this->useGraphQLSchema($graphql)->getGraphQLSchema();
-        $query  = $schema->getType('Query');
-        $field  = $query instanceof ObjectType
-            ? $query->getField('field')->astNode
-            : null;
-
-        self::assertNotNull($field);
-
-        $type = $manipulator->getPlaceholderTypeDefinitionNode($field);
-
-        if ($expected !== null) {
-            self::assertNotNull($type);
-            self::assertEquals($expected, $manipulator->getName($type));
-        } else {
-            self::assertNull($type);
-        }
-    }
-
     public function testGetTypeOperators(): void {
         // Operators
         $scope     = new class() implements Scope {
@@ -193,7 +124,7 @@ final class ManipulatorTest extends TestCase {
 
         // Manipulator
         $context     = (new Context())->override([
-            AstManipulationBuilderInfo::class => new AstManipulationBuilderInfo(
+            HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo(
                 new BuilderInfo($builder::class, $builder::class),
             ),
         ]);
@@ -252,119 +183,6 @@ final class ManipulatorTest extends TestCase {
         );
     }
     // </editor-fold>
-
-    // <editor-fold desc="DataProviders">
-    // =========================================================================
-    /**
-     * @return array<string, array{?string,string}>
-     */
-    public static function dataProviderGetPlaceholderTypeDefinitionNode(): array {
-        return [
-            'field nullable'              => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: Test @mock
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-            'field not null'              => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: Test! @mock
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-            'list'                        => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: [Test] @mock
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-            '@paginate(type: PAGINATOR)'  => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: [Test!]
-                    @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
-                        type: PAGINATOR
-                    )
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-            '@paginate(type: SIMPLE)'     => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: [Test!]
-                    @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
-                        type: SIMPLE
-                    )
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-            '@paginate(type: CONNECTION)' => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: [Test!]
-                    @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
-                        type: CONNECTION
-                    )
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-            '@stream'                     => [
-                'Test',
-                <<<'GRAPHQL'
-                type Query {
-                    field: [Test!]
-                    @stream(
-                        key: "id"
-                        builder: {
-                            model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
-                        }
-                    )
-                }
-
-                type Test {
-                    field: Int
-                }
-                GRAPHQL,
-            ],
-        ];
-    }
-    //</editor-fold>
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -399,7 +217,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, ContextContract $context): bool {
         return is_a($builder, stdClass::class, true);
     }
 
@@ -436,7 +254,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, ContextContract $context): bool {
         return false;
     }
 
@@ -473,7 +291,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, ContextContract $context): bool {
         return is_a($builder, stdClass::class, true);
     }
 

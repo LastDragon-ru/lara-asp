@@ -64,7 +64,7 @@ class Relation extends BaseOperator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, Context $context): bool {
         return is_a($builder, EloquentBuilder::class, true);
     }
 

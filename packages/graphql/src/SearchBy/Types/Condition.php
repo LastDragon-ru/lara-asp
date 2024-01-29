@@ -13,7 +13,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -45,7 +45,7 @@ class Condition extends InputObject {
     #[Override]
     public function getTypeName(TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
-        $builderName   = $context->get(AstManipulationBuilderInfo::class)?->value->getName() ?? 'Unknown';
+        $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
         $directiveName = Directive::Name;
 
         return "{$directiveName}{$builderName}Condition{$typeName}";
@@ -84,30 +84,13 @@ class Condition extends InputObject {
     }
 
     #[Override]
-    protected function isFieldConvertable(
-        Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
-        Context $context,
-    ): bool {
-        // Parent?
-        if (!parent::isFieldConvertable($manipulator, $field, $context)) {
-            return false;
-        }
+    protected function getFieldMarkerOperator(): string {
+        return Operator::class;
+    }
 
-        // Ignored field?
-        if ($manipulator->getDirective($field->getField(), Ignored::class) !== null) {
-            return false;
-        }
-
-        // Ignored type?
-        $fieldType = $field->getTypeDefinition();
-
-        if ($fieldType instanceof Ignored || $manipulator->getDirective($fieldType, Ignored::class) !== null) {
-            return false;
-        }
-
-        // Ok
-        return true;
+    #[Override]
+    protected function getFieldMarkerIgnored(): ?string {
+        return Ignored::class;
     }
 
     /**

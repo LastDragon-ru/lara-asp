@@ -1,0 +1,22 @@
+type Query {
+    a(where: A @searchBy): ID! @all
+    b(where: A @searchBy): [A!]! @paginate(
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
+}
+
+input A {
+    # Should be processed
+    "Description should be copied."
+    id: ID!
+    name: String!
+    field: B!
+    fields: [B!]!
+}
+
+input B {
+    "Description should be copied."
+    id: ID!
+    name: String
+    parent: A!
+}

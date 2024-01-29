@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -112,11 +113,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     'builder' => null,
                 ],
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String'),
+                        );
                 },
             ],
             '@all'                     => [
@@ -127,11 +127,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('all', AllDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @all'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @all'),
+                        );
                 },
             ],
             '@all(query)'              => [
@@ -145,11 +144,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @all(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@all(custom query)'       => [
@@ -163,11 +161,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @all(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@paginate'                => [
@@ -178,11 +175,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('paginate', PaginateDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @paginate'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @paginate'),
+                        );
                 },
             ],
             '@paginate(resolver)'      => [
@@ -196,11 +192,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__PaginatorResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(resolver: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@paginate(query)'         => [
@@ -214,11 +209,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@paginate(custom query)'  => [
@@ -232,11 +226,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @paginate(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@relation'                => [
@@ -247,11 +240,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('relation', BuilderInfoDetectorTest__RelationDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @relation'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @relation'),
+                        );
                 },
             ],
             '@find'                    => [
@@ -262,11 +254,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('find', FindDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @find'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @find'),
+                        );
                 },
             ],
             '@first'                   => [
@@ -277,11 +268,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('first', FirstDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @first'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @first'),
+                        );
                 },
             ],
             '@count'                   => [
@@ -292,11 +282,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('count', CountDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @count'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @count'),
+                        );
                 },
             ],
             '@aggregate'               => [
@@ -307,11 +296,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('aggregate', AggregateDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @aggregate'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @aggregate'),
+                        );
                 },
             ],
             '@aggregate(query)'        => [
@@ -325,11 +313,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field: String @aggregate(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             BuilderInfoProvider::class => [
@@ -340,11 +327,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('custom', BuilderInfoDetectorTest__BuilderInfoProviderDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field: String @custom'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field: String @custom'),
+                        );
                 },
             ],
         ];
@@ -366,11 +352,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                 static function (DirectiveLocator $locator, AstManipulator $manipulator): ObjectFieldSource {
                     $locator->setResolved('search', SearchDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String'),
+                        );
                 },
             ],
             '@all'                     => [
@@ -382,11 +367,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('all', AllDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @all'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @all'),
+                        );
                 },
             ],
             '@all(query)'              => [
@@ -401,11 +385,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__QueryBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field(search: String @search): String @all(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@all(custom query)'       => [
@@ -420,11 +403,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $class = json_encode(BuilderInfoDetectorTest__CustomBuilderResolver::class, JSON_THROW_ON_ERROR);
                     $field = Parser::fieldDefinition("field(search: String @search): String @all(builder: {$class})");
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@paginate'                => [
@@ -436,11 +418,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('paginate', PaginateDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @paginate'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @paginate'),
+                        );
                 },
             ],
             '@paginate(resolver)'      => [
@@ -457,11 +438,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                         "field(search: String @search): String @paginate(resolver: {$class})",
                     );
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@paginate(query)'         => [
@@ -478,11 +458,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                         "field(search: String @search): String @paginate(builder: {$class})",
                     );
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@paginate(custom query)'  => [
@@ -499,11 +478,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                         "field(search: String @search): String @paginate(builder: {$class})",
                     );
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             '@relation'                => [
@@ -515,11 +493,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('relation', BuilderInfoDetectorTest__RelationDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @relation'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @relation'),
+                        );
                 },
             ],
             '@find'                    => [
@@ -531,11 +508,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('find', FindDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @find'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @find'),
+                        );
                 },
             ],
             '@first'                   => [
@@ -547,11 +523,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('first', FirstDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @first'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @first'),
+                        );
                 },
             ],
             '@count'                   => [
@@ -563,11 +538,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('count', CountDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @count'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @count'),
+                        );
                 },
             ],
             '@aggregate'               => [
@@ -579,11 +553,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('aggregate', AggregateDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @aggregate'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @aggregate'),
+                        );
                 },
             ],
             '@aggregate(query)'        => [
@@ -600,11 +573,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                         "field(search: String @search): String @aggregate(builder: {$class})",
                     );
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        $field,
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            $field,
+                        );
                 },
             ],
             BuilderInfoProvider::class => [
@@ -616,11 +588,10 @@ final class BuilderInfoDetectorTest extends TestCase {
                     $locator->setResolved('search', SearchDirective::class);
                     $locator->setResolved('custom', BuilderInfoDetectorTest__BuilderInfoProviderDirective::class);
 
-                    return new ObjectFieldSource(
-                        $manipulator,
-                        new ObjectType(['name' => 'Test', 'fields' => []]),
-                        Parser::fieldDefinition('field(search: String @search): String @custom'),
-                    );
+                    return (new ObjectSource($manipulator, new ObjectType(['name' => 'Test', 'fields' => []])))
+                        ->getField(
+                            Parser::fieldDefinition('field(search: String @search): String @custom'),
+                        );
                 },
             ],
         ];

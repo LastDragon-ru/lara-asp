@@ -9,7 +9,8 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -23,12 +24,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Override;
 
 use function count;
+use function is_a;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
@@ -97,7 +100,7 @@ abstract class InputObject implements TypeDefinition {
             }
 
             // Field & Type
-            $fieldSource = $source->getField($field);
+            $fieldSource = $source->getField($field, $manipulator->getOriginType($field));
 
             if (!$this->isFieldConvertable($manipulator, $fieldSource, $context)) {
                 continue;
@@ -134,30 +137,140 @@ abstract class InputObject implements TypeDefinition {
         return [];
     }
 
+    /**
+     * Determines if the field can be converted or not.
+     *
+     * Explicit and Implicit (=placeholder) types processing a bit differently,
+     * see {@see self::isFieldConvertableExplicit()} and {@see self::isFieldConvertableImplicit()}
+     * accordingly. Field also can be marked by a special marker (class/interface)
+     * as ignored, see {@see self::isFieldConvertableIgnored()} and
+     * {@see self::getFieldMarkerIgnored()}.
+     */
     protected function isFieldConvertable(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): bool {
-        // Args? (in general case we don't know how they should be converted)
-        if ($field->hasArguments()) {
-            return false;
-        }
-
         // Union?
         if ($field->isUnion()) {
+            // todo(graphql): Would be nice to support Unions. Maybe just use
+            //      fields with same name and type for all members?
             return false;
         }
 
-        // Resolver?
-        $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
+        // Convertable?
+        $convertable = $context->get(HandlerContextImplicit::class)?->value
+            ? $this->isFieldConvertableImplicit($manipulator, $field, $context)
+            : $this->isFieldConvertableExplicit($manipulator, $field, $context);
 
-        if ($resolver !== null && !$this->isFieldDirectiveAllowed($manipulator, $resolver, $context)) {
+        if (!$convertable) {
+            return false;
+        }
+
+        // Ignored?
+        if ($this->isFieldConvertableIgnored($manipulator, $field, $context)) {
             return false;
         }
 
         // Ok
         return true;
+    }
+
+    protected function isFieldConvertableExplicit(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+    ): bool {
+        // Explicit type is an `input` and we are expecting this type was created
+        // for the directive, so all fields are valid and available.
+        return true;
+    }
+
+    protected function isFieldConvertableImplicit(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+    ): bool {
+        // Implicit type (=placeholder) is an `object`/`interface` and may contain
+        // fields with arguments and/or `FieldResolver` directive - these fields
+        // (most likely) cannot be used to modify the Builder.
+
+        // Operator?
+        $marker   = $this->getFieldMarkerOperator();
+        $operator = $marker
+            ? $manipulator->getDirective($field->getField(), $marker)
+            : null;
+
+        if ($operator) {
+            return true;
+        }
+
+        // Resolver?
+        $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
+
+        if ($resolver && !$this->isFieldConvertableResolver($manipulator, $field, $context, $resolver)) {
+            return false;
+        }
+
+        // Object/Arguments allowed only if Resolver defined and convertable
+        if (($field->hasArguments() || $field->isObject()) && !$resolver) {
+            return false;
+        }
+
+        // Ok
+        return true;
+    }
+
+    protected function isFieldConvertableResolver(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+        FieldResolver $directive,
+    ): bool {
+        return ($directive instanceof RelationDirective && $field->isObject())
+            || ($directive instanceof RenameDirective && !$field->hasArguments() && !$field->isObject());
+    }
+
+    protected function isFieldConvertableIgnored(
+        Manipulator $manipulator,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
+        Context $context,
+    ): bool {
+        // Marker?
+        $marker = $this->getFieldMarkerIgnored();
+
+        if (!$marker) {
+            return false;
+        }
+
+        // Ignored?
+        if ($field instanceof $marker || $manipulator->getDirective($field->getField(), $marker) !== null) {
+            return true;
+        }
+
+        // Ignored type?
+        $fieldType = $field->getTypeDefinition();
+
+        if ($fieldType instanceof $marker || $manipulator->getDirective($fieldType, $marker) !== null) {
+            return true;
+        }
+
+        // Nope
+        return false;
+    }
+
+    /**
+     * @return class-string<Operator>
+     */
+    abstract protected function getFieldMarkerOperator(): string;
+
+    /**
+     * @see self::isFieldConvertableIgnored()
+     *
+     * @return class-string|null
+     */
+    protected function getFieldMarkerIgnored(): ?string {
+        return null;
     }
 
     protected function getFieldDefinition(
@@ -166,7 +279,7 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): ?InputValueDefinitionNode {
         // Builder?
-        $builder = $context->get(AstManipulationBuilderInfo::class)?->value->getBuilder();
+        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
 
         if (!$builder) {
             return null;
@@ -175,7 +288,7 @@ abstract class InputObject implements TypeDefinition {
         // Operator?
         [$operator, $type] = $this->getFieldOperator($manipulator, $field, $context) ?? [null, null];
 
-        if ($operator === null || !$operator->isBuilderSupported($builder)) {
+        if ($operator === null || !$operator->isAvailable($builder, $context)) {
             return null;
         }
 
@@ -222,7 +335,7 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): ?Operator {
         // Builder?
-        $builder = $context->get(AstManipulationBuilderInfo::class)?->value->getBuilder();
+        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
 
         if (!$builder) {
             return null;
@@ -236,8 +349,8 @@ abstract class InputObject implements TypeDefinition {
             $operator = $manipulator->getDirective(
                 $node,
                 $directive,
-                static function (Operator $operator) use ($builder): bool {
-                    return $operator->isBuilderSupported($builder);
+                static function (Operator $operator) use ($builder, $context): bool {
+                    return $operator->isAvailable($builder, $context);
                 },
             );
 
@@ -283,7 +396,7 @@ abstract class InputObject implements TypeDefinition {
         $directives = [];
 
         foreach ($manipulator->getDirectives($field->getField()) as $directive) {
-            if ($this->isFieldDirectiveAllowed($manipulator, $directive, $context)) {
+            if ($this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive)) {
                 $node = $manipulator->getDirectiveNode($directive);
 
                 if ($node) {
@@ -297,10 +410,11 @@ abstract class InputObject implements TypeDefinition {
 
     protected function isFieldDirectiveAllowed(
         Manipulator $manipulator,
-        Directive $directive,
+        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
+        Directive $directive,
     ): bool {
-        return $directive instanceof Operator
+        return is_a($directive, $this->getFieldMarkerOperator())
             || $directive instanceof RenameDirective;
     }
 }

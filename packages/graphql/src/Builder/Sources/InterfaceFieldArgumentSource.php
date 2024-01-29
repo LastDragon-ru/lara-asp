@@ -5,9 +5,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
@@ -16,39 +15,39 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\FieldArgument;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
+ * @extends Source<(TypeNode&Node)|Type, InterfaceFieldSource>
  */
 class InterfaceFieldArgumentSource extends Source {
     use FieldArgument;
 
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         AstManipulator $manipulator,
-        private InterfaceTypeDefinitionNode|InterfaceType $object,
-        private FieldDefinitionNode|FieldDefinition $field,
+        InterfaceFieldSource $parent,
         private InputValueDefinitionNode|Argument $argument,
+        TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($manipulator, $argument instanceof Argument ? $argument->getType() : $argument->type);
+        parent::__construct(
+            $manipulator,
+            $type ?? ($argument instanceof Argument ? $argument->getType() : $argument->type),
+            $parent,
+        );
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     public function getObject(): InterfaceTypeDefinitionNode|InterfaceType {
-        return $this->object;
+        return $this->getParent()->getObject();
     }
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
-        return $this->field;
+        return $this->getParent()->getField();
     }
 
     public function getArgument(): InputValueDefinitionNode|Argument {
         return $this->argument;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Helpers">
-    // =================================================================================================================
-    public function getParent(): InterfaceFieldSource {
-        return new InterfaceFieldSource($this->getManipulator(), $this->getObject(), $this->getField());
     }
     // </editor-fold>
 }

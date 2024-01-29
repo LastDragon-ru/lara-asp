@@ -46,7 +46,7 @@ class NullsLast extends BaseOperator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, Context $context): bool {
         return $this->factory->isSupported($builder);
     }
 

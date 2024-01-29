@@ -41,17 +41,21 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
+use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\Directives\DeprecatedDirective;
+use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -59,6 +63,8 @@ use function array_merge;
 use function assert;
 use function is_string;
 use function json_encode;
+use function mb_strlen;
+use function mb_substr;
 use function sprintf;
 use function trim;
 
@@ -162,22 +168,26 @@ class AstManipulator {
     public function isUnion(
         Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
     ): bool {
-        $type = null;
-
-        if ($node instanceof WrappingType) {
-            $type = $node->getInnermostType();
-        } elseif ($node instanceof Node) {
-            try {
-                $type = $this->getTypeDefinition($node);
-            } catch (TypeDefinitionUnknown) {
-                // empty
-            }
-        } else {
-            // empty
-        }
+        $type = $this->getType($node);
 
         return $type instanceof UnionTypeDefinitionNode
             || $type instanceof UnionType;
+    }
+
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
+     */
+    public function isObject(
+        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+    ): bool {
+        $type = $this->getType($node);
+
+        return $type instanceof ObjectTypeDefinitionNode
+            || $type instanceof ObjectType
+            || $type instanceof InterfaceTypeDefinitionNode
+            || $type instanceof InterfaceType
+            || $type instanceof InputObjectTypeDefinitionNode
+            || $type instanceof InputObjectType;
     }
 
     public function isDeprecated(
@@ -208,6 +218,10 @@ class AstManipulator {
     public function getTypeDefinition(
         Node|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): TypeDefinitionNode|Type {
+        if ($node instanceof TypeDefinitionNode && $node instanceof Node) {
+            return $node;
+        }
+
         $name       = $this->getTypeName($node);
         $types      = $this->getTypes();
         $definition = $this->getDocument()->types[$name] ?? null;
@@ -279,6 +293,52 @@ class AstManipulator {
 
         // Remove
         unset($this->getDocument()->types[$name]);
+    }
+
+    /**
+     * @return (TypeNode&Node)|Type
+     */
+    public function getOriginType(
+        FieldDefinitionNode|FieldDefinition|InputValueDefinitionNode|InputObjectField $field,
+    ): TypeNode|Type {
+        $directive = $this->getDirective($field, Directive::class, static function (Directive $directive): bool {
+            return $directive instanceof StreamDirective
+                || $directive instanceof PaginateDirective
+                || $directive instanceof RelationDirective;
+        });
+        $origin    = $field instanceof FieldDefinition || $field instanceof InputObjectField
+            ? $field->getType()
+            : $field->type;
+        $name      = $this->getTypeName($origin);
+        $type      = null;
+
+        if ($directive instanceof StreamDirective) {
+            $type = Str::singular(mb_substr($name, 0, -mb_strlen(StreamDirective::Name)));
+        } elseif ($directive instanceof PaginateDirective || $directive instanceof RelationDirective) {
+            $pagination = $directive instanceof PaginateDirective
+                ? PaginateDirectiveHelper::getPaginationType($directive)
+                : RelationDirectiveHelper::getPaginationType($directive);
+
+            if ($pagination) {
+                if ($pagination->isPaginator()) {
+                    $type = mb_substr($name, 0, -mb_strlen('Paginator'));
+                } elseif ($pagination->isSimple()) {
+                    $type = mb_substr($name, 0, -mb_strlen('SimplePaginator'));
+                } elseif ($pagination->isConnection()) {
+                    $type = mb_substr($name, 0, -mb_strlen('Connection'));
+                } else {
+                    // empty
+                }
+            }
+        } else {
+            // empty
+        }
+
+        if ($type) {
+            $origin = Parser::typeReference("[{$type}!]!");
+        }
+
+        return $origin;
     }
 
     /**
@@ -660,7 +720,7 @@ class AstManipulator {
         } else {
             $argument = new Argument([
                 'name'         => $name,
-                'type'         => $this->getType($type, InputType::class),
+                'type'         => $this->toType($type, InputType::class),
                 'description'  => $description,
                 'defaultValue' => $default,
             ]);
@@ -817,15 +877,15 @@ class AstManipulator {
      *
      * @return Type&T
      */
-    private function getType(TypeNode|string $name, string $expected): Type {
+    private function toType(TypeNode|string $name, string $expected): Type {
         // todo(graphql): Is there a better way to get Type?
         $type = null;
         $node = is_string($name) ? Parser::typeReference($name) : $name;
 
         if ($node instanceof ListTypeNode) {
-            $type = Type::listOf($this->getType($node->type, Type::class));
+            $type = Type::listOf($this->toType($node->type, Type::class));
         } elseif ($node instanceof NonNullTypeNode) {
-            $type = Type::nonNull($this->getType($node->type, NullableType::class));
+            $type = Type::nonNull($this->toType($node->type, NullableType::class));
         } else {
             $type = $this->getTypeDefinition($node);
 
@@ -856,6 +916,31 @@ class AstManipulator {
         } else {
             throw new NotImplemented($node::class);
         }
+    }
+
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
+     *
+     * @return (Node&TypeDefinitionNode)|Type|null
+     */
+    private function getType(
+        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+    ): TypeDefinitionNode|Type|null {
+        $type = null;
+
+        if ($node instanceof WrappingType) {
+            $type = $node->getInnermostType();
+        } elseif ($node instanceof Node) {
+            try {
+                $type = $this->getTypeDefinition($node);
+            } catch (TypeDefinitionUnknown) {
+                // empty
+            }
+        } else {
+            // empty
+        }
+
+        return $type;
     }
     // </editor-fold>
 }

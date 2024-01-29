@@ -1,0 +1,102 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+input A {
+    id: ID!
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByConditionA {
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+}
+
+"""
+Available conditions for `type B` (only one property allowed at a time).
+"""
+input SearchByConditionB {
+    """
+    Property condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorProperty
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+}
+
+interface QueryInterface
+implements
+    & QueryInterfaceA
+    & QueryInterfaceB
+{
+    a(
+        where: SearchByConditionA
+    ): A!
+
+    b(
+        where: SearchByConditionB
+    ): B!
+}
+
+interface QueryInterfaceA {
+    a(
+        where: SearchByConditionA
+    ): A!
+}
+
+interface QueryInterfaceB {
+    b(
+        where: SearchByConditionB
+    ): B!
+}
+
+type B {
+    id: ID!
+}
+
+type Query
+implements
+    & QueryInterface
+{
+    a(
+        where: SearchByConditionA
+        @searchBy
+    ): A!
+    @all
+
+    b(
+        where: SearchByConditionB
+        @searchBy
+    ): B!
+    @all
+}

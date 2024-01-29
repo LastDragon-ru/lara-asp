@@ -198,7 +198,9 @@ enum SearchByTypeFlag {
 input Comment {
     date: Date
     text: String!
+
     user: User
+    @belongsTo
 }
 
 """

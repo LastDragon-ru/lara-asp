@@ -27,6 +27,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: c70a9a43c0a80bd2e7fa6010a9b2c0fbcab4cb4d536d7a498216d9df7431f7e2)
 
+## Tips
+
+> [!TIP]
+>
+> Maybe a good idea to add test (at least) with `LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions::assertGraphQLSchemaEquals()` assertion before the upgrade 🤗
+
 # Upgrade from v5
 
 ## General
@@ -38,6 +44,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: fd146cf51ef5a8d9d13e0317c09860f472c63cb3d60d02f4d95deb3e12cae73d)
+
+* [ ] [Input type auto-generation](README.md#input-type-auto-generation) reworked and may include more/fewer fields. Please check the documentation and update the schema if needed.
 
 ## `@searchBy`
 
@@ -80,16 +88,22 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider`
 
-* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator` (removed `BuilderInfo`)
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`
+
+  * [ ] Removed `BuilderInfo`. To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead
+
+    ```php
+    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo::class)?->value
+    ```
+
+  * [ ] Removed `getPlaceholderTypeDefinitionNode()` => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject`
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`
-
-* [ ] To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead of `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`:
-
-    ```php
-    $context->get(\LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo::class)?->builderInfo
-    ```

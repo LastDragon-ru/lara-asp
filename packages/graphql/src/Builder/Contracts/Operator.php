@@ -20,7 +20,7 @@ interface Operator extends Directive {
     /**
      * @param class-string $builder
      */
-    public function isBuilderSupported(string $builder): bool;
+    public function isAvailable(string $builder, Context $context): bool;
 
     /**
      * @template TBuilder of object

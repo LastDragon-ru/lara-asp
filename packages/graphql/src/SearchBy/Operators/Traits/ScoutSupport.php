@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits;
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
 use Override;
 
@@ -15,8 +16,8 @@ use function is_a;
  */
 trait ScoutSupport {
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
-        return parent::isBuilderSupported($builder)
+    public function isAvailable(string $builder, Context $context): bool {
+        return parent::isAvailable($builder, $context)
             || (is_a($builder, ScoutBuilder::class, true) && $this->isScoutSupported());
     }
 

@@ -17,7 +17,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contexts\AstManipulationBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -45,7 +46,8 @@ use function is_array;
 use function reset;
 
 /**
- * @see AstManipulationBuilderInfo
+ * @see HandlerContextBuilderInfo
+ * @see HandlerContextImplicit
  */
 abstract class HandlerDirective extends BaseDirective implements Handler {
     use WithManipulator;
@@ -223,7 +225,10 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
         // Argument
         $context = (new Context())->override([
-            AstManipulationBuilderInfo::class => new AstManipulationBuilderInfo($builder),
+            HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo($builder),
+            HandlerContextImplicit::class    => new HandlerContextImplicit(
+                $manipulator->isPlaceholder($argDefinition),
+            ),
         ]);
         $source  = $this->getFieldArgumentSource($manipulator, $parentType, $parentField, $argDefinition);
         $type    = $this->getArgDefinitionType($manipulator, $documentAST, $source, $context);
@@ -258,17 +263,13 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         string $operator,
         ContextContract $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
-        $type       = null;
-        $definition = $manipulator->isPlaceholder($argument->getArgument())
-            ? $manipulator->getPlaceholderTypeDefinitionNode($argument->getField())
+        $definition = $context->get(HandlerContextImplicit::class)?->value
+            ? $manipulator->getTypeDefinition($manipulator->getOriginType($argument->getField()))
             : $argument->getTypeDefinition();
-
-        if ($definition) {
-            $operator = $manipulator->getOperator(static::getScope(), $operator);
-            $node     = $manipulator->getTypeSource($definition);
-            $type     = $operator->getFieldType($manipulator, $node, $context);
-            $type     = Parser::typeReference($type);
-        }
+        $operator   = $manipulator->getOperator(static::getScope(), $operator);
+        $node       = $manipulator->getTypeSource($definition);
+        $type       = $operator->getFieldType($manipulator, $node, $context);
+        $type       = Parser::typeReference($type);
 
         return $type;
     }

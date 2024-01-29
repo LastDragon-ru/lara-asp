@@ -1,15 +1,17 @@
 type Query implements A & B {
-    a(where: InputA @searchBy): ID! @all
+    a(search: String @search, where: InputA @searchBy): ID! @all
 
-    b(where: NestedA @searchBy): ID! @all
+    b(search: String @search, where: NestedA @searchBy): ID! @all
 
-    c(where: InputB @searchBy): ID! @all
+    c(search: String @search, where: InputB @searchBy): ID! @all
 
-    d(where: NestedB @searchBy): ID! @all
+    d(search: String @search, where: NestedB @searchBy): ID! @all
 
-    e(where: _ @searchBy): Object! @all
+    e(search: String @search, where: InputA @searchBy): ID! @all
 
-    f(where: ObjectInterface @searchBy): Object! @all
+    f(search: String @search, where: _ @searchBy): Object! @all
+
+    g(search: String @search, where: _ @searchBy): ObjectInterface! @all
 }
 
 interface A implements C & F {
@@ -25,7 +27,7 @@ interface C {
 }
 
 interface F {
-    f(where: _ @searchBy): Object! @all
+    f(search: String @search, where: _ @searchBy): Object! @all
 }
 
 input InputA {
@@ -120,8 +122,8 @@ interface ObjectInterface {
     stringScalarNotNull: String!
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
-    nested: ObjectNested
-    nestedNotNull: ObjectNested!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
     enum: EnumA
     enumNotNull: EnumA!
     enumIgnored: EnumIgnored
@@ -153,7 +155,7 @@ interface ObjectInterface {
     fieldRenamed: ID @rename(attribute: "renamed")
 }
 
-type Object implements ObjectInterface{
+type Object implements ObjectInterface {
     idScalar: ID
     idScalarNotNull: ID!
     intScalar: Int
@@ -164,8 +166,8 @@ type Object implements ObjectInterface{
     stringScalarNotNull: String!
     booleanScalar: Boolean
     booleanScalarNotNull: Boolean!
-    nested: ObjectNested
-    nestedNotNull: ObjectNested!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
     enum: EnumA
     enumNotNull: EnumA!
     enumIgnored: EnumIgnored

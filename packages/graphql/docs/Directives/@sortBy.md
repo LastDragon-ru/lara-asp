@@ -19,7 +19,11 @@ on
 
 ## Basic usage
 
-How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest~example-expected.graphql)):
+How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest/Example.expected.graphql)):
+
+[include:example]: ../../src/SortBy/Directives/DirectiveTest/Example.schema.graphql
+[//]: # (start: f4e6a88c853cd9b15aa5c3388c1b61148589eddbc18b410b0e846695c5765e4f)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
 type Query {
@@ -37,7 +41,7 @@ input UsersSort {
 
 type Comment {
     text: String
-    user: User
+    user: User @belongsTo
 }
 
 type User {
@@ -45,6 +49,8 @@ type User {
     name: String!
 }
 ```
+
+[//]: # (end: f4e6a88c853cd9b15aa5c3388c1b61148589eddbc18b410b0e846695c5765e4f)
 
 And:
 
@@ -60,14 +66,33 @@ query {
 
 ## Input type auto-generation
 
-As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
+As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. Please check the main section of [Input type auto-generation](../../README.md#input-type-auto-generation) to learn more about general conversion rules.
 
-* unions
-* with list/array type
-* with `@field` directive
-* with `@sortByIgnored` directive
-* with any directive that implements [`Ignored`](../../src/SortBy/Contracts/Ignored.php)
-* any `Type` that implements [`Ignored`](../../src/SortBy/Contracts/Ignored.php)
+Addition rules for Implicit type:
+
+* The field is a list of `scalar`/`enum`? - exclude
+
+The `@sortByIgnored` can be used as Ignored marker.
+
+[include:exec]: <../../../../dev/artisan dev:directive @sortByIgnored>
+[//]: # (start: 08dddca7c96cf62e6e6e632190eb16fa49d5c1652e35e29b74417dc9d52c29ff)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```graphql
+"""
+Marks that field/definition should be excluded from sort.
+"""
+directive @sortByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+```
+
+[//]: # (end: 08dddca7c96cf62e6e6e632190eb16fa49d5c1652e35e29b74417dc9d52c29ff)
 
 ## Operators
 
@@ -76,20 +101,6 @@ The package defines only one's own type. To extend/replace the list of its opera
 * `SortByExtra` / [`Operators::Extra`](../../src/SortBy/Operators.php) - List of additional extra operators for all types. The list is empty by default.
 
 ## Eloquent/Database
-
-### Supported Relations
-
-The main feature - the ability to sort results by relation properties, at the moment supported the following relation types:
-
-* `HasOne` (<https://laravel.com/docs/eloquent-relationships#one-to-one>)
-* `HasMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many>)
-* `HasManyThrough` (<https://laravel.com/docs/eloquent-relationships#has-many-through>)
-* `BelongsTo` (<https://laravel.com/docs/eloquent-relationships#one-to-many-inverse>)
-* `BelongsToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many>)
-* `MorphOne` (<https://laravel.com/docs/eloquent-relationships#one-of-many-polymorphic-relations>)
-* `MorphMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-relations>)
-* `MorphToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations>)
-* `HasOneThrough` (<https://laravel.com/docs/eloquent-relationships#has-one-through>)
 
 ### Order by random
 
@@ -146,7 +157,7 @@ query {
 
 ### NULLs ordering
 
-`NULL`s order different in different databases. Sometimes you may to change it. There is no default/built-it support in Laravel nor Lighthouse, but you can do it! :) Please note, not all databases have native `NULLS FIRST`/`NULLS LAST` support (eg MySQL and SQL Server doesn't). The additional `ORDER BY` clause with `CASE WHEN` will be used for these databases. It may be slow for big datasets.
+`NULL`s order different in different databases. Sometimes you may want to change it. There is no default/built-it support in Laravel nor Lighthouse, but you can do it! :) Please note, not all databases have native `NULLS FIRST`/`NULLS LAST` support (eg MySQL and SQL Server doesn't). The additional `ORDER BY` clause with `CASE WHEN` will be used for these databases. It may be slow for big datasets.
 
 Default ordering can be changed via config. You may set it for all directions if single value used, in this case NULL always be first/last:
 

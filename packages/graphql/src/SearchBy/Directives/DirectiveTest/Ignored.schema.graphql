@@ -1,0 +1,64 @@
+type Query {
+    a(where: A @searchBy): A! @all
+    b(where: _ @searchBy): B! @all
+}
+
+input A {
+    "Not ignored"
+    a: String!
+    b: [String!]!
+
+    "Marked by @searchByIgnored"
+    c: IgnoredInput!
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+    g: String @searchByIgnored
+}
+
+interface B {
+    "Not ignored"
+    a: String!
+    b: [String!]!
+
+    "Marked by @searchByIgnored"
+    c: IgnoredType!
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+    g: String @searchByIgnored
+
+    "Resolver"
+    h: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    "Arguments"
+    i(arg: String): Int!
+
+    "Union"
+    j: ObjectUnion
+    k: [ObjectUnion!]
+}
+
+input IgnoredInput @searchByIgnored {
+    id: ID
+}
+
+scalar IgnoredDate
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@searchByIgnored
+
+enum IgnoredEnum @searchByIgnored {
+    One
+}
+
+union ObjectUnion = ObjectA | ObjectB
+
+type ObjectA {
+    id: ID!
+}
+
+type ObjectB {
+    id: ID!
+}

@@ -1,0 +1,86 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Property clause.
+    """
+    a: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
+}
+
+"""
+Sort clause for `interface B` (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Property clause.
+    """
+    b: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "renamed"
+    )
+}
+
+interface B {
+    b: String!
+    @rename(
+        attribute: "renamed"
+    )
+}
+
+type A {
+    a: String!
+    @rename(
+        attribute: "renamed"
+    )
+}
+
+type Query {
+    a(
+        order: [SortByClauseA!]
+        @sortBy
+    ): A!
+    @all
+
+    b(
+        order: [SortByClauseB!]
+        @sortBy
+    ): B!
+    @all
+}

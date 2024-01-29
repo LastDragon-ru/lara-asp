@@ -1,0 +1,188 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Marks that field/definition should be excluded from sort.
+"""
+directive @sortByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+enum IgnoredEnum
+@sortByIgnored
+{
+    One
+}
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+input A {
+    """
+    Not ignored
+    """
+    a: String!
+
+    """
+    List
+    """
+    b: [String!]
+
+    """
+    Marked by @sortByIgnored
+    """
+    c: IgnoredInput!
+
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+
+    g: String
+    @sortByIgnored
+}
+
+input IgnoredInput
+@sortByIgnored
+{
+    id: ID
+}
+
+input IgnoredType {
+    name: String!
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Not ignored
+    """
+    a: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    List
+    """
+    b: SortByTypeDirection
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `interface B` (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Property clause.
+    """
+    a: SortByTypeDirection
+    @sortByOperatorField
+}
+
+interface B {
+    """
+    Not ignored
+    """
+    a: String!
+
+    """
+    List
+    """
+    b: [String!]
+
+    """
+    Marked by @sortByIgnored
+    """
+    c: IgnoredType!
+
+    d: IgnoredDate!
+    e: [IgnoredDate!]!
+    f: IgnoredEnum!
+
+    g: String
+    @sortByIgnored
+
+    """
+    Resolver
+    """
+    h: Float
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    """
+    Arguments
+    """
+    i(
+        arg: String
+    ): Int!
+
+    """
+    Union
+    """
+    j: ObjectUnion
+
+    k: [ObjectUnion!]
+}
+
+scalar IgnoredDate
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+@sortByIgnored
+
+type ObjectA {
+    id: ID!
+}
+
+type ObjectB {
+    id: ID!
+}
+
+type Query {
+    a(
+        order: [SortByClauseA!]
+        @sortBy
+    ): A!
+    @all
+
+    b(
+        order: [SortByClauseB!]
+        @sortBy
+    ): B!
+    @all
+}
+
+union ObjectUnion =
+    | ObjectA
+    | ObjectB

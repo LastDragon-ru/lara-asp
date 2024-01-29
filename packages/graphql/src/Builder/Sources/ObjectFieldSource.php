@@ -4,10 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Sources;
 
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NonNullTypeNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
@@ -16,23 +15,31 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Traits\Field;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 /**
- * @extends Source<NamedTypeNode|ListTypeNode|NonNullTypeNode|Type>
+ * @extends Source<(TypeNode&Node)|Type, ObjectSource>
  */
 class ObjectFieldSource extends Source {
     use Field;
 
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
     public function __construct(
         AstManipulator $manipulator,
-        private ObjectTypeDefinitionNode|ObjectType $object,
+        ObjectSource $parent,
         private FieldDefinitionNode|FieldDefinition $field,
+        TypeNode|Type|null $type = null,
     ) {
-        parent::__construct($manipulator, $field instanceof FieldDefinition ? $field->getType() : $field->type);
+        parent::__construct(
+            $manipulator,
+            $type ?? ($field instanceof FieldDefinition ? $field->getType() : $field->type),
+            $parent,
+        );
     }
 
     // <editor-fold desc="Getters / Setters">
     // =========================================================================
     public function getObject(): ObjectTypeDefinitionNode|ObjectType {
-        return $this->object;
+        return $this->getParent()->getType();
     }
 
     public function getField(): FieldDefinition|FieldDefinitionNode {
@@ -42,12 +49,14 @@ class ObjectFieldSource extends Source {
 
     // <editor-fold desc="Helpers">
     // =================================================================================================================
-    public function getParent(): ObjectSource {
-        return new ObjectSource($this->getManipulator(), $this->getObject());
-    }
-
-    public function getArgument(InputValueDefinitionNode|Argument $argument): ObjectFieldArgumentSource {
-        return new ObjectFieldArgumentSource($this->getManipulator(), $this->getObject(), $this->getField(), $argument);
+    /**
+     * @param (TypeNode&Node)|Type|null $type
+     */
+    public function getArgument(
+        InputValueDefinitionNode|Argument $argument,
+        TypeNode|Type $type = null,
+    ): ObjectFieldArgumentSource {
+        return new ObjectFieldArgumentSource($this->getManipulator(), $this, $argument, $type);
     }
     // </editor-fold>
 }

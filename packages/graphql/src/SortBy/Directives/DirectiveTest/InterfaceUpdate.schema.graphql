@@ -1,0 +1,25 @@
+type Query implements QueryInterface {
+    a(order: A @sortBy): A! @all
+    b(order: _ @sortBy): B! @all
+}
+
+input A {
+    id: ID!
+}
+
+type B {
+    id: ID!
+}
+
+interface QueryInterface implements QueryInterfaceA & QueryInterfaceB {
+    a(order: A): A!
+    b(order: _): B!
+}
+
+interface QueryInterfaceA {
+    a(order: A): A!
+}
+
+interface QueryInterfaceB {
+    b(order: _): B!
+}

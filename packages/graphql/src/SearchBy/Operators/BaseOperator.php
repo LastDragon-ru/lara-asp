@@ -21,7 +21,7 @@ abstract class BaseOperator extends OperatorDirective implements Operator, Marke
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, Context $context): bool {
         return is_a($builder, EloquentBuilder::class, true)
             || is_a($builder, QueryBuilder::class, true);
     }

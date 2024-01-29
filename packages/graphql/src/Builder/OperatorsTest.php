@@ -179,7 +179,7 @@ abstract class OperatorsTest__Operator implements Operator {
     }
 
     #[Override]
-    public function isBuilderSupported(string $builder): bool {
+    public function isAvailable(string $builder, Context $context): bool {
         throw new Exception('Should not be called');
     }
 

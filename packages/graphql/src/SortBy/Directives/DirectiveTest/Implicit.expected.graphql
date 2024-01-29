@@ -1,0 +1,775 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorProperty
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Splits list of items into the chunks and returns one chunk specified
+by an offset or a cursor.
+"""
+directive @stream(
+    """
+    Overrides default searchable status.
+    """
+    searchable: Boolean
+
+    """
+    Overrides default sortable status.
+    """
+    sortable: Boolean
+
+    """
+    Overrides default builder. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the field and its type to determine the Builder to query.
+    """
+    builder: StreamBuilder
+
+    """
+    Overrides default limit.
+    """
+    limit: Int
+
+    """
+    Overrides default unique key. Useful if the standard detection
+    algorithm doesn't fit/work. By default, the directive will use
+    the name of field with `ID!` type.
+    """
+    key: String
+)
+on
+    | FIELD_DEFINITION
+
+directive @streamLimit(
+    default: Int
+    max: Int
+)
+on
+    | ARGUMENT_DEFINITION
+
+directive @streamOffset
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Options for the `type` argument of `@hasMany`.
+"""
+enum HasManyType {
+    """
+    Cursor-based pagination, compatible with the Relay specification.
+    """
+    CONNECTION
+
+    """
+    Offset-based pagination, similar to the Laravel default.
+    """
+    PAGINATOR
+
+    """
+    Offset-based pagination like the Laravel "Simple Pagination", which does not count the total number of records.
+    """
+    SIMPLE
+}
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseA
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseA
+    @sortByOperatorNullsLast
+
+    """
+    Property clause.
+    """
+    operator: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relation: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationWithArgs: SortByClauseA
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
+Sort clause for `type B` (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseB
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseB
+    @sortByOperatorNullsLast
+
+    """
+    Property clause.
+    """
+    parent: SortByClauseA
+    @sortByOperatorProperty
+}
+
+"""
+Sort clause for `interface C` (only one property allowed at a time).
+"""
+input SortByClauseC {
+    """
+    Property clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Property clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseC
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseC
+    @sortByOperatorNullsLast
+
+    """
+    Property clause.
+    """
+    operator: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relation: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationWithArgs: SortByClauseA
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
+Explicit builder. Only one of fields allowed.
+"""
+input StreamBuilder {
+    """
+    The reference to a function that provides a Builder instance.
+    """
+    builder: String
+
+    """
+    The class name of the model to query.
+    """
+    model: String
+
+    """
+    The relation name to query.
+    """
+    relation: String
+}
+
+interface C {
+    field: B!
+    fields: [B!]!
+
+    """
+    Description should be ignored.
+    """
+    id: ID!
+
+    list: [String!]
+    name: String!
+
+    operator: B!
+    @sortByOperatorProperty
+
+    operators: [B!]
+    @sortByOperatorProperty
+
+    property(
+        arg: String
+    ): Int!
+
+    relation: B!
+    @hasOne
+
+    relationWithArgs(
+        arg: String
+    ): A!
+    @hasOne
+
+    relations: [B!]!
+    @hasMany
+
+    relationsPaginated(
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsPaginatedWithArgs(
+        arg: String
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsWithArgs(
+        arg: String
+    ): [A!]
+    @hasMany
+
+    renamed: String!
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedList: [String!]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObject: B
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObjectList: [B]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedWithArgs(
+        arg: String
+    ): String!
+    @rename(
+        attribute: "internal"
+    )
+
+    resolver: Int!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stream(
+        order: [SortByClauseA!]
+        @sortBy
+
+        """
+        Maximum count of items to return. The value must be between `1` and `100`.
+        """
+        limit: Int! = 25
+        @streamLimit
+        @rules(
+            apply: ["integer", "min:1", "max:100"]
+        )
+
+        """
+        The cursor or offset within the stream to start.
+        """
+        offset: StreamOffset
+        @streamOffset
+    ): ASStream!
+    @stream(
+        searchable: false
+        builder: {
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        }
+    )
+    @validate
+}
+
+"""
+Represents a offset for the `@stream` directive. The value can be a
+positive `Int` or a `String`. The `Int` value represents the offset
+(zero-based) to navigate to any position within the stream (= offset
+pagination). And the `String` value represents the cursor and allows
+navigation only to the previous/current/next pages (= cursor
+pagination).
+"""
+scalar StreamOffset
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Offset"
+)
+
+type A {
+    field: B!
+    fields: [B!]!
+
+    """
+    Description should be ignored.
+    """
+    id: ID!
+
+    list: [String!]
+    name: String!
+
+    operator: B!
+    @sortByOperatorProperty
+
+    operators: [B!]
+    @sortByOperatorProperty
+
+    property(
+        arg: String
+    ): Int!
+
+    relation: B!
+    @hasOne
+
+    relationWithArgs(
+        arg: String
+    ): A!
+    @hasOne
+
+    relations: [B!]!
+    @hasMany
+
+    relationsPaginated(
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsPaginatedWithArgs(
+        arg: String
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): BPaginator!
+    @hasMany(
+        type: PAGINATOR
+    )
+
+    relationsWithArgs(
+        arg: String
+    ): [A!]
+    @hasMany
+
+    renamed: String!
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedList: [String!]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObject: B
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObjectList: [B]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedWithArgs(
+        arg: String
+    ): String!
+    @rename(
+        attribute: "internal"
+    )
+
+    resolver: Int!
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver"
+    )
+
+    stream(
+        order: [SortByClauseA!]
+        @sortBy
+
+        """
+        Maximum count of items to return. The value must be between `1` and `100`.
+        """
+        limit: Int! = 25
+        @streamLimit
+        @rules(
+            apply: ["integer", "min:1", "max:100"]
+        )
+
+        """
+        The cursor or offset within the stream to start.
+        """
+        offset: StreamOffset
+        @streamOffset
+    ): ASStream!
+    @stream(
+        searchable: false
+        builder: {
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        }
+    )
+    @validate
+}
+
+"""
+A paginated list of A items.
+"""
+type APaginator
+@model(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+)
+{
+    """
+    A list of A items.
+    """
+    data: [A!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
+
+    """
+    Pagination information about the list of items.
+    """
+    paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
+    )
+}
+
+type ASStream {
+    """
+    Requested items.
+    """
+    items: [A!]!
+
+    """
+    Total number of items. Not recommended querying it in each query
+    due to performance.
+    """
+    length: Int
+
+    """
+    Offsets/Cursors to navigate within the stream.
+    """
+    navigation: StreamNavigation!
+}
+
+type B {
+    """
+    Description should be ignored.
+    """
+    id: ID!
+
+    name: String
+
+    parent: A!
+    @hasOne
+}
+
+"""
+A paginated list of B items.
+"""
+type BPaginator {
+    """
+    A list of B items.
+    """
+    data: [B!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
+
+    """
+    Pagination information about the list of items.
+    """
+    paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
+    )
+}
+
+"""
+Information about pagination using a fully featured paginator.
+"""
+type PaginatorInfo {
+    """
+    Number of items in the current page.
+    """
+    count: Int!
+
+    """
+    Index of the current page.
+    """
+    currentPage: Int!
+
+    """
+    Index of the first item in the current page.
+    """
+    firstItem: Int
+
+    """
+    Are there more pages after this one?
+    """
+    hasMorePages: Boolean!
+
+    """
+    Index of the last item in the current page.
+    """
+    lastItem: Int
+
+    """
+    Index of the last available page.
+    """
+    lastPage: Int!
+
+    """
+    Number of items per page.
+    """
+    perPage: Int!
+
+    """
+    Number of total available items.
+    """
+    total: Int!
+}
+
+type Query {
+    a(
+        where: [SortByClauseA!]
+        @sortBy
+    ): [A!]!
+    @all
+
+    b(
+        where: [SortByClauseA!]
+        @sortBy
+
+        """
+        Limits number of fetched items.
+        """
+        first: Int!
+
+        """
+        The offset from which items are returned.
+        """
+        page: Int
+    ): APaginator!
+    @paginate(
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
+
+    c(
+        where: [SortByClauseC!]
+        @sortBy
+    ): [C!]!
+    @all
+}
+
+type StreamNavigation {
+    current: StreamOffset!
+    next: StreamOffset
+    previous: StreamOffset
+}

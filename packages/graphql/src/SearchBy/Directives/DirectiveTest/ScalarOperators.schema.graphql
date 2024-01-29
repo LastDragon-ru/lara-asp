@@ -1,0 +1,28 @@
+type Query {
+    test(where: A @searchBy): ID! @all
+}
+
+input A {
+    a: Mixed!
+    b: Date
+    c: EnumA
+}
+
+scalar Date
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@searchByOperators(type: "Boolean")
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
+
+enum EnumA
+@searchByOperatorIn
+{
+    A
+}
+
+scalar SearchByExtra
+@searchByOperatorAllOf
+
+scalar Mixed
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
+@searchByOperatorEqual

@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -52,6 +53,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Nuwave\Lighthouse\Pagination\PaginationServiceProvider as LighthousePaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
@@ -59,6 +61,7 @@ use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_merge;
 use function config;
 use function implode;
 use function is_array;
@@ -74,15 +77,27 @@ final class DirectiveTest extends TestCase {
     use WithTestObject;
     use MakesGraphQLRequests;
 
+    // <editor-fold desc="Prepare">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getPackageProviders(mixed $app): array {
+        return array_merge(parent::getPackageProviders($app), [
+            LighthousePaginationServiceProvider::class,
+        ]);
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
      * @dataProvider dataProviderManipulateArgDefinition
      *
-     * @param Closure(static): GraphQLExpected $expected
-     * @param Closure(static): void|null       $prepare
+     * @param Closure(static): void|null $prepare
      */
-    public function testManipulateArgDefinition(Closure $expected, string $graphql, ?Closure $prepare = null): void {
+    public function testManipulateArgDefinition(string $expected, string $graphql, ?Closure $prepare = null): void {
         if ($prepare) {
             $prepare($this);
         }
@@ -92,7 +107,7 @@ final class DirectiveTest extends TestCase {
         );
 
         self::assertGraphQLSchemaEquals(
-            $expected($this),
+            new GraphQLExpected(self::getTestData()->file($expected)),
         );
     }
 
@@ -108,15 +123,15 @@ final class DirectiveTest extends TestCase {
             ->setResolved('search', SearchDirective::class);
 
         $this->useGraphQLSchema(
-            self::getTestData()->file('~scout.graphql'),
+            self::getTestData()->file('Scout.schema.graphql'),
         );
 
         self::assertGraphQLSchemaEquals(
             new GraphQLExpected(
                 static::getTestData()->file(
                     match (true) {
-                        (new RequiresLaravelScout('>=10.3.0'))->isSatisfied() => '~scout-v10.3.0-expected.graphql',
-                        default                                               => '~scout-expected.graphql',
+                        (new RequiresLaravelScout('>=10.3.0'))->isSatisfied() => 'Scout.expected.v10.3.0.graphql',
+                        default                                               => 'Scout.expected.graphql',
                     },
                 ),
             ),
@@ -126,78 +141,16 @@ final class DirectiveTest extends TestCase {
     public function testManipulateArgDefinitionUnknownType(): void {
         self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
-        $this->useGraphQLSchema(self::getTestData()->file('~unknown.graphql'));
-    }
-
-    public function testManipulateArgDefinitionProgrammaticallyAddedType(): void {
-        $enum    = new EnumType([
-            'name'   => 'TestEnum',
-            'values' => [
-                'property' => [
-                    'value'       => 123,
-                    'description' => 'test property',
-                ],
-            ],
-        ]);
-        $ignored = new class([
-            'name'   => 'TestIgnored',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::nonNull(Type::string()),
-                ],
-            ],
-        ]) extends InputObjectType implements Ignored {
-            // empty
-        };
-        $typeA   = new InputObjectType([
-            'name'   => 'TestTypeA',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::string(),
-                ],
-                [
-                    'name' => 'flag',
-                    'type' => Type::boolean(),
-                ],
-                [
-                    'name' => 'value',
-                    'type' => Type::listOf(Type::nonNull($enum)),
-                ],
-                [
-                    'name' => 'ignored',
-                    'type' => Type::listOf(Type::nonNull($ignored)),
-                ],
-            ],
-        ]);
-        $typeB   = new InputObjectType([
-            'name'   => 'TestTypeB',
-            'fields' => [
-                [
-                    'name' => 'name',
-                    'type' => Type::nonNull(Type::string()),
-                ],
-                [
-                    'name' => 'child',
-                    'type' => $typeA,
-                ],
-            ],
-        ]);
-
-        $registry = Container::getInstance()->make(TypeRegistry::class);
-
-        $registry->register($enum);
-        $registry->register($typeA);
-        $registry->register($typeB);
-        $registry->register($ignored);
-
         $this->useGraphQLSchema(
-            self::getTestData()->file('~programmatically.graphql'),
-        );
+            <<<'GRAPHQL'
+            type Query {
+              test(where: Properties @searchBy): ID! @all
+            }
 
-        self::assertGraphQLSchemaEquals(
-            self::getTestData()->file('~programmatically-expected.graphql'),
+            input Properties {
+              value: UnknownType
+            }
+            GRAPHQL,
         );
     }
 
@@ -382,130 +335,168 @@ final class DirectiveTest extends TestCase {
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<string,array{Closure(self): GraphQLExpected, string}>
+     * @return array<string,array{string, string, Closure(static): void|null}>
      */
     public static function dataProviderManipulateArgDefinition(): array {
         return [
-            'full'                           => [
-                static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~full-expected.graphql'),
-                    ));
-                },
-                '~full.graphql',
+            'Explicit'              => [
+                'Explicit.expected.graphql',
+                'Explicit.schema.graphql',
+                null,
+            ],
+            'Implicit'              => [
+                'Implicit.expected.graphql',
+                'Implicit.schema.graphql',
+                null,
+            ],
+            'ScalarOperators'       => [
+                'ScalarOperators.expected.graphql',
+                'ScalarOperators.schema.graphql',
+                null,
+            ],
+            'TypeRegistry'          => [
+                'TypeRegistry.expected.graphql',
+                'TypeRegistry.schema.graphql',
                 static function (): void {
-                    $package = Package::Name;
+                    $enum    = new EnumType([
+                        'name'   => 'TestEnum',
+                        'values' => [
+                            'property' => [
+                                'value'       => 123,
+                                'description' => 'test property',
+                            ],
+                        ],
+                    ]);
+                    $ignored = new class([
+                        'name'   => 'TestIgnored',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::nonNull(Type::string()),
+                            ],
+                        ],
+                    ]) extends InputObjectType implements Ignored {
+                        // empty
+                    };
+                    $typeA   = new InputObjectType([
+                        'name'   => 'TestTypeA',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::string(),
+                            ],
+                            [
+                                'name' => 'flag',
+                                'type' => Type::boolean(),
+                            ],
+                            [
+                                'name' => 'value',
+                                'type' => Type::listOf(Type::nonNull($enum)),
+                            ],
+                            [
+                                'name' => 'ignored',
+                                'type' => Type::listOf(Type::nonNull($ignored)),
+                            ],
+                        ],
+                    ]);
+                    $typeB   = new InputObjectType([
+                        'name'   => 'TestTypeB',
+                        'fields' => [
+                            [
+                                'name' => 'name',
+                                'type' => Type::nonNull(Type::string()),
+                            ],
+                            [
+                                'name' => 'child',
+                                'type' => $typeA,
+                            ],
+                        ],
+                    ]);
 
+                    $registry = Container::getInstance()->make(TypeRegistry::class);
+
+                    $registry->register($enum);
+                    $registry->register($typeA);
+                    $registry->register($typeB);
+                    $registry->register($ignored);
+                },
+            ],
+            'CustomComplexOperator' => [
+                'CustomComplexOperator.expected.graphql',
+                'CustomComplexOperator.schema.graphql',
+                static function (): void {
+                    $locator   = Container::getInstance()->make(DirectiveLocator::class);
+                    $resolver  = Container::getInstance()->make(BuilderPropertyResolver::class);
+                    $directive = new DirectiveTest__CustomComplexOperator($resolver);
+
+                    $locator->setResolved('customComplexOperator', $directive::class);
+                },
+            ],
+            'AllowedDirectives'     => [
+                'AllowedDirectives.expected.graphql',
+                'AllowedDirectives.schema.graphql',
+                static function (): void {
                     config([
-                        "{$package}.search_by.operators.Date" => [
+                        Package::Name.'.search_by.operators.String'            => [
                             SearchByOperatorEqualDirective::class,
+                        ],
+                        Package::Name.'.search_by.operators.'.Operators::Extra => [
+                            // empty
                         ],
                     ]);
                 },
             ],
-            'example'                        => [
-                static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~example-expected.graphql'),
-                    ));
-                },
-                '~example.graphql',
+            'Ignored'               => [
+                'Ignored.expected.graphql',
+                'Ignored.schema.graphql',
                 static function (): void {
-                    $package = Package::Name;
-
                     config([
-                        "{$package}.search_by.operators.Date" => [
+                        Package::Name.'.search_by.operators.String'            => [
+                            SearchByOperatorEqualDirective::class,
+                        ],
+                        Package::Name.'.search_by.operators.'.Operators::Extra => [
+                            // empty
+                        ],
+                    ]);
+
+                    Container::getInstance()->make(TypeRegistry::class)->register(
+                        new class([
+                            'name'   => 'IgnoredType',
+                            'fields' => [
+                                [
+                                    'name' => 'name',
+                                    'type' => Type::nonNull(Type::string()),
+                                ],
+                            ],
+                        ]) extends InputObjectType implements Ignored {
+                            // empty
+                        },
+                    );
+                },
+            ],
+            'Example'               => [
+                'Example.expected.graphql',
+                'Example.schema.graphql',
+                static function (): void {
+                    config([
+                        Package::Name.'.search_by.operators.Date' => [
                             SearchByOperatorBetweenDirective::class,
                         ],
                     ]);
                 },
             ],
-            'only used type should be added' => [
-                static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~usedonly-expected.graphql'),
-                    ));
-                },
-                '~usedonly.graphql',
-                null,
-            ],
-            'custom complex operators'       => [
-                static function (self $test): GraphQLExpected {
-                    return (new GraphQLExpected(
-                        $test::getTestData()->file('~custom-complex-operators-expected.graphql'),
-                    ));
-                },
-                '~custom-complex-operators.graphql',
+            'InterfaceUpdate'       => [
+                'InterfaceUpdate.expected.graphql',
+                'InterfaceUpdate.schema.graphql',
                 static function (): void {
-                    $locator   = Container::getInstance()->make(DirectiveLocator::class);
-                    $resolver  = Container::getInstance()->make(BuilderPropertyResolver::class);
-                    $directive = new class($resolver) extends BaseOperator implements TypeDefinition {
-                        #[Override]
-                        public static function getName(): string {
-                            return 'custom';
-                        }
-
-                        #[Override]
-                        public function getFieldType(
-                            TypeProvider $provider,
-                            TypeSource $source,
-                            Context $context,
-                        ): string {
-                            return $provider->getType(static::class, $provider->getTypeSource(Type::int()), $context);
-                        }
-
-                        #[Override]
-                        public function getFieldDescription(): string {
-                            return 'Custom condition.';
-                        }
-
-                        #[Override]
-                        public static function definition(): string {
-                            return <<<'GRAPHQL'
-                                directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
-                            GRAPHQL;
-                        }
-
-                        #[Override]
-                        public function call(
-                            Handler $handler,
-                            object $builder,
-                            Property $property,
-                            Argument $argument,
-                            Context $context,
-                        ): object {
-                            throw new Exception('Should not be called');
-                        }
-
-                        #[Override]
-                        public function getTypeName(TypeSource $source, Context $context): string {
-                            $directiveName = Directive::Name;
-                            $typeName      = Str::studly($source->getTypeName());
-
-                            return "{$directiveName}ComplexCustom{$typeName}";
-                        }
-
-                        #[Override]
-                        public function getTypeDefinition(
-                            Manipulator $manipulator,
-                            TypeSource $source,
-                            Context $context,
-                            string $name,
-                        ): TypeDefinitionNode&Node {
-                            return Parser::inputObjectTypeDefinition(
-                                <<<GRAPHQL
-                                """
-                                Custom operator
-                                """
-                                input {$name} {
-                                    custom: {$source->getTypeName()}
-                                }
-                                GRAPHQL,
-                            );
-                        }
-                    };
-
-                    $locator->setResolved('customComplexOperator', $directive::class);
+                    config([
+                        Package::Name.'.search_by.operators.'.Operators::ID    => [
+                            SearchByOperatorEqualDirective::class,
+                        ],
+                        Package::Name.'.search_by.operators.'.Operators::Extra => [
+                            // empty
+                        ],
+                    ]);
                 },
             ],
         ];
@@ -884,5 +875,75 @@ final class DirectiveTest extends TestCase {
 class DirectiveTest__Resolver {
     public function __invoke(): mixed {
         throw new Exception('Should not be called.');
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__CustomComplexOperator extends BaseOperator implements TypeDefinition {
+    #[Override]
+    public static function getName(): string {
+        return 'custom';
+    }
+
+    #[Override]
+    public function getFieldType(
+        TypeProvider $provider,
+        TypeSource $source,
+        Context $context,
+    ): string {
+        return $provider->getType(static::class, $provider->getTypeSource(Type::int()), $context);
+    }
+
+    #[Override]
+    public function getFieldDescription(): string {
+        return 'Custom condition.';
+    }
+
+    #[Override]
+    public static function definition(): string {
+        return <<<'GRAPHQL'
+            directive @customComplexOperator(value: String) on INPUT_FIELD_DEFINITION
+        GRAPHQL;
+    }
+
+    #[Override]
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function getTypeName(TypeSource $source, Context $context): string {
+        $directiveName = Directive::Name;
+        $typeName      = Str::studly($source->getTypeName());
+
+        return "{$directiveName}ComplexCustom{$typeName}";
+    }
+
+    #[Override]
+    public function getTypeDefinition(
+        Manipulator $manipulator,
+        TypeSource $source,
+        Context $context,
+        string $name,
+    ): TypeDefinitionNode&Node {
+        return Parser::inputObjectTypeDefinition(
+            <<<GRAPHQL
+            """
+            Custom operator
+            """
+            input {$name} {
+                custom: {$source->getTypeName()}
+            }
+            GRAPHQL,
+        );
     }
 }
