@@ -31,6 +31,7 @@ use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Override;
 
 use function count;
+use function is_a;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
@@ -194,6 +195,16 @@ abstract class InputObject implements TypeDefinition {
         // fields with arguments and/or `FieldResolver` directive - these fields
         // (most likely) cannot be used to modify the Builder.
 
+        // Operator?
+        $marker   = $this->getFieldMarkerOperator();
+        $operator = $marker
+            ? $manipulator->getDirective($field->getField(), $marker)
+            : null;
+
+        if ($operator) {
+            return true;
+        }
+
         // Resolver?
         $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
@@ -216,8 +227,8 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
         FieldResolver $directive,
     ): bool {
-        return $directive instanceof RelationDirective
-            || $this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive);
+        return ($directive instanceof RelationDirective && $field->isObject())
+            || ($directive instanceof RenameDirective && !$field->hasArguments() && !$field->isObject());
     }
 
     protected function isFieldConvertableIgnored(
@@ -247,6 +258,11 @@ abstract class InputObject implements TypeDefinition {
         // Nope
         return false;
     }
+
+    /**
+     * @return class-string<Operator>
+     */
+    abstract protected function getFieldMarkerOperator(): string;
 
     /**
      * @see self::isFieldConvertableIgnored()
@@ -398,7 +414,7 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
         Directive $directive,
     ): bool {
-        return $directive instanceof Operator
+        return is_a($directive, $this->getFieldMarkerOperator())
             || $directive instanceof RenameDirective;
     }
 }

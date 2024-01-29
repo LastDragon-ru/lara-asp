@@ -100,6 +100,11 @@ class Clause extends InputObject {
     }
 
     #[Override]
+    protected function getFieldMarkerOperator(): string {
+        return Operator::class;
+    }
+
+    #[Override]
     protected function getFieldMarkerIgnored(): ?string {
         return Ignored::class;
     }

@@ -11,24 +11,31 @@ type A {
     "Description should be ignored."
     id: ID!
     name: String!
+    operator: B! @searchByOperatorRelation
+    operators: [B!] @searchByOperatorRelation
     relation: B! @hasOne
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
     relationsWithArgs(arg: String): [A!] @hasMany
+    relationsPaginated: B! @hasMany(type: PAGINATOR)
+    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
+    renamed: String! @rename(attribute: "internal")
+    renamedList: [String!] @rename(attribute: "internal")
 
     # Should be ignored
     field: B!
     fields: [B!]!
     property(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver")
-    relationsPaginated: B! @hasMany(type: PAGINATOR)
-    relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
     stream: [A!]! @stream(
         sortable: false
         builder: {
             model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
         }
     )
+    renamedObject: B @rename(attribute: "internal")
+    renamedObjectList: [B] @rename(attribute: "internal")
+    renamedWithArgs(arg: String): String! @rename(attribute: "internal")
 }
 
 type B {
@@ -43,12 +50,16 @@ interface C {
     "Description should be ignored."
     id: ID!
     name: String!
+    operator: B! @searchByOperatorRelation
+    operators: [B!] @searchByOperatorRelation
     relation: B! @hasOne
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
     relationsWithArgs(arg: String): [A!] @hasMany
     relationsPaginated: B! @hasMany(type: PAGINATOR)
     relationsPaginatedWithArgs(arg: String): [B!]! @hasMany(type: PAGINATOR)
+    renamed: String! @rename(attribute: "internal")
+    renamedList: [String!] @rename(attribute: "internal")
 
     # Should be ignored
     field: B!
@@ -61,4 +72,7 @@ interface C {
             model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
         }
     )
+    renamedObject: B @rename(attribute: "internal")
+    renamedObjectList: [B] @rename(attribute: "internal")
+    renamedWithArgs(arg: String): String! @rename(attribute: "internal")
 }

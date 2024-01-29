@@ -358,6 +358,18 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
+    operator: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    operators: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
     relation: SearchByComplexRelationB
     @searchByOperatorRelation
 
@@ -390,6 +402,24 @@ input SearchByConditionA {
     """
     relationsWithArgs: SearchByComplexRelationA
     @searchByOperatorRelation
+
+    """
+    Property condition.
+    """
+    renamed: SearchByScalarString
+    @searchByOperatorProperty
+    @rename(
+        attribute: "internal"
+    )
+
+    """
+    Property condition.
+    """
+    renamedList: SearchByScalarStringOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "internal"
+    )
 }
 
 """
@@ -470,6 +500,18 @@ input SearchByConditionC {
     """
     Relationship condition.
     """
+    operator: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
+    operators: SearchByComplexRelationB
+    @searchByOperatorRelation
+
+    """
+    Relationship condition.
+    """
     relation: SearchByComplexRelationB
     @searchByOperatorRelation
 
@@ -502,6 +544,24 @@ input SearchByConditionC {
     """
     relationsWithArgs: SearchByComplexRelationA
     @searchByOperatorRelation
+
+    """
+    Property condition.
+    """
+    renamed: SearchByScalarString
+    @searchByOperatorProperty
+    @rename(
+        attribute: "internal"
+    )
+
+    """
+    Property condition.
+    """
+    renamedList: SearchByScalarStringOrNull
+    @searchByOperatorProperty
+    @rename(
+        attribute: "internal"
+    )
 }
 
 """
@@ -830,6 +890,12 @@ interface C {
 
     name: String!
 
+    operator: B!
+    @searchByOperatorRelation
+
+    operators: [B!]
+    @searchByOperatorRelation
+
     property(
         arg: String
     ): Int!
@@ -881,6 +947,33 @@ interface C {
         arg: String
     ): [A!]
     @hasMany
+
+    renamed: String!
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedList: [String!]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObject: B
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObjectList: [B]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedWithArgs(
+        arg: String
+    ): String!
+    @rename(
+        attribute: "internal"
+    )
 
     resolver: Int!
     @field(
@@ -939,6 +1032,12 @@ type A {
 
     name: String!
 
+    operator: B!
+    @searchByOperatorRelation
+
+    operators: [B!]
+    @searchByOperatorRelation
+
     property(
         arg: String
     ): Int!
@@ -990,6 +1089,33 @@ type A {
         arg: String
     ): [A!]
     @hasMany
+
+    renamed: String!
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedList: [String!]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObject: B
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObjectList: [B]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedWithArgs(
+        arg: String
+    ): String!
+    @rename(
+        attribute: "internal"
+    )
 
     resolver: Int!
     @field(

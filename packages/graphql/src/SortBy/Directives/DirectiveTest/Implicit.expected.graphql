@@ -146,6 +146,18 @@ input SortByClauseA {
     """
     Property clause.
     """
+    operator: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
     relation: SortByClauseB
     @sortByOperatorProperty
 
@@ -178,6 +190,15 @@ input SortByClauseA {
     """
     relationsWithArgs: SortByClauseA
     @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "internal"
+    )
 }
 
 """
@@ -246,6 +267,18 @@ input SortByClauseC {
     """
     Property clause.
     """
+    operator: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
     relation: SortByClauseB
     @sortByOperatorProperty
 
@@ -278,6 +311,15 @@ input SortByClauseC {
     """
     relationsWithArgs: SortByClauseA
     @sortByOperatorProperty
+
+    """
+    Property clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorField
+    @rename(
+        attribute: "internal"
+    )
 }
 
 """
@@ -311,6 +353,12 @@ interface C {
 
     list: [String!]
     name: String!
+
+    operator: B!
+    @sortByOperatorProperty
+
+    operators: [B!]
+    @sortByOperatorProperty
 
     property(
         arg: String
@@ -363,6 +411,33 @@ interface C {
         arg: String
     ): [A!]
     @hasMany
+
+    renamed: String!
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedList: [String!]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObject: B
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObjectList: [B]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedWithArgs(
+        arg: String
+    ): String!
+    @rename(
+        attribute: "internal"
+    )
 
     resolver: Int!
     @field(
@@ -422,6 +497,12 @@ type A {
     list: [String!]
     name: String!
 
+    operator: B!
+    @sortByOperatorProperty
+
+    operators: [B!]
+    @sortByOperatorProperty
+
     property(
         arg: String
     ): Int!
@@ -473,6 +554,33 @@ type A {
         arg: String
     ): [A!]
     @hasMany
+
+    renamed: String!
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedList: [String!]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObject: B
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedObjectList: [B]
+    @rename(
+        attribute: "internal"
+    )
+
+    renamedWithArgs(
+        arg: String
+    ): String!
+    @rename(
+        attribute: "internal"
+    )
 
     resolver: Int!
     @field(
