@@ -104,6 +104,26 @@ Represents [JSON](https://json.org) string.
 
 [Scout](https://laravel.com/docs/scout) is also supported 🤩. You just need to add [`@search`](https://lighthouse-php.com/master/api-reference/directives.html#search) directive to an argument.
 
+# Input type auto-generation
+
+The type used with the Builder directives like `@searchBy`/`@sortBy` may be Explicit (when you specify the `input` name `field(where: InputTypeName @searchBy): [Object!]!`) or Implicit (when the `_` used, `field(where: _ @searchBy): [Object!]!`). They are processing a bit differently.
+
+For Explicit type, all fields except unions and marked as ignored (if supported by the directive) will be included.
+
+For Implicit type, the following rules are applied (in this order; concrete directive may have differences, please check its docs):
+
+* Union? - exclude
+* Has `Operator` of the concrete directive? - include
+* Has `Nuwave\Lighthouse\Support\Contracts\FieldResolver`?
+  * Yes
+    * Is `Nuwave\Lighthouse\Schema\Directives\RelationDirective`? - Include if is the `type` or list of `type`
+    * Is `Nuwave\Lighthouse\Schema\Directives\RenameDirective`? - Include if is `scalar`/`enum` (not `type`) and no arguments
+    * Otherwise - exclude
+  * No
+    * Is `type` or has arguments - exclude
+    * Otherwise - include
+* Ignored (if supported)? - exclude
+
 # Builder property name
 
 By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`BuilderPropertyResolver`](./src/Builder/Contracts/BuilderPropertyResolver.php):

@@ -145,13 +145,29 @@ query {
 
 ## Input type auto-generation
 
-As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
+As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@searchBy` will generate `input` automatically by the actual `type` of the query. Please check the main section of [Input type auto-generation](../../README.md#input-type-auto-generation) to learn more about general conversion rules.
 
-* unions
-* with `@field` directive
-* with `@searchByIgnored` directive
-* with any directive that implements [`Ignored`](../../src/SearchBy/Contracts/Ignored.php)
-* any `Type` that implements [`Ignored`](../../src/SearchBy/Contracts/Ignored.php)
+The `@searchByIgnored` can be used as Ignored marker.
+
+[include:exec]: <../../../../dev/artisan dev:directive @searchByIgnored>
+[//]: # (start: 20d300e04ef04c52684a5d3db6a419825ada6f67a950a418e26dee5c9b5d218c)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```graphql
+"""
+Marks that field/definition should be excluded from search.
+"""
+directive @searchByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+```
+
+[//]: # (end: 20d300e04ef04c52684a5d3db6a419825ada6f67a950a418e26dee5c9b5d218c)
 
 ## Operators
 

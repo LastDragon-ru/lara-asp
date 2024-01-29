@@ -66,14 +66,33 @@ query {
 
 ## Input type auto-generation
 
-As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. While converting `type` into `input` following fields will be excluded:
+As you can see in the example above you can use the special placeholder `_` instead of real `input`. In this case, `@sortBy` will generate `input` automatically by the actual `type` of the query. Please check the main section of [Input type auto-generation](../../README.md#input-type-auto-generation) to learn more about general conversion rules.
 
-* unions
-* with list/array type
-* with `@field` directive
-* with `@sortByIgnored` directive
-* with any directive that implements [`Ignored`](../../src/SortBy/Contracts/Ignored.php)
-* any `Type` that implements [`Ignored`](../../src/SortBy/Contracts/Ignored.php)
+Addition rules for Implicit type:
+
+* The field is a list of `scalar`/`enum`? - exclude
+
+The `@sortByIgnored` can be used as Ignored marker.
+
+[include:exec]: <../../../../dev/artisan dev:directive @sortByIgnored>
+[//]: # (start: 08dddca7c96cf62e6e6e632190eb16fa49d5c1652e35e29b74417dc9d52c29ff)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```graphql
+"""
+Marks that field/definition should be excluded from sort.
+"""
+directive @sortByIgnored
+on
+    | ENUM
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | OBJECT
+    | SCALAR
+```
+
+[//]: # (end: 08dddca7c96cf62e6e6e632190eb16fa49d5c1652e35e29b74417dc9d52c29ff)
 
 ## Operators
 
