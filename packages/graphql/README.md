@@ -102,7 +102,7 @@ Represents [JSON](https://json.org) string.
 
 # Scout
 
-[Scout](https://laravel.com/docs/scout) is also supported 🤩. You just need to add [`@search`](https://lighthouse-php.com/master/api-reference/directives.html#search) directive to an argument.
+[Scout](https://laravel.com/docs/scout) is also supported 🤩. You just need to add [`@search`](https://lighthouse-php.com/master/api-reference/directives.html#search) directive to an argument. Please note that available operators depend on [Scout itself](https://laravel.com/docs/scout#where-clauses).
 
 # Input type auto-generation
 

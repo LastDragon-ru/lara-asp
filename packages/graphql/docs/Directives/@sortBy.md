@@ -102,20 +102,6 @@ The package defines only one's own type. To extend/replace the list of its opera
 
 ## Eloquent/Database
 
-### Supported Relations
-
-The main feature - the ability to sort results by relation properties, at the moment supported the following relation types:
-
-* `HasOne` (<https://laravel.com/docs/eloquent-relationships#one-to-one>)
-* `HasMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many>)
-* `HasManyThrough` (<https://laravel.com/docs/eloquent-relationships#has-many-through>)
-* `BelongsTo` (<https://laravel.com/docs/eloquent-relationships#one-to-many-inverse>)
-* `BelongsToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many>)
-* `MorphOne` (<https://laravel.com/docs/eloquent-relationships#one-of-many-polymorphic-relations>)
-* `MorphMany` (<https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-relations>)
-* `MorphToMany` (<https://laravel.com/docs/eloquent-relationships#many-to-many-polymorphic-relations>)
-* `HasOneThrough` (<https://laravel.com/docs/eloquent-relationships#has-one-through>)
-
 ### Order by random
 
 It is also possible to sort records in random order, but it is not enabled by default. To enable it you just need to add [`Random`](../../src/SortBy/Operators/Extra/Random.php)/`@sortByOperatorRandom` operator/directive to `Extra` type:
@@ -171,7 +157,7 @@ query {
 
 ### NULLs ordering
 
-`NULL`s order different in different databases. Sometimes you may to change it. There is no default/built-it support in Laravel nor Lighthouse, but you can do it! :) Please note, not all databases have native `NULLS FIRST`/`NULLS LAST` support (eg MySQL and SQL Server doesn't). The additional `ORDER BY` clause with `CASE WHEN` will be used for these databases. It may be slow for big datasets.
+`NULL`s order different in different databases. Sometimes you may want to change it. There is no default/built-it support in Laravel nor Lighthouse, but you can do it! :) Please note, not all databases have native `NULLS FIRST`/`NULLS LAST` support (eg MySQL and SQL Server doesn't). The additional `ORDER BY` clause with `CASE WHEN` will be used for these databases. It may be slow for big datasets.
 
 Default ordering can be changed via config. You may set it for all directions if single value used, in this case NULL always be first/last:
 
