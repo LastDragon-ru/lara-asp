@@ -116,11 +116,11 @@ For Implicit type, the following rules are applied (in this order; concrete dire
 * Has `Operator` of the concrete directive? - include
 * Has `Nuwave\Lighthouse\Support\Contracts\FieldResolver`?
   * Yes
-    * Is `Nuwave\Lighthouse\Schema\Directives\RelationDirective`? - Include if is the `type` or list of `type`
-    * Is `Nuwave\Lighthouse\Schema\Directives\RenameDirective`? - Include if is `scalar`/`enum` (not `type`) and no arguments
+    * Is `Nuwave\Lighthouse\Schema\Directives\RelationDirective`? - Include if is the `Object` or list of `Object`
+    * Is `Nuwave\Lighthouse\Schema\Directives\RenameDirective`? - Include if is `scalar`/`enum` (not `Object`) and no arguments
     * Otherwise - exclude
   * No
-    * Is `type` or has arguments - exclude
+    * Is `Object` or has arguments - exclude
     * Otherwise - include
 * Ignored (if supported)? - exclude
 
