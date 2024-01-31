@@ -2,13 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
@@ -118,17 +112,10 @@ class Clause extends InputObject {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): ?array {
-        $fieldType = $field->getTypeDefinition();
-        $isNested  = $fieldType instanceof InputObjectTypeDefinitionNode
-            || $fieldType instanceof ObjectTypeDefinitionNode
-            || $fieldType instanceof InputObjectType
-            || $fieldType instanceof ObjectType
-            || $fieldType instanceof InterfaceTypeDefinitionNode
-            || $fieldType instanceof InterfaceType;
-        $operator  = null;
-        $source    = null;
+        $operator = null;
+        $source   = null;
 
-        if ($isNested) {
+        if ($field->isObject()) {
             $operator = $this->getObjectDefaultOperator($manipulator, $field, $context);
         } else {
             $type     = $manipulator->getType(Direction::class, $field, $context);

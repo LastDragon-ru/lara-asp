@@ -190,6 +190,30 @@ class AstManipulator {
             || $type instanceof InputObjectType;
     }
 
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
+     */
+    public function isScalar(
+        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+    ): bool {
+        $type = $this->getType($node);
+
+        return $type instanceof ScalarTypeDefinitionNode
+            || $type instanceof ScalarType;
+    }
+
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
+     */
+    public function isEnum(
+        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+    ): bool {
+        $type = $this->getType($node);
+
+        return $type instanceof EnumTypeDefinitionNode
+            || $type instanceof EnumType;
+    }
+
     public function isDeprecated(
         Node|Argument|EnumValueDefinition|FieldDefinition|InputObjectField $node,
     ): bool {
@@ -926,21 +950,23 @@ class AstManipulator {
     private function getType(
         Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
     ): TypeDefinitionNode|Type|null {
-        $type = null;
-
-        if ($node instanceof WrappingType) {
-            $type = $node->getInnermostType();
+        if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
+            $node = $node->getType();
         } elseif ($node instanceof Node) {
             try {
-                $type = $this->getTypeDefinition($node);
+                $node = $this->getTypeDefinition($node);
             } catch (TypeDefinitionUnknown) {
-                // empty
+                $node = null;
             }
         } else {
             // empty
         }
 
-        return $type;
+        if ($node instanceof WrappingType) {
+            $node = $node->getInnermostType();
+        }
+
+        return $node;
     }
     // </editor-fold>
 }

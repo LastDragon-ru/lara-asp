@@ -28,4 +28,8 @@ interface TypeSource extends Stringable {
     public function isUnion(): bool;
 
     public function isObject(): bool;
+
+    public function isScalar(): bool;
+
+    public function isEnum(): bool;
 }

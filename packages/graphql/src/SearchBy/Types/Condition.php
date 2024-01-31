@@ -2,17 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
-use GraphQL\Language\AST\EnumTypeDefinitionNode;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ScalarType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
@@ -102,23 +92,11 @@ class Condition extends InputObject {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): ?array {
-        $fieldType = $field->getTypeDefinition();
-        $operator  = match (true) {
-            $fieldType instanceof ScalarTypeDefinitionNode,
-                $fieldType instanceof ScalarType
-                    => Scalar::class,
-            $fieldType instanceof EnumTypeDefinitionNode,
-                $fieldType instanceof EnumType
-                    => Enumeration::class,
-            $fieldType instanceof InputObjectTypeDefinitionNode,
-                $fieldType instanceof ObjectTypeDefinitionNode,
-                $fieldType instanceof InputObjectType,
-                $fieldType instanceof ObjectType,
-                $fieldType instanceof InterfaceTypeDefinitionNode,
-                $fieldType instanceof InterfaceType
-                    => $this->getObjectDefaultOperator($manipulator, $field, $context),
-            default
-                    => null,
+        $operator = match (true) {
+            $field->isScalar() => Scalar::class,
+            $field->isEnum()   => Enumeration::class,
+            $field->isObject() => $this->getObjectDefaultOperator($manipulator, $field, $context),
+            default            => null,
         };
 
         if (!$operator) {

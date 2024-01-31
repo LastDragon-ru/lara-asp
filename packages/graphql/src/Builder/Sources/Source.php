@@ -85,6 +85,16 @@ class Source implements TypeSource {
     }
 
     #[Override]
+    public function isScalar(): bool {
+        return $this->getManipulator()->isScalar($this->getType());
+    }
+
+    #[Override]
+    public function isEnum(): bool {
+        return $this->getManipulator()->isEnum($this->getType());
+    }
+
+    #[Override]
     public function __toString(): string {
         return $this->getManipulator()->getTypeFullName($this->getType());
     }
