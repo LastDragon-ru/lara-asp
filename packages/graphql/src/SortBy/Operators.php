@@ -7,21 +7,26 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsFirstDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsLastDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorPropertyDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use Override;
 
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Extra = Directive::Name.'Extra';
+    public const Extra  = Directive::Name.'Extra';
+    public const Object = Directive::Name.'Object';
 
     /**
      * @inheritDoc
      */
     protected array $default = [
-        self::Extra => [
+        self::Extra  => [
             SortByOperatorNullsFirstDirective::class,
             SortByOperatorNullsLastDirective::class,
+        ],
+        self::Object => [
+            SortByOperatorPropertyDirective::class,
         ],
     ];
 
