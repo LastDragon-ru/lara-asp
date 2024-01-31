@@ -135,7 +135,12 @@ abstract class InputObject implements TypeDefinition {
         InputSource|ObjectSource|InterfaceSource $source,
         Context $context,
     ): array {
-        return [];
+        $type      = $this->getTypeForOperators();
+        $operators = $type
+            ? $manipulator->getTypeOperators($this->getScope(), $type, $context)
+            : [];
+
+        return $operators;
     }
 
     /**
@@ -432,6 +437,10 @@ abstract class InputObject implements TypeDefinition {
     ): bool {
         return is_a($directive, $this->getFieldMarkerOperator())
             || $directive instanceof RenameDirective;
+    }
+
+    protected function getTypeForOperators(): ?string {
+        return null;
     }
 
     protected function getTypeForFieldOperator(): ?string {

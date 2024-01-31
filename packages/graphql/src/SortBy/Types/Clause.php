@@ -22,12 +22,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use Override;
 
-use function array_merge;
-use function array_unique;
-use function array_values;
 use function is_string;
-
-use const SORT_REGULAR;
 
 class Clause extends InputObject {
     #[Override]
@@ -51,26 +46,6 @@ class Clause extends InputObject {
         Context $context,
     ): string {
         return "Sort clause for `{$source}` (only one property allowed at a time).";
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getOperators(
-        Manipulator $manipulator,
-        InputSource|ObjectSource|InterfaceSource $source,
-        Context $context,
-    ): array {
-        return array_values(
-            array_unique(
-                array_merge(
-                    parent::getOperators($manipulator, $source, $context),
-                    $manipulator->getTypeOperators($this->getScope(), Operators::Extra, $context),
-                ),
-                SORT_REGULAR,
-            ),
-        );
     }
 
     #[Override]
@@ -101,6 +76,11 @@ class Clause extends InputObject {
     #[Override]
     protected function getFieldMarkerIgnored(): ?string {
         return Ignored::class;
+    }
+
+    #[Override]
+    protected function getTypeForOperators(): ?string {
+        return Operators::Extra;
     }
 
     #[Override]
