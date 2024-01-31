@@ -150,7 +150,7 @@ class Condition extends InputObject {
         }
 
         // Condition
-        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Condition, $context);
+        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Object, $context);
         $condition = reset($operators) ?: null;
 
         return $condition;

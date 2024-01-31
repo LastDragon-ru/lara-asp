@@ -41,24 +41,24 @@ use Override;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Null      = Directive::Name.'Null';
-    public const Extra     = Directive::Name.'Extra';
-    public const Number    = Directive::Name.'Number';
-    public const Enum      = Directive::Name.'Enum';
-    public const Condition = Directive::Name.'Condition';
+    public const Null   = Directive::Name.'Null';
+    public const Extra  = Directive::Name.'Extra';
+    public const Number = Directive::Name.'Number';
+    public const Enum   = Directive::Name.'Enum';
+    public const Object = Directive::Name.'Object';
 
     /**
      * @inheritDoc
      */
     protected array $default = [
         // Standard types
-        self::ID        => [
+        self::ID      => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
             SearchByOperatorInDirective::class,
             SearchByOperatorNotInDirective::class,
         ],
-        self::Int       => [
+        self::Int     => [
             self::Number,
             SearchByOperatorBitwiseOrDirective::class,
             SearchByOperatorBitwiseXorDirective::class,
@@ -66,14 +66,14 @@ class Operators extends BuilderOperators {
             SearchByOperatorBitwiseLeftShiftDirective::class,
             SearchByOperatorBitwiseRightShiftDirective::class,
         ],
-        self::Float     => [
+        self::Float   => [
             self::Number,
         ],
-        self::Boolean   => [
+        self::Boolean => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
         ],
-        self::String    => [
+        self::String  => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
             SearchByOperatorLikeDirective::class,
@@ -89,7 +89,7 @@ class Operators extends BuilderOperators {
         ],
 
         // Special types
-        self::Number    => [
+        self::Number  => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
             SearchByOperatorLessThanDirective::class,
@@ -101,37 +101,37 @@ class Operators extends BuilderOperators {
             SearchByOperatorBetweenDirective::class,
             SearchByOperatorNotBetweenDirective::class,
         ],
-        self::Enum      => [
+        self::Enum    => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
             SearchByOperatorInDirective::class,
             SearchByOperatorNotInDirective::class,
         ],
-        self::Null      => [
+        self::Null    => [
             SearchByOperatorIsNullDirective::class,
             SearchByOperatorIsNotNullDirective::class,
         ],
-        self::Extra     => [
+        self::Extra   => [
             SearchByOperatorAllOfDirective::class,
             SearchByOperatorAnyOfDirective::class,
             SearchByOperatorNotDirective::class,
         ],
-        self::Condition => [
+        self::Object  => [
             SearchByOperatorRelationshipDirective::class,
             SearchByOperatorConditionDirective::class,
         ],
 
         // Lighthouse
-        'Date'          => [
+        'Date'        => [
             self::Number,
         ],
-        'DateTime'      => [
+        'DateTime'    => [
             'Date',
         ],
-        'DateTimeTz'    => [
+        'DateTimeTz'  => [
             'Date',
         ],
-        'DateTimeUtc'   => [
+        'DateTimeUtc' => [
             'Date',
         ],
     ];

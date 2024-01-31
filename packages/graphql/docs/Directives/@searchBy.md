@@ -175,7 +175,7 @@ There are three types of operators:
 
 * Comparison - used to compare column with value(s), eg `{equal: "value"}`, `{lt: 2}`, etc. To add your own you just need to implement [`Operator`](../../src/Builder/Contracts/Operator.php) and add it to type(s);
 * Extra - used to add additional fields, by default package provides few Logical operators which allow you to do eg `anyOf([{equal: "a"}, {equal: "b"}])`. Adding your own is the same: implement [`Operator`](../../src/Builder/Contracts/Operator.php) and add it to `Operators::Extra` type;
-* Condition - used to create conditions for nested Input types and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relationship`](../../src/SearchBy/Operators/Complex/Relationship.php) operator will be used:
+* Object - used to create conditions for fields with type `Object` (`input`/`type`/`interface`) and allow implement any logic eg `whereHas`, `whereDoesntHave`, etc. All the same, but these operators should be explicitly added to the fields/input types, by default the [`Relationship`](../../src/SearchBy/Operators/Complex/Relationship.php) operator will be used:
 
     ```graphql
     type Query {
@@ -200,7 +200,7 @@ By default, the package provide list of predefined operators for build-in GraphQ
 
 The package also defines a few own types in addition to the standard GraphQL types:
 
-* `SearchByCondition` / [`Operators::Condition`](../../src/SearchBy/Operators.php) - List of known Condition operators. If no directive is found, the first supported operator from the list will be used.
+* `SearchByObject` / [`Operators::Object`](../../src/SearchBy/Operators.php) - List of known operators for `Object`. If no other directive is found, the first supported operator from the list will be used.
 * `SearchByNumber` / [`Operators::Number`](../../src/SearchBy/Operators.php) - Any operator for this type will be available for `Int` and `Float`.
 * `SearchByNull` / [`Operators::Null`](../../src/SearchBy/Operators.php) - Additional operators available for nullable fields.
 * `SearchByExtra` / [`Operators::Extra`](../../src/SearchBy/Operators.php) - List of additional extra operators for all types.
