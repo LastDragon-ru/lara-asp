@@ -121,7 +121,7 @@ class Condition extends InputObject {
         Context $context,
     ): ?OperatorContract {
         // Directive?
-        $directive = parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $context);
+        $directive = parent::getFieldOperatorDirective($manipulator, $field, $context, Operator::class);
 
         if ($directive) {
             return $directive;

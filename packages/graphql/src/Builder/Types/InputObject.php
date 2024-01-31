@@ -328,11 +328,11 @@ abstract class InputObject implements TypeDefinition {
      *
      * @return ?T
      */
-    protected function getFieldDirectiveOperator(
-        string $directive,
+    protected function getFieldOperatorDirective(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
+        string $directive,
     ): ?Operator {
         // Builder?
         $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();

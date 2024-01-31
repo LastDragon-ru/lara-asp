@@ -131,7 +131,7 @@ class Clause extends InputObject {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): OperatorContract {
-        return parent::getFieldDirectiveOperator(Operator::class, $manipulator, $field, $context)
+        return parent::getFieldOperatorDirective($manipulator, $field, $context, Operator::class)
             ?? $manipulator->getOperator($this->getScope(), SortByOperatorPropertyDirective::class);
     }
 }
