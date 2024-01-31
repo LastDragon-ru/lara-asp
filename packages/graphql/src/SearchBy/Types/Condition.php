@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
@@ -27,7 +26,6 @@ use function array_merge;
 use function array_unique;
 use function array_values;
 use function is_string;
-use function reset;
 
 use const SORT_REGULAR;
 
@@ -83,6 +81,11 @@ class Condition extends InputObject {
         return Ignored::class;
     }
 
+    #[Override]
+    protected function getTypeForFieldOperator(): ?string {
+        return Operators::Object;
+    }
+
     /**
      * @inheritDoc
      */
@@ -95,42 +98,17 @@ class Condition extends InputObject {
         $operator = match (true) {
             $field->isScalar() => Scalar::class,
             $field->isEnum()   => Enumeration::class,
-            $field->isObject() => $this->getObjectDefaultOperator($manipulator, $field, $context),
-            default            => null,
+            $field->isObject() => parent::getFieldOperator($manipulator, $field, $context),
+            default            => throw new NotImplemented($field),
         };
-
-        if (!$operator) {
-            throw new NotImplemented($field);
-        }
-
-        // Create input
-        $source = null;
 
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field, $context);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
             $operator = $manipulator->getOperator($this->getScope(), SearchByOperatorPropertyDirective::class);
+            $operator = [$operator, $source];
         }
 
-        return [$operator, $source];
-    }
-
-    protected function getObjectDefaultOperator(
-        Manipulator $manipulator,
-        InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
-        Context $context,
-    ): ?OperatorContract {
-        // Directive?
-        $directive = parent::getFieldOperatorDirective($manipulator, $field, $context, Operator::class);
-
-        if ($directive) {
-            return $directive;
-        }
-
-        // Condition
-        $operators = $manipulator->getTypeOperators($this->getScope(), Operators::Object, $context);
-        $condition = reset($operators) ?: null;
-
-        return $condition;
+        return $operator;
     }
 }

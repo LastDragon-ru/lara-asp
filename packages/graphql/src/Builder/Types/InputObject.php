@@ -32,6 +32,7 @@ use Override;
 
 use function count;
 use function is_a;
+use function reset;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
@@ -315,11 +316,26 @@ abstract class InputObject implements TypeDefinition {
     /**
      * @return array{Operator, ?TypeSource}|null
      */
-    abstract protected function getFieldOperator(
+    protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-    ): ?array;
+    ): ?array {
+        $operator = $this->getFieldOperatorDirective($manipulator, $field, $context, $this->getFieldMarkerOperator());
+
+        if (!$operator) {
+            $type = $this->getTypeForFieldOperator();
+
+            if ($type) {
+                $operators = $manipulator->getTypeOperators($this->getScope(), $type, $context);
+                $operator  = reset($operators) ?: null;
+            }
+        }
+
+        return $operator
+            ? [$operator, null]
+            : null;
+    }
 
     /**
      * @template T of Operator
@@ -416,5 +432,9 @@ abstract class InputObject implements TypeDefinition {
     ): bool {
         return is_a($directive, $this->getFieldMarkerOperator())
             || $directive instanceof RenameDirective;
+    }
+
+    protected function getTypeForFieldOperator(): ?string {
+        return null;
     }
 }
