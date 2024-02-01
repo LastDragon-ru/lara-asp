@@ -108,7 +108,7 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
-* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
+* [ ] Removed `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
 

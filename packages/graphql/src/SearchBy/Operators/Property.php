@@ -2,13 +2,25 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator as Marker;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use Override;
 
-class Property extends PropertyDirective implements Marker {
+class Property extends BaseOperator {
+    use HandlerOperator;
+
+    #[Override]
+    public static function getName(): string {
+        return 'property';
+    }
+
     #[Override]
     public function getFieldDescription(): string {
         return 'Property condition.';
+    }
+
+    #[Override]
+    public function isAvailable(string $builder, Context $context): bool {
+        return true;
     }
 }
