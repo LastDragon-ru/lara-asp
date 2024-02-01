@@ -112,6 +112,8 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\PropertyOperator` => `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator`
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`

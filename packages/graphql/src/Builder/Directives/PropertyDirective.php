@@ -7,12 +7,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\PropertyOperator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
 abstract class PropertyDirective extends OperatorDirective {
-    use PropertyOperator;
+    use HandlerOperator;
 
     #[Override]
     public static function getName(): string {

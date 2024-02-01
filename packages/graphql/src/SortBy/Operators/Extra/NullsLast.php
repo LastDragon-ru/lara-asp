@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\PropertyOperator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\BaseOperator;
@@ -18,7 +18,7 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
 class NullsLast extends BaseOperator {
-    use PropertyOperator;
+    use HandlerOperator;
 
     /**
      * @param SorterFactory<object> $factory
