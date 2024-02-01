@@ -63,8 +63,8 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             $manipulator,
             $document,
             $argument,
-            SortByOperatorClauseDirective::class,
             $context,
+            SortByOperatorClauseDirective::class,
         );
 
         if (!$type) {

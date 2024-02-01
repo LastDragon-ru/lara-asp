@@ -66,8 +66,8 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
             $manipulator,
             $document,
             $argument,
-            SearchByOperatorConditionDirective::class,
             $context,
+            SearchByOperatorConditionDirective::class,
         );
 
         if (!$type) {
