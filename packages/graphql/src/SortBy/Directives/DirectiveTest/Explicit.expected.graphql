@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorFieldObject
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -18,12 +24,6 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -74,16 +74,16 @@ Sort clause for `input A` (only one property allowed at a time).
 """
 input SortByClauseA {
     """
-    Property clause.
+    Field clause.
     """
     field: SortByClauseB
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     fields: SortByClauseB
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     Description should be copied.
@@ -92,7 +92,7 @@ input SortByClauseA {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -121,7 +121,7 @@ input SortByClauseB {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -139,10 +139,10 @@ input SortByClauseB {
     @sortByOperatorNullsLast
 
     """
-    Property clause.
+    Field clause.
     """
     parent: SortByClauseA
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 }
 
 """
@@ -223,7 +223,7 @@ type Query {
     @all
 
     b(
-        where: [SortByClauseA!]
+        order: [SortByClauseA!]
         @sortBy
 
         """

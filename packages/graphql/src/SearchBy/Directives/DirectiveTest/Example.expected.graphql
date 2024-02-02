@@ -71,6 +71,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -167,12 +173,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorRelationship
 on
     | ENUM
@@ -220,10 +220,10 @@ input SearchByConditionCommentsQuery {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     date: SearchByScalarDateOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.
@@ -232,10 +232,10 @@ input SearchByConditionCommentsQuery {
     @searchByOperatorNot
 
     """
-    Property condition.
+    Field condition.
     """
     text: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Relationship condition.
@@ -261,16 +261,16 @@ input SearchByConditionUser {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.
@@ -296,16 +296,16 @@ input SearchByConditionUsersQuery {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.

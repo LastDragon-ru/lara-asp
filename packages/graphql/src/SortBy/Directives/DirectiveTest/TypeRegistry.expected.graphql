@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorFieldObject
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -18,12 +24,6 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -48,17 +48,46 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for `input A` (only one property allowed at a time).
+Sort clause for `type Comment` (only one property allowed at a time).
 """
-input SortByClauseA {
+input SortByClauseComment {
     """
-    Property clause.
+    NULLs first
     """
-    flag: SortByTypeDirection
+    nullsFirst: SortByClauseComment
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseComment
+    @sortByOperatorNullsLast
+
+    """
+    Field clause.
+    """
+    text: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
+    """
+    user: SortByClauseUser
+    @sortByOperatorFieldObject
+}
+
+"""
+Sort clause for `type User` (only one property allowed at a time).
+"""
+input SortByClauseUser {
+    """
+    Field clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorField
+
+    """
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -66,28 +95,28 @@ input SortByClauseA {
     """
     NULLs first
     """
-    nullsFirst: SortByClauseA
+    nullsFirst: SortByClauseUser
     @sortByOperatorNullsFirst
 
     """
     NULLs last
     """
-    nullsLast: SortByClauseA
+    nullsLast: SortByClauseUser
     @sortByOperatorNullsLast
 }
 
 """
-Sort clause for `input B` (only one property allowed at a time).
+Sort clause for `input UsersSort` (only one property allowed at a time).
 """
-input SortByClauseB {
+input SortByClauseUsersSort {
     """
-    Property clause.
+    Field clause.
     """
-    child: SortByClauseA
-    @sortByOperatorProperty
+    id: SortByTypeDirection
+    @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -95,94 +124,44 @@ input SortByClauseB {
     """
     NULLs first
     """
-    nullsFirst: SortByClauseB
+    nullsFirst: SortByClauseUsersSort
     @sortByOperatorNullsFirst
 
     """
     NULLs last
     """
-    nullsLast: SortByClauseB
+    nullsLast: SortByClauseUsersSort
     @sortByOperatorNullsLast
 }
 
-"""
-Sort clause for `type C` (only one property allowed at a time).
-"""
-input SortByClauseC {
-    """
-    Property clause.
-    """
-    flag: SortByTypeDirection
-    @sortByOperatorField
+type Comment {
+    text: String
 
-    """
-    Property clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseC
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseC
-    @sortByOperatorNullsLast
-}
-
-"""
-Sort clause for `type D` (only one property allowed at a time).
-"""
-input SortByClauseD {
-    """
-    Property clause.
-    """
-    child: SortByClauseC
-    @sortByOperatorProperty
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseD
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseD
-    @sortByOperatorNullsLast
-}
-
-type C {
-    flag: Boolean!
-    list: [Boolean!]!
-    name: String
-}
-
-type D {
-    child: C!
+    user: User
+    @belongsTo
 }
 
 type Query {
-    a(
-        order: [SortByClauseA!]
+    """
+    or `_` to generate type automatically 😛
+    """
+    comments(
+        order: [SortByClauseComment!]
+        @sortBy
+    ): [Comment!]!
+    @all
+
+    """
+    You can use normal input type
+    """
+    users(
+        order: [SortByClauseUsersSort!]
         @sortBy
     ): ID!
     @all
+}
 
-    b(
-        order: [SortByClauseB!]
-        @sortBy
-    ): ID!
-    @all
-
-    c(
-        order: [SortByClauseD!]
-        @sortBy
-    ): D!
-    @all
+type User {
+    id: ID!
+    name: String!
 }

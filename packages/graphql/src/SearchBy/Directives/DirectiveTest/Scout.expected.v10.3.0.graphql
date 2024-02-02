@@ -23,13 +23,19 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorCondition
+directive @searchByOperatorEqual
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorEqual
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorFieldObject
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -54,12 +60,6 @@ on
     | SCALAR
 
 directive @searchByOperatorNotIn
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -97,133 +97,133 @@ input SearchByScoutConditionInputA {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     booleanScalar: SearchByScoutScalarBooleanOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     booleanScalarNotNull: SearchByScoutScalarBoolean
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalar: SearchByScoutScalarDateOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarList: SearchByScoutScalarDate
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarNonNull: SearchByScoutScalarDate
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarOperators: SearchByScoutScalarScalarCustomOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Description should be used.
     """
     description: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     enum: SearchByScoutEnumEnumAOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     enumNotNull: SearchByScoutEnumEnumA
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     fieldRenamed: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "renamed"
     )
 
     """
-    Property condition.
+    Field condition.
     """
     floatScalar: SearchByScoutScalarFloatOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     floatScalarNotNull: SearchByScoutScalarFloat
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     idScalar: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     idScalarNotNull: SearchByScoutScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     intScalar: SearchByScoutScalarIntOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     intScalarNotNull: SearchByScoutScalarInt
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     nestedNotNull: SearchByScoutConditionNestedA
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     resolver: SearchByScoutScalarFloatOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     stringScalar: SearchByScoutScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     stringScalarNotNull: SearchByScoutScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -237,10 +237,10 @@ input SearchByScoutConditionInputB {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -254,16 +254,16 @@ input SearchByScoutConditionNestedA {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     value: SearchByScoutScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -277,10 +277,10 @@ input SearchByScoutConditionNestedB {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedC
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 }
 
 """
@@ -294,10 +294,10 @@ input SearchByScoutConditionNestedC {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedB
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 }
 
 """
@@ -311,127 +311,127 @@ input SearchByScoutConditionObject {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     booleanScalar: SearchByScoutScalarBooleanOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     booleanScalarNotNull: SearchByScoutScalarBoolean
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalar: SearchByScoutScalarDateOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarList: SearchByScoutScalarDate
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarNonNull: SearchByScoutScalarDate
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarOperators: SearchByScoutScalarScalarCustomOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     description: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     enum: SearchByScoutEnumEnumAOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     enumNotNull: SearchByScoutEnumEnumA
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     fieldRenamed: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "renamed"
     )
 
     """
-    Property condition.
+    Field condition.
     """
     floatScalar: SearchByScoutScalarFloatOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     floatScalarNotNull: SearchByScoutScalarFloat
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     idScalar: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     idScalarNotNull: SearchByScoutScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     intScalar: SearchByScoutScalarIntOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     intScalarNotNull: SearchByScoutScalarInt
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     nestedNotNull: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     stringScalar: SearchByScoutScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     stringScalarNotNull: SearchByScoutScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -445,127 +445,127 @@ input SearchByScoutConditionObjectInterface {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     booleanScalar: SearchByScoutScalarBooleanOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     booleanScalarNotNull: SearchByScoutScalarBoolean
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalar: SearchByScoutScalarDateOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarList: SearchByScoutScalarDate
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarNonNull: SearchByScoutScalarDate
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     customScalarOperators: SearchByScoutScalarScalarCustomOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     description: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     enum: SearchByScoutEnumEnumAOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     enumNotNull: SearchByScoutEnumEnumA
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     fieldRenamed: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "renamed"
     )
 
     """
-    Property condition.
+    Field condition.
     """
     floatScalar: SearchByScoutScalarFloatOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     floatScalarNotNull: SearchByScoutScalarFloat
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     idScalar: SearchByScoutScalarIDOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     idScalarNotNull: SearchByScoutScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     intScalar: SearchByScoutScalarIntOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     intScalarNotNull: SearchByScoutScalarInt
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     nestedNotNull: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     stringScalar: SearchByScoutScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     stringScalarNotNull: SearchByScoutScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -579,10 +579,10 @@ input SearchByScoutConditionObjectNested {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     value: SearchByScoutScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """

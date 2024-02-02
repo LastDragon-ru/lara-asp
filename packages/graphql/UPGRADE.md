@@ -53,6 +53,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `@searchByOperatorRelation` => `@searchByOperatorRelationship` (and class too; generated types will be named as `SearchByRelationship*` instead of `SearchByComplex*`).
 
+* [ ] `@searchByOperatorProperty` => `@searchByOperatorField` (and class too)
+
+* [ ] `@searchByOperatorCondition` => `@searchByOperatorFieldObject`
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object`.
 
 * [ ] `scalar SearchByCondition` => `scalar SearchByObject`.
@@ -82,6 +86,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are using `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver` instead. 🤝
 
+* [ ] `@sortByOperatorProperty` => `@sortByOperatorFieldObject` (and class too)
+
 ## API
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
@@ -108,10 +114,18 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
-* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
+* [ ] Removed `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\PropertyOperator` => `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\BaseOperator` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport` => `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport`

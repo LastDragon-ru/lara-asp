@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
@@ -17,7 +17,7 @@ use Override;
  * @internal Must not be used directly.
  */
 class AllOf extends Logical {
-    use ScoutSupport;
+    use WithScoutSupport;
 
     #[Override]
     public static function getName(): string {

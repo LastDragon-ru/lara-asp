@@ -21,7 +21,7 @@ use Override;
 use function config;
 use function is_array;
 
-class Field extends BaseOperator {
+class Field extends Operator {
     /**
      * @param SorterFactory<object> $factory
      */
@@ -44,7 +44,7 @@ class Field extends BaseOperator {
 
     #[Override]
     public function getFieldDescription(): string {
-        return 'Property clause.';
+        return 'Field clause.';
     }
 
     #[Override]

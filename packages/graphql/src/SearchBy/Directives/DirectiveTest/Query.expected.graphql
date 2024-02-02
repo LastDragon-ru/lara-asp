@@ -17,42 +17,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorBetween
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorBitwiseAnd
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorBitwiseLeftShift
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorBitwiseOr
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorBitwiseRightShift
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorBitwiseXor
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorContains
 on
     | ENUM
@@ -77,18 +41,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorGreaterThan
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorGreaterThanOrEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorIn
 on
     | ENUM
@@ -107,18 +59,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorLessThan
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorLessThanOrEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorLike
 on
     | ENUM
@@ -126,12 +66,6 @@ on
     | SCALAR
 
 directive @searchByOperatorNot
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorNotBetween
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -173,13 +107,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelationship
-on
-    | ENUM
-    | FIELD_DEFINITION
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorStartsWith
 on
     | ENUM
@@ -195,287 +122,109 @@ enum SearchByTypeFlag {
     )
 }
 
-enum TestEnum {
-    """
-    test property
-    """
-    property
-}
-
 """
-Available conditions for `input TestTypeA` (only one property allowed at a time).
+Available conditions for `input InputA` (only one property allowed at a time).
 """
-input SearchByConditionTestTypeA {
+input SearchByQueryConditionInputA {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionTestTypeA!]
+    allOf: [SearchByQueryConditionInputA!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionTestTypeA!]
+    anyOf: [SearchByQueryConditionInputA!]
     @searchByOperatorAnyOf
 
     """
     Field condition.
     """
-    flag: SearchByScalarBooleanOrNull
+    id: SearchByQueryScalarID
     @searchByOperatorField
 
     """
     Field condition.
     """
-    name: SearchByScalarStringOrNull
+    name: SearchByQueryScalarString
     @searchByOperatorField
 
     """
     Not.
     """
-    not: SearchByConditionTestTypeA
+    not: SearchByQueryConditionInputA
     @searchByOperatorNot
-
-    """
-    Field condition.
-    """
-    value: SearchByEnumTestEnumOrNull
-    @searchByOperatorField
 }
 
 """
-Available conditions for `input TestTypeB` (only one property allowed at a time).
+Available conditions for `input TypeB` (only one property allowed at a time).
 """
-input SearchByConditionTestTypeB {
+input SearchByQueryConditionTypeB {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionTestTypeB!]
+    allOf: [SearchByQueryConditionTypeB!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionTestTypeB!]
+    anyOf: [SearchByQueryConditionTypeB!]
     @searchByOperatorAnyOf
-
-    """
-    Relationship condition.
-    """
-    child: SearchByRelationshipRelationTestTypeA
-    @searchByOperatorRelationship
 
     """
     Field condition.
     """
-    name: SearchByScalarString
+    id: SearchByQueryScalarID
+    @searchByOperatorField
+
+    """
+    Field condition.
+    """
+    name: SearchByQueryScalarStringOrNull
     @searchByOperatorField
 
     """
     Not.
     """
-    not: SearchByConditionTestTypeB
+    not: SearchByQueryConditionTypeB
     @searchByOperatorNot
 }
 
 """
-Available operators for `enum TestEnum` (only one operator allowed at a time).
+Available operators for `scalar ID` (only one operator allowed at a time).
 """
-input SearchByEnumTestEnumOrNull {
+input SearchByQueryScalarID {
     """
     Equal (`=`).
     """
-    equal: TestEnum
+    equal: ID
     @searchByOperatorEqual
 
     """
     Within a set of values.
     """
-    in: [TestEnum!]
+    in: [ID!]
     @searchByOperatorIn
-
-    """
-    Is NOT NULL?
-    """
-    isNotNull: SearchByTypeFlag
-    @searchByOperatorIsNotNull
-
-    """
-    Is NULL?
-    """
-    isNull: SearchByTypeFlag
-    @searchByOperatorIsNull
 
     """
     Not Equal (`!=`).
     """
-    notEqual: TestEnum
+    notEqual: ID
     @searchByOperatorNotEqual
 
     """
     Outside a set of values.
     """
-    notIn: [TestEnum!]
-    @searchByOperatorNotIn
-}
-
-"""
-Conditions for the relationship (`has()`/`doesntHave()`) for `input TestTypeA`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByRelationshipRelationTestTypeA {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionTestTypeA
-}
-
-"""
-Available operators for `scalar Boolean` (only one operator allowed at a time).
-"""
-input SearchByScalarBooleanOrNull {
-    """
-    Equal (`=`).
-    """
-    equal: Boolean
-    @searchByOperatorEqual
-
-    """
-    Is NOT NULL?
-    """
-    isNotNull: SearchByTypeFlag
-    @searchByOperatorIsNotNull
-
-    """
-    Is NULL?
-    """
-    isNull: SearchByTypeFlag
-    @searchByOperatorIsNull
-
-    """
-    Not Equal (`!=`).
-    """
-    notEqual: Boolean
-    @searchByOperatorNotEqual
-}
-
-"""
-Available operators for `scalar Int` (only one operator allowed at a time).
-"""
-input SearchByScalarInt {
-    """
-    Within a range.
-    """
-    between: SearchByTypeRangeInt
-    @searchByOperatorBetween
-
-    """
-    Bitwise AND (`&`).
-    """
-    bitwiseAnd: Int
-    @searchByOperatorBitwiseAnd
-
-    """
-    Bitwise Left shift (`<<`).
-    """
-    bitwiseLeftShift: Int
-    @searchByOperatorBitwiseLeftShift
-
-    """
-    Bitwise OR (`|`).
-    """
-    bitwiseOr: Int
-    @searchByOperatorBitwiseOr
-
-    """
-    Bitwise Right shift (`>>`).
-    """
-    bitwiseRightShift: Int
-    @searchByOperatorBitwiseRightShift
-
-    """
-    Bitwise XOR (`^`).
-    """
-    bitwiseXor: Int
-    @searchByOperatorBitwiseXor
-
-    """
-    Equal (`=`).
-    """
-    equal: Int
-    @searchByOperatorEqual
-
-    """
-    Greater than (`>`).
-    """
-    greaterThan: Int
-    @searchByOperatorGreaterThan
-
-    """
-    Greater than or equal to (`>=`).
-    """
-    greaterThanOrEqual: Int
-    @searchByOperatorGreaterThanOrEqual
-
-    """
-    Within a set of values.
-    """
-    in: [Int!]
-    @searchByOperatorIn
-
-    """
-    Less than (`<`).
-    """
-    lessThan: Int
-    @searchByOperatorLessThan
-
-    """
-    Less than or equal to (`<=`).
-    """
-    lessThanOrEqual: Int
-    @searchByOperatorLessThanOrEqual
-
-    """
-    Outside a range.
-    """
-    notBetween: SearchByTypeRangeInt
-    @searchByOperatorNotBetween
-
-    """
-    Not Equal (`!=`).
-    """
-    notEqual: Int
-    @searchByOperatorNotEqual
-
-    """
-    Outside a set of values.
-    """
-    notIn: [Int!]
+    notIn: [ID!]
     @searchByOperatorNotIn
 }
 
 """
 Available operators for `scalar String` (only one operator allowed at a time).
 """
-input SearchByScalarString {
+input SearchByQueryScalarString {
     """
     Contains.
     """
@@ -552,7 +301,7 @@ input SearchByScalarString {
 """
 Available operators for `scalar String` (only one operator allowed at a time).
 """
-input SearchByScalarStringOrNull {
+input SearchByQueryScalarStringOrNull {
     """
     Contains.
     """
@@ -638,15 +387,32 @@ input SearchByScalarStringOrNull {
     @searchByOperatorStartsWith
 }
 
-input SearchByTypeRangeInt {
-    max: Int!
-    min: Int!
+input TypeA {
+    child: TypeB!
+    id: ID!
+    name: String!
+}
+
+input TypeB {
+    id: ID!
+    name: String
+    parent: TypeA!
 }
 
 type Query {
     a(
-        where: SearchByConditionTestTypeB
+        where: SearchByQueryConditionInputA
         @searchBy
     ): ID!
-    @all
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    b(
+        where: SearchByQueryConditionTypeB
+        @searchBy
+    ): [TypeB!]!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
 }

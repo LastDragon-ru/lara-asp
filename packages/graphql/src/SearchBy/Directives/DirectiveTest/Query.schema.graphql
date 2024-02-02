@@ -1,0 +1,32 @@
+type Query {
+    a(where: InputA @searchBy): ID! @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+    b(where: _ @searchBy): [TypeB!]! @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+}
+
+input InputA {
+    id: ID!
+    name: String!
+    child: InputB! @hasOne
+}
+
+input InputB {
+    id: ID!
+    name: String
+    parent: InputA!
+}
+
+input TypeA {
+    id: ID!
+    name: String!
+    child: TypeB!
+}
+
+input TypeB {
+    id: ID!
+    name: String
+    parent: TypeA!
+}

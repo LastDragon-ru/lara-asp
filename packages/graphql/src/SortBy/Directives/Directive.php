@@ -11,8 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorClauseDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Root;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Scout\ScoutBuilderDirective;
@@ -59,13 +59,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
-        $type = $this->getArgumentTypeDefinitionNode(
-            $manipulator,
-            $document,
-            $argument,
-            SortByOperatorClauseDirective::class,
-            $context,
-        );
+        $type = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
 
         if (!$type) {
             throw new FailedToCreateSortClause($argument);

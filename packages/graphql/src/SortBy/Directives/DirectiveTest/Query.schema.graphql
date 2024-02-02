@@ -10,7 +10,7 @@ type Query {
 input InputA {
     id: ID!
     name: String!
-    child: InputB!
+    child: InputB! @hasOne
 }
 
 input InputB {

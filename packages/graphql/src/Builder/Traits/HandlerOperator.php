@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
@@ -11,10 +12,25 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
+use Override;
 
 use function count;
 
-trait PropertyOperator {
+/**
+ * @phpstan-require-implements Operator
+ */
+trait HandlerOperator {
+    #[Override]
+    public function call(
+        Handler $handler,
+        object $builder,
+        Property $property,
+        Argument $argument,
+        Context $context,
+    ): object {
+        return $this->handle($handler, $builder, $property, $argument, $context);
+    }
+
     /**
      * @template TBuilder of object
      *
@@ -22,7 +38,7 @@ trait PropertyOperator {
      *
      * @return TBuilder
      */
-    protected function handle(
+    private function handle(
         Handler $handler,
         object $builder,
         Property $property,

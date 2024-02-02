@@ -282,6 +282,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorIn
 on
     | ENUM
@@ -336,12 +342,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorStartsWith
 on
     | ENUM
@@ -365,16 +365,16 @@ input SearchByConditionUser {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.

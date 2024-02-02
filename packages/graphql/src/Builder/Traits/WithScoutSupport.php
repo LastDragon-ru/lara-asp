@@ -1,20 +1,20 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
 
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use Override;
 
 use function is_a;
 
 /**
- * @mixin SearchByOperatorPropertyDirective
+ * @mixin Operator
  */
-trait ScoutSupport {
+trait WithScoutSupport {
     #[Override]
     public function isAvailable(string $builder, Context $context): bool {
         return parent::isAvailable($builder, $context)

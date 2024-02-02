@@ -1,9 +1,9 @@
 type Query {
-    a(where: _ @sortBy): [A!]! @all
-    b(where: _ @sortBy): [A!]! @paginate(
+    a(order: _ @sortBy): [A!]! @all
+    b(order: _ @sortBy): [A!]! @paginate(
         model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
     )
-    c(where: _ @sortBy): [C!]! @all
+    c(order: _ @sortBy): [C!]! @all
 }
 
 type A {
@@ -11,8 +11,8 @@ type A {
     "Description should be ignored."
     id: ID!
     name: String!
-    operator: B! @sortByOperatorProperty
-    operators: [B!] @sortByOperatorProperty
+    operator: B! @sortByOperatorFieldObject
+    operators: [B!] @sortByOperatorFieldObject
     relation: B! @hasOne
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne
@@ -51,8 +51,8 @@ interface C {
     "Description should be ignored."
     id: ID!
     name: String!
-    operator: B! @sortByOperatorProperty
-    operators: [B!] @sortByOperatorProperty
+    operator: B! @sortByOperatorFieldObject
+    operators: [B!] @sortByOperatorFieldObject
     relation: B! @hasOne
     relations: [B!]! @hasMany
     relationWithArgs(arg: String): A! @hasOne

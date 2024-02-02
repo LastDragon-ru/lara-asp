@@ -11,7 +11,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
+directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -26,10 +26,10 @@ Available conditions for `input A` (only one property allowed at a time).
 """
 input SearchByConditionA {
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -37,10 +37,10 @@ Available conditions for `type B` (only one property allowed at a time).
 """
 input SearchByConditionB {
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """

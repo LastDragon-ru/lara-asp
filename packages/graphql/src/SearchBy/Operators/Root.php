@@ -5,17 +5,27 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition as ConditionType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Override;
 
-class Condition extends Property {
+class Root extends Operator {
+    use HandlerOperator;
+    use WithScoutSupport;
+
     #[Override]
     public static function getName(): string {
-        return 'Condition';
+        return 'root';
     }
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return $provider->getType(ConditionType::class, $source, $context);
+        return $provider->getType(Condition::class, $source, $context);
+    }
+
+    #[Override]
+    public function getFieldDescription(): string {
+        return 'Directive root.';
     }
 }

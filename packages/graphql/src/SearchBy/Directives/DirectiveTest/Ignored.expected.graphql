@@ -23,7 +23,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
+directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -74,13 +74,13 @@ input SearchByConditionA {
     Not ignored
     """
     a: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     b: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
@@ -88,16 +88,16 @@ Available conditions for `interface B` (only one property allowed at a time).
 """
 input SearchByConditionB {
     """
-    Property condition.
+    Field condition.
     """
     a: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     b: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """

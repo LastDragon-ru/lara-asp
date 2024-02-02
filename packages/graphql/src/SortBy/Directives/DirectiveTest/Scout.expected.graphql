@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorFieldObject
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -30,12 +36,6 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -91,10 +91,10 @@ Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByClauseNested {
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -115,7 +115,7 @@ input SortByClauseNested {
     @sortByOperatorRandom
 
     """
-    Property clause.
+    Field clause.
     """
     value: SortByTypeDirection
     @sortByOperatorField
@@ -126,37 +126,37 @@ Sort clause for `type Object` (only one property allowed at a time).
 """
 input SortByClauseObject {
     """
-    Property clause.
+    Field clause.
     """
     customScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     description: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enum: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     fieldRenamed: SortByTypeDirection
     @sortByOperatorField
@@ -165,28 +165,28 @@ input SortByClauseObject {
     )
 
     """
-    Property clause.
+    Field clause.
     """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -212,37 +212,37 @@ Sort clause for `interface ObjectInterface` (only one property allowed at a time
 """
 input SortByClauseObjectInterface {
     """
-    Property clause.
+    Field clause.
     """
     customScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     description: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enum: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     fieldRenamed: SortByTypeDirection
     @sortByOperatorField
@@ -251,28 +251,28 @@ input SortByClauseObjectInterface {
     )
 
     """
-    Property clause.
+    Field clause.
     """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -316,7 +316,7 @@ input SortByClauseObjectNested {
     @sortByOperatorRandom
 
     """
-    Property clause.
+    Field clause.
     """
     value: SortByTypeDirection
     @sortByOperatorField
@@ -327,19 +327,19 @@ Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByClauseProperties {
     """
-    Property clause.
+    Field clause.
     """
     customScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarList: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
@@ -351,19 +351,19 @@ input SortByClauseProperties {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enum: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     fieldRenamed: SortByTypeDirection
     @sortByOperatorField
@@ -372,28 +372,28 @@ input SortByClauseProperties {
     )
 
     """
-    Property clause.
+    Field clause.
     """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -414,7 +414,7 @@ input SortByClauseProperties {
     @sortByOperatorRandom
 
     """
-    Property clause.
+    Field clause.
     """
     resolver: SortByTypeDirection
     @sortByOperatorField
@@ -425,19 +425,19 @@ Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByQueryClauseProperties {
     """
-    Property clause.
+    Field clause.
     """
     customScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarList: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
@@ -449,19 +449,19 @@ input SortByQueryClauseProperties {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enum: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     fieldRenamed: SortByTypeDirection
     @sortByOperatorField
@@ -470,13 +470,13 @@ input SortByQueryClauseProperties {
     )
 
     """
-    Property clause.
+    Field clause.
     """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorField
@@ -500,7 +500,7 @@ input SortByQueryClauseProperties {
     @sortByOperatorRandom
 
     """
-    Property clause.
+    Field clause.
     """
     resolver: SortByTypeDirection
     @sortByOperatorField
@@ -511,10 +511,10 @@ Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByScoutClauseNested {
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByScoutClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -529,7 +529,7 @@ input SortByScoutClauseNested {
     @sortByOperatorNullsLast
 
     """
-    Property clause.
+    Field clause.
     """
     value: SortByTypeDirection
     @sortByOperatorField
@@ -540,19 +540,19 @@ Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByScoutClauseProperties {
     """
-    Property clause.
+    Field clause.
     """
     customScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarList: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     customScalarNonNull: SortByTypeDirection
     @sortByOperatorField
@@ -564,19 +564,19 @@ input SortByScoutClauseProperties {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enum: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     enumNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     fieldRenamed: SortByTypeDirection
     @sortByOperatorField
@@ -585,28 +585,28 @@ input SortByScoutClauseProperties {
     )
 
     """
-    Property clause.
+    Field clause.
     """
     idScalar: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByScoutClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByScoutClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -621,7 +621,7 @@ input SortByScoutClauseProperties {
     @sortByOperatorNullsLast
 
     """
-    Property clause.
+    Field clause.
     """
     resolver: SortByTypeDirection
     @sortByOperatorField
