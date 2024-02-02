@@ -339,6 +339,11 @@ final class DirectiveTest extends TestCase {
      */
     public static function dataProviderManipulateArgDefinition(): array {
         return [
+            'Query'                 => [
+                'Query.expected.graphql',
+                'Query.schema.graphql',
+                null,
+            ],
             'Explicit'              => [
                 'Explicit.expected.graphql',
                 'Explicit.schema.graphql',
@@ -874,6 +879,16 @@ final class DirectiveTest extends TestCase {
  */
 class DirectiveTest__Resolver {
     public function __invoke(): mixed {
+        throw new Exception('Should not be called.');
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__QueryBuilderResolver {
+    public function __invoke(): QueryBuilder {
         throw new Exception('Should not be called.');
     }
 }

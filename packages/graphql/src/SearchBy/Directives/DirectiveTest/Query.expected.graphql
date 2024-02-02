@@ -1,0 +1,418 @@
+"""
+Use Input as Search Conditions for the current Builder.
+"""
+directive @searchBy
+on
+    | ARGUMENT_DEFINITION
+
+directive @searchByOperatorAllOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorAnyOf
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorContains
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEndsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIsNotNull
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorIsNull
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNot
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotContains
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEndsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotEqual
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotLike
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorNotStartsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorStartsWith
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+enum SearchByTypeFlag {
+    Yes
+
+    yes
+    @deprecated(
+        reason: "Please use `Yes` instead."
+    )
+}
+
+"""
+Available conditions for `input InputA` (only one property allowed at a time).
+"""
+input SearchByQueryConditionInputA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByQueryConditionInputA!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByQueryConditionInputA!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    id: SearchByQueryScalarID
+    @searchByOperatorField
+
+    """
+    Field condition.
+    """
+    name: SearchByQueryScalarString
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByQueryConditionInputA
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `input TypeB` (only one property allowed at a time).
+"""
+input SearchByQueryConditionTypeB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByQueryConditionTypeB!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByQueryConditionTypeB!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    id: SearchByQueryScalarID
+    @searchByOperatorField
+
+    """
+    Field condition.
+    """
+    name: SearchByQueryScalarStringOrNull
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByQueryConditionTypeB
+    @searchByOperatorNot
+}
+
+"""
+Available operators for `scalar ID` (only one operator allowed at a time).
+"""
+input SearchByQueryScalarID {
+    """
+    Equal (`=`).
+    """
+    equal: ID
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [ID!]
+    @searchByOperatorIn
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ID
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByQueryScalarString {
+    """
+    Contains.
+    """
+    contains: String
+    @searchByOperatorContains
+
+    """
+    Ends with a string.
+    """
+    endsWith: String
+    @searchByOperatorEndsWith
+
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+
+    """
+    Like.
+    """
+    like: String
+    @searchByOperatorLike
+
+    """
+    Not contains.
+    """
+    notContains: String
+    @searchByOperatorNotContains
+
+    """
+    Not ends with a string.
+    """
+    notEndsWith: String
+    @searchByOperatorNotEndsWith
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
+
+    """
+    Not like.
+    """
+    notLike: String
+    @searchByOperatorNotLike
+
+    """
+    Not starts with a string.
+    """
+    notStartsWith: String
+    @searchByOperatorNotStartsWith
+
+    """
+    Starts with a string.
+    """
+    startsWith: String
+    @searchByOperatorStartsWith
+}
+
+"""
+Available operators for `scalar String` (only one operator allowed at a time).
+"""
+input SearchByQueryScalarStringOrNull {
+    """
+    Contains.
+    """
+    contains: String
+    @searchByOperatorContains
+
+    """
+    Ends with a string.
+    """
+    endsWith: String
+    @searchByOperatorEndsWith
+
+    """
+    Equal (`=`).
+    """
+    equal: String
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [String!]
+    @searchByOperatorIn
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Like.
+    """
+    like: String
+    @searchByOperatorLike
+
+    """
+    Not contains.
+    """
+    notContains: String
+    @searchByOperatorNotContains
+
+    """
+    Not ends with a string.
+    """
+    notEndsWith: String
+    @searchByOperatorNotEndsWith
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: String
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
+
+    """
+    Not like.
+    """
+    notLike: String
+    @searchByOperatorNotLike
+
+    """
+    Not starts with a string.
+    """
+    notStartsWith: String
+    @searchByOperatorNotStartsWith
+
+    """
+    Starts with a string.
+    """
+    startsWith: String
+    @searchByOperatorStartsWith
+}
+
+input TypeA {
+    child: TypeB!
+    id: ID!
+    name: String!
+}
+
+input TypeB {
+    id: ID!
+    name: String
+    parent: TypeA!
+}
+
+type Query {
+    a(
+        where: SearchByQueryConditionInputA
+        @searchBy
+    ): ID!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+
+    b(
+        where: SearchByQueryConditionTypeB
+        @searchBy
+    ): [TypeB!]!
+    @all(
+        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
+}
