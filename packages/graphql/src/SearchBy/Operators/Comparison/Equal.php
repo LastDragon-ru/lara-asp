@@ -9,13 +9,13 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
 class Equal extends Operator {
-    use ScoutSupport;
+    use WithScoutSupport;
 
     #[Override]
     public static function getName(): string {

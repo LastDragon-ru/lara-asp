@@ -6,13 +6,13 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition as ConditionType;
 use Override;
 
 class Condition extends Operator {
     use HandlerOperator;
-    use ScoutSupport;
+    use WithScoutSupport;
 
     #[Override]
     public static function getName(): string {
