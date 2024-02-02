@@ -13,12 +13,12 @@ use Override;
 
 use function is_a;
 
-class Property extends BaseOperator {
+class FieldObject extends BaseOperator {
     use HandlerOperator;
 
     #[Override]
     public static function getName(): string {
-        return 'property';
+        return 'field';
     }
 
     #[Override]
@@ -28,7 +28,7 @@ class Property extends BaseOperator {
 
     #[Override]
     public function getFieldDescription(): string {
-        return 'Property clause.';
+        return 'Field clause.';
     }
 
     #[Override]

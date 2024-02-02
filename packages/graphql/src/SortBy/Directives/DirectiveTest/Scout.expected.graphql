@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorFieldObject
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -30,12 +36,6 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -91,10 +91,10 @@ Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByClauseNested {
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -177,16 +177,16 @@ input SortByClauseObject {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -263,16 +263,16 @@ input SortByClauseObjectInterface {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -384,16 +384,16 @@ input SortByClauseProperties {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -511,10 +511,10 @@ Sort clause for `input Nested` (only one property allowed at a time).
 """
 input SortByScoutClauseNested {
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByScoutClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first
@@ -597,16 +597,16 @@ input SortByScoutClauseProperties {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     nested: SortByScoutClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
-    Property clause.
+    Field clause.
     """
     nestedNotNull: SortByScoutClauseNested
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 
     """
     NULLs first

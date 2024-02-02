@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorFieldObject
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -18,12 +24,6 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @sortByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -70,10 +70,10 @@ input SortByClauseComment {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     user: SortByClauseUser
-    @sortByOperatorProperty
+    @sortByOperatorFieldObject
 }
 
 """

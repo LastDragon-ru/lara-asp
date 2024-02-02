@@ -494,7 +494,7 @@ final class DirectiveTest extends TestCase {
                     $registry->register($i);
                 },
             ],
-            'example'           => [
+            'Example'           => [
                 'Example.expected.graphql',
                 'Example.schema.graphql',
                 null,
