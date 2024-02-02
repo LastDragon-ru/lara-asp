@@ -23,12 +23,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorCondition
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorEqual
 on
     | ENUM
@@ -36,6 +30,12 @@ on
     | SCALAR
 
 directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @searchByOperatorFieldObject
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -196,16 +196,16 @@ input SearchByScoutConditionInputA {
     @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     nestedNotNull: SearchByScoutConditionNestedA
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
     Field condition.
@@ -254,10 +254,10 @@ input SearchByScoutConditionNestedA {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
     Field condition.
@@ -277,10 +277,10 @@ input SearchByScoutConditionNestedB {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedC
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 }
 
 """
@@ -294,10 +294,10 @@ input SearchByScoutConditionNestedC {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionNestedB
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 }
 
 """
@@ -410,16 +410,16 @@ input SearchByScoutConditionObject {
     @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     nestedNotNull: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
     Field condition.
@@ -544,16 +544,16 @@ input SearchByScoutConditionObjectInterface {
     @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     nested: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
-    Property condition.
+    Field condition.
     """
     nestedNotNull: SearchByScoutConditionObjectNested
-    @searchByOperatorCondition
+    @searchByOperatorFieldObject
 
     """
     Field condition.

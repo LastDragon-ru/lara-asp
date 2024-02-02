@@ -55,6 +55,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `@searchByOperatorProperty` => `@searchByOperatorField` (and class too)
 
+* [ ] `@searchByOperatorCondition` => `@searchByOperatorFieldObject`
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object`.
 
 * [ ] `scalar SearchByCondition` => `scalar SearchByObject`.
