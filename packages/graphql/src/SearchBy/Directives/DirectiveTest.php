@@ -34,7 +34,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -882,7 +882,7 @@ class DirectiveTest__Resolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class DirectiveTest__CustomComplexOperator extends BaseOperator implements TypeDefinition {
+class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefinition {
     #[Override]
     public static function getName(): string {
         return 'custom';

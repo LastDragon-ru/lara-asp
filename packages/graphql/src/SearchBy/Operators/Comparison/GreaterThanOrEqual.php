@@ -8,11 +8,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
-class GreaterThanOrEqual extends BaseOperator {
+class GreaterThanOrEqual extends Operator {
     #[Override]
     public static function getName(): string {
         return 'greaterThanOrEqual';

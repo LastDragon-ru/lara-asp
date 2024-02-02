@@ -123,3 +123,7 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Builders\*` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters\*`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\BaseOperator` => `LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator`

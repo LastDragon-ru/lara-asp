@@ -11,13 +11,13 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\BaseOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\FieldContextNulls;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
-class NullsFirst extends BaseOperator {
+class NullsFirst extends Operator {
     use HandlerOperator;
 
     /**

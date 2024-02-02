@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Override;
@@ -25,7 +25,7 @@ use function array_merge;
 use function is_a;
 use function reset;
 
-class Relationship extends BaseOperator {
+class Relationship extends Operator {
     public function __construct(
         protected readonly SearchByOperatorFieldDirective $field,
         BuilderPropertyResolver $resolver,

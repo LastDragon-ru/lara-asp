@@ -11,12 +11,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Range;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
-class Between extends BaseOperator {
+class Between extends Operator {
     #[Override]
     public static function getName(): string {
         return 'between';

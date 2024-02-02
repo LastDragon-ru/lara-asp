@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition as ConditionType;
 use Override;
 
-class Condition extends BaseOperator {
+class Condition extends Operator {
     use HandlerOperator;
     use ScoutSupport;
 

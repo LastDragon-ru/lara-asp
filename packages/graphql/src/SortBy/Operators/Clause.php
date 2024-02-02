@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause as ClauseType;
 use Override;
 
-class Clause extends BaseOperator {
+class Clause extends Operator {
     use HandlerOperator;
 
     #[Override]

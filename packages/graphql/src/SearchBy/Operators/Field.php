@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use Override;
 
-class Field extends BaseOperator {
+class Field extends Operator {
     use HandlerOperator;
     use ScoutSupport;
 

@@ -6,13 +6,13 @@ use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Override;
 
 use function is_a;
 
 /**
- * @mixin BaseOperator
+ * @mixin Operator
  */
 trait ScoutSupport {
     #[Override]

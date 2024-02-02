@@ -13,7 +13,7 @@ use Override;
 
 use function is_a;
 
-class FieldObject extends BaseOperator {
+class FieldObject extends Operator {
     use HandlerOperator;
 
     #[Override]
