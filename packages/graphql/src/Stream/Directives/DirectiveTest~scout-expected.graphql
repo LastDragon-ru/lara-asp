@@ -147,7 +147,7 @@ Sort clause for `type TestObject` (only one property allowed at a time).
 """
 input SortByScoutClauseTestObject {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField

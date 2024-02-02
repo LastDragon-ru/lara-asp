@@ -92,7 +92,7 @@ input SortByClauseA {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -121,7 +121,7 @@ input SortByClauseB {
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -223,7 +223,7 @@ type Query {
     @all
 
     b(
-        where: [SortByClauseA!]
+        order: [SortByClauseA!]
         @sortBy
 
         """

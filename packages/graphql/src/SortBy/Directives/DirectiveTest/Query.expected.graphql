@@ -46,13 +46,13 @@ Sort clause for `input InputA` (only one property allowed at a time).
 """
 input SortByQueryClauseInputA {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -75,13 +75,13 @@ Sort clause for `input TypeB` (only one property allowed at a time).
 """
 input SortByQueryClauseTypeB {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField

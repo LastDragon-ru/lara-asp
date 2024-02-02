@@ -64,7 +64,7 @@ input SortByClauseComment {
     @sortByOperatorNullsLast
 
     """
-    Property clause.
+    Field clause.
     """
     text: SortByTypeDirection
     @sortByOperatorField
@@ -81,13 +81,13 @@ Sort clause for `type User` (only one property allowed at a time).
 """
 input SortByClauseUser {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -110,13 +110,13 @@ Sort clause for `input UsersSort` (only one property allowed at a time).
 """
 input SortByClauseUsersSort {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField

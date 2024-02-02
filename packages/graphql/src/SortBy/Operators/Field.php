@@ -44,7 +44,7 @@ class Field extends BaseOperator {
 
     #[Override]
     public function getFieldDescription(): string {
-        return 'Property clause.';
+        return 'Field clause.';
     }
 
     #[Override]

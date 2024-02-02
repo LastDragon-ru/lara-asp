@@ -120,13 +120,13 @@ Sort clause for `type A` (only one property allowed at a time).
 """
 input SortByClauseA {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -192,7 +192,7 @@ input SortByClauseA {
     @sortByOperatorProperty
 
     """
-    Property clause.
+    Field clause.
     """
     renamed: SortByTypeDirection
     @sortByOperatorField
@@ -206,13 +206,13 @@ Sort clause for `type B` (only one property allowed at a time).
 """
 input SortByClauseB {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -241,13 +241,13 @@ Sort clause for `interface C` (only one property allowed at a time).
 """
 input SortByClauseC {
     """
-    Property clause.
+    Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorField
 
     """
-    Property clause.
+    Field clause.
     """
     name: SortByTypeDirection
     @sortByOperatorField
@@ -313,7 +313,7 @@ input SortByClauseC {
     @sortByOperatorProperty
 
     """
-    Property clause.
+    Field clause.
     """
     renamed: SortByTypeDirection
     @sortByOperatorField
@@ -738,13 +738,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        where: [SortByClauseA!]
+        order: [SortByClauseA!]
         @sortBy
     ): [A!]!
     @all
 
     b(
-        where: [SortByClauseA!]
+        order: [SortByClauseA!]
         @sortBy
 
         """
@@ -762,7 +762,7 @@ type Query {
     )
 
     c(
-        where: [SortByClauseC!]
+        order: [SortByClauseC!]
         @sortBy
     ): [C!]!
     @all

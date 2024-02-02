@@ -103,7 +103,7 @@ Sort clause for `interface B` (only one property allowed at a time).
 """
 input SortByClauseB {
     """
-    Property clause.
+    Field clause.
     """
     a: SortByTypeDirection
     @sortByOperatorField
