@@ -263,10 +263,18 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         ContextContract $context,
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
+        // Supported?
+        $operator = $manipulator->getOperator(static::getScope(), $operator);
+        $builder  = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
+
+        if (!$builder || !$operator->isAvailable($builder, $context)) {
+            return null;
+        }
+
+        // Type
         $definition = $context->get(HandlerContextImplicit::class)?->value
             ? $manipulator->getTypeDefinition($manipulator->getOriginType($argument->getField()))
             : $argument->getTypeDefinition();
-        $operator   = $manipulator->getOperator(static::getScope(), $operator);
         $source     = $manipulator->getTypeSource($definition);
         $type       = $operator->getFieldType($manipulator, $source, $context);
         $type       = Parser::typeReference($type);
