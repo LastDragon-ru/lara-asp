@@ -17,7 +17,7 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
+directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -125,10 +125,10 @@ input SearchByScoutConditionTestObject {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScoutScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """

@@ -2,25 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport;
 use Override;
 
-class Property extends BaseOperator {
+class Field extends BaseOperator {
     use HandlerOperator;
+    use ScoutSupport;
 
     #[Override]
     public static function getName(): string {
-        return 'property';
+        return 'field';
     }
 
     #[Override]
     public function getFieldDescription(): string {
-        return 'Property condition.';
-    }
-
-    #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
-        return true;
+        return 'Field condition.';
     }
 }

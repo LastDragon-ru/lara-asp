@@ -77,6 +77,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -173,12 +179,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorRelationship
 on
     | ENUM
@@ -231,10 +231,10 @@ input SearchByConditionChild {
     @searchByOperatorNot
 
     """
-    Property condition.
+    Field condition.
     """
     value: SearchByScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """

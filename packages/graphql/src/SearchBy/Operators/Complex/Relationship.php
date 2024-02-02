@@ -14,7 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorPropertyDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\BaseOperator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -27,7 +27,7 @@ use function reset;
 
 class Relationship extends BaseOperator {
     public function __construct(
-        protected SearchByOperatorPropertyDirective $property,
+        protected readonly SearchByOperatorFieldDirective $field,
         BuilderPropertyResolver $resolver,
     ) {
         parent::__construct($resolver);
@@ -105,7 +105,7 @@ class Relationship extends BaseOperator {
 
         if ($hasCount instanceof Argument) {
             $query    = $builder->getQuery()->newQuery();
-            $query    = $this->property->call($handler, $query, new Property(), $hasCount, $context);
+            $query    = $this->field->call($handler, $query, new Property(), $hasCount, $context);
             $where    = reset($query->wheres);
             $count    = $where['value'] ?? $count;
             $operator = $where['operator'] ?? $operator;

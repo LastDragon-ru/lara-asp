@@ -75,10 +75,10 @@ final class AnyOfTest extends TestCase {
                 <<<'GRAPHQL'
                     input TestInput {
                         a: TestOperators
-                        @searchByOperatorProperty
+                        @searchByOperatorField
 
                         b: TestOperators
-                        @searchByOperatorProperty
+                        @searchByOperatorField
                     }
 
                     input TestOperators {

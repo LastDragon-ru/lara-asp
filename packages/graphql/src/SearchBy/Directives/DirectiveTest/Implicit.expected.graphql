@@ -71,6 +71,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -162,12 +168,6 @@ on
     | SCALAR
 
 directive @searchByOperatorNotStartsWith
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorProperty
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -280,16 +280,16 @@ input SearchByConditionA {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.
@@ -346,19 +346,19 @@ input SearchByConditionA {
     @searchByOperatorRelationship
 
     """
-    Property condition.
+    Field condition.
     """
     renamed: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "internal"
     )
 
     """
-    Property condition.
+    Field condition.
     """
     renamedList: SearchByScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "internal"
     )
@@ -381,16 +381,16 @@ input SearchByConditionB {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.
@@ -422,16 +422,16 @@ input SearchByConditionC {
     @searchByOperatorAnyOf
 
     """
-    Property condition.
+    Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     Not.
@@ -488,19 +488,19 @@ input SearchByConditionC {
     @searchByOperatorRelationship
 
     """
-    Property condition.
+    Field condition.
     """
     renamed: SearchByScalarString
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "internal"
     )
 
     """
-    Property condition.
+    Field condition.
     """
     renamedList: SearchByScalarStringOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
     @rename(
         attribute: "internal"
     )

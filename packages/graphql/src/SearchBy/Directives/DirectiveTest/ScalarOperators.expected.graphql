@@ -17,6 +17,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorIn
 on
     | ENUM
@@ -53,12 +59,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorProperty
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 """
 Extends the list of operators by the operators from the specified `type`.
 """
@@ -89,10 +89,10 @@ Available conditions for `input A` (only one property allowed at a time).
 """
 input SearchByConditionA {
     """
-    Property condition.
+    Field condition.
     """
     a: SearchByScalarMixed
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
     All of the conditions must be true.
@@ -101,16 +101,16 @@ input SearchByConditionA {
     @searchByOperatorAllOf
 
     """
-    Property condition.
+    Field condition.
     """
     b: SearchByScalarDateOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 
     """
-    Property condition.
+    Field condition.
     """
     c: SearchByEnumEnumAOrNull
-    @searchByOperatorProperty
+    @searchByOperatorField
 }
 
 """
