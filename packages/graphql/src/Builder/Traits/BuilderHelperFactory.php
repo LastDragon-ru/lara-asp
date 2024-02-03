@@ -37,15 +37,22 @@ trait BuilderHelperFactory {
         return $this;
     }
 
-    private function getHelper(object $builder): ?object {
-        if (!array_key_exists($builder::class, $this->instances)) {
-            $class                            = $this->getHelperClass($builder::class);
-            $this->instances[$builder::class] = $class
+    /**
+     * @param object|class-string $builder
+     */
+    private function getHelper(object|string $builder): ?object {
+        if (is_object($builder)) {
+            $builder = $builder::class;
+        }
+
+        if (!array_key_exists($builder, $this->instances)) {
+            $class                     = $this->getHelperClass($builder);
+            $this->instances[$builder] = $class
                 ? Container::getInstance()->make($class)
                 : null;
         }
 
-        return $this->instances[$builder::class];
+        return $this->instances[$builder];
     }
 
     /**

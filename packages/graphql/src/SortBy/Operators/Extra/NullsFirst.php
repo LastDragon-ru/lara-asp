@@ -47,7 +47,7 @@ class NullsFirst extends Operator {
 
     #[Override]
     public function isAvailable(string $builder, Context $context): bool {
-        return $this->factory->isSupported($builder);
+        return (bool) $this->factory->create($builder)?->isNullsSupported();
     }
 
     #[Override]

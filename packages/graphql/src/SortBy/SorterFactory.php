@@ -35,7 +35,7 @@ class SorterFactory implements SorterFactoryContract {
     }
 
     #[Override]
-    public function create(object $builder): ?SorterContract {
+    public function create(object|string $builder): ?SorterContract {
         $helper = $this->getHelper($builder);
 
         assert($helper instanceof SorterContract);

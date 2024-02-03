@@ -14,9 +14,9 @@ interface SorterFactory {
     public function isSupported(object|string $builder): bool;
 
     /**
-     * @param TBuilder $builder
+     * @param TBuilder|class-string<TBuilder> $builder
      *
      * @return ?Sorter<TBuilder>
      */
-    public function create(object $builder): ?Sorter;
+    public function create(object|string $builder): ?Sorter;
 }

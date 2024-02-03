@@ -517,18 +517,6 @@ input SortByScoutClauseNested {
     @sortByOperatorFieldObject
 
     """
-    NULLs first
-    """
-    nullsFirst: SortByScoutClauseNested
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByScoutClauseNested
-    @sortByOperatorNullsLast
-
-    """
     Field clause.
     """
     value: SortByTypeDirection
@@ -607,18 +595,6 @@ input SortByScoutClauseProperties {
     """
     nestedNotNull: SortByScoutClauseNested
     @sortByOperatorFieldObject
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByScoutClauseProperties
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByScoutClauseProperties
-    @sortByOperatorNullsLast
 
     """
     Field clause.
