@@ -5,13 +5,13 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -77,13 +77,13 @@ input SortByClauseA {
     Field clause.
     """
     field: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     fields: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Description should be copied.
@@ -142,7 +142,7 @@ input SortByClauseB {
     Field clause.
     """
     parent: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 }
 
 """

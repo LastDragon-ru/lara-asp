@@ -5,13 +5,13 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -73,7 +73,7 @@ input SortByClauseComment {
     Field clause.
     """
     user: SortByClauseUser
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 }
 
 """

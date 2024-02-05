@@ -5,13 +5,13 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -147,49 +147,49 @@ input SortByClauseA {
     Field clause.
     """
     operator: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     operators: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relation: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relations: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsPaginated: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsPaginatedWithArgs: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
@@ -233,7 +233,7 @@ input SortByClauseB {
     Field clause.
     """
     parent: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 }
 
 """
@@ -268,49 +268,49 @@ input SortByClauseC {
     Field clause.
     """
     operator: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     operators: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relation: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relations: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsPaginated: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsPaginatedWithArgs: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
@@ -355,10 +355,10 @@ interface C {
     name: String!
 
     operator: B!
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     operators: [B!]
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     property(
         arg: String
@@ -498,10 +498,10 @@ type A {
     name: String!
 
     operator: B!
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     operators: [B!]
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     property(
         arg: String

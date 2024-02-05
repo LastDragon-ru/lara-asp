@@ -17,13 +17,13 @@ on
     | OBJECT
     | SCALAR
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -94,7 +94,7 @@ input SortByClauseNested {
     Field clause.
     """
     nested: SortByClauseNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     NULLs first
@@ -180,13 +180,13 @@ input SortByClauseObject {
     Field clause.
     """
     nested: SortByClauseObjectNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     NULLs first
@@ -266,13 +266,13 @@ input SortByClauseObjectInterface {
     Field clause.
     """
     nested: SortByClauseObjectNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     NULLs first
@@ -387,13 +387,13 @@ input SortByClauseProperties {
     Field clause.
     """
     nested: SortByClauseNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     nestedNotNull: SortByClauseNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     NULLs first
@@ -514,7 +514,7 @@ input SortByScoutClauseNested {
     Field clause.
     """
     nested: SortByScoutClauseNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
@@ -588,13 +588,13 @@ input SortByScoutClauseProperties {
     Field clause.
     """
     nested: SortByScoutClauseNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     nestedNotNull: SortByScoutClauseNested
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
