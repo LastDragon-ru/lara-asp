@@ -5,6 +5,12 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorSort
 on
     | ENUM
@@ -32,7 +38,7 @@ enum SortByTypeDirection {
 """
 Sort clause for `type A` (only one property allowed at a time).
 """
-input SortByRootA {
+input SortByClauseA {
     """
     Field clause.
     """
@@ -46,7 +52,7 @@ input SortByRootA {
 """
 Sort clause for `interface B` (only one property allowed at a time).
 """
-input SortByRootB {
+input SortByClauseB {
     """
     Field clause.
     """
@@ -55,6 +61,28 @@ input SortByRootB {
     @rename(
         attribute: "renamed"
     )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `interface B` (only one property allowed at a time).
+"""
+input SortByRootB {
+    """
+    Field.
+    """
+    field: SortByClauseB
+    @sortByOperatorField
 }
 
 interface B {

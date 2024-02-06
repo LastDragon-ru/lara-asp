@@ -30,6 +30,12 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorSort
 on
     | ENUM
@@ -133,12 +139,23 @@ input SearchByScoutScalarID {
 """
 Sort clause for `type TestObject` (only one property allowed at a time).
 """
-input SortByScoutRootTestObject {
+input SortByScoutClauseTestObject {
     """
     Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorSort
+}
+
+"""
+Sort clause for `type TestObject` (only one property allowed at a time).
+"""
+input SortByScoutRootTestObject {
+    """
+    Field.
+    """
+    field: SortByScoutClauseTestObject
+    @sortByOperatorField
 }
 
 """

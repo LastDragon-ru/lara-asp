@@ -5,6 +5,12 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorSort
 on
     | ENUM
@@ -36,7 +42,7 @@ input A {
 """
 Sort clause for `input A` (only one property allowed at a time).
 """
-input SortByRootA {
+input SortByClauseA {
     """
     Field clause.
     """
@@ -47,12 +53,34 @@ input SortByRootA {
 """
 Sort clause for `type B` (only one property allowed at a time).
 """
-input SortByRootB {
+input SortByClauseB {
     """
     Field clause.
     """
     id: SortByTypeDirection
     @sortByOperatorSort
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `type B` (only one property allowed at a time).
+"""
+input SortByRootB {
+    """
+    Field.
+    """
+    field: SortByClauseB
+    @sortByOperatorField
 }
 
 interface QueryInterface

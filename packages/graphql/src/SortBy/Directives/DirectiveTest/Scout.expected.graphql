@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -403,61 +409,10 @@ Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByQueryRootProperties {
     """
-    Field clause.
+    Field.
     """
-    customScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    customScalarList: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    customScalarNonNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Description should be used.
-    """
-    description: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enum: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enumNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    fieldRenamed: SortByTypeDirection
-    @sortByOperatorSort
-    @rename(
-        attribute: "renamed"
-    )
-
-    """
-    Field clause.
-    """
-    idScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    idScalarNotNull: SortByTypeDirection
-    @sortByOperatorSort
+    field: SortByQueryClauseProperties
+    @sortByOperatorField
 
     """
     NULLs first
@@ -476,12 +431,6 @@ input SortByQueryRootProperties {
     """
     random: SortByTypeFlag
     @sortByOperatorRandom
-
-    """
-    Field clause.
-    """
-    resolver: SortByTypeDirection
-    @sortByOperatorSort
 }
 
 """
@@ -489,67 +438,10 @@ Sort clause for `type Object` (only one property allowed at a time).
 """
 input SortByRootObject {
     """
-    Field clause.
+    Field.
     """
-    customScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    customScalarNonNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    description: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enum: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enumNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    fieldRenamed: SortByTypeDirection
-    @sortByOperatorSort
-    @rename(
-        attribute: "renamed"
-    )
-
-    """
-    Field clause.
-    """
-    idScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    idScalarNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    nested: SortByClauseObjectNested
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorChild
+    field: SortByClauseObject
+    @sortByOperatorField
 
     """
     NULLs first
@@ -575,67 +467,10 @@ Sort clause for `interface ObjectInterface` (only one property allowed at a time
 """
 input SortByRootObjectInterface {
     """
-    Field clause.
+    Field.
     """
-    customScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    customScalarNonNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    description: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enum: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enumNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    fieldRenamed: SortByTypeDirection
-    @sortByOperatorSort
-    @rename(
-        attribute: "renamed"
-    )
-
-    """
-    Field clause.
-    """
-    idScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    idScalarNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    nested: SortByClauseObjectNested
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    nestedNotNull: SortByClauseObjectNested
-    @sortByOperatorChild
+    field: SortByClauseObjectInterface
+    @sortByOperatorField
 
     """
     NULLs first
@@ -661,73 +496,10 @@ Sort clause for `input Properties` (only one property allowed at a time).
 """
 input SortByRootProperties {
     """
-    Field clause.
+    Field.
     """
-    customScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    customScalarList: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    customScalarNonNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Description should be used.
-    """
-    description: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enum: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    enumNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    fieldRenamed: SortByTypeDirection
-    @sortByOperatorSort
-    @rename(
-        attribute: "renamed"
-    )
-
-    """
-    Field clause.
-    """
-    idScalar: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    idScalarNotNull: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    nested: SortByClauseNested
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    nestedNotNull: SortByClauseNested
-    @sortByOperatorChild
+    field: SortByClauseProperties
+    @sortByOperatorField
 
     """
     NULLs first
@@ -746,12 +518,6 @@ input SortByRootProperties {
     """
     random: SortByTypeFlag
     @sortByOperatorRandom
-
-    """
-    Field clause.
-    """
-    resolver: SortByTypeDirection
-    @sortByOperatorSort
 }
 
 """
@@ -774,7 +540,7 @@ input SortByScoutClauseNested {
 """
 Sort clause for `input Properties` (only one property allowed at a time).
 """
-input SortByScoutRootProperties {
+input SortByScoutClauseProperties {
     """
     Field clause.
     """
@@ -849,6 +615,17 @@ input SortByScoutRootProperties {
     """
     resolver: SortByTypeDirection
     @sortByOperatorSort
+}
+
+"""
+Sort clause for `input Properties` (only one property allowed at a time).
+"""
+input SortByScoutRootProperties {
+    """
+    Field.
+    """
+    field: SortByScoutClauseProperties
+    @sortByOperatorField
 }
 
 interface Eloquent

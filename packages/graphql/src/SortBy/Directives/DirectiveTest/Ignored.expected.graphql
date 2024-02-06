@@ -17,6 +17,12 @@ on
     | OBJECT
     | SCALAR
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorSort
 on
     | ENUM
@@ -84,7 +90,7 @@ input IgnoredType {
 """
 Sort clause for `input A` (only one property allowed at a time).
 """
-input SortByRootA {
+input SortByClauseA {
     """
     Not ignored
     """
@@ -101,12 +107,34 @@ input SortByRootA {
 """
 Sort clause for `interface B` (only one property allowed at a time).
 """
-input SortByRootB {
+input SortByClauseB {
     """
     Field clause.
     """
     a: SortByTypeDirection
     @sortByOperatorSort
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `interface B` (only one property allowed at a time).
+"""
+input SortByRootB {
+    """
+    Field.
+    """
+    field: SortByClauseB
+    @sortByOperatorField
 }
 
 interface B {

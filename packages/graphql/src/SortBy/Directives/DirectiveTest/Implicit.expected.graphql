@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -291,16 +297,10 @@ Sort clause for `type A` (only one property allowed at a time).
 """
 input SortByRootA {
     """
-    Field clause.
+    Field.
     """
-    id: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorSort
+    field: SortByClauseA
+    @sortByOperatorField
 
     """
     NULLs first
@@ -313,63 +313,6 @@ input SortByRootA {
     """
     nullsLast: SortByClauseA
     @sortByOperatorNullsLast
-
-    """
-    Field clause.
-    """
-    operator: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    operators: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relation: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationWithArgs: SortByClauseA
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relations: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationsPaginated: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationsPaginatedWithArgs: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationsWithArgs: SortByClauseA
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    renamed: SortByTypeDirection
-    @sortByOperatorSort
-    @rename(
-        attribute: "internal"
-    )
 }
 
 """
@@ -377,16 +320,10 @@ Sort clause for `interface C` (only one property allowed at a time).
 """
 input SortByRootC {
     """
-    Field clause.
+    Field.
     """
-    id: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorSort
+    field: SortByClauseC
+    @sortByOperatorField
 
     """
     NULLs first
@@ -399,63 +336,6 @@ input SortByRootC {
     """
     nullsLast: SortByClauseC
     @sortByOperatorNullsLast
-
-    """
-    Field clause.
-    """
-    operator: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    operators: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relation: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationWithArgs: SortByClauseA
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relations: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationsPaginated: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationsPaginatedWithArgs: SortByClauseB
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    relationsWithArgs: SortByClauseA
-    @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    renamed: SortByTypeDirection
-    @sortByOperatorSort
-    @rename(
-        attribute: "internal"
-    )
 }
 
 """

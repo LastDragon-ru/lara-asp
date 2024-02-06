@@ -71,20 +71,45 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are overriding Extra operators, you may need to add `SortByOperators::Extra` to use new built-in:
 
-    ```php
-    $settings = [
-        'sort_by'   => [
-            'operators' => [
-                SortByOperators::Extra => [
-                    SortByOperators::Extra,
-                    SortByOperatorRandomDirective::class,
-                ],
-            ],
-        ],
-    ];
-    ```
+  ```php
+  $settings = [
+      'sort_by'   => [
+          'operators' => [
+              SortByOperators::Extra => [
+                  SortByOperators::Extra,
+                  SortByOperatorRandomDirective::class,
+              ],
+          ],
+      ],
+  ];
+  ```
 
 * [ ] If you are using `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver` instead. 🤝
+
+* [ ] Added the root type that will contain only extra operators and newly added `field` operator (always present and cannot be removed). The new query syntax is:
+
+  ```graphql
+  query {
+      # ORDER BY user.name ASC, text DESC
+      comments(order: [
+          {field: {user: {name: asc}}}
+          {field: {text: desc}}
+      ])
+  }
+  ```
+
+  If you want to use old query syntax, you can add following bindings into application provider:
+
+  ```php
+  $this->app->bind(
+      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Root::class,
+      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5::class,
+  );
+  $this->app->bind(
+      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause::class,
+      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5::class,
+  );
+  ```
 
 ## API
 

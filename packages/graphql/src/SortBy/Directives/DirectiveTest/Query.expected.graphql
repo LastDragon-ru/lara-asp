@@ -5,6 +5,12 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -80,16 +86,10 @@ Sort clause for `input InputA` (only one property allowed at a time).
 """
 input SortByQueryRootInputA {
     """
-    Field clause.
+    Field.
     """
-    id: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorSort
+    field: SortByQueryClauseInputA
+    @sortByOperatorField
 
     """
     NULLs first
@@ -109,16 +109,10 @@ Sort clause for `input TypeB` (only one property allowed at a time).
 """
 input SortByQueryRootTypeB {
     """
-    Field clause.
+    Field.
     """
-    id: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorSort
+    field: SortByQueryClauseTypeB
+    @sortByOperatorField
 
     """
     NULLs first

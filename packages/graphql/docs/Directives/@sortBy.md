@@ -58,8 +58,8 @@ And:
 query {
     # ORDER BY user.name ASC, text DESC
     comments(order: [
-        {user: {name: asc}}
-        {text: desc}
+        {field: {user: {name: asc}}}
+        {field: {text: desc}}
     ])
 }
 ```
@@ -216,7 +216,7 @@ query {
     # ORDER BY user.name ASC NULLS FIRST, text DESC
     comments(order: [
         {nullsFirst: {user: {name: asc}}}
-        {text: desc}
+        {field: {text: desc}}
     ])
 }
 ```
