@@ -129,3 +129,5 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport` => `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport`
 
 * [ ] `@sortByOperatorProperty` => `@sortByOperatorChild` (and class too)
+
+* [ ] `@sortByOperatorField` => `@sortByOperatorSort` (and class too)

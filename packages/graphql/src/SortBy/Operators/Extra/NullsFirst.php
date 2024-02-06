@@ -11,8 +11,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\FieldContextNulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\SortContextNulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
@@ -59,7 +59,7 @@ class NullsFirst extends Operator {
         Context $context,
     ): object {
         return $this->handle($handler, $builder, $property->getParent(), $argument, $context->override([
-            FieldContextNulls::class => new FieldContextNulls(Nulls::First),
+            SortContextNulls::class => new SortContextNulls(Nulls::First),
         ]));
     }
 }

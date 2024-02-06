@@ -42,12 +42,6 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -55,6 +49,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -174,7 +174,7 @@ input SortByClauseTestObject {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     NULLs first

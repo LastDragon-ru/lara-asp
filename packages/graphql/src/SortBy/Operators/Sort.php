@@ -21,7 +21,7 @@ use Override;
 use function config;
 use function is_array;
 
-class Field extends Operator {
+class Sort extends Operator {
     /**
      * @param SorterFactory<object> $factory
      */
@@ -34,7 +34,7 @@ class Field extends Operator {
 
     #[Override]
     public static function getName(): string {
-        return 'field';
+        return 'sort';
     }
 
     #[Override]
@@ -84,8 +84,8 @@ class Field extends Operator {
         }
 
         // Explicit?
-        if ($context->has(FieldContextNulls::class)) {
-            return $context->get(FieldContextNulls::class)?->value;
+        if ($context->has(SortContextNulls::class)) {
+            return $context->get(SortContextNulls::class)?->value;
         }
 
         // Default

@@ -17,7 +17,7 @@ on
     | OBJECT
     | SCALAR
 
-directive @sortByOperatorField
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -89,13 +89,13 @@ input SortByClauseA {
     Not ignored
     """
     a: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     List
     """
     b: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 }
 
 """
@@ -106,7 +106,7 @@ input SortByClauseB {
     Field clause.
     """
     a: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 }
 
 interface B {

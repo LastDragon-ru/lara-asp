@@ -11,12 +11,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorField
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -24,6 +18,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -123,13 +123,13 @@ input SortByClauseA {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     NULLs first
@@ -195,7 +195,7 @@ input SortByClauseA {
     Field clause.
     """
     renamed: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
     @rename(
         attribute: "internal"
     )
@@ -209,13 +209,13 @@ input SortByClauseB {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     NULLs first
@@ -244,13 +244,13 @@ input SortByClauseC {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     NULLs first
@@ -316,7 +316,7 @@ input SortByClauseC {
     Field clause.
     """
     renamed: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
     @rename(
         attribute: "internal"
     )

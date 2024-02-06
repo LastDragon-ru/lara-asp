@@ -11,12 +11,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorField
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -24,6 +18,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -67,7 +67,7 @@ input SortByClauseComment {
     Field clause.
     """
     text: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
@@ -84,13 +84,13 @@ input SortByClauseUser {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     NULLs first
@@ -113,13 +113,13 @@ input SortByClauseUsersSort {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     NULLs first

@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Field;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Sort;
 
-class SortByOperatorFieldDirective extends Field {
+class SortByOperatorSortDirective extends Sort {
     // Lighthouse loads all classes from directive namespace this leads to
     // 'Class "Orchestra\Testbench\TestCase" not found' error for our *Test
     // classes. This class required to avoid this error.
