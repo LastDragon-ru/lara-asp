@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\SortContextNulls;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 

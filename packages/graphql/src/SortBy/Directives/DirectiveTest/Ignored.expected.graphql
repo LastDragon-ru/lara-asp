@@ -84,7 +84,7 @@ input IgnoredType {
 """
 Sort clause for `input A` (only one property allowed at a time).
 """
-input SortByClauseA {
+input SortByRootA {
     """
     Not ignored
     """
@@ -101,7 +101,7 @@ input SortByClauseA {
 """
 Sort clause for `interface B` (only one property allowed at a time).
 """
-input SortByClauseB {
+input SortByRootB {
     """
     Field clause.
     """
@@ -171,13 +171,13 @@ type ObjectB {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): A!
     @all
 
     b(
-        order: [SortByClauseB!]
+        order: [SortByRootB!]
         @sortBy
     ): B!
     @all

@@ -96,18 +96,6 @@ input SortByClauseA {
     """
     name: SortByTypeDirection
     @sortByOperatorSort
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseA
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseA
-    @sortByOperatorNullsLast
 }
 
 """
@@ -127,22 +115,51 @@ input SortByClauseB {
     @sortByOperatorSort
 
     """
+    Field clause.
+    """
+    parent: SortByClauseA
+    @sortByOperatorChild
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field clause.
+    """
+    field: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    fields: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Description should be copied.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
     NULLs first
     """
-    nullsFirst: SortByClauseB
+    nullsFirst: SortByClauseA
     @sortByOperatorNullsFirst
 
     """
     NULLs last
     """
-    nullsLast: SortByClauseB
+    nullsLast: SortByClauseA
     @sortByOperatorNullsLast
-
-    """
-    Field clause.
-    """
-    parent: SortByClauseA
-    @sortByOperatorChild
 }
 
 """
@@ -217,13 +234,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): ID!
     @all
 
     b(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """

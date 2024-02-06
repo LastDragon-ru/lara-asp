@@ -24,7 +24,9 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirecti
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Root;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
@@ -120,6 +122,26 @@ final class DirectiveTest extends TestCase {
         );
     }
 
+    /**
+     * @deprecated 5.5.0
+     */
+    #[RequiresLaravelScout]
+    public function testManipulateArgDefinitionScoutBuilderV5Compat(): void {
+        $this->override(Root::class, V5::class);
+        $this->override(Clause::class, V5::class);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        $this->useGraphQLSchema(
+            self::getTestData()->file('V5CompatScout.schema.graphql'),
+        );
+
+        self::assertGraphQLSchemaEquals(
+            self::getTestData()->file('V5CompatScout.expected.graphql'),
+        );
+    }
+
     public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
         config([
             Package::Name.'.sort_by.operators' => [
@@ -140,7 +162,7 @@ final class DirectiveTest extends TestCase {
         ]);
 
         self::expectExceptionObject(
-            new TypeDefinitionImpossibleToCreateType(Clause::class, 'type TestType', new Context()),
+            new TypeDefinitionImpossibleToCreateType(Root::class, 'type TestType', new Context()),
         );
 
         $registry = Container::getInstance()->make(TypeRegistry::class);
@@ -191,7 +213,7 @@ final class DirectiveTest extends TestCase {
             )
             ->graphQL(
                 <<<'GRAPHQL'
-                query test($input: [SortByClauseTestObject!]) {
+                query test($input: [SortByRootTestObject!]) {
                     test(input: $input) {
                         id
                     }
@@ -246,8 +268,8 @@ final class DirectiveTest extends TestCase {
         );
 
         $type = match (true) {
-            $builder instanceof QueryBuilder => 'SortByQueryClauseTest',
-            default                          => 'SortByClauseTest',
+            $builder instanceof QueryBuilder => 'SortByQueryRootTest',
+            default                          => 'SortByRootTest',
         };
         $result = $this->graphQL(
             <<<GRAPHQL
@@ -325,7 +347,7 @@ final class DirectiveTest extends TestCase {
 
         $result = $this->graphQL(
             <<<'GRAPHQL'
-            query test($query: [SortByScoutClauseTest!]) {
+            query test($query: [SortByScoutRootTest!]) {
                 test(search: "*", input: $query)
             }
             GRAPHQL,
@@ -498,6 +520,14 @@ final class DirectiveTest extends TestCase {
                 'Example.expected.graphql',
                 'Example.schema.graphql',
                 null,
+            ],
+            'V5Compat'          => [
+                'V5Compat.expected.graphql',
+                'V5Compat.schema.graphql',
+                static function (TestCase $test): void {
+                    $test->override(Root::class, V5::class);
+                    $test->override(Clause::class, V5::class);
+                },
             ],
         ];
     }

@@ -149,7 +149,7 @@ final class DirectiveTest extends TestCase {
                 <<<'GRAPHQL'
                 query test(
                     $where: SearchByConditionTestObject,
-                    $order: [SortByClauseTestObject!],
+                    $order: [SortByRootTestObject!],
                     $limit: Int!,
                     $offset: StreamOffset,
                 ) {
@@ -239,7 +239,7 @@ final class DirectiveTest extends TestCase {
                 query test(
                     $search: String!,
                     $where: SearchByScoutConditionTestObjectSearchable,
-                    $order: [SortByScoutClauseTestObjectSearchable!],
+                    $order: [SortByScoutRootTestObjectSearchable!],
                     $limit: Int!,
                     $offset: StreamOffset,
                 ) {

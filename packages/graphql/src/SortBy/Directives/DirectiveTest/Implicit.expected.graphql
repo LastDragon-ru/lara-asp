@@ -132,18 +132,6 @@ input SortByClauseA {
     @sortByOperatorSort
 
     """
-    NULLs first
-    """
-    nullsFirst: SortByClauseA
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseA
-    @sortByOperatorNullsLast
-
-    """
     Field clause.
     """
     operator: SortByClauseB
@@ -218,18 +206,6 @@ input SortByClauseB {
     @sortByOperatorSort
 
     """
-    NULLs first
-    """
-    nullsFirst: SortByClauseB
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseB
-    @sortByOperatorNullsLast
-
-    """
     Field clause.
     """
     parent: SortByClauseA
@@ -240,6 +216,166 @@ input SortByClauseB {
 Sort clause for `interface C` (only one property allowed at a time).
 """
 input SortByClauseC {
+    """
+    Field clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    operator: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relation: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationWithArgs: SortByClauseA
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorSort
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseA
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseA
+    @sortByOperatorNullsLast
+
+    """
+    Field clause.
+    """
+    operator: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relation: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationWithArgs: SortByClauseA
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorSort
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
+Sort clause for `interface C` (only one property allowed at a time).
+"""
+input SortByRootC {
     """
     Field clause.
     """
@@ -445,7 +581,7 @@ interface C {
     )
 
     stream(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """
@@ -588,7 +724,7 @@ type A {
     )
 
     stream(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """
@@ -738,13 +874,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): [A!]!
     @all
 
     b(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """
@@ -762,7 +898,7 @@ type Query {
     )
 
     c(
-        order: [SortByClauseC!]
+        order: [SortByRootC!]
         @sortBy
     ): [C!]!
     @all

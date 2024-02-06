@@ -133,7 +133,7 @@ input SearchByScoutScalarID {
 """
 Sort clause for `type TestObject` (only one property allowed at a time).
 """
-input SortByScoutClauseTestObject {
+input SortByScoutRootTestObject {
     """
     Field clause.
     """
@@ -165,7 +165,7 @@ interface InterfaceA {
     fieldWithSearch(
         argument: String
         where: SearchByScoutConditionTestObject
-        order: [SortByScoutClauseTestObject!]
+        order: [SortByScoutRootTestObject!]
         limit: Int!
         offset: StreamOffset
     ): TestObjectsStream!
@@ -195,7 +195,7 @@ implements
         where: SearchByScoutConditionTestObject
         @searchBy
 
-        order: [SortByScoutClauseTestObject!]
+        order: [SortByScoutRootTestObject!]
         @sortBy
 
         """

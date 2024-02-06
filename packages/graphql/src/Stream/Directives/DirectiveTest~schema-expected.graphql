@@ -175,6 +175,17 @@ input SortByClauseTestObject {
     """
     id: SortByTypeDirection
     @sortByOperatorSort
+}
+
+"""
+Sort clause for `type TestObject` (only one property allowed at a time).
+"""
+input SortByRootTestObject {
+    """
+    Field clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
 
     """
     NULLs first
@@ -213,7 +224,7 @@ interface InterfaceA {
     fieldWithArguments(
         argument: String
         where: SearchByConditionTestObject
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         limit: Int!
         offset: StreamOffset
     ): TestObjectsStream!
@@ -224,7 +235,7 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         limit: Int!
         offset: StreamOffset
     ): TestObjectsStream!
@@ -233,7 +244,7 @@ implements
 interface InterfaceC {
     fieldWithDirectives(
         a: SearchByConditionTestObject
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         c: Int!
         d: StreamOffset
     ): TestObjectsStream!
@@ -258,7 +269,7 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -311,7 +322,7 @@ implements
         where: SearchByConditionTestObject
         @searchBy
 
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -337,7 +348,7 @@ implements
         @deprecated
         @searchBy
 
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         @deprecated
         @sortBy
 
@@ -364,7 +375,7 @@ implements
         where: SearchByConditionTestObject
         @searchBy
 
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -393,7 +404,7 @@ implements
         a: SearchByConditionTestObject
         @searchBy
 
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -421,7 +432,7 @@ implements
         a: SearchByConditionTestObject
         @searchBy
 
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -450,7 +461,7 @@ implements
         where: SearchByConditionTestObject
         @searchBy
 
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """

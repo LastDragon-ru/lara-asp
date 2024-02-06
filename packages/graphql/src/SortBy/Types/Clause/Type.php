@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
+namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
@@ -20,18 +20,21 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorSortDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Override;
+use ReflectionClass;
 
 use function is_string;
 
-class Clause extends InputObject {
+abstract class Type extends InputObject {
     #[Override]
     public function getTypeName(TypeSource $source, Context $context): string {
         $directiveName = Directive::Name;
         $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
         $typeName      = $source->getTypeName();
+        $name          = (new ReflectionClass($this))->getShortName();
 
-        return "{$directiveName}{$builderName}Clause{$typeName}";
+        return "{$directiveName}{$builderName}{$name}{$typeName}";
     }
 
     #[Override]

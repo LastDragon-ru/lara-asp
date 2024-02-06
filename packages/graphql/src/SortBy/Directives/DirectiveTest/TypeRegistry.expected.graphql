@@ -52,18 +52,6 @@ Sort clause for `type Comment` (only one property allowed at a time).
 """
 input SortByClauseComment {
     """
-    NULLs first
-    """
-    nullsFirst: SortByClauseComment
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseComment
-    @sortByOperatorNullsLast
-
-    """
     Field clause.
     """
     text: SortByTypeDirection
@@ -91,24 +79,58 @@ input SortByClauseUser {
     """
     name: SortByTypeDirection
     @sortByOperatorSort
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseUser
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseUser
-    @sortByOperatorNullsLast
 }
 
 """
 Sort clause for `input UsersSort` (only one property allowed at a time).
 """
 input SortByClauseUsersSort {
+    """
+    Field clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `type Comment` (only one property allowed at a time).
+"""
+input SortByRootComment {
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseComment
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseComment
+    @sortByOperatorNullsLast
+
+    """
+    Field clause.
+    """
+    text: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    user: SortByClauseUser
+    @sortByOperatorChild
+}
+
+"""
+Sort clause for `input UsersSort` (only one property allowed at a time).
+"""
+input SortByRootUsersSort {
     """
     Field clause.
     """
@@ -146,7 +168,7 @@ type Query {
     or `_` to generate type automatically 😛
     """
     comments(
-        order: [SortByClauseComment!]
+        order: [SortByRootComment!]
         @sortBy
     ): [Comment!]!
     @all
@@ -155,7 +177,7 @@ type Query {
     You can use normal input type
     """
     users(
-        order: [SortByClauseUsersSort!]
+        order: [SortByRootUsersSort!]
         @sortBy
     ): ID!
     @all

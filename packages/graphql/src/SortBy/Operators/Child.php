@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause as ClauseType;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause as ClauseType;
 use Override;
 
 use function is_a;

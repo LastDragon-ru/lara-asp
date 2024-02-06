@@ -5,6 +5,12 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
+directive @sortByOperatorChild
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @sortByOperatorNullsFirst
 on
     | ENUM
@@ -42,43 +48,38 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for `input InputA` (only one property allowed at a time).
+Sort clause for `type Comment` (only one property allowed at a time).
 """
-input SortByQueryClauseInputA {
+input SortByClauseComment {
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseComment
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseComment
+    @sortByOperatorNullsLast
+
     """
     Field clause.
     """
-    id: SortByTypeDirection
+    text: SortByTypeDirection
     @sortByOperatorSort
 
     """
     Field clause.
     """
-    name: SortByTypeDirection
-    @sortByOperatorSort
+    user: SortByClauseUser
+    @sortByOperatorChild
 }
 
 """
-Sort clause for `input TypeB` (only one property allowed at a time).
+Sort clause for `type User` (only one property allowed at a time).
 """
-input SortByQueryClauseTypeB {
-    """
-    Field clause.
-    """
-    id: SortByTypeDirection
-    @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorSort
-}
-
-"""
-Sort clause for `input InputA` (only one property allowed at a time).
-"""
-input SortByQueryRootInputA {
+input SortByClauseUser {
     """
     Field clause.
     """
@@ -94,20 +95,20 @@ input SortByQueryRootInputA {
     """
     NULLs first
     """
-    nullsFirst: SortByQueryClauseInputA
+    nullsFirst: SortByClauseUser
     @sortByOperatorNullsFirst
 
     """
     NULLs last
     """
-    nullsLast: SortByQueryClauseInputA
+    nullsLast: SortByClauseUser
     @sortByOperatorNullsLast
 }
 
 """
-Sort clause for `input TypeB` (only one property allowed at a time).
+Sort clause for `input UsersSort` (only one property allowed at a time).
 """
-input SortByQueryRootTypeB {
+input SortByClauseUsersSort {
     """
     Field clause.
     """
@@ -123,42 +124,44 @@ input SortByQueryRootTypeB {
     """
     NULLs first
     """
-    nullsFirst: SortByQueryClauseTypeB
+    nullsFirst: SortByClauseUsersSort
     @sortByOperatorNullsFirst
 
     """
     NULLs last
     """
-    nullsLast: SortByQueryClauseTypeB
+    nullsLast: SortByClauseUsersSort
     @sortByOperatorNullsLast
 }
 
-input TypeA {
-    child: TypeB!
-    id: ID!
-    name: String!
-}
+type Comment {
+    text: String
 
-input TypeB {
-    id: ID!
-    name: String
-    parent: TypeA!
+    user: User
+    @belongsTo
 }
 
 type Query {
-    a(
-        order: [SortByQueryRootInputA!]
+    """
+    or `_` to generate type automatically 😛
+    """
+    comments(
+        order: [SortByClauseComment!]
+        @sortBy
+    ): [Comment!]!
+    @all
+
+    """
+    You can use normal input type
+    """
+    users(
+        order: [SortByClauseUsersSort!]
         @sortBy
     ): ID!
-    @all(
-        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
-    )
+    @all
+}
 
-    b(
-        order: [SortByQueryRootTypeB!]
-        @sortBy
-    ): [TypeB!]!
-    @all(
-        builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
-    )
+type User {
+    id: ID!
+    name: String!
 }
