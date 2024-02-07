@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorChild
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorEqual
 on
     | ENUM
@@ -30,12 +36,6 @@ on
     | SCALAR
 
 directive @searchByOperatorField
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorFieldObject
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -193,13 +193,13 @@ input SearchByScoutConditionInputA {
     Field condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.
     """
     nestedNotNull: SearchByScoutConditionNestedA
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.
@@ -251,7 +251,7 @@ input SearchByScoutConditionNestedA {
     Field condition.
     """
     nested: SearchByScoutConditionNestedA
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.
@@ -274,7 +274,7 @@ input SearchByScoutConditionNestedB {
     Field condition.
     """
     nested: SearchByScoutConditionNestedC
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 }
 
 """
@@ -291,7 +291,7 @@ input SearchByScoutConditionNestedC {
     Field condition.
     """
     nested: SearchByScoutConditionNestedB
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 }
 
 """
@@ -407,13 +407,13 @@ input SearchByScoutConditionObject {
     Field condition.
     """
     nested: SearchByScoutConditionObjectNested
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.
     """
     nestedNotNull: SearchByScoutConditionObjectNested
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.
@@ -541,13 +541,13 @@ input SearchByScoutConditionObjectInterface {
     Field condition.
     """
     nested: SearchByScoutConditionObjectNested
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.
     """
     nestedNotNull: SearchByScoutConditionObjectNested
-    @searchByOperatorFieldObject
+    @searchByOperatorChild
 
     """
     Field condition.

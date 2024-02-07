@@ -12,12 +12,12 @@ use Override;
 
 use function is_a;
 
-class FieldObject extends Operator {
+class Child extends Operator {
     use HandlerOperator;
 
     #[Override]
     public static function getName(): string {
-        return 'field';
+        return 'child';
     }
 
     #[Override]
