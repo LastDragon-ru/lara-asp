@@ -53,6 +53,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -66,12 +72,6 @@ on
     | SCALAR
 
 directive @searchByOperatorEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -283,13 +283,13 @@ input SearchByConditionA {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -349,7 +349,7 @@ input SearchByConditionA {
     Field condition.
     """
     renamed: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -358,7 +358,7 @@ input SearchByConditionA {
     Field condition.
     """
     renamedList: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -384,13 +384,13 @@ input SearchByConditionB {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -425,13 +425,13 @@ input SearchByConditionC {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -491,7 +491,7 @@ input SearchByConditionC {
     Field condition.
     """
     renamed: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -500,7 +500,7 @@ input SearchByConditionC {
     Field condition.
     """
     renamedList: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )

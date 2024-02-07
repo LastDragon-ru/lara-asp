@@ -17,13 +17,13 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorEqual
+directive @searchByOperatorCondition
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorField
+directive @searchByOperatorEqual
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -152,7 +152,7 @@ input SearchByConditionTestObject {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.

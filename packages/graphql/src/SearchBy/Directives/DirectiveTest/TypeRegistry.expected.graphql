@@ -53,6 +53,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -66,12 +72,6 @@ on
     | SCALAR
 
 directive @searchByOperatorEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -222,13 +222,13 @@ input SearchByConditionTestTypeA {
     Field condition.
     """
     flag: SearchByScalarBooleanOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -240,7 +240,7 @@ input SearchByConditionTestTypeA {
     Field condition.
     """
     value: SearchByEnumTestEnumOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """
@@ -269,7 +269,7 @@ input SearchByConditionTestTypeB {
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.

@@ -17,13 +17,13 @@ on
     | OBJECT
     | SCALAR
 
-directive @searchByOperatorEqual
+directive @searchByOperatorCondition
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorField
+directive @searchByOperatorEqual
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -74,13 +74,13 @@ input SearchByConditionA {
     Not ignored
     """
     a: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     b: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """
@@ -91,13 +91,13 @@ input SearchByConditionB {
     Field condition.
     """
     a: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     b: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """

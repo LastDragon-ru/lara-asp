@@ -11,13 +11,13 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorEqual
+directive @searchByOperatorCondition
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorField
+directive @searchByOperatorEqual
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -92,7 +92,7 @@ input SearchByConditionA {
     Field condition.
     """
     a: SearchByScalarMixed
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     All of the conditions must be true.
@@ -104,13 +104,13 @@ input SearchByConditionA {
     Field condition.
     """
     b: SearchByScalarDateOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     c: SearchByEnumEnumAOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """

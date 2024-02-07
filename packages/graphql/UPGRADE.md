@@ -53,8 +53,6 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `@searchByOperatorRelation` => `@searchByOperatorRelationship` (and class too; generated types will be named as `SearchByRelationship*` instead of `SearchByComplex*`).
 
-* [ ] `@searchByOperatorProperty` => `@searchByOperatorField` (and class too)
-
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object`.
 
 * [ ] `scalar SearchByCondition` => `scalar SearchByObject`.
@@ -152,6 +150,8 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Traits\ScoutSupport` => `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport`
 
 * [ ] `@searchByOperatorCondition` => `@searchByOperatorChild` (and class too)
+
+* [ ] `@searchByOperatorProperty` => `@searchByOperatorCondition` (and class too)
 
 * [ ] `@sortByOperatorProperty` => `@sortByOperatorChild` (and class too)
 

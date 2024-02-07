@@ -53,6 +53,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -66,12 +72,6 @@ on
     | SCALAR
 
 directive @searchByOperatorEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -249,13 +249,13 @@ input SearchByConditionA {
     Description should be copied.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -284,13 +284,13 @@ input SearchByConditionB {
     Description should be copied.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.

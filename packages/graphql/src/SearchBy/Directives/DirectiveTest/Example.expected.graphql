@@ -53,6 +53,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -66,12 +72,6 @@ on
     | SCALAR
 
 directive @searchByOperatorEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -223,7 +223,7 @@ input SearchByConditionCommentsQuery {
     Field condition.
     """
     date: SearchByScalarDateOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -235,7 +235,7 @@ input SearchByConditionCommentsQuery {
     Field condition.
     """
     text: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Relationship condition.
@@ -264,13 +264,13 @@ input SearchByConditionUser {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -299,13 +299,13 @@ input SearchByConditionUsersQuery {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.

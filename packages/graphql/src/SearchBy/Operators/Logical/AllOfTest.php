@@ -116,10 +116,10 @@ final class AllOfTest extends TestCase {
                 <<<'GRAPHQL'
                     input TestInput {
                         a: TestOperators
-                        @searchByOperatorField
+                        @searchByOperatorCondition
 
                         b: TestOperators
-                        @searchByOperatorField
+                        @searchByOperatorCondition
                     }
 
                     input TestOperators {
@@ -265,10 +265,10 @@ final class AllOfTest extends TestCase {
                 <<<'GRAPHQL'
                     input TestInput {
                         a: TestOperators
-                        @searchByOperatorField
+                        @searchByOperatorCondition
 
                         b: TestOperators
-                        @searchByOperatorField
+                        @searchByOperatorCondition
                     }
 
                     input TestOperators {

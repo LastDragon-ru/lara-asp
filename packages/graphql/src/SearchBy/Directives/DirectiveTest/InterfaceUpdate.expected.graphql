@@ -5,13 +5,13 @@ directive @searchBy
 on
     | ARGUMENT_DEFINITION
 
-directive @searchByOperatorEqual
+directive @searchByOperatorCondition
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorField
+directive @searchByOperatorEqual
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -29,7 +29,7 @@ input SearchByConditionA {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """
@@ -40,7 +40,7 @@ input SearchByConditionB {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """

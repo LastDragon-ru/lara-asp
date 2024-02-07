@@ -17,7 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorConditionDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use Override;
@@ -87,7 +87,7 @@ class Condition extends InputObject {
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field, $context);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = $manipulator->getOperator($this->getScope(), SearchByOperatorFieldDirective::class);
+            $operator = $manipulator->getOperator($this->getScope(), SearchByOperatorConditionDirective::class);
             $operator = [$operator, $source];
         }
 

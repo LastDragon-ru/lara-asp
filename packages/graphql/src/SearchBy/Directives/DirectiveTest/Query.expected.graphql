@@ -17,6 +17,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -30,12 +36,6 @@ on
     | SCALAR
 
 directive @searchByOperatorEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -142,13 +142,13 @@ input SearchByQueryConditionInputA {
     Field condition.
     """
     id: SearchByQueryScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByQueryScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
@@ -177,13 +177,13 @@ input SearchByQueryConditionTypeB {
     Field condition.
     """
     id: SearchByQueryScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByQueryScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Not.
