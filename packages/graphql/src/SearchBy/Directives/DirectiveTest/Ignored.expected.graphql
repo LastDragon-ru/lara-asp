@@ -17,6 +17,12 @@ on
     | OBJECT
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorEqual
 on
     | ENUM
@@ -74,13 +80,13 @@ input SearchByConditionA {
     Not ignored
     """
     a: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     b: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """
@@ -91,12 +97,34 @@ input SearchByConditionB {
     Field condition.
     """
     a: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     b: SearchByScalarString
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `interface B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    Field.
+    """
+    field: SearchByConditionB
     @searchByOperatorField
 }
 
@@ -170,13 +198,13 @@ type ObjectB {
 
 type Query {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): A!
     @all
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
         @searchBy
     ): B!
     @all

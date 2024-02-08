@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorSort
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 enum IgnoredEnum
 @sortByIgnored
 {
@@ -89,13 +95,13 @@ input SortByClauseA {
     Not ignored
     """
     a: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     List
     """
     b: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 }
 
 """
@@ -106,6 +112,28 @@ input SortByClauseB {
     Field clause.
     """
     a: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `interface B` (only one property allowed at a time).
+"""
+input SortByRootB {
+    """
+    Field.
+    """
+    field: SortByClauseB
     @sortByOperatorField
 }
 
@@ -171,13 +199,13 @@ type ObjectB {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): A!
     @all
 
     b(
-        order: [SortByClauseB!]
+        order: [SortByRootB!]
         @sortBy
     ): B!
     @all

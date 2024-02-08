@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorSort
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Sort direction.
 """
@@ -41,7 +47,7 @@ input SortByClauseA {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 }
 
 """
@@ -52,6 +58,28 @@ input SortByClauseB {
     Field clause.
     """
     id: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `type B` (only one property allowed at a time).
+"""
+input SortByRootB {
+    """
+    Field.
+    """
+    field: SortByClauseB
     @sortByOperatorField
 }
 
@@ -61,23 +89,23 @@ implements
     & QueryInterfaceB
 {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
     ): A!
 
     b(
-        order: [SortByClauseB!]
+        order: [SortByRootB!]
     ): B!
 }
 
 interface QueryInterfaceA {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
     ): A!
 }
 
 interface QueryInterfaceB {
     b(
-        order: [SortByClauseB!]
+        order: [SortByRootB!]
     ): B!
 }
 
@@ -90,13 +118,13 @@ implements
     & QueryInterface
 {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): A!
     @all
 
     b(
-        order: [SortByClauseB!]
+        order: [SortByRootB!]
         @sortBy
     ): B!
     @all

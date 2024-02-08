@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
@@ -31,7 +30,10 @@ class AllOf extends Logical {
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return "[{$provider->getType(Condition::class, $source, $context)}!]";
+        $parent = parent::getFieldType($provider, $source, $context);
+        $type   = "[{$parent}!]";
+
+        return $type;
     }
 
     #[Override]

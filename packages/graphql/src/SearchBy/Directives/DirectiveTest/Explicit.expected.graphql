@@ -53,6 +53,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -222,18 +228,6 @@ Available conditions for `input A` (only one property allowed at a time).
 """
 input SearchByConditionA {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionA!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionA!]
-    @searchByOperatorAnyOf
-
-    """
     Relationship condition.
     """
     field: SearchByRelationshipRelationB
@@ -249,19 +243,13 @@ input SearchByConditionA {
     Description should be copied.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
-
-    """
-    Not.
-    """
-    not: SearchByConditionA
-    @searchByOperatorNot
+    @searchByOperatorCondition
 }
 
 """
@@ -269,34 +257,16 @@ Available conditions for `input B` (only one property allowed at a time).
 """
 input SearchByConditionB {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionB!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionB!]
-    @searchByOperatorAnyOf
-
-    """
     Description should be copied.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByOperatorField
-
-    """
-    Not.
-    """
-    not: SearchByConditionB
-    @searchByOperatorNot
+    @searchByOperatorCondition
 
     """
     Relationship condition.
@@ -331,7 +301,7 @@ input SearchByRelationshipRelationA {
     """
     Additional conditions.
     """
-    where: SearchByConditionA
+    where: SearchByRootA
 }
 
 """
@@ -360,7 +330,65 @@ input SearchByRelationshipRelationB {
     """
     Additional conditions.
     """
-    where: SearchByConditionB
+    where: SearchByRootB
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootA!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootA!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByRootA
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `input B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootB!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootB!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByConditionB
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByRootB
+    @searchByOperatorNot
 }
 
 """
@@ -730,13 +758,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): ID!
     @all
 
     b(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
 
         """

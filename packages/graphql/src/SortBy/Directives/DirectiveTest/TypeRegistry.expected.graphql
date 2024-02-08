@@ -5,13 +5,13 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -24,6 +24,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -52,28 +58,16 @@ Sort clause for `type Comment` (only one property allowed at a time).
 """
 input SortByClauseComment {
     """
-    NULLs first
-    """
-    nullsFirst: SortByClauseComment
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseComment
-    @sortByOperatorNullsLast
-
-    """
     Field clause.
     """
     text: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     user: SortByClauseUser
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 }
 
 """
@@ -84,25 +78,13 @@ input SortByClauseUser {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseUser
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseUser
-    @sortByOperatorNullsLast
+    @sortByOperatorSort
 }
 
 """
@@ -113,12 +95,46 @@ input SortByClauseUsersSort {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `type Comment` (only one property allowed at a time).
+"""
+input SortByRootComment {
+    """
+    Field.
+    """
+    field: SortByClauseComment
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseComment
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseComment
+    @sortByOperatorNullsLast
+}
+
+"""
+Sort clause for `input UsersSort` (only one property allowed at a time).
+"""
+input SortByRootUsersSort {
+    """
+    Field.
+    """
+    field: SortByClauseUsersSort
     @sortByOperatorField
 
     """
@@ -146,7 +162,7 @@ type Query {
     or `_` to generate type automatically 😛
     """
     comments(
-        order: [SortByClauseComment!]
+        order: [SortByRootComment!]
         @sortBy
     ): [Comment!]!
     @all
@@ -155,7 +171,7 @@ type Query {
     You can use normal input type
     """
     users(
-        order: [SortByClauseUsersSort!]
+        order: [SortByRootUsersSort!]
         @sortBy
     ): ID!
     @all

@@ -5,13 +5,13 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -24,6 +24,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -123,79 +129,67 @@ input SortByClauseA {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseA
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseA
-    @sortByOperatorNullsLast
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     operator: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     operators: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relation: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relations: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsPaginated: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsPaginatedWithArgs: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     relationsWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     renamed: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
     @rename(
         attribute: "internal"
     )
@@ -209,31 +203,19 @@ input SortByClauseB {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseB
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseB
-    @sortByOperatorNullsLast
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     parent: SortByClauseA
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 }
 
 """
@@ -244,12 +226,103 @@ input SortByClauseC {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    operator: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    operators: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relation: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationWithArgs: SortByClauseA
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relations: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsPaginated: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsPaginatedWithArgs: SortByClauseB
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    relationsWithArgs: SortByClauseA
+    @sortByOperatorChild
+
+    """
+    Field clause.
+    """
+    renamed: SortByTypeDirection
+    @sortByOperatorSort
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseA
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseA
+    @sortByOperatorNullsLast
+}
+
+"""
+Sort clause for `interface C` (only one property allowed at a time).
+"""
+input SortByRootC {
+    """
+    Field.
+    """
+    field: SortByClauseC
     @sortByOperatorField
 
     """
@@ -263,63 +336,6 @@ input SortByClauseC {
     """
     nullsLast: SortByClauseC
     @sortByOperatorNullsLast
-
-    """
-    Field clause.
-    """
-    operator: SortByClauseB
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    operators: SortByClauseB
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    relation: SortByClauseB
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    relationWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    relations: SortByClauseB
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    relationsPaginated: SortByClauseB
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    relationsPaginatedWithArgs: SortByClauseB
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    relationsWithArgs: SortByClauseA
-    @sortByOperatorFieldObject
-
-    """
-    Field clause.
-    """
-    renamed: SortByTypeDirection
-    @sortByOperatorField
-    @rename(
-        attribute: "internal"
-    )
 }
 
 """
@@ -355,10 +371,10 @@ interface C {
     name: String!
 
     operator: B!
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     operators: [B!]
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     property(
         arg: String
@@ -445,7 +461,7 @@ interface C {
     )
 
     stream(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """
@@ -498,10 +514,10 @@ type A {
     name: String!
 
     operator: B!
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     operators: [B!]
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     property(
         arg: String
@@ -588,7 +604,7 @@ type A {
     )
 
     stream(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """
@@ -738,13 +754,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): [A!]!
     @all
 
     b(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """
@@ -762,7 +778,7 @@ type Query {
     )
 
     c(
-        order: [SortByClauseC!]
+        order: [SortByRootC!]
         @sortBy
     ): [C!]!
     @all

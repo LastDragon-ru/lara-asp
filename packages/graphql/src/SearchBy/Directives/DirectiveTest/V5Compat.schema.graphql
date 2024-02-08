@@ -1,0 +1,28 @@
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query {
+    users(where: _ @searchBy): [User!]! @all
+    comments(where: CommentsQuery @searchBy): [Comment!]! @all
+}
+
+input UsersQuery {
+    id: ID!
+    name: String!
+}
+
+input CommentsQuery {
+    text: String!
+    user: UsersQuery
+    date: Date
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+input Comment {
+    text: String!
+    user: User @belongsTo
+    date: Date
+}

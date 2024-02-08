@@ -5,6 +5,12 @@ directive @searchBy
 on
     | ARGUMENT_DEFINITION
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorEqual
 on
     | ENUM
@@ -29,7 +35,7 @@ input SearchByConditionA {
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 }
 
 """
@@ -40,6 +46,28 @@ input SearchByConditionB {
     Field condition.
     """
     id: SearchByScalarID
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `type B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    Field.
+    """
+    field: SearchByConditionB
     @searchByOperatorField
 }
 
@@ -60,23 +88,23 @@ implements
     & QueryInterfaceB
 {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
     ): A!
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
     ): B!
 }
 
 interface QueryInterfaceA {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
     ): A!
 }
 
 interface QueryInterfaceB {
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
     ): B!
 }
 
@@ -89,13 +117,13 @@ implements
     & QueryInterface
 {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): A!
     @all
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
         @searchBy
     ): B!
     @all

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
@@ -15,23 +15,27 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorConditionDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Enumeration;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
 use Override;
+use ReflectionClass;
 
 use function is_string;
 
-class Clause extends InputObject {
+abstract class Type extends InputObject {
     #[Override]
     public function getTypeName(TypeSource $source, Context $context): string {
-        $directiveName = Directive::Name;
-        $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
+        $name          = (new ReflectionClass($this))->getShortName();
         $typeName      = $source->getTypeName();
+        $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
+        $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Clause{$typeName}";
+        return "{$directiveName}{$builderName}{$name}{$typeName}";
     }
 
     #[Override]
@@ -45,27 +49,7 @@ class Clause extends InputObject {
         InputSource|ObjectSource|InterfaceSource $source,
         Context $context,
     ): string {
-        return "Sort clause for `{$source}` (only one property allowed at a time).";
-    }
-
-    #[Override]
-    protected function isFieldConvertableImplicit(
-        Manipulator $manipulator,
-        ObjectFieldSource|InputFieldSource|InterfaceFieldSource $field,
-        Context $context,
-    ): bool {
-        // Parent?
-        if (!parent::isFieldConvertableImplicit($manipulator, $field, $context,)) {
-            return false;
-        }
-
-        // List of scalars/enums?
-        if ($field->isList() && !$field->isObject()) {
-            return false;
-        }
-
-        // Ok
-        return true;
+        return "Available conditions for `{$source}` (only one property allowed at a time).";
     }
 
     #[Override]
@@ -98,18 +82,17 @@ class Clause extends InputObject {
         Context $context,
     ): ?array {
         $operator = match (true) {
-            $field->isScalar(), $field->isEnum() => Direction::class,
-            $field->isObject()                   => parent::getFieldOperator($manipulator, $field, $context),
-            default                              => throw new NotImplemented($field),
+            $field->isScalar() => Scalar::class,
+            $field->isEnum()   => Enumeration::class,
+            $field->isObject() => parent::getFieldOperator($manipulator, $field, $context),
+            default            => throw new NotImplemented($field),
         };
 
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field, $context);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = $manipulator->getOperator($this->getScope(), SortByOperatorFieldDirective::class);
+            $operator = $manipulator->getOperator($this->getScope(), SearchByOperatorConditionDirective::class);
             $operator = [$operator, $source];
-        } else {
-            // empty
         }
 
         return $operator;

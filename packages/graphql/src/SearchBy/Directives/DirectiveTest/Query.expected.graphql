@@ -17,6 +17,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -127,34 +133,16 @@ Available conditions for `input InputA` (only one property allowed at a time).
 """
 input SearchByQueryConditionInputA {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByQueryConditionInputA!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByQueryConditionInputA!]
-    @searchByOperatorAnyOf
-
-    """
     Field condition.
     """
     id: SearchByQueryScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByQueryScalarString
-    @searchByOperatorField
-
-    """
-    Not.
-    """
-    not: SearchByQueryConditionInputA
-    @searchByOperatorNot
+    @searchByOperatorCondition
 }
 
 """
@@ -162,33 +150,73 @@ Available conditions for `input TypeB` (only one property allowed at a time).
 """
 input SearchByQueryConditionTypeB {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByQueryConditionTypeB!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByQueryConditionTypeB!]
-    @searchByOperatorAnyOf
-
-    """
     Field condition.
     """
     id: SearchByQueryScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByQueryScalarStringOrNull
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input InputA` (only one property allowed at a time).
+"""
+input SearchByQueryRootInputA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByQueryRootInputA!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByQueryRootInputA!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByQueryConditionInputA
     @searchByOperatorField
 
     """
     Not.
     """
-    not: SearchByQueryConditionTypeB
+    not: SearchByQueryRootInputA
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `input TypeB` (only one property allowed at a time).
+"""
+input SearchByQueryRootTypeB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByQueryRootTypeB!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByQueryRootTypeB!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByQueryConditionTypeB
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByQueryRootTypeB
     @searchByOperatorNot
 }
 
@@ -401,7 +429,7 @@ input TypeB {
 
 type Query {
     a(
-        where: SearchByQueryConditionInputA
+        where: SearchByQueryRootInputA
         @searchBy
     ): ID!
     @all(
@@ -409,7 +437,7 @@ type Query {
     )
 
     b(
-        where: SearchByQueryConditionTypeB
+        where: SearchByQueryRootTypeB
         @searchBy
     ): [TypeB!]!
     @all(

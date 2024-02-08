@@ -3,11 +3,14 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
@@ -87,10 +90,7 @@ abstract class InputObject implements TypeDefinition {
         );
 
         // Add searchable fields
-        $object = $source->getType();
-        $fields = $object instanceof Type
-            ? $object->getFields()
-            : $object->fields;
+        $fields = $this->getFields($manipulator, $source, $context);
 
         foreach ($fields as $field) {
             // Name should be unique (may conflict with Type's operators)
@@ -141,6 +141,22 @@ abstract class InputObject implements TypeDefinition {
             : [];
 
         return $operators;
+    }
+
+    /**
+     * @return iterable<array-key, FieldDefinition|FieldDefinitionNode|InputObjectField|InputValueDefinitionNode>
+     */
+    protected function getFields(
+        Manipulator $manipulator,
+        InterfaceSource|InputSource|ObjectSource $source,
+        Context $context,
+    ): iterable {
+        $object = $source->getType();
+        $fields = $object instanceof Type
+            ? $object->getFields()
+            : $object->fields;
+
+        return $fields;
     }
 
     /**

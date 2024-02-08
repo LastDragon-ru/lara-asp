@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorSort
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Sort direction.
 """
@@ -49,12 +55,40 @@ input SortByQueryClauseInputA {
     Field clause.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `input TypeB` (only one property allowed at a time).
+"""
+input SortByQueryClauseTypeB {
+    """
+    Field clause.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `input InputA` (only one property allowed at a time).
+"""
+input SortByQueryRootInputA {
+    """
+    Field.
+    """
+    field: SortByQueryClauseInputA
     @sortByOperatorField
 
     """
@@ -73,17 +107,11 @@ input SortByQueryClauseInputA {
 """
 Sort clause for `input TypeB` (only one property allowed at a time).
 """
-input SortByQueryClauseTypeB {
+input SortByQueryRootTypeB {
     """
-    Field clause.
+    Field.
     """
-    id: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
+    field: SortByQueryClauseTypeB
     @sortByOperatorField
 
     """
@@ -113,7 +141,7 @@ input TypeB {
 
 type Query {
     a(
-        order: [SortByQueryClauseInputA!]
+        order: [SortByQueryRootInputA!]
         @sortBy
     ): ID!
     @all(
@@ -121,7 +149,7 @@ type Query {
     )
 
     b(
-        order: [SortByQueryClauseTypeB!]
+        order: [SortByQueryRootTypeB!]
         @sortBy
     ): [TypeB!]!
     @all(

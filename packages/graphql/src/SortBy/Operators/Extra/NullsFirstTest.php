@@ -77,7 +77,7 @@ final class NullsFirstTest extends TestCase {
             );
 
             return $test->getGraphQLArgument(
-                'SortByClauseTest!',
+                'SortByRootTest!',
                 [
                     'nullsFirst' => [
                         'a' => Direction::Desc,

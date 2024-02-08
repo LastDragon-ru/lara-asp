@@ -5,6 +5,12 @@ directive @searchBy
 on
     | ARGUMENT_DEFINITION
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorEqual
 on
     | ENUM
@@ -25,7 +31,7 @@ input SearchByConditionA {
     Field condition.
     """
     a: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "renamed"
     )
@@ -39,10 +45,32 @@ input SearchByConditionB {
     Field condition.
     """
     b: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "renamed"
     )
+}
+
+"""
+Available conditions for `type A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `interface B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    Field.
+    """
+    field: SearchByConditionB
+    @searchByOperatorField
 }
 
 """
@@ -72,13 +100,13 @@ type A {
 
 type Query {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): A!
     @all
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
         @searchBy
     ): B!
     @all

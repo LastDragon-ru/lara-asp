@@ -64,9 +64,9 @@ parameters:
             paths:
                 - packages/graphql/src/Stream/Directives/DirectiveTest.php
         -
-            message: "#^Call to protected method getNulls\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Operators\\\\Field\\.$#"
+            message: "#^Call to protected method getNulls\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Operators\\\\Sort\\.$#"
             paths:
-                - packages/graphql/src/SortBy/Operators/FieldTest.php
+                - packages/graphql/src/SortBy/Operators/SortTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149

@@ -17,6 +17,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorEqual
 on
     | ENUM
@@ -55,6 +61,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -131,27 +143,38 @@ Available conditions for `type TestObject` (only one property allowed at a time)
 """
 input SearchByConditionTestObject {
     """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `type TestObject` (only one property allowed at a time).
+"""
+input SearchByRootTestObject {
+    """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionTestObject!]
+    allOf: [SearchByRootTestObject!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionTestObject!]
+    anyOf: [SearchByRootTestObject!]
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
+    field: SearchByConditionTestObject
     @searchByOperatorField
 
     """
     Not.
     """
-    not: SearchByConditionTestObject
+    not: SearchByRootTestObject
     @searchByOperatorNot
 }
 
@@ -174,6 +197,17 @@ input SortByClauseTestObject {
     Field clause.
     """
     id: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `type TestObject` (only one property allowed at a time).
+"""
+input SortByRootTestObject {
+    """
+    Field.
+    """
+    field: SortByClauseTestObject
     @sortByOperatorField
 
     """
@@ -212,8 +246,8 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        where: SearchByConditionTestObject
-        order: [SortByClauseTestObject!]
+        where: SearchByRootTestObject
+        order: [SortByRootTestObject!]
         limit: Int!
         offset: StreamOffset
     ): TestObjectsStream!
@@ -224,7 +258,7 @@ implements
     & InterfaceC
 {
     fieldNotSearchable(
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         limit: Int!
         offset: StreamOffset
     ): TestObjectsStream!
@@ -232,8 +266,8 @@ implements
 
 interface InterfaceC {
     fieldWithDirectives(
-        a: SearchByConditionTestObject
-        b: [SortByClauseTestObject!]
+        a: SearchByRootTestObject
+        b: [SortByRootTestObject!]
         c: Int!
         d: StreamOffset
     ): TestObjectsStream!
@@ -258,7 +292,7 @@ implements
     & InterfaceB
 {
     fieldNotSearchable(
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -282,7 +316,7 @@ implements
     @validate
 
     fieldNotSortable(
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
         """
@@ -308,10 +342,10 @@ implements
     fieldWithArguments(
         argument: String
 
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -333,11 +367,11 @@ implements
     @validate
 
     fieldWithDeprecations(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         @deprecated
         @searchBy
 
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         @deprecated
         @sortBy
 
@@ -361,10 +395,10 @@ implements
         @deprecated
         @streamOffset
 
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -390,10 +424,10 @@ implements
     @validate
 
     fieldWithDirectives(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         @searchBy
 
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -418,10 +452,10 @@ implements
     @validate
 
     fieldWithDirectivesAndDefaults(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         @searchBy
 
-        b: [SortByClauseTestObject!]
+        b: [SortByRootTestObject!]
         @sortBy
 
         """
@@ -447,10 +481,10 @@ implements
     @validate
 
     fieldWithoutArguments(
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
-        order: [SortByClauseTestObject!]
+        order: [SortByRootTestObject!]
         @sortBy
 
         """

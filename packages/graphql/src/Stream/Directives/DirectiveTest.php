@@ -148,8 +148,8 @@ final class DirectiveTest extends TestCase {
             ->graphQL(
                 <<<'GRAPHQL'
                 query test(
-                    $where: SearchByConditionTestObject,
-                    $order: [SortByClauseTestObject!],
+                    $where: SearchByRootTestObject,
+                    $order: [SortByRootTestObject!],
                     $limit: Int!,
                     $offset: StreamOffset,
                 ) {
@@ -238,8 +238,8 @@ final class DirectiveTest extends TestCase {
                 <<<'GRAPHQL'
                 query test(
                     $search: String!,
-                    $where: SearchByScoutConditionTestObjectSearchable,
-                    $order: [SortByScoutClauseTestObjectSearchable!],
+                    $where: SearchByScoutRootTestObjectSearchable,
+                    $order: [SortByScoutRootTestObjectSearchable!],
                     $limit: Int!,
                     $offset: StreamOffset,
                 ) {
@@ -1452,7 +1452,11 @@ final class DirectiveTest extends TestCase {
                     ]);
                 },
                 [
-                    'value' => ['equal' => 'b'],
+                    'field' => [
+                        'value' => [
+                            'equal' => 'b',
+                        ],
+                    ],
                 ],
                 null,
                 25,
@@ -1497,7 +1501,9 @@ final class DirectiveTest extends TestCase {
                 },
                 null,
                 [
-                    ['value' => 'asc'],
+                    [
+                        'field' => ['value' => 'asc'],
+                    ],
                 ],
                 25,
                 null,

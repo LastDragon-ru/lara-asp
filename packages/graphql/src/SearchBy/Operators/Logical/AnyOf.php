@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 use Override;
 
 /**
@@ -24,7 +23,10 @@ class AnyOf extends Logical {
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return "[{$provider->getType(Condition::class, $source, $context)}!]";
+        $parent = parent::getFieldType($provider, $source, $context);
+        $type   = "[{$parent}!]";
+
+        return $type;
     }
 
     #[Override]

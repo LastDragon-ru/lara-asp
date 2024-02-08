@@ -15,6 +15,7 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
@@ -24,7 +25,9 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirecti
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Root;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
@@ -120,6 +123,26 @@ final class DirectiveTest extends TestCase {
         );
     }
 
+    /**
+     * @deprecated 5.5.0
+     */
+    #[RequiresLaravelScout]
+    public function testManipulateArgDefinitionScoutBuilderV5Compat(): void {
+        $this->override(Root::class, V5::class);
+        $this->override(Clause::class, V5::class);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        $this->useGraphQLSchema(
+            self::getTestData()->file('V5CompatScout.schema.graphql'),
+        );
+
+        self::assertGraphQLSchemaEquals(
+            self::getTestData()->file('V5CompatScout.expected.graphql'),
+        );
+    }
+
     public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
         config([
             Package::Name.'.sort_by.operators' => [
@@ -168,6 +191,68 @@ final class DirectiveTest extends TestCase {
         mixed $value,
         ?Closure $prepare = null,
     ): void {
+        if ($prepare) {
+            $prepare($this);
+        }
+
+        $path = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
+
+        $this
+            ->useGraphQLSchema(
+                <<<'GRAPHQL'
+                type Query {
+                    test(input: _ @sortBy): [TestObject!]!
+                    @all
+                }
+
+                type TestObject {
+                    id: ID!
+                    value: String
+                }
+                GRAPHQL,
+            )
+            ->graphQL(
+                <<<'GRAPHQL'
+                query test($input: [SortByRootTestObject!]) {
+                    test(input: $input) {
+                        id
+                    }
+                }
+                GRAPHQL,
+                [
+                    'input' => $value,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body),
+                    ),
+                ),
+            );
+    }
+
+    /**
+     * @deprecated   5.5.0
+     *
+     * @dataProvider dataProviderHandleBuilderV5Compat
+     *
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): object                                           $builderFactory
+     * @param Closure(static): void|null                                        $prepare
+     */
+    public function testDirectiveV5Compat(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        ?Closure $prepare = null,
+    ): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Clause::class, V5::class);
+
         if ($prepare) {
             $prepare($this);
         }
@@ -246,6 +331,69 @@ final class DirectiveTest extends TestCase {
         );
 
         $type = match (true) {
+            $builder instanceof QueryBuilder => 'SortByQueryRootTest',
+            default                          => 'SortByRootTest',
+        };
+        $result = $this->graphQL(
+            <<<GRAPHQL
+            query test(\$query: [{$type}!]) {
+                test(input: \$query)
+            }
+            GRAPHQL,
+            [
+                'query' => $value,
+            ],
+        );
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertDatabaseQueryEquals($expected, $directive::$result);
+        } else {
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @deprecated   5.5.0
+     *
+     * @dataProvider dataProviderHandleBuilderV5Compat
+     *
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>)    $builderFactory
+     * @param Closure(static): void|null                                        $prepare
+     */
+    public function testHandleBuilderV5Compat(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        ?Closure $prepare = null,
+    ): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Clause::class, V5::class);
+
+        if ($prepare) {
+            $prepare($this);
+        }
+
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
+        $this->useGraphQLSchema(
+            <<<GRAPHQL
+            type Query {
+                test(input: Test @sortBy): [String!]! {$directive::getName()}
+            }
+
+            input Test {
+                id: Int!
+                value: String @rename(attribute: "renamed.field")
+            }
+            GRAPHQL,
+        );
+
+        $type = match (true) {
             $builder instanceof QueryBuilder => 'SortByQueryClauseTest',
             default                          => 'SortByClauseTest',
         };
@@ -286,6 +434,85 @@ final class DirectiveTest extends TestCase {
         ?Closure $resolver,
         ?Closure $fieldResolver,
     ): void {
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        if ($resolver) {
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->atLeast()
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
+        }
+
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
+        }
+
+        $this->useGraphQLSchema(
+            <<<GRAPHQL
+            type Query {
+                test(search: String @search, input: Test @sortBy): [String!]! {$directive::getName()}
+            }
+
+            input Test {
+                a: Int!
+                b: String @rename(attribute: "renamed.field")
+                c: Test
+            }
+            GRAPHQL,
+        );
+
+        $result = $this->graphQL(
+            <<<'GRAPHQL'
+            query test($query: [SortByScoutRootTest!]) {
+                test(search: "*", input: $query)
+            }
+            GRAPHQL,
+            [
+                'query' => $value,
+            ],
+        );
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertScoutQueryEquals($expected, $directive::$result);
+        } else {
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @deprecated   5.5.0
+     *
+     * @dataProvider dataProviderHandleScoutBuilderV5Compat
+     *
+     * @param array<string, mixed>|Exception         $expected
+     * @param Closure(static): ScoutBuilder          $builderFactory
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
+     */
+    #[RequiresLaravelScout]
+    public function testHandleScoutBuilderV5Compat(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
+    ): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Clause::class, V5::class);
+
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
 
@@ -499,6 +726,14 @@ final class DirectiveTest extends TestCase {
                 'Example.schema.graphql',
                 null,
             ],
+            'V5Compat'          => [
+                'V5Compat.expected.graphql',
+                'V5Compat.schema.graphql',
+                static function (TestCase $test): void {
+                    $test->override(Root::class, V5::class);
+                    $test->override(Clause::class, V5::class);
+                },
+            ],
         ];
     }
 
@@ -506,6 +741,228 @@ final class DirectiveTest extends TestCase {
      * @return array<array-key, mixed>
      */
     public static function dataProviderHandleBuilder(): array {
+        return (new CompositeDataProvider(
+            new BuilderDataProvider(),
+            new ArrayDataProvider([
+                'empty'                       => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        // empty
+                    ],
+                    null,
+                ],
+                'empty operators'             => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            // empty
+                        ],
+                    ],
+                    null,
+                ],
+                'too many fields (operators)' => [
+                    new ConditionTooManyProperties(['nullsFirst', 'field']),
+                    [
+                        [
+                            'field'      => [
+                                'id' => 'asc',
+                            ],
+                            'nullsFirst' => [
+                                'id' => 'desc',
+                            ],
+                        ],
+                    ],
+                    null,
+                ],
+                'too many fields (fields)'    => [
+                    new ConditionTooManyOperators(['id', 'value']),
+                    [
+                        [
+                            'field' => [
+                                'id'    => 'asc',
+                                'value' => 'desc',
+                            ],
+                        ],
+                    ],
+                    null,
+                ],
+                'null'                        => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    null,
+                    null,
+                ],
+                'valid condition'             => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" asc,
+                                "renamed"."field" desc,
+                                RANDOM()
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'field' => [
+                                'id' => 'asc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'value' => 'desc',
+                            ],
+                        ],
+                        [
+                            'random' => 'yes',
+                        ],
+                    ],
+                    static function (): void {
+                        $package = Package::Name;
+
+                        config([
+                            "{$package}.sort_by.operators" => [
+                                Operators::Extra => [
+                                    SortByOperatorRandomDirective::class,
+                                ],
+                            ],
+                        ]);
+                    },
+                ],
+                'nulls ordering'              => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" ASC NULLS LAST,
+                                "renamed"."field" DESC NULLS FIRST
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'field' => [
+                                'id' => 'asc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'value' => 'desc',
+                            ],
+                        ],
+                    ],
+                    static function (): void {
+                        $package = Package::Name;
+
+                        config([
+                            "{$package}.sort_by.nulls" => [
+                                Direction::Asc->value  => Nulls::Last,
+                                Direction::Desc->value => Nulls::First,
+                            ],
+                        ]);
+                    },
+                ],
+                'nullsFirst'                  => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" DESC NULLS FIRST,
+                                "renamed"."field" asc
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'nullsFirst' => [
+                                'id' => 'desc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'value' => 'asc',
+                            ],
+                        ],
+                    ],
+                    null,
+                ],
+                'nullsLast'                   => [
+                    [
+                        'query'    => <<<'SQL'
+                            select
+                                *
+                            from
+                                "test_objects"
+                            order by
+                                "id" ASC NULLS LAST,
+                                "renamed"."field" desc
+                        SQL
+                        ,
+                        'bindings' => [],
+                    ],
+                    [
+                        [
+                            'nullsLast' => [
+                                'id' => 'Asc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'value' => 'Desc',
+                            ],
+                        ],
+                    ],
+                    null,
+                ],
+            ]),
+        ))->getData();
+    }
+
+    /**
+     * @deprecated 5.5.0
+     *
+     * @return array<array-key, mixed>
+     */
+    public static function dataProviderHandleBuilderV5Compat(): array {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
@@ -698,6 +1155,194 @@ final class DirectiveTest extends TestCase {
      * @return array<array-key, mixed>
      */
     public static function dataProviderHandleScoutBuilder(): array {
+        return (new CompositeDataProvider(
+            new ScoutBuilderDataProvider(),
+            new ArrayDataProvider([
+                'empty'                    => [
+                    [
+                        // empty
+                    ],
+                    [
+                        // empty
+                    ],
+                    null,
+                    null,
+                ],
+                'empty operators'          => [
+                    [
+                        // empty
+                    ],
+                    [
+                        [
+                            // empty
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'too many fields (fields)' => [
+                    new ConditionTooManyOperators(['a', 'b']),
+                    [
+                        [
+                            'field' => [
+                                'a' => 'asc',
+                                'b' => 'desc',
+                            ],
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'null'                     => [
+                    [
+                        // empty
+                    ],
+                    null,
+                    null,
+                    null,
+                ],
+                'default field resolver'   => [
+                    [
+                        'orders' => [
+                            [
+                                'column'    => 'a',
+                                'direction' => 'asc',
+                            ],
+                            [
+                                'column'    => 'c.a',
+                                'direction' => 'desc',
+                            ],
+                            [
+                                'column'    => 'renamed.field',
+                                'direction' => 'desc',
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'field' => [
+                                'a' => 'asc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'c' => [
+                                    'a' => 'desc',
+                                ],
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'b' => 'desc',
+                            ],
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'resolver (deprecated)'    => [
+                    [
+                        'orders' => [
+                            [
+                                'column'    => 'properties/a',
+                                'direction' => 'asc',
+                            ],
+                            [
+                                'column'    => 'properties/c/a',
+                                'direction' => 'desc',
+                            ],
+                            [
+                                'column'    => 'properties/renamed.field',
+                                'direction' => 'desc',
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'field' => [
+                                'a' => 'asc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'c' => [
+                                    'a' => 'desc',
+                                ],
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'b' => 'desc',
+                            ],
+                        ],
+                    ],
+                    null,
+                    static function (): FieldResolver {
+                        return new class() implements FieldResolver {
+                            /**
+                             * @inheritDoc
+                             */
+                            #[Override]
+                            public function getField(
+                                EloquentModel $model,
+                                Property $property,
+                            ): string {
+                                return 'properties/'.implode('/', $property->getPath());
+                            }
+                        };
+                    },
+                ],
+                'resolver'                 => [
+                    [
+                        'orders' => [
+                            [
+                                'column'    => 'a',
+                                'direction' => 'asc',
+                            ],
+                            [
+                                'column'    => 'c__a',
+                                'direction' => 'desc',
+                            ],
+                            [
+                                'column'    => 'renamed.field',
+                                'direction' => 'desc',
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'field' => [
+                                'a' => 'asc',
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'c' => [
+                                    'a' => 'desc',
+                                ],
+                            ],
+                        ],
+                        [
+                            'field' => [
+                                'b' => 'desc',
+                            ],
+                        ],
+                    ],
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
+                ],
+            ]),
+        ))->getData();
+    }
+
+    /**
+     * @deprecated 5.5.0
+     *
+     * @return array<array-key, mixed>
+     */
+    public static function dataProviderHandleScoutBuilderV5Compat(): array {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([

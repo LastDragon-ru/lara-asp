@@ -11,6 +11,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @sortByOperatorSort
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Sort direction.
 """
@@ -37,7 +43,7 @@ input SortByClauseA {
     Field clause.
     """
     a: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
     @rename(
         attribute: "renamed"
     )
@@ -51,10 +57,32 @@ input SortByClauseB {
     Field clause.
     """
     b: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
     @rename(
         attribute: "renamed"
     )
+}
+
+"""
+Sort clause for `type A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+}
+
+"""
+Sort clause for `interface B` (only one property allowed at a time).
+"""
+input SortByRootB {
+    """
+    Field.
+    """
+    field: SortByClauseB
+    @sortByOperatorField
 }
 
 interface B {
@@ -73,13 +101,13 @@ type A {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): A!
     @all
 
     b(
-        order: [SortByClauseB!]
+        order: [SortByRootB!]
         @sortBy
     ): B!
     @all

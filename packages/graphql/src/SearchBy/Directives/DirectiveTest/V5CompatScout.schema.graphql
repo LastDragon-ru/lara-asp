@@ -1,0 +1,211 @@
+type Query implements A & B {
+    a(search: String @search, where: InputA @searchBy): ID! @all
+
+    b(search: String @search, where: NestedA @searchBy): ID! @all
+
+    c(search: String @search, where: InputB @searchBy): ID! @all
+
+    d(search: String @search, where: NestedB @searchBy): ID! @all
+
+    e(search: String @search, where: InputA @searchBy): ID! @all
+
+    f(search: String @search, where: _ @searchBy): Object! @all
+
+    g(search: String @search, where: _ @searchBy): ObjectInterface! @all
+}
+
+interface A implements C & F {
+    a(where: InputA): ID!
+}
+
+interface B {
+    b(where: TypeDoesntMatter): ID!
+}
+
+interface C {
+    c(where: TypeDoesntMatter): ID!
+}
+
+interface F {
+    f(search: String @search, where: _ @searchBy): Object! @all
+}
+
+input InputA {
+    idScalar: ID
+    idScalarNotNull: ID!
+    intScalar: Int
+    intScalarNotNull: Int!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    stringScalar: String
+    stringScalarNotNull: String!
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    nested: NestedA
+    nestedNotNull: NestedA!
+    enum: EnumA
+    enumNotNull: EnumA!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
+    ignored: String @searchByIgnored
+    resolver: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+    ignoredType: InputIgnored
+    ignoredTypeList: [InputIgnored!]!
+    ignoredTypeNonNull: InputIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored
+    customScalarOperators: ScalarCustom
+
+    "Description should be used."
+    description: ID
+
+    fieldRenamed: ID @rename(attribute: "renamed")
+}
+
+input NestedA {
+    value: String
+    nested: NestedA
+}
+
+input NestedB {
+    nested: NestedC
+}
+
+input NestedC {
+    nested: NestedB
+}
+
+input InputB {
+    id: ID
+}
+
+input InputIgnored @searchByIgnored {
+    id: ID
+}
+
+scalar Date
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+scalar DateIgnored
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@searchByIgnored
+
+scalar ScalarCustom
+@scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+@searchByOperators(type: "Boolean")
+@searchByOperatorLessThan
+@searchByOperatorLessThanOrEqual
+
+enum EnumA {
+    One
+    Two
+}
+
+enum EnumIgnored @searchByIgnored {
+    One
+}
+
+interface ObjectInterface {
+    idScalar: ID
+    idScalarNotNull: ID!
+    intScalar: Int
+    intScalarNotNull: Int!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    stringScalar: String
+    stringScalarNotNull: String!
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
+    enum: EnumA
+    enumNotNull: EnumA!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
+    ignored: String @searchByIgnored
+    resolver: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarOperators: ScalarCustom
+
+    "Description should NOT be used."
+    description: ID
+
+    "Should be ignored"
+    fieldWithArguments(arg: Int): Boolean
+
+    fieldRenamed: ID @rename(attribute: "renamed")
+}
+
+type Object implements ObjectInterface {
+    idScalar: ID
+    idScalarNotNull: ID!
+    intScalar: Int
+    intScalarNotNull: Int!
+    floatScalar: Float
+    floatScalarNotNull: Float!
+    stringScalar: String
+    stringScalarNotNull: String!
+    booleanScalar: Boolean
+    booleanScalarNotNull: Boolean!
+    nested: ObjectNested @hasOne
+    nestedNotNull: ObjectNested! @hasOne
+    enum: EnumA
+    enumNotNull: EnumA!
+    enumIgnored: EnumIgnored
+    enumEnumIgnoredNotNull: EnumIgnored!
+    ignored: String @searchByIgnored
+    resolver: Float @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
+    union: ObjectUnion
+    unionList: [ObjectUnion!]!
+    unionNonNull: ObjectUnion!
+    ignoredType: ObjectIgnored
+    ignoredTypeList: [ObjectIgnored!]!
+    ignoredTypeNonNull: ObjectIgnored!
+    customScalar: Date
+    customScalarList: [Date!]!
+    customScalarNonNull: Date!
+    customScalarIgnored: DateIgnored
+    customScalarIgnoredList: [DateIgnored!]!
+    customScalarIgnoredNonNull: DateIgnored!
+    customScalarOperators: ScalarCustom
+
+    "Description should NOT be used."
+    description: ID
+
+    "Should be ignored"
+    fieldWithArguments(arg: Int): Boolean
+
+    fieldRenamed: ID @rename(attribute: "renamed")
+}
+
+type ObjectNested {
+    value: String
+    nested: ObjectNested
+}
+
+union ObjectUnion = Object | ObjectNested
+
+type ObjectIgnored @searchByIgnored {
+    value: String
+}

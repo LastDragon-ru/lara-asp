@@ -108,8 +108,8 @@ Query:
 query example(
     $limit: Int!,
     $offset: StreamOffset,
-    $where: SearchByConditionObject,
-    $order: [SortByClauseObject!],
+    $where: SearchByRootObject,
+    $order: [SortByRootObject!],
 ) {
     objects(where: $where, order: $order, limit: $limit, offset: $offset) {
         items {

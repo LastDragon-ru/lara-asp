@@ -5,13 +5,13 @@ directive @sortBy
 on
     | ARGUMENT_DEFINITION
 
-directive @sortByOperatorField
+directive @sortByOperatorChild
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @sortByOperatorFieldObject
+directive @sortByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -24,6 +24,12 @@ on
     | SCALAR
 
 directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -77,24 +83,58 @@ input SortByClauseA {
     Field clause.
     """
     field: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Field clause.
     """
     fields: SortByClauseB
-    @sortByOperatorFieldObject
+    @sortByOperatorChild
 
     """
     Description should be copied.
     """
     id: SortByTypeDirection
-    @sortByOperatorField
+    @sortByOperatorSort
 
     """
     Field clause.
     """
     name: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `input B` (only one property allowed at a time).
+"""
+input SortByClauseB {
+    """
+    Description should be copied.
+    """
+    id: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    name: SortByTypeDirection
+    @sortByOperatorSort
+
+    """
+    Field clause.
+    """
+    parent: SortByClauseA
+    @sortByOperatorChild
+}
+
+"""
+Sort clause for `input A` (only one property allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
     @sortByOperatorField
 
     """
@@ -108,41 +148,6 @@ input SortByClauseA {
     """
     nullsLast: SortByClauseA
     @sortByOperatorNullsLast
-}
-
-"""
-Sort clause for `input B` (only one property allowed at a time).
-"""
-input SortByClauseB {
-    """
-    Description should be copied.
-    """
-    id: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    Field clause.
-    """
-    name: SortByTypeDirection
-    @sortByOperatorField
-
-    """
-    NULLs first
-    """
-    nullsFirst: SortByClauseB
-    @sortByOperatorNullsFirst
-
-    """
-    NULLs last
-    """
-    nullsLast: SortByClauseB
-    @sortByOperatorNullsLast
-
-    """
-    Field clause.
-    """
-    parent: SortByClauseA
-    @sortByOperatorFieldObject
 }
 
 """
@@ -217,13 +222,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
     ): ID!
     @all
 
     b(
-        order: [SortByClauseA!]
+        order: [SortByRootA!]
         @sortBy
 
         """

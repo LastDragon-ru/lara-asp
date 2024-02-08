@@ -53,6 +53,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorCondition
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorContains
 on
     | ENUM
@@ -268,34 +274,16 @@ Available conditions for `type A` (only one property allowed at a time).
 """
 input SearchByConditionA {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionA!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionA!]
-    @searchByOperatorAnyOf
-
-    """
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
-
-    """
-    Not.
-    """
-    not: SearchByConditionA
-    @searchByOperatorNot
+    @searchByOperatorCondition
 
     """
     Relationship condition.
@@ -349,7 +337,7 @@ input SearchByConditionA {
     Field condition.
     """
     renamed: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -358,7 +346,7 @@ input SearchByConditionA {
     Field condition.
     """
     renamedList: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -369,34 +357,16 @@ Available conditions for `type B` (only one property allowed at a time).
 """
 input SearchByConditionB {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionB!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionB!]
-    @searchByOperatorAnyOf
-
-    """
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarStringOrNull
-    @searchByOperatorField
-
-    """
-    Not.
-    """
-    not: SearchByConditionB
-    @searchByOperatorNot
+    @searchByOperatorCondition
 
     """
     Relationship condition.
@@ -410,34 +380,16 @@ Available conditions for `interface C` (only one property allowed at a time).
 """
 input SearchByConditionC {
     """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionC!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionC!]
-    @searchByOperatorAnyOf
-
-    """
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
-    @searchByOperatorField
-
-    """
-    Not.
-    """
-    not: SearchByConditionC
-    @searchByOperatorNot
+    @searchByOperatorCondition
 
     """
     Relationship condition.
@@ -491,7 +443,7 @@ input SearchByConditionC {
     Field condition.
     """
     renamed: SearchByScalarString
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -500,7 +452,7 @@ input SearchByConditionC {
     Field condition.
     """
     renamedList: SearchByScalarStringOrNull
-    @searchByOperatorField
+    @searchByOperatorCondition
     @rename(
         attribute: "internal"
     )
@@ -532,7 +484,7 @@ input SearchByRelationshipRelationA {
     """
     Additional conditions.
     """
-    where: SearchByConditionA
+    where: SearchByRootA
 }
 
 """
@@ -561,7 +513,94 @@ input SearchByRelationshipRelationB {
     """
     Additional conditions.
     """
-    where: SearchByConditionB
+    where: SearchByRootB
+}
+
+"""
+Available conditions for `type A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootA!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootA!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByRootA
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `type B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootB!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootB!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByConditionB
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByRootB
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `interface C` (only one property allowed at a time).
+"""
+input SearchByRootC {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootC!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootC!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByConditionC
+    @searchByOperatorField
+
+    """
+    Not.
+    """
+    not: SearchByRootC
+    @searchByOperatorNot
 }
 
 """
@@ -981,7 +1020,7 @@ interface C {
     )
 
     stream(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
 
         """
@@ -1123,7 +1162,7 @@ type A {
     )
 
     stream(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
 
         """
@@ -1273,13 +1312,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): [A!]!
     @all
 
     b(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
 
         """
@@ -1297,7 +1336,7 @@ type Query {
     )
 
     c(
-        where: SearchByConditionC
+        where: SearchByRootC
         @searchBy
     ): [C!]!
     @all

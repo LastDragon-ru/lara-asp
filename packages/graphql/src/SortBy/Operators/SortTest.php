@@ -38,8 +38,8 @@ use function implode;
  *
  * @phpstan-import-type BuilderFactory from BuilderDataProvider
  */
-#[CoversClass(Field::class)]
-final class FieldTest extends TestCase {
+#[CoversClass(Sort::class)]
+final class SortTest extends TestCase {
     use OperatorTests;
 
     // <editor-fold desc="Tests">
@@ -88,7 +88,7 @@ final class FieldTest extends TestCase {
 
         $directive = Container::getInstance()->make(Directive::class);
         $property  = new Property();
-        $operator  = Container::getInstance()->make(Field::class);
+        $operator  = Container::getInstance()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -115,7 +115,7 @@ final class FieldTest extends TestCase {
 
         $directive = Container::getInstance()->make(Directive::class);
         $property  = new Property();
-        $operator  = Container::getInstance()->make(Field::class);
+        $operator  = Container::getInstance()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -142,7 +142,7 @@ final class FieldTest extends TestCase {
 
         $directive = Container::getInstance()->make(Directive::class);
         $property  = new Property();
-        $operator  = Container::getInstance()->make(Field::class);
+        $operator  = Container::getInstance()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -174,7 +174,7 @@ final class FieldTest extends TestCase {
 
         $sorter   = $sorterFactory($this);
         $context  = $contextFactory($this);
-        $operator = Mockery::mock(Field::class);
+        $operator = Mockery::mock(Sort::class);
         $operator->shouldAllowMockingProtectedMethods();
         $operator->makePartial();
 
@@ -233,7 +233,7 @@ final class FieldTest extends TestCase {
                     $factory,
                     static function (): Context {
                         return (new Context())->override([
-                            FieldContextNulls::class => new FieldContextNulls(Nulls::First),
+                            SortContextNulls::class => new SortContextNulls(Nulls::First),
                         ]);
                     },
                     null,
@@ -383,7 +383,7 @@ final class FieldTest extends TestCase {
                 $getSorterFactory(true),
                 static function (): Context {
                     return (new Context())->override([
-                        FieldContextNulls::class => new FieldContextNulls(null),
+                        SortContextNulls::class => new SortContextNulls(null),
                     ]);
                 },
                 Direction::Desc,
@@ -396,7 +396,7 @@ final class FieldTest extends TestCase {
                 $getSorterFactory(true),
                 static function (): Context {
                     return (new Context())->override([
-                        FieldContextNulls::class => new FieldContextNulls(Nulls::First),
+                        SortContextNulls::class => new SortContextNulls(Nulls::First),
                     ]);
                 },
                 Direction::Desc,

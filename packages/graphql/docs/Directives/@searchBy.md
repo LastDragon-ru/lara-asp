@@ -75,14 +75,14 @@ That's all, just search 😃 (or look at [generated GraphQL schema](../../src/Se
 query {
     # WHERE name = "LastDragon"
     users(where: {
-        name: {equal: "LastDragon"}
+        field: { name: { equal: "LastDragon" } }
     }) {
         id
     }
 
     # WHERE name != "LastDragon"
     users(where: {
-        name: {notEqual: "LastDragon"}
+        field: { name: { notEqual: "LastDragon" } }
     }) {
         id
     }
@@ -90,8 +90,8 @@ query {
     # WHERE name = "LastDragon" or name = "Aleksei"
     users(where: {
         anyOf: [
-            {name: {equal: "LastDragon"}}
-            {name: {equal: "Aleksei"}}
+            { field: { name: { equal: "LastDragon" } } }
+            { field: { name: { equal: "Aleksei" } } }
         ]
     }) {
         id
@@ -101,8 +101,8 @@ query {
     users(where: {
         not: {
             anyOf: [
-                {name: {equal: "LastDragon"}}
-                {name: {equal: "Aleksei"}}
+                { field: { name: { equal: "LastDragon" } } }
+                { field: { name: { equal: "Aleksei" } } }
             ]
         }
     }) {
@@ -111,16 +111,20 @@ query {
 
     # WHERE date IS NULL
     users(where: {
-        date: {isNull: yes}
+        field: { date: { isNull: Yes } }
     }) {
         id
     }
 
     # Relationship: WHERE EXIST (related table)
     comments(where: {
-        user: {
-            where: {
-                date: {between: {min: "2021-01-01", max: "2021-04-01"}}
+        field: {
+            user: {
+                where: {
+                    field: {
+                        date: { between: { min: "2021-01-01", max: "2021-04-01" } }
+                    }
+                }
             }
         }
     }) {
@@ -129,12 +133,16 @@ query {
 
     # Relationship: WHERE COUNT (related table) = 2
     comments(where: {
-        user: {
-            where: {
-                date: {between: {min: "2021-01-01", max: "2021-04-01"}}
-            }
-            count: {
-                equal: 2
+        field: {
+            user: {
+                where: {
+                    field: {
+                        date: { between: { min: "2021-01-01", max: "2021-04-01"} }
+                    }
+                }
+                count: {
+                    equal: 2
+                }
             }
         }
     }) {

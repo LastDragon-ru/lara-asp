@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldObjectDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorChildDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsFirstDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsLastDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
@@ -26,7 +26,7 @@ class Operators extends BuilderOperators {
             SortByOperatorNullsLastDirective::class,
         ],
         self::Object => [
-            SortByOperatorFieldObjectDirective::class,
+            SortByOperatorChildDirective::class,
         ],
     ];
 
