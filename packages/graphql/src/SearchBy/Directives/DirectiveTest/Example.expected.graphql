@@ -228,7 +228,7 @@ input SearchByConditionCommentsQuery {
     """
     Relationship condition.
     """
-    user: SearchByRelationshipRelationUsersQuery
+    user: SearchByRelationshipUsersQuery
     @searchByOperatorRelationship
 }
 
@@ -273,7 +273,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationUsersQuery {
+input SearchByRelationshipUsersQuery {
     """
     Count conditions.
     """

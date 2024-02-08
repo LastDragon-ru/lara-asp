@@ -288,49 +288,49 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
-    operator: SearchByRelationshipRelationB
+    operator: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    operators: SearchByRelationshipRelationB
+    operators: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relation: SearchByRelationshipRelationB
+    relation: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationWithArgs: SearchByRelationshipRelationA
+    relationWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relations: SearchByRelationshipRelationB
+    relations: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginated: SearchByRelationshipRelationB
+    relationsPaginated: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    relationsPaginatedWithArgs: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsWithArgs: SearchByRelationshipRelationA
+    relationsWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
@@ -371,7 +371,7 @@ input SearchByConditionB {
     """
     Relationship condition.
     """
-    parent: SearchByRelationshipRelationA
+    parent: SearchByRelationshipA
     @searchByOperatorRelationship
 }
 
@@ -394,49 +394,49 @@ input SearchByConditionC {
     """
     Relationship condition.
     """
-    operator: SearchByRelationshipRelationB
+    operator: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    operators: SearchByRelationshipRelationB
+    operators: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relation: SearchByRelationshipRelationB
+    relation: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationWithArgs: SearchByRelationshipRelationA
+    relationWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relations: SearchByRelationshipRelationB
+    relations: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginated: SearchByRelationshipRelationB
+    relationsPaginated: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    relationsPaginatedWithArgs: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsWithArgs: SearchByRelationshipRelationA
+    relationsWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
@@ -465,7 +465,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationA {
+input SearchByRelationshipA {
     """
     Count conditions.
     """
@@ -494,7 +494,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationB {
+input SearchByRelationshipB {
     """
     Count conditions.
     """

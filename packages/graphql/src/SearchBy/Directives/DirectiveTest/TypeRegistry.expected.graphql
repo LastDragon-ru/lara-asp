@@ -238,7 +238,7 @@ input SearchByConditionTestTypeB {
     """
     Relationship condition.
     """
-    child: SearchByRelationshipRelationTestTypeA
+    child: SearchByRelationshipTestTypeA
     @searchByOperatorRelationship
 
     """
@@ -296,7 +296,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationTestTypeA {
+input SearchByRelationshipTestTypeA {
     """
     Count conditions.
     """

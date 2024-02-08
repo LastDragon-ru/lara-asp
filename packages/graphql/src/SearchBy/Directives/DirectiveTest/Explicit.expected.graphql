@@ -230,13 +230,13 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
-    field: SearchByRelationshipRelationB
+    field: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    fields: SearchByRelationshipRelationB
+    fields: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
@@ -271,7 +271,7 @@ input SearchByConditionB {
     """
     Relationship condition.
     """
-    parent: SearchByRelationshipRelationA
+    parent: SearchByRelationshipA
     @searchByOperatorRelationship
 }
 
@@ -282,7 +282,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationA {
+input SearchByRelationshipA {
     """
     Count conditions.
     """
@@ -311,7 +311,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationB {
+input SearchByRelationshipB {
     """
     Count conditions.
     """

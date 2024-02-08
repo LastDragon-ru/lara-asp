@@ -246,7 +246,7 @@ input SearchByConditionProperties {
     """
     Relationship condition.
     """
-    defaultOperator: SearchByRelationshipRelationChild
+    defaultOperator: SearchByRelationshipChild
     @searchByOperatorRelationship
 }
 
@@ -257,7 +257,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationChild {
+input SearchByRelationshipChild {
     """
     Count conditions.
     """

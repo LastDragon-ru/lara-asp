@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -25,10 +24,9 @@ class RelationshipType implements TypeDefinition {
     public function getTypeName(TypeSource $source, Context $context): string {
         $typeName      = $source->getTypeName();
         $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
-        $operatorName  = Str::studly(Relationship::getName());
         $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Relationship{$operatorName}{$typeName}";
+        return "{$directiveName}{$builderName}Relationship{$typeName}";
     }
 
     #[Override]
