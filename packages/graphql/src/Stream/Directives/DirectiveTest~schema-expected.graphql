@@ -135,17 +135,17 @@ enum SortByTypeDirection {
 """
 Available conditions for `type TestObject` (only one property allowed at a time).
 """
-input SearchByConditionTestObject {
+input SearchByRootTestObject {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionTestObject!]
+    allOf: [SearchByRootTestObject!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionTestObject!]
+    anyOf: [SearchByRootTestObject!]
     @searchByOperatorAnyOf
 
     """
@@ -157,7 +157,7 @@ input SearchByConditionTestObject {
     """
     Not.
     """
-    not: SearchByConditionTestObject
+    not: SearchByRootTestObject
     @searchByOperatorNot
 }
 
@@ -229,7 +229,7 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithArguments(
         argument: String
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         order: [SortByRootTestObject!]
         limit: Int!
         offset: StreamOffset
@@ -249,7 +249,7 @@ implements
 
 interface InterfaceC {
     fieldWithDirectives(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         b: [SortByRootTestObject!]
         c: Int!
         d: StreamOffset
@@ -299,7 +299,7 @@ implements
     @validate
 
     fieldNotSortable(
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
         """
@@ -325,7 +325,7 @@ implements
     fieldWithArguments(
         argument: String
 
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
         order: [SortByRootTestObject!]
@@ -350,7 +350,7 @@ implements
     @validate
 
     fieldWithDeprecations(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         @deprecated
         @searchBy
 
@@ -378,7 +378,7 @@ implements
         @deprecated
         @streamOffset
 
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
         order: [SortByRootTestObject!]
@@ -407,7 +407,7 @@ implements
     @validate
 
     fieldWithDirectives(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         @searchBy
 
         b: [SortByRootTestObject!]
@@ -435,7 +435,7 @@ implements
     @validate
 
     fieldWithDirectivesAndDefaults(
-        a: SearchByConditionTestObject
+        a: SearchByRootTestObject
         @searchBy
 
         b: [SortByRootTestObject!]
@@ -464,7 +464,7 @@ implements
     @validate
 
     fieldWithoutArguments(
-        where: SearchByConditionTestObject
+        where: SearchByRootTestObject
         @searchBy
 
         order: [SortByRootTestObject!]

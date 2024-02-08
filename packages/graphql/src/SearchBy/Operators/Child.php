@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root;
 use Override;
 
 use function is_a;
@@ -22,7 +22,7 @@ class Child extends Operator {
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return $provider->getType(Condition::class, $source, $context);
+        return $provider->getType(Root::class, $source, $context);
     }
 
     #[Override]

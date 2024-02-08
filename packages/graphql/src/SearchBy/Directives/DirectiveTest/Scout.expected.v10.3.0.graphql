@@ -87,13 +87,59 @@ enum EnumIgnored
 }
 
 """
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumA {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumAOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
+    @searchByOperatorNotIn
+}
+
+"""
 Available conditions for `input InputA` (only one property allowed at a time).
 """
-input SearchByScoutConditionInputA {
+input SearchByScoutRootInputA {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionInputA!]
+    allOf: [SearchByScoutRootInputA!]
     @searchByOperatorAllOf
 
     """
@@ -198,13 +244,13 @@ input SearchByScoutConditionInputA {
     """
     Field condition.
     """
-    nested: SearchByScoutConditionNestedA
+    nested: SearchByScoutRootNestedA
     @searchByOperatorChild
 
     """
     Field condition.
     """
-    nestedNotNull: SearchByScoutConditionNestedA
+    nestedNotNull: SearchByScoutRootNestedA
     @searchByOperatorChild
 
     """
@@ -229,11 +275,11 @@ input SearchByScoutConditionInputA {
 """
 Available conditions for `input InputB` (only one property allowed at a time).
 """
-input SearchByScoutConditionInputB {
+input SearchByScoutRootInputB {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionInputB!]
+    allOf: [SearchByScoutRootInputB!]
     @searchByOperatorAllOf
 
     """
@@ -246,17 +292,17 @@ input SearchByScoutConditionInputB {
 """
 Available conditions for `input NestedA` (only one property allowed at a time).
 """
-input SearchByScoutConditionNestedA {
+input SearchByScoutRootNestedA {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionNestedA!]
+    allOf: [SearchByScoutRootNestedA!]
     @searchByOperatorAllOf
 
     """
     Field condition.
     """
-    nested: SearchByScoutConditionNestedA
+    nested: SearchByScoutRootNestedA
     @searchByOperatorChild
 
     """
@@ -269,45 +315,45 @@ input SearchByScoutConditionNestedA {
 """
 Available conditions for `input NestedB` (only one property allowed at a time).
 """
-input SearchByScoutConditionNestedB {
+input SearchByScoutRootNestedB {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionNestedB!]
+    allOf: [SearchByScoutRootNestedB!]
     @searchByOperatorAllOf
 
     """
     Field condition.
     """
-    nested: SearchByScoutConditionNestedC
+    nested: SearchByScoutRootNestedC
     @searchByOperatorChild
 }
 
 """
 Available conditions for `input NestedC` (only one property allowed at a time).
 """
-input SearchByScoutConditionNestedC {
+input SearchByScoutRootNestedC {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionNestedC!]
+    allOf: [SearchByScoutRootNestedC!]
     @searchByOperatorAllOf
 
     """
     Field condition.
     """
-    nested: SearchByScoutConditionNestedB
+    nested: SearchByScoutRootNestedB
     @searchByOperatorChild
 }
 
 """
 Available conditions for `type Object` (only one property allowed at a time).
 """
-input SearchByScoutConditionObject {
+input SearchByScoutRootObject {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionObject!]
+    allOf: [SearchByScoutRootObject!]
     @searchByOperatorAllOf
 
     """
@@ -412,13 +458,13 @@ input SearchByScoutConditionObject {
     """
     Field condition.
     """
-    nested: SearchByScoutConditionObjectNested
+    nested: SearchByScoutRootObjectNested
     @searchByOperatorChild
 
     """
     Field condition.
     """
-    nestedNotNull: SearchByScoutConditionObjectNested
+    nestedNotNull: SearchByScoutRootObjectNested
     @searchByOperatorChild
 
     """
@@ -437,11 +483,11 @@ input SearchByScoutConditionObject {
 """
 Available conditions for `interface ObjectInterface` (only one property allowed at a time).
 """
-input SearchByScoutConditionObjectInterface {
+input SearchByScoutRootObjectInterface {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionObjectInterface!]
+    allOf: [SearchByScoutRootObjectInterface!]
     @searchByOperatorAllOf
 
     """
@@ -546,13 +592,13 @@ input SearchByScoutConditionObjectInterface {
     """
     Field condition.
     """
-    nested: SearchByScoutConditionObjectNested
+    nested: SearchByScoutRootObjectNested
     @searchByOperatorChild
 
     """
     Field condition.
     """
-    nestedNotNull: SearchByScoutConditionObjectNested
+    nestedNotNull: SearchByScoutRootObjectNested
     @searchByOperatorChild
 
     """
@@ -571,11 +617,11 @@ input SearchByScoutConditionObjectInterface {
 """
 Available conditions for `type ObjectNested` (only one property allowed at a time).
 """
-input SearchByScoutConditionObjectNested {
+input SearchByScoutRootObjectNested {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionObjectNested!]
+    allOf: [SearchByScoutRootObjectNested!]
     @searchByOperatorAllOf
 
     """
@@ -583,52 +629,6 @@ input SearchByScoutConditionObjectNested {
     """
     value: SearchByScoutScalarStringOrNull
     @searchByOperatorCondition
-}
-
-"""
-Available operators for `enum EnumA` (only one operator allowed at a time).
-"""
-input SearchByScoutEnumEnumA {
-    """
-    Equal (`=`).
-    """
-    equal: EnumA
-    @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [EnumA!]
-    @searchByOperatorIn
-
-    """
-    Outside a set of values.
-    """
-    notIn: [EnumA!]
-    @searchByOperatorNotIn
-}
-
-"""
-Available operators for `enum EnumA` (only one operator allowed at a time).
-"""
-input SearchByScoutEnumEnumAOrNull {
-    """
-    Equal (`=`).
-    """
-    equal: EnumA
-    @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [EnumA!]
-    @searchByOperatorIn
-
-    """
-    Outside a set of values.
-    """
-    notIn: [EnumA!]
-    @searchByOperatorNotIn
 }
 
 """
@@ -876,19 +876,19 @@ implements
     & F
 {
     a(
-        where: SearchByScoutConditionInputA
+        where: SearchByScoutRootInputA
     ): ID!
 }
 
 interface B {
     b(
-        where: SearchByScoutConditionNestedA
+        where: SearchByScoutRootNestedA
     ): ID!
 }
 
 interface C {
     c(
-        where: SearchByScoutConditionInputB
+        where: SearchByScoutRootInputB
     ): ID!
 }
 
@@ -897,7 +897,7 @@ interface F {
         search: String
         @search
 
-        where: SearchByScoutConditionObject
+        where: SearchByScoutRootObject
         @searchBy
     ): Object!
     @all
@@ -1077,7 +1077,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionInputA
+        where: SearchByScoutRootInputA
         @searchBy
     ): ID!
     @all
@@ -1086,7 +1086,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionNestedA
+        where: SearchByScoutRootNestedA
         @searchBy
     ): ID!
     @all
@@ -1095,7 +1095,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionInputB
+        where: SearchByScoutRootInputB
         @searchBy
     ): ID!
     @all
@@ -1104,7 +1104,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionNestedB
+        where: SearchByScoutRootNestedB
         @searchBy
     ): ID!
     @all
@@ -1113,7 +1113,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionInputA
+        where: SearchByScoutRootInputA
         @searchBy
     ): ID!
     @all
@@ -1122,7 +1122,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionObject
+        where: SearchByScoutRootObject
         @searchBy
     ): Object!
     @all
@@ -1131,7 +1131,7 @@ implements
         search: String
         @search
 
-        where: SearchByScoutConditionObjectInterface
+        where: SearchByScoutRootObjectInterface
         @searchBy
     ): ObjectInterface!
     @all

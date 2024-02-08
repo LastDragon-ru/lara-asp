@@ -209,78 +209,6 @@ input SearchByComplexCustomInt {
 }
 
 """
-Available conditions for `input Child` (only one property allowed at a time).
-"""
-input SearchByConditionChild {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionChild!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionChild!]
-    @searchByOperatorAnyOf
-
-    """
-    Not.
-    """
-    not: SearchByConditionChild
-    @searchByOperatorNot
-
-    """
-    Field condition.
-    """
-    value: SearchByScalarStringOrNull
-    @searchByOperatorCondition
-}
-
-"""
-Available conditions for `input Properties` (only one property allowed at a time).
-"""
-input SearchByConditionProperties {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionProperties!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionProperties!]
-    @searchByOperatorAnyOf
-
-    """
-    Custom condition.
-    """
-    customWithArguments: SearchByComplexCustomInt
-    @customComplexOperator(
-        value: "abc"
-    )
-
-    """
-    Custom condition.
-    """
-    customWithoutArguments: SearchByComplexCustomInt
-    @customComplexOperator
-
-    """
-    Relationship condition.
-    """
-    defaultOperator: SearchByRelationshipRelationChild
-    @searchByOperatorRelationship
-
-    """
-    Not.
-    """
-    not: SearchByConditionProperties
-    @searchByOperatorNot
-}
-
-"""
 Conditions for the relationship (`has()`/`doesntHave()`) for `input Child`.
 
 See also:
@@ -306,7 +234,79 @@ input SearchByRelationshipRelationChild {
     """
     Additional conditions.
     """
-    where: SearchByConditionChild
+    where: SearchByRootChild
+}
+
+"""
+Available conditions for `input Child` (only one property allowed at a time).
+"""
+input SearchByRootChild {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootChild!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootChild!]
+    @searchByOperatorAnyOf
+
+    """
+    Not.
+    """
+    not: SearchByRootChild
+    @searchByOperatorNot
+
+    """
+    Field condition.
+    """
+    value: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input Properties` (only one property allowed at a time).
+"""
+input SearchByRootProperties {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootProperties!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootProperties!]
+    @searchByOperatorAnyOf
+
+    """
+    Custom condition.
+    """
+    customWithArguments: SearchByComplexCustomInt
+    @customComplexOperator(
+        value: "abc"
+    )
+
+    """
+    Custom condition.
+    """
+    customWithoutArguments: SearchByComplexCustomInt
+    @customComplexOperator
+
+    """
+    Relationship condition.
+    """
+    defaultOperator: SearchByRelationshipRelationChild
+    @searchByOperatorRelationship
+
+    """
+    Not.
+    """
+    not: SearchByRootProperties
+    @searchByOperatorNot
 }
 
 """
@@ -500,7 +500,7 @@ input SearchByTypeRangeInt {
 
 type Query {
     test(
-        where: SearchByConditionProperties
+        where: SearchByRootProperties
         @searchBy
     ): ID!
     @all

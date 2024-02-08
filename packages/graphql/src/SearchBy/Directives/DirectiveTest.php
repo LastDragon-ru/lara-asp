@@ -184,7 +184,7 @@ final class DirectiveTest extends TestCase {
             )
             ->graphQL(
                 <<<'GRAPHQL'
-                query test($input: SearchByConditionTestObject) {
+                query test($input: SearchByRootTestObject) {
                     test(input: $input) {
                         id
                     }
@@ -233,8 +233,8 @@ final class DirectiveTest extends TestCase {
         );
 
         $type = match (true) {
-            $builder instanceof QueryBuilder => 'SearchByQueryConditionTest',
-            default                          => 'SearchByConditionTest',
+            $builder instanceof QueryBuilder => 'SearchByQueryRootTest',
+            default                          => 'SearchByRootTest',
         };
         $result = $this->graphQL(
             <<<GRAPHQL
@@ -312,7 +312,7 @@ final class DirectiveTest extends TestCase {
 
         $result = $this->graphQL(
             <<<'GRAPHQL'
-            query test($query: SearchByScoutConditionTest) {
+            query test($query: SearchByScoutRootTest) {
                 test(search: "*", input: $query)
             }
             GRAPHQL,

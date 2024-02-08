@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
+namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
@@ -20,18 +20,22 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorConditionDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Enumeration;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
 use Override;
+use ReflectionClass;
 
 use function is_string;
 
-class Condition extends InputObject {
+abstract class Type extends InputObject {
     #[Override]
     public function getTypeName(TypeSource $source, Context $context): string {
+        $name          = (new ReflectionClass($this))->getShortName();
         $typeName      = $source->getTypeName();
         $builderName   = $context->get(HandlerContextBuilderInfo::class)?->value->getName() ?? 'Unknown';
         $directiveName = Directive::Name;
 
-        return "{$directiveName}{$builderName}Condition{$typeName}";
+        return "{$directiveName}{$builderName}{$name}{$typeName}";
     }
 
     #[Override]

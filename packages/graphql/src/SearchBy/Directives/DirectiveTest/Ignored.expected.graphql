@@ -69,7 +69,7 @@ input IgnoredType {
 """
 Available conditions for `input A` (only one property allowed at a time).
 """
-input SearchByConditionA {
+input SearchByRootA {
     """
     Not ignored
     """
@@ -86,7 +86,7 @@ input SearchByConditionA {
 """
 Available conditions for `interface B` (only one property allowed at a time).
 """
-input SearchByConditionB {
+input SearchByRootB {
     """
     Field condition.
     """
@@ -170,13 +170,13 @@ type ObjectB {
 
 type Query {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): A!
     @all
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
         @searchBy
     ): B!
     @all

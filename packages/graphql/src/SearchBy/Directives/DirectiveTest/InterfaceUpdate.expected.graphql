@@ -24,7 +24,7 @@ input A {
 """
 Available conditions for `input A` (only one property allowed at a time).
 """
-input SearchByConditionA {
+input SearchByRootA {
     """
     Field condition.
     """
@@ -35,7 +35,7 @@ input SearchByConditionA {
 """
 Available conditions for `type B` (only one property allowed at a time).
 """
-input SearchByConditionB {
+input SearchByRootB {
     """
     Field condition.
     """
@@ -60,23 +60,23 @@ implements
     & QueryInterfaceB
 {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
     ): A!
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
     ): B!
 }
 
 interface QueryInterfaceA {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
     ): A!
 }
 
 interface QueryInterfaceB {
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
     ): B!
 }
 
@@ -89,13 +89,13 @@ implements
     & QueryInterface
 {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): A!
     @all
 
     b(
-        where: SearchByConditionB
+        where: SearchByRootB
         @searchBy
     ): B!
     @all

@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Override;
@@ -24,7 +24,7 @@ use function is_array;
 abstract class Logical extends Operator {
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return $provider->getType(Condition::class, $source, $context);
+        return $provider->getType(Root::class, $source, $context);
     }
 
     #[Override]

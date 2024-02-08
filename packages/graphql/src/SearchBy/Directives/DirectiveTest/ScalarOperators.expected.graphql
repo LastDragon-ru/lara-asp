@@ -85,35 +85,6 @@ enum SearchByTypeFlag {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
-"""
-input SearchByConditionA {
-    """
-    Field condition.
-    """
-    a: SearchByScalarMixed
-    @searchByOperatorCondition
-
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionA!]
-    @searchByOperatorAllOf
-
-    """
-    Field condition.
-    """
-    b: SearchByScalarDateOrNull
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    c: SearchByEnumEnumAOrNull
-    @searchByOperatorCondition
-}
-
-"""
 Available operators for `enum EnumA` (only one operator allowed at a time).
 """
 input SearchByEnumEnumAOrNull {
@@ -134,6 +105,35 @@ input SearchByEnumEnumAOrNull {
     """
     isNull: SearchByTypeFlag
     @searchByOperatorIsNull
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    Field condition.
+    """
+    a: SearchByScalarMixed
+    @searchByOperatorCondition
+
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootA!]
+    @searchByOperatorAllOf
+
+    """
+    Field condition.
+    """
+    b: SearchByScalarDateOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    c: SearchByEnumEnumAOrNull
+    @searchByOperatorCondition
 }
 
 """
@@ -211,7 +211,7 @@ scalar Mixed
 
 type Query {
     test(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): ID!
     @all

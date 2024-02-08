@@ -203,82 +203,6 @@ enum TestEnum {
 }
 
 """
-Available conditions for `input TestTypeA` (only one property allowed at a time).
-"""
-input SearchByConditionTestTypeA {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionTestTypeA!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionTestTypeA!]
-    @searchByOperatorAnyOf
-
-    """
-    Field condition.
-    """
-    flag: SearchByScalarBooleanOrNull
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarStringOrNull
-    @searchByOperatorCondition
-
-    """
-    Not.
-    """
-    not: SearchByConditionTestTypeA
-    @searchByOperatorNot
-
-    """
-    Field condition.
-    """
-    value: SearchByEnumTestEnumOrNull
-    @searchByOperatorCondition
-}
-
-"""
-Available conditions for `input TestTypeB` (only one property allowed at a time).
-"""
-input SearchByConditionTestTypeB {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionTestTypeB!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionTestTypeB!]
-    @searchByOperatorAnyOf
-
-    """
-    Relationship condition.
-    """
-    child: SearchByRelationshipRelationTestTypeA
-    @searchByOperatorRelationship
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
-
-    """
-    Not.
-    """
-    not: SearchByConditionTestTypeB
-    @searchByOperatorNot
-}
-
-"""
 Available operators for `enum TestEnum` (only one operator allowed at a time).
 """
 input SearchByEnumTestEnumOrNull {
@@ -345,7 +269,83 @@ input SearchByRelationshipRelationTestTypeA {
     """
     Additional conditions.
     """
-    where: SearchByConditionTestTypeA
+    where: SearchByRootTestTypeA
+}
+
+"""
+Available conditions for `input TestTypeA` (only one property allowed at a time).
+"""
+input SearchByRootTestTypeA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootTestTypeA!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootTestTypeA!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    flag: SearchByScalarBooleanOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByRootTestTypeA
+    @searchByOperatorNot
+
+    """
+    Field condition.
+    """
+    value: SearchByEnumTestEnumOrNull
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input TestTypeB` (only one property allowed at a time).
+"""
+input SearchByRootTestTypeB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootTestTypeB!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootTestTypeB!]
+    @searchByOperatorAnyOf
+
+    """
+    Relationship condition.
+    """
+    child: SearchByRelationshipRelationTestTypeA
+    @searchByOperatorRelationship
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByRootTestTypeB
+    @searchByOperatorNot
 }
 
 """
@@ -645,7 +645,7 @@ input SearchByTypeRangeInt {
 
 type Query {
     a(
-        where: SearchByConditionTestTypeB
+        where: SearchByRootTestTypeB
         @searchBy
     ): ID!
     @all

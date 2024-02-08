@@ -204,117 +204,6 @@ input Comment {
 }
 
 """
-Available conditions for `input CommentsQuery` (only one property allowed at a time).
-"""
-input SearchByConditionCommentsQuery {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionCommentsQuery!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionCommentsQuery!]
-    @searchByOperatorAnyOf
-
-    """
-    Field condition.
-    """
-    date: SearchByScalarDateOrNull
-    @searchByOperatorCondition
-
-    """
-    Not.
-    """
-    not: SearchByConditionCommentsQuery
-    @searchByOperatorNot
-
-    """
-    Field condition.
-    """
-    text: SearchByScalarString
-    @searchByOperatorCondition
-
-    """
-    Relationship condition.
-    """
-    user: SearchByRelationshipRelationUsersQuery
-    @searchByOperatorRelationship
-}
-
-"""
-Available conditions for `type User` (only one property allowed at a time).
-"""
-input SearchByConditionUser {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionUser!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionUser!]
-    @searchByOperatorAnyOf
-
-    """
-    Field condition.
-    """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
-
-    """
-    Not.
-    """
-    not: SearchByConditionUser
-    @searchByOperatorNot
-}
-
-"""
-Available conditions for `input UsersQuery` (only one property allowed at a time).
-"""
-input SearchByConditionUsersQuery {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionUsersQuery!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionUsersQuery!]
-    @searchByOperatorAnyOf
-
-    """
-    Field condition.
-    """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
-
-    """
-    Not.
-    """
-    not: SearchByConditionUsersQuery
-    @searchByOperatorNot
-}
-
-"""
 Conditions for the relationship (`has()`/`doesntHave()`) for `input UsersQuery`.
 
 See also:
@@ -340,7 +229,118 @@ input SearchByRelationshipRelationUsersQuery {
     """
     Additional conditions.
     """
-    where: SearchByConditionUsersQuery
+    where: SearchByRootUsersQuery
+}
+
+"""
+Available conditions for `input CommentsQuery` (only one property allowed at a time).
+"""
+input SearchByRootCommentsQuery {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootCommentsQuery!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootCommentsQuery!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    date: SearchByScalarDateOrNull
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByRootCommentsQuery
+    @searchByOperatorNot
+
+    """
+    Field condition.
+    """
+    text: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Relationship condition.
+    """
+    user: SearchByRelationshipRelationUsersQuery
+    @searchByOperatorRelationship
+}
+
+"""
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByRootUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByRootUser
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `input UsersQuery` (only one property allowed at a time).
+"""
+input SearchByRootUsersQuery {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootUsersQuery!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootUsersQuery!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByRootUsersQuery
+    @searchByOperatorNot
 }
 
 """
@@ -584,13 +584,13 @@ scalar Date
 
 type Query {
     comments(
-        where: SearchByConditionCommentsQuery
+        where: SearchByRootCommentsQuery
         @searchBy
     ): [Comment!]!
     @all
 
     users(
-        where: SearchByConditionUser
+        where: SearchByRootUser
         @searchBy
     ): [User!]!
     @all

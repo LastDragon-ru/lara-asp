@@ -218,19 +218,77 @@ input B {
 }
 
 """
+Conditions for the relationship (`has()`/`doesntHave()`) for `input A`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationA {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByRootA
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input B`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipRelationB {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByRootB
+}
+
+"""
 Available conditions for `input A` (only one property allowed at a time).
 """
-input SearchByConditionA {
+input SearchByRootA {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionA!]
+    allOf: [SearchByRootA!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionA!]
+    anyOf: [SearchByRootA!]
     @searchByOperatorAnyOf
 
     """
@@ -260,24 +318,24 @@ input SearchByConditionA {
     """
     Not.
     """
-    not: SearchByConditionA
+    not: SearchByRootA
     @searchByOperatorNot
 }
 
 """
 Available conditions for `input B` (only one property allowed at a time).
 """
-input SearchByConditionB {
+input SearchByRootB {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByConditionB!]
+    allOf: [SearchByRootB!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByConditionB!]
+    anyOf: [SearchByRootB!]
     @searchByOperatorAnyOf
 
     """
@@ -295,7 +353,7 @@ input SearchByConditionB {
     """
     Not.
     """
-    not: SearchByConditionB
+    not: SearchByRootB
     @searchByOperatorNot
 
     """
@@ -303,64 +361,6 @@ input SearchByConditionB {
     """
     parent: SearchByRelationshipRelationA
     @searchByOperatorRelationship
-}
-
-"""
-Conditions for the relationship (`has()`/`doesntHave()`) for `input A`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByRelationshipRelationA {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionA
-}
-
-"""
-Conditions for the relationship (`has()`/`doesntHave()`) for `input B`.
-
-See also:
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
-* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
-"""
-input SearchByRelationshipRelationB {
-    """
-    Count conditions.
-    """
-    count: SearchByScalarInt
-
-    """
-    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
-    """
-    exists: Boolean
-
-    """
-    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
-    """
-    notExists: Boolean! = false
-
-    """
-    Additional conditions.
-    """
-    where: SearchByConditionB
 }
 
 """
@@ -730,13 +730,13 @@ type PaginatorInfo {
 
 type Query {
     a(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
     ): ID!
     @all
 
     b(
-        where: SearchByConditionA
+        where: SearchByRootA
         @searchBy
 
         """

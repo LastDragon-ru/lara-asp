@@ -111,11 +111,11 @@ enum SortByTypeDirection {
 """
 Available conditions for `type TestObject` (only one property allowed at a time).
 """
-input SearchByScoutConditionTestObject {
+input SearchByScoutRootTestObject {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByScoutConditionTestObject!]
+    allOf: [SearchByScoutRootTestObject!]
     @searchByOperatorAllOf
 
     """
@@ -181,7 +181,7 @@ input StreamBuilder {
 interface InterfaceA {
     fieldWithSearch(
         argument: String
-        where: SearchByScoutConditionTestObject
+        where: SearchByScoutRootTestObject
         order: [SortByScoutRootTestObject!]
         limit: Int!
         offset: StreamOffset
@@ -209,7 +209,7 @@ implements
         search: String!
         @search
 
-        where: SearchByScoutConditionTestObject
+        where: SearchByScoutRootTestObject
         @searchBy
 
         order: [SortByScoutRootTestObject!]

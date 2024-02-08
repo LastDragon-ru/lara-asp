@@ -125,17 +125,17 @@ enum SearchByTypeFlag {
 """
 Available conditions for `input InputA` (only one property allowed at a time).
 """
-input SearchByQueryConditionInputA {
+input SearchByQueryRootInputA {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByQueryConditionInputA!]
+    allOf: [SearchByQueryRootInputA!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByQueryConditionInputA!]
+    anyOf: [SearchByQueryRootInputA!]
     @searchByOperatorAnyOf
 
     """
@@ -153,24 +153,24 @@ input SearchByQueryConditionInputA {
     """
     Not.
     """
-    not: SearchByQueryConditionInputA
+    not: SearchByQueryRootInputA
     @searchByOperatorNot
 }
 
 """
 Available conditions for `input TypeB` (only one property allowed at a time).
 """
-input SearchByQueryConditionTypeB {
+input SearchByQueryRootTypeB {
     """
     All of the conditions must be true.
     """
-    allOf: [SearchByQueryConditionTypeB!]
+    allOf: [SearchByQueryRootTypeB!]
     @searchByOperatorAllOf
 
     """
     Any of the conditions must be true.
     """
-    anyOf: [SearchByQueryConditionTypeB!]
+    anyOf: [SearchByQueryRootTypeB!]
     @searchByOperatorAnyOf
 
     """
@@ -188,7 +188,7 @@ input SearchByQueryConditionTypeB {
     """
     Not.
     """
-    not: SearchByQueryConditionTypeB
+    not: SearchByQueryRootTypeB
     @searchByOperatorNot
 }
 
@@ -401,7 +401,7 @@ input TypeB {
 
 type Query {
     a(
-        where: SearchByQueryConditionInputA
+        where: SearchByQueryRootInputA
         @searchBy
     ): ID!
     @all(
@@ -409,7 +409,7 @@ type Query {
     )
 
     b(
-        where: SearchByQueryConditionTypeB
+        where: SearchByQueryRootTypeB
         @searchBy
     ): [TypeB!]!
     @all(

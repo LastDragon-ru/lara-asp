@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root as RootType;
 use Override;
 
 class Root extends Operator {
@@ -21,7 +21,7 @@ class Root extends Operator {
 
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return $provider->getType(Condition::class, $source, $context);
+        return $provider->getType(RootType::class, $source, $context);
     }
 
     #[Override]
