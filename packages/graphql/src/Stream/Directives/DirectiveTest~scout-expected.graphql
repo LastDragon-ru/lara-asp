@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Use Input as Sort Conditions for the current Builder.
 """
@@ -111,6 +117,17 @@ enum SortByTypeDirection {
 """
 Available conditions for `type TestObject` (only one property allowed at a time).
 """
+input SearchByScoutConditionTestObject {
+    """
+    Field condition.
+    """
+    id: SearchByScoutScalarID
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `type TestObject` (only one property allowed at a time).
+"""
 input SearchByScoutRootTestObject {
     """
     All of the conditions must be true.
@@ -119,10 +136,10 @@ input SearchByScoutRootTestObject {
     @searchByOperatorAllOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScoutScalarID
-    @searchByOperatorCondition
+    field: SearchByScoutConditionTestObject
+    @searchByOperatorField
 }
 
 """

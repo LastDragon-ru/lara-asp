@@ -29,6 +29,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorNot
 on
     | ENUM
@@ -135,6 +141,17 @@ enum SortByTypeDirection {
 """
 Available conditions for `type TestObject` (only one property allowed at a time).
 """
+input SearchByConditionTestObject {
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `type TestObject` (only one property allowed at a time).
+"""
 input SearchByRootTestObject {
     """
     All of the conditions must be true.
@@ -149,10 +166,10 @@ input SearchByRootTestObject {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
+    field: SearchByConditionTestObject
+    @searchByOperatorField
 
     """
     Not.

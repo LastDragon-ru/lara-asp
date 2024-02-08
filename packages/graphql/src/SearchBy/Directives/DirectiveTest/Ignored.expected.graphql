@@ -29,6 +29,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 enum IgnoredEnum
 @searchByIgnored
 {
@@ -69,7 +75,7 @@ input IgnoredType {
 """
 Available conditions for `input A` (only one property allowed at a time).
 """
-input SearchByRootA {
+input SearchByConditionA {
     """
     Not ignored
     """
@@ -86,7 +92,7 @@ input SearchByRootA {
 """
 Available conditions for `interface B` (only one property allowed at a time).
 """
-input SearchByRootB {
+input SearchByConditionB {
     """
     Field condition.
     """
@@ -98,6 +104,28 @@ input SearchByRootB {
     """
     b: SearchByScalarString
     @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `interface B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    Field.
+    """
+    field: SearchByConditionB
+    @searchByOperatorField
 }
 
 """

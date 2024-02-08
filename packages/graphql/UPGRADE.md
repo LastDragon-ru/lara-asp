@@ -57,6 +57,32 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `scalar SearchByCondition` => `scalar SearchByObject`.
 
+* [ ] Added the root type that will contain only extra operators and newly added `field` operator (always present and cannot be removed). The new query syntax is:
+
+  ```graphql
+  query {
+      # WHERE name = "LastDragon"
+      users(where: {
+          field: { name: {equal: "LastDragon"} }
+      }) {
+          id
+      }
+  }
+  ```
+
+  If you want to use old query syntax, you can add following bindings into application provider:
+
+  ```php
+  $this->app->bind(
+      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root::class,
+      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5::class,
+  );
+  $this->app->bind(
+      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Condition::class,
+      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5::class,
+  );
+  ```
+
 ## `@sortBy`
 
 * [ ] `enum SortByTypeFlag { yes }` => `enum SortByTypeFlag { Yes }`. 🤝

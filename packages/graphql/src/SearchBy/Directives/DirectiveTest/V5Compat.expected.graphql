@@ -1,9 +1,3 @@
-directive @customComplexOperator(
-    value: String
-)
-on
-    | INPUT_FIELD_DEFINITION
-
 """
 Use Input as Search Conditions for the current Builder.
 """
@@ -78,12 +72,6 @@ on
     | SCALAR
 
 directive @searchByOperatorEqual
-on
-    | ENUM
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-directive @searchByOperatorField
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
@@ -207,57 +195,133 @@ enum SearchByTypeFlag {
     )
 }
 
-"""
-Custom operator
-"""
-input SearchByComplexCustomInt {
-    custom: Int
+input Comment {
+    date: Date
+    text: String!
+
+    user: User
+    @belongsTo
 }
 
 """
-Available conditions for `input Child` (only one property allowed at a time).
+Available conditions for `input CommentsQuery` (only one property allowed at a time).
 """
-input SearchByConditionChild {
+input SearchByConditionCommentsQuery {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionCommentsQuery!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionCommentsQuery!]
+    @searchByOperatorAnyOf
+
     """
     Field condition.
     """
-    value: SearchByScalarStringOrNull
+    date: SearchByScalarDateOrNull
     @searchByOperatorCondition
-}
-
-"""
-Available conditions for `input Properties` (only one property allowed at a time).
-"""
-input SearchByConditionProperties {
-    """
-    Custom condition.
-    """
-    customWithArguments: SearchByComplexCustomInt
-    @customComplexOperator(
-        value: "abc"
-    )
 
     """
-    Custom condition.
+    Not.
     """
-    customWithoutArguments: SearchByComplexCustomInt
-    @customComplexOperator
+    not: SearchByConditionCommentsQuery
+    @searchByOperatorNot
+
+    """
+    Field condition.
+    """
+    text: SearchByScalarString
+    @searchByOperatorCondition
 
     """
     Relationship condition.
     """
-    defaultOperator: SearchByRelationshipRelationChild
+    user: SearchByRelationshipRelationUsersQuery
     @searchByOperatorRelationship
 }
 
 """
-Conditions for the relationship (`has()`/`doesntHave()`) for `input Child`.
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByConditionUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByConditionUser
+    @searchByOperatorNot
+}
+
+"""
+Available conditions for `input UsersQuery` (only one property allowed at a time).
+"""
+input SearchByConditionUsersQuery {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByConditionUsersQuery!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByConditionUsersQuery!]
+    @searchByOperatorAnyOf
+
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Not.
+    """
+    not: SearchByConditionUsersQuery
+    @searchByOperatorNot
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `input UsersQuery`.
 
 See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationChild {
+input SearchByRelationshipRelationUsersQuery {
     """
     Count conditions.
     """
@@ -276,65 +340,113 @@ input SearchByRelationshipRelationChild {
     """
     Additional conditions.
     """
-    where: SearchByRootChild
+    where: SearchByConditionUsersQuery
 }
 
 """
-Available conditions for `input Child` (only one property allowed at a time).
+Available operators for `scalar Date` (only one operator allowed at a time).
 """
-input SearchByRootChild {
+input SearchByScalarDateOrNull {
     """
-    All of the conditions must be true.
+    Within a range.
     """
-    allOf: [SearchByRootChild!]
-    @searchByOperatorAllOf
+    between: SearchByTypeRangeDate
+    @searchByOperatorBetween
 
     """
-    Any of the conditions must be true.
+    Equal (`=`).
     """
-    anyOf: [SearchByRootChild!]
-    @searchByOperatorAnyOf
+    equal: Date
+    @searchByOperatorEqual
 
     """
-    Field.
+    Greater than (`>`).
     """
-    field: SearchByConditionChild
-    @searchByOperatorField
+    greaterThan: Date
+    @searchByOperatorGreaterThan
 
     """
-    Not.
+    Greater than or equal to (`>=`).
     """
-    not: SearchByRootChild
-    @searchByOperatorNot
+    greaterThanOrEqual: Date
+    @searchByOperatorGreaterThanOrEqual
+
+    """
+    Within a set of values.
+    """
+    in: [Date!]
+    @searchByOperatorIn
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Less than (`<`).
+    """
+    lessThan: Date
+    @searchByOperatorLessThan
+
+    """
+    Less than or equal to (`<=`).
+    """
+    lessThanOrEqual: Date
+    @searchByOperatorLessThanOrEqual
+
+    """
+    Outside a range.
+    """
+    notBetween: SearchByTypeRangeDate
+    @searchByOperatorNotBetween
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Date
+    @searchByOperatorNotEqual
+
+    """
+    Outside a set of values.
+    """
+    notIn: [Date!]
+    @searchByOperatorNotIn
 }
 
 """
-Available conditions for `input Properties` (only one property allowed at a time).
+Available operators for `scalar ID` (only one operator allowed at a time).
 """
-input SearchByRootProperties {
+input SearchByScalarID {
     """
-    All of the conditions must be true.
+    Equal (`=`).
     """
-    allOf: [SearchByRootProperties!]
-    @searchByOperatorAllOf
+    equal: ID
+    @searchByOperatorEqual
 
     """
-    Any of the conditions must be true.
+    Within a set of values.
     """
-    anyOf: [SearchByRootProperties!]
-    @searchByOperatorAnyOf
+    in: [ID!]
+    @searchByOperatorIn
 
     """
-    Field.
+    Not Equal (`!=`).
     """
-    field: SearchByConditionProperties
-    @searchByOperatorField
+    notEqual: ID
+    @searchByOperatorNotEqual
 
     """
-    Not.
+    Outside a set of values.
     """
-    not: SearchByRootProperties
-    @searchByOperatorNot
+    notIn: [ID!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -435,7 +547,7 @@ input SearchByScalarInt {
 """
 Available operators for `scalar String` (only one operator allowed at a time).
 """
-input SearchByScalarStringOrNull {
+input SearchByScalarString {
     """
     Contains.
     """
@@ -459,18 +571,6 @@ input SearchByScalarStringOrNull {
     """
     in: [String!]
     @searchByOperatorIn
-
-    """
-    Is NOT NULL?
-    """
-    isNotNull: SearchByTypeFlag
-    @searchByOperatorIsNotNull
-
-    """
-    Is NULL?
-    """
-    isNull: SearchByTypeFlag
-    @searchByOperatorIsNull
 
     """
     Like.
@@ -521,15 +621,36 @@ input SearchByScalarStringOrNull {
     @searchByOperatorStartsWith
 }
 
+input SearchByTypeRangeDate {
+    max: Date!
+    min: Date!
+}
+
 input SearchByTypeRangeInt {
     max: Int!
     min: Int!
 }
 
+scalar Date
+@scalar(
+    class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
+)
+
 type Query {
-    test(
-        where: SearchByRootProperties
+    comments(
+        where: SearchByConditionCommentsQuery
         @searchBy
-    ): ID!
+    ): [Comment!]!
     @all
+
+    users(
+        where: SearchByConditionUser
+        @searchBy
+    ): [User!]!
+    @all
+}
+
+type User {
+    id: ID!
+    name: String!
 }

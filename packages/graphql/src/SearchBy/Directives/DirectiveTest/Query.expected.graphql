@@ -41,6 +41,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorIn
 on
     | ENUM
@@ -125,6 +131,40 @@ enum SearchByTypeFlag {
 """
 Available conditions for `input InputA` (only one property allowed at a time).
 """
+input SearchByQueryConditionInputA {
+    """
+    Field condition.
+    """
+    id: SearchByQueryScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByQueryScalarString
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input TypeB` (only one property allowed at a time).
+"""
+input SearchByQueryConditionTypeB {
+    """
+    Field condition.
+    """
+    id: SearchByQueryScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByQueryScalarStringOrNull
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input InputA` (only one property allowed at a time).
+"""
 input SearchByQueryRootInputA {
     """
     All of the conditions must be true.
@@ -139,16 +179,10 @@ input SearchByQueryRootInputA {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByQueryScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByQueryScalarString
-    @searchByOperatorCondition
+    field: SearchByQueryConditionInputA
+    @searchByOperatorField
 
     """
     Not.
@@ -174,16 +208,10 @@ input SearchByQueryRootTypeB {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByQueryScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByQueryScalarStringOrNull
-    @searchByOperatorCondition
+    field: SearchByQueryConditionTypeB
+    @searchByOperatorField
 
     """
     Not.

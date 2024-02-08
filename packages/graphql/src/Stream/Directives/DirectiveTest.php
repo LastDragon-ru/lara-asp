@@ -1452,7 +1452,11 @@ final class DirectiveTest extends TestCase {
                     ]);
                 },
                 [
-                    'value' => ['equal' => 'b'],
+                    'field' => [
+                        'value' => [
+                            'equal' => 'b',
+                        ],
+                    ],
                 ],
                 null,
                 25,

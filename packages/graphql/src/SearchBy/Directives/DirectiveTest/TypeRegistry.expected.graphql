@@ -77,6 +77,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -203,6 +209,46 @@ enum TestEnum {
 }
 
 """
+Available conditions for `input TestTypeA` (only one property allowed at a time).
+"""
+input SearchByConditionTestTypeA {
+    """
+    Field condition.
+    """
+    flag: SearchByScalarBooleanOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    value: SearchByEnumTestEnumOrNull
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input TestTypeB` (only one property allowed at a time).
+"""
+input SearchByConditionTestTypeB {
+    """
+    Relationship condition.
+    """
+    child: SearchByRelationshipRelationTestTypeA
+    @searchByOperatorRelationship
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+}
+
+"""
 Available operators for `enum TestEnum` (only one operator allowed at a time).
 """
 input SearchByEnumTestEnumOrNull {
@@ -289,28 +335,16 @@ input SearchByRootTestTypeA {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    flag: SearchByScalarBooleanOrNull
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarStringOrNull
-    @searchByOperatorCondition
+    field: SearchByConditionTestTypeA
+    @searchByOperatorField
 
     """
     Not.
     """
     not: SearchByRootTestTypeA
     @searchByOperatorNot
-
-    """
-    Field condition.
-    """
-    value: SearchByEnumTestEnumOrNull
-    @searchByOperatorCondition
 }
 
 """
@@ -330,16 +364,10 @@ input SearchByRootTestTypeB {
     @searchByOperatorAnyOf
 
     """
-    Relationship condition.
+    Field.
     """
-    child: SearchByRelationshipRelationTestTypeA
-    @searchByOperatorRelationship
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
+    field: SearchByConditionTestTypeB
+    @searchByOperatorField
 
     """
     Not.

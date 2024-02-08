@@ -41,6 +41,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorIn
 on
     | ENUM
@@ -87,61 +93,9 @@ enum EnumIgnored
 }
 
 """
-Available operators for `enum EnumA` (only one operator allowed at a time).
-"""
-input SearchByScoutEnumEnumA {
-    """
-    Equal (`=`).
-    """
-    equal: EnumA
-    @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [EnumA!]
-    @searchByOperatorIn
-
-    """
-    Outside a set of values.
-    """
-    notIn: [EnumA!]
-    @searchByOperatorNotIn
-}
-
-"""
-Available operators for `enum EnumA` (only one operator allowed at a time).
-"""
-input SearchByScoutEnumEnumAOrNull {
-    """
-    Equal (`=`).
-    """
-    equal: EnumA
-    @searchByOperatorEqual
-
-    """
-    Within a set of values.
-    """
-    in: [EnumA!]
-    @searchByOperatorIn
-
-    """
-    Outside a set of values.
-    """
-    notIn: [EnumA!]
-    @searchByOperatorNotIn
-}
-
-"""
 Available conditions for `input InputA` (only one property allowed at a time).
 """
-input SearchByScoutRootInputA {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootInputA!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionInputA {
     """
     Field condition.
     """
@@ -275,13 +229,7 @@ input SearchByScoutRootInputA {
 """
 Available conditions for `input InputB` (only one property allowed at a time).
 """
-input SearchByScoutRootInputB {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootInputB!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionInputB {
     """
     Field condition.
     """
@@ -292,13 +240,7 @@ input SearchByScoutRootInputB {
 """
 Available conditions for `input NestedA` (only one property allowed at a time).
 """
-input SearchByScoutRootNestedA {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootNestedA!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionNestedA {
     """
     Field condition.
     """
@@ -315,13 +257,7 @@ input SearchByScoutRootNestedA {
 """
 Available conditions for `input NestedB` (only one property allowed at a time).
 """
-input SearchByScoutRootNestedB {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootNestedB!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionNestedB {
     """
     Field condition.
     """
@@ -332,13 +268,7 @@ input SearchByScoutRootNestedB {
 """
 Available conditions for `input NestedC` (only one property allowed at a time).
 """
-input SearchByScoutRootNestedC {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootNestedC!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionNestedC {
     """
     Field condition.
     """
@@ -349,13 +279,7 @@ input SearchByScoutRootNestedC {
 """
 Available conditions for `type Object` (only one property allowed at a time).
 """
-input SearchByScoutRootObject {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootObject!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionObject {
     """
     Field condition.
     """
@@ -483,13 +407,7 @@ input SearchByScoutRootObject {
 """
 Available conditions for `interface ObjectInterface` (only one property allowed at a time).
 """
-input SearchByScoutRootObjectInterface {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByScoutRootObjectInterface!]
-    @searchByOperatorAllOf
-
+input SearchByScoutConditionObjectInterface {
     """
     Field condition.
     """
@@ -617,6 +535,182 @@ input SearchByScoutRootObjectInterface {
 """
 Available conditions for `type ObjectNested` (only one property allowed at a time).
 """
+input SearchByScoutConditionObjectNested {
+    """
+    Field condition.
+    """
+    value: SearchByScoutScalarStringOrNull
+    @searchByOperatorCondition
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumA {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available operators for `enum EnumA` (only one operator allowed at a time).
+"""
+input SearchByScoutEnumEnumAOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: EnumA
+    @searchByOperatorEqual
+
+    """
+    Within a set of values.
+    """
+    in: [EnumA!]
+    @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
+    @searchByOperatorNotIn
+}
+
+"""
+Available conditions for `input InputA` (only one property allowed at a time).
+"""
+input SearchByScoutRootInputA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootInputA!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionInputA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `input InputB` (only one property allowed at a time).
+"""
+input SearchByScoutRootInputB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootInputB!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionInputB
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `input NestedA` (only one property allowed at a time).
+"""
+input SearchByScoutRootNestedA {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootNestedA!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionNestedA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `input NestedB` (only one property allowed at a time).
+"""
+input SearchByScoutRootNestedB {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootNestedB!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionNestedB
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `input NestedC` (only one property allowed at a time).
+"""
+input SearchByScoutRootNestedC {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootNestedC!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionNestedC
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `type Object` (only one property allowed at a time).
+"""
+input SearchByScoutRootObject {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootObject!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionObject
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `interface ObjectInterface` (only one property allowed at a time).
+"""
+input SearchByScoutRootObjectInterface {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByScoutRootObjectInterface!]
+    @searchByOperatorAllOf
+
+    """
+    Field.
+    """
+    field: SearchByScoutConditionObjectInterface
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `type ObjectNested` (only one property allowed at a time).
+"""
 input SearchByScoutRootObjectNested {
     """
     All of the conditions must be true.
@@ -625,10 +719,10 @@ input SearchByScoutRootObjectNested {
     @searchByOperatorAllOf
 
     """
-    Field condition.
+    Field.
     """
-    value: SearchByScoutScalarStringOrNull
-    @searchByOperatorCondition
+    field: SearchByScoutConditionObjectNested
+    @searchByOperatorField
 }
 
 """

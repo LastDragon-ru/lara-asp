@@ -33,8 +33,12 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotInDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Condition;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -138,6 +142,42 @@ final class DirectiveTest extends TestCase {
         );
     }
 
+    /**
+     * @deprecated 5.5.0
+     */
+    #[RequiresLaravelScout]
+    public function testManipulateArgDefinitionScoutBuilderV5Compat(): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Condition::class, V5::class);
+
+        $this->override(SearchByOperatorNotInDirective::class, static function (MockInterface $mock): void {
+            $mock
+                ->shouldReceive('isAvailable')
+                ->atLeast()
+                ->once()
+                ->andReturn(false);
+        });
+
+        config([
+            Package::Name.'.search_by.operators.Date' => [
+                SearchByOperatorEqualDirective::class,
+            ],
+        ]);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        $this->useGraphQLSchema(
+            self::getTestData()->file('V5CompatScout.schema.graphql'),
+        );
+
+        self::assertGraphQLSchemaEquals(
+            new GraphQLExpected(
+                static::getTestData()->file('V5CompatScout.expected.graphql'),
+            ),
+        );
+    }
+
     public function testManipulateArgDefinitionUnknownType(): void {
         self::expectExceptionObject(new TypeDefinitionUnknown('UnknownType'));
 
@@ -206,6 +246,62 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
+     * @deprecated   5.5.0
+     *
+     * @dataProvider dataProviderHandleBuilderV5Compat
+     *
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): object                                           $builderFactory
+     */
+    public function testDirectiveV5Compat(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Condition::class, V5::class);
+
+        $path = is_array($expected) ? 'data.test' : 'errors.0.message';
+        $body = is_array($expected) ? [] : json_encode($expected->getMessage(), JSON_THROW_ON_ERROR);
+
+        $this
+            ->useGraphQLSchema(
+                <<<'GRAPHQL'
+                type Query {
+                    test(input: _ @searchBy): [TestObject!]!
+                    @all
+                }
+
+                type TestObject {
+                    id: ID!
+                    value: String
+                }
+                GRAPHQL,
+            )
+            ->graphQL(
+                <<<'GRAPHQL'
+                query test($input: SearchByConditionTestObject) {
+                    test(input: $input) {
+                        id
+                    }
+                }
+                GRAPHQL,
+                [
+                    'input' => $value,
+                ],
+            )
+            ->assertThat(
+                new Response(
+                    new Ok(),
+                    new JsonContentType(),
+                    new JsonBody(
+                        new JsonMatchesFragment($path, $body),
+                    ),
+                ),
+            );
+    }
+
+    /**
      * @dataProvider dataProviderHandleBuilder
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
@@ -235,6 +331,63 @@ final class DirectiveTest extends TestCase {
         $type = match (true) {
             $builder instanceof QueryBuilder => 'SearchByQueryRootTest',
             default                          => 'SearchByRootTest',
+        };
+        $result = $this->graphQL(
+            <<<GRAPHQL
+            query test(\$query: {$type}) {
+                test(input: \$query)
+            }
+            GRAPHQL,
+            [
+                'query' => $value,
+            ],
+        );
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertDatabaseQueryEquals($expected, $directive::$result);
+        } else {
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @deprecated   5.5.0
+     *
+     * @dataProvider dataProviderHandleBuilderV5Compat
+     *
+     * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
+     * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>)    $builderFactory
+     */
+    public function testHandleBuilderV5Compat(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+    ): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Condition::class, V5::class);
+
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
+        $this->useGraphQLSchema(
+            <<<GRAPHQL
+            type Query {
+                test(input: Test @searchBy): [String!]! {$directive::getName()}
+            }
+
+            input Test {
+                id: Int!
+                value: String @rename(attribute: "renamed.field")
+            }
+            GRAPHQL,
+        );
+
+        $type = match (true) {
+            $builder instanceof QueryBuilder => 'SearchByQueryConditionTest',
+            default                          => 'SearchByConditionTest',
         };
         $result = $this->graphQL(
             <<<GRAPHQL
@@ -313,6 +466,85 @@ final class DirectiveTest extends TestCase {
         $result = $this->graphQL(
             <<<'GRAPHQL'
             query test($query: SearchByScoutRootTest) {
+                test(search: "*", input: $query)
+            }
+            GRAPHQL,
+            [
+                'query' => $value,
+            ],
+        );
+
+        if (is_array($expected)) {
+            self::assertInstanceOf($builder::class, $directive::$result);
+            self::assertScoutQueryEquals($expected, $directive::$result);
+        } else {
+            $result->assertJsonFragment([
+                'message' => $expected->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @deprecated   5.5.0
+     *
+     * @dataProvider dataProviderHandleScoutBuilderV5Compat
+     *
+     * @param array<string, mixed>|Exception         $expected
+     * @param Closure(static): ScoutBuilder          $builderFactory
+     * @param Closure(object, Property): string|null $resolver
+     * @param Closure():FieldResolver|null           $fieldResolver
+     */
+    #[RequiresLaravelScout]
+    public function testHandleScoutBuilderV5Compat(
+        array|Exception $expected,
+        Closure $builderFactory,
+        mixed $value,
+        ?Closure $resolver,
+        ?Closure $fieldResolver,
+    ): void {
+        Container::getInstance()->bind(Root::class, V5::class);
+        Container::getInstance()->bind(Condition::class, V5::class);
+
+        $builder   = $builderFactory($this);
+        $directive = $this->getExposeBuilderDirective($builder);
+
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('search', SearchDirective::class);
+
+        if ($resolver) {
+            $this->override(
+                BuilderPropertyResolver::class,
+                static function (MockInterface $mock) use ($resolver): void {
+                    $mock
+                        ->shouldReceive('getProperty')
+                        ->atLeast()
+                        ->once()
+                        ->andReturnUsing($resolver);
+                },
+            );
+        }
+
+        if ($fieldResolver) {
+            $this->override(FieldResolver::class, $fieldResolver);
+        }
+
+        $this->useGraphQLSchema(
+            <<<GRAPHQL
+            type Query {
+                test(search: String @search, input: Test @searchBy): [String!]! {$directive::getName()}
+            }
+
+            input Test {
+                a: Int!
+                b: String @rename(attribute: "renamed.field")
+                c: Test
+            }
+            GRAPHQL,
+        );
+
+        $result = $this->graphQL(
+            <<<'GRAPHQL'
+            query test($query: SearchByScoutConditionTest) {
                 test(search: "*", input: $query)
             }
             GRAPHQL,
@@ -504,6 +736,14 @@ final class DirectiveTest extends TestCase {
                     ]);
                 },
             ],
+            'V5Compat'              => [
+                'V5Compat.expected.graphql',
+                'V5Compat.schema.graphql',
+                static function (): void {
+                    Container::getInstance()->bind(Root::class, V5::class);
+                    Container::getInstance()->bind(Condition::class, V5::class);
+                },
+            ],
         ];
     }
 
@@ -511,6 +751,207 @@ final class DirectiveTest extends TestCase {
      * @return array<array-key, mixed>
      */
     public static function dataProviderHandleBuilder(): array {
+        return (new MergeDataProvider([
+            'Both'     => new CompositeDataProvider(
+                new BuilderDataProvider(),
+                new ArrayDataProvider([
+                    'empty'                       => [
+                        [
+                            'query'    => <<<'SQL'
+                                select
+                                    *
+                                from
+                                    "test_objects"
+                            SQL
+                            ,
+                            'bindings' => [],
+                        ],
+                        [
+                            // empty
+                        ],
+                    ],
+                    'empty operators'             => [
+                        new ConditionEmpty(),
+                        [
+                            'field' => [
+                                'id' => [
+                                    // empty
+                                ],
+                            ],
+                        ],
+                    ],
+                    'too many fields (operators)' => [
+                        new ConditionTooManyOperators(['equal', 'notEqual']),
+                        [
+                            'field' => [
+                                'id' => [
+                                    'equal'    => 1,
+                                    'notEqual' => 1,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'too many fields (fields)'    => [
+                        new ConditionTooManyOperators(['id', 'value']),
+                        [
+                            'field' => [
+                                'id'    => [
+                                    'notEqual' => 1,
+                                ],
+                                'value' => [
+                                    'notEqual' => 'a',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'null'                        => [
+                        [
+                            'query'    => <<<'SQL'
+                                select
+                                    *
+                                from
+                                    "test_objects"
+                            SQL
+                            ,
+                            'bindings' => [],
+                        ],
+                        null,
+                    ],
+                ]),
+            ),
+            'Query'    => new CompositeDataProvider(
+                new QueryBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'query'    => <<<'SQL'
+                                select
+                                    *
+                                from
+                                    "test_objects"
+                                where
+                                    (
+                                        not (
+                                            (
+                                                ("id" != ?)
+                                                and (
+                                                    (
+                                                        ("id" = ?)
+                                                        or ("renamed"."field" != ?)
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                            SQL
+                            ,
+                            'bindings' => [1, 2, 'a'],
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
+                                    [
+                                        'field' => [
+                                            'id' => [
+                                                'notEqual' => 1,
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'anyOf' => [
+                                            [
+                                                'field' => [
+                                                    'id' => [
+                                                        'equal' => 2,
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'field' => [
+                                                    'value' => [
+                                                        'notEqual' => 'a',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]),
+            ),
+            'Eloquent' => new CompositeDataProvider(
+                new EloquentBuilderDataProvider(),
+                new ArrayDataProvider([
+                    'valid condition' => [
+                        [
+                            'query'    => <<<'SQL'
+                                select
+                                    *
+                                from
+                                    "test_objects"
+                                where
+                                    (
+                                        not (
+                                            (
+                                                ("test_objects"."id" != ?)
+                                                and (
+                                                    (
+                                                        ("test_objects"."id" = ?)
+                                                        or ("test_objects"."renamed"."field" != ?)
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                            SQL
+                            ,
+                            'bindings' => [1, 2, 'a'],
+                        ],
+                        [
+                            'not' => [
+                                'allOf' => [
+                                    [
+                                        'field' => [
+                                            'id' => [
+                                                'notEqual' => 1,
+                                            ],
+                                        ],
+                                    ],
+                                    [
+                                        'anyOf' => [
+                                            [
+                                                'field' => [
+                                                    'id' => [
+                                                        'equal' => 2,
+                                                    ],
+                                                ],
+                                            ],
+                                            [
+                                                'field' => [
+                                                    'value' => [
+                                                        'notEqual' => 'a',
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]),
+            ),
+        ]))->getData();
+    }
+
+    /**
+     * @deprecated 5.5.0
+     *
+     * @return array<array-key, mixed>
+     */
+    public static function dataProviderHandleBuilderV5Compat(): array {
         return (new MergeDataProvider([
             'Both'     => new CompositeDataProvider(
                 new BuilderDataProvider(),
@@ -692,6 +1133,218 @@ final class DirectiveTest extends TestCase {
      * @return array<array-key, mixed>
      */
     public static function dataProviderHandleScoutBuilder(): array {
+        return (new CompositeDataProvider(
+            new ScoutBuilderDataProvider(),
+            new ArrayDataProvider([
+                'empty'                       => [
+                    [
+                        // empty
+                    ],
+                    [
+                        // empty
+                    ],
+                    null,
+                    null,
+                ],
+                'empty operators'             => [
+                    new ConditionEmpty(),
+                    [
+                        'field' => [
+                            'a' => [
+                                // empty
+                            ],
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'too many fields (operators)' => [
+                    new ConditionTooManyOperators(['equal', 'in']),
+                    [
+                        'field' => [
+                            'a' => [
+                                'equal' => 1,
+                                'in'    => [1, 2, 3],
+                            ],
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'too many fields (fields)'    => [
+                    new ConditionTooManyOperators(['a', 'b']),
+                    [
+                        'field' => [
+                            'a' => [
+                                'equal' => 1,
+                            ],
+                            'b' => [
+                                'equal' => 'a',
+                            ],
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'null'                        => [
+                    [
+                        // empty
+                    ],
+                    null,
+                    null,
+                    null,
+                ],
+                'default field resolver'      => [
+                    [
+                        'wheres'   => [
+                            'a'   => 1,
+                            'c.a' => 2,
+                        ],
+                        'whereIns' => [
+                            'renamed.field' => ['a', 'b', 'c'],
+                        ],
+                    ],
+                    [
+                        'allOf' => [
+                            [
+                                'field' => [
+                                    'a' => [
+                                        'equal' => 1,
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field' => [
+                                    'b' => [
+                                        'in' => ['a', 'b', 'c'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field' => [
+                                    'c' => [
+                                        'field' => [
+                                            'a' => [
+                                                'equal' => 2,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    null,
+                    null,
+                ],
+                'resolver (deprecated)'       => [
+                    [
+                        'wheres'   => [
+                            'properties/a'   => 1,
+                            'properties/c/a' => 2,
+                        ],
+                        'whereIns' => [
+                            'properties/renamed.field' => ['a', 'b', 'c'],
+                        ],
+                    ],
+                    [
+                        'allOf' => [
+                            [
+                                'field' => [
+                                    'a' => [
+                                        'equal' => 1,
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field' => [
+                                    'b' => [
+                                        'in' => ['a', 'b', 'c'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field' => [
+                                    'c' => [
+                                        'field' => [
+                                            'a' => [
+                                                'equal' => 2,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    null,
+                    static function (): FieldResolver {
+                        return new class() implements FieldResolver {
+                            /**
+                             * @inheritDoc
+                             */
+                            #[Override]
+                            public function getField(
+                                EloquentModel $model,
+                                Property $property,
+                            ): string {
+                                return 'properties/'.implode('/', $property->getPath());
+                            }
+                        };
+                    },
+                ],
+                'resolver'                    => [
+                    [
+                        'wheres'   => [
+                            'a'    => 1,
+                            'c__a' => 2,
+                        ],
+                        'whereIns' => [
+                            'renamed.field' => ['a', 'b', 'c'],
+                        ],
+                    ],
+                    [
+                        'allOf' => [
+                            [
+                                'field' => [
+                                    'a' => [
+                                        'equal' => 1,
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field' => [
+                                    'b' => [
+                                        'in' => ['a', 'b', 'c'],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'field' => [
+                                    'c' => [
+                                        'field' => [
+                                            'a' => [
+                                                'equal' => 2,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    static function (object $builder, Property $property): string {
+                        return implode('__', $property->getPath());
+                    },
+                    null,
+                ],
+            ]),
+        ))->getData();
+    }
+
+    /**
+     * @deprecated 5.5.0
+     *
+     * @return array<array-key, mixed>
+     */
+    public static function dataProviderHandleScoutBuilderV5Compat(): array {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([

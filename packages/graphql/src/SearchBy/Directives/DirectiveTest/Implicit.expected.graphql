@@ -77,6 +77,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -264,6 +270,195 @@ enum SearchByTypeFlag {
 }
 
 """
+Available conditions for `type A` (only one property allowed at a time).
+"""
+input SearchByConditionA {
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Relationship condition.
+    """
+    operator: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    operators: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relation: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relations: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationsPaginated: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationsWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+
+    """
+    Field condition.
+    """
+    renamed: SearchByScalarString
+    @searchByOperatorCondition
+    @rename(
+        attribute: "internal"
+    )
+
+    """
+    Field condition.
+    """
+    renamedList: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
+Available conditions for `type B` (only one property allowed at a time).
+"""
+input SearchByConditionB {
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+
+    """
+    Relationship condition.
+    """
+    parent: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+}
+
+"""
+Available conditions for `interface C` (only one property allowed at a time).
+"""
+input SearchByConditionC {
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Relationship condition.
+    """
+    operator: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    operators: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relation: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relations: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationsPaginated: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    relationsWithArgs: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+
+    """
+    Field condition.
+    """
+    renamed: SearchByScalarString
+    @searchByOperatorCondition
+    @rename(
+        attribute: "internal"
+    )
+
+    """
+    Field condition.
+    """
+    renamedList: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+    @rename(
+        attribute: "internal"
+    )
+}
+
+"""
 Conditions for the relationship (`has()`/`doesntHave()`) for `type A`.
 
 See also:
@@ -338,88 +533,16 @@ input SearchByRootA {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
+    field: SearchByConditionA
+    @searchByOperatorField
 
     """
     Not.
     """
     not: SearchByRootA
     @searchByOperatorNot
-
-    """
-    Relationship condition.
-    """
-    operator: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    operators: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relation: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationWithArgs: SearchByRelationshipRelationA
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relations: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationsPaginated: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationsPaginatedWithArgs: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationsWithArgs: SearchByRelationshipRelationA
-    @searchByOperatorRelationship
-
-    """
-    Field condition.
-    """
-    renamed: SearchByScalarString
-    @searchByOperatorCondition
-    @rename(
-        attribute: "internal"
-    )
-
-    """
-    Field condition.
-    """
-    renamedList: SearchByScalarStringOrNull
-    @searchByOperatorCondition
-    @rename(
-        attribute: "internal"
-    )
 }
 
 """
@@ -439,28 +562,16 @@ input SearchByRootB {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarStringOrNull
-    @searchByOperatorCondition
+    field: SearchByConditionB
+    @searchByOperatorField
 
     """
     Not.
     """
     not: SearchByRootB
     @searchByOperatorNot
-
-    """
-    Relationship condition.
-    """
-    parent: SearchByRelationshipRelationA
-    @searchByOperatorRelationship
 }
 
 """
@@ -480,88 +591,16 @@ input SearchByRootC {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
+    field: SearchByConditionC
+    @searchByOperatorField
 
     """
     Not.
     """
     not: SearchByRootC
     @searchByOperatorNot
-
-    """
-    Relationship condition.
-    """
-    operator: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    operators: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relation: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationWithArgs: SearchByRelationshipRelationA
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relations: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationsPaginated: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationsPaginatedWithArgs: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    relationsWithArgs: SearchByRelationshipRelationA
-    @searchByOperatorRelationship
-
-    """
-    Field condition.
-    """
-    renamed: SearchByScalarString
-    @searchByOperatorCondition
-    @rename(
-        attribute: "internal"
-    )
-
-    """
-    Field condition.
-    """
-    renamedList: SearchByScalarStringOrNull
-    @searchByOperatorCondition
-    @rename(
-        attribute: "internal"
-    )
 }
 
 """

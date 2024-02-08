@@ -77,6 +77,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -204,6 +210,63 @@ input Comment {
 }
 
 """
+Available conditions for `input CommentsQuery` (only one property allowed at a time).
+"""
+input SearchByConditionCommentsQuery {
+    """
+    Field condition.
+    """
+    date: SearchByScalarDateOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    text: SearchByScalarString
+    @searchByOperatorCondition
+
+    """
+    Relationship condition.
+    """
+    user: SearchByRelationshipRelationUsersQuery
+    @searchByOperatorRelationship
+}
+
+"""
+Available conditions for `type User` (only one property allowed at a time).
+"""
+input SearchByConditionUser {
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input UsersQuery` (only one property allowed at a time).
+"""
+input SearchByConditionUsersQuery {
+    """
+    Field condition.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+}
+
+"""
 Conditions for the relationship (`has()`/`doesntHave()`) for `input UsersQuery`.
 
 See also:
@@ -249,28 +312,16 @@ input SearchByRootCommentsQuery {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    date: SearchByScalarDateOrNull
-    @searchByOperatorCondition
+    field: SearchByConditionCommentsQuery
+    @searchByOperatorField
 
     """
     Not.
     """
     not: SearchByRootCommentsQuery
     @searchByOperatorNot
-
-    """
-    Field condition.
-    """
-    text: SearchByScalarString
-    @searchByOperatorCondition
-
-    """
-    Relationship condition.
-    """
-    user: SearchByRelationshipRelationUsersQuery
-    @searchByOperatorRelationship
 }
 
 """
@@ -290,16 +341,10 @@ input SearchByRootUser {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
+    field: SearchByConditionUser
+    @searchByOperatorField
 
     """
     Not.
@@ -325,16 +370,10 @@ input SearchByRootUsersQuery {
     @searchByOperatorAnyOf
 
     """
-    Field condition.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
+    field: SearchByConditionUsersQuery
+    @searchByOperatorField
 
     """
     Not.

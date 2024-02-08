@@ -77,6 +77,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorGreaterThan
 on
     | ENUM
@@ -218,6 +224,58 @@ input B {
 }
 
 """
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByConditionA {
+    """
+    Relationship condition.
+    """
+    field: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Relationship condition.
+    """
+    fields: SearchByRelationshipRelationB
+    @searchByOperatorRelationship
+
+    """
+    Description should be copied.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarString
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input B` (only one property allowed at a time).
+"""
+input SearchByConditionB {
+    """
+    Description should be copied.
+    """
+    id: SearchByScalarID
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    name: SearchByScalarStringOrNull
+    @searchByOperatorCondition
+
+    """
+    Relationship condition.
+    """
+    parent: SearchByRelationshipRelationA
+    @searchByOperatorRelationship
+}
+
+"""
 Conditions for the relationship (`has()`/`doesntHave()`) for `input A`.
 
 See also:
@@ -292,28 +350,10 @@ input SearchByRootA {
     @searchByOperatorAnyOf
 
     """
-    Relationship condition.
+    Field.
     """
-    field: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Relationship condition.
-    """
-    fields: SearchByRelationshipRelationB
-    @searchByOperatorRelationship
-
-    """
-    Description should be copied.
-    """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarString
-    @searchByOperatorCondition
+    field: SearchByConditionA
+    @searchByOperatorField
 
     """
     Not.
@@ -339,28 +379,16 @@ input SearchByRootB {
     @searchByOperatorAnyOf
 
     """
-    Description should be copied.
+    Field.
     """
-    id: SearchByScalarID
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    name: SearchByScalarStringOrNull
-    @searchByOperatorCondition
+    field: SearchByConditionB
+    @searchByOperatorField
 
     """
     Not.
     """
     not: SearchByRootB
     @searchByOperatorNot
-
-    """
-    Relationship condition.
-    """
-    parent: SearchByRelationshipRelationA
-    @searchByOperatorRelationship
 }
 
 """

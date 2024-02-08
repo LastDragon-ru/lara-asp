@@ -17,6 +17,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 input A {
     id: ID!
 }
@@ -24,7 +30,7 @@ input A {
 """
 Available conditions for `input A` (only one property allowed at a time).
 """
-input SearchByRootA {
+input SearchByConditionA {
     """
     Field condition.
     """
@@ -35,12 +41,34 @@ input SearchByRootA {
 """
 Available conditions for `type B` (only one property allowed at a time).
 """
-input SearchByRootB {
+input SearchByConditionB {
     """
     Field condition.
     """
     id: SearchByScalarID
     @searchByOperatorCondition
+}
+
+"""
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByRootA {
+    """
+    Field.
+    """
+    field: SearchByConditionA
+    @searchByOperatorField
+}
+
+"""
+Available conditions for `type B` (only one property allowed at a time).
+"""
+input SearchByRootB {
+    """
+    Field.
+    """
+    field: SearchByConditionB
+    @searchByOperatorField
 }
 
 """

@@ -23,6 +23,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorIn
 on
     | ENUM
@@ -85,6 +91,29 @@ enum SearchByTypeFlag {
 }
 
 """
+Available conditions for `input A` (only one property allowed at a time).
+"""
+input SearchByConditionA {
+    """
+    Field condition.
+    """
+    a: SearchByScalarMixed
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    b: SearchByScalarDateOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    c: SearchByEnumEnumAOrNull
+    @searchByOperatorCondition
+}
+
+"""
 Available operators for `enum EnumA` (only one operator allowed at a time).
 """
 input SearchByEnumEnumAOrNull {
@@ -112,28 +141,16 @@ Available conditions for `input A` (only one property allowed at a time).
 """
 input SearchByRootA {
     """
-    Field condition.
-    """
-    a: SearchByScalarMixed
-    @searchByOperatorCondition
-
-    """
     All of the conditions must be true.
     """
     allOf: [SearchByRootA!]
     @searchByOperatorAllOf
 
     """
-    Field condition.
+    Field.
     """
-    b: SearchByScalarDateOrNull
-    @searchByOperatorCondition
-
-    """
-    Field condition.
-    """
-    c: SearchByEnumEnumAOrNull
-    @searchByOperatorCondition
+    field: SearchByConditionA
+    @searchByOperatorField
 }
 
 """
