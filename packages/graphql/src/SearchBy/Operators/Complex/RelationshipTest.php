@@ -7,7 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -232,7 +232,7 @@ final class RelationshipTest extends TestCase {
                 null,
             ],
             '{count: { multiple operators }}'             => [
-                new ConditionTooManyOperators(['lessThan', 'equal']),
+                new ConditionTooManyFields(['lessThan', 'equal']),
                 static function (): EloquentBuilder {
                     return User::query();
                 },

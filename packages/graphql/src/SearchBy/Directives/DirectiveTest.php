@@ -25,7 +25,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
@@ -782,7 +781,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many fields (operators)' => [
-                        new ConditionTooManyOperators(['equal', 'notEqual']),
+                        new ConditionTooManyFields(['equal', 'notEqual']),
                         [
                             'field' => [
                                 'id' => [
@@ -793,7 +792,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many fields (fields)'    => [
-                        new ConditionTooManyOperators(['id', 'value']),
+                        new ConditionTooManyFields(['id', 'value']),
                         [
                             'field' => [
                                 'id'    => [
@@ -992,7 +991,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many operators'  => [
-                        new ConditionTooManyOperators(['equal', 'notEqual']),
+                        new ConditionTooManyFields(['equal', 'notEqual']),
                         [
                             'id' => [
                                 'equal'    => 1,
@@ -1160,7 +1159,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (operators)' => [
-                    new ConditionTooManyOperators(['equal', 'in']),
+                    new ConditionTooManyFields(['equal', 'in']),
                     [
                         'field' => [
                             'a' => [
@@ -1173,7 +1172,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (fields)'    => [
-                    new ConditionTooManyOperators(['a', 'b']),
+                    new ConditionTooManyFields(['a', 'b']),
                     [
                         'field' => [
                             'a' => [
@@ -1383,7 +1382,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many operators'     => [
-                    new ConditionTooManyOperators(['equal', 'in']),
+                    new ConditionTooManyFields(['equal', 'in']),
                     [
                         'a' => [
                             'equal' => 1,

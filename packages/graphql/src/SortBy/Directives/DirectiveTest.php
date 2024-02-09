@@ -16,7 +16,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
@@ -794,7 +793,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (fields)'    => [
-                    new ConditionTooManyOperators(['id', 'value']),
+                    new ConditionTooManyFields(['id', 'value']),
                     [
                         [
                             'field' => [
@@ -1182,7 +1181,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (fields)' => [
-                    new ConditionTooManyOperators(['a', 'b']),
+                    new ConditionTooManyFields(['a', 'b']),
                     [
                         [
                             'field' => [
