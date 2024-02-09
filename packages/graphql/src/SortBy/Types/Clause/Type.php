@@ -109,8 +109,8 @@ abstract class Type extends InputObject {
         if (is_string($operator)) {
             $type     = $manipulator->getType($operator, $field, $context);
             $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = $manipulator->getOperator($this->getScope(), SortByOperatorSortDirective::class);
-            $operator = [$operator, $source];
+            $operator = $manipulator->getOperator($this->getScope(), SortByOperatorSortDirective::class, $context);
+            $operator = $operator ? [$operator, $source] : null;
         } else {
             // empty
         }

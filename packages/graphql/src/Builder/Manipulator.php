@@ -118,10 +118,32 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @param class-string<Scope> $scope
      * @param class-string<T>     $operator
      *
-     * @return T
+     * @return T|null
      */
-    public function getOperator(string $scope, string $operator): Operator {
-        return Container::getInstance()->make($operator);
+    public function getOperator(string $scope, string $operator, Context $context): ?Operator {
+        // Builder?
+        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
+
+        if (!$builder) {
+            return null;
+        }
+
+        // Provider?
+        $provider = $this->operators[$scope] ?? null;
+
+        if (!$provider) {
+            return null;
+        }
+
+        // Available?
+        $operator = $provider->getOperator($operator);
+
+        if (!$operator->isAvailable($builder, $context)) {
+            return null;
+        }
+
+        // Return
+        return $operator;
     }
 
     /**
