@@ -276,7 +276,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             : $argument->getTypeDefinition();
         $source     = $manipulator->getTypeSource($definition);
         $type       = $operator->getFieldType($manipulator, $source, $context);
-        $type       = Parser::typeReference($type);
+        $type       = $type ? Parser::typeReference($type) : null;
 
         return $type;
     }

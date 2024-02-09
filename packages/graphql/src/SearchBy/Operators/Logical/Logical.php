@@ -23,7 +23,7 @@ use function is_array;
 
 abstract class Logical extends Operator {
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Root::class, $source, $context);
     }
 

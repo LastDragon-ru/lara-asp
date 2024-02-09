@@ -1561,7 +1561,7 @@ class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefin
         TypeProvider $provider,
         TypeSource $source,
         Context $context,
-    ): string {
+    ): ?string {
         return $provider->getType(static::class, $provider->getTypeSource(Type::int()), $context);
     }
 

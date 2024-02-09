@@ -207,7 +207,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
         return $source->getTypeName();
     }
 
@@ -244,7 +244,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
         return $source->getTypeName();
     }
 
@@ -281,7 +281,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
         return $source->getTypeName();
     }
 

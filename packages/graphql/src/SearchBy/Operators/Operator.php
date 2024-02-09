@@ -15,7 +15,7 @@ use function is_a;
 
 abstract class Operator extends OperatorDirective implements Marker {
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $source->getTypeName();
     }
 

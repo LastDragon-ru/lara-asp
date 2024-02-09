@@ -13,7 +13,7 @@ interface Operator extends Directive {
      */
     public static function getName(): string;
 
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string;
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string;
 
     public function getFieldDescription(): string;
 

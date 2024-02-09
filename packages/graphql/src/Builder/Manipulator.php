@@ -27,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorImpossibleToCreateField;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
@@ -250,8 +251,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
             array_unshift($directives, Parser::directive('@'.DirectiveLocator::directiveName($operator::class)));
         }
 
+        // Type?
+        $type = $operator->getFieldType($this, $source, $context);
+
+        if (!$type) {
+            throw new OperatorImpossibleToCreateField($operator, $source, $context);
+        }
+
         // Definition
-        $type        = $operator->getFieldType($this, $source, $context);
         $field       = $field ?: $operator::getName();
         $directives  = implode(
             "\n",

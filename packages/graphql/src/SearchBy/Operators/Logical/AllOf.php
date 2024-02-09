@@ -29,9 +29,9 @@ class AllOf extends Logical {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         $parent = parent::getFieldType($provider, $source, $context);
-        $type   = "[{$parent}!]";
+        $type   = $parent ? "[{$parent}!]" : null;
 
         return $type;
     }
