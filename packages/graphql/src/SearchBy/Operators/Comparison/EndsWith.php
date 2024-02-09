@@ -11,7 +11,7 @@ class EndsWith extends Contains {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Ends with a string.';
     }
 

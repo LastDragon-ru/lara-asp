@@ -25,7 +25,7 @@ class NotIn extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Outside a set of values.';
     }
 

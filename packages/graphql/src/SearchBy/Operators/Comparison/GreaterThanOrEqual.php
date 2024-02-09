@@ -19,7 +19,7 @@ class GreaterThanOrEqual extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Greater than or equal to (`>=`).';
     }
 

@@ -11,7 +11,7 @@ class NotStartsWith extends StartsWith {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Not starts with a string.';
     }
 

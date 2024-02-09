@@ -11,7 +11,7 @@ class Not extends Logical {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Not.';
     }
 

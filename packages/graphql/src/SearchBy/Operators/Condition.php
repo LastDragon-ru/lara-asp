@@ -16,7 +16,7 @@ class Condition extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Field condition.';
     }
 }

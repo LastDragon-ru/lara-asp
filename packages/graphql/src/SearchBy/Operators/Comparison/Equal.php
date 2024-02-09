@@ -23,7 +23,7 @@ class Equal extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Equal (`=`).';
     }
 

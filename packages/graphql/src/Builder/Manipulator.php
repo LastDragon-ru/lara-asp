@@ -268,7 +268,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             ),
         );
         $description = $description ?: $operator->getFieldDescription();
-        $description = BlockString::print($description);
+        $description = BlockString::print((string) $description);
 
         return <<<GRAPHQL
             {$description}

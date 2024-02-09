@@ -174,7 +174,7 @@ abstract class OperatorsTest__Operator implements Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         throw new Exception('Should not be called');
     }
 

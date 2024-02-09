@@ -1566,7 +1566,7 @@ class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefin
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Custom condition.';
     }
 

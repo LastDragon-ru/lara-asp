@@ -24,7 +24,7 @@ class AllOf extends Logical {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'All of the conditions must be true.';
     }
 

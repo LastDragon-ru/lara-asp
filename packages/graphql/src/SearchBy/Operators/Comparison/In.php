@@ -25,7 +25,7 @@ class In extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Within a set of values.';
     }
 

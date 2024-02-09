@@ -15,7 +15,7 @@ interface Operator extends Directive {
 
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string;
 
-    public function getFieldDescription(): string;
+    public function getFieldDescription(): ?string;
 
     /**
      * @param class-string $builder

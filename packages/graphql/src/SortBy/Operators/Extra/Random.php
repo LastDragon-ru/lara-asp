@@ -40,7 +40,7 @@ class Random extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'By random';
     }
 

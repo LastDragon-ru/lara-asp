@@ -19,7 +19,7 @@ class NotBetween extends Between {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Outside a range.';
     }
 
