@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
@@ -34,12 +34,12 @@ final class GreaterThanTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -48,7 +48,7 @@ final class GreaterThanTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -65,42 +65,42 @@ final class GreaterThanTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property'      => [
+                'field'      => [
                     [
-                        'query'    => 'select * from "test_objects" where "property" > ?',
+                        'query'    => 'select * from "test_objects" where "field" > ?',
                         'bindings' => [123],
                     ],
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('Int!', 123);
                     },
                     null,
                     null,
                 ],
-                'property.path' => [
+                'field.path' => [
                     [
-                        'query'    => 'select * from "test_objects" where "path"."to"."property" > ?',
+                        'query'    => 'select * from "test_objects" where "path"."to"."field" > ?',
                         'bindings' => [321],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('Int!', 321);
                     },
                     null,
                     null,
                 ],
-                'resolver'      => [
+                'resolver'   => [
                     [
-                        'query'    => 'select * from "test_objects" where "path__to__property" > ?',
+                        'query'    => 'select * from "test_objects" where "path__to__field" > ?',
                         'bindings' => [321],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('Int!', 321);
                     },
                     null,
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                 ],
             ]),

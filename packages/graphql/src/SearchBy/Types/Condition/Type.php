@@ -49,7 +49,7 @@ abstract class Type extends InputObject {
         InputSource|ObjectSource|InterfaceSource $source,
         Context $context,
     ): string {
-        return "Available conditions for `{$source}` (only one property allowed at a time).";
+        return "Available conditions for `{$source}` (only one field allowed at a time).";
     }
 
     #[Override]

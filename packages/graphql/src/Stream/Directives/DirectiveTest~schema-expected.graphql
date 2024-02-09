@@ -139,7 +139,7 @@ enum SortByTypeDirection {
 }
 
 """
-Available conditions for `type TestObject` (only one property allowed at a time).
+Available conditions for `type TestObject` (only one field allowed at a time).
 """
 input SearchByConditionTestObject {
     """
@@ -150,7 +150,7 @@ input SearchByConditionTestObject {
 }
 
 """
-Available conditions for `type TestObject` (only one property allowed at a time).
+Available conditions for `type TestObject` (only one field allowed at a time).
 """
 input SearchByRootTestObject {
     """
@@ -190,7 +190,7 @@ input SearchByScalarID {
 }
 
 """
-Sort clause for `type TestObject` (only one property allowed at a time).
+Sort clause for `type TestObject` (only one field allowed at a time).
 """
 input SortByClauseTestObject {
     """
@@ -201,7 +201,7 @@ input SortByClauseTestObject {
 }
 
 """
-Sort clause for `type TestObject` (only one property allowed at a time).
+Sort clause for `type TestObject` (only one field allowed at a time).
 """
 input SortByRootTestObject {
     """

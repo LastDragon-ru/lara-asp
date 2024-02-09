@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -40,12 +41,12 @@ final class InTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -54,7 +55,7 @@ final class InTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -64,18 +65,18 @@ final class InTest extends TestCase {
     /**
      * @dataProvider dataProviderCallScout
      *
-     * @param array<string, mixed>                   $expected
-     * @param Closure(static): ScoutBuilder          $builderFactory
-     * @param Closure(static): Argument              $argumentFactory
-     * @param Closure(static): Context|null          $contextFactory
-     * @param Closure(object, Property): string|null $resolver
-     * @param Closure():FieldResolver|null           $fieldResolver
+     * @param array<string, mixed>                $expected
+     * @param Closure(static): ScoutBuilder       $builderFactory
+     * @param Closure(static): Argument           $argumentFactory
+     * @param Closure(static): Context|null       $contextFactory
+     * @param Closure(object, Field): string|null $resolver
+     * @param Closure():FieldResolver|null        $fieldResolver
      */
     #[RequiresLaravelScout]
     public function testCallScoutBuilder(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -89,7 +90,7 @@ final class InTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -106,42 +107,42 @@ final class InTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property'      => [
+                'field'      => [
                     [
-                        'query'    => 'select * from "test_objects" where "property" in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "field" in (?, ?, ?)',
                         'bindings' => [1, 2, 3],
                     ],
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
                     null,
                     null,
                 ],
-                'property.path' => [
+                'field.path' => [
                     [
-                        'query'    => 'select * from "test_objects" where "path"."to"."property" in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "path"."to"."field" in (?, ?, ?)',
                         'bindings' => ['a', 'b', 'c'],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
                     },
                     null,
                     null,
                 ],
-                'resolver'      => [
+                'resolver'   => [
                     [
-                        'query'    => 'select * from "test_objects" where "path__to__property" in (?, ?, ?)',
+                        'query'    => 'select * from "test_objects" where "path__to__field" in (?, ?, ?)',
                         'bindings' => ['a', 'b', 'c'],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[String!]!', ['a', 'b', 'c']);
                     },
                     null,
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                 ],
             ]),
@@ -155,13 +156,13 @@ final class InTest extends TestCase {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([
-                'property'              => [
+                'field'                 => [
                     [
                         'whereIns' => [
-                            'path.to.property' => [1, 2, 3],
+                            'path.to.field' => [1, 2, 3],
                         ],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
@@ -196,16 +197,16 @@ final class InTest extends TestCase {
                 'resolver'              => [
                     [
                         'whereIns' => [
-                            'path__to__property' => [1, 2, 3],
+                            'path__to__field' => [1, 2, 3],
                         ],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
                     },
                     null,
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                     null,
                 ],

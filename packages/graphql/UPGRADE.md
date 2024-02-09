@@ -106,7 +106,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   ];
   ```
 
-* [ ] If you are using `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver` instead. 🤝
+* [ ] If you are using `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver` instead. 🤝
 
 * [ ] Added the root type that will contain only extra operators and newly added `field` operator (always present and cannot be removed). The new query syntax is:
 
@@ -147,19 +147,23 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource`
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties` => `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Property` => `LastDragon_ru\LaraASP\GraphQL\Builder\Field`
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`
 
-  * [ ] Removed `BuilderInfo`. To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead
+  * [ ] `BuilderInfo` removed. To get `BuilderInfo` instance within Operator the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead
 
     ```php
     $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo::class)?->value
     ```
 
-  * [ ] Removed `getPlaceholderTypeDefinitionNode()` => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()`
+  * [ ] `getPlaceholderTypeDefinitionNode()` removed => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
-* [ ] Removed `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective`
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective` removed
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
 

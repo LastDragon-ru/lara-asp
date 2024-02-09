@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -34,7 +34,7 @@ interface Operator extends Directive {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object;

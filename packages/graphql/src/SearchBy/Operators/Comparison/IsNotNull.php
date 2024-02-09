@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -38,7 +38,7 @@ class IsNotNull extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -46,9 +46,9 @@ class IsNotNull extends Operator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = $this->resolver->getProperty($builder, $property->getParent());
+        $field = $this->resolver->getField($builder, $field->getParent());
 
-        $builder->whereNotNull($property);
+        $builder->whereNotNull($field);
 
         return $builder;
     }

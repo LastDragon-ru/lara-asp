@@ -225,7 +225,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         ContextContract $context,
     ): object {
@@ -262,7 +262,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         ContextContract $context,
     ): object {
@@ -299,7 +299,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         ContextContract $context,
     ): object {

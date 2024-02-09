@@ -7,9 +7,9 @@ use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -31,13 +31,13 @@ final class ScoutSorterTest extends TestCase {
     /**
      * @dataProvider dataProviderSort
      *
-     * @param array<string, mixed>|Exception         $expected
-     * @param Closure(object, Property): string|null $resolver
-     * @param Closure():FieldResolver|null           $fieldResolver
+     * @param array<string, mixed>|Exception      $expected
+     * @param Closure(object, Field): string|null $resolver
+     * @param Closure():FieldResolver|null        $fieldResolver
      */
     public function testSort(
         array|Exception $expected,
-        Property $property,
+        Field $field,
         Direction $direction,
         ?Closure $resolver,
         ?Closure $fieldResolver,
@@ -48,10 +48,10 @@ final class ScoutSorterTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->atLeast()
                         ->once()
                         ->andReturnUsing($resolver);
@@ -70,7 +70,7 @@ final class ScoutSorterTest extends TestCase {
                 // empty
             },
         ]);
-        $builder = $sorter->sort($builder, $property, $direction, null);
+        $builder = $sorter->sort($builder, $field, $direction, null);
 
         if (is_array($expected)) {
             self::assertScoutQueryEquals($expected, $builder);
@@ -94,7 +94,7 @@ final class ScoutSorterTest extends TestCase {
                         ],
                     ],
                 ],
-                new Property('c', 'd', 'e'),
+                new Field('c', 'd', 'e'),
                 Direction::Desc,
                 null,
                 null,
@@ -108,7 +108,7 @@ final class ScoutSorterTest extends TestCase {
                         ],
                     ],
                 ],
-                new Property('a', 'b'),
+                new Field('a', 'b'),
                 Direction::Asc,
                 null,
                 static function (): FieldResolver {
@@ -117,8 +117,8 @@ final class ScoutSorterTest extends TestCase {
                          * @inheritDoc
                          */
                         #[Override]
-                        public function getField(Model $model, Property $property): string {
-                            return 'properties/'.implode('/', $property->getPath());
+                        public function getField(Model $model, Field $field): string {
+                            return 'properties/'.implode('/', $field->getPath());
                         }
                     };
                 },
@@ -132,10 +132,10 @@ final class ScoutSorterTest extends TestCase {
                         ],
                     ],
                 ],
-                new Property('a', 'b'),
+                new Field('a', 'b'),
                 Direction::Asc,
-                static function (object $builder, Property $property): string {
-                    return implode('__', $property->getPath());
+                static function (object $builder, Field $field): string {
+                    return implode('__', $field->getPath());
                 },
                 null,
             ],

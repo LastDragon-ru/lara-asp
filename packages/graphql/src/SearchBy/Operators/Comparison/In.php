@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -38,17 +38,17 @@ class In extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
-        $property = $this->resolver->getProperty($builder, $property->getParent());
-        $value    = (array) $argument->toPlain();
+        $field = $this->resolver->getField($builder, $field->getParent());
+        $value = (array) $argument->toPlain();
 
         if ($builder instanceof EloquentBuilder || $builder instanceof QueryBuilder) {
-            $builder->whereIn($property, $value);
+            $builder->whereIn($field, $value);
         } elseif ($builder instanceof ScoutBuilder) {
-            $builder->whereIn($property, $value);
+            $builder->whereIn($field, $value);
         } else {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }

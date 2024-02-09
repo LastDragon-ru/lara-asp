@@ -76,7 +76,7 @@ input B {
 }
 
 """
-Sort clause for `input A` (only one property allowed at a time).
+Sort clause for `input A` (only one field allowed at a time).
 """
 input SortByClauseA {
     """
@@ -105,7 +105,7 @@ input SortByClauseA {
 }
 
 """
-Sort clause for `input B` (only one property allowed at a time).
+Sort clause for `input B` (only one field allowed at a time).
 """
 input SortByClauseB {
     """
@@ -128,7 +128,7 @@ input SortByClauseB {
 }
 
 """
-Sort clause for `input A` (only one property allowed at a time).
+Sort clause for `input A` (only one field allowed at a time).
 """
 input SortByRootA {
     """

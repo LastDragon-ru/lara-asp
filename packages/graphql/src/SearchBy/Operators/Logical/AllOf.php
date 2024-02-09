@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
@@ -45,21 +45,21 @@ class AllOf extends Logical {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
         // Scout?
         if (!($builder instanceof ScoutBuilder)) {
-            return parent::call($handler, $builder, $property, $argument, $context);
+            return parent::call($handler, $builder, $field, $argument, $context);
         }
 
         // Build
-        $property   = $property->getParent();
+        $field      = $field->getParent();
         $conditions = $this->getConditions($argument);
 
         foreach ($conditions as $arguments) {
-            $handler->handle($builder, $property, $arguments, $context);
+            $handler->handle($builder, $field, $arguments, $context);
         }
 
         // Return

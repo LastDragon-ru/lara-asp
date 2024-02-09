@@ -224,7 +224,7 @@ input B {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
+Available conditions for `input A` (only one field allowed at a time).
 """
 input SearchByConditionA {
     """
@@ -253,7 +253,7 @@ input SearchByConditionA {
 }
 
 """
-Available conditions for `input B` (only one property allowed at a time).
+Available conditions for `input B` (only one field allowed at a time).
 """
 input SearchByConditionB {
     """
@@ -334,7 +334,7 @@ input SearchByRelationshipB {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
+Available conditions for `input A` (only one field allowed at a time).
 """
 input SearchByRootA {
     """
@@ -363,7 +363,7 @@ input SearchByRootA {
 }
 
 """
-Available conditions for `input B` (only one property allowed at a time).
+Available conditions for `input B` (only one field allowed at a time).
 """
 input SearchByRootB {
     """

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
@@ -27,15 +27,15 @@ class EloquentSorter extends DatabaseSorter {
     // <editor-fold desc="API">
     // =========================================================================
     #[Override]
-    public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object {
+    public function sort(object $builder, Field $field, Direction $direction, Nulls $nulls = null): object {
         // Column
-        $relation = $property->getParent()->getPath();
+        $relation = $field->getParent()->getPath();
 
         if ($relation) {
-            $column = $property->getName();
+            $column = $field->getName();
             $column = $this->getRelationColumn($builder, $relation, $column, $direction);
         } else {
-            $column = $this->resolver->getProperty($builder, $property);
+            $column = $this->resolver->getField($builder, $field);
         }
 
         // Order
@@ -81,7 +81,7 @@ class EloquentSorter extends DatabaseSorter {
         }
 
         // We need only one row
-        $qualified = $this->resolver->getProperty($relation->getQuery(), new Property($alias, $column));
+        $qualified = $this->resolver->getField($relation->getQuery(), new Field($alias, $column));
         $query     = $query->select($qualified)->reorder()->limit(1);
         $query     = $this->sortByColumn($query, $qualified, $direction);
 

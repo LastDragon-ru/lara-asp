@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -37,12 +37,12 @@ final class AnyOfTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -51,7 +51,7 @@ final class AnyOfTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -100,7 +100,7 @@ final class AnyOfTest extends TestCase {
             'Query'    => new CompositeDataProvider(
                 new QueryBuilderDataProvider(),
                 new ArrayDataProvider([
-                    'property'   => [
+                    'field'      => [
                         [
                             'query'    => 'select * from "test_objects" where (("a" = ?) or ("b" != ?))',
                             'bindings' => [
@@ -108,7 +108,7 @@ final class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('operator name should be ignored'),
+                        new Field('operator name should be ignored'),
                         $factory,
                         null,
                         null,
@@ -124,7 +124,7 @@ final class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias', 'operator name should be ignored'),
+                        new Field('alias', 'operator name should be ignored'),
                         $factory,
                         null,
                         null,
@@ -140,11 +140,11 @@ final class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias', 'operator name should be ignored'),
+                        new Field('alias', 'operator name should be ignored'),
                         $factory,
                         null,
-                        static function (object $builder, Property $property): string {
-                            return implode('__', $property->getPath());
+                        static function (object $builder, Field $field): string {
+                            return implode('__', $field->getPath());
                         },
                     ],
                 ]),
@@ -152,7 +152,7 @@ final class AnyOfTest extends TestCase {
             'Eloquent' => new CompositeDataProvider(
                 new EloquentBuilderDataProvider(),
                 new ArrayDataProvider([
-                    'property'   => [
+                    'field'      => [
                         [
                             'query'    => <<<'SQL'
                                 select *
@@ -165,7 +165,7 @@ final class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('operator name should be ignored'),
+                        new Field('operator name should be ignored'),
                         $factory,
                         null,
                         null,
@@ -181,7 +181,7 @@ final class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias', 'operator name should be ignored'),
+                        new Field('alias', 'operator name should be ignored'),
                         $factory,
                         null,
                         null,
@@ -197,11 +197,11 @@ final class AnyOfTest extends TestCase {
                                 22,
                             ],
                         ],
-                        new Property('alias', 'operator name should be ignored'),
+                        new Field('alias', 'operator name should be ignored'),
                         $factory,
                         null,
-                        static function (object $builder, Property $property): string {
-                            return implode('__', $property->getPath());
+                        static function (object $builder, Field $field): string {
+                            return implode('__', $field->getPath());
                         },
                     ],
                 ]),

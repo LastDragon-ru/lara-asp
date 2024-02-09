@@ -6,8 +6,8 @@ use Closure;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -31,12 +31,12 @@ final class QuerySorterTest extends TestCase {
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): QueryBuilder                                     $builder
-     * @param Closure(object, Property): string|null                            $resolver
+     * @param Closure(object, Field): string|null                               $resolver
      */
     public function testSort(
         array|Exception $expected,
         Closure $builder,
-        Property $property,
+        Field $field,
         Direction $direction,
         ?Closure $resolver,
     ): void {
@@ -46,10 +46,10 @@ final class QuerySorterTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->once()
                         ->andReturnUsing($resolver);
                 },
@@ -58,7 +58,7 @@ final class QuerySorterTest extends TestCase {
 
         $sorter  = Container::getInstance()->make(QuerySorter::class);
         $builder = $builder($this);
-        $builder = $sorter->sort($builder, $property, $direction, null);
+        $builder = $sorter->sort($builder, $field, $direction, null);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -82,28 +82,28 @@ final class QuerySorterTest extends TestCase {
                         'query'    => 'select * from "test_objects" order by "a" asc',
                         'bindings' => [],
                     ],
-                    new Property('a'),
+                    new Field('a'),
                     Direction::Asc,
                     null,
                 ],
-                'property.path'    => [
+                'field.path'       => [
                     [
-                        'query'    => 'select * from "test_objects" order by "path"."to"."property" asc',
+                        'query'    => 'select * from "test_objects" order by "path"."to"."field" asc',
                         'bindings' => [],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Field('path', 'to', 'field'),
                     Direction::Asc,
                     null,
                 ],
                 'resolver'         => [
                     [
-                        'query'    => 'select * from "test_objects" order by "path__to__property" asc',
+                        'query'    => 'select * from "test_objects" order by "path__to__field" asc',
                         'bindings' => [],
                     ],
-                    new Property('path', 'to', 'property'),
+                    new Field('path', 'to', 'field'),
                     Direction::Asc,
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                 ],
             ]),

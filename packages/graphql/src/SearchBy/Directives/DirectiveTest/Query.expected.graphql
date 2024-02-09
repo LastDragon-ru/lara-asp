@@ -129,7 +129,7 @@ enum SearchByTypeFlag {
 }
 
 """
-Available conditions for `input InputA` (only one property allowed at a time).
+Available conditions for `input InputA` (only one field allowed at a time).
 """
 input SearchByQueryConditionInputA {
     """
@@ -146,7 +146,7 @@ input SearchByQueryConditionInputA {
 }
 
 """
-Available conditions for `input TypeB` (only one property allowed at a time).
+Available conditions for `input TypeB` (only one field allowed at a time).
 """
 input SearchByQueryConditionTypeB {
     """
@@ -163,7 +163,7 @@ input SearchByQueryConditionTypeB {
 }
 
 """
-Available conditions for `input InputA` (only one property allowed at a time).
+Available conditions for `input InputA` (only one field allowed at a time).
 """
 input SearchByQueryRootInputA {
     """
@@ -192,7 +192,7 @@ input SearchByQueryRootInputA {
 }
 
 """
-Available conditions for `input TypeB` (only one property allowed at a time).
+Available conditions for `input TypeB` (only one field allowed at a time).
 """
 input SearchByQueryRootTypeB {
     """

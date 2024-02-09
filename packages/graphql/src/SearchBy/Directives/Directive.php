@@ -8,8 +8,8 @@ use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Scope;
@@ -75,16 +75,16 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     // <editor-fold desc="Handle">
     // =========================================================================
     #[Override]
-    public function handle(object $builder, Property $property, ArgumentSet $conditions, Context $context): object {
+    public function handle(object $builder, Field $field, ArgumentSet $conditions, Context $context): object {
         // Some relations (eg `HasManyThrough`) require a table name prefix to
         // avoid "SQLSTATE[23000]: Integrity constraint violation: 1052 Column
         // 'xxx' in where clause is ambiguous" error.
-        if ($builder instanceof EloquentBuilder && $property->getPath() === []) {
-            $property = $property->getChild($builder->getModel()->getTable());
+        if ($builder instanceof EloquentBuilder && $field->getPath() === []) {
+            $field = $field->getChild($builder->getModel()->getTable());
         }
 
         // Return
-        return parent::handle($builder, $property, $conditions, $context);
+        return parent::handle($builder, $field, $conditions, $context);
     }
     // </editor-fold>
 }

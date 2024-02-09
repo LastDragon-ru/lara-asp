@@ -203,13 +203,13 @@ enum SearchByTypeFlag {
 
 enum TestEnum {
     """
-    test property
+    description
     """
-    property
+    a
 }
 
 """
-Available conditions for `input TestTypeA` (only one property allowed at a time).
+Available conditions for `input TestTypeA` (only one field allowed at a time).
 """
 input SearchByConditionTestTypeA {
     """
@@ -232,7 +232,7 @@ input SearchByConditionTestTypeA {
 }
 
 """
-Available conditions for `input TestTypeB` (only one property allowed at a time).
+Available conditions for `input TestTypeB` (only one field allowed at a time).
 """
 input SearchByConditionTestTypeB {
     """
@@ -319,7 +319,7 @@ input SearchByRelationshipTestTypeA {
 }
 
 """
-Available conditions for `input TestTypeA` (only one property allowed at a time).
+Available conditions for `input TestTypeA` (only one field allowed at a time).
 """
 input SearchByRootTestTypeA {
     """
@@ -348,7 +348,7 @@ input SearchByRootTestTypeA {
 }
 
 """
-Available conditions for `input TestTypeB` (only one property allowed at a time).
+Available conditions for `input TestTypeB` (only one field allowed at a time).
 """
 input SearchByRootTestTypeB {
     """

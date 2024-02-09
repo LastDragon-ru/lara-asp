@@ -124,16 +124,16 @@ For Implicit type, the following rules are applied (in this order; concrete dire
     * Otherwise - include
 * Ignored (if supported)? - exclude
 
-# Builder property name
+# Builder field/column name
 
-By default `@searchBy`/`@sortBy` will convert nested/related properties into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`BuilderPropertyResolver`](./src/Builder/Contracts/BuilderPropertyResolver.php):
+By default `@searchBy`/`@sortBy` will convert nested/related fields into dot string: eg `{user: {name: asc}}` will be converted into `user.name`. You can redefine this behavior by [`BuilderFieldResolver`](./src/Builder/Contracts/BuilderFieldResolver.php):
 
 ```php
 // AppProvider
 
 $this->app->bind(
-    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver::class,
-    MyBuilderPropertyResolver::class,
+    LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver::class,
+    MyBuilderFieldResolver::class,
 );
 ```
 
@@ -349,7 +349,7 @@ on
     | SCALAR
 
 """
-Available conditions for `type User` (only one property allowed at a time).
+Available conditions for `type User` (only one field allowed at a time).
 """
 input SearchByConditionUser {
     """

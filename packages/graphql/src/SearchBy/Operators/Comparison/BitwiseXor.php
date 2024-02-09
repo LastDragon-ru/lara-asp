@@ -7,7 +7,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
@@ -27,7 +27,7 @@ class BitwiseXor extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -35,9 +35,9 @@ class BitwiseXor extends Operator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = $this->resolver->getProperty($builder, $property->getParent());
-        $value    = $argument->toPlain();
-        $builder  = $builder->where($property, '^', $value);
+        $field   = $this->resolver->getField($builder, $field->getParent());
+        $value   = $argument->toPlain();
+        $builder = $builder->where($field, '^', $value);
 
         return $builder;
     }

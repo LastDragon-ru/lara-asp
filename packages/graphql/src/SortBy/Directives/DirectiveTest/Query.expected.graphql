@@ -48,7 +48,7 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for `input InputA` (only one property allowed at a time).
+Sort clause for `input InputA` (only one field allowed at a time).
 """
 input SortByQueryClauseInputA {
     """
@@ -65,7 +65,7 @@ input SortByQueryClauseInputA {
 }
 
 """
-Sort clause for `input TypeB` (only one property allowed at a time).
+Sort clause for `input TypeB` (only one field allowed at a time).
 """
 input SortByQueryClauseTypeB {
     """
@@ -82,7 +82,7 @@ input SortByQueryClauseTypeB {
 }
 
 """
-Sort clause for `input InputA` (only one property allowed at a time).
+Sort clause for `input InputA` (only one field allowed at a time).
 """
 input SortByQueryRootInputA {
     """
@@ -105,7 +105,7 @@ input SortByQueryRootInputA {
 }
 
 """
-Sort clause for `input TypeB` (only one property allowed at a time).
+Sort clause for `input TypeB` (only one field allowed at a time).
 """
 input SortByQueryRootTypeB {
     """

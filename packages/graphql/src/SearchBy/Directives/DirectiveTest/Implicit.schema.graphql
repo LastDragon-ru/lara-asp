@@ -25,7 +25,7 @@ type A {
     # Should be ignored
     field: B!
     fields: [B!]!
-    property(arg: String): Int!
+    fieldWithArgs(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver")
     stream: [A!]! @stream(
         sortable: false
@@ -64,7 +64,7 @@ interface C {
     # Should be ignored
     field: B!
     fields: [B!]!
-    property(arg: String): Int!
+    fieldWithArgs(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver")
     stream: [A!]! @stream(
         sortable: false

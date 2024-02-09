@@ -10,7 +10,7 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Database\Query\Grammars\SQLiteGrammar;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
@@ -41,13 +41,13 @@ final class NotContainsTest extends TestCase {
      * @param class-string<Grammar>                                   $grammar
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
         string $grammar,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -70,7 +70,7 @@ final class NotContainsTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -89,11 +89,11 @@ final class NotContainsTest extends TestCase {
             new ArrayDataProvider([
                 MySqlGrammar::class     => [
                     [
-                        'query'    => 'select * from `test_objects` where `property` NOT LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from `test_objects` where `field` NOT LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     MySqlGrammar::class,
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
@@ -102,11 +102,11 @@ final class NotContainsTest extends TestCase {
                 ],
                 SQLiteGrammar::class    => [
                     [
-                        'query'    => 'select * from "test_objects" where "property" NOT LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "field" NOT LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
@@ -115,11 +115,11 @@ final class NotContainsTest extends TestCase {
                 ],
                 PostgresGrammar::class  => [
                     [
-                        'query'    => 'select * from "test_objects" where "property" NOT LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "field" NOT LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     PostgresGrammar::class,
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
@@ -128,27 +128,27 @@ final class NotContainsTest extends TestCase {
                 ],
                 SqlServerGrammar::class => [
                     [
-                        'query'    => 'select * from [test_objects] where [property] NOT LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from [test_objects] where [field] NOT LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a![!_!]c!!!%%'],
                     ],
                     SqlServerGrammar::class,
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                     null,
                     null,
                 ],
-                'property.path'         => [
+                'field.path'            => [
                     [
                         'query'    => <<<'SQL'
-                            select * from "test_objects" where "path"."to"."property" NOT LIKE ? ESCAPE '!'
+                            select * from "test_objects" where "path"."to"."field" NOT LIKE ? ESCAPE '!'
                             SQL
                         ,
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
@@ -157,17 +157,17 @@ final class NotContainsTest extends TestCase {
                 ],
                 'resolver'              => [
                     [
-                        'query'    => 'select * from "test_objects" where "path__to__property" NOT LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "path__to__field" NOT LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%%'],
                     ],
                     SQLiteGrammar::class,
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                     null,
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                 ],
             ]),

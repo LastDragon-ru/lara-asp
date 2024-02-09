@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
@@ -423,7 +424,7 @@ final class DirectiveTest extends TestCase {
      *
      * @param array<string, mixed>|Exception         $expected
      * @param Closure(static): ScoutBuilder          $builderFactory
-     * @param Closure(object, Property): string|null $resolver
+     * @param Closure(object, Field): string|null $resolver
      * @param Closure():FieldResolver|null           $fieldResolver
      */
     #[RequiresLaravelScout]
@@ -442,10 +443,10 @@ final class DirectiveTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->atLeast()
                         ->once()
                         ->andReturnUsing($resolver);
@@ -499,7 +500,7 @@ final class DirectiveTest extends TestCase {
      *
      * @param array<string, mixed>|Exception         $expected
      * @param Closure(static): ScoutBuilder          $builderFactory
-     * @param Closure(object, Property): string|null $resolver
+     * @param Closure(object, Field): string|null $resolver
      * @param Closure():FieldResolver|null           $fieldResolver
      */
     #[RequiresLaravelScout]
@@ -521,10 +522,10 @@ final class DirectiveTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->atLeast()
                         ->once()
                         ->andReturnUsing($resolver);
@@ -779,7 +780,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (operators)' => [
-                    new ConditionTooManyProperties(['nullsFirst', 'field']),
+                    new ConditionTooManyFields(['nullsFirst', 'field']),
                     [
                         [
                             'field'      => [
@@ -1001,7 +1002,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many properties' => [
-                    new ConditionTooManyProperties(['id', 'value']),
+                    new ConditionTooManyFields(['id', 'value']),
                     [
                         [
                             'id'    => 'asc',
@@ -1328,8 +1329,8 @@ final class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                     null,
                 ],
@@ -1369,7 +1370,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many properties'    => [
-                    new ConditionTooManyProperties(['a', 'b']),
+                    new ConditionTooManyFields(['a', 'b']),
                     [
                         [
                             'a' => 'asc',
@@ -1496,8 +1497,8 @@ final class DirectiveTest extends TestCase {
                             'b' => 'desc',
                         ],
                     ],
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                     null,
                 ],

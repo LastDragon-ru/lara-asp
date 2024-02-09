@@ -187,7 +187,7 @@ abstract class OperatorsTest__Operator implements Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {

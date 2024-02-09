@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\User;
@@ -37,12 +37,12 @@ final class RelationshipTest extends TestCase {
      * @param BuilderFactory                                                    $builderFactory
      * @param Closure(static): Argument                                         $argumentFactory
      * @param Closure(static): Context|null                                     $contextFactory
-     * @param Closure(object, Property): string|null                            $resolver
+     * @param Closure(object, Field): string|null                               $resolver
      */
     public function testCall(
         array|Exception $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -51,7 +51,7 @@ final class RelationshipTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -67,7 +67,7 @@ final class RelationshipTest extends TestCase {
     public static function dataProviderCall(): array {
         $graphql = <<<'GRAPHQL'
             input TestInput {
-                property: TestOperators
+                field: TestOperators
                 @searchByOperatorCondition
 
                 user: TestRelation
@@ -101,12 +101,12 @@ final class RelationshipTest extends TestCase {
         GRAPHQL;
 
         return [
-            'not a relation'                                 => [
+            'not a relation'                              => [
                 new PropertyIsNotRelation(new User(), 'delete'),
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('delete'),
+                new Field('delete'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation!',
@@ -119,7 +119,7 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{exists: true}'                                 => [
+            '{exists: true}'                              => [
                 [
                     'query'    => 'select * from "users" where exists ('.
                         'select * from "cars" '.
@@ -130,7 +130,7 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('car'),
+                new Field('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation!',
@@ -143,7 +143,7 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{notExists: true}'                              => [
+            '{notExists: true}'                           => [
                 [
                     'query'    => 'select * from "users" where not exists ('.
                         'select * from "cars" '.
@@ -154,7 +154,7 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('car'),
+                new Field('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -167,13 +167,13 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{relation: {property: {equal: 1}}}'             => [
+            '{relation: {field: {equal: 1}}}'             => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where exists (
                             select * from "cars"
                             where "users"."localKey" = "cars"."foreignKey"
-                                and "cars"."property" = ?
+                                and "cars"."field" = ?
                                 and "favorite" = ?
                         )
                     SQL
@@ -183,13 +183,13 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('car'),
+                new Field('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
                         [
                             'where' => [
-                                'property' => [
+                                'field' => [
                                     'equal' => 123,
                                 ],
                             ],
@@ -200,7 +200,7 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{count: {equal: 1}}'                            => [
+            '{count: {equal: 1}}'                         => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where (
@@ -216,7 +216,7 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('car'),
+                new Field('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -231,12 +231,12 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{count: { multiple operators }}'                => [
+            '{count: { multiple operators }}'             => [
                 new ConditionTooManyOperators(['lessThan', 'equal']),
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('car'),
+                new Field('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -252,14 +252,14 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{where: {{property: {equal: 1}}}} (own)'        => [
+            '{where: {{field: {equal: 1}}}} (own)'        => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where exists (
                             select *
                             from "users" as "laravel_reserved_0"
                             where "users"."localKey" = "laravel_reserved_0"."foreignKey"
-                                and "laravel_reserved_0"."property" = ?
+                                and "laravel_reserved_0"."field" = ?
                         )
                     SQL
                     ,
@@ -268,13 +268,13 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('parent'),
+                new Field('parent'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
                         [
                             'where' => [
-                                'property' => [
+                                'field' => [
                                     'equal' => 123,
                                 ],
                             ],
@@ -285,7 +285,7 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            '{relation: {relation: {property: {equal: 1}}}}' => [
+            '{relation: {relation: {field: {equal: 1}}}}' => [
                 [
                     'query'    => <<<'SQL'
                         select
@@ -307,7 +307,7 @@ final class RelationshipTest extends TestCase {
                                             "users"
                                         where
                                             "cars"."foreignKey" = "users"."ownerKey"
-                                            and "users"."property" = ?
+                                            and "users"."field" = ?
                                             and "deleted_at" is null
                                     )
                                     and "favorite" = ?
@@ -319,7 +319,7 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('car'),
+                new Field('car'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
@@ -327,7 +327,7 @@ final class RelationshipTest extends TestCase {
                             'where' => [
                                 'user' => [
                                     'where' => [
-                                        'property' => [
+                                        'field' => [
                                             'equal' => 123,
                                         ],
                                     ],
@@ -340,14 +340,14 @@ final class RelationshipTest extends TestCase {
                 null,
                 null,
             ],
-            'resolver'                                       => [
+            'resolver'                                    => [
                 [
                     'query'    => <<<'SQL'
                         select * from "users" where exists (
                             select *
                             from "users" as "laravel_reserved_0"
                             where "users"."localKey" = "laravel_reserved_0"."foreignKey"
-                                and "laravel_reserved_0"."resolved__property" = ?
+                                and "laravel_reserved_0"."resolved__field" = ?
                         )
                     SQL
                     ,
@@ -356,13 +356,13 @@ final class RelationshipTest extends TestCase {
                 static function (): EloquentBuilder {
                     return User::query();
                 },
-                new Property('parent'),
+                new Field('parent'),
                 static function (self $test) use ($graphql): Argument {
                     return $test->getGraphQLArgument(
                         'TestRelation',
                         [
                             'where' => [
-                                'property' => [
+                                'field' => [
                                     'equal' => 123,
                                 ],
                             ],
@@ -371,8 +371,8 @@ final class RelationshipTest extends TestCase {
                     );
                 },
                 null,
-                static function (object $builder, Property $property): string {
-                    return implode('.', $property->getParent()->getPath()).'.resolved__'.$property->getName();
+                static function (object $builder, Field $field): string {
+                    return implode('.', $field->getParent()->getPath()).'.resolved__'.$field->getName();
                 },
             ],
         ];

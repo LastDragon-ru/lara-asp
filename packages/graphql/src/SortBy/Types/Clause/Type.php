@@ -48,7 +48,7 @@ abstract class Type extends InputObject {
         InputSource|ObjectSource|InterfaceSource $source,
         Context $context,
     ): string {
-        return "Sort clause for `{$source}` (only one property allowed at a time).";
+        return "Sort clause for `{$source}` (only one field allowed at a time).";
     }
 
     #[Override]

@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
@@ -27,7 +27,7 @@ class NotBetween extends Between {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -35,10 +35,10 @@ class NotBetween extends Between {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = $this->resolver->getProperty($builder, $property->getParent());
-        $value    = Cast::toIterable($argument->toPlain());
+        $field = $this->resolver->getField($builder, $field->getParent());
+        $value = Cast::toIterable($argument->toPlain());
 
-        $builder->whereNotBetween($property, $value);
+        $builder->whereNotBetween($field, $value);
 
         return $builder;
     }

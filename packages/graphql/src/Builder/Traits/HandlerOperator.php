@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
@@ -24,11 +24,11 @@ trait HandlerOperator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
-        return $this->handle($handler, $builder, $property, $argument, $context);
+        return $this->handle($handler, $builder, $field, $argument, $context);
     }
 
     /**
@@ -41,7 +41,7 @@ trait HandlerOperator {
     private function handle(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -62,6 +62,6 @@ trait HandlerOperator {
         }
 
         // Apply
-        return $handler->handle($builder, $property, $argument->value, $context);
+        return $handler->handle($builder, $field, $argument->value, $context);
     }
 }

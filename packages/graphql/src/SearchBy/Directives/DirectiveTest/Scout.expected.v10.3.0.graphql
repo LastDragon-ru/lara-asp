@@ -93,7 +93,7 @@ enum EnumIgnored
 }
 
 """
-Available conditions for `input InputA` (only one property allowed at a time).
+Available conditions for `input InputA` (only one field allowed at a time).
 """
 input SearchByScoutConditionInputA {
     """
@@ -227,7 +227,7 @@ input SearchByScoutConditionInputA {
 }
 
 """
-Available conditions for `input InputB` (only one property allowed at a time).
+Available conditions for `input InputB` (only one field allowed at a time).
 """
 input SearchByScoutConditionInputB {
     """
@@ -238,7 +238,7 @@ input SearchByScoutConditionInputB {
 }
 
 """
-Available conditions for `input NestedA` (only one property allowed at a time).
+Available conditions for `input NestedA` (only one field allowed at a time).
 """
 input SearchByScoutConditionNestedA {
     """
@@ -255,7 +255,7 @@ input SearchByScoutConditionNestedA {
 }
 
 """
-Available conditions for `input NestedB` (only one property allowed at a time).
+Available conditions for `input NestedB` (only one field allowed at a time).
 """
 input SearchByScoutConditionNestedB {
     """
@@ -266,7 +266,7 @@ input SearchByScoutConditionNestedB {
 }
 
 """
-Available conditions for `input NestedC` (only one property allowed at a time).
+Available conditions for `input NestedC` (only one field allowed at a time).
 """
 input SearchByScoutConditionNestedC {
     """
@@ -277,7 +277,7 @@ input SearchByScoutConditionNestedC {
 }
 
 """
-Available conditions for `type Object` (only one property allowed at a time).
+Available conditions for `type Object` (only one field allowed at a time).
 """
 input SearchByScoutConditionObject {
     """
@@ -405,7 +405,7 @@ input SearchByScoutConditionObject {
 }
 
 """
-Available conditions for `interface ObjectInterface` (only one property allowed at a time).
+Available conditions for `interface ObjectInterface` (only one field allowed at a time).
 """
 input SearchByScoutConditionObjectInterface {
     """
@@ -533,7 +533,7 @@ input SearchByScoutConditionObjectInterface {
 }
 
 """
-Available conditions for `type ObjectNested` (only one property allowed at a time).
+Available conditions for `type ObjectNested` (only one field allowed at a time).
 """
 input SearchByScoutConditionObjectNested {
     """
@@ -590,7 +590,7 @@ input SearchByScoutEnumEnumAOrNull {
 }
 
 """
-Available conditions for `input InputA` (only one property allowed at a time).
+Available conditions for `input InputA` (only one field allowed at a time).
 """
 input SearchByScoutRootInputA {
     """
@@ -607,7 +607,7 @@ input SearchByScoutRootInputA {
 }
 
 """
-Available conditions for `input InputB` (only one property allowed at a time).
+Available conditions for `input InputB` (only one field allowed at a time).
 """
 input SearchByScoutRootInputB {
     """
@@ -624,7 +624,7 @@ input SearchByScoutRootInputB {
 }
 
 """
-Available conditions for `input NestedA` (only one property allowed at a time).
+Available conditions for `input NestedA` (only one field allowed at a time).
 """
 input SearchByScoutRootNestedA {
     """
@@ -641,7 +641,7 @@ input SearchByScoutRootNestedA {
 }
 
 """
-Available conditions for `input NestedB` (only one property allowed at a time).
+Available conditions for `input NestedB` (only one field allowed at a time).
 """
 input SearchByScoutRootNestedB {
     """
@@ -658,7 +658,7 @@ input SearchByScoutRootNestedB {
 }
 
 """
-Available conditions for `input NestedC` (only one property allowed at a time).
+Available conditions for `input NestedC` (only one field allowed at a time).
 """
 input SearchByScoutRootNestedC {
     """
@@ -675,7 +675,7 @@ input SearchByScoutRootNestedC {
 }
 
 """
-Available conditions for `type Object` (only one property allowed at a time).
+Available conditions for `type Object` (only one field allowed at a time).
 """
 input SearchByScoutRootObject {
     """
@@ -692,7 +692,7 @@ input SearchByScoutRootObject {
 }
 
 """
-Available conditions for `interface ObjectInterface` (only one property allowed at a time).
+Available conditions for `interface ObjectInterface` (only one field allowed at a time).
 """
 input SearchByScoutRootObjectInterface {
     """
@@ -709,7 +709,7 @@ input SearchByScoutRootObjectInterface {
 }
 
 """
-Available conditions for `type ObjectNested` (only one property allowed at a time).
+Available conditions for `type ObjectNested` (only one field allowed at a time).
 """
 input SearchByScoutRootObjectNested {
     """

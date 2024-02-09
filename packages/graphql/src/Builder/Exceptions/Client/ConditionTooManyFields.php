@@ -7,24 +7,24 @@ use Throwable;
 use function implode;
 use function sprintf;
 
-class ConditionTooManyProperties extends ClientException {
+class ConditionTooManyFields extends ClientException {
     /**
-     * @param list<string> $properties
+     * @param list<string> $fields
      */
     public function __construct(
-        protected array $properties,
+        protected readonly array $fields,
         Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
-            'Only one property allowed, found: `%s`.',
-            implode('`, `', $this->getProperties()),
+            'Only one field allowed, found: `%s`.',
+            implode('`, `', $this->getFields()),
         ), $previous);
     }
 
     /**
      * @return list<string>
      */
-    public function getProperties(): array {
-        return $this->properties;
+    public function getFields(): array {
+        return $this->fields;
     }
 }

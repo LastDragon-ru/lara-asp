@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts;
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 
@@ -20,5 +20,5 @@ interface Sorter {
      *
      * @return TBuilder
      */
-    public function sort(object $builder, Property $property, Direction $direction, Nulls $nulls = null): object;
+    public function sort(object $builder, Field $field, Direction $direction, Nulls $nulls = null): object;
 }

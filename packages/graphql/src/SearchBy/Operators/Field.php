@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field as BuilderField;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Condition;
@@ -36,10 +36,10 @@ class Field extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        BuilderField $field,
         Argument $argument,
         Context $context,
     ): object {
-        return $this->handle($handler, $builder, $property->getParent(), $argument, $context);
+        return $this->handle($handler, $builder, $field->getParent(), $argument, $context);
     }
 }

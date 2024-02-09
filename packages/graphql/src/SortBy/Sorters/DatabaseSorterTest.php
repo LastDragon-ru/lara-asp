@@ -7,8 +7,8 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Car;
@@ -46,14 +46,14 @@ final class DatabaseSorterTest extends TestCase {
         Direction $direction,
         ?Nulls $nulls,
     ): void {
-        $resolver = Mockery::mock(BuilderPropertyResolver::class);
+        $resolver = Mockery::mock(BuilderFieldResolver::class);
         $builder  = $builderFactory($this);
         $column   = is_string($columnFactory) ? $columnFactory : $columnFactory($this);
         $sorter   = new class($nullsDefault, $nullsOrderable, $resolver) extends DatabaseSorter {
             public function __construct(
                 private readonly Nulls $nullsDefault,
                 private readonly bool $nullsOrderable,
-                BuilderPropertyResolver $resolver,
+                BuilderFieldResolver $resolver,
             ) {
                 parent::__construct($resolver);
             }
@@ -61,7 +61,7 @@ final class DatabaseSorterTest extends TestCase {
             #[Override]
             public function sort(
                 object $builder,
-                Property $property,
+                Field $field,
                 Direction $direction,
                 Nulls $nulls = null,
             ): object {
@@ -93,13 +93,13 @@ final class DatabaseSorterTest extends TestCase {
     }
 
     public function testGetAlias(): void {
-        $resolver = Mockery::mock(BuilderPropertyResolver::class);
+        $resolver = Mockery::mock(BuilderFieldResolver::class);
         $builder  = User::query()->where('name', '=', 'name');
         $sorter   = new class($resolver) extends DatabaseSorter {
             #[Override]
             public function sort(
                 object $builder,
-                Property $property,
+                Field $field,
                 Direction $direction,
                 Nulls $nulls = null,
             ): object {

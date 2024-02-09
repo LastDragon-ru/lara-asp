@@ -48,7 +48,7 @@ enum SortByTypeDirection {
 }
 
 """
-Sort clause for `type Comment` (only one property allowed at a time).
+Sort clause for `type Comment` (only one field allowed at a time).
 """
 input SortByClauseComment {
     """
@@ -77,7 +77,7 @@ input SortByClauseComment {
 }
 
 """
-Sort clause for `type User` (only one property allowed at a time).
+Sort clause for `type User` (only one field allowed at a time).
 """
 input SortByClauseUser {
     """
@@ -106,7 +106,7 @@ input SortByClauseUser {
 }
 
 """
-Sort clause for `input UsersSort` (only one property allowed at a time).
+Sort clause for `input UsersSort` (only one field allowed at a time).
 """
 input SortByClauseUsersSort {
     """

@@ -270,7 +270,7 @@ enum SearchByTypeFlag {
 }
 
 """
-Available conditions for `type A` (only one property allowed at a time).
+Available conditions for `type A` (only one field allowed at a time).
 """
 input SearchByConditionA {
     """
@@ -353,7 +353,7 @@ input SearchByConditionA {
 }
 
 """
-Available conditions for `type B` (only one property allowed at a time).
+Available conditions for `type B` (only one field allowed at a time).
 """
 input SearchByConditionB {
     """
@@ -376,7 +376,7 @@ input SearchByConditionB {
 }
 
 """
-Available conditions for `interface C` (only one property allowed at a time).
+Available conditions for `interface C` (only one field allowed at a time).
 """
 input SearchByConditionC {
     """
@@ -517,7 +517,7 @@ input SearchByRelationshipB {
 }
 
 """
-Available conditions for `type A` (only one property allowed at a time).
+Available conditions for `type A` (only one field allowed at a time).
 """
 input SearchByRootA {
     """
@@ -546,7 +546,7 @@ input SearchByRootA {
 }
 
 """
-Available conditions for `type B` (only one property allowed at a time).
+Available conditions for `type B` (only one field allowed at a time).
 """
 input SearchByRootB {
     """
@@ -575,7 +575,7 @@ input SearchByRootB {
 }
 
 """
-Available conditions for `interface C` (only one property allowed at a time).
+Available conditions for `interface C` (only one field allowed at a time).
 """
 input SearchByRootC {
     """
@@ -920,6 +920,11 @@ input StreamBuilder {
 
 interface C {
     field: B!
+
+    fieldWithArgs(
+        arg: String
+    ): Int!
+
     fields: [B!]!
 
     """
@@ -934,10 +939,6 @@ interface C {
 
     operators: [B!]
     @searchByOperatorRelationship
-
-    property(
-        arg: String
-    ): Int!
 
     relation: B!
     @hasOne
@@ -1062,6 +1063,11 @@ scalar StreamOffset
 
 type A {
     field: B!
+
+    fieldWithArgs(
+        arg: String
+    ): Int!
+
     fields: [B!]!
 
     """
@@ -1076,10 +1082,6 @@ type A {
 
     operators: [B!]
     @searchByOperatorRelationship
-
-    property(
-        arg: String
-    ): Int!
 
     relation: B!
     @hasOne

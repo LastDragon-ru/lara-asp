@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\EloquentBuilderDataProvider;
@@ -48,12 +48,12 @@ final class EloquentSorterTest extends TestCase {
      *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): EloquentBuilder<EloquentModel>                   $builder
-     * @param Closure(object, Property): string|null                            $resolver
+     * @param Closure(object, Field): string|null                               $resolver
      */
     public function testSort(
         array|Exception $expected,
         Closure $builder,
-        Property $property,
+        Field $field,
         Direction $direction,
         ?Nulls $nulls,
         ?Closure $resolver,
@@ -64,10 +64,10 @@ final class EloquentSorterTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->once()
                         ->andReturnUsing($resolver);
                 },
@@ -76,7 +76,7 @@ final class EloquentSorterTest extends TestCase {
 
         $sorter  = Container::getInstance()->make(EloquentSorter::class);
         $builder = $builder($this);
-        $builder = $sorter->sort($builder, $property, $direction, $nulls);
+        $builder = $sorter->sort($builder, $field, $direction, $nulls);
 
         if (is_array($expected)) {
             self::assertDatabaseQueryEquals($expected, $builder);
@@ -101,7 +101,7 @@ final class EloquentSorterTest extends TestCase {
                             'query'    => 'select * from "test_objects" order by "name" desc',
                             'bindings' => [],
                         ],
-                        new Property('name'),
+                        new Field('name'),
                         Direction::Desc,
                         null,
                         null,
@@ -114,7 +114,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('unknown', 'name'),
+                    new Field('unknown', 'name'),
                     Direction::Asc,
                     null,
                     null,
@@ -157,7 +157,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return Car::query();
                     },
-                    new Property('user', 'organization', 'name'),
+                    new Field('user', 'organization', 'name'),
                     Direction::Desc,
                     null,
                     null,
@@ -203,7 +203,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('car', 'engine', 'id'),
+                    new Field('car', 'engine', 'id'),
                     Direction::Asc,
                     null,
                     null,
@@ -238,7 +238,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('cars', 'name'),
+                    new Field('cars', 'name'),
                     Direction::Asc,
                     null,
                     null,
@@ -274,7 +274,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('avatar', 'id'),
+                    new Field('avatar', 'id'),
                     Direction::Asc,
                     null,
                     null,
@@ -321,7 +321,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('role', 'user', 'name'),
+                    new Field('role', 'user', 'name'),
                     Direction::Desc,
                     null,
                     null,
@@ -369,7 +369,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('roles', 'users', 'name'),
+                    new Field('roles', 'users', 'name'),
                     Direction::Desc,
                     null,
                     null,
@@ -415,7 +415,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('tags', 'users', 'name'),
+                    new Field('tags', 'users', 'name'),
                     Direction::Asc,
                     null,
                     null,
@@ -451,7 +451,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return CarEngine::query();
                     },
-                    new Property('users', 'name'),
+                    new Field('users', 'name'),
                     Direction::Asc,
                     null,
                     null,
@@ -487,7 +487,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('images', 'id'),
+                    new Field('images', 'id'),
                     Direction::Asc,
                     null,
                     null,
@@ -510,7 +510,7 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('name'),
+                    new Field('name'),
                     Direction::Desc,
                     Nulls::First,
                     null,
@@ -533,14 +533,14 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('name'),
+                    new Field('name'),
                     Direction::Asc,
                     null,
-                    static function (object $builder, Property $property): string {
+                    static function (object $builder, Field $field): string {
                         self::assertInstanceOf(EloquentBuilder::class, $builder);
                         self::assertInstanceOf(User::class, $builder->getModel());
 
-                        return 'resolved__'.implode('__', $property->getPath());
+                        return 'resolved__'.implode('__', $field->getPath());
                     },
                 ],
                 'resolver (relation)' => [
@@ -595,14 +595,14 @@ final class EloquentSorterTest extends TestCase {
                     static function (): EloquentBuilder {
                         return User::query();
                     },
-                    new Property('cars', 'user', 'roles', 'name'),
+                    new Field('cars', 'user', 'roles', 'name'),
                     Direction::Asc,
                     null,
-                    static function (object $builder, Property $property): string {
+                    static function (object $builder, Field $field): string {
                         self::assertInstanceOf(EloquentBuilder::class, $builder);
                         self::assertInstanceOf(Role::class, $builder->getModel());
 
-                        return implode('.', $property->getParent()->getPath()).'.resolved__'.$property->getName();
+                        return implode('.', $field->getParent()->getPath()).'.resolved__'.$field->getName();
                     },
                 ],
             ])),
