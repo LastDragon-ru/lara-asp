@@ -12,7 +12,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -137,7 +136,7 @@ abstract class InputObject implements TypeDefinition {
     ): array {
         $type      = $this->getTypeForOperators();
         $operators = $type
-            ? $manipulator->getTypeOperators($this->getScope(), $type, $context)
+            ? $manipulator->getTypeOperators($type, $this->getScope(), $source, $context)
             : [];
 
         return $operators;
@@ -300,17 +299,10 @@ abstract class InputObject implements TypeDefinition {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): ?InputValueDefinitionNode {
-        // Builder?
-        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
-
-        if (!$builder) {
-            return null;
-        }
-
         // Operator?
         [$operator, $type] = $this->getFieldOperator($manipulator, $field, $context) ?? [null, null];
 
-        if ($operator === null || !$operator->isAvailable($builder, $context)) {
+        if ($operator === null || !$operator->isAvailable($manipulator, $field, $context)) {
             return null;
         }
 
@@ -348,7 +340,7 @@ abstract class InputObject implements TypeDefinition {
             $type = $this->getTypeForFieldOperator();
 
             if ($type) {
-                $operators = $manipulator->getTypeOperators($this->getScope(), $type, $context);
+                $operators = $manipulator->getTypeOperators($type, $this->getScope(), $field, $context);
                 $operator  = reset($operators) ?: null;
             }
         }
@@ -371,13 +363,6 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
         string $directive,
     ): ?Operator {
-        // Builder?
-        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
-
-        if (!$builder) {
-            return null;
-        }
-
         // Directive?
         $operator = null;
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
@@ -386,8 +371,8 @@ abstract class InputObject implements TypeDefinition {
             $operator = $manipulator->getDirective(
                 $node,
                 $directive,
-                static function (Operator $operator) use ($builder, $context): bool {
-                    return $operator->isAvailable($builder, $context);
+                static function (Operator $operator) use ($manipulator, $field, $context): bool {
+                    return $operator->isAvailable($manipulator, $field, $context);
                 },
             );
 

@@ -3,9 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
 use GraphQL\Language\DirectiveLocation;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Override;
@@ -45,4 +49,22 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
 
         return $locations;
     }
+
+    #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        // Builder?
+        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
+
+        if (!$builder || !$this->isBuilderSupported($builder)) {
+            return false;
+        }
+
+        // Ok
+        return true;
+    }
+
+    /**
+     * @param class-string $builder
+     */
+    abstract protected function isBuilderSupported(string $builder): bool;
 }

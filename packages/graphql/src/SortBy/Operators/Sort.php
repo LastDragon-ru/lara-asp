@@ -48,7 +48,7 @@ class Sort extends Operator {
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return $this->factory->isSupported($builder);
     }
 

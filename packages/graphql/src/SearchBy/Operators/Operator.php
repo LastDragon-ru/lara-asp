@@ -20,7 +20,7 @@ abstract class Operator extends OperatorDirective implements Marker {
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true)
             || is_a($builder, QueryBuilder::class, true);
     }

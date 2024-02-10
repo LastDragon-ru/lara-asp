@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -123,6 +124,7 @@ final class ManipulatorTest extends TestCase {
         };
 
         // Manipulator
+        $source      = Mockery::mock(TypeSource::class);
         $context     = (new Context())->override([
             HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo(
                 new BuilderInfo($builder::class, $builder::class),
@@ -144,7 +146,7 @@ final class ManipulatorTest extends TestCase {
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, $context)),
+            array_map($map, $manipulator->getTypeOperators(Operators::ID, $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
@@ -153,33 +155,42 @@ final class ManipulatorTest extends TestCase {
             ],
             array_map(
                 $map,
-                $manipulator->getTypeOperators($operators->getScope(), Operators::ID, $context, Operators::Int),
+                $manipulator->getTypeOperators(
+                    Operators::ID,
+                    $operators->getScope(),
+                    $source,
+                    $context,
+                    Operators::Int,
+                ),
             ),
         );
         self::assertEquals(
             [
                 // empty (another scope)
             ],
-            array_map($map, $manipulator->getTypeOperators($scope::class, Operators::ID, $context)),
+            array_map($map, $manipulator->getTypeOperators(Operators::ID, $scope::class, $source, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestScalar', $context)),
+            array_map($map, $manipulator->getTypeOperators('TestScalar', $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestOperators', $context)),
+            array_map($map, $manipulator->getTypeOperators('TestOperators', $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
                 $cOperator,
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestBuiltinOperators', $context)),
+            array_map(
+                $map,
+                $manipulator->getTypeOperators('TestBuiltinOperators', $operators->getScope(), $source, $context),
+            ),
         );
     }
     // </editor-fold>
@@ -217,7 +228,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function isAvailable(string $builder, ContextContract $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, stdClass::class, true);
     }
 
@@ -254,7 +265,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function isAvailable(string $builder, ContextContract $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return false;
     }
 
@@ -291,7 +302,7 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function isAvailable(string $builder, ContextContract $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, stdClass::class, true);
     }
 

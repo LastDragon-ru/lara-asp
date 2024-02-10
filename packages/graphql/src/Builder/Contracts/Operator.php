@@ -13,14 +13,11 @@ interface Operator extends Directive {
      */
     public static function getName(): string;
 
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool;
+
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string;
 
     public function getFieldDescription(): ?string;
-
-    /**
-     * @param class-string $builder
-     */
-    public function isAvailable(string $builder, Context $context): bool;
 
     /**
      * @template TBuilder of object

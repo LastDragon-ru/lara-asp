@@ -18,7 +18,6 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -116,19 +115,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @template T of Operator
      *
-     * @param class-string<Scope> $scope
      * @param class-string<T>     $operator
+     * @param class-string<Scope> $scope
      *
      * @return T|null
      */
-    public function getOperator(string $scope, string $operator, Context $context): ?Operator {
-        // Builder?
-        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
-
-        if (!$builder) {
-            return null;
-        }
-
+    public function getOperator(string $operator, string $scope, TypeSource $source, Context $context): ?Operator {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
@@ -139,7 +131,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Available?
         $operator = $provider->getOperator($operator);
 
-        if (!$operator->isAvailable($builder, $context)) {
+        if (!$operator->isAvailable($this, $source, $context)) {
             return null;
         }
 
@@ -152,18 +144,17 @@ class Manipulator extends AstManipulator implements TypeProvider {
      *
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, string $type, Context $context, string ...$extras): array {
+    public function getTypeOperators(
+        string $type,
+        string $scope,
+        TypeSource $source,
+        Context $context,
+        string ...$extras,
+    ): array {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
         if (!$provider) {
-            return [];
-        }
-
-        // Builder?
-        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
-
-        if (!$builder) {
             return [];
         }
 
@@ -179,7 +170,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                     $directiveType = $directive->getType();
 
                     if ($type !== $directiveType) {
-                        array_push($operators, ...$this->getTypeOperators($scope, $directiveType, $context));
+                        array_push($operators, ...$this->getTypeOperators($directiveType, $scope, $source, $context));
                     } else {
                         array_push($operators, ...$provider->getOperators($type));
                     }
@@ -201,7 +192,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Extra
         foreach ($extras as $extra) {
-            array_push($operators, ...$this->getTypeOperators($scope, $extra, $context));
+            array_push($operators, ...$this->getTypeOperators($extra, $scope, $source, $context));
         }
 
         // Unique
@@ -212,7 +203,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 continue;
             }
 
-            if (!$operator->isAvailable($builder, $context)) {
+            if (!$operator->isAvailable($this, $source, $context)) {
                 continue;
             }
 

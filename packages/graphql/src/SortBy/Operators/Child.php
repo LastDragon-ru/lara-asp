@@ -32,7 +32,7 @@ class Child extends Operator {
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, EloquentBuilder::class, true)
             || is_a($builder, ScoutBuilder::class, true);
     }
