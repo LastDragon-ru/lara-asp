@@ -5,11 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
@@ -86,9 +84,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     #[Override]
-    public function getTypeSource(
-        TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type,
-    ): TypeSource {
+    public function getTypeSource(TypeDefinitionNode|TypeNode|Type $type): TypeSource {
         $source = null;
 
         if ($type instanceof InputObjectTypeDefinitionNode || $type instanceof InputObjectType) {
