@@ -20,12 +20,12 @@ class Root extends Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(RootType::class, $source, $context);
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Directive root.';
     }
 }

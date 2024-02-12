@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
@@ -24,7 +24,7 @@ class Contains extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Contains.';
     }
 
@@ -32,7 +32,7 @@ class Contains extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -41,13 +41,13 @@ class Contains extends Operator {
         }
 
         $character = $this->getEscapeCharacter();
-        $property  = $this->resolver->getProperty($builder, $property->getParent());
-        $property  = $builder->getGrammar()->wrap($property);
+        $field     = $this->resolver->getField($builder, $field->getParent());
+        $field     = $builder->getGrammar()->wrap($field);
         $value     = (string) Cast::toStringable($argument->toPlain());
         $not       = $this->isNegated() ? ' NOT' : '';
 
         $builder->whereRaw(
-            "{$property}{$not} LIKE ? ESCAPE '{$character}'",
+            "{$field}{$not} LIKE ? ESCAPE '{$character}'",
             [
                 $this->value($this->escape($builder, $value)),
             ],

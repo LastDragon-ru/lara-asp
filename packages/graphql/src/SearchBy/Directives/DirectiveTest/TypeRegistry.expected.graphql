@@ -203,13 +203,13 @@ enum SearchByTypeFlag {
 
 enum TestEnum {
     """
-    test property
+    description
     """
-    property
+    a
 }
 
 """
-Available conditions for `input TestTypeA` (only one property allowed at a time).
+Available conditions for `input TestTypeA` (only one field allowed at a time).
 """
 input SearchByConditionTestTypeA {
     """
@@ -232,13 +232,13 @@ input SearchByConditionTestTypeA {
 }
 
 """
-Available conditions for `input TestTypeB` (only one property allowed at a time).
+Available conditions for `input TestTypeB` (only one field allowed at a time).
 """
 input SearchByConditionTestTypeB {
     """
     Relationship condition.
     """
-    child: SearchByRelationshipRelationTestTypeA
+    child: SearchByRelationshipTestTypeA
     @searchByOperatorRelationship
 
     """
@@ -296,7 +296,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationTestTypeA {
+input SearchByRelationshipTestTypeA {
     """
     Count conditions.
     """
@@ -319,7 +319,7 @@ input SearchByRelationshipRelationTestTypeA {
 }
 
 """
-Available conditions for `input TestTypeA` (only one property allowed at a time).
+Available conditions for `input TestTypeA` (only one field allowed at a time).
 """
 input SearchByRootTestTypeA {
     """
@@ -348,7 +348,7 @@ input SearchByRootTestTypeA {
 }
 
 """
-Available conditions for `input TestTypeB` (only one property allowed at a time).
+Available conditions for `input TestTypeB` (only one field allowed at a time).
 """
 input SearchByRootTestTypeB {
     """

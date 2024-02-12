@@ -44,7 +44,6 @@ on
 directive @sortByOperatorRandom
 on
     | ENUM
-    | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
@@ -93,7 +92,7 @@ enum Value {
 }
 
 """
-Sort clause for `input Nested` (only one property allowed at a time).
+Sort clause for `input Nested` (only one field allowed at a time).
 """
 input SortByClauseNested {
     """
@@ -110,7 +109,7 @@ input SortByClauseNested {
 }
 
 """
-Sort clause for `type Object` (only one property allowed at a time).
+Sort clause for `type Object` (only one field allowed at a time).
 """
 input SortByClauseObject {
     """
@@ -178,7 +177,7 @@ input SortByClauseObject {
 }
 
 """
-Sort clause for `interface ObjectInterface` (only one property allowed at a time).
+Sort clause for `interface ObjectInterface` (only one field allowed at a time).
 """
 input SortByClauseObjectInterface {
     """
@@ -246,7 +245,7 @@ input SortByClauseObjectInterface {
 }
 
 """
-Sort clause for `type ObjectNested` (only one property allowed at a time).
+Sort clause for `type ObjectNested` (only one field allowed at a time).
 """
 input SortByClauseObjectNested {
     """
@@ -257,7 +256,7 @@ input SortByClauseObjectNested {
 }
 
 """
-Sort clause for `input Properties` (only one property allowed at a time).
+Sort clause for `input Properties` (only one field allowed at a time).
 """
 input SortByClauseProperties {
     """
@@ -337,7 +336,7 @@ input SortByClauseProperties {
 }
 
 """
-Sort clause for `input Properties` (only one property allowed at a time).
+Sort clause for `input Properties` (only one field allowed at a time).
 """
 input SortByQueryClauseProperties {
     """
@@ -405,7 +404,7 @@ input SortByQueryClauseProperties {
 }
 
 """
-Sort clause for `input Properties` (only one property allowed at a time).
+Sort clause for `input Properties` (only one field allowed at a time).
 """
 input SortByQueryRootProperties {
     """
@@ -434,7 +433,7 @@ input SortByQueryRootProperties {
 }
 
 """
-Sort clause for `type Object` (only one property allowed at a time).
+Sort clause for `type Object` (only one field allowed at a time).
 """
 input SortByRootObject {
     """
@@ -463,7 +462,7 @@ input SortByRootObject {
 }
 
 """
-Sort clause for `interface ObjectInterface` (only one property allowed at a time).
+Sort clause for `interface ObjectInterface` (only one field allowed at a time).
 """
 input SortByRootObjectInterface {
     """
@@ -492,7 +491,7 @@ input SortByRootObjectInterface {
 }
 
 """
-Sort clause for `input Properties` (only one property allowed at a time).
+Sort clause for `input Properties` (only one field allowed at a time).
 """
 input SortByRootProperties {
     """
@@ -521,7 +520,7 @@ input SortByRootProperties {
 }
 
 """
-Sort clause for `input Nested` (only one property allowed at a time).
+Sort clause for `input Nested` (only one field allowed at a time).
 """
 input SortByScoutClauseNested {
     """
@@ -538,7 +537,7 @@ input SortByScoutClauseNested {
 }
 
 """
-Sort clause for `input Properties` (only one property allowed at a time).
+Sort clause for `input Properties` (only one field allowed at a time).
 """
 input SortByScoutClauseProperties {
     """
@@ -618,7 +617,7 @@ input SortByScoutClauseProperties {
 }
 
 """
-Sort clause for `input Properties` (only one property allowed at a time).
+Sort clause for `input Properties` (only one field allowed at a time).
 """
 input SortByScoutRootProperties {
     """

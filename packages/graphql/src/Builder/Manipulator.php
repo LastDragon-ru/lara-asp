@@ -5,11 +5,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
@@ -18,8 +16,8 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -27,6 +25,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorImpossibleToCreateField;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidTypeName;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
@@ -85,9 +84,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     #[Override]
-    public function getTypeSource(
-        TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type,
-    ): TypeSource {
+    public function getTypeSource(TypeDefinitionNode|TypeNode|Type $type): TypeSource {
         $source = null;
 
         if ($type instanceof InputObjectTypeDefinitionNode || $type instanceof InputObjectType) {
@@ -115,13 +112,28 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @template T of Operator
      *
-     * @param class-string<Scope> $scope
      * @param class-string<T>     $operator
+     * @param class-string<Scope> $scope
      *
-     * @return T
+     * @return T|null
      */
-    public function getOperator(string $scope, string $operator): Operator {
-        return Container::getInstance()->make($operator);
+    public function getOperator(string $operator, string $scope, TypeSource $source, Context $context): ?Operator {
+        // Provider?
+        $provider = $this->operators[$scope] ?? null;
+
+        if (!$provider) {
+            return null;
+        }
+
+        // Available?
+        $operator = $provider->getOperator($operator);
+
+        if (!$operator->isAvailable($this, $source, $context)) {
+            return null;
+        }
+
+        // Return
+        return $operator;
     }
 
     /**
@@ -129,7 +141,13 @@ class Manipulator extends AstManipulator implements TypeProvider {
      *
      * @return list<Operator>
      */
-    public function getTypeOperators(string $scope, string $type, Context $context, string ...$extras): array {
+    public function getTypeOperators(
+        string $type,
+        string $scope,
+        TypeSource $source,
+        Context $context,
+        string ...$extras,
+    ): array {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
@@ -137,40 +155,8 @@ class Manipulator extends AstManipulator implements TypeProvider {
             return [];
         }
 
-        // Builder?
-        $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
-
-        if (!$builder) {
-            return [];
-        }
-
         // Operators
-        $operators = [];
-
-        if ($this->isTypeDefinitionExists($type)) {
-            $node       = $this->getTypeDefinition($type);
-            $directives = $this->getDirectives($node, $scope);
-
-            foreach ($directives as $directive) {
-                if ($directive instanceof OperatorsDirective) {
-                    $directiveType = $directive->getType();
-
-                    if ($type !== $directiveType) {
-                        array_push($operators, ...$this->getTypeOperators($scope, $directiveType, $context));
-                    } else {
-                        array_push($operators, ...$provider->getOperators($type));
-                    }
-                } elseif ($directive instanceof Operator) {
-                    $operators[] = $directive;
-                } else {
-                    // empty
-                }
-            }
-        }
-
-        if (!$operators && $provider->hasOperators($type)) {
-            array_push($operators, ...$provider->getOperators($type));
-        }
+        $operators = $this->getOperators($provider, $scope, $type);
 
         if (!$operators) {
             return [];
@@ -178,7 +164,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Extra
         foreach ($extras as $extra) {
-            array_push($operators, ...$this->getTypeOperators($scope, $extra, $context));
+            array_push($operators, ...$this->getOperators($provider, $scope, $extra));
         }
 
         // Unique
@@ -189,7 +175,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 continue;
             }
 
-            if (!$operator->isAvailable($builder, $context)) {
+            if (!$operator->isAvailable($this, $source, $context)) {
                 continue;
             }
 
@@ -228,8 +214,14 @@ class Manipulator extends AstManipulator implements TypeProvider {
             array_unshift($directives, Parser::directive('@'.DirectiveLocator::directiveName($operator::class)));
         }
 
+        // Type?
+        $type = $operator->getFieldType($this, $source, $context);
+
+        if (!$type) {
+            throw new OperatorImpossibleToCreateField($operator, $source, $context);
+        }
+
         // Definition
-        $type        = $operator->getFieldType($this, $source, $context);
         $field       = $field ?: $operator::getName();
         $directives  = implode(
             "\n",
@@ -239,7 +231,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             ),
         );
         $description = $description ?: $operator->getFieldDescription();
-        $description = BlockString::print($description);
+        $description = BlockString::print((string) $description);
 
         return <<<GRAPHQL
             {$description}
@@ -295,6 +287,51 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         $this->removeTypeDefinition($name);
+    }
+
+    /**
+     * @param class-string<Scope> $scope
+     *
+     * @return array<array-key, Operator>
+     */
+    private function getOperators(Operators $provider, string $scope, string $type): array {
+        $ignored   = false;
+        $operators = [];
+
+        if ($this->isTypeDefinitionExists($type)) {
+            $node       = $this->getTypeDefinition($type);
+            $directives = $this->getDirectives($node);
+
+            foreach ($directives as $directive) {
+                if (!($directive instanceof $scope)) {
+                    continue;
+                }
+
+                if ($directive instanceof OperatorsDirective) {
+                    $directiveType = $directive->getType();
+
+                    if ($type !== $directiveType) {
+                        array_push($operators, ...$this->getOperators($provider, $scope, $directiveType));
+                    } else {
+                        array_push($operators, ...$provider->getOperators($type));
+                    }
+                } elseif ($directive instanceof Operator) {
+                    $operators[] = $directive;
+                } elseif ($directive instanceof Ignored) {
+                    $ignored   = true;
+                    $operators = [];
+                    break;
+                } else {
+                    // empty
+                }
+            }
+        }
+
+        if (!$operators && !$ignored && $provider->hasOperators($type)) {
+            array_push($operators, ...$provider->getOperators($type));
+        }
+
+        return $operators;
     }
     // </editor-fold>
 }

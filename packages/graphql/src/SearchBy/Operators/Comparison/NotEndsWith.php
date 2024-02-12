@@ -11,7 +11,7 @@ class NotEndsWith extends EndsWith {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Not ends with a string.';
     }
 

@@ -8,18 +8,18 @@ use Throwable;
 use function implode;
 use function sprintf;
 
-class ConditionTooManyOperators extends ClientException {
+class ConditionTooManyFields extends ClientException {
     /**
-     * @param list<string> $operators
+     * @param list<string> $fields
      */
     public function __construct(
-        protected array $operators,
+        protected readonly array $fields,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Only one operator allowed, found: `%s`.',
-                implode('`, `', Arr::sort($this->getOperators())),
+                'Only one field allowed, found: `%s`.',
+                implode('`, `', Arr::sort($this->getFields())),
             ),
             $previous,
         );
@@ -28,7 +28,7 @@ class ConditionTooManyOperators extends ClientException {
     /**
      * @return list<string>
      */
-    public function getOperators(): array {
-        return $this->operators;
+    public function getFields(): array {
+        return $this->fields;
     }
 }

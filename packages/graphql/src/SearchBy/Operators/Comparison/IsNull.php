@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Flag;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -25,12 +25,12 @@ class IsNull extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Is NULL?';
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Flag::class, $source, $context);
     }
 
@@ -38,7 +38,7 @@ class IsNull extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -46,9 +46,9 @@ class IsNull extends Operator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = $this->resolver->getProperty($builder, $property->getParent());
+        $field = $this->resolver->getField($builder, $field->getParent());
 
-        $builder->whereNull($property);
+        $builder->whereNull($field);
 
         return $builder;
     }

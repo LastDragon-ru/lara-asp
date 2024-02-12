@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
@@ -34,12 +34,12 @@ final class NotEndsWithTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -48,7 +48,7 @@ final class NotEndsWithTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -65,48 +65,48 @@ final class NotEndsWithTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property'      => [
+                'field'      => [
                     [
-                        'query'    => 'select * from "test_objects" where "property" NOT LIKE ? ESCAPE \'!\'',
+                        'query'    => 'select * from "test_objects" where "field" NOT LIKE ? ESCAPE \'!\'',
                         'bindings' => ['%!%a[!_]c!!!%'],
                     ],
-                    new Property('property', 'operator name should be ignored'),
+                    new Field('field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', '%a[_]c!%');
                     },
                     null,
                     null,
                 ],
-                'property.path' => [
+                'field.path' => [
                     [
                         'query'    => <<<'SQL'
-                            select * from "test_objects" where "path"."to"."property" NOT LIKE ? ESCAPE '!'
+                            select * from "test_objects" where "path"."to"."field" NOT LIKE ? ESCAPE '!'
                             SQL
                         ,
                         'bindings' => ['%abc'],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', 'abc');
                     },
                     null,
                     null,
                 ],
-                'resolver'      => [
+                'resolver'   => [
                     [
                         'query'    => <<<'SQL'
-                            select * from "test_objects" where "path__to__property" NOT LIKE ? ESCAPE '!'
+                            select * from "test_objects" where "path__to__field" NOT LIKE ? ESCAPE '!'
                             SQL
                         ,
                         'bindings' => ['%abc'],
                     ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
+                    new Field('path', 'to', 'field', 'operator name should be ignored'),
                     static function (self $test): Argument {
                         return $test->getGraphQLArgument('String!', 'abc');
                     },
                     null,
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                 ],
             ]),

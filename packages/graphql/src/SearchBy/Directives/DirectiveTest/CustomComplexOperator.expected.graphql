@@ -215,7 +215,7 @@ input SearchByComplexCustomInt {
 }
 
 """
-Available conditions for `input Child` (only one property allowed at a time).
+Available conditions for `input Child` (only one field allowed at a time).
 """
 input SearchByConditionChild {
     """
@@ -226,7 +226,7 @@ input SearchByConditionChild {
 }
 
 """
-Available conditions for `input Properties` (only one property allowed at a time).
+Available conditions for `input Properties` (only one field allowed at a time).
 """
 input SearchByConditionProperties {
     """
@@ -246,7 +246,7 @@ input SearchByConditionProperties {
     """
     Relationship condition.
     """
-    defaultOperator: SearchByRelationshipRelationChild
+    defaultOperator: SearchByRelationshipChild
     @searchByOperatorRelationship
 }
 
@@ -257,7 +257,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationChild {
+input SearchByRelationshipChild {
     """
     Count conditions.
     """
@@ -280,7 +280,7 @@ input SearchByRelationshipRelationChild {
 }
 
 """
-Available conditions for `input Child` (only one property allowed at a time).
+Available conditions for `input Child` (only one field allowed at a time).
 """
 input SearchByRootChild {
     """
@@ -309,7 +309,7 @@ input SearchByRootChild {
 }
 
 """
-Available conditions for `input Properties` (only one property allowed at a time).
+Available conditions for `input Properties` (only one field allowed at a time).
 """
 input SearchByRootProperties {
     """

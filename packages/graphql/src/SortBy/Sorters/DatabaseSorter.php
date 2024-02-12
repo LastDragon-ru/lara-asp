@@ -10,7 +10,7 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Database\Query\Grammars\SQLiteGrammar;
 use Illuminate\Database\Query\Grammars\SqlServerGrammar;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
@@ -30,7 +30,7 @@ use function mb_strtoupper;
  */
 abstract class DatabaseSorter implements Sorter {
     public function __construct(
-        protected readonly BuilderPropertyResolver $resolver,
+        protected readonly BuilderFieldResolver $resolver,
     ) {
         // empty
     }

@@ -169,17 +169,17 @@ abstract class OperatorsTest__Operator implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
         throw new Exception('Should not be called');
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         throw new Exception('Should not be called');
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    public function getFieldDescription(): ?string {
         throw new Exception('Should not be called');
     }
 
@@ -187,7 +187,7 @@ abstract class OperatorsTest__Operator implements Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {

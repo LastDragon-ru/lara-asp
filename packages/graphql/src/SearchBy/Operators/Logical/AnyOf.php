@@ -17,14 +17,14 @@ class AnyOf extends Logical {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Any of the conditions must be true.';
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         $parent = parent::getFieldType($provider, $source, $context);
-        $type   = "[{$parent}!]";
+        $type   = $parent ? "[{$parent}!]" : null;
 
         return $type;
     }

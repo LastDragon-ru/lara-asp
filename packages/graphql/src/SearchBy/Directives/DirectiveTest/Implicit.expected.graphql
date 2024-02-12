@@ -270,7 +270,7 @@ enum SearchByTypeFlag {
 }
 
 """
-Available conditions for `type A` (only one property allowed at a time).
+Available conditions for `type A` (only one field allowed at a time).
 """
 input SearchByConditionA {
     """
@@ -288,49 +288,49 @@ input SearchByConditionA {
     """
     Relationship condition.
     """
-    operator: SearchByRelationshipRelationB
+    operator: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    operators: SearchByRelationshipRelationB
+    operators: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relation: SearchByRelationshipRelationB
+    relation: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationWithArgs: SearchByRelationshipRelationA
+    relationWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relations: SearchByRelationshipRelationB
+    relations: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginated: SearchByRelationshipRelationB
+    relationsPaginated: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    relationsPaginatedWithArgs: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsWithArgs: SearchByRelationshipRelationA
+    relationsWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
@@ -353,7 +353,7 @@ input SearchByConditionA {
 }
 
 """
-Available conditions for `type B` (only one property allowed at a time).
+Available conditions for `type B` (only one field allowed at a time).
 """
 input SearchByConditionB {
     """
@@ -371,12 +371,12 @@ input SearchByConditionB {
     """
     Relationship condition.
     """
-    parent: SearchByRelationshipRelationA
+    parent: SearchByRelationshipA
     @searchByOperatorRelationship
 }
 
 """
-Available conditions for `interface C` (only one property allowed at a time).
+Available conditions for `interface C` (only one field allowed at a time).
 """
 input SearchByConditionC {
     """
@@ -394,49 +394,49 @@ input SearchByConditionC {
     """
     Relationship condition.
     """
-    operator: SearchByRelationshipRelationB
+    operator: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    operators: SearchByRelationshipRelationB
+    operators: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relation: SearchByRelationshipRelationB
+    relation: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationWithArgs: SearchByRelationshipRelationA
+    relationWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relations: SearchByRelationshipRelationB
+    relations: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginated: SearchByRelationshipRelationB
+    relationsPaginated: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsPaginatedWithArgs: SearchByRelationshipRelationB
+    relationsPaginatedWithArgs: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    relationsWithArgs: SearchByRelationshipRelationA
+    relationsWithArgs: SearchByRelationshipA
     @searchByOperatorRelationship
 
     """
@@ -465,7 +465,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationA {
+input SearchByRelationshipA {
     """
     Count conditions.
     """
@@ -494,7 +494,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationB {
+input SearchByRelationshipB {
     """
     Count conditions.
     """
@@ -517,7 +517,7 @@ input SearchByRelationshipRelationB {
 }
 
 """
-Available conditions for `type A` (only one property allowed at a time).
+Available conditions for `type A` (only one field allowed at a time).
 """
 input SearchByRootA {
     """
@@ -546,7 +546,7 @@ input SearchByRootA {
 }
 
 """
-Available conditions for `type B` (only one property allowed at a time).
+Available conditions for `type B` (only one field allowed at a time).
 """
 input SearchByRootB {
     """
@@ -575,7 +575,7 @@ input SearchByRootB {
 }
 
 """
-Available conditions for `interface C` (only one property allowed at a time).
+Available conditions for `interface C` (only one field allowed at a time).
 """
 input SearchByRootC {
     """
@@ -920,6 +920,11 @@ input StreamBuilder {
 
 interface C {
     field: B!
+
+    fieldWithArgs(
+        arg: String
+    ): Int!
+
     fields: [B!]!
 
     """
@@ -934,10 +939,6 @@ interface C {
 
     operators: [B!]
     @searchByOperatorRelationship
-
-    property(
-        arg: String
-    ): Int!
 
     relation: B!
     @hasOne
@@ -1062,6 +1063,11 @@ scalar StreamOffset
 
 type A {
     field: B!
+
+    fieldWithArgs(
+        arg: String
+    ): Int!
+
     fields: [B!]!
 
     """
@@ -1076,10 +1082,6 @@ type A {
 
     operators: [B!]
     @searchByOperatorRelationship
-
-    property(
-        arg: String
-    ): Int!
 
     relation: B!
     @hasOne

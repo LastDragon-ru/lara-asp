@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
-use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -10,28 +9,13 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Flag;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
-use function array_merge;
-
 class Random extends Operator {
-    // <editor-fold desc="Directive">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected static function getDirectiveLocations(): array {
-        return array_merge(parent::getDirectiveLocations(), [
-            DirectiveLocation::FIELD_DEFINITION,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Operator">
     // =========================================================================
     #[Override]
@@ -40,12 +24,12 @@ class Random extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'By random';
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Flag::class, $source, $context);
     }
 
@@ -53,7 +37,7 @@ class Random extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {

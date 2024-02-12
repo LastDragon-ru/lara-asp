@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
-use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
@@ -20,11 +20,8 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorSortDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction;
 use Override;
 use ReflectionClass;
-
-use function is_string;
 
 abstract class Type extends InputObject {
     #[Override]
@@ -48,7 +45,7 @@ abstract class Type extends InputObject {
         InputSource|ObjectSource|InterfaceSource $source,
         Context $context,
     ): string {
-        return "Sort clause for `{$source}` (only one property allowed at a time).";
+        return "Sort clause for `{$source}` (only one field allowed at a time).";
     }
 
     #[Override]
@@ -91,30 +88,21 @@ abstract class Type extends InputObject {
         return Operators::Object;
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
     protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-    ): ?array {
-        $operator = match (true) {
-            $field->isScalar(), $field->isEnum() => Direction::class,
+    ): ?OperatorContract {
+        return match (true) {
+            $field->isScalar(), $field->isEnum() => $manipulator->getOperator(
+                SortByOperatorSortDirective::class,
+                $this->getScope(),
+                $field,
+                $context,
+            ),
             $field->isObject()                   => parent::getFieldOperator($manipulator, $field, $context),
             default                              => throw new NotImplemented($field),
         };
-
-        if (is_string($operator)) {
-            $type     = $manipulator->getType($operator, $field, $context);
-            $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = $manipulator->getOperator($this->getScope(), SortByOperatorSortDirective::class);
-            $operator = [$operator, $source];
-        } else {
-            // empty
-        }
-
-        return $operator;
     }
 }

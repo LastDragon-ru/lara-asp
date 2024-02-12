@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
@@ -13,14 +13,11 @@ interface Operator extends Directive {
      */
     public static function getName(): string;
 
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string;
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool;
 
-    public function getFieldDescription(): string;
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string;
 
-    /**
-     * @param class-string $builder
-     */
-    public function isAvailable(string $builder, Context $context): bool;
+    public function getFieldDescription(): ?string;
 
     /**
      * @template TBuilder of object
@@ -34,7 +31,7 @@ interface Operator extends Directive {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object;

@@ -11,7 +11,7 @@ class StartsWith extends Contains {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Starts with a string.';
     }
 

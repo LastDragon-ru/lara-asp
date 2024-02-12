@@ -24,11 +24,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
@@ -107,7 +107,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
             foreach ($conditions as $condition) {
                 if ($condition instanceof ArgumentSet) {
-                    $builder = $this->handle($builder, new Property(), $condition, $context ?? new Context());
+                    $builder = $this->handle($builder, new Field(), $condition, $context ?? new Context());
                 } else {
                     throw new HandlerInvalidConditions($this);
                 }
@@ -127,7 +127,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
     #[Override]
     public function handle(
         object $builder,
-        Property $property,
+        Field $field,
         ArgumentSet $conditions,
         ContextContract $context,
     ): object {
@@ -138,13 +138,13 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
 
         // Valid?
         if (count($conditions->arguments) !== 1) {
-            throw new ConditionTooManyProperties(
+            throw new ConditionTooManyFields(
                 ArgumentFactory::getArgumentsNames($conditions),
             );
         }
 
         // Call
-        return $this->call($builder, $property, $conditions, $context);
+        return $this->call($builder, $field, $conditions, $context);
     }
 
     /**
@@ -156,7 +156,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      */
     protected function call(
         object $builder,
-        Property $property,
+        Field $field,
         ArgumentSet $operator,
         ContextContract $context,
     ): object {
@@ -180,9 +180,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
                 }
             }
 
-            $property = $property->getChild($name);
-            $value    = $argument;
-            $op       = reset($operators);
+            $field = $field->getChild($name);
+            $value = $argument;
+            $op    = reset($operators);
 
             if (count($operators) > 1) {
                 throw new ConditionTooManyOperators(
@@ -202,7 +202,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         }
 
         // Return
-        return $op->call($this, $builder, $property, $value, $context);
+        return $op->call($this, $builder, $field, $value, $context);
     }
     // </editor-fold>
 
@@ -264,10 +264,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         // Supported?
-        $operator = $manipulator->getOperator(static::getScope(), $operator);
-        $builder  = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
+        $operator = $manipulator->getOperator($operator, static::getScope(), $argument, $context);
 
-        if (!$builder || !$operator->isAvailable($builder, $context)) {
+        if (!$operator) {
             return null;
         }
 
@@ -277,7 +276,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
             : $argument->getTypeDefinition();
         $source     = $manipulator->getTypeSource($definition);
         $type       = $operator->getFieldType($manipulator, $source, $context);
-        $type       = Parser::typeReference($type);
+        $type       = $type ? Parser::typeReference($type) : null;
 
         return $type;
     }

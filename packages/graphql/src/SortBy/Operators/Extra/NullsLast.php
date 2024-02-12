@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
@@ -25,7 +25,7 @@ class NullsLast extends Operator {
      */
     public function __construct(
         protected readonly SorterFactory $factory,
-        BuilderPropertyResolver $resolver,
+        BuilderFieldResolver $resolver,
     ) {
         parent::__construct($resolver);
     }
@@ -36,17 +36,17 @@ class NullsLast extends Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Clause::class, $source, $context);
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'NULLs last';
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return (bool) $this->factory->create($builder)?->isNullsSupported();
     }
 
@@ -54,11 +54,11 @@ class NullsLast extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
-        return $this->handle($handler, $builder, $property->getParent(), $argument, $context->override([
+        return $this->handle($handler, $builder, $field->getParent(), $argument, $context->override([
             SortContextNulls::class => new SortContextNulls(Nulls::Last),
         ]));
     }

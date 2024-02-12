@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
@@ -24,8 +24,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotInDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
@@ -413,10 +414,10 @@ final class DirectiveTest extends TestCase {
     /**
      * @dataProvider dataProviderHandleScoutBuilder
      *
-     * @param array<string, mixed>|Exception         $expected
-     * @param Closure(static): ScoutBuilder          $builderFactory
-     * @param Closure(object, Property): string|null $resolver
-     * @param Closure():FieldResolver|null           $fieldResolver
+     * @param array<string, mixed>|Exception      $expected
+     * @param Closure(static): ScoutBuilder       $builderFactory
+     * @param Closure(object, Field): string|null $resolver
+     * @param Closure():FieldResolver|null        $fieldResolver
      */
     #[RequiresLaravelScout]
     public function testHandleScoutBuilder(
@@ -434,10 +435,10 @@ final class DirectiveTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->atLeast()
                         ->once()
                         ->andReturnUsing($resolver);
@@ -489,10 +490,10 @@ final class DirectiveTest extends TestCase {
      *
      * @dataProvider dataProviderHandleScoutBuilderV5Compat
      *
-     * @param array<string, mixed>|Exception         $expected
-     * @param Closure(static): ScoutBuilder          $builderFactory
-     * @param Closure(object, Property): string|null $resolver
-     * @param Closure():FieldResolver|null           $fieldResolver
+     * @param array<string, mixed>|Exception      $expected
+     * @param Closure(static): ScoutBuilder       $builderFactory
+     * @param Closure(object, Field): string|null $resolver
+     * @param Closure():FieldResolver|null        $fieldResolver
      */
     #[RequiresLaravelScout]
     public function testHandleScoutBuilderV5Compat(
@@ -513,10 +514,10 @@ final class DirectiveTest extends TestCase {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->atLeast()
                         ->once()
                         ->andReturnUsing($resolver);
@@ -598,9 +599,9 @@ final class DirectiveTest extends TestCase {
                     $enum    = new EnumType([
                         'name'   => 'TestEnum',
                         'values' => [
-                            'property' => [
+                            'a' => [
                                 'value'       => 123,
-                                'description' => 'test property',
+                                'description' => 'description',
                             ],
                         ],
                     ]);
@@ -663,7 +664,7 @@ final class DirectiveTest extends TestCase {
                 'CustomComplexOperator.schema.graphql',
                 static function (): void {
                     $locator   = Container::getInstance()->make(DirectiveLocator::class);
-                    $resolver  = Container::getInstance()->make(BuilderPropertyResolver::class);
+                    $resolver  = Container::getInstance()->make(BuilderFieldResolver::class);
                     $directive = new DirectiveTest__CustomComplexOperator($resolver);
 
                     $locator->setResolved('customComplexOperator', $directive::class);
@@ -678,7 +679,7 @@ final class DirectiveTest extends TestCase {
                             SearchByOperatorEqualDirective::class,
                         ],
                         Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            // empty
+                            SearchByOperatorFieldDirective::class,
                         ],
                     ]);
                 },
@@ -692,7 +693,7 @@ final class DirectiveTest extends TestCase {
                             SearchByOperatorEqualDirective::class,
                         ],
                         Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            // empty
+                            SearchByOperatorFieldDirective::class,
                         ],
                     ]);
 
@@ -731,7 +732,7 @@ final class DirectiveTest extends TestCase {
                             SearchByOperatorEqualDirective::class,
                         ],
                         Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            // empty
+                            SearchByOperatorFieldDirective::class,
                         ],
                     ]);
                 },
@@ -781,7 +782,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many fields (operators)' => [
-                        new ConditionTooManyOperators(['equal', 'notEqual']),
+                        new ConditionTooManyFields(['equal', 'notEqual']),
                         [
                             'field' => [
                                 'id' => [
@@ -792,7 +793,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many fields (fields)'    => [
-                        new ConditionTooManyOperators(['id', 'value']),
+                        new ConditionTooManyFields(['id', 'value']),
                         [
                             'field' => [
                                 'id'    => [
@@ -980,7 +981,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many properties' => [
-                        new ConditionTooManyProperties(['id', 'value']),
+                        new ConditionTooManyFields(['id', 'value']),
                         [
                             'id'    => [
                                 'notEqual' => 1,
@@ -991,7 +992,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     'too many operators'  => [
-                        new ConditionTooManyOperators(['equal', 'notEqual']),
+                        new ConditionTooManyFields(['equal', 'notEqual']),
                         [
                             'id' => [
                                 'equal'    => 1,
@@ -1159,7 +1160,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (operators)' => [
-                    new ConditionTooManyOperators(['equal', 'in']),
+                    new ConditionTooManyFields(['equal', 'in']),
                     [
                         'field' => [
                             'a' => [
@@ -1172,7 +1173,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many fields (fields)'    => [
-                    new ConditionTooManyOperators(['a', 'b']),
+                    new ConditionTooManyFields(['a', 'b']),
                     [
                         'field' => [
                             'a' => [
@@ -1330,8 +1331,8 @@ final class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                     null,
                 ],
@@ -1369,7 +1370,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many properties'    => [
-                    new ConditionTooManyProperties(['a', 'b']),
+                    new ConditionTooManyFields(['a', 'b']),
                     [
                         'a' => [
                             'equal' => 1,
@@ -1382,7 +1383,7 @@ final class DirectiveTest extends TestCase {
                     null,
                 ],
                 'too many operators'     => [
-                    new ConditionTooManyOperators(['equal', 'in']),
+                    new ConditionTooManyFields(['equal', 'in']),
                     [
                         'a' => [
                             'equal' => 1,
@@ -1512,8 +1513,8 @@ final class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
-                    static function (object $builder, Property $property): string {
-                        return implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return implode('__', $field->getPath());
                     },
                     null,
                 ],
@@ -1561,12 +1562,12 @@ class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefin
         TypeProvider $provider,
         TypeSource $source,
         Context $context,
-    ): string {
+    ): ?string {
         return $provider->getType(static::class, $provider->getTypeSource(Type::int()), $context);
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Custom condition.';
     }
 
@@ -1581,7 +1582,7 @@ class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefin
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {

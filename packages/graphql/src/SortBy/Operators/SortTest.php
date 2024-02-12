@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
@@ -51,12 +51,12 @@ final class SortTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -65,7 +65,7 @@ final class SortTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -87,7 +87,7 @@ final class SortTest extends TestCase {
         });
 
         $directive = Container::getInstance()->make(Directive::class);
-        $property  = new Property();
+        $field     = new Field();
         $operator  = Container::getInstance()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
@@ -97,7 +97,7 @@ final class SortTest extends TestCase {
         $context   = new Context();
         $builder   = Mockery::mock(EloquentBuilder::class);
 
-        $operator->call($directive, $builder, $property, $argument, $context);
+        $operator->call($directive, $builder, $field, $argument, $context);
     }
 
     public function testCallQueryBuilder(): void {
@@ -114,7 +114,7 @@ final class SortTest extends TestCase {
         });
 
         $directive = Container::getInstance()->make(Directive::class);
-        $property  = new Property();
+        $field     = new Field();
         $operator  = Container::getInstance()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
@@ -123,7 +123,7 @@ final class SortTest extends TestCase {
         $context   = new Context();
         $builder   = Mockery::mock(QueryBuilder::class);
 
-        $operator->call($directive, $builder, $property, $argument, $context);
+        $operator->call($directive, $builder, $field, $argument, $context);
     }
 
     #[RequiresLaravelScout]
@@ -141,7 +141,7 @@ final class SortTest extends TestCase {
         });
 
         $directive = Container::getInstance()->make(Directive::class);
-        $property  = new Property();
+        $field     = new Field();
         $operator  = Container::getInstance()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
@@ -151,7 +151,7 @@ final class SortTest extends TestCase {
         $context   = new Context();
         $builder   = Mockery::mock(ScoutBuilder::class);
 
-        $operator->call($directive, $builder, $property, $argument, $context);
+        $operator->call($directive, $builder, $field, $argument, $context);
     }
 
     /**
@@ -211,12 +211,12 @@ final class SortTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property'           => [
+                'field'              => [
                     [
                         'query'    => 'select * from "test_objects" order by "a" desc',
                         'bindings' => [],
                     ],
-                    new Property('a'),
+                    new Field('a'),
                     $factory,
                     static function (): Context {
                         return new Context();
@@ -229,7 +229,7 @@ final class SortTest extends TestCase {
                         'query'    => 'select * from "test_objects" order by "a" DESC NULLS FIRST',
                         'bindings' => [],
                     ],
-                    new Property('a'),
+                    new Field('a'),
                     $factory,
                     static function (): Context {
                         return (new Context())->override([
@@ -244,13 +244,13 @@ final class SortTest extends TestCase {
                         'query'    => 'select * from "test_objects" order by "resolved__a" desc',
                         'bindings' => [],
                     ],
-                    new Property('a'),
+                    new Field('a'),
                     $factory,
                     static function (): Context {
                         return new Context();
                     },
-                    static function (object $builder, Property $property): string {
-                        return 'resolved__'.implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return 'resolved__'.implode('__', $field->getPath());
                     },
                 ],
             ]),
@@ -288,7 +288,7 @@ final class SortTest extends TestCase {
                     #[Override]
                     public function sort(
                         object $builder,
-                        Property $property,
+                        Field $field,
                         Direction $direction,
                         Nulls $nulls = null,
                     ): object {

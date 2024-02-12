@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -14,9 +15,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -64,6 +67,7 @@ final class ManipulatorTest extends TestCase {
         // Directives
         $directives = Container::getInstance()->make(DirectiveLocator::class);
 
+        $directives->setResolved('ignored', ManipulatorTest_Ignored::class);
         $directives->setResolved('operators', ManipulatorTest_Operators::class);
         $directives->setResolved('aOperator', $aOperator);
         $directives->setResolved('bOperator', $bOperator);
@@ -76,6 +80,10 @@ final class ManipulatorTest extends TestCase {
             @aOperator
             @bOperator
             @cOperator
+
+            scalar TestIgnored
+            @aOperator
+            @ignored
 
             scalar TestOperators
             @operators(type: "TestScalar")
@@ -123,6 +131,7 @@ final class ManipulatorTest extends TestCase {
         };
 
         // Manipulator
+        $source      = Mockery::mock(TypeSource::class);
         $context     = (new Context())->override([
             HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo(
                 new BuilderInfo($builder::class, $builder::class),
@@ -144,7 +153,7 @@ final class ManipulatorTest extends TestCase {
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), Operators::ID, $context)),
+            array_map($map, $manipulator->getTypeOperators(Operators::ID, $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
@@ -153,33 +162,60 @@ final class ManipulatorTest extends TestCase {
             ],
             array_map(
                 $map,
-                $manipulator->getTypeOperators($operators->getScope(), Operators::ID, $context, Operators::Int),
+                $manipulator->getTypeOperators(
+                    Operators::ID,
+                    $operators->getScope(),
+                    $source,
+                    $context,
+                    Operators::Int,
+                ),
             ),
         );
         self::assertEquals(
             [
                 // empty (another scope)
             ],
-            array_map($map, $manipulator->getTypeOperators($scope::class, Operators::ID, $context)),
+            array_map($map, $manipulator->getTypeOperators(Operators::ID, $scope::class, $source, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestScalar', $context)),
+            array_map($map, $manipulator->getTypeOperators('TestScalar', $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestOperators', $context)),
+            array_map($map, $manipulator->getTypeOperators('TestOperators', $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
                 $cOperator,
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators($operators->getScope(), 'TestBuiltinOperators', $context)),
+            array_map(
+                $map,
+                $manipulator->getTypeOperators('TestBuiltinOperators', $operators->getScope(), $source, $context),
+            ),
+        );
+        self::assertEquals(
+            [
+                // empty
+            ],
+            array_map(
+                $map,
+                $manipulator->getTypeOperators('Unknown', $operators->getScope(), $source, $context, Operators::ID),
+            ),
+        );
+        self::assertEquals(
+            [
+                // empty
+            ],
+            array_map(
+                $map,
+                $manipulator->getTypeOperators('TestIgnored', $operators->getScope(), $source, $context),
+            ),
         );
     }
     // </editor-fold>
@@ -207,17 +243,17 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
         return $source->getTypeName();
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return '';
     }
 
     #[Override]
-    public function isAvailable(string $builder, ContextContract $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, stdClass::class, true);
     }
 
@@ -225,7 +261,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         ContextContract $context,
     ): object {
@@ -244,17 +280,17 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
         return $source->getTypeName();
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return '';
     }
 
     #[Override]
-    public function isAvailable(string $builder, ContextContract $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return false;
     }
 
@@ -262,7 +298,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         ContextContract $context,
     ): object {
@@ -281,17 +317,17 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
         return $source->getTypeName();
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return '';
     }
 
     #[Override]
-    public function isAvailable(string $builder, ContextContract $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, stdClass::class, true);
     }
 
@@ -299,10 +335,23 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         ContextContract $context,
     ): object {
         return $builder;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_Ignored extends BaseDirective implements Ignored, Scope {
+    #[Override]
+    public static function definition(): string {
+        return <<<'GRAPHQL'
+            directive @ignored on SCALAR
+        GRAPHQL;
     }
 }

@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LogicException;
 use Mockery\MockInterface;
@@ -39,18 +39,18 @@ trait OperatorTests {
      * PHPStorm or PHPUnit issue). Anyway, this approach requires less
      * copy-pasting.
      *
-     * @param class-string<Handler>                  $directive
-     * @param array<array-key, mixed>|Exception      $expected
-     * @param Closure(static): object                $builderFactory
-     * @param Closure(static): Argument              $argumentFactory
-     * @param Closure(static): Context|null          $contextFactory
-     * @param Closure(object, Property): string|null $resolver
+     * @param class-string<Handler>               $directive
+     * @param array<array-key, mixed>|Exception   $expected
+     * @param Closure(static): object             $builderFactory
+     * @param Closure(static): Argument           $argumentFactory
+     * @param Closure(static): Context|null       $contextFactory
+     * @param Closure(object, Field): string|null $resolver
      */
     private function testOperator(
         string $directive,
         array|Exception $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -61,10 +61,10 @@ trait OperatorTests {
 
         if ($resolver) {
             $this->override(
-                BuilderPropertyResolver::class,
+                BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
                     $mock
-                        ->shouldReceive('getProperty')
+                        ->shouldReceive('getField')
                         ->atLeast()
                         ->once()
                         ->andReturnUsing($resolver);
@@ -77,7 +77,7 @@ trait OperatorTests {
         $context  = $contextFactory ? $contextFactory($this) : new Context();
         $handler  = Container::getInstance()->make($directive);
         $builder  = $builderFactory($this);
-        $actual   = $operator->call($handler, $builder, $property, $argument, $context);
+        $actual   = $operator->call($handler, $builder, $field, $argument, $context);
 
         if (is_array($expected)) {
             if ($builder instanceof EloquentBuilder) {

@@ -21,17 +21,23 @@ class Child extends Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && $source->isObject();
+    }
+
+    #[Override]
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Root::class, $source, $context);
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Field condition.';
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return is_a($builder, ScoutBuilder::class, true);
     }
 }

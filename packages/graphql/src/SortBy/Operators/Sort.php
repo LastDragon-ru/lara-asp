@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
@@ -27,7 +27,7 @@ class Sort extends Operator {
      */
     public function __construct(
         protected readonly SorterFactory $factory,
-        BuilderPropertyResolver $resolver,
+        BuilderFieldResolver $resolver,
     ) {
         parent::__construct($resolver);
     }
@@ -38,17 +38,23 @@ class Sort extends Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && ($source->isScalar() || $source->isEnum());
+    }
+
+    #[Override]
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(DirectionType::class, $source, $context);
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Field clause.';
     }
 
     #[Override]
-    public function isAvailable(string $builder, Context $context): bool {
+    protected function isBuilderSupported(string $builder): bool {
         return $this->factory->isSupported($builder);
     }
 
@@ -56,7 +62,7 @@ class Sort extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -66,7 +72,7 @@ class Sort extends Operator {
             $direction = $argument->value instanceof Direction ? $argument->value : Direction::Asc;
             $nulls     = $this->getNulls($sorter, $context, $direction);
 
-            $sorter->sort($builder, $property, $direction, $nulls);
+            $sorter->sort($builder, $field, $direction, $nulls);
         } else {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }

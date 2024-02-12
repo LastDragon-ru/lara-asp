@@ -91,7 +91,7 @@ enum SearchByTypeFlag {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
+Available conditions for `input A` (only one field allowed at a time).
 """
 input SearchByConditionA {
     """
@@ -137,7 +137,7 @@ input SearchByEnumEnumAOrNull {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
+Available conditions for `input A` (only one field allowed at a time).
 """
 input SearchByRootA {
     """

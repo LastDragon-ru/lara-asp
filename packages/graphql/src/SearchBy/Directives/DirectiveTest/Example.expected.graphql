@@ -210,7 +210,7 @@ input Comment {
 }
 
 """
-Available conditions for `input CommentsQuery` (only one property allowed at a time).
+Available conditions for `input CommentsQuery` (only one field allowed at a time).
 """
 input SearchByConditionCommentsQuery {
     """
@@ -228,12 +228,12 @@ input SearchByConditionCommentsQuery {
     """
     Relationship condition.
     """
-    user: SearchByRelationshipRelationUsersQuery
+    user: SearchByRelationshipUsersQuery
     @searchByOperatorRelationship
 }
 
 """
-Available conditions for `type User` (only one property allowed at a time).
+Available conditions for `type User` (only one field allowed at a time).
 """
 input SearchByConditionUser {
     """
@@ -250,7 +250,7 @@ input SearchByConditionUser {
 }
 
 """
-Available conditions for `input UsersQuery` (only one property allowed at a time).
+Available conditions for `input UsersQuery` (only one field allowed at a time).
 """
 input SearchByConditionUsersQuery {
     """
@@ -273,7 +273,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationUsersQuery {
+input SearchByRelationshipUsersQuery {
     """
     Count conditions.
     """
@@ -296,7 +296,7 @@ input SearchByRelationshipRelationUsersQuery {
 }
 
 """
-Available conditions for `input CommentsQuery` (only one property allowed at a time).
+Available conditions for `input CommentsQuery` (only one field allowed at a time).
 """
 input SearchByRootCommentsQuery {
     """
@@ -325,7 +325,7 @@ input SearchByRootCommentsQuery {
 }
 
 """
-Available conditions for `type User` (only one property allowed at a time).
+Available conditions for `type User` (only one field allowed at a time).
 """
 input SearchByRootUser {
     """
@@ -354,7 +354,7 @@ input SearchByRootUser {
 }
 
 """
-Available conditions for `input UsersQuery` (only one property allowed at a time).
+Available conditions for `input UsersQuery` (only one field allowed at a time).
 """
 input SearchByRootUsersQuery {
     """

@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
@@ -20,7 +20,7 @@ class NotLike extends Operator {
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldDescription(): ?string {
         return 'Not like.';
     }
 
@@ -28,7 +28,7 @@ class NotLike extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -36,10 +36,10 @@ class NotLike extends Operator {
             throw new OperatorUnsupportedBuilder($this, $builder);
         }
 
-        $property = $this->resolver->getProperty($builder, $property->getParent());
-        $value    = (string) Cast::toStringable($argument->toPlain());
+        $field = $this->resolver->getField($builder, $field->getParent());
+        $value = (string) Cast::toStringable($argument->toPlain());
 
-        $builder->where($property, 'not like', $value);
+        $builder->where($field, 'not like', $value);
 
         return $builder;
     }

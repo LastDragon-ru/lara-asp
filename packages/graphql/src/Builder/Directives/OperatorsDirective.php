@@ -7,6 +7,7 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Override;
 
+use function array_unique;
 use function assert;
 use function implode;
 use function is_string;
@@ -19,7 +20,7 @@ abstract class OperatorsDirective extends BaseDirective {
     #[Override]
     public static function definition(): string {
         $name      = DirectiveLocator::directiveName(static::class);
-        $locations = implode(' | ', static::getDirectiveLocations());
+        $locations = implode(' | ', array_unique(static::getDirectiveLocations()));
 
         return <<<GRAPHQL
             """

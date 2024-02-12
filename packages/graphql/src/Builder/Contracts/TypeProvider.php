@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
 
 interface TypeProvider {
@@ -16,7 +14,7 @@ interface TypeProvider {
     public function getType(string $definition, TypeSource $source, Context $context): string;
 
     /**
-     * @param (TypeDefinitionNode&Node)|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type
+     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
      */
-    public function getTypeSource(TypeDefinitionNode|NamedTypeNode|ListTypeNode|NonNullTypeNode|Type $type): TypeSource;
+    public function getTypeSource(TypeDefinitionNode|TypeNode|Type $type): TypeSource;
 }

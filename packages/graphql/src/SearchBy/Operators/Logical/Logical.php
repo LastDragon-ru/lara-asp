@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\OperatorInvalidArgumentValue;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root;
@@ -23,7 +23,7 @@ use function is_array;
 
 abstract class Logical extends Operator {
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Root::class, $source, $context);
     }
 
@@ -31,7 +31,7 @@ abstract class Logical extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        Field $field,
         Argument $argument,
         Context $context,
     ): object {
@@ -40,9 +40,9 @@ abstract class Logical extends Operator {
         }
 
         $builder->where(
-            function (EloquentBuilder|QueryBuilder $builder) use ($handler, $context, $property, $argument): void {
-                // The last item is the name of the operator not a property
-                $property   = $property->getParent();
+            function (EloquentBuilder|QueryBuilder $builder) use ($handler, $context, $field, $argument): void {
+                // The last item is the name of the operator not a field
+                $field      = $field->getParent();
                 $conditions = $this->getConditions($argument);
 
                 foreach ($conditions as $arguments) {
@@ -51,9 +51,9 @@ abstract class Logical extends Operator {
                             $handler,
                             $context,
                             $arguments,
-                            $property,
+                            $field,
                         ): void {
-                            $handler->handle($builder, $property, $arguments, $context);
+                            $handler->handle($builder, $field, $arguments, $context);
                         },
                         null,
                         null,

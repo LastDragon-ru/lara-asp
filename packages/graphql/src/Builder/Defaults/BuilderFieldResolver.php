@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Defaults;
 
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderPropertyResolver as BuilderPropertyResolverContract;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver as BuilderFieldResolverContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver as ScoutFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use Override;
 
@@ -13,7 +14,7 @@ use function implode;
 /**
  * @internal
  */
-final class BuilderPropertyResolver implements BuilderPropertyResolverContract {
+final class BuilderFieldResolver implements BuilderFieldResolverContract {
     public function __construct(
         private readonly ?ScoutFieldResolver $resolver = null,
     ) {
@@ -21,9 +22,9 @@ final class BuilderPropertyResolver implements BuilderPropertyResolverContract {
     }
 
     #[Override]
-    public function getProperty(object $builder, Property $property): string {
+    public function getField(object $builder, Field $field): string {
         return $builder instanceof ScoutBuilder && $this->resolver
-            ? $this->resolver->getField($builder->model, $property)
-            : implode('.', $property->getPath());
+            ? $this->resolver->getField($builder->model, new Property(...$field->getPath()))
+            : implode('.', $field->getPath());
     }
 }

@@ -6,10 +6,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field as BuilderField;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause as ClauseType;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
@@ -23,12 +23,18 @@ class Field extends Operator {
     }
 
     #[Override]
-    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): string {
-        return $provider->getType(ClauseType::class, $source, $context);
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && $source->isObject();
     }
 
     #[Override]
-    public function getFieldDescription(): string {
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
+        return $provider->getType(Clause::class, $source, $context);
+    }
+
+    #[Override]
+    public function getFieldDescription(): ?string {
         return 'Field.';
     }
 
@@ -36,10 +42,10 @@ class Field extends Operator {
     public function call(
         Handler $handler,
         object $builder,
-        Property $property,
+        BuilderField $field,
         Argument $argument,
         Context $context,
     ): object {
-        return $this->handle($handler, $builder, $property->getParent(), $argument, $context);
+        return $this->handle($handler, $builder, $field->getParent(), $argument, $context);
     }
 }

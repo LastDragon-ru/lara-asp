@@ -24,7 +24,7 @@ on
     | SCALAR
 
 """
-Available conditions for `type A` (only one property allowed at a time).
+Available conditions for `type A` (only one field allowed at a time).
 """
 input SearchByConditionA {
     """
@@ -38,7 +38,7 @@ input SearchByConditionA {
 }
 
 """
-Available conditions for `interface B` (only one property allowed at a time).
+Available conditions for `interface B` (only one field allowed at a time).
 """
 input SearchByConditionB {
     """
@@ -52,7 +52,7 @@ input SearchByConditionB {
 }
 
 """
-Available conditions for `type A` (only one property allowed at a time).
+Available conditions for `type A` (only one field allowed at a time).
 """
 input SearchByRootA {
     """
@@ -63,7 +63,7 @@ input SearchByRootA {
 }
 
 """
-Available conditions for `interface B` (only one property allowed at a time).
+Available conditions for `interface B` (only one field allowed at a time).
 """
 input SearchByRootB {
     """

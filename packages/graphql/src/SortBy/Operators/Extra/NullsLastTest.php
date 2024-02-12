@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
 use Closure;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -35,12 +35,12 @@ final class NullsLastTest extends TestCase {
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
-     * @param Closure(object, Property): string|null                  $resolver
+     * @param Closure(object, Field): string|null                     $resolver
      */
     public function testCall(
         array $expected,
         Closure $builderFactory,
-        Property $property,
+        Field $field,
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
@@ -49,7 +49,7 @@ final class NullsLastTest extends TestCase {
             Directive::class,
             $expected,
             $builderFactory,
-            $property,
+            $field,
             $argumentFactory,
             $contextFactory,
             $resolver,
@@ -89,12 +89,12 @@ final class NullsLastTest extends TestCase {
         return (new CompositeDataProvider(
             new BuilderDataProvider(),
             new ArrayDataProvider([
-                'property' => [
+                'field'    => [
                     [
                         'query'    => 'select * from "test_objects" order by "a" ASC NULLS LAST',
                         'bindings' => [],
                     ],
-                    new Property('operator name should be ignored'),
+                    new Field('operator name should be ignored'),
                     $argument,
                     null,
                     null,
@@ -104,11 +104,11 @@ final class NullsLastTest extends TestCase {
                         'query'    => 'select * from "test_objects" order by "resolved__a" ASC NULLS LAST',
                         'bindings' => [],
                     ],
-                    new Property('operator name should be ignored'),
+                    new Field('operator name should be ignored'),
                     $argument,
                     null,
-                    static function (object $builder, Property $property): string {
-                        return 'resolved__'.implode('__', $property->getPath());
+                    static function (object $builder, Field $field): string {
+                        return 'resolved__'.implode('__', $field->getPath());
                     },
                 ],
             ]),

@@ -25,7 +25,7 @@ type A {
     list: [String!]
     field: B!
     fields: [B!]!
-    property(arg: String): Int!
+    fieldWithArgs(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver")
     stream: [A!]! @stream(
         searchable: false
@@ -65,7 +65,7 @@ interface C {
     list: [String!]
     field: B!
     fields: [B!]!
-    property(arg: String): Int!
+    fieldWithArgs(arg: String): Int!
     resolver: Int! @field(resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__Resolver")
     stream: [A!]! @stream(
         searchable: false

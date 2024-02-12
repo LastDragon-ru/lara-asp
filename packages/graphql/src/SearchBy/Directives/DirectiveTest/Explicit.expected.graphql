@@ -224,19 +224,19 @@ input B {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
+Available conditions for `input A` (only one field allowed at a time).
 """
 input SearchByConditionA {
     """
     Relationship condition.
     """
-    field: SearchByRelationshipRelationB
+    field: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
     Relationship condition.
     """
-    fields: SearchByRelationshipRelationB
+    fields: SearchByRelationshipB
     @searchByOperatorRelationship
 
     """
@@ -253,7 +253,7 @@ input SearchByConditionA {
 }
 
 """
-Available conditions for `input B` (only one property allowed at a time).
+Available conditions for `input B` (only one field allowed at a time).
 """
 input SearchByConditionB {
     """
@@ -271,7 +271,7 @@ input SearchByConditionB {
     """
     Relationship condition.
     """
-    parent: SearchByRelationshipRelationA
+    parent: SearchByRelationshipA
     @searchByOperatorRelationship
 }
 
@@ -282,7 +282,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationA {
+input SearchByRelationshipA {
     """
     Count conditions.
     """
@@ -311,7 +311,7 @@ See also:
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
 * https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
 """
-input SearchByRelationshipRelationB {
+input SearchByRelationshipB {
     """
     Count conditions.
     """
@@ -334,7 +334,7 @@ input SearchByRelationshipRelationB {
 }
 
 """
-Available conditions for `input A` (only one property allowed at a time).
+Available conditions for `input A` (only one field allowed at a time).
 """
 input SearchByRootA {
     """
@@ -363,7 +363,7 @@ input SearchByRootA {
 }
 
 """
-Available conditions for `input B` (only one property allowed at a time).
+Available conditions for `input B` (only one field allowed at a time).
 """
 input SearchByRootB {
     """
