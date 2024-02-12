@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client;
 
+use Illuminate\Support\Arr;
 use Throwable;
 
 use function implode;
@@ -15,10 +16,13 @@ class ConditionTooManyOperators extends ClientException {
         protected array $operators,
         Throwable $previous = null,
     ) {
-        parent::__construct(sprintf(
-            'Only one operator allowed, found: `%s`.',
-            implode('`, `', $this->getOperators()),
-        ), $previous);
+        parent::__construct(
+            sprintf(
+                'Only one operator allowed, found: `%s`.',
+                implode('`, `', Arr::sort($this->getOperators())),
+            ),
+            $previous,
+        );
     }
 
     /**

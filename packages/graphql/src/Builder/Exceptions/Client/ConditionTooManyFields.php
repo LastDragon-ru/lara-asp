@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client;
 
+use Illuminate\Support\Arr;
 use Throwable;
 
 use function implode;
@@ -15,10 +16,13 @@ class ConditionTooManyFields extends ClientException {
         protected readonly array $fields,
         Throwable $previous = null,
     ) {
-        parent::__construct(sprintf(
-            'Only one field allowed, found: `%s`.',
-            implode('`, `', $this->getFields()),
-        ), $previous);
+        parent::__construct(
+            sprintf(
+                'Only one field allowed, found: `%s`.',
+                implode('`, `', Arr::sort($this->getFields())),
+            ),
+            $previous,
+        );
     }
 
     /**

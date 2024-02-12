@@ -21,6 +21,7 @@ enum EnumA
 }
 
 scalar SearchByExtra
+@searchByOperatorField
 @searchByOperatorAllOf
 
 scalar Mixed

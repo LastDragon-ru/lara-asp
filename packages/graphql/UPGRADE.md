@@ -91,7 +91,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are testing generated queries, you need to update `sort_by_*` alias to `lara_asp_graphql__sort_by__*`.
 
-* [ ] If you are overriding Extra operators, you may need to add `SortByOperators::Extra` to use new built-in:
+* [ ] If you are overriding Extra operators, you should to add `SortByOperators::Extra` to use new built-in:
 
   ```php
   $settings = [

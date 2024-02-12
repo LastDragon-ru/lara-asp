@@ -33,6 +33,7 @@ use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotInDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
@@ -678,7 +679,7 @@ final class DirectiveTest extends TestCase {
                             SearchByOperatorEqualDirective::class,
                         ],
                         Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            // empty
+                            SearchByOperatorFieldDirective::class,
                         ],
                     ]);
                 },
@@ -692,7 +693,7 @@ final class DirectiveTest extends TestCase {
                             SearchByOperatorEqualDirective::class,
                         ],
                         Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            // empty
+                            SearchByOperatorFieldDirective::class,
                         ],
                     ]);
 
@@ -731,7 +732,7 @@ final class DirectiveTest extends TestCase {
                             SearchByOperatorEqualDirective::class,
                         ],
                         Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            // empty
+                            SearchByOperatorFieldDirective::class,
                         ],
                     ]);
                 },

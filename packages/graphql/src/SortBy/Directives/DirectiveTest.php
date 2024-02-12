@@ -21,6 +21,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
@@ -147,7 +148,7 @@ final class DirectiveTest extends TestCase {
         config([
             Package::Name.'.sort_by.operators' => [
                 Operators::Extra => [
-                    // empty
+                    SortByOperatorFieldDirective::class,
                 ],
             ],
         ]);
@@ -600,7 +601,7 @@ final class DirectiveTest extends TestCase {
                 static function (): void {
                     config([
                         Package::Name.'.sort_by.operators.'.Operators::Extra => [
-                            // empty
+                            SortByOperatorFieldDirective::class,
                         ],
                     ]);
                 },
@@ -611,7 +612,7 @@ final class DirectiveTest extends TestCase {
                 static function (): void {
                     config([
                         Package::Name.'.sort_by.operators.'.Operators::Extra => [
-                            // empty
+                            SortByOperatorFieldDirective::class,
                         ],
                     ]);
 
@@ -636,7 +637,7 @@ final class DirectiveTest extends TestCase {
                 static function (): void {
                     config([
                         Package::Name.'.sort_by.operators.'.Operators::Extra => [
-                            // empty
+                            SortByOperatorFieldDirective::class,
                         ],
                     ]);
                 },
@@ -854,6 +855,7 @@ final class DirectiveTest extends TestCase {
                         config([
                             "{$package}.sort_by.operators" => [
                                 Operators::Extra => [
+                                    SortByOperatorFieldDirective::class,
                                     SortByOperatorRandomDirective::class,
                                 ],
                             ],
@@ -1056,6 +1058,7 @@ final class DirectiveTest extends TestCase {
                         config([
                             "{$package}.sort_by.operators" => [
                                 Operators::Extra => [
+                                    SortByOperatorFieldDirective::class,
                                     SortByOperatorRandomDirective::class,
                                 ],
                             ],
