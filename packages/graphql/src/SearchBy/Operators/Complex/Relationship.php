@@ -54,6 +54,12 @@ class Relationship extends Operator {
     }
 
     #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && $source->isObject();
+    }
+
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(RelationshipType::class, $source, $context);
     }

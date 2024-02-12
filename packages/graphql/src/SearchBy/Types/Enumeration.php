@@ -39,23 +39,28 @@ class Enumeration implements TypeDefinition {
         Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
+        // Enum?
+        if (!$source->isEnum()) {
+            return null;
+        }
+
         // Operators
+        $type      = $manipulator->getTypeSource($source->getType());
         $scope     = Directive::getScope();
-        $extras    = $source->isNullable() ? [Operators::Null] : [];
-        $operators = $manipulator->getTypeOperators($scope, $source, $context, $source->getTypeName(), ...$extras)
-            ?: $manipulator->getTypeOperators($scope, $source, $context, Operators::Enum, ...$extras);
+        $extras    = $type->isNullable() ? [Operators::Null] : [];
+        $operators = $manipulator->getTypeOperators($scope, $type, $context, $type->getTypeName(), ...$extras)
+            ?: $manipulator->getTypeOperators($scope, $type, $context, Operators::Enum, ...$extras);
 
         if (!$operators) {
             return null;
         }
 
         // Definition
-        $content    = $manipulator->getOperatorsFields($operators, $source, $context);
-        $typeName   = $manipulator->getTypeFullName($source->getType());
+        $content    = $manipulator->getOperatorsFields($operators, $type, $context);
         $definition = Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             """
-            Available operators for `{$typeName}` (only one operator allowed at a time).
+            Available operators for `{$type}` (only one operator allowed at a time).
             """
             input {$name} {
                 {$content}

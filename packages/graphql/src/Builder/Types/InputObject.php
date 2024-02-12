@@ -65,6 +65,8 @@ abstract class InputObject implements TypeDefinition {
         string $name,
     ): TypeDefinitionNode|Type|null {
         // Source?
+        $source = $manipulator->getTypeSource($source->getTypeDefinition());
+
         if (
             !($source instanceof InterfaceSource || $source instanceof ObjectSource || $source instanceof InputSource)
         ) {
@@ -301,14 +303,10 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): ?InputValueDefinitionNode {
         // Operator?
-        [$operator, $type] = $this->getFieldOperator($manipulator, $field, $context) ?? [null, null];
+        $operator = $this->getFieldOperator($manipulator, $field, $context);
 
         if ($operator === null || !$operator->isAvailable($manipulator, $field, $context)) {
             return null;
-        }
-
-        if ($type === null) {
-            $type = $manipulator->getTypeSource($field->getTypeDefinition());
         }
 
         // Field
@@ -317,7 +315,7 @@ abstract class InputObject implements TypeDefinition {
         $fieldDirectives = $this->getFieldDirectives($manipulator, $field, $context);
         $fieldDefinition = $manipulator->getOperatorField(
             $operator,
-            $type,
+            $field,
             $context,
             $fieldName,
             $fieldDesc,
@@ -327,14 +325,11 @@ abstract class InputObject implements TypeDefinition {
         return Parser::inputValueDefinition($fieldDefinition);
     }
 
-    /**
-     * @return array{Operator, ?TypeSource}|null
-     */
     protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-    ): ?array {
+    ): ?Operator {
         $operator = $this->getFieldOperatorDirective($manipulator, $field, $context, $this->getFieldMarkerOperator());
 
         if (!$operator) {
@@ -346,9 +341,7 @@ abstract class InputObject implements TypeDefinition {
             }
         }
 
-        return $operator
-            ? [$operator, null]
-            : null;
+        return $operator;
     }
 
     /**

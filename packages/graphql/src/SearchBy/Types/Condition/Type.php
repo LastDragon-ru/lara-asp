@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition;
 
-use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputFieldSource;
@@ -20,12 +20,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorConditionDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Enumeration;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
 use Override;
 use ReflectionClass;
-
-use function is_string;
 
 abstract class Type extends InputObject {
     #[Override]
@@ -72,30 +68,21 @@ abstract class Type extends InputObject {
         return Operators::Object;
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
     protected function getFieldOperator(
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-    ): ?array {
-        $operator = match (true) {
-            $field->isScalar() => Scalar::class,
-            $field->isEnum()   => Enumeration::class,
-            $field->isObject() => parent::getFieldOperator($manipulator, $field, $context),
-            default            => throw new NotImplemented($field),
+    ): ?OperatorContract {
+        return match (true) {
+            $field->isScalar(), $field->isEnum() => $manipulator->getOperator(
+                $this->getScope(),
+                $field,
+                $context,
+                SearchByOperatorConditionDirective::class,
+            ),
+            $field->isObject()                   => parent::getFieldOperator($manipulator, $field, $context),
+            default                              => throw new NotImplemented($field),
         };
-
-        if (is_string($operator)) {
-            $type     = $manipulator->getType($operator, $field, $context);
-            $source   = $manipulator->getTypeSource(Parser::typeReference($type));
-            $operator = SearchByOperatorConditionDirective::class;
-            $operator = $manipulator->getOperator($this->getScope(), $field, $context, $operator);
-            $operator = $operator ? [$operator, $source] : null;
-        }
-
-        return $operator;
     }
 }

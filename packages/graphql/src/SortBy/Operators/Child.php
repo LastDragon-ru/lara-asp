@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause as ClauseType;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause;
 use Override;
 
 use function is_a;
@@ -22,8 +22,14 @@ class Child extends Operator {
     }
 
     #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && $source->isObject();
+    }
+
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
-        return $provider->getType(ClauseType::class, $source, $context);
+        return $provider->getType(Clause::class, $source, $context);
     }
 
     #[Override]

@@ -38,6 +38,12 @@ class Sort extends Operator {
     }
 
     #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && ($source->isScalar() || $source->isEnum());
+    }
+
+    #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(DirectionType::class, $source, $context);
     }

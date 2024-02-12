@@ -36,14 +36,21 @@ class RelationshipType implements TypeDefinition {
         Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
-        $int   = $manipulator->getTypeSource(Type::nonNull(Type::int()));
-        $count = $manipulator->getType(Scalar::class, $int, $context);
-        $where = $manipulator->getType(Root::class, $source, $context);
+        // Object?
+        if (!$source->isObject()) {
+            return null;
+        }
+
+        // Definition
+        $int    = $manipulator->getTypeSource(Type::nonNull(Type::int()));
+        $count  = $manipulator->getType(Scalar::class, $int, $context);
+        $where  = $manipulator->getType(Root::class, $source, $context);
+        $origin = $manipulator->getTypeFullName($source->getType());
 
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             """
-            Conditions for the relationship (`has()`/`doesntHave()`) for `{$source}`.
+            Conditions for the relationship (`has()`/`doesntHave()`) for `{$origin}`.
 
             See also:
             * https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
