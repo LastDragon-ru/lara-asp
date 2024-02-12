@@ -145,10 +145,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @return list<Operator>
      */
     public function getTypeOperators(
-        string $type,
         string $scope,
         TypeSource $source,
         Context $context,
+        string $type,
         string ...$extras,
     ): array {
         // Provider?
@@ -159,32 +159,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Operators
-        $operators = [];
-
-        if ($this->isTypeDefinitionExists($type)) {
-            $node       = $this->getTypeDefinition($type);
-            $directives = $this->getDirectives($node, $scope);
-
-            foreach ($directives as $directive) {
-                if ($directive instanceof OperatorsDirective) {
-                    $directiveType = $directive->getType();
-
-                    if ($type !== $directiveType) {
-                        array_push($operators, ...$this->getTypeOperators($directiveType, $scope, $source, $context));
-                    } else {
-                        array_push($operators, ...$provider->getOperators($type));
-                    }
-                } elseif ($directive instanceof Operator) {
-                    $operators[] = $directive;
-                } else {
-                    // empty
-                }
-            }
-        }
-
-        if (!$operators && $provider->hasOperators($type)) {
-            array_push($operators, ...$provider->getOperators($type));
-        }
+        $operators = $this->getOperators($provider, $scope, $type);
 
         if (!$operators) {
             return [];
@@ -192,7 +167,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Extra
         foreach ($extras as $extra) {
-            array_push($operators, ...$this->getTypeOperators($extra, $scope, $source, $context));
+            array_push($operators, ...$this->getOperators($provider, $scope, $extra));
         }
 
         // Unique
@@ -315,6 +290,42 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         $this->removeTypeDefinition($name);
+    }
+
+    /**
+     * @param class-string<Scope> $scope
+     *
+     * @return array<array-key, Operator>
+     */
+    private function getOperators(Operators $provider, string $scope, string $type): array {
+        $operators = [];
+
+        if ($this->isTypeDefinitionExists($type)) {
+            $node       = $this->getTypeDefinition($type);
+            $directives = $this->getDirectives($node, $scope);
+
+            foreach ($directives as $directive) {
+                if ($directive instanceof OperatorsDirective) {
+                    $directiveType = $directive->getType();
+
+                    if ($type !== $directiveType) {
+                        array_push($operators, ...$this->getOperators($provider, $scope, $directiveType));
+                    } else {
+                        array_push($operators, ...$provider->getOperators($type));
+                    }
+                } elseif ($directive instanceof Operator) {
+                    $operators[] = $directive;
+                } else {
+                    // empty
+                }
+            }
+        }
+
+        if (!$operators && $provider->hasOperators($type)) {
+            array_push($operators, ...$provider->getOperators($type));
+        }
+
+        return $operators;
     }
     // </editor-fold>
 }

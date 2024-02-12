@@ -146,7 +146,7 @@ final class ManipulatorTest extends TestCase {
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators(Operators::ID, $operators->getScope(), $source, $context)),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), $source, $context, Operators::ID)),
         );
         self::assertEquals(
             [
@@ -156,10 +156,10 @@ final class ManipulatorTest extends TestCase {
             array_map(
                 $map,
                 $manipulator->getTypeOperators(
-                    Operators::ID,
                     $operators->getScope(),
                     $source,
                     $context,
+                    Operators::ID,
                     Operators::Int,
                 ),
             ),
@@ -168,19 +168,19 @@ final class ManipulatorTest extends TestCase {
             [
                 // empty (another scope)
             ],
-            array_map($map, $manipulator->getTypeOperators(Operators::ID, $scope::class, $source, $context)),
+            array_map($map, $manipulator->getTypeOperators($scope::class, $source, $context, Operators::ID)),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators('TestScalar', $operators->getScope(), $source, $context)),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), $source, $context, 'TestScalar')),
         );
         self::assertEquals(
             [
                 $aOperator,
             ],
-            array_map($map, $manipulator->getTypeOperators('TestOperators', $operators->getScope(), $source, $context)),
+            array_map($map, $manipulator->getTypeOperators($operators->getScope(), $source, $context, 'TestOperators')),
         );
         self::assertEquals(
             [
@@ -189,7 +189,16 @@ final class ManipulatorTest extends TestCase {
             ],
             array_map(
                 $map,
-                $manipulator->getTypeOperators('TestBuiltinOperators', $operators->getScope(), $source, $context),
+                $manipulator->getTypeOperators($operators->getScope(), $source, $context, 'TestBuiltinOperators'),
+            ),
+        );
+        self::assertEquals(
+            [
+                // empty
+            ],
+            array_map(
+                $map,
+                $manipulator->getTypeOperators($operators->getScope(), $source, $context, 'Unknown', Operators::ID),
             ),
         );
     }
