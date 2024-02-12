@@ -48,7 +48,7 @@ class Scalar implements TypeDefinition {
         $type      = $manipulator->getTypeSource($source->getType());
         $scope     = Directive::getScope();
         $extras    = $type->isNullable() ? [Operators::Null] : [];
-        $operators = $manipulator->getTypeOperators($scope, $type, $context, $type->getTypeName(), ...$extras);
+        $operators = $manipulator->getTypeOperators($type->getTypeName(), $scope, $type, $context, ...$extras);
 
         if (!$operators) {
             return null;

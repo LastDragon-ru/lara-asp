@@ -139,7 +139,7 @@ abstract class InputObject implements TypeDefinition {
     ): array {
         $type      = $this->getTypeForOperators();
         $operators = $type
-            ? $manipulator->getTypeOperators($this->getScope(), $source, $context, $type)
+            ? $manipulator->getTypeOperators($type, $this->getScope(), $source, $context)
             : [];
 
         return $operators;
@@ -336,7 +336,7 @@ abstract class InputObject implements TypeDefinition {
             $type = $this->getTypeForFieldOperator();
 
             if ($type) {
-                $operators = $manipulator->getTypeOperators($this->getScope(), $field, $context, $type);
+                $operators = $manipulator->getTypeOperators($type, $this->getScope(), $field, $context);
                 $operator  = reset($operators) ?: null;
             }
         }

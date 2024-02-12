@@ -76,10 +76,10 @@ abstract class Type extends InputObject {
     ): ?OperatorContract {
         return match (true) {
             $field->isScalar(), $field->isEnum() => $manipulator->getOperator(
+                SearchByOperatorConditionDirective::class,
                 $this->getScope(),
                 $field,
                 $context,
-                SearchByOperatorConditionDirective::class,
             ),
             $field->isObject()                   => parent::getFieldOperator($manipulator, $field, $context),
             default                              => throw new NotImplemented($field),

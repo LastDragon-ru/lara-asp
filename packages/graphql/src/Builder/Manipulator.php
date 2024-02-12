@@ -112,12 +112,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @template T of Operator
      *
-     * @param class-string<Scope> $scope
      * @param class-string<T>     $operator
+     * @param class-string<Scope> $scope
      *
      * @return T|null
      */
-    public function getOperator(string $scope, TypeSource $source, Context $context, string $operator): ?Operator {
+    public function getOperator(string $operator, string $scope, TypeSource $source, Context $context): ?Operator {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
@@ -142,10 +142,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @return list<Operator>
      */
     public function getTypeOperators(
+        string $type,
         string $scope,
         TypeSource $source,
         Context $context,
-        string $type,
         string ...$extras,
     ): array {
         // Provider?
