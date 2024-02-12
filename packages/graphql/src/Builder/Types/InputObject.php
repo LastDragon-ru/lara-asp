@@ -14,6 +14,7 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -288,7 +289,7 @@ abstract class InputObject implements TypeDefinition {
     /**
      * @see self::isFieldConvertableIgnored()
      *
-     * @return class-string|null
+     * @return class-string<Ignored>|null
      */
     protected function getFieldMarkerIgnored(): ?string {
         return null;

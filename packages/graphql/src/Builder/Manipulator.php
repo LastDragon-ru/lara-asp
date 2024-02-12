@@ -19,6 +19,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -298,13 +299,18 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @return array<array-key, Operator>
      */
     private function getOperators(Operators $provider, string $scope, string $type): array {
+        $ignored   = false;
         $operators = [];
 
         if ($this->isTypeDefinitionExists($type)) {
             $node       = $this->getTypeDefinition($type);
-            $directives = $this->getDirectives($node, $scope);
+            $directives = $this->getDirectives($node);
 
             foreach ($directives as $directive) {
+                if (!($directive instanceof $scope)) {
+                    continue;
+                }
+
                 if ($directive instanceof OperatorsDirective) {
                     $directiveType = $directive->getType();
 
@@ -315,13 +321,17 @@ class Manipulator extends AstManipulator implements TypeProvider {
                     }
                 } elseif ($directive instanceof Operator) {
                     $operators[] = $directive;
+                } elseif ($directive instanceof Ignored) {
+                    $ignored   = true;
+                    $operators = [];
+                    break;
                 } else {
                     // empty
                 }
             }
         }
 
-        if (!$operators && $provider->hasOperators($type)) {
+        if (!$operators && !$ignored && $provider->hasOperators($type)) {
             array_push($operators, ...$provider->getOperators($type));
         }
 

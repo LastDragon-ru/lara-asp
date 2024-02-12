@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -18,6 +19,7 @@ use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -65,6 +67,7 @@ final class ManipulatorTest extends TestCase {
         // Directives
         $directives = Container::getInstance()->make(DirectiveLocator::class);
 
+        $directives->setResolved('ignored', ManipulatorTest_Ignored::class);
         $directives->setResolved('operators', ManipulatorTest_Operators::class);
         $directives->setResolved('aOperator', $aOperator);
         $directives->setResolved('bOperator', $bOperator);
@@ -77,6 +80,10 @@ final class ManipulatorTest extends TestCase {
             @aOperator
             @bOperator
             @cOperator
+
+            scalar TestIgnored
+            @aOperator
+            @ignored
 
             scalar TestOperators
             @operators(type: "TestScalar")
@@ -199,6 +206,15 @@ final class ManipulatorTest extends TestCase {
             array_map(
                 $map,
                 $manipulator->getTypeOperators($operators->getScope(), $source, $context, 'Unknown', Operators::ID),
+            ),
+        );
+        self::assertEquals(
+            [
+                // empty
+            ],
+            array_map(
+                $map,
+                $manipulator->getTypeOperators($operators->getScope(), $source, $context, 'TestIgnored'),
             ),
         );
     }
@@ -324,5 +340,18 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
         ContextContract $context,
     ): object {
         return $builder;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_Ignored extends BaseDirective implements Ignored, Scope {
+    #[Override]
+    public static function definition(): string {
+        return <<<'GRAPHQL'
+            directive @ignored on SCALAR
+        GRAPHQL;
     }
 }
