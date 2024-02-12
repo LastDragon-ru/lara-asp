@@ -264,7 +264,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         // Supported?
-        $operator = $manipulator->getOperator($operator, static::getScope(), $argument, $context);
+        $operator = $manipulator->getOperator(static::getScope(), $argument, $context, $operator);
 
         if (!$operator) {
             return null;

@@ -22,10 +22,10 @@ class Root extends Type {
     ): array {
         $operators = parent::getOperators($manipulator, $source, $context);
         $operator  = $manipulator->getOperator(
-            SortByOperatorFieldDirective::class,
             $this->getScope(),
             $source,
             $context,
+            SortByOperatorFieldDirective::class,
         );
 
         if ($operator) {
