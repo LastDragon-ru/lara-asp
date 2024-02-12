@@ -7,15 +7,15 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Override;
 
+use function array_merge;
+use function array_unique;
 use function implode;
-use function is_a;
 
 abstract class OperatorDirective extends BaseDirective implements Operator {
     public function __construct(
@@ -27,7 +27,18 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
     #[Override]
     public static function definition(): string {
         $name      = '@'.DirectiveLocator::directiveName(static::class);
-        $locations = implode('|', static::getDirectiveLocations());
+        $locations = implode(
+            ' | ',
+            array_unique(
+                array_merge(
+                    static::getDirectiveLocations(),
+                    [
+                        // Location is mandatory to be able to call the operator
+                        DirectiveLocation::INPUT_FIELD_DEFINITION,
+                    ],
+                ),
+            ),
+        );
 
         return <<<GRAPHQL
             directive {$name} on {$locations}
@@ -38,16 +49,11 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
      * @return non-empty-list<string>
      */
     protected static function getDirectiveLocations(): array {
-        $locations = [
-            DirectiveLocation::INPUT_FIELD_DEFINITION,
+        return [
+            // Locations are required to be able to add operators inside the schema
+            DirectiveLocation::SCALAR,
+            DirectiveLocation::ENUM,
         ];
-
-        if (is_a(static::class, Scope::class, true)) {
-            $locations[] = DirectiveLocation::SCALAR;
-            $locations[] = DirectiveLocation::ENUM;
-        }
-
-        return $locations;
     }
 
     #[Override]

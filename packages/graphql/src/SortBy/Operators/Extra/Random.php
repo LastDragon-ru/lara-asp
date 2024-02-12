@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
-use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -16,22 +15,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Flag;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
-use function array_merge;
-
 class Random extends Operator {
-    // <editor-fold desc="Directive">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected static function getDirectiveLocations(): array {
-        return array_merge(parent::getDirectiveLocations(), [
-            DirectiveLocation::FIELD_DEFINITION,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Operator">
     // =========================================================================
     #[Override]

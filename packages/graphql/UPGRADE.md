@@ -133,6 +133,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   );
   ```
 
+* [ ] `@sortByOperatorRandom` cannot be added to `FIELD_DEFINITION` anymore.
+
 ## API
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
