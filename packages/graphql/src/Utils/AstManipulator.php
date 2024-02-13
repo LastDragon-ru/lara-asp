@@ -60,11 +60,13 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
 use function array_merge;
+use function array_udiff;
 use function assert;
 use function is_string;
 use function json_encode;
 use function mb_strlen;
 use function mb_substr;
+use function spl_object_id;
 use function sprintf;
 use function trim;
 
@@ -420,15 +422,28 @@ class AstManipulator {
         $directives = [];
 
         if ($node instanceof NamedType) {
+            // From Node itself (it will also include directive from extension nodes)
             if ($node->astNode()) {
                 $directives = $this->getDirectives($node->astNode(), $class, $callback);
             }
 
-            foreach ($node->extensionASTNodes() as $extensionNode) {
+            // Form Node's extensions but without already added
+            $typeExtensionNodes = $node->extensionASTNodes();
+            $astExtensionNodes  = $this->getDocument()->typeExtensions[$node->name()] ?? [];
+            $extensionNodes     = array_udiff(
+                $typeExtensionNodes,
+                $astExtensionNodes,
+                static function (object $a, object $b): int {
+                    return spl_object_id($a) <=> spl_object_id($b);
+                },
+            );
+
+            foreach ($extensionNodes as $extensionNode) {
                 $directives = array_merge($directives, $this->getDirectives($extensionNode, $class, $callback));
             }
         } elseif ($node instanceof Node) {
-            $associated = $this->getDirectiveLocator()->associated($node)->all();
+            // From Node itself
+            $associated = $this->getDirectiveLocator()->associated($node);
 
             if ($class !== null || $callback !== null) {
                 foreach ($associated as $directive) {
@@ -446,7 +461,14 @@ class AstManipulator {
                     $directives[] = $directive;
                 }
             } else {
-                $directives = $associated;
+                $directives = $associated->all();
+            }
+
+            // From extensions ("extend scalar ..."/etc)
+            if ($node instanceof TypeDefinitionNode) {
+                foreach ($this->getDocument()->typeExtensions[$node->getName()->value] ?? [] as $extensionNode) {
+                    $directives = array_merge($directives, $this->getDirectives($extensionNode, $class, $callback));
+                }
             }
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
             if ($node->astNode) {

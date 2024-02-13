@@ -27,3 +27,6 @@ scalar SearchByExtra
 scalar Mixed
 @scalar(class: "GraphQL\\Type\\Definition\\StringType")
 @searchByOperatorEqual
+
+extend scalar Mixed
+@searchByOperatorNotEqual

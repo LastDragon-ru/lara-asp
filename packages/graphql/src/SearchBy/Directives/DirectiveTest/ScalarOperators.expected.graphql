@@ -203,6 +203,12 @@ input SearchByScalarMixed {
     """
     equal: Mixed
     @searchByOperatorEqual
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: Mixed
+    @searchByOperatorNotEqual
 }
 
 scalar Date
