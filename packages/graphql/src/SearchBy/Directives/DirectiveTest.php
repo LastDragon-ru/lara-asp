@@ -471,6 +471,15 @@ class DirectiveTest extends TestCase {
                     $locator->setResolved('customComplexOperator', $directive::class);
                 },
             ],
+            'scalars'                        => [
+                static function (self $test): GraphQLExpected {
+                    return (new GraphQLExpected(
+                        $test::getTestData()->file('~scalars-expected.graphql'),
+                    ));
+                },
+                '~scalars.graphql',
+                null,
+            ],
         ];
     }
 
