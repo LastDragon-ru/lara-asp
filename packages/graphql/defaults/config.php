@@ -3,6 +3,7 @@
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 
 /**
  * -----------------------------------------------------------------------------
@@ -40,7 +41,10 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
  *          offset: array{
  *              name: string,
  *          }
- *      }
+ *      },
+ *      builder: array{
+ *          allowed_directives: list<class-string>,
+ *      },
  *      } $settings
  */
 $settings = [
@@ -114,6 +118,22 @@ $settings = [
         ],
         'offset' => [
             'name' => 'offset',
+        ],
+    ],
+
+    /**
+     * General settings for all `Builder` directives like `@searchBy`/`@sortBy`/etc.
+     */
+    'builder'   => [
+        /**
+         * The list of the directives which should be copied from the original
+         * field into the generated `input` field. All other directives except
+         * {@see Operator} will be ignored.
+         *
+         * The `instanceof` operator is used to check.
+         */
+        'allowed_directives' => [
+            RenameDirective::class,
         ],
     ],
 ];

@@ -27,14 +27,17 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Override;
 
+use function config;
 use function count;
 use function is_a;
+use function is_string;
 use function reset;
 use function trim;
 
@@ -252,7 +255,12 @@ abstract class InputObject implements TypeDefinition {
         FieldResolver $directive,
     ): bool {
         return ($directive instanceof RelationDirective && $field->isObject())
-            || ($directive instanceof RenameDirective && !$field->hasArguments() && !$field->isObject());
+            || (
+                $directive instanceof RenameDirective
+                && !$field->hasArguments()
+                && !$field->isObject()
+                && $this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive)
+            );
     }
 
     protected function isFieldConvertableIgnored(
@@ -430,8 +438,23 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
         Directive $directive,
     ): bool {
-        return is_a($directive, $this->getFieldMarkerOperator())
-            || $directive instanceof RenameDirective;
+        // Operator is always allowed
+        if (is_a($directive, $this->getFieldMarkerOperator())) {
+            return true;
+        }
+
+        // Allowed?
+        $isAllowed = false;
+        $allowed   = (array) config(Package::Name.'.builder.allowed_directives');
+
+        foreach ($allowed as $class) {
+            if (is_string($class) && $directive instanceof $class) {
+                $isAllowed = true;
+                break;
+            }
+        }
+
+        return $isAllowed;
     }
 
     protected function getTypeForOperators(): ?string {

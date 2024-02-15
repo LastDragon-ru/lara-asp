@@ -119,12 +119,14 @@ For Implicit type, the following rules are applied (in this order; concrete dire
 * Has `Nuwave\Lighthouse\Support\Contracts\FieldResolver`?
   * Yes
     * Is `Nuwave\Lighthouse\Schema\Directives\RelationDirective`? - Include if is the `Object` or list of `Object`
-    * Is `Nuwave\Lighthouse\Schema\Directives\RenameDirective`? - Include if is `scalar`/`enum` (not `Object`) and no arguments
+    * Is `Nuwave\Lighthouse\Schema\Directives\RenameDirective`? - Include if allowed, is `scalar`/`enum` (not `Object`), and no arguments
     * Otherwise - exclude
   * No
     * Is `Object` or has arguments - exclude
     * Otherwise - include
 * Ignored (if supported)? - exclude
+
+For both types you can use [`builder.allowed_directives`](defaults/config.php) setting to control which directives should be copied from the original field into generated. Be aware of directive locations - package doesn't check that allowed directive can be used on `INPUT_FIELD_DEFINITION`.
 
 # Builder field/column name
 
