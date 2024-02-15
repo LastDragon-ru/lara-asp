@@ -10,6 +10,8 @@ use SebastianBergmann\Exporter\Exporter;
 use function assert;
 use function is_bool;
 use function is_float;
+use function is_string;
+use function mb_strtolower;
 
 class ScalarStrictComparator extends ScalarComparator {
     #[Override]
@@ -25,8 +27,22 @@ class ScalarStrictComparator extends ScalarComparator {
         assert(is_bool($canonicalize));
         assert(is_bool($ignoreCase));
 
+        // Ignore case?
+        $actualNormalized   = $actual;
+        $expectedNormalized = $expected;
+
+        if ($ignoreCase) {
+            if (is_string($actual)) {
+                $actualNormalized = mb_strtolower($actual);
+            }
+
+            if (is_string($expected)) {
+                $expectedNormalized = mb_strtolower($expected);
+            }
+        }
+
         // Same?
-        if ($expected === $actual) {
+        if ($expectedNormalized === $actualNormalized) {
             return;
         }
 
