@@ -7,6 +7,9 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\ScalarComparator;
 use SebastianBergmann\Exporter\Exporter;
 
+use function is_string;
+use function mb_strtolower;
+
 class ScalarStrictComparator extends ScalarComparator {
     /**
      * @param array<array-key, mixed> $processed
@@ -20,8 +23,22 @@ class ScalarStrictComparator extends ScalarComparator {
         bool $ignoreCase = false,
         array &$processed = [],
     ): void {
+        // Ignore case?
+        $actualNormalized   = $actual;
+        $expectedNormalized = $expected;
+
+        if ($ignoreCase) {
+            if (is_string($actual)) {
+                $actualNormalized = mb_strtolower($actual);
+            }
+
+            if (is_string($expected)) {
+                $expectedNormalized = mb_strtolower($expected);
+            }
+        }
+
         // Same?
-        if ($expected === $actual) {
+        if ($expectedNormalized === $actualNormalized) {
             return;
         }
 
