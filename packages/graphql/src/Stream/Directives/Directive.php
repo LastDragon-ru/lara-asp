@@ -12,6 +12,8 @@ use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
@@ -19,6 +21,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Enhancer;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
@@ -98,10 +101,10 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgKey        = 'key';
 
     /**
-     * @param StreamFactory<object> $streamFactory
+     * @param StreamFactory<object> $factory
      */
     public function __construct(
-        private readonly StreamFactory $streamFactory,
+        protected readonly StreamFactory $factory,
     ) {
         // empty
     }
@@ -176,16 +179,6 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         GRAPHQL;
     }
     //</editor-fold>
-
-    // <editor-fold desc="Getters / Setters">
-    // =========================================================================
-    /**
-     * @return StreamFactory<object>
-     */
-    protected function getStreamFactory(): StreamFactory {
-        return $this->streamFactory;
-    }
-    // </editor-fold>
 
     // <editor-fold desc="FieldManipulator">
     // =========================================================================
@@ -412,7 +405,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Not supported?
-            if ($type !== null && !$this->getStreamFactory()->isSupported($type)) {
+            if ($type !== null && !$this->factory->isSupported($type)) {
                 throw new BuilderUnsupported($source, $type);
             }
         } catch (ReflectionException) {
@@ -441,29 +434,94 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $offset      = $this->getFieldValue(StreamOffsetDirective::class, $manipulator, $source, $info, $args);
 
             // Builder
-            $factory  = $this->getStreamFactory();
             $resolver = $this->getResolver($source);
             $builder  = $resolver !== null && is_callable($resolver)
                 ? $resolver($root, $args, $context, $info)
                 : null;
+            $builder  = is_object($builder)
+                ? $this->getBuilder($builder, $root, $args, $context, $info)
+                : null;
 
             if (!is_object($builder)) {
                 throw new BuilderInvalid($source, gettype($builder));
-            } elseif (!$factory->isSupported($builder)) {
+            } elseif (!$this->factory->isSupported($builder)) {
                 throw new BuilderUnsupported($source, $builder::class);
             } else {
                 // ok
             }
 
             // Stream
-            $key     = $this->getArgKey($manipulator, $source);
-            $limit   = $this->getFieldValue(StreamLimitDirective::class, $manipulator, $source, $info, $args);
-            $builder = $factory->enhance($builder, $root, $args, $context, $info);
-            $stream  = $factory->create($builder, $key, $limit, $offset);
-            $stream  = new StreamValue($stream);
+            $key    = $this->getArgKey($manipulator, $source);
+            $limit  = $this->getFieldValue(StreamLimitDirective::class, $manipulator, $source, $info, $args);
+            $stream = $this->factory->create($builder, $key, $limit, $offset);
+            $stream = new StreamValue($stream);
 
             return $stream;
         };
+    }
+
+    /**
+     * @param array<string, mixed> $args
+     */
+    protected function getBuilder(
+        object $builder,
+        mixed $root,
+        array $args,
+        GraphQLContext $context,
+        ResolveInfo $info,
+    ): object {
+        // Scout?
+        if ($builder instanceof EloquentBuilder) {
+            $enhancer = new class ($info->argumentSet, $builder) extends ScoutEnhancer {
+                #[Override]
+                public function enhanceEloquentBuilder(): ScoutBuilder {
+                    return parent::enhanceEloquentBuilder();
+                }
+            };
+
+            if ($enhancer->canEnhanceBuilder()) {
+                $builder = $enhancer->enhanceEloquentBuilder();
+            }
+        }
+
+        // Lighthouse's enhancer is slower because it processes all nested fields
+        // of the input value, and then we need to recreate Argument from the
+        // plain value. So we are skipping it if possible.
+        $lighthouse = false;
+        $filter     = static function (object $directive): bool {
+            return !($directive instanceof Enhancer)
+                && !($directive instanceof Offset)
+                && !($directive instanceof Limit)
+                && !($directive instanceof SearchDirective);
+        };
+
+        foreach ($info->argumentSet->arguments as $argument) {
+            if ($argument->directives->contains(static fn ($directive) => !$filter($directive))) {
+                foreach ($argument->directives as $directive) {
+                    if ($directive instanceof Enhancer) {
+                        $builder = $directive->enhance($builder, $argument);
+                    }
+                }
+            } else {
+                $lighthouse = true;
+            }
+        }
+
+        // Not possible?
+        if (
+            $lighthouse
+            && (
+                $builder instanceof EloquentBuilder
+                || $builder instanceof EloquentRelation
+                || $builder instanceof QueryBuilder
+                || $builder instanceof ScoutBuilder
+            )
+        ) {
+            $builder = $info->enhanceBuilder($builder, [], $root, $args, $context, $info, $filter);
+        }
+
+        // Return
+        return $builder;
     }
 
     /**
@@ -493,13 +551,15 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
         } else {
             $parent   = $source->getParent()->getTypeName();
-            $resolver = $this->getResolverQuery($parent, $source->getName()) ?? (
-                RootType::isRootType($parent)
+            $resolver = $this->getResolverQuery($parent, $source->getName());
+
+            if (!$resolver) {
+                $resolver = RootType::isRootType($parent)
                     ? $this->getResolverModel(
                         Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName()),
                     )
-                    : $this->getResolverRelation($parent, $source->getName())
-            );
+                    : $this->getResolverRelation($parent, $source->getName());
+            }
         }
 
         return $resolver;

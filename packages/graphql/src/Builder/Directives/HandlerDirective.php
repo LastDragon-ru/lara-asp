@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Enhancer;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
@@ -49,7 +50,7 @@ use function reset;
  * @see HandlerContextBuilderInfo
  * @see HandlerContextImplicit
  */
-abstract class HandlerDirective extends BaseDirective implements Handler {
+abstract class HandlerDirective extends BaseDirective implements Handler, Enhancer {
     use WithManipulator;
     use WithSource;
 
@@ -95,22 +96,44 @@ abstract class HandlerDirective extends BaseDirective implements Handler {
      *
      * @return T
      */
-    protected function handleAnyBuilder(object $builder, mixed $value, ContextContract $context = null): object {
+    protected function handleAnyBuilder(
+        object $builder,
+        mixed $value,
+        Field $field = null,
+        ContextContract $context = null,
+    ): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
-            $argument   = !($value instanceof Argument)
+            $argument = !($value instanceof Argument)
                 ? $this->getFactory()->getArgument($this->definitionNode, $value)
                 : $value;
-            $isList     = $this->definitionNode->type instanceof ListTypeNode;
-            $conditions = $isList && is_array($argument->value)
-                ? $argument->value
-                : [$argument->value];
+            $builder  = $this->enhance($builder, $argument, $field, $context);
+        }
 
-            foreach ($conditions as $condition) {
-                if ($condition instanceof ArgumentSet) {
-                    $builder = $this->handle($builder, new Field(), $condition, $context ?? new Context());
-                } else {
-                    throw new HandlerInvalidConditions($this);
-                }
+        return $builder;
+    }
+
+    #[Override]
+    public function enhance(
+        object $builder,
+        ArgumentSet|Argument $value,
+        Field $field = null,
+        ContextContract $context = null,
+    ): object {
+        $field    ??= new Field();
+        $context  ??= new Context();
+        $conditions = match (true) {
+            $value instanceof ArgumentSet => [$value],
+            !is_array($value->value)      => [$value->value],
+            default                       => $value->value,
+        };
+
+        foreach ($conditions as $condition) {
+            if ($condition instanceof ArgumentSet) {
+                $builder = $this->handle($builder, $field, $condition, $context);
+            } elseif ($condition === null) {
+                // nothing to do, skip
+            } else {
+                throw new HandlerInvalidConditions($this);
             }
         }
 

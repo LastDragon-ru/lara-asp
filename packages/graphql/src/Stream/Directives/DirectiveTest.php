@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
@@ -42,6 +43,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Stream;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObjectSearchable;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Queries\Query;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Types\CustomType;
@@ -57,6 +59,8 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentT
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use Mockery;
+use Mockery\MockInterface;
+use Nuwave\Lighthouse\Execution\Arguments\ArgumentSetFactory;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -465,6 +469,228 @@ final class DirectiveTest extends TestCase {
             ->andReturn($resolver);
 
         self::assertEquals($expected, $directive->getBuilderInfo($source));
+    }
+
+    public function testGetBuilder(): void {
+        config([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(Car::class))->getNamespaceName(),
+            ],
+        ]);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            type Query {
+                field: [Car] @stream
+            }
+
+            type Car {
+                id: ID!
+            }
+            GRAPHQL,
+        );
+
+        $type  = $this->getGraphQLSchema()->getQueryType();
+        $field = $type?->findField('field');
+
+        self::assertNotNull($type);
+        self::assertNotNull($field);
+        self::assertNotNull($field->astNode);
+
+        $this->override(SearchByDirective::class, static function (MockInterface $mock): void {
+            $mock
+                ->shouldReceive('hydrate')
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('enhance')
+                ->once()
+                ->andReturnUsing(
+                    static fn (object $builder) => $builder,
+                );
+        });
+
+        $info                  = Mockery::mock(ResolveInfo::class);
+        $info->path            = ['field'];
+        $info->parentType      = $type;
+        $info->fieldDefinition = $field;
+        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo(
+            [
+                'limit' => 10,
+                'where' => [
+                    'field' => [
+                        'id' => [
+                            'equal' => 123,
+                        ],
+                    ],
+                ],
+            ],
+            $info,
+        );
+        $info
+            ->shouldReceive('enhanceBuilder')
+            ->never();
+
+        $root      = 123;
+        $args      = $info->argumentSet->toArray();
+        $context   = Mockery::mock(GraphQLContext::class);
+        $builder   = Car::query();
+        $directive = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            $field->astNode,
+        );
+
+        self::assertInstanceOf($builder::class, $directive->getBuilder($builder, $root, $args, $context, $info));
+    }
+
+    #[RequiresLaravelScout]
+    public function testGetBuilderScoutBuilder(): void {
+        config([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(TestObjectSearchable::class))->getNamespaceName(),
+            ],
+        ]);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            type Query {
+                field(search: String! @search): [TestObject] @stream
+            }
+
+            type TestObject {
+                id: ID!
+            }
+            GRAPHQL,
+        );
+
+        $type  = $this->getGraphQLSchema()->getQueryType();
+        $field = $type?->findField('field');
+
+        self::assertNotNull($type);
+        self::assertNotNull($field);
+        self::assertNotNull($field->astNode);
+
+        $this->override(SearchByDirective::class, static function (MockInterface $mock): void {
+            $mock
+                ->shouldReceive('hydrate')
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('enhance')
+                ->never();
+        });
+
+        $info                  = Mockery::mock(ResolveInfo::class);
+        $info->path            = ['field'];
+        $info->parentType      = $type;
+        $info->fieldDefinition = $field;
+        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo(
+            [
+                'search' => '*',
+            ],
+            $info,
+        );
+        $info
+            ->shouldReceive('enhanceBuilder')
+            ->never();
+
+        $root      = 123;
+        $args      = $info->argumentSet->toArray();
+        $context   = Mockery::mock(GraphQLContext::class);
+        $builder   = TestObjectSearchable::query();
+        $directive = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            $field->astNode,
+        );
+
+        self::assertInstanceOf(ScoutBuilder::class, $directive->getBuilder($builder, $root, $args, $context, $info));
+    }
+
+    public function testGetBuilderLighthouseEnhancer(): void {
+        config([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(Car::class))->getNamespaceName(),
+            ],
+        ]);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            type Query {
+                field(id: String! @eq): [Car] @stream
+            }
+
+            type Car {
+                id: ID!
+            }
+            GRAPHQL,
+        );
+
+        $type  = $this->getGraphQLSchema()->getQueryType();
+        $field = $type?->findField('field');
+
+        self::assertNotNull($type);
+        self::assertNotNull($field);
+        self::assertNotNull($field->astNode);
+
+        $this->override(SearchByDirective::class, static function (MockInterface $mock): void {
+            $mock
+                ->shouldReceive('hydrate')
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('enhance')
+                ->once()
+                ->andReturnUsing(
+                    static fn (object $builder) => $builder,
+                );
+        });
+
+        $info                  = Mockery::mock(ResolveInfo::class);
+        $info->path            = ['field'];
+        $info->parentType      = $type;
+        $info->fieldDefinition = $field;
+        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo(
+            [
+                'id'    => 123,
+                'where' => [
+                    'field' => [
+                        'id' => [
+                            'equal' => 123,
+                        ],
+                    ],
+                ],
+            ],
+            $info,
+        );
+        $info
+            ->shouldReceive('enhanceBuilder')
+            ->once()
+            ->andReturnUsing(
+                static fn (object $builder) => $builder,
+            );
+
+        $root      = 123;
+        $args      = $info->argumentSet->toArray();
+        $context   = Mockery::mock(GraphQLContext::class);
+        $builder   = Car::query();
+        $directive = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            $field->astNode,
+        );
+
+        self::assertInstanceOf($builder::class, $directive->getBuilder($builder, $root, $args, $context, $info));
     }
 
     /**
@@ -901,15 +1127,13 @@ final class DirectiveTest extends TestCase {
         $info->path            = ['field'];
         $info->parentType      = $type;
         $info->fieldDefinition = $field;
+        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo([], $info);
         $info
             ->shouldReceive('enhanceBuilder')
-            ->once()
-            ->andReturnUsing(
-                static fn (mixed $builder) => $builder,
-            );
+            ->never();
 
         $root      = 123;
-        $args      = ['a' => 'a'];
+        $args      = $info->argumentSet->toArray();
         $value     = Mockery::mock(FieldValue::class);
         $context   = Mockery::mock(GraphQLContext::class);
         $builder   = Mockery::mock(EloquentBuilder::class);
@@ -1066,6 +1290,12 @@ final class DirectiveTest extends TestCase {
             ->once()
             ->andReturn(
                 static fn () => new stdClass(),
+            );
+        $directive
+            ->shouldReceive('getBuilder')
+            ->once()
+            ->andReturnUsing(
+                static fn (object $builder) => $builder,
             );
         $factory
             ->shouldReceive('isSupported')

@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Contracts;
 
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
-use Nuwave\Lighthouse\Execution\ResolveInfo;
-use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 /**
  * @template TBuilder of object
@@ -16,20 +14,6 @@ interface StreamFactory {
      * @param object|class-string                                                      $builder
      */
     public function isSupported(object|string $builder): bool;
-
-    /**
-     * @param TBuilder             $builder
-     * @param array<string, mixed> $args
-     *
-     * @return TBuilder
-     */
-    public function enhance(
-        object $builder,
-        mixed $root,
-        array $args,
-        GraphQLContext $context,
-        ResolveInfo $info,
-    ): object;
 
     /**
      * @param TBuilder    $builder

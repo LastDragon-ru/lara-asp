@@ -188,3 +188,7 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] `@sortByOperatorProperty` => `@sortByOperatorChild` (and class too)
 
 * [ ] `@sortByOperatorField` => `@sortByOperatorSort` (and class too)
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory::enhance()` removed
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive`
