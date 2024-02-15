@@ -21,12 +21,14 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Override;
 
+use function config;
 use function count;
+use function is_string;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
@@ -263,7 +265,22 @@ abstract class InputObject implements TypeDefinition {
     }
 
     protected function isFieldDirectiveAllowed(Manipulator $manipulator, Directive $directive): bool {
-        return $directive instanceof Operator
-            || $directive instanceof RenameDirective;
+        // Operator is always allowed
+        if ($directive instanceof Operator) {
+            return true;
+        }
+
+        // Allowed?
+        $isAllowed = false;
+        $allowed   = (array) config(Package::Name.'.builder.allowed_directives');
+
+        foreach ($allowed as $class) {
+            if (is_string($class) && $directive instanceof $class) {
+                $isAllowed = true;
+                break;
+            }
+        }
+
+        return $isAllowed;
     }
 }

@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 
 /**
  * -----------------------------------------------------------------------------
@@ -36,7 +37,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
  *          offset: array{
  *              name: string,
  *          }
- *      }
+ *      },
+ *      builder: array{
+ *          allowed_directives: list<class-string>,
+ *      },
  *      } $settings
  */
 $settings = [
@@ -99,6 +103,22 @@ $settings = [
         ],
         'offset' => [
             'name' => 'offset',
+        ],
+    ],
+
+    /**
+     * General settings for all `Builder` directives like `@searchBy`/`@sortBy`/etc.
+     */
+    'builder'   => [
+        /**
+         * The list of the directives which should be copied from the original
+         * field into the generated `input` field. All other directives except
+         * {@see Operator} will be ignored.
+         *
+         * The `instanceof` operator is used to check.
+         */
+        'allowed_directives' => [
+            RenameDirective::class,
         ],
     ],
 ];
