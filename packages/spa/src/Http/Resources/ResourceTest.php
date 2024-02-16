@@ -50,9 +50,11 @@ final class ResourceTest extends TestCase {
      * @param class-string $expected
      */
     public function testCollection(string $expected, mixed $value): void {
-        $class  = get_class(new class(null) extends Resource {
-            // empty
-        });
+        $class  = get_class(
+            new class(null) extends Resource {
+                // empty
+            },
+        );
         $actual = $class::collection($value);
 
         self::assertInstanceOf($expected, $actual);
@@ -92,10 +94,13 @@ final class ResourceTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        self::assertEquals($expected, json_decode(
-            $resource->response()->content(),
-            true,
-        ));
+        self::assertEquals(
+            $expected,
+            json_decode(
+                $resource->response()->content(),
+                true,
+            ),
+        );
     }
 
     public function testMapResourceDataImplicitModel(): void {
@@ -106,9 +111,11 @@ final class ResourceTest extends TestCase {
             // empty
         };
 
-        self::expectExceptionObject(new LogicException(
-            'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
-        ));
+        self::expectExceptionObject(
+            new LogicException(
+                'Implicit conversions of Models is not supported, please redefine this method to make it explicit.',
+            ),
+        );
 
         self::assertIsArray($resource->toArray(new Request()));
     }
@@ -304,38 +311,7 @@ final class ResourceTest extends TestCase {
                         'collection_date_no_cast' => $date->format(Package::DateTimeFormat),
                     ],
                 ],
-                new
-                /**
-                 * @property DateTimeInterface                        $date
-                 * @property DateTimeInterface                        $datetime
-                 * @property DateTimeInterface                        $date_no_cast
-                 * @property array<array-key, DateTimeInterface>      $nested
-                 * @property Collection<array-key, DateTimeInterface> $collection
-                 */
-                class($date, $format) extends Model {
-                    public function __construct(DateTimeInterface $date, string $format) {
-                        parent::__construct([]);
-
-                        $this->dateFormat   = $format;
-                        $this->casts        = [
-                            'date'     => 'date',
-                            'datetime' => 'datetime',
-                        ];
-                        $this->date         = $date;
-                        $this->datetime     = $date;
-                        $this->date_no_cast = $date;
-                        $this->nested       = [
-                            'nested_date'         => $date,
-                            'nested_datetime'     => $date,
-                            'nested_date_no_cast' => $date,
-                        ];
-                        $this->collection   = new Collection([
-                            'collection_date'         => $date,
-                            'collection_datetime'     => $date,
-                            'collection_date_no_cast' => $date,
-                        ]);
-                    }
-                },
+                ResourceTest_Model::create($date, $format),
             ],
             'JsonResource inside properties'    => [
                 new LogicException('Please do not return JsonResource directly, use our Resources instead.'),
@@ -359,4 +335,43 @@ final class ResourceTest extends TestCase {
         ];
     }
     // </editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @property DateTimeInterface                        $date
+ * @property DateTimeInterface                        $datetime
+ * @property DateTimeInterface                        $date_no_cast
+ * @property array<array-key, DateTimeInterface>      $nested
+ * @property Collection<array-key, DateTimeInterface> $collection
+ */
+class ResourceTest_Model extends Model {
+    public static function create(DateTimeInterface $date, string $format): self {
+        $model               = new self();
+        $model->dateFormat   = $format;
+        $model->casts        = [
+            'date'     => 'date',
+            'datetime' => 'datetime',
+        ];
+        $model->date         = $date;
+        $model->datetime     = $date;
+        $model->date_no_cast = $date;
+        $model->nested       = [
+            'nested_date'         => $date,
+            'nested_datetime'     => $date,
+            'nested_date_no_cast' => $date,
+        ];
+        $model->collection   = new Collection([
+            'collection_date'         => $date,
+            'collection_datetime'     => $date,
+            'collection_date_no_cast' => $date,
+        ]);
+
+        return $model;
+    }
 }
