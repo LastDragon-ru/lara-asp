@@ -11,10 +11,13 @@ trait Concerns {
     /**
      * @param array<string, mixed> $attributes
      */
-    public function __construct(string $table, string $id = null, array $attributes = []) {
+    public function __construct(string $table = null, string $id = null, array $attributes = []) {
         parent::__construct();
 
-        $this->table        = $table;
+        if ($table) {
+            $this->table = $table;
+        }
+
         $this->keyType      = 'string';
         $this->incrementing = false;
 
