@@ -3,7 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
 use Exception;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -39,7 +41,12 @@ final class InputObjectTest extends TestCase {
      *
      * @param list<class-string>|null $allowed
      */
-    public function testIsFieldDirectiveAllowed(bool $expected, ?array $allowed, Directive $directive): void {
+    public function testIsFieldDirectiveAllowed(
+        bool $expected,
+        ?array $allowed,
+        Directive $directive,
+        ContextContract $context,
+    ): void {
         if ($allowed !== null) {
             config([
                 Package::Name.'.builder.allowed_directives' => $allowed,
@@ -47,7 +54,6 @@ final class InputObjectTest extends TestCase {
         }
 
         $manipulator = Mockery::mock(Manipulator::class);
-        $context     = Mockery::mock(Context::class);
         $field       = Mockery::mock(ObjectFieldSource::class);
         $input       = new InputObjectTest__InputObject();
 
@@ -62,59 +68,27 @@ final class InputObjectTest extends TestCase {
      */
     public static function dataProviderIsFieldDirectiveAllowed(): array {
         return [
-            Operator::class        => [
+            Operator::class                            => [
                 true,
                 [
                     // empty
                 ],
-                new class () implements InputObjectTest__Operator {
-                    #[Override]
-                    public static function definition(): string {
-                        throw new Exception('Should not be called');
-                    }
-
-                    #[Override]
-                    public static function getName(): string {
-                        throw new Exception('Should not be called');
-                    }
-
-                    #[Override]
-                    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
-                        throw new Exception('Should not be called');
-                    }
-
-                    #[Override]
-                    public function getFieldType(
-                        TypeProvider $provider,
-                        TypeSource $source,
-                        Context $context,
-                    ): ?string {
-                        throw new Exception('Should not be called');
-                    }
-
-                    #[Override]
-                    public function getFieldDescription(): ?string {
-                        throw new Exception('Should not be called');
-                    }
-
-                    #[Override]
-                    public function call(
-                        Handler $handler,
-                        object $builder,
-                        Field $field,
-                        Argument $argument,
-                        Context $context,
-                    ): object {
-                        throw new Exception('Should not be called');
-                    }
+                new class () extends InputObjectTest__OperatorImpl implements InputObjectTest__Operator {
+                    // empty
                 },
+                (new Context())->override([
+                    HandlerContextImplicit::class => new HandlerContextImplicit(true),
+                ]),
             ],
-            RenameDirective::class => [
+            RenameDirective::class                     => [
                 true,
                 null,
                 new RenameDirective(),
+                (new Context())->override([
+                    HandlerContextImplicit::class => new HandlerContextImplicit(true),
+                ]),
             ],
-            'Not allowed'          => [
+            'Not allowed'                              => [
                 false,
                 [
                     // empty
@@ -125,8 +99,11 @@ final class InputObjectTest extends TestCase {
                         throw new Exception('Should not be called');
                     }
                 },
+                (new Context())->override([
+                    HandlerContextImplicit::class => new HandlerContextImplicit(true),
+                ]),
             ],
-            'Allowed'              => [
+            'Allowed'                                  => [
                 true,
                 [
                     Directive::class,
@@ -137,6 +114,36 @@ final class InputObjectTest extends TestCase {
                         throw new Exception('Should not be called');
                     }
                 },
+                (new Context())->override([
+                    HandlerContextImplicit::class => new HandlerContextImplicit(true),
+                ]),
+            ],
+            'Not allowed (explicit)'                   => [
+                true,
+                [
+                    // empty
+                ],
+                new class () implements Directive {
+                    #[Override]
+                    public static function definition(): string {
+                        throw new Exception('Should not be called');
+                    }
+                },
+                (new Context())->override([
+                    HandlerContextImplicit::class => new HandlerContextImplicit(false),
+                ]),
+            ],
+            'Operator of another directive (explicit)' => [
+                false,
+                [
+                    // empty
+                ],
+                new class () extends InputObjectTest__OperatorImpl {
+                    // empty
+                },
+                (new Context())->override([
+                    HandlerContextImplicit::class => new HandlerContextImplicit(false),
+                ]),
             ],
         ];
     }
@@ -160,13 +167,13 @@ class InputObjectTest__InputObject extends InputObject {
     protected function getDescription(
         Manipulator $manipulator,
         InterfaceSource|InputSource|ObjectSource $source,
-        Context $context,
+        ContextContract $context,
     ): string {
         throw new Exception('Should not be called');
     }
 
     #[Override]
-    public function getTypeName(TypeSource $source, Context $context): string {
+    public function getTypeName(TypeSource $source, ContextContract $context): string {
         throw new Exception('Should not be called');
     }
 
@@ -179,7 +186,7 @@ class InputObjectTest__InputObject extends InputObject {
     public function isFieldDirectiveAllowed(
         Manipulator $manipulator,
         ObjectFieldSource|InputFieldSource|InterfaceFieldSource $field,
-        Context $context,
+        ContextContract $context,
         Directive $directive,
     ): bool {
         return parent::isFieldDirectiveAllowed(
@@ -197,4 +204,54 @@ class InputObjectTest__InputObject extends InputObject {
  */
 interface InputObjectTest__Operator extends Operator {
     // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class InputObjectTest__OperatorImpl implements Operator {
+    #[Override]
+    public static function definition(): string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public static function getName(): string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function isAvailable(
+        TypeProvider $provider,
+        TypeSource $source,
+        ContextContract $context,
+    ): bool {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function getFieldType(
+        TypeProvider $provider,
+        TypeSource $source,
+        ContextContract $context,
+    ): ?string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function getFieldDescription(): ?string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function call(
+        Handler $handler,
+        object $builder,
+        Field $field,
+        Argument $argument,
+        ContextContract $context,
+    ): object {
+        throw new Exception('Should not be called');
+    }
 }

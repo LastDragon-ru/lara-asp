@@ -4,9 +4,15 @@ type Query {
 }
 
 type A {
-    a: String! @rename(attribute: "renamed")
+    a: String!
+    @rename(attribute: "renamed")
+    @forbidden
+    @allowed
 }
 
 interface B {
-    b: String! @rename(attribute: "renamed")
+    b: String!
+    @rename(attribute: "renamed")
+    @forbidden
+    @allowed
 }

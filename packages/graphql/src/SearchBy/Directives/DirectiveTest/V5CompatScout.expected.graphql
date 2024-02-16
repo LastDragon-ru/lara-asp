@@ -206,6 +206,9 @@ input SearchByScoutConditionInputA {
     """
     resolver: SearchByScoutScalarFloatOrNull
     @searchByOperatorCondition
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
+    )
 
     """
     Field condition.

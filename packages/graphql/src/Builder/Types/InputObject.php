@@ -438,6 +438,16 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
         Directive $directive,
     ): bool {
+        // Explicit type is an `input` and we are expecting this type was created
+        // for the directive, so all field's directives are allowed.
+        if (!$context->get(HandlerContextImplicit::class)?->value) {
+            if ($directive instanceof Operator) {
+                return is_a($directive, $this->getFieldMarkerOperator());
+            }
+
+            return true;
+        }
+
         // Operator is always allowed
         if (is_a($directive, $this->getFieldMarkerOperator())) {
             return true;

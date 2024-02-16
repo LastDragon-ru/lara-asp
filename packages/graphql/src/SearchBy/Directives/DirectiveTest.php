@@ -60,6 +60,8 @@ use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider as LighthousePaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
+use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
@@ -674,7 +676,32 @@ final class DirectiveTest extends TestCase {
                 'AllowedDirectives.expected.graphql',
                 'AllowedDirectives.schema.graphql',
                 static function (): void {
+                    $locator   = Container::getInstance()->make(DirectiveLocator::class);
+                    $allowed   = new class () extends BaseDirective {
+                        #[Override]
+                        public static function definition(): string {
+                            return <<<'GRAPHQL'
+                                directive @allowed on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+                                GRAPHQL;
+                        }
+                    };
+                    $forbidden = new class () extends BaseDirective {
+                        #[Override]
+                        public static function definition(): string {
+                            return <<<'GRAPHQL'
+                                directive @forbidden on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+                                GRAPHQL;
+                        }
+                    };
+
+                    $locator->setResolved('allowed', $allowed::class);
+                    $locator->setResolved('forbidden', $forbidden::class);
+
                     config([
+                        Package::Name.'.builder.allowed_directives'            => [
+                            RenameDirective::class,
+                            $allowed::class,
+                        ],
                         Package::Name.'.search_by.operators.String'            => [
                             SearchByOperatorEqualDirective::class,
                         ],

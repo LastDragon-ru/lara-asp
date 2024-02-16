@@ -126,7 +126,7 @@ For Implicit type, the following rules are applied (in this order; concrete dire
     * Otherwise - include
 * Ignored (if supported)? - exclude
 
-For both types you can use [`builder.allowed_directives`](defaults/config.php) setting to control which directives should be copied from the original field into generated. Be aware of directive locations - package doesn't check that allowed directive can be used on `INPUT_FIELD_DEFINITION`.
+When converting the field, some of the original directives will be copied into the newly generated field. For the Explicit type, all directives except operators of other directives will be copied. For Implicit type, you can use [`builder.allowed_directives`](defaults/config.php) setting to control. Be aware of directive locations - the package doesn't perform any checks to ensure that the copied directive allowed on `INPUT_FIELD_DEFINITION`, it just copies it as is.
 
 # Builder field/column name
 

@@ -333,6 +333,9 @@ input SortByClauseProperties {
     """
     resolver: SortByTypeDirection
     @sortByOperatorSort
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
 }
 
 """
@@ -401,6 +404,9 @@ input SortByQueryClauseProperties {
     """
     resolver: SortByTypeDirection
     @sortByOperatorSort
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
 }
 
 """
@@ -614,6 +620,9 @@ input SortByScoutClauseProperties {
     """
     resolver: SortByTypeDirection
     @sortByOperatorSort
+    @field(
+        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
+    )
 }
 
 """

@@ -35,6 +35,8 @@ input SearchByConditionA {
     @rename(
         attribute: "renamed"
     )
+    @forbidden
+    @allowed
 }
 
 """
@@ -49,6 +51,7 @@ input SearchByConditionB {
     @rename(
         attribute: "renamed"
     )
+    @allowed
 }
 
 """
@@ -89,6 +92,8 @@ interface B {
     @rename(
         attribute: "renamed"
     )
+    @forbidden
+    @allowed
 }
 
 type A {
@@ -96,6 +101,8 @@ type A {
     @rename(
         attribute: "renamed"
     )
+    @forbidden
+    @allowed
 }
 
 type Query {

@@ -127,10 +127,15 @@ $settings = [
     'builder'   => [
         /**
          * The list of the directives which should be copied from the original
-         * field into the generated `input` field. All other directives except
-         * {@see Operator} will be ignored.
+         * field into the generated `input` field.
          *
-         * The `instanceof` operator is used to check.
+         * Important notes:
+         * - All other directives except {@see Operator} (for the current
+         *   directive) will be ignored.
+         * - There are no any checks that directive can be used on
+         *   `INPUT_FIELD_DEFINITION`.
+         * - The `instanceof` operator is used to check.
+         * - Applies for Implicit types only.
          */
         'allowed_directives' => [
             RenameDirective::class,
