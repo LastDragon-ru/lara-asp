@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
 
+use function array_filter;
 use function array_key_exists;
 use function array_map;
 use function array_merge;
@@ -69,9 +70,9 @@ abstract class Operators {
      *
      * @param class-string<T> $operator
      *
-     * @return T
+     * @return T|null
      */
-    public function getOperator(string $operator): Operator {
+    public function getOperator(string $operator): ?Operator {
         return Container::getInstance()->make($operator);
     }
 
@@ -87,6 +88,7 @@ abstract class Operators {
         // Operators
         $operators = $this->findOperators($type);
         $operators = array_map($this->getOperator(...), $operators);
+        $operators = array_values(array_filter($operators));
 
         // Return
         return $operators;

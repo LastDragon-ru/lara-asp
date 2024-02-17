@@ -128,7 +128,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Available?
         $operator = $provider->getOperator($operator);
 
-        if (!$operator->isAvailable($this, $source, $context)) {
+        if (!$operator || !$operator->isAvailable($this, $source, $context)) {
             return null;
         }
 
