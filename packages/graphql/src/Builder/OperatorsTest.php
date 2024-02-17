@@ -51,8 +51,10 @@ final class OperatorsTest extends TestCase {
             'type-a' => [
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorExternal::class,
             ],
             'type-b' => [
+                OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorA::class,
                 'type-b',
             ],
@@ -62,12 +64,15 @@ final class OperatorsTest extends TestCase {
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorB::class,
                 OperatorsTest__OperatorC::class,
+                OperatorsTest__OperatorExternal::class,
             ],
             'type-b' => [
+                OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorB::class,
                 'type-b',
             ],
             'type-c' => [
+                OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorC::class,
                 'type-b',
                 'type-a',
@@ -199,7 +204,7 @@ abstract class OperatorsTest__Operator implements Operator {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class OperatorsTest__OperatorA extends OperatorsTest__Operator {
+class OperatorsTest__OperatorA extends OperatorsTest__Operator implements Scope {
     // empty
 }
 
@@ -207,7 +212,7 @@ class OperatorsTest__OperatorA extends OperatorsTest__Operator {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class OperatorsTest__OperatorB extends OperatorsTest__Operator {
+class OperatorsTest__OperatorB extends OperatorsTest__Operator implements Scope {
     // empty
 }
 
@@ -215,7 +220,7 @@ class OperatorsTest__OperatorB extends OperatorsTest__Operator {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class OperatorsTest__OperatorC extends OperatorsTest__Operator {
+class OperatorsTest__OperatorC extends OperatorsTest__Operator implements Scope {
     // empty
 }
 
@@ -223,6 +228,6 @@ class OperatorsTest__OperatorC extends OperatorsTest__Operator {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class OperatorsTest__OperatorD extends OperatorsTest__Operator {
+class OperatorsTest__OperatorExternal extends OperatorsTest__Operator {
     // empty
 }

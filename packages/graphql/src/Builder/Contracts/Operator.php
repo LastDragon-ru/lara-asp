@@ -7,6 +7,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 
+/**
+ * Operator must also implement individual {@see Scope}.
+ */
 interface Operator extends Directive {
     /**
      * Must be a valid GraphQL Object Field name.

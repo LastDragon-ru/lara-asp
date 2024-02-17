@@ -17,6 +17,7 @@ use function array_shift;
 use function array_unique;
 use function array_values;
 use function is_a;
+use function is_string;
 
 abstract class Operators {
     public const ID      = Type::ID;
@@ -61,12 +62,20 @@ abstract class Operators {
     /**
      * @template T of Operator
      *
-     * @param class-string<T> $operator
+     * @param T|class-string<T> $operator
      *
      * @return T|null
      */
-    public function getOperator(string $operator): ?Operator {
-        return Container::getInstance()->make($operator);
+    public function getOperator(Operator|string $operator): ?Operator {
+        if (!is_a($operator, $this->getScope(), true)) {
+            return null;
+        }
+
+        if (is_string($operator)) {
+            $operator = Container::getInstance()->make($operator);
+        }
+
+        return $operator;
     }
 
     /**

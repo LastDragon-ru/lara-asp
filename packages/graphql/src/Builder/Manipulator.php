@@ -5,12 +5,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -34,6 +38,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 
 use function array_map;
@@ -112,12 +117,17 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @template T of Operator
      *
-     * @param class-string<T>     $operator
+     * @param T|class-string<T>   $operator
      * @param class-string<Scope> $scope
      *
      * @return T|null
      */
-    public function getOperator(string $operator, string $scope, TypeSource $source, Context $context): ?Operator {
+    public function getOperator(
+        Operator|string $operator,
+        string $scope,
+        TypeSource $source,
+        Context $context,
+    ): ?Operator {
         // Provider?
         $provider = $this->operators[$scope] ?? null;
 
@@ -134,6 +144,30 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Return
         return $operator;
+    }
+
+    /**
+     * @template T of Operator
+     *
+     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
+     * @param class-string<T>                                                               $operator
+     * @param class-string<Scope>                                                           $scope
+     *
+     * @return (T&Directive)|null
+     */
+    public function getOperatorDirective(
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
+        string $operator,
+        string $scope,
+        TypeSource $source,
+        Context $context,
+    ): ?Operator {
+        $directive = $this->getDirective($node, $operator);
+        $directive = $directive
+            ? $this->getOperator($directive, $scope, $source, $context)
+            : null;
+
+        return $directive;
     }
 
     /**
@@ -316,7 +350,11 @@ class Manipulator extends AstManipulator implements TypeProvider {
                         array_push($operators, ...$provider->getOperators($type));
                     }
                 } elseif ($directive instanceof Operator) {
-                    $operators[] = $directive;
+                    $operator = $provider->getOperator($directive);
+
+                    if ($operator) {
+                        $operators[] = $operator;
+                    }
                 } elseif ($directive instanceof Ignored) {
                     $ignored   = true;
                     $operators = [];

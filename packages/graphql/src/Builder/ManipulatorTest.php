@@ -37,13 +37,14 @@ final class ManipulatorTest extends TestCase {
     // =========================================================================
     public function testGetTypeOperators(): void {
         // Operators
-        $scope     = new class() implements Scope {
+        $scope            = new class() implements Scope {
             // empty;
         };
-        $builder   = new stdClass();
-        $aOperator = ManipulatorTest_OperatorA::class;
-        $bOperator = ManipulatorTest_OperatorB::class;
-        $cOperator = ManipulatorTest_OperatorC::class;
+        $builder          = new stdClass();
+        $aOperator        = ManipulatorTest_OperatorA::class;
+        $bOperator        = ManipulatorTest_OperatorB::class;
+        $cOperator        = ManipulatorTest_OperatorC::class;
+        $externalOperator = ManipulatorTest_OperatorExternal::class;
 
         // Types
         $types = Container::getInstance()->make(TypeRegistry::class);
@@ -72,6 +73,7 @@ final class ManipulatorTest extends TestCase {
         $directives->setResolved('aOperator', $aOperator);
         $directives->setResolved('bOperator', $bOperator);
         $directives->setResolved('cOperator', $cOperator);
+        $directives->setResolved('externalOperator', $externalOperator);
 
         // Schema
         $this->useGraphQLSchema(
@@ -80,6 +82,7 @@ final class ManipulatorTest extends TestCase {
             @aOperator
             @bOperator
             @cOperator
+            @externalOperator
 
             scalar TestIgnored
             @aOperator
@@ -91,6 +94,7 @@ final class ManipulatorTest extends TestCase {
             scalar TestBuiltinOperators
             @operators(type: "TestBuiltinOperators")
             @aOperator
+            @externalOperator
 
             type Query {
                 test: Int @all
@@ -104,13 +108,16 @@ final class ManipulatorTest extends TestCase {
             Operators::ID          => [
                 $aOperator,
                 $bOperator,
+                $externalOperator,
             ],
             Operators::Int         => [
                 $bOperator,
                 $cOperator,
+                $externalOperator,
             ],
             'TestBuiltinOperators' => [
                 $cOperator,
+                $externalOperator,
             ],
         ];
         $operators = new class($config, $default) extends Operators {
@@ -126,7 +133,7 @@ final class ManipulatorTest extends TestCase {
 
             #[Override]
             public function getScope(): string {
-                return Scope::class;
+                return ManipulatorTest_Scope::class;
             }
         };
 
@@ -180,12 +187,14 @@ final class ManipulatorTest extends TestCase {
         self::assertEquals(
             [
                 $aOperator,
+                $cOperator,
             ],
             array_map($map, $manipulator->getTypeOperators('TestScalar', $operators->getScope(), $source, $context)),
         );
         self::assertEquals(
             [
                 $aOperator,
+                $cOperator,
             ],
             array_map($map, $manipulator->getTypeOperators('TestOperators', $operators->getScope(), $source, $context)),
         );
@@ -228,7 +237,7 @@ final class ManipulatorTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ManipulatorTest_Operators extends OperatorsDirective implements Scope {
+interface ManipulatorTest_Scope extends Scope {
     // empty
 }
 
@@ -236,7 +245,15 @@ class ManipulatorTest_Operators extends OperatorsDirective implements Scope {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, Scope {
+class ManipulatorTest_Operators extends OperatorsDirective implements ManipulatorTest_Scope {
+    // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, ManipulatorTest_Scope {
     #[Override]
     public static function getName(): string {
         return 'a';
@@ -273,7 +290,7 @@ class ManipulatorTest_OperatorA extends OperatorDirective implements Operator, S
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
+class ManipulatorTest_OperatorB extends OperatorDirective implements Operator, ManipulatorTest_Scope {
     #[Override]
     public static function getName(): string {
         return 'b';
@@ -310,7 +327,7 @@ class ManipulatorTest_OperatorB extends OperatorDirective implements Operator {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
+class ManipulatorTest_OperatorC extends OperatorDirective implements Operator, ManipulatorTest_Scope {
     #[Override]
     public static function getName(): string {
         return 'c';
@@ -347,7 +364,44 @@ class ManipulatorTest_OperatorC extends OperatorDirective implements Operator {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ManipulatorTest_Ignored extends BaseDirective implements Ignored, Scope {
+class ManipulatorTest_OperatorExternal extends OperatorDirective implements Operator {
+    #[Override]
+    public static function getName(): string {
+        return 'external';
+    }
+
+    #[Override]
+    public function getFieldType(TypeProvider $provider, TypeSource $source, ContextContract $context): ?string {
+        return $source->getTypeName();
+    }
+
+    #[Override]
+    public function getFieldDescription(): ?string {
+        return '';
+    }
+
+    #[Override]
+    protected function isBuilderSupported(string $builder): bool {
+        return true;
+    }
+
+    #[Override]
+    public function call(
+        Handler $handler,
+        object $builder,
+        Field $field,
+        Argument $argument,
+        ContextContract $context,
+    ): object {
+        return $builder;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ManipulatorTest_Ignored extends BaseDirective implements Ignored, ManipulatorTest_Scope {
     #[Override]
     public static function definition(): string {
         return <<<'GRAPHQL'

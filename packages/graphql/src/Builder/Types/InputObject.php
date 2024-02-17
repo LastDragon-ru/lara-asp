@@ -313,7 +313,7 @@ abstract class InputObject implements TypeDefinition {
         // Operator?
         $operator = $this->getFieldOperator($manipulator, $field, $context);
 
-        if ($operator === null || !$operator->isAvailable($manipulator, $field, $context)) {
+        if (!$operator) {
             return null;
         }
 
@@ -370,13 +370,7 @@ abstract class InputObject implements TypeDefinition {
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
-            $operator = $manipulator->getDirective(
-                $node,
-                $directive,
-                static function (Operator $operator) use ($manipulator, $field, $context): bool {
-                    return $operator->isAvailable($manipulator, $field, $context);
-                },
-            );
+            $operator = $manipulator->getOperatorDirective($node, $directive, $this->getScope(), $field, $context);
 
             if ($operator) {
                 break;

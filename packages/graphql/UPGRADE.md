@@ -139,6 +139,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator` must explicitly implement concrete `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope` (used to filter available directive-operators, previously was required implicitly).
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator`
