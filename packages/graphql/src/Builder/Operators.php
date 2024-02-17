@@ -43,8 +43,8 @@ abstract class Operators {
      * @param array<string, list<class-string<Operator>|string>> $operators
      */
     public function __construct(array $operators = []) {
-        foreach ($operators as $key => $value) {
-            $this->addType($key, $value);
+        foreach ($operators as $type => $value) {
+            $this->operators[$type] = $value;
         }
     }
 
@@ -56,13 +56,6 @@ abstract class Operators {
     public function hasType(string $type): bool {
         return array_key_exists($type, $this->operators)
             || array_key_exists($type, $this->default);
-    }
-
-    /**
-     * @param list<class-string<Operator>|string> $operators
-     */
-    public function addType(string $type, array $operators): void {
-        $this->operators[$type] = $operators;
     }
 
     /**
