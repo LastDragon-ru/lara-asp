@@ -43,7 +43,7 @@ abstract class Operators {
      */
     public function __construct(array $operators = []) {
         foreach ($operators as $key => $value) {
-            $this->setOperators($key, $value);
+            $this->addType($key, $value);
         }
     }
 
@@ -51,6 +51,18 @@ abstract class Operators {
      * @return class-string<Scope>
      */
     abstract public function getScope(): string;
+
+    public function hasType(string $type): bool {
+        return array_key_exists($type, $this->operators)
+            || array_key_exists($type, $this->default);
+    }
+
+    /**
+     * @param list<class-string<Operator>|string> $operators
+     */
+    public function addType(string $type, array $operators): void {
+        $this->operators[$type] = $operators;
+    }
 
     /**
      * @template T of Operator
@@ -63,24 +75,12 @@ abstract class Operators {
         return Container::getInstance()->make($operator);
     }
 
-    public function hasOperators(string $type): bool {
-        return array_key_exists($type, $this->operators)
-            || array_key_exists($type, $this->default);
-    }
-
-    /**
-     * @param list<class-string<Operator>|string> $operators
-     */
-    public function setOperators(string $type, array $operators): void {
-        $this->operators[$type] = $operators;
-    }
-
     /**
      * @return list<Operator>
      */
     public function getOperators(string $type): array {
         // Is known?
-        if (!$this->hasOperators($type)) {
+        if (!$this->hasType($type)) {
             throw new TypeUnknown($this->getScope(), $type);
         }
 

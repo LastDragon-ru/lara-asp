@@ -167,6 +167,8 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective` removed
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Operators`
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\PropertyOperator` => `LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator`

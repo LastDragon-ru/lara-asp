@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testHasOperators(): void {
+    public function testHasType(): void {
         $operators = new class() extends Operators {
             /**
              * @inheritDoc
@@ -39,8 +39,8 @@ final class OperatorsTest extends TestCase {
             }
         };
 
-        self::assertTrue($operators->hasOperators(Operators::Int));
-        self::assertFalse($operators->hasOperators('unknown'));
+        self::assertTrue($operators->hasType(Operators::Int));
+        self::assertFalse($operators->hasType('unknown'));
     }
 
     public function testGetOperators(): void {

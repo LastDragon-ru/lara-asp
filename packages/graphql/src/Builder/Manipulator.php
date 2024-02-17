@@ -327,7 +327,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
             }
         }
 
-        if (!$operators && !$ignored && $provider->hasOperators($type)) {
+        if (!$operators && !$ignored && $provider->hasType($type)) {
             array_push($operators, ...$provider->getOperators($type));
         }
 

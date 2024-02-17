@@ -28,8 +28,8 @@ final class OperatorsTest extends TestCase {
 
         $operators = Container::getInstance()->make(Operators::class);
 
-        self::assertTrue($operators->hasOperators(Operators::Extra));
-        self::assertFalse($operators->hasOperators('unknown'));
+        self::assertTrue($operators->hasType(Operators::Extra));
+        self::assertFalse($operators->hasType('unknown'));
         self::assertEquals(
             [
                 SortByOperatorRandomDirective::class,
