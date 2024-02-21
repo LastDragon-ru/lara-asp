@@ -3,10 +3,13 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -30,7 +33,10 @@ final class OperatorsTest extends TestCase {
             ],
         ]);
 
-        $operators = Container::getInstance()->make(Operators::class);
+        $operators   = Container::getInstance()->make(Operators::class);
+        $manipulator = Container::getInstance()->make(Manipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
 
         self::assertTrue($operators->hasType(Operators::ID));
         self::assertTrue($operators->hasType(Operators::Int));
@@ -40,7 +46,7 @@ final class OperatorsTest extends TestCase {
                 SearchByOperatorEqualDirective::class,
             ],
             $this->toClassNames(
-                $operators->getOperators(Operators::ID),
+                $operators->getOperators($manipulator, Operators::ID),
             ),
         );
     }

@@ -4,17 +4,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
-use function array_filter;
 use function array_key_exists;
-use function array_map;
 use function array_merge;
 use function array_push;
 use function array_shift;
-use function array_unique;
 use function array_values;
 use function is_a;
 use function is_string;
@@ -81,25 +80,89 @@ abstract class Operators {
     /**
      * @return list<Operator>
      */
-    public function getOperators(string $type): array {
-        // Is known?
-        if (!$this->hasType($type)) {
-            throw new TypeUnknown($this->getScope(), $type);
+    public function getOperators(AstManipulator $manipulator, string $type): array {
+        // Operators
+        $unique    = [];
+        $operators = $this->findOperators($manipulator, $type);
+
+        foreach ($operators as $operator) {
+            $operator = $this->getOperator($operator);
+
+            if ($operator && !isset($unique[$operator::class])) {
+                $unique[$operator::class] = $operator;
+            }
         }
 
-        // Operators
-        $operators = $this->findOperators($type);
-        $operators = array_map($this->getOperator(...), $operators);
-        $operators = array_values(array_filter($operators));
+        // Return
+        return array_values($unique);
+    }
+
+    /**
+     * @return array<array-key, class-string<Operator>|Operator>
+     */
+    private function findOperators(AstManipulator $manipulator, string $type): array {
+        // AST have a bigger priority
+        $operators = $this->findAstOperators($manipulator, $type);
+
+        if ($operators === null) {
+            return [];
+        }
+
+        // If no operators in AST, use config
+        if (!$operators) {
+            array_push($operators, ...$this->findConfigOperators($type));
+        }
 
         // Return
         return $operators;
     }
 
     /**
-     * @return list<class-string<Operator>>
+     * @return array<array-key, class-string<Operator>|Operator>|null
      */
-    private function findOperators(string $type): array {
+    private function findAstOperators(AstManipulator $manipulator, string $type): ?array {
+        $operators = [];
+
+        if ($manipulator->isTypeDefinitionExists($type)) {
+            $node       = $manipulator->getTypeDefinition($type);
+            $scope      = $this->getScope();
+            $directives = $manipulator->getDirectives($node);
+
+            foreach ($directives as $directive) {
+                if (!($directive instanceof $scope)) {
+                    continue;
+                }
+
+                if ($directive instanceof OperatorsDirective) {
+                    $directiveType = $directive->getType();
+
+                    if ($type !== $directiveType) {
+                        array_push($operators, ...$this->findOperators($manipulator, $directiveType));
+                    } else {
+                        array_push($operators, ...$this->findConfigOperators($type));
+                    }
+                } elseif ($directive instanceof Operator) {
+                    $operator = $this->getOperator($directive);
+
+                    if ($operator) {
+                        $operators[] = $operator;
+                    }
+                } elseif ($directive instanceof Ignored) {
+                    $operators = null;
+                    break;
+                } else {
+                    // empty
+                }
+            }
+        }
+
+        return $operators;
+    }
+
+    /**
+     * @return array<array-key, class-string<Operator>>
+     */
+    private function findConfigOperators(string $type): array {
         $extends   = $this->operators[$type] ?? $this->default[$type] ?? [];
         $operators = [];
         $processed = [];
@@ -116,12 +179,12 @@ abstract class Operators {
             } elseif ($type === $operator) {
                 array_push($extends, ...($this->default[$operator] ?? []));
             } else {
-                $operators = array_merge($operators, $this->findOperators($operator));
+                $operators = array_merge($operators, $this->findConfigOperators($operator));
             }
 
             $processed[$operator] = true;
         } while ($extends);
 
-        return array_values(array_unique($operators));
+        return $operators;
     }
 }

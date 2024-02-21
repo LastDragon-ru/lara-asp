@@ -21,12 +21,10 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorImpossibleToCreateField;
@@ -190,7 +188,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Operators
-        $operators = $this->getOperators($provider, $scope, $type);
+        $operators = $provider->getOperators($this, $type);
 
         if (!$operators) {
             return [];
@@ -198,7 +196,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Extra
         foreach ($extras as $extra) {
-            array_push($operators, ...$this->getOperators($provider, $scope, $extra));
+            array_push($operators, ...$provider->getOperators($this, $extra));
         }
 
         // Unique
@@ -321,55 +319,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         $this->removeTypeDefinition($name);
-    }
-
-    /**
-     * @param class-string<Scope> $scope
-     *
-     * @return array<array-key, Operator>
-     */
-    private function getOperators(Operators $provider, string $scope, string $type): array {
-        $ignored   = false;
-        $operators = [];
-
-        if ($this->isTypeDefinitionExists($type)) {
-            $node       = $this->getTypeDefinition($type);
-            $directives = $this->getDirectives($node);
-
-            foreach ($directives as $directive) {
-                if (!($directive instanceof $scope)) {
-                    continue;
-                }
-
-                if ($directive instanceof OperatorsDirective) {
-                    $directiveType = $directive->getType();
-
-                    if ($type !== $directiveType) {
-                        array_push($operators, ...$this->getOperators($provider, $scope, $directiveType));
-                    } else {
-                        array_push($operators, ...$provider->getOperators($type));
-                    }
-                } elseif ($directive instanceof Operator) {
-                    $operator = $provider->getOperator($directive);
-
-                    if ($operator) {
-                        $operators[] = $operator;
-                    }
-                } elseif ($directive instanceof Ignored) {
-                    $ignored   = true;
-                    $operators = [];
-                    break;
-                } else {
-                    // empty
-                }
-            }
-        }
-
-        if (!$operators && !$ignored && $provider->hasType($type)) {
-            array_push($operators, ...$provider->getOperators($type));
-        }
-
-        return $operators;
     }
     // </editor-fold>
 }

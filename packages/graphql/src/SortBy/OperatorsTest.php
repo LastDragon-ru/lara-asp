@@ -3,9 +3,12 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -26,7 +29,10 @@ final class OperatorsTest extends TestCase {
             ],
         ]);
 
-        $operators = Container::getInstance()->make(Operators::class);
+        $operators   = Container::getInstance()->make(Operators::class);
+        $manipulator = Container::getInstance()->make(Manipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
 
         self::assertTrue($operators->hasType(Operators::Extra));
         self::assertFalse($operators->hasType('unknown'));
@@ -35,7 +41,7 @@ final class OperatorsTest extends TestCase {
                 SortByOperatorRandomDirective::class,
             ],
             $this->toClassNames(
-                $operators->getOperators(Operators::Extra),
+                $operators->getOperators($manipulator, Operators::Extra),
             ),
         );
     }
