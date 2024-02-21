@@ -153,6 +153,8 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties` => `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields`
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown` removed
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Property` => `LastDragon_ru\LaraASP\GraphQL\Builder\Field`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator`

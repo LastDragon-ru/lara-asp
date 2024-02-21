@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
-use function array_key_exists;
 use function array_merge;
 use function array_push;
 use function array_shift;
@@ -52,11 +51,6 @@ abstract class Operators {
      * @return class-string<Scope>
      */
     abstract public function getScope(): string;
-
-    public function hasType(string $type): bool {
-        return array_key_exists($type, $this->operators)
-            || array_key_exists($type, $this->default);
-    }
 
     /**
      * @template T of Operator

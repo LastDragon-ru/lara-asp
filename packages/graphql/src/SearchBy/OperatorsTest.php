@@ -38,9 +38,7 @@ final class OperatorsTest extends TestCase {
             'document' => Mockery::mock(DocumentAST::class),
         ]);
 
-        self::assertTrue($operators->hasType(Operators::ID));
-        self::assertTrue($operators->hasType(Operators::Int));
-        self::assertFalse($operators->hasType('unknown'));
+        self::assertEquals([], $operators->getOperators($manipulator, 'unknown'));
         self::assertEquals(
             [
                 SearchByOperatorEqualDirective::class,

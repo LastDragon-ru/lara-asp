@@ -27,27 +27,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testHasType(): void {
-        $operators = new class() extends Operators {
-            /**
-             * @inheritDoc
-             */
-            protected array $default = [
-                Operators::Int => [
-                    OperatorsTest__OperatorA::class,
-                ],
-            ];
-
-            #[Override]
-            public function getScope(): string {
-                return Scope::class;
-            }
-        };
-
-        self::assertTrue($operators->hasType(Operators::Int));
-        self::assertFalse($operators->hasType('unknown'));
-    }
-
     public function testGetOperators(): void {
         // Directives
         $directives = Container::getInstance()->make(DirectiveLocator::class);
