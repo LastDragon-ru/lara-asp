@@ -25,6 +25,12 @@ class IsNotNull extends Operator {
     }
 
     #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return parent::isAvailable($provider, $source, $context)
+            && ($source->isNullable() && ($source->isScalar() || $source->isEnum()));
+    }
+
+    #[Override]
     public function getFieldDescription(): ?string {
         return 'Is NOT NULL?';
     }
