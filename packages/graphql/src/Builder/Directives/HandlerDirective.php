@@ -55,7 +55,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     use WithSource;
 
     public function __construct(
-        private ArgumentFactory $factory,
+        protected readonly ArgumentFactory $argumentFactory,
     ) {
         // empty
     }
@@ -66,10 +66,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
      * @return class-string<Scope>
      */
     abstract public static function getScope(): string;
-
-    protected function getFactory(): ArgumentFactory {
-        return $this->factory;
-    }
     // </editor-fold>
 
     // <editor-fold desc="Handle">
@@ -104,7 +100,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     ): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
             $argument = !($value instanceof Argument)
-                ? $this->getFactory()->getArgument($this->definitionNode, $value)
+                ? $this->argumentFactory->getArgument($this->definitionNode, $value)
                 : $value;
             $builder  = $this->enhance($builder, $argument, $field, $context);
         }
