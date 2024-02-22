@@ -55,6 +55,10 @@ final class OperatorsTest extends TestCase {
             @operators(type: "TypeD")
             @externalOperator
 
+            scalar SchemaTypeInfiniteLoop
+            @operators(type: "InfiniteLoop")
+            @aOperator
+
             type Query {
                 test: Int @all
             }
@@ -63,18 +67,26 @@ final class OperatorsTest extends TestCase {
 
         // Config
         $config      = [
-            'Alias' => [
+            'Alias'        => [
                 'TypeA',
             ],
-            'TypeA' => [
+            'TypeA'        => [
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorExternal::class,
             ],
-            'TypeB' => [
+            'TypeB'        => [
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorA::class,
                 'TypeB',
+            ],
+            'TypeD'        => [
+                'TypeD',
+            ],
+            'InfiniteLoop' => [
+                OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorA::class,
+                'SchemaTypeInfiniteLoop',
             ],
         ];
         $default     = [
@@ -123,8 +135,8 @@ final class OperatorsTest extends TestCase {
         self::assertEquals(
             [
                 OperatorsTest__OperatorC::class,
-                OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorB::class,
+                OperatorsTest__OperatorA::class,
             ],
             $this->toClassNames($operators->getOperators($manipulator, 'TypeC')),
         );
@@ -151,6 +163,12 @@ final class OperatorsTest extends TestCase {
                 // empty
             ],
             $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeIgnored')),
+        );
+        self::assertEquals(
+            [
+                OperatorsTest__OperatorA::class,
+            ],
+            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeInfiniteLoop')),
         );
     }
     // </editor-fold>

@@ -11,8 +11,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 use function array_merge;
-use function array_push;
-use function array_shift;
 use function array_values;
 use function is_a;
 use function is_string;
@@ -92,61 +90,96 @@ abstract class Operators {
     }
 
     /**
+     * @param array<string, true> $processed
+     *
      * @return array<array-key, class-string<Operator>|Operator>
      */
-    private function findOperators(AstManipulator $manipulator, string $type): array {
-        // AST have a bigger priority
-        $operators = $this->findAstOperators($manipulator, $type);
+    private function findOperators(
+        AstManipulator $manipulator,
+        string $type,
+        int $level = 0,
+        array &$processed = [],
+    ): array {
+        // We have several levels where operators can be defined - AST, config,
+        // and built-in defaults. We are always starting at the highest level
+        // and go deeper if there are no operators or if the type with the same
+        // name is found.
 
-        if ($operators === null) {
+        // Processed?
+        if (isset($processed[$type])) {
             return [];
         }
 
-        // If no operators in AST, use config
-        if (!$operators) {
-            array_push($operators, ...$this->findConfigOperators($type));
+        // Search for operators
+        $list = match ($level) {
+            0       => $this->findAstOperators($manipulator, $type),
+            1       => $this->findConfigOperators($type),
+            2       => $this->findDefaultOperators($type),
+            default => null,
+        };
+
+        if ($list === null) {
+            return [];
         }
+
+        // Merge
+        $operators = [];
+
+        foreach ($list as $operator) {
+            if (is_a($operator, Operator::class, true)) {
+                $operators[] = $operator;
+            } elseif ($type !== $operator) {
+                $processed[$type] = true;
+                $operators        = array_merge(
+                    $operators,
+                    $this->findOperators($manipulator, $operator, $level, $processed),
+                );
+            } else {
+                $operators = array_merge(
+                    $operators,
+                    $this->findOperators($manipulator, $operator, $level + 1, $processed),
+                );
+            }
+        }
+
+        // Empty?
+        if (!$operators) {
+            $operators = $this->findOperators($manipulator, $type, $level + 1, $processed);
+        }
+
+        // Mark
+        $processed[$type] = true;
 
         // Return
         return $operators;
     }
 
     /**
-     * @return array<array-key, class-string<Operator>|Operator>|null
+     * @return array<array-key, class-string<Operator>|Operator|string>|null
      */
     private function findAstOperators(AstManipulator $manipulator, string $type): ?array {
-        $operators = [];
+        if (!$manipulator->isTypeDefinitionExists($type)) {
+            return [];
+        }
 
-        if ($manipulator->isTypeDefinitionExists($type)) {
-            $node       = $manipulator->getTypeDefinition($type);
-            $scope      = $this->getScope();
-            $directives = $manipulator->getDirectives($node);
+        $scope      = $this->getScope();
+        $operators  = [];
+        $directives = $manipulator->getDirectives($manipulator->getTypeDefinition($type));
 
-            foreach ($directives as $directive) {
-                if (!($directive instanceof $scope)) {
-                    continue;
-                }
+        foreach ($directives as $directive) {
+            if (!($directive instanceof $scope)) {
+                continue;
+            }
 
-                if ($directive instanceof OperatorsDirective) {
-                    $directiveType = $directive->getType();
-
-                    if ($type !== $directiveType) {
-                        array_push($operators, ...$this->findOperators($manipulator, $directiveType));
-                    } else {
-                        array_push($operators, ...$this->findConfigOperators($type));
-                    }
-                } elseif ($directive instanceof Operator) {
-                    $operator = $this->getOperator($directive);
-
-                    if ($operator) {
-                        $operators[] = $operator;
-                    }
-                } elseif ($directive instanceof Ignored) {
-                    $operators = null;
-                    break;
-                } else {
-                    // empty
-                }
+            if ($directive instanceof OperatorsDirective) {
+                $operators[] = $directive->getType();
+            } elseif ($directive instanceof Operator) {
+                $operators[] = $directive;
+            } elseif ($directive instanceof Ignored) {
+                $operators = null;
+                break;
+            } else {
+                // empty
             }
         }
 
@@ -154,31 +187,16 @@ abstract class Operators {
     }
 
     /**
-     * @return array<array-key, class-string<Operator>>
+     * @return array<array-key, class-string<Operator>|string>
      */
     private function findConfigOperators(string $type): array {
-        $extends   = $this->operators[$type] ?? $this->default[$type] ?? [];
-        $operators = [];
-        $processed = [];
+        return $this->operators[$type] ?? [];
+    }
 
-        do {
-            $operator = array_shift($extends);
-
-            if ($operator === null || isset($processed[$operator])) {
-                continue;
-            }
-
-            if (is_a($operator, Operator::class, true)) {
-                $operators[] = $operator;
-            } elseif ($type === $operator) {
-                array_push($extends, ...($this->default[$operator] ?? []));
-            } else {
-                $operators = array_merge($operators, $this->findConfigOperators($operator));
-            }
-
-            $processed[$operator] = true;
-        } while ($extends);
-
-        return $operators;
+    /**
+     * @return array<array-key, class-string<Operator>|string>
+     */
+    private function findDefaultOperators(string $type): array {
+        return $this->default[$type] ?? [];
     }
 }
