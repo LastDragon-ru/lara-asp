@@ -164,22 +164,6 @@ final class ManipulatorTest extends TestCase {
         );
         self::assertEquals(
             [
-                $aOperator,
-                $cOperator,
-            ],
-            array_map(
-                $map,
-                $manipulator->getTypeOperators(
-                    Operators::ID,
-                    $operators->getScope(),
-                    $source,
-                    $context,
-                    Operators::Int,
-                ),
-            ),
-        );
-        self::assertEquals(
-            [
                 // empty (another scope)
             ],
             array_map($map, $manipulator->getTypeOperators(Operators::ID, $scope::class, $source, $context)),
@@ -206,15 +190,6 @@ final class ManipulatorTest extends TestCase {
             array_map(
                 $map,
                 $manipulator->getTypeOperators('TestBuiltinOperators', $operators->getScope(), $source, $context),
-            ),
-        );
-        self::assertEquals(
-            [
-                // empty
-            ],
-            array_map(
-                $map,
-                $manipulator->getTypeOperators('Unknown', $operators->getScope(), $source, $context, Operators::ID),
             ),
         );
         self::assertEquals(

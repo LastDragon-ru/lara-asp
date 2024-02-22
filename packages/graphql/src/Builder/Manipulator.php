@@ -40,9 +40,7 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 
 use function array_map;
-use function array_push;
 use function array_unshift;
-use function array_values;
 use function count;
 use function implode;
 
@@ -165,42 +163,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
         string $scope,
         TypeSource $source,
         Context $context,
-        string ...$extras,
     ): array {
-        // Provider?
-        $provider = $this->operators[$scope] ?? null;
-
-        if (!$provider) {
-            return [];
-        }
-
-        // Operators
-        $operators = $provider->getOperators($this, $type, $source, $context);
-
-        if (!$operators) {
-            return [];
-        }
-
-        // Extra
-        foreach ($extras as $extra) {
-            array_push($operators, ...$provider->getOperators($this, $extra, $source, $context));
-        }
-
-        // Unique
-        $unique = [];
-
-        foreach ($operators as $operator) {
-            if (isset($unique[$operator::class])) {
-                continue;
-            }
-
-            $unique[$operator::class] = $operator;
-        }
-
-        $unique = array_values($unique);
-
-        // Return
-        return $unique;
+        return isset($this->operators[$scope])
+            ? $this->operators[$scope]->getOperators($this, $type, $source, $context)
+            : [];
     }
 
     /**
@@ -259,15 +225,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @param list<Operator> $operators
      */
     public function getOperatorsFields(array $operators, TypeSource $source, Context $context): string {
-        return implode(
-            "\n",
-            array_map(
-                function (Operator $operator) use ($source, $context): string {
-                    return $this->getOperatorField($operator, $source, $context, null);
-                },
-                $operators,
-            ),
-        );
+        $fields = [];
+
+        foreach ($operators as $operator) {
+            if (!isset($fields[$operator::class])) {
+                $fields[$operator::class] = $this->getOperatorField($operator, $source, $context, null);
+            }
+        }
+
+        return implode("\n", $fields);
     }
     // </editor-fold>
 

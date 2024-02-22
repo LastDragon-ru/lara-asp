@@ -14,6 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use Override;
 
+use function array_merge;
+
 class Scalar implements TypeDefinition {
     public function __construct() {
         // empty
@@ -47,11 +49,18 @@ class Scalar implements TypeDefinition {
         // Operators
         $type      = $manipulator->getTypeSource($source->getType());
         $scope     = Directive::getScope();
-        $extras    = $type->isNullable() ? [Operators::Null] : [];
-        $operators = $manipulator->getTypeOperators($type->getTypeName(), $scope, $type, $context, ...$extras);
+        $operators = $manipulator->getTypeOperators($type->getTypeName(), $scope, $type, $context);
 
         if (!$operators) {
             return null;
+        }
+
+        // Nullable?
+        if ($type->isNullable()) {
+            $operators = array_merge(
+                $operators,
+                $manipulator->getTypeOperators(Operators::Null, $scope, $type, $context),
+            );
         }
 
         // Definition
