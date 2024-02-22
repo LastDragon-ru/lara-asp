@@ -113,13 +113,27 @@ class Manipulator extends AstManipulator implements TypeProvider {
         TypeSource $source,
         Context $context,
     ): ?Operator {
-        $provider  = $context->get(HandlerContextOperators::class)?->value;
-        $directive = $this->getDirective($node, $operator);
-        $directive = $directive && $provider
-            ? $provider->getOperator($this, $directive, $source, $context)
-            : null;
+        // Operators?
+        $provider = $context->get(HandlerContextOperators::class)?->value;
 
-        return $directive;
+        if (!$provider) {
+            return null;
+        }
+
+        // Search
+        $instance   = null;
+        $directives = $this->getDirectives($node, $operator);
+
+        foreach ($directives as $directive) {
+            $directive = $provider->getOperator($this, $directive, $source, $context);
+
+            if ($directive) {
+                $instance = $directive;
+                break;
+            }
+        }
+
+        return $instance;
     }
 
     /**
