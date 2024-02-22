@@ -50,7 +50,7 @@ abstract class Operators {
     /**
      * @return class-string<Scope>
      */
-    abstract public function getScope(): string;
+    abstract protected function getScope(): string;
 
     /**
      * @template T of Operator
