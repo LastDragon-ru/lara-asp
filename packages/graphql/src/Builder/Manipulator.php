@@ -126,22 +126,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
         TypeSource $source,
         Context $context,
     ): ?Operator {
-        // Provider?
-        $provider = $this->operators[$scope] ?? null;
-
-        if (!$provider) {
-            return null;
-        }
-
-        // Available?
-        $operator = $provider->getOperator($operator);
-
-        if (!$operator || !$operator->isAvailable($this, $source, $context)) {
-            return null;
-        }
-
-        // Return
-        return $operator;
+        return isset($this->operators[$scope])
+            ? $this->operators[$scope]->getOperator($this, $operator, $source, $context)
+            : null;
     }
 
     /**
@@ -188,7 +175,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Operators
-        $operators = $provider->getOperators($this, $type);
+        $operators = $provider->getOperators($this, $type, $source, $context);
 
         if (!$operators) {
             return [];
@@ -196,7 +183,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Extra
         foreach ($extras as $extra) {
-            array_push($operators, ...$provider->getOperators($this, $extra));
+            array_push($operators, ...$provider->getOperators($this, $extra, $source, $context));
         }
 
         // Unique
@@ -204,10 +191,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         foreach ($operators as $operator) {
             if (isset($unique[$operator::class])) {
-                continue;
-            }
-
-            if (!$operator->isAvailable($this, $source, $context)) {
                 continue;
             }
 

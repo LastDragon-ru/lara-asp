@@ -4,9 +4,11 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
@@ -57,7 +59,12 @@ abstract class Operators {
      *
      * @return T|null
      */
-    public function getOperator(Operator|string $operator): ?Operator {
+    public function getOperator(
+        Manipulator $manipulator,
+        Operator|string $operator,
+        TypeSource $source,
+        Context $context,
+    ): ?Operator {
         if (!is_a($operator, $this->getScope(), true)) {
             return null;
         }
@@ -66,19 +73,23 @@ abstract class Operators {
             $operator = Container::getInstance()->make($operator);
         }
 
+        if (!$operator->isAvailable($manipulator, $source, $context)) {
+            return null;
+        }
+
         return $operator;
     }
 
     /**
      * @return list<Operator>
      */
-    public function getOperators(AstManipulator $manipulator, string $type): array {
+    public function getOperators(Manipulator $manipulator, string $type, TypeSource $source, Context $context): array {
         // Operators
         $unique    = [];
         $operators = $this->findOperators($manipulator, $type);
 
         foreach ($operators as $operator) {
-            $operator = $this->getOperator($operator);
+            $operator = $this->getOperator($manipulator, $operator, $source, $context);
 
             if ($operator && !isset($unique[$operator::class])) {
                 $unique[$operator::class] = $operator;

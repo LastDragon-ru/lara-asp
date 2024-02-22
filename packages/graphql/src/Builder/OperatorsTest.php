@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -74,8 +75,10 @@ final class OperatorsTest extends TestCase {
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorNotAvailable::class,
             ],
             'TypeB'        => [
+                OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorA::class,
                 'TypeB',
@@ -84,6 +87,7 @@ final class OperatorsTest extends TestCase {
                 'TypeD',
             ],
             'InfiniteLoop' => [
+                OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorA::class,
                 'SchemaTypeInfiniteLoop',
@@ -95,23 +99,29 @@ final class OperatorsTest extends TestCase {
                 OperatorsTest__OperatorB::class,
                 OperatorsTest__OperatorC::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorNotAvailable::class,
             ],
             'TypeB' => [
+                OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorB::class,
                 'TypeB',
             ],
             'TypeC' => [
+                OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorC::class,
                 'TypeB',
                 'TypeA',
             ],
             'TypeD' => [
+                OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorA::class,
             ],
         ];
+        $source      = Mockery::mock(TypeSource::class);
+        $context     = Mockery::mock(Context::class);
         $operators   = new OperatorsTest__Operators($config, $default);
         $document    = Container::getInstance()->make(ASTBuilder::class)->documentAST();
         $manipulator = Container::getInstance()->make(Manipulator::class, [
@@ -123,14 +133,14 @@ final class OperatorsTest extends TestCase {
             [
                 OperatorsTest__OperatorA::class,
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'TypeA')),
+            $this->toClassNames($operators->getOperators($manipulator, 'TypeA', $source, $context)),
         );
         self::assertEquals(
             [
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorB::class,
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'TypeB')),
+            $this->toClassNames($operators->getOperators($manipulator, 'TypeB', $source, $context)),
         );
         self::assertEquals(
             [
@@ -138,11 +148,11 @@ final class OperatorsTest extends TestCase {
                 OperatorsTest__OperatorB::class,
                 OperatorsTest__OperatorA::class,
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'TypeC')),
+            $this->toClassNames($operators->getOperators($manipulator, 'TypeC', $source, $context)),
         );
         self::assertEquals(
-            $operators->getOperators($manipulator, 'TypeA'),
-            $operators->getOperators($manipulator, 'Alias'),
+            $operators->getOperators($manipulator, 'TypeA', $source, $context),
+            $operators->getOperators($manipulator, 'Alias', $source, $context),
         );
         self::assertEquals(
             [
@@ -150,25 +160,25 @@ final class OperatorsTest extends TestCase {
                 OperatorsTest__OperatorB::class,
                 OperatorsTest__OperatorC::class,
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeA')),
+            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeA', $source, $context)),
         );
         self::assertEquals(
             [
                 OperatorsTest__OperatorA::class,
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'TypeD')),
+            $this->toClassNames($operators->getOperators($manipulator, 'TypeD', $source, $context)),
         );
         self::assertEquals(
             [
                 // empty
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeIgnored')),
+            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeIgnored', $source, $context)),
         );
         self::assertEquals(
             [
                 OperatorsTest__OperatorA::class,
             ],
-            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeInfiniteLoop')),
+            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeInfiniteLoop', $source, $context)),
         );
     }
     // </editor-fold>
@@ -249,7 +259,7 @@ abstract class OperatorsTest__Operator implements Operator {
 
     #[Override]
     public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
-        throw new Exception('Should not be called');
+        return true;
     }
 
     #[Override]
@@ -296,6 +306,17 @@ class OperatorsTest__OperatorB extends OperatorsTest__Operator implements Operat
  */
 class OperatorsTest__OperatorC extends OperatorsTest__Operator implements OperatorsTest__Scope {
     // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class OperatorsTest__OperatorNotAvailable extends OperatorsTest__Operator implements OperatorsTest__Scope {
+    #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return false;
+    }
 }
 
 /**
