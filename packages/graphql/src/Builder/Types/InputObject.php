@@ -13,10 +13,10 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionFieldAlreadyDefined;
@@ -45,11 +45,6 @@ abstract class InputObject implements TypeDefinition {
     public function __construct() {
         // empty
     }
-
-    /**
-     * @return class-string<Scope>
-     */
-    abstract protected function getScope(): string;
 
     abstract protected function getDescription(
         Manipulator $manipulator,
@@ -141,8 +136,9 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): array {
         $type      = $this->getTypeForOperators();
-        $operators = $type
-            ? $manipulator->getTypeOperators($type, $this->getScope(), $source, $context)
+        $provider  = $context->get(HandlerContextOperators::class)?->value;
+        $operators = $type && $provider
+            ? $provider->getOperators($manipulator, $type, $source, $context)
             : [];
 
         return $operators;
@@ -341,10 +337,11 @@ abstract class InputObject implements TypeDefinition {
         $operator = $this->getFieldOperatorDirective($manipulator, $field, $context, $this->getFieldMarkerOperator());
 
         if (!$operator) {
-            $type = $this->getTypeForFieldOperator();
+            $type     = $this->getTypeForFieldOperator();
+            $provider = $context->get(HandlerContextOperators::class)?->value;
 
-            if ($type) {
-                $operators = $manipulator->getTypeOperators($type, $this->getScope(), $field, $context);
+            if ($type && $provider) {
+                $operators = $provider->getOperators($manipulator, $type, $field, $context);
                 $operator  = reset($operators) ?: null;
             }
         }
@@ -370,7 +367,7 @@ abstract class InputObject implements TypeDefinition {
         $nodes    = [$field->getField(), $field->getTypeDefinition()];
 
         foreach ($nodes as $node) {
-            $operator = $manipulator->getOperatorDirective($node, $directive, $this->getScope(), $field, $context);
+            $operator = $manipulator->getOperatorDirective($node, $directive, $field, $context);
 
             if ($operator) {
                 break;

@@ -5,13 +5,14 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\FailedToCreateSortClause;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Root;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -37,14 +38,6 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         GRAPHQL;
     }
 
-    // <editor-fold desc="Getters / Setters">
-    // =========================================================================
-    #[Override]
-    public static function getScope(): string {
-        return Scope::class;
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Manipulate">
     // =========================================================================
     #[Override]
@@ -59,7 +52,8 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
-        $type = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
+        $context = $context->override([HandlerContextOperators::class => new HandlerContextOperators(new Operators())]);
+        $type    = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
 
         if (!$type) {
             throw new FailedToCreateSortClause($argument);

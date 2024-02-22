@@ -159,11 +159,6 @@ final class InputObjectTest extends TestCase {
  */
 class InputObjectTest__InputObject extends InputObject {
     #[Override]
-    protected function getScope(): string {
-        throw new Exception('Should not be called');
-    }
-
-    #[Override]
     protected function getDescription(
         Manipulator $manipulator,
         InterfaceSource|InputSource|ObjectSource $source,

@@ -167,6 +167,12 @@ This section is actual only if you are extending the package. Please review and 
 
   * [ ] `getPlaceholderTypeDefinitionNode()` removed => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()`
 
+  * [ ] `getTypeOperators()`/`getOperator()` removed. To get operators the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead
+
+    ```php
+    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators::class)?->value
+    ```
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective` removed

@@ -19,11 +19,11 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Enhancer;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionEmpty;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOperators;
@@ -59,14 +59,6 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     ) {
         // empty
     }
-
-    // <editor-fold desc="Getters / Setters">
-    // =========================================================================
-    /**
-     * @return class-string<Scope>
-     */
-    abstract public static function getScope(): string;
-    // </editor-fold>
 
     // <editor-fold desc="Handle">
     // =========================================================================
@@ -283,7 +275,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         string $operator,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode|null {
         // Supported?
-        $operator = $manipulator->getOperator($operator, static::getScope(), $argument, $context);
+        $provider = $context->get(HandlerContextOperators::class)?->value;
+        $operator = $provider?->getOperator($manipulator, $operator, $argument, $context);
 
         if (!$operator) {
             return null;

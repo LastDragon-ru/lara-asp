@@ -20,9 +20,9 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
@@ -45,11 +45,6 @@ use function count;
 use function implode;
 
 class Manipulator extends AstManipulator implements TypeProvider {
-    /**
-     * @var array<class-string<Scope>, Operators>
-     */
-    private array $operators = [];
-
     // <editor-fold desc="TypeProvider">
     // =========================================================================
     #[Override]
@@ -104,69 +99,27 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Operators">
     // =========================================================================
-    public function addOperators(Operators $operators): static {
-        $this->operators[$operators->getScope()] = $operators;
-
-        return $this;
-    }
-
-    /**
-     * @template T of Operator
-     *
-     * @param T|class-string<T>   $operator
-     * @param class-string<Scope> $scope
-     *
-     * @return T|null
-     */
-    public function getOperator(
-        Operator|string $operator,
-        string $scope,
-        TypeSource $source,
-        Context $context,
-    ): ?Operator {
-        return isset($this->operators[$scope])
-            ? $this->operators[$scope]->getOperator($this, $operator, $source, $context)
-            : null;
-    }
-
     /**
      * @template T of Operator
      *
      * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
      * @param class-string<T>                                                               $operator
-     * @param class-string<Scope>                                                           $scope
      *
      * @return (T&Directive)|null
      */
     public function getOperatorDirective(
         Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
         string $operator,
-        string $scope,
         TypeSource $source,
         Context $context,
     ): ?Operator {
+        $provider  = $context->get(HandlerContextOperators::class)?->value;
         $directive = $this->getDirective($node, $operator);
-        $directive = $directive
-            ? $this->getOperator($directive, $scope, $source, $context)
+        $directive = $directive && $provider
+            ? $provider->getOperator($this, $directive, $source, $context)
             : null;
 
         return $directive;
-    }
-
-    /**
-     * @param class-string<Scope> $scope
-     *
-     * @return list<Operator>
-     */
-    public function getTypeOperators(
-        string $type,
-        string $scope,
-        TypeSource $source,
-        Context $context,
-    ): array {
-        return isset($this->operators[$scope])
-            ? $this->operators[$scope]->getOperators($this, $type, $source, $context)
-            : [];
     }
 
     /**
