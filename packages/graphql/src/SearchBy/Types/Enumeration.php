@@ -6,6 +6,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -13,6 +14,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use Override;
+
+use function array_merge;
 
 class Enumeration implements TypeDefinition {
     public function __construct() {
@@ -44,15 +47,28 @@ class Enumeration implements TypeDefinition {
             return null;
         }
 
+        // Operators?
+        $provider = $context->get(HandlerContextOperators::class)?->value;
+
+        if (!$provider) {
+            return null;
+        }
+
         // Operators
         $type      = $manipulator->getTypeSource($source->getType());
-        $scope     = Directive::getScope();
-        $extras    = $type->isNullable() ? [Operators::Null] : [];
-        $operators = $manipulator->getTypeOperators($type->getTypeName(), $scope, $type, $context, ...$extras)
-            ?: $manipulator->getTypeOperators(Operators::Enum, $scope, $type, $context, ...$extras);
+        $operators = $provider->getOperators($manipulator, $type->getTypeName(), $type, $context)
+            ?: $provider->getOperators($manipulator, Operators::Enum, $type, $context);
 
         if (!$operators) {
             return null;
+        }
+
+        // Nullable?
+        if ($type->isNullable()) {
+            $operators = array_merge(
+                $operators,
+                $provider->getOperators($manipulator, Operators::Null, $type, $context),
+            );
         }
 
         // Definition

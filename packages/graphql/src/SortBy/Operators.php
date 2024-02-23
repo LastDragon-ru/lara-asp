@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorChildDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsFirstDirective;
@@ -41,6 +42,6 @@ class Operators extends BuilderOperators {
 
     #[Override]
     public function getScope(): string {
-        return Directive::getScope();
+        return Scope::class;
     }
 }

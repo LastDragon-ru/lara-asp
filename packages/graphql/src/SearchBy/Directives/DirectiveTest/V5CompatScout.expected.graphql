@@ -61,6 +61,8 @@ on
 
 """
 Extends the list of operators by the operators from the specified `type`.
+
+The directive is deprecated!
 """
 directive @searchByOperators(
     type: String!

@@ -19,8 +19,20 @@ class Cast {
         return $value;
     }
 
+    public static function toIntNullable(mixed $value): ?int {
+        assert($value === null || is_int($value));
+
+        return $value;
+    }
+
     public static function toFloat(mixed $value): float {
         assert(is_float($value));
+
+        return $value;
+    }
+
+    public static function toFloatNullable(mixed $value): ?float {
+        assert($value === null || is_float($value));
 
         return $value;
     }
@@ -31,8 +43,20 @@ class Cast {
         return $value;
     }
 
+    public static function toStringNullable(mixed $value): ?string {
+        assert($value === null || is_string($value));
+
+        return $value;
+    }
+
     public static function toScalar(mixed $value): int|float|string|bool {
         assert(is_scalar($value));
+
+        return $value;
+    }
+
+    public static function toScalarNullable(mixed $value): int|float|string|bool|null {
+        assert($value === null || is_scalar($value));
 
         return $value;
     }
@@ -43,8 +67,20 @@ class Cast {
         return $value;
     }
 
+    public static function toNumberNullable(mixed $value): int|float|null {
+        assert($value === null || is_int($value) || is_float($value));
+
+        return $value;
+    }
+
     public static function toBool(mixed $value): bool {
         assert(is_bool($value));
+
+        return $value;
+    }
+
+    public static function toBoolNullable(mixed $value): ?bool {
+        assert($value === null || is_bool($value));
 
         return $value;
     }

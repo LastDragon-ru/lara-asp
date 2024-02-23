@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as OperatorContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
@@ -32,11 +33,6 @@ abstract class Type extends InputObject {
         $name          = (new ReflectionClass($this))->getShortName();
 
         return "{$directiveName}{$builderName}{$name}{$typeName}";
-    }
-
-    #[Override]
-    protected function getScope(): string {
-        return Directive::getScope();
     }
 
     #[Override]
@@ -94,13 +90,11 @@ abstract class Type extends InputObject {
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
     ): ?OperatorContract {
+        $provider = $context->get(HandlerContextOperators::class)?->value;
+        $operator = SortByOperatorSortDirective::class;
+
         return match (true) {
-            $field->isScalar(), $field->isEnum() => $manipulator->getOperator(
-                SortByOperatorSortDirective::class,
-                $this->getScope(),
-                $field,
-                $context,
-            ),
+            $field->isScalar(), $field->isEnum() => $provider?->getOperator($manipulator, $operator, $field, $context),
             $field->isObject()                   => parent::getFieldOperator($manipulator, $field, $context),
             default                              => throw new NotImplemented($field),
         };

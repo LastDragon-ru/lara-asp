@@ -218,11 +218,31 @@ The package also defines a few own types in addition to the standard GraphQL typ
 
 ```graphql
 scalar MyScalar
-@searchByOperators(type: "MyScalar")    # Re-use operators for `MyScalar` from config
-@searchByOperators(type: "Int")         # Re-use operators from `Int` from schema
-@searchByOperatorEqual                  # Package operator
-@myOperator                             # Custom operator
+@searchByExtendOperators                    # Re-use operators for `MyScalar` from config
+@searchByExtendOperators(type: "MyScalar")  # same
+@searchByExtendOperators(type: "Int")       # Re-use operators from `Int` from schema
+@searchByOperatorEqual                      # Add package operator
+@myOperator                                 # Add custom operator
 ```
+
+[include:exec]: <../../../../dev/artisan dev:directive @searchByExtendOperators>
+[//]: # (start: fb9508c1688c78899393b1119463a14ebcc2c0872316ca676b2945a296312230)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```graphql
+"""
+Extends the list of operators by the operators from the specified
+`type` or from the config if `null`.
+"""
+directive @searchByExtendOperators(
+    type: String
+)
+on
+    | ENUM
+    | SCALAR
+```
+
+[//]: # (end: fb9508c1688c78899393b1119463a14ebcc2c0872316ca676b2945a296312230)
 
 ### Schema
 

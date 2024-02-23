@@ -2,10 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
+use Exception;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Package;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
+use Nuwave\Lighthouse\Execution\Arguments\Argument;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function config;
@@ -21,21 +32,25 @@ final class OperatorsTest extends TestCase {
         config([
             Package::Name.'.sort_by.operators' => [
                 Operators::Extra => [
-                    SortByOperatorRandomDirective::class,
+                    OperatorsTest__Operator::class,
                 ],
             ],
         ]);
 
-        $operators = Container::getInstance()->make(Operators::class);
+        $source      = Mockery::mock(TypeSource::class);
+        $context     = Mockery::mock(Context::class);
+        $operators   = Container::getInstance()->make(Operators::class);
+        $manipulator = Container::getInstance()->make(Manipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
 
-        self::assertTrue($operators->hasOperators(Operators::Extra));
-        self::assertFalse($operators->hasOperators('unknown'));
+        self::assertEquals([], $operators->getOperators($manipulator, 'unknown', $source, $context));
         self::assertEquals(
             [
-                SortByOperatorRandomDirective::class,
+                OperatorsTest__Operator::class,
             ],
             $this->toClassNames(
-                $operators->getOperators(Operators::Extra),
+                $operators->getOperators($manipulator, Operators::Extra, $source, $context),
             ),
         );
     }
@@ -58,4 +73,44 @@ final class OperatorsTest extends TestCase {
         return $classes;
     }
     // </editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class OperatorsTest__Operator extends Operator {
+    #[Override]
+    public static function getName(): string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return true;
+    }
+
+    #[Override]
+    public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function getFieldDescription(): ?string {
+        throw new Exception('Should not be called');
+    }
+
+    #[Override]
+    public function call(
+        Handler $handler,
+        object $builder,
+        Field $field,
+        Argument $argument,
+        Context $context,
+    ): object {
+        throw new Exception('Should not be called');
+    }
 }

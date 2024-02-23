@@ -55,7 +55,7 @@ final class DatabaseQueryComparatorTest extends TestCase {
             INNER JOIN b laravel_reserved_10 ON laravel_reserved_10.b = laravel_reserved_2.c
             INNER JOIN c laravel_reserved_2 ON laravel_reserved_2.c = laravel_reserved_1.a
             WHERE laravel_reserved_1.a IS NOT NULL
-                and laravel_reserved_10.b IS NULL
+                AND laravel_reserved_10.b IS NULL
                 AND laravel_reserved_2.c > 10
             SQL,
         );
@@ -70,7 +70,7 @@ final class DatabaseQueryComparatorTest extends TestCase {
                 INNER JOIN c laravel_reserved_1 ON laravel_reserved_1.c = laravel_reserved_0.a
             WHERE
                 laravel_reserved_0.a IS NOT NULL
-                and laravel_reserved_2.b IS NULL
+                AND laravel_reserved_2.b IS NULL
                 AND laravel_reserved_1.c > 10
             SQL;
 

@@ -2,12 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions;
 
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\ExtendOperators;
 
-/**
- * @deprecated 5.6.0 Use {@see SearchByExtendOperatorsDirective} instead.
- */
-class SearchByOperatorsDirective extends Operators {
+class SearchByExtendOperatorsDirective extends ExtendOperators {
     // Lighthouse loads all classes from directive namespace this leads to
     // 'Class "Orchestra\Testbench\TestCase" not found' error for our *Test
     // classes. This class required to avoid this error.

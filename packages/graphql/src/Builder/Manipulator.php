@@ -5,24 +5,26 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorImpossibleToCreateField;
@@ -34,21 +36,15 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 
 use function array_map;
-use function array_push;
 use function array_unshift;
-use function array_values;
 use function count;
 use function implode;
 
 class Manipulator extends AstManipulator implements TypeProvider {
-    /**
-     * @var array<class-string<Scope>, Operators>
-     */
-    private array $operators = [];
-
     // <editor-fold desc="TypeProvider">
     // =========================================================================
     #[Override]
@@ -103,89 +99,41 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
     // <editor-fold desc="Operators">
     // =========================================================================
-    public function addOperators(Operators $operators): static {
-        $this->operators[$operators->getScope()] = $operators;
-
-        return $this;
-    }
-
     /**
      * @template T of Operator
      *
-     * @param class-string<T>     $operator
-     * @param class-string<Scope> $scope
+     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
+     * @param class-string<T>                                                               $operator
      *
-     * @return T|null
+     * @return (T&Directive)|null
      */
-    public function getOperator(string $operator, string $scope, TypeSource $source, Context $context): ?Operator {
-        // Provider?
-        $provider = $this->operators[$scope] ?? null;
-
-        if (!$provider) {
-            return null;
-        }
-
-        // Available?
-        $operator = $provider->getOperator($operator);
-
-        if (!$operator->isAvailable($this, $source, $context)) {
-            return null;
-        }
-
-        // Return
-        return $operator;
-    }
-
-    /**
-     * @param class-string<Scope> $scope
-     *
-     * @return list<Operator>
-     */
-    public function getTypeOperators(
-        string $type,
-        string $scope,
+    public function getOperatorDirective(
+        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
+        string $operator,
         TypeSource $source,
         Context $context,
-        string ...$extras,
-    ): array {
-        // Provider?
-        $provider = $this->operators[$scope] ?? null;
+    ): ?Operator {
+        // Operators?
+        $provider = $context->get(HandlerContextOperators::class)?->value;
 
         if (!$provider) {
-            return [];
+            return null;
         }
 
-        // Operators
-        $operators = $this->getOperators($provider, $scope, $type);
+        // Search
+        $instance   = null;
+        $directives = $this->getDirectives($node, $operator);
 
-        if (!$operators) {
-            return [];
-        }
+        foreach ($directives as $directive) {
+            $directive = $provider->getOperator($this, $directive, $source, $context);
 
-        // Extra
-        foreach ($extras as $extra) {
-            array_push($operators, ...$this->getOperators($provider, $scope, $extra));
-        }
-
-        // Unique
-        $unique = [];
-
-        foreach ($operators as $operator) {
-            if (isset($unique[$operator::class])) {
-                continue;
+            if ($directive) {
+                $instance = $directive;
+                break;
             }
-
-            if (!$operator->isAvailable($this, $source, $context)) {
-                continue;
-            }
-
-            $unique[$operator::class] = $operator;
         }
 
-        $unique = array_values($unique);
-
-        // Return
-        return $unique;
+        return $instance;
     }
 
     /**
@@ -244,15 +192,15 @@ class Manipulator extends AstManipulator implements TypeProvider {
      * @param list<Operator> $operators
      */
     public function getOperatorsFields(array $operators, TypeSource $source, Context $context): string {
-        return implode(
-            "\n",
-            array_map(
-                function (Operator $operator) use ($source, $context): string {
-                    return $this->getOperatorField($operator, $source, $context, null);
-                },
-                $operators,
-            ),
-        );
+        $fields = [];
+
+        foreach ($operators as $operator) {
+            if (!isset($fields[$operator::class])) {
+                $fields[$operator::class] = $this->getOperatorField($operator, $source, $context, null);
+            }
+        }
+
+        return implode("\n", $fields);
     }
     // </editor-fold>
 
@@ -287,51 +235,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Remove
         $this->removeTypeDefinition($name);
-    }
-
-    /**
-     * @param class-string<Scope> $scope
-     *
-     * @return array<array-key, Operator>
-     */
-    private function getOperators(Operators $provider, string $scope, string $type): array {
-        $ignored   = false;
-        $operators = [];
-
-        if ($this->isTypeDefinitionExists($type)) {
-            $node       = $this->getTypeDefinition($type);
-            $directives = $this->getDirectives($node);
-
-            foreach ($directives as $directive) {
-                if (!($directive instanceof $scope)) {
-                    continue;
-                }
-
-                if ($directive instanceof OperatorsDirective) {
-                    $directiveType = $directive->getType();
-
-                    if ($type !== $directiveType) {
-                        array_push($operators, ...$this->getOperators($provider, $scope, $directiveType));
-                    } else {
-                        array_push($operators, ...$provider->getOperators($type));
-                    }
-                } elseif ($directive instanceof Operator) {
-                    $operators[] = $directive;
-                } elseif ($directive instanceof Ignored) {
-                    $ignored   = true;
-                    $operators = [];
-                    break;
-                } else {
-                    // empty
-                }
-            }
-        }
-
-        if (!$operators && !$ignored && $provider->hasOperators($type)) {
-            array_push($operators, ...$provider->getOperators($type));
-        }
-
-        return $operators;
     }
     // </editor-fold>
 }

@@ -51,6 +51,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `enum SearchByTypeFlag { yes }` => `enum SearchByTypeFlag { Yes }`. 🤝
 
+* [ ] `@searchByOperators` => `@searchByExtendOperators`. 🤝
+
 * [ ] `@searchByOperatorRelation` => `@searchByOperatorRelationship` (and class too; generated types will be named as `SearchByRelationship*` instead of `SearchByComplex*`).
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object`.
@@ -139,6 +141,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
 
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator` must explicitly implement concrete `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope` (used to filter available directive-operators, previously was required implicitly).
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator`
@@ -150,6 +154,8 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyProperties` => `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields`
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown` removed
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Property` => `LastDragon_ru\LaraASP\GraphQL\Builder\Field`
 
@@ -163,9 +169,17 @@ This section is actual only if you are extending the package. Please review and 
 
   * [ ] `getPlaceholderTypeDefinitionNode()` removed => `LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()`
 
+  * [ ] `getTypeOperators()`/`getOperator()` removed. To get operators the `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context` should be used instead
+
+    ```php
+    $context->get(LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators::class)?->value
+    ```
+
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective` removed
+
+* [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Operators`
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
 

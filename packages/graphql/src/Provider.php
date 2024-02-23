@@ -8,13 +8,10 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver as BuilderFieldResolverContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Defaults\BuilderFieldResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
-use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators as SearchByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory as SorterFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
@@ -46,7 +43,6 @@ class Provider extends ServiceProvider {
         parent::register();
 
         $this->registerBindings();
-        $this->registerOperators();
         $this->registerSchemaPrinter();
     }
 
@@ -68,16 +64,6 @@ class Provider extends ServiceProvider {
         $this->app->scopedIf(SorterFactoryContract::class, SorterFactory::class);
         $this->app->scopedIf(StreamFactoryContract::class, StreamFactory::class);
         $this->app->scopedIf(BuilderFieldResolverContract::class, BuilderFieldResolver::class);
-    }
-
-    protected function registerOperators(): void {
-        $this->callAfterResolving(
-            Manipulator::class,
-            static function (Manipulator $manipulator): void {
-                $manipulator->addOperators(new SearchByOperators());
-                $manipulator->addOperators(new SortByOperators());
-            },
-        );
     }
 
     protected function registerSchemaPrinter(): void {
