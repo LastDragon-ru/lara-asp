@@ -12,9 +12,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
+use function array_filter;
+use function array_map;
 use function array_merge;
 use function array_values;
 use function is_a;
+use function is_object;
 use function is_string;
 
 abstract class Operators {
@@ -73,6 +76,10 @@ abstract class Operators {
             $operator = Container::getInstance()->make($operator);
         }
 
+        if (!$this->isEnabled($manipulator, $operator)) {
+            return null;
+        }
+
         if (!$operator->isAvailable($manipulator, $source, $context)) {
             return null;
         }
@@ -84,16 +91,29 @@ abstract class Operators {
      * @return list<Operator>
      */
     public function getOperators(Manipulator $manipulator, string $type, TypeSource $source, Context $context): array {
+        return array_values(
+            array_filter(
+                array_map(
+                    function (mixed $operator) use ($manipulator, $source, $context): ?Operator {
+                        return $this->getOperator($manipulator, $operator, $source, $context);
+                    },
+                    $this->getTypeOperators($manipulator, $type),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @return list<class-string<Operator>|Operator>
+     */
+    protected function getTypeOperators(AstManipulator $manipulator, string $type): array {
         // Operators
         $unique    = [];
         $operators = $this->findOperators($manipulator, $type);
 
         foreach ($operators as $operator) {
-            $operator = $this->getOperator($manipulator, $operator, $source, $context);
-
-            if ($operator && !isset($unique[$operator::class])) {
-                $unique[$operator::class] = $operator;
-            }
+            $class            = is_object($operator) ? $operator::class : $operator;
+            $unique[$class] ??= $operator;
         }
 
         // Return
@@ -209,5 +229,25 @@ abstract class Operators {
      */
     private function findDefaultOperators(string $type): array {
         return $this->default[$type] ?? [];
+    }
+
+    private function isEnabled(AstManipulator $manipulator, Operator $operator): bool {
+        $enabled = true;
+
+        foreach ($this->getDisabledOperators($manipulator) as $disabled) {
+            if (is_a($operator, is_object($disabled) ? $disabled::class : $disabled, true)) {
+                $enabled = false;
+                break;
+            }
+        }
+
+        return $enabled;
+    }
+
+    /**
+     * @return list<class-string<Operator>|Operator>
+     */
+    protected function getDisabledOperators(AstManipulator $manipulator): array {
+        return [];
     }
 }

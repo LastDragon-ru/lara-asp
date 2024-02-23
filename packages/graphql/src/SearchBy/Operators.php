@@ -38,16 +38,19 @@ use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorNotStarts
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorRelationshipDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorStartsWithDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Override;
 
+use function array_merge;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Null   = Directive::Name.'Null';
-    public const Extra  = Directive::Name.'Extra';
-    public const Number = Directive::Name.'Number';
-    public const Enum   = Directive::Name.'Enum';
-    public const Object = Directive::Name.'Object';
+    public const Null     = Directive::Name.'Null';
+    public const Extra    = Directive::Name.'Extra';
+    public const Number   = Directive::Name.'Number';
+    public const Enum     = Directive::Name.'Enum';
+    public const Object   = Directive::Name.'Object';
+    public const Disabled = Directive::Name.'Disabled';
 
     /**
      * @inheritDoc
@@ -149,5 +152,16 @@ class Operators extends BuilderOperators {
     #[Override]
     public function getScope(): string {
         return Scope::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getDisabledOperators(AstManipulator $manipulator): array {
+        return array_merge(
+            parent::getDisabledOperators($manipulator),
+            $this->getTypeOperators($manipulator, self::Disabled),
+        );
     }
 }

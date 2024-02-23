@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
@@ -40,6 +41,7 @@ final class OperatorsTest extends TestCase {
         $directives->setResolved('bOperator', OperatorsTest__OperatorB::class);
         $directives->setResolved('cOperator', OperatorsTest__OperatorC::class);
         $directives->setResolved('externalOperator', OperatorsTest__OperatorExternal::class);
+        $directives->setResolved('disabledOperator', OperatorsTest__OperatorDisabled::class);
 
         // Schema
         $this->useGraphQLSchema(
@@ -48,6 +50,7 @@ final class OperatorsTest extends TestCase {
             @aOperator
             @bOperator
             @cOperator
+            @disabledOperator
             @externalOperator
 
             scalar SchemaTypeIgnored
@@ -56,10 +59,12 @@ final class OperatorsTest extends TestCase {
 
             scalar SchemaTypeD
             @operators(type: "TypeD")
+            @disabledOperator
             @externalOperator
 
             scalar TypeD
             @extendOperators
+            @disabledOperator
             @externalOperator
 
             scalar SchemaTypeInfiniteLoop
@@ -80,12 +85,14 @@ final class OperatorsTest extends TestCase {
             'TypeA'        => [
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorNotAvailable::class,
             ],
             'TypeB'        => [
                 OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorA::class,
                 'TypeB',
             ],
@@ -95,8 +102,12 @@ final class OperatorsTest extends TestCase {
             'InfiniteLoop' => [
                 OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorA::class,
                 'SchemaTypeInfiniteLoop',
+            ],
+            'Disabled'     => [
+                OperatorsTest__OperatorDisabled::class,
             ],
         ];
         $default     = [
@@ -104,18 +115,21 @@ final class OperatorsTest extends TestCase {
                 OperatorsTest__OperatorA::class,
                 OperatorsTest__OperatorB::class,
                 OperatorsTest__OperatorC::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorExternal::class,
                 OperatorsTest__OperatorNotAvailable::class,
             ],
             'TypeB' => [
                 OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorB::class,
                 'TypeB',
             ],
             'TypeC' => [
                 OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorC::class,
                 'TypeB',
                 'TypeA',
@@ -123,6 +137,7 @@ final class OperatorsTest extends TestCase {
             'TypeD' => [
                 OperatorsTest__OperatorNotAvailable::class,
                 OperatorsTest__OperatorExternal::class,
+                OperatorsTest__OperatorDisabled::class,
                 OperatorsTest__OperatorA::class,
             ],
         ];
@@ -221,6 +236,14 @@ final class OperatorsTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
+interface OperatorsTest__Disabled {
+    // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
 interface OperatorsTest__Scope extends Scope {
     // empty
 }
@@ -261,6 +284,14 @@ class OperatorsTest__Operators extends Operators {
     #[Override]
     public function getScope(): string {
         return OperatorsTest__Scope::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getDisabledOperators(AstManipulator $manipulator): array {
+        return $this->getTypeOperators($manipulator, 'Disabled');
     }
 }
 
@@ -338,6 +369,17 @@ class OperatorsTest__OperatorNotAvailable extends OperatorsTest__Operator implem
     #[Override]
     public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
         return false;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class OperatorsTest__OperatorDisabled extends OperatorsTest__Operator implements OperatorsTest__Scope {
+    #[Override]
+    public function isAvailable(TypeProvider $provider, TypeSource $source, Context $context): bool {
+        return true;
     }
 }
 

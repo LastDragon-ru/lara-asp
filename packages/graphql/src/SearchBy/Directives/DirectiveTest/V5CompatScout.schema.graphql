@@ -102,6 +102,9 @@ scalar ScalarCustom
 @searchByOperatorLessThan
 @searchByOperatorLessThanOrEqual
 
+scalar SearchByDisabled
+@searchByOperatorField
+
 enum EnumA {
     One
     Two

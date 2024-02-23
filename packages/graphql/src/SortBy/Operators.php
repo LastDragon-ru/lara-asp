@@ -11,13 +11,16 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirectiv
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsFirstDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorNullsLastDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Override;
 
+use function array_merge;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Extra  = Directive::Name.'Extra';
-    public const Object = Directive::Name.'Object';
+    public const Extra    = Directive::Name.'Extra';
+    public const Object   = Directive::Name.'Object';
+    public const Disabled = Directive::Name.'Disabled';
 
     /**
      * @inheritDoc
@@ -43,5 +46,16 @@ class Operators extends BuilderOperators {
     #[Override]
     public function getScope(): string {
         return Scope::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getDisabledOperators(AstManipulator $manipulator): array {
+        return array_merge(
+            parent::getDisabledOperators($manipulator),
+            $this->getTypeOperators($manipulator, self::Disabled),
+        );
     }
 }

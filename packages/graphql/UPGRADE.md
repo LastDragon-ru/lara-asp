@@ -72,18 +72,27 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
-  If you want to use old query syntax, you can add following bindings into application provider:
+  If you want to use old query syntax, you need:
 
-  ```php
-  $this->app->bind(
-      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root::class,
-      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5::class,
-  );
-  $this->app->bind(
-      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Condition::class,
-      LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5::class,
-  );
-  ```
+  1. Add following bindings into application provider:
+
+      ```php
+      $this->app->bind(
+          LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root::class,
+          LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5::class,
+      );
+      $this->app->bind(
+          LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Condition::class,
+          LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\V5::class,
+      );
+      ```
+
+  2. Disable `LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective` operator to avoid possible conflict with field names (via schema or config)
+
+      ```graphql
+      scalar SearchByDisabled
+      @searchByOperatorField
+      ```
 
 ## `@sortBy`
 
@@ -122,18 +131,27 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
-  If you want to use old query syntax, you can add following bindings into application provider:
+  If you want to use old query syntax, you need:
 
-  ```php
-  $this->app->bind(
-      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Root::class,
-      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5::class,
-  );
-  $this->app->bind(
-      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause::class,
-      LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5::class,
-  );
-  ```
+  1. Add following bindings into application provider:
+
+      ```php
+      $this->app->bind(
+          LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Root::class,
+          LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5::class,
+      );
+      $this->app->bind(
+          LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause::class,
+          LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5::class,
+      );
+      ```
+
+  2. Disable `LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective` operator to avoid possible conflict with field names (via schema or config)
+
+      ```graphql
+      scalar SortByDisabled
+      @sortByOperatorField
+      ```
 
 * [ ] `@sortByOperatorRandom` cannot be added to `FIELD_DEFINITION` anymore.
 
