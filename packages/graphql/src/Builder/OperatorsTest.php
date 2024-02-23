@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
@@ -34,6 +35,7 @@ final class OperatorsTest extends TestCase {
 
         $directives->setResolved('ignored', OperatorsTest__Ignored::class);
         $directives->setResolved('operators', OperatorsTest__OperatorsDirective::class);
+        $directives->setResolved('extendOperators', OperatorsTest__ExtendOperatorsDirective::class);
         $directives->setResolved('aOperator', OperatorsTest__OperatorA::class);
         $directives->setResolved('bOperator', OperatorsTest__OperatorB::class);
         $directives->setResolved('cOperator', OperatorsTest__OperatorC::class);
@@ -52,8 +54,12 @@ final class OperatorsTest extends TestCase {
             @aOperator
             @ignored
 
-            scalar TypeD
+            scalar SchemaTypeD
             @operators(type: "TypeD")
+            @externalOperator
+
+            scalar TypeD
+            @extendOperators
             @externalOperator
 
             scalar SchemaTypeInfiniteLoop
@@ -170,6 +176,12 @@ final class OperatorsTest extends TestCase {
         );
         self::assertEquals(
             [
+                OperatorsTest__OperatorA::class,
+            ],
+            $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeD', $source, $context)),
+        );
+        self::assertEquals(
+            [
                 // empty
             ],
             $this->toClassNames($operators->getOperators($manipulator, 'SchemaTypeIgnored', $source, $context)),
@@ -214,10 +226,20 @@ interface OperatorsTest__Scope extends Scope {
 }
 
 /**
+ * @deprecated   5.6.0
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ */
+class OperatorsTest__OperatorsDirective extends OperatorsDirective implements OperatorsTest__Scope {
+    // empty
+}
+
+/**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class OperatorsTest__OperatorsDirective extends OperatorsDirective implements OperatorsTest__Scope {
+class OperatorsTest__ExtendOperatorsDirective extends ExtendOperatorsDirective implements OperatorsTest__Scope {
     // empty
 }
 

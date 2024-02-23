@@ -10,7 +10,7 @@ input A {
 
 scalar Date
 @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
-@searchByOperators(type: "Boolean")
+@searchByExtendOperators(type: "Boolean")
 @searchByOperatorLessThan
 @searchByOperatorLessThanOrEqual
 

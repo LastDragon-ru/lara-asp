@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 
 use function array_merge;
@@ -182,8 +182,8 @@ abstract class Operators {
                 continue;
             }
 
-            if ($directive instanceof OperatorsDirective) {
-                $operators[] = $directive->getType();
+            if ($directive instanceof ExtendOperatorsDirective) {
+                $operators[] = $directive->getType() ?? $type;
             } elseif ($directive instanceof Operator) {
                 $operators[] = $directive;
             } elseif ($directive instanceof Ignored) {

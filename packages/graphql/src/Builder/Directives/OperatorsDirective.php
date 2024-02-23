@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
-use GraphQL\Language\DirectiveLocation;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
-use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Override;
 
 use function array_unique;
@@ -12,11 +10,10 @@ use function assert;
 use function implode;
 use function is_string;
 
-abstract class OperatorsDirective extends BaseDirective {
-    public function __construct() {
-        // empty
-    }
-
+/**
+ * @deprecated 5.6.0 Use {@see ExtendOperatorsDirective} instead.
+ */
+abstract class OperatorsDirective extends ExtendOperatorsDirective {
     #[Override]
     public static function definition(): string {
         $name      = DirectiveLocator::directiveName(static::class);
@@ -25,21 +22,14 @@ abstract class OperatorsDirective extends BaseDirective {
         return <<<GRAPHQL
             """
             Extends the list of operators by the operators from the specified `type`.
+
+            The directive is deprecated!
             """
             directive @{$name}(type: String!) on {$locations}
         GRAPHQL;
     }
 
-    /**
-     * @return non-empty-list<string>
-     */
-    protected static function getDirectiveLocations(): array {
-        return [
-            DirectiveLocation::SCALAR,
-            DirectiveLocation::ENUM,
-        ];
-    }
-
+    #[Override]
     public function getType(): string {
         $type = $this->directiveArgValue('type');
 
