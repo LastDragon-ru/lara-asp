@@ -94,3 +94,9 @@ parameters:
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"
             paths:
                 - dev/PhpStan/ClassMustBeInternal/RuleTest.php
+
+        # False positive for our dev app
+        -
+            message: "#^Called 'env' outside of the config directory which returns null when the config is cached, use 'config'\\.$#"
+            paths:
+                - dev/App/config/*.php

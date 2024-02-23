@@ -16,6 +16,7 @@ parameters:
     checkOctaneCompatibility: true
     checkBenevolentUnionTypes: true
     checkUninitializedProperties: true
+    noEnvCallsOutsideOfConfig: true
 
     # Package
     classMustBeFinal:

@@ -8,7 +8,6 @@ use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 use function array_splice;
-use function array_values;
 use function end;
 
 /**
@@ -70,7 +69,7 @@ abstract class Translator {
      * @param Closure(string): string $callback
      */
     protected function translate(array|string $variants, Closure $callback): string {
-        $variants   = array_values((array) $variants);
+        $variants   = (array) $variants;
         $translated = array_splice($variants, -1);
         $translated = (string) end($translated);
 
