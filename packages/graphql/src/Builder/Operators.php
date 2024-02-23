@@ -143,7 +143,7 @@ abstract class Operators {
                 $processed[$type] = true;
                 $operators        = array_merge(
                     $operators,
-                    $this->findOperators($manipulator, $operator, $level, $processed),
+                    $this->findOperators($manipulator, $operator, 0, $processed),
                 );
             } else {
                 $operators = array_merge(

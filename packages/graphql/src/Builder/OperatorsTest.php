@@ -151,8 +151,8 @@ final class OperatorsTest extends TestCase {
         self::assertEquals(
             [
                 OperatorsTest__OperatorC::class,
-                OperatorsTest__OperatorB::class,
                 OperatorsTest__OperatorA::class,
+                OperatorsTest__OperatorB::class,
             ],
             $this->toClassNames($operators->getOperators($manipulator, 'TypeC', $source, $context)),
         );
