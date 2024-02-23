@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use WeakMap;
 
 use function array_filter;
 use function array_map;
@@ -42,9 +43,22 @@ abstract class Operators {
     private array $operators = [];
 
     /**
+     * @var WeakMap<AstManipulator, array<string, list<class-string<Operator>|Operator>>>
+     */
+    private WeakMap $types;
+
+    /**
+     * @var WeakMap<AstManipulator, array<class-string<Operator>, bool>>
+     */
+    private WeakMap $enabled;
+
+    /**
      * @param array<string, list<class-string<Operator>|string>> $operators
      */
     public function __construct(array $operators = []) {
+        $this->types   = new WeakMap();
+        $this->enabled = new WeakMap();
+
         foreach ($operators as $type => $value) {
             $this->operators[$type] = $value;
         }
@@ -107,6 +121,15 @@ abstract class Operators {
      * @return list<class-string<Operator>|Operator>
      */
     protected function getTypeOperators(AstManipulator $manipulator, string $type): array {
+        // Cached?
+        if (isset($this->types[$manipulator][$type])) {
+            return $this->types[$manipulator][$type];
+        }
+
+        // Prepare
+        $this->types[$manipulator]        ??= [];
+        $this->types[$manipulator][$type] ??= [];
+
         // Operators
         $unique    = [];
         $operators = $this->findOperators($manipulator, $type);
@@ -116,8 +139,13 @@ abstract class Operators {
             $unique[$class] ??= $operator;
         }
 
+        $unique = array_values($unique);
+
+        // Cache
+        $this->types[$manipulator][$type] = $unique;
+
         // Return
-        return array_values($unique);
+        return $unique;
     }
 
     /**
@@ -231,7 +259,21 @@ abstract class Operators {
         return $this->default[$type] ?? [];
     }
 
-    private function isEnabled(AstManipulator $manipulator, Operator $operator): bool {
+    /**
+     * @param Operator|class-string<Operator> $operator
+     */
+    private function isEnabled(AstManipulator $manipulator, Operator|string $operator): bool {
+        // Cached?
+        $class = is_object($operator) ? $operator::class : $operator;
+
+        if (isset($this->enabled[$manipulator][$class])) {
+            return $this->enabled[$manipulator][$class];
+        }
+
+        // Prepare
+        $this->enabled[$manipulator] ??= [];
+
+        // Check
         $enabled = true;
 
         foreach ($this->getDisabledOperators($manipulator) as $disabled) {
@@ -241,6 +283,10 @@ abstract class Operators {
             }
         }
 
+        // Cache
+        $this->enabled[$manipulator][$class] = $enabled;
+
+        // Return
         return $enabled;
     }
 
