@@ -11,8 +11,8 @@
   "devDependencies": {
     "@release-it/bumper": "^6.0.0",
     "@release-it/conventional-changelog": "^8.0.0",
-    "markdownlint-cli": "^0.38.0",
+    "markdownlint-cli": "^0.39.0",
     "minimist": "^1.2.8",
-    "release-it": "~17.0.1"
+    "release-it": "~17.1.1"
   }
 }
