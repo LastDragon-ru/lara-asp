@@ -20,14 +20,17 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidExtension;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\TypeExtension;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\TypeExtensionManipulator;
 use Override;
 
+use function array_key_exists;
+
 /**
- * Merges type extension directives into target type.
+ * Merges the directive from type extension into target type.
  *
  * Lighthouse doesn't support adding directives from extensions nodes yet. It
  * may be useful for adding new operators, especially for scalars. So we are
@@ -52,9 +55,10 @@ trait TypeExtender {
 
         // Create scalar if not exists
         if ($typeExtension instanceof ScalarTypeExtensionNode && $node === null) {
-            $class = $this->getExtendableScalars()[$name] ?? null;
+            $extendable = $this->getExtendableScalars();
 
-            if ($class) {
+            if (array_key_exists($name, $extendable)) {
+                $class                     = $extendable[$name] ?? TypeExtension::class;
                 $attr                      = Cast::to(Node::class, AST::astFromValue($class, Type::string()));
                 $attr                      = Printer::doPrint($attr);
                 $node                      = Parser::scalarTypeDefinition("scalar {$name} @scalar(class: {$attr})");
@@ -97,7 +101,7 @@ trait TypeExtender {
     }
 
     /**
-     * @return array<string, class-string>
+     * @return array<string, ?class-string>
      */
     abstract protected function getExtendableScalars(): array;
 }

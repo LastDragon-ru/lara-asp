@@ -11,6 +11,7 @@ use GraphQL\Utils\AST;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidExtension;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\TypeExtension;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -56,9 +57,15 @@ final class TypeExtenderTest extends TestCase {
      * @return array<string, array{Exception|string, string, string}>
      */
     public static function dataProviderManipulateTypeExtension(): array {
-        $string = TypeExtenderTest__Scalar::class;
-        $string = Cast::to(Node::class, AST::astFromValue($string, Type::string()));
-        $string = Printer::doPrint($string);
+        $class       = static function (string $string): string {
+            $string = Cast::to(Node::class, AST::astFromValue($string, Type::string()));
+            $string = Printer::doPrint($string);
+
+            return $string;
+        };
+        $string      = $class(TypeExtenderTest__Scalar::class);
+        $default     = $class(TypeExtension::class);
+        $description = (new TypeExtension())->description();
 
         return [
             'Scalar'                      => [
@@ -111,6 +118,27 @@ final class TypeExtenderTest extends TestCase {
                 @operator
                 GRAPHQL,
                 'MyScalarExtendable',
+            ],
+            'Scalar (default class)'      => [
+                <<<GRAPHQL
+                """
+                {$description}
+                """
+                scalar MyScalarDefault
+                @scalar(
+                    class: {$default}
+                )
+                @operator
+                GRAPHQL,
+                <<<'GRAPHQL'
+                type Query {
+                    test: String! @mock
+                }
+
+                extend scalar MyScalarDefault
+                @operator
+                GRAPHQL,
+                'MyScalarDefault',
             ],
             'Enum'                        => [
                 <<<'GRAPHQL'
@@ -293,6 +321,7 @@ class TypeExtenderTest__Operator extends BaseDirective implements TypeExtensionM
     protected function getExtendableScalars(): array {
         return [
             'MyScalarExtendable' => TypeExtenderTest__Scalar::class,
+            'MyScalarDefault'    => null,
         ];
     }
 }
