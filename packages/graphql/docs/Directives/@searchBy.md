@@ -163,7 +163,7 @@ The `@searchByIgnored` can be used as Ignored marker.
 
 ```graphql
 """
-Marks that field/definition should be excluded from search.
+Marks that field/definition should be excluded.
 """
 directive @searchByIgnored
 on

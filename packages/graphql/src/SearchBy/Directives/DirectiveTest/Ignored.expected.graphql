@@ -6,7 +6,7 @@ on
     | ARGUMENT_DEFINITION
 
 """
-Marks that field/definition should be excluded from search.
+Marks that field/definition should be excluded.
 """
 directive @searchByIgnored
 on
