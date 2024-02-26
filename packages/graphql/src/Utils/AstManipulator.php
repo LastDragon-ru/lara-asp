@@ -62,6 +62,7 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 use function array_merge;
 use function array_udiff;
 use function assert;
+use function in_array;
 use function is_string;
 use function json_encode;
 use function mb_strlen;
@@ -101,7 +102,16 @@ class AstManipulator {
     // </editor-fold>
 
     // <editor-fold desc="AST Helpers">
-    // =========================================================================}
+    // =========================================================================
+    /**
+     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
+     */
+    public function isStandard(
+        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
+    ): bool {
+        return in_array($this->getTypeName($node), Type::STANDARD_TYPE_NAMES, true);
+    }
+
     /**
      * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
      */

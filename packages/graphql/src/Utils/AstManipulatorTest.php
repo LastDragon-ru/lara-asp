@@ -69,6 +69,21 @@ final class AstManipulatorTest extends TestCase {
 
     // <editor-fold desc="Tests">
     // =========================================================================
+    public function testIsStandard(): void {
+        $manipulator = $this->getManipulator(
+            <<<'GRAPHQL'
+            interface A {
+                id: ID!
+            }
+
+            scalar B
+            GRAPHQL,
+        );
+
+        self::assertTrue($manipulator->isStandard('ID'));
+        self::assertFalse($manipulator->isStandard('A'));
+    }
+
     public function testGetInterfaces(): void {
         // Object
         $types       = Container::getInstance()->make(TypeRegistry::class);
