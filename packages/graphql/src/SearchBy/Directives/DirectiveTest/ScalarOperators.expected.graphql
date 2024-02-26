@@ -232,8 +232,25 @@ scalar Mixed
     class: "GraphQL\\Type\\Definition\\StringType"
 )
 @searchByOperatorEqual
+@searchByOperatorNotEqual
+
+"""
+Special/Internal scalar that used to extend types and exists only as a
+definition. Must not be used as type/value.
+"""
+scalar SearchByExtra
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Builder\\Scalars\\TypeExtension"
+)
+@searchByOperatorField
+@searchByOperatorAllOf
 
 type Query {
+    debug(
+        extra: SearchByExtra
+    ): String!
+    @mock
+
     test(
         where: SearchByRootA
         @searchBy

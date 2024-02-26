@@ -54,6 +54,22 @@ final class OperatorsTest extends TestCase {
             ),
         );
     }
+
+    public function testGetExtendableScalars(): void {
+        $manipulator = Container::getInstance()->make(Manipulator::class, [
+            'document' => Mockery::mock(DocumentAST::class),
+        ]);
+        $actual      = Operators::getExtendableScalars($manipulator);
+
+        self::assertEquals(
+            [
+                'SortByExtra'    => null,
+                'SortByObject'   => null,
+                'SortByDisabled' => null,
+            ],
+            $actual,
+        );
+    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">

@@ -215,16 +215,23 @@ The package also defines a few own types in addition to the standard GraphQL typ
 * `SearchByEnum` / [`Operators::Enum`](../../src/SearchBy/Operators.php) - Default operators for enums.
 * `SearchByDisabled` / [`Operators::Disabled`](../../src/SearchBy/Operators.php) - Disabled operators.
 
-### GraphQL
+### GraphQL (recommended)
 
 ```graphql
+extend scalar SearchByEnum
+@searchByExtendOperators                    # Re-use operators for `SearchByEnum` from config
+@searchByExtendOperators(type: "MyScalar")  # Re-use operators from `MyScalar` from schema
+
 scalar MyScalar
+@scalar(class: "App\\GraphQL\\Scalars\\MyScalar")
 @searchByExtendOperators                    # Re-use operators for `MyScalar` from config
 @searchByExtendOperators(type: "MyScalar")  # same
 @searchByExtendOperators(type: "Int")       # Re-use operators from `Int` from schema
 @searchByOperatorEqual                      # Add package operator
 @myOperator                                 # Add custom operator
 ```
+
+Keep in mind, when you define/extend the scalar/enum, it will override all existing operators, so if you just want to add new operators, the `@searchByExtendOperators` directive should be used.
 
 [include:exec]: <../../../../dev/artisan dev:directive @searchByExtendOperators>
 [//]: # (start: fb9508c1688c78899393b1119463a14ebcc2c0872316ca676b2945a296312230)

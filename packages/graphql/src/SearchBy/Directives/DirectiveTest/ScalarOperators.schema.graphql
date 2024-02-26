@@ -1,5 +1,9 @@
 type Query {
     test(where: A @searchBy): ID! @all
+
+    debug(
+        extra: SearchByExtra
+    ): String! @mock
 }
 
 input A {
@@ -20,8 +24,10 @@ enum EnumA
     A
 }
 
-scalar SearchByExtra
+extend scalar SearchByExtra
 @searchByOperatorField
+
+extend scalar SearchByExtra
 @searchByOperatorAllOf
 
 scalar Mixed
