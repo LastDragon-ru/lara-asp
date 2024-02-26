@@ -254,7 +254,6 @@ final class AstManipulatorTest extends TestCase {
             [
                 AstManipulatorTest_BDirective::class,
                 AstManipulatorTest_CDirective::class,
-                AstManipulatorTest_ADirective::class,
             ],
             array_map(
                 $map,
