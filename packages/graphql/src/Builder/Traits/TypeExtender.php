@@ -22,6 +22,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidExtension;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\TypeExtension;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\TypeExtensionManipulator;
@@ -47,15 +48,21 @@ use function array_key_exists;
  * @phpstan-require-implements TypeExtensionManipulator
  */
 trait TypeExtender {
+    use WithManipulator;
+
     #[Override]
     public function manipulateTypeExtension(DocumentAST &$documentAST, TypeExtensionNode &$typeExtension): void {
         // Node
         $name = $typeExtension->getName()->value;
         $node = $documentAST->types[$name] ?? null;
 
-        // Create scalar if not exists
-        if ($typeExtension instanceof ScalarTypeExtensionNode && $node === null) {
-            $extendable = $this->getExtendableScalars();
+        // Create scalar if not exist and not a standard type
+        // (it is not possible to redefine standard type nor extend it)
+        if ($node === null && $typeExtension instanceof ScalarTypeExtensionNode) {
+            $manipulator = $this->getAstManipulator($documentAST);
+            $extendable  = !$manipulator->isStandard($name)
+                ? $this->getExtendableScalars($manipulator)
+                : [];
 
             if (array_key_exists($name, $extendable)) {
                 $class                     = $extendable[$name] ?? TypeExtension::class;
@@ -103,5 +110,5 @@ trait TypeExtender {
     /**
      * @return array<string, ?class-string>
      */
-    abstract protected function getExtendableScalars(): array;
+    abstract protected function getExtendableScalars(AstManipulator $manipulator): array;
 }

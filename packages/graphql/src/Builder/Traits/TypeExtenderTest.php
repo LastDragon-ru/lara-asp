@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionInvalidExtens
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\TypeExtension;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Support\Contracts\TypeExtensionManipulator;
@@ -270,6 +271,18 @@ final class TypeExtenderTest extends TestCase {
                 GRAPHQL,
                 'MyUnion',
             ],
+            'Standard'                    => [
+                new TypeDefinitionUnknown('Int'),
+                <<<'GRAPHQL'
+                type Query {
+                    test: String! @mock
+                }
+
+                extend scalar Int
+                @operator
+                GRAPHQL,
+                'Int',
+            ],
         ];
     }
     // </editor-fold>
@@ -318,10 +331,11 @@ class TypeExtenderTest__Operator extends BaseDirective implements TypeExtensionM
      * @inheritDoc
      */
     #[Override]
-    protected function getExtendableScalars(): array {
+    protected function getExtendableScalars(AstManipulator $manipulator): array {
         return [
             'MyScalarExtendable' => TypeExtenderTest__Scalar::class,
             'MyScalarDefault'    => null,
+            'Int'                => null,
         ];
     }
 }
