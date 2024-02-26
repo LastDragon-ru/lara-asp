@@ -16,6 +16,7 @@ use GraphQL\Language\AST\ScalarTypeExtensionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
@@ -108,7 +109,7 @@ trait TypeExtender {
     }
 
     /**
-     * @return array<string, ?class-string>
+     * @return array<string, ?class-string<ScalarType>>
      */
     abstract protected function getExtendableScalars(AstManipulator $manipulator): array;
 }

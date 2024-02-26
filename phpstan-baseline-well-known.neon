@@ -89,6 +89,15 @@ parameters:
         - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$orders \\(array\\) on left side of \\?\\? is not nullable\\.$#"
         - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$unionOrders \\(array\\) on left side of \\?\\? is not nullable\\.$#"
 
+        # False positive (overriding trait abstract methods which return iterable)
+        # https://github.com/phpstan/phpstan/issues/9657
+        -
+            message: "#^Method LastDragon_ru\\\\([^:]+)\\:\\:getExtendableScalars\\(\\) return type has no value type specified in iterable type array\\.$#"
+            paths:
+                - packages/graphql/src/Builder/Traits/TypeExtenderTest.php
+                - packages/graphql/src/SearchBy/Operators/Operator.php
+                - packages/graphql/src/SortBy/Operators/Operator.php
+
         # (dev) Required for tests
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"

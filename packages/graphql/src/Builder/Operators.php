@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -300,7 +301,7 @@ abstract class Operators {
     }
 
     /**
-     * @return array<string, ?class-string>
+     * @return array<string, ?class-string<ScalarType>>
      */
     public static function getExtendableScalars(AstManipulator $manipulator): array {
         $class      = new ReflectionClass(static::class);
