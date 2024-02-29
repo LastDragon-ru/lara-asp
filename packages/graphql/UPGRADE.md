@@ -94,6 +94,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
       @searchByOperatorField
       ```
 
+* [ ] If you define additional operators via `scalar SearchBy*` use `extend scalar SearchBy*` instead (or you will get `TypeDefinitionAlreadyDefined` error).
+
 ## `@sortBy`
 
 * [ ] `enum SortByTypeFlag { yes }` => `enum SortByTypeFlag { Yes }`. 🤝
@@ -154,6 +156,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
       ```
 
 * [ ] `@sortByOperatorRandom` cannot be added to `FIELD_DEFINITION` anymore.
+
+* [ ] If you define addition operators via `scalar SortBy*` use `extend scalar SortBy*` instead (or you will get `TypeDefinitionAlreadyDefined` error).
 
 ## API
 

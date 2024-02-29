@@ -6,16 +6,14 @@ use Exception;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionIsNotScalar;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionIsNotScalarExtension;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\Internal;
+use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Override;
@@ -84,17 +82,10 @@ final class SchemaDirectiveTest extends TestCase {
     public static function dataProviderManipulateTypeDefinition(): array {
         $string  = self::getGraphQLStringValue(StringType::class);
         $default = self::getGraphQLStringValue(Internal::class);
-        $custom  = self::getGraphQLStringValue(SchemaDirectiveTest__Scalar::class);
 
         return [
             'Scalar'                 => [
-                <<<GRAPHQL
-                scalar TestScalar
-                @scalar(
-                    class: {$default}
-                )
-                @test
-                GRAPHQL,
+                new TypeDefinitionAlreadyDefined('TestScalar'),
                 <<<GRAPHQL
                 type Query {
                     test: String! @mock
@@ -126,40 +117,6 @@ final class SchemaDirectiveTest extends TestCase {
                 GRAPHQL,
                 'TestScalar',
             ],
-            'Scalar (custom class)'  => [
-                <<<GRAPHQL
-                scalar TestScalarCustom
-                @scalar(
-                    class: {$custom}
-                )
-                @test
-                GRAPHQL,
-                <<<'GRAPHQL'
-                type Query {
-                    test: String! @mock
-                }
-
-                extend scalar TestScalarCustom
-                @test
-                GRAPHQL,
-                'TestScalarCustom',
-            ],
-            'Not a scalar'           => [
-                new TypeDefinitionIsNotScalar('TestScalar', 'enum TestScalar'),
-                <<<'GRAPHQL'
-                type Query {
-                    test: String! @mock
-                }
-
-                enum TestScalar {
-                    TestCase
-                }
-
-                extend enum TestScalar
-                @test
-                GRAPHQL,
-                'TestScalar',
-            ],
             'Not a scalar extension' => [
                 new TypeDefinitionIsNotScalarExtension('TestScalar', 'extend enum TestScalar'),
                 <<<'GRAPHQL'
@@ -174,7 +131,7 @@ final class SchemaDirectiveTest extends TestCase {
             ],
             'Unsupported'            => [
                 <<<'GRAPHQL'
-                union TestUnion =
+                union MyUnion =
                     | A
                     | B
                 GRAPHQL,
@@ -191,12 +148,12 @@ final class SchemaDirectiveTest extends TestCase {
                     b: String!
                 }
 
-                union TestUnion = A | B
+                union MyUnion = A | B
 
-                extend union TestUnion
+                extend union MyUnion
                 @test
                 GRAPHQL,
-                'TestUnion',
+                'MyUnion',
             ],
         ];
     }
@@ -211,38 +168,8 @@ final class SchemaDirectiveTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class SchemaDirective__Directive extends SchemaDirective {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    protected function getScalars(AstManipulator $manipulator): array {
-        return [
-            'TestScalar'       => null,
-            'TestScalarCustom' => SchemaDirectiveTest__Scalar::class,
-        ];
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class SchemaDirectiveTest__Scalar extends ScalarType {
-    #[Override]
-    public function serialize(mixed $value): mixed {
-        throw new Exception('Should not be called.');
-    }
-
-    #[Override]
-    public function parseValue(mixed $value): mixed {
-        throw new Exception('Should not be called.');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function parseLiteral(Node $valueNode, array $variables = null): mixed {
-        throw new Exception('Should not be called.');
+    protected function getNamespace(): string {
+        return 'Test';
     }
 }

@@ -54,22 +54,6 @@ final class OperatorsTest extends TestCase {
             ),
         );
     }
-
-    public function testGetSchemaScalars(): void {
-        $manipulator = Container::getInstance()->make(Manipulator::class, [
-            'document' => Mockery::mock(DocumentAST::class),
-        ]);
-        $actual      = (new Operators())->getSchemaScalars($manipulator);
-
-        self::assertEquals(
-            [
-                'SortByExtra'    => null,
-                'SortByObject'   => null,
-                'SortByDisabled' => null,
-            ],
-            $actual,
-        );
-    }
     // </editor-fold>
 
     // <editor-fold desc="Helpers">

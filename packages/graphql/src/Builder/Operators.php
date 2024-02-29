@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -12,8 +11,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
-use ReflectionClass;
-use ReflectionClassConstant;
 use WeakMap;
 
 use function array_filter;
@@ -298,31 +295,5 @@ abstract class Operators {
      */
     protected function getDisabledOperators(AstManipulator $manipulator): array {
         return [];
-    }
-
-    /**
-     * @return array<string, ?class-string<ScalarType>>
-     */
-    public function getSchemaScalars(AstManipulator $manipulator): array {
-        $class      = new ReflectionClass(static::class);
-        $constants  = $class->getConstants(ReflectionClassConstant::IS_PUBLIC);
-        $extendable = [];
-
-        foreach ($constants as $value) {
-            // Only string accepted
-            if (!is_string($value)) {
-                continue;
-            }
-
-            // Standard types should not be redefined.
-            if ($manipulator->isStandard($value)) {
-                continue;
-            }
-
-            // Ok
-            $extendable[$value] = null;
-        }
-
-        return $extendable;
     }
 }

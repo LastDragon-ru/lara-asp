@@ -4,15 +4,27 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\SchemaDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
-use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Override;
+use ReflectionClass;
+use ReflectionClassConstant;
+
+use function in_array;
 
 class Schema extends SchemaDirective {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    protected function getScalars(AstManipulator $manipulator): array {
-        return (new Operators())->getSchemaScalars($manipulator);
+    protected function getNamespace(): string {
+        return Directive::Name;
+    }
+
+    #[Override]
+    protected function isScalar(string $name): bool {
+        if (!parent::isScalar($name)) {
+            return false;
+        }
+
+        $constants = (new ReflectionClass(Operators::class))->getConstants(ReflectionClassConstant::IS_PUBLIC);
+        $known     = in_array($name, $constants, true);
+
+        return $known;
     }
 }
