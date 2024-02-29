@@ -74,21 +74,39 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
 
         foreach ($documentAST->typeExtensions as $type => $extensions) {
             // Supported?
-            if (!$this->isScalar($type)) {
+            // (no way to extend standard types, we are trying to use alias instead)
+            $targetType = $manipulator->isStandard($type)
+                ? "{$this->getNamespace()}{$type}"
+                : $type;
+
+            if (!$this->isScalar($targetType)) {
                 continue;
             }
 
             // Extend
-            $targetNode = $manipulator->addTypeDefinition($this->getScalarDefinitionNode($type));
+            $targetNode = $manipulator->addTypeDefinition($this->getScalarDefinitionNode($targetType));
 
             foreach ($extensions as $key => $extension) {
                 // Valid?
                 if (!($extension instanceof ScalarTypeExtensionNode)) {
-                    throw new TypeDefinitionIsNotScalarExtension($type, $this->getExtensionNodeName($extension));
+                    throw new TypeDefinitionIsNotScalarExtension($targetType, $this->getExtensionNodeName($extension));
                 }
 
                 // Directives
-                $targetNode->directives = $targetNode->directives->merge($extension->directives);
+                if ($targetType === $type) {
+                    $targetNode->directives = $targetNode->directives->merge($extension->directives);
+                } else {
+                    // Only known directives will be copied for alias
+                    foreach ($extension->directives as $index => $directive) {
+                        if ($this->isDirective($directive->name->value)) {
+                            $targetNode->directives[] = $directive;
+
+                            unset($extension->directives[$index]);
+                        }
+                    }
+
+                    $extension->directives->reindex();
+                }
 
                 // Remove to avoid conflicts with future Lighthouse version
                 unset($documentAST->typeExtensions[$type][$key]);
@@ -107,6 +125,10 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
 
     protected function isScalar(string $name): bool {
         return str_starts_with($name, Str::studly($this->getNamespace()));
+    }
+
+    protected function isDirective(string $name): bool {
+        return str_starts_with($name, Str::camel($this->getNamespace()));
     }
 
     protected function getScalarDefinition(string $name): string {

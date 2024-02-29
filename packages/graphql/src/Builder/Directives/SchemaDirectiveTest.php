@@ -106,6 +106,7 @@ final class SchemaDirectiveTest extends TestCase {
                     class: {$default}
                 )
                 @test
+                @a
                 GRAPHQL,
                 <<<'GRAPHQL'
                 type Query {
@@ -114,6 +115,9 @@ final class SchemaDirectiveTest extends TestCase {
 
                 extend scalar TestScalar
                 @test
+
+                extend scalar TestScalar
+                @a
                 GRAPHQL,
                 'TestScalar',
             ],
@@ -154,6 +158,25 @@ final class SchemaDirectiveTest extends TestCase {
                 @test
                 GRAPHQL,
                 'MyUnion',
+            ],
+            'Alias (standard type)'  => [
+                <<<GRAPHQL
+                scalar TestInt
+                @scalar(
+                    class: {$default}
+                )
+                @test
+                GRAPHQL,
+                <<<'GRAPHQL'
+                 type Query {
+                    test: String! @mock
+                }
+
+                extend scalar Int
+                @test
+                @a
+                GRAPHQL,
+                'TestInt',
             ],
         ];
     }

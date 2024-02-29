@@ -2,6 +2,7 @@ type Query {
     test(where: A @searchBy): ID! @all
 
     debug(
+        int: SearchByInt
         extra: SearchByExtra
     ): String! @mock
 }
@@ -10,6 +11,7 @@ input A {
     a: Mixed!
     b: Date
     c: EnumA
+    d: Int!
 }
 
 scalar Date
@@ -23,6 +25,9 @@ enum EnumA
 {
     A
 }
+
+extend scalar Int
+@searchByOperatorEqual
 
 extend scalar SearchByExtra
 @searchByOperatorField

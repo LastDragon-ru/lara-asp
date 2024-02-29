@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
-use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
@@ -22,12 +21,6 @@ use function is_object;
 use function is_string;
 
 abstract class Operators {
-    public const ID      = Type::ID;
-    public const Int     = Type::INT;
-    public const Float   = Type::FLOAT;
-    public const String  = Type::STRING;
-    public const Boolean = Type::BOOLEAN;
-
     /**
      * Determines default operators available for each type.
      *

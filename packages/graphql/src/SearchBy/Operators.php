@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
@@ -45,6 +46,11 @@ use function array_merge;
 use function config;
 
 class Operators extends BuilderOperators {
+    public const ID       = Directive::Name.Type::ID;
+    public const Int      = Directive::Name.Type::INT;
+    public const Float    = Directive::Name.Type::FLOAT;
+    public const String   = Directive::Name.Type::STRING;
+    public const Boolean  = Directive::Name.Type::BOOLEAN;
     public const Null     = Directive::Name.'Null';
     public const Extra    = Directive::Name.'Extra';
     public const Number   = Directive::Name.'Number';
@@ -56,7 +62,24 @@ class Operators extends BuilderOperators {
      * @inheritDoc
      */
     protected array $default = [
-        // Standard types
+        // Built-in
+        Type::ID      => [
+            self::ID,
+        ],
+        Type::INT     => [
+            self::Int,
+        ],
+        Type::FLOAT   => [
+            self::Float,
+        ],
+        Type::STRING  => [
+            self::String,
+        ],
+        Type::BOOLEAN => [
+            self::Boolean,
+        ],
+
+        // Scalars
         self::ID      => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
@@ -93,7 +116,7 @@ class Operators extends BuilderOperators {
             SearchByOperatorNotEndsWithDirective::class,
         ],
 
-        // Special types
+        // Special
         self::Number  => [
             SearchByOperatorEqualDirective::class,
             SearchByOperatorNotEqualDirective::class,
