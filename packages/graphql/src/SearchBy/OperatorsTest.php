@@ -62,7 +62,7 @@ final class OperatorsTest extends TestCase {
         $manipulator = Container::getInstance()->make(Manipulator::class, [
             'document' => Mockery::mock(DocumentAST::class),
         ]);
-        $actual      = Operators::getSchemaScalars($manipulator);
+        $actual      = (new Operators())->getSchemaScalars($manipulator);
 
         self::assertEquals(
             [

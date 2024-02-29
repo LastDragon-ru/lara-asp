@@ -303,7 +303,7 @@ abstract class Operators {
     /**
      * @return array<string, ?class-string<ScalarType>>
      */
-    public static function getSchemaScalars(AstManipulator $manipulator): array {
+    public function getSchemaScalars(AstManipulator $manipulator): array {
         $class      = new ReflectionClass(static::class);
         $constants  = $class->getConstants(ReflectionClassConstant::IS_PUBLIC);
         $extendable = [];

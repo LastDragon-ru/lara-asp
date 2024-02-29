@@ -13,6 +13,6 @@ class Schema extends SchemaDirective {
      */
     #[Override]
     protected function getScalars(AstManipulator $manipulator): array {
-        return Operators::getSchemaScalars($manipulator);
+        return (new Operators())->getSchemaScalars($manipulator);
     }
 }
