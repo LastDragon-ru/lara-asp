@@ -7,17 +7,15 @@ use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\ScalarType;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\TypeExtender as TypeExtenderTrait;
 use Override;
 
 /**
  * @internal
- * @see TypeExtenderTrait
  */
-class TypeExtension extends ScalarType {
+class Internal extends ScalarType {
     public ?string $description = <<<'STRING'
-        Special/Internal scalar that used to extend types and exists only as a
-        definition. Must not be used as type/value.
+        Internal scalar for internal purposes. It is only exists as a definition
+        thus must not be used as type/value.
         STRING;
 
     #[Override]

@@ -55,11 +55,11 @@ final class OperatorsTest extends TestCase {
         );
     }
 
-    public function testGetExtendableScalars(): void {
+    public function testGetSchemaScalars(): void {
         $manipulator = Container::getInstance()->make(Manipulator::class, [
             'document' => Mockery::mock(DocumentAST::class),
         ]);
-        $actual      = Operators::getExtendableScalars($manipulator);
+        $actual      = Operators::getSchemaScalars($manipulator);
 
         self::assertEquals(
             [

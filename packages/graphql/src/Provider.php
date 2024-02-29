@@ -10,8 +10,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver as Buil
 use LastDragon_ru\LaraASP\GraphQL\Builder\Defaults\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchBySchemaDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory as SorterFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortBySchemaDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
@@ -22,6 +24,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContr
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings as SettingsContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
+use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Nuwave\Lighthouse\Events\RegisterDirectiveNamespaces;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Override;
@@ -58,6 +61,8 @@ class Provider extends ServiceProvider {
                 ];
             },
         );
+        $dispatcher->listen(BuildSchemaString::class, SearchBySchemaDirective::class);
+        $dispatcher->listen(BuildSchemaString::class, SortBySchemaDirective::class);
     }
 
     protected function registerBindings(): void {

@@ -6,17 +6,17 @@ use Throwable;
 
 use function sprintf;
 
-class TypeDefinitionInvalidExtension extends BuilderException {
+class TypeDefinitionIsNotScalar extends BuilderException {
     public function __construct(
         protected string $name,
-        protected string $extension,
+        protected string $expected,
         Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Type Definition `%s` cannot be extended by `%s` extension.',
+                'The `%s` must be a scalar, `%s` given.',
                 $this->name,
-                $this->extension,
+                $this->expected,
             ),
             $previous,
         );
@@ -26,7 +26,7 @@ class TypeDefinitionInvalidExtension extends BuilderException {
         return $this->name;
     }
 
-    public function getExtension(): string {
-        return $this->extension;
+    public function getExpected(): string {
+        return $this->expected;
     }
 }
