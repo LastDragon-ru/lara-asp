@@ -143,7 +143,7 @@ abstract class DatabaseSorter implements Sorter {
         // create conflicts while adding additional clauses 🤞
         $builder = $builder instanceof EloquentBuilder ? $builder->getQuery() : $builder;
         $count   = count($builder->orders ?? []) + count($builder->unionOrders ?? []);
-        $alias   = Str::snake(Str::camel(Package::Name).'_'.Directive::Name).'__'.$count;
+        $alias   = Str::snake(Str::studly(Package::Name).'_'.Directive::Name).'__'.$count;
 
         return $alias;
     }
