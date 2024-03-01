@@ -69,7 +69,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
   * [ ] `SearchByEnum` => `SearchByOperatorsEnum`
 
-* [ ] Added the root type that will contain only extra operators and newly added `field` operator (always present and cannot be removed). The new query syntax is:
+* [ ] Added the root type that will contain only extra operators and newly added `field` operator. The new query syntax is:
 
   ```graphql
   query {
@@ -100,7 +100,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   2. Disable `LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective` operator to avoid possible conflict with field names (via schema or config)
 
       ```graphql
-      scalar SearchByOperatorsDisabled
+      extend scalar SearchByOperatorsDisabled
       @searchByOperatorField
       ```
 
@@ -137,7 +137,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are using `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use `LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver` instead. 🤝
 
-* [ ] Added the root type that will contain only extra operators and newly added `field` operator (always present and cannot be removed). The new query syntax is:
+* [ ] Added the root type that will contain only extra operators and newly added `field` operator. The new query syntax is:
 
   ```graphql
   query {
@@ -167,7 +167,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   2. Disable `LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective` operator to avoid possible conflict with field names (via schema or config)
 
       ```graphql
-      scalar SortByOperatorsDisabled
+      extend scalar SortByOperatorsDisabled
       @sortByOperatorField
       ```
 
