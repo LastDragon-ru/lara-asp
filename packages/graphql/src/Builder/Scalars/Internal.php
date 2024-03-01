@@ -13,11 +13,6 @@ use Override;
  * @internal
  */
 class Internal extends ScalarType {
-    public ?string $description = <<<'STRING'
-        Internal scalar for internal purposes. It is only exists as a definition
-        thus must not be used as type/value.
-        STRING;
-
     #[Override]
     public function serialize(mixed $value): mixed {
         $this->error(InvariantViolation::class);

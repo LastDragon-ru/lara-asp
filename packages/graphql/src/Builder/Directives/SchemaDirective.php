@@ -132,10 +132,19 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
     }
 
     protected function getScalarDefinition(string $name): string {
-        $class  = Internal::class;
-        $value  = Cast::to(Node::class, AST::astFromValue($class, Type::string()));
-        $value  = Printer::doPrint($value);
-        $scalar = "scalar {$name} @scalar(class: {$value})";
+        $directive = '@'.Str::camel($this->getNamespace());
+        $class     = Internal::class;
+        $value     = Cast::to(Node::class, AST::astFromValue($class, Type::string()));
+        $value     = Printer::doPrint($value);
+        $scalar    = <<<GRAPHQL
+            """
+            The scalar is used to add builder operators for `{$directive}` directive.
+            """
+            scalar {$name}
+            @scalar(
+                class: {$value}
+            )
+            GRAPHQL;
 
         return $scalar;
     }

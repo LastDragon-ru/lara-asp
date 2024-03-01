@@ -32,9 +32,18 @@ final class SchemaDirectiveTest extends TestCase {
         $directive = new SchemaDirective__Directive();
         $actual    = $directive(new BuildSchemaString(''));
         $class     = self::getGraphQLStringValue(Internal::class);
-        $expected  = "scalar SchemaDirective @scalar(class: {$class}) @schemaDirective__";
+        $expected  = <<<GRAPHQL
+            """
+            The scalar is used to add builder operators for `@test` directive.
+            """
+            scalar SchemaDirective
+            @scalar(
+                class: {$class}
+            )
+            @schemaDirective__
+            GRAPHQL;
 
-        self::assertEquals($expected, $actual);
+        self::assertGraphQLPrintableEquals($expected, $actual);
     }
 
     /**
@@ -101,6 +110,9 @@ final class SchemaDirectiveTest extends TestCase {
             ],
             'Scalar (no definition)' => [
                 <<<GRAPHQL
+                """
+                The scalar is used to add builder operators for `@test` directive.
+                """
                 scalar TestScalar
                 @scalar(
                     class: {$default}
@@ -161,6 +173,9 @@ final class SchemaDirectiveTest extends TestCase {
             ],
             'Alias (standard type)'  => [
                 <<<GRAPHQL
+                """
+                The scalar is used to add builder operators for `@test` directive.
+                """
                 scalar TestInt
                 @scalar(
                     class: {$default}

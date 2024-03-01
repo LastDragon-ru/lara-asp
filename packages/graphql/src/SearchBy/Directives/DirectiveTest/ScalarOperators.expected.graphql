@@ -245,8 +245,7 @@ scalar Mixed
 @searchByOperatorEqual
 
 """
-Internal scalar for internal purposes. It is only exists as a definition
-thus must not be used as type/value.
+The scalar is used to add builder operators for `@searchBy` directive.
 """
 scalar SearchByExtra
 @scalar(
@@ -256,8 +255,7 @@ scalar SearchByExtra
 @searchByOperatorAllOf
 
 """
-Internal scalar for internal purposes. It is only exists as a definition
-thus must not be used as type/value.
+The scalar is used to add builder operators for `@searchBy` directive.
 """
 scalar SearchByInt
 @scalar(
