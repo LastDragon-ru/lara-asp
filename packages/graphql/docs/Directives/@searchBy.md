@@ -163,7 +163,7 @@ The `@searchByIgnored` can be used as Ignored marker.
 
 ```graphql
 """
-Marks that field/definition should be excluded from search.
+Marks that field/definition should be excluded.
 """
 directive @searchByIgnored
 on
@@ -208,23 +208,30 @@ By default, the package provide list of predefined operators for build-in GraphQ
 
 The package also defines a few own types in addition to the standard GraphQL types:
 
-* `SearchByObject` / [`Operators::Object`](../../src/SearchBy/Operators.php) - List of known operators for `Object`. If no other directive is found, the first supported operator from the list will be used.
-* `SearchByNumber` / [`Operators::Number`](../../src/SearchBy/Operators.php) - Any operator for this type will be available for `Int` and `Float`.
-* `SearchByNull` / [`Operators::Null`](../../src/SearchBy/Operators.php) - Additional operators available for nullable fields.
-* `SearchByExtra` / [`Operators::Extra`](../../src/SearchBy/Operators.php) - List of additional extra operators for all types.
-* `SearchByEnum` / [`Operators::Enum`](../../src/SearchBy/Operators.php) - Default operators for enums.
-* `SearchByDisabled` / [`Operators::Disabled`](../../src/SearchBy/Operators.php) - Disabled operators.
+* `SearchByOperatorsObject` / [`Operators::Object`](../../src/SearchBy/Operators.php) - List of known operators for `Object`. If no other directive is found, the first supported operator from the list will be used.
+* `SearchByOperatorsNumber` / [`Operators::Number`](../../src/SearchBy/Operators.php) - Any operator for this type will be available for `Int` and `Float`.
+* `SearchByOperatorsNull` / [`Operators::Null`](../../src/SearchBy/Operators.php) - Additional operators available for nullable fields.
+* `SearchByOperatorsExtra` / [`Operators::Extra`](../../src/SearchBy/Operators.php) - List of additional extra operators for all types.
+* `SearchByOperatorsEnum` / [`Operators::Enum`](../../src/SearchBy/Operators.php) - Default operators for enums.
+* `SearchByOperatorsDisabled` / [`Operators::Disabled`](../../src/SearchBy/Operators.php) - Disabled operators.
 
-### GraphQL
+### GraphQL (recommended)
 
 ```graphql
+extend scalar SearchByOperatorsEnum
+@searchByExtendOperators                    # Re-use operators for `SearchByOperatorsEnum` from config
+@searchByExtendOperators(type: "MyScalar")  # Re-use operators from `MyScalar` from schema
+
 scalar MyScalar
+@scalar(class: "App\\GraphQL\\Scalars\\MyScalar")
 @searchByExtendOperators                    # Re-use operators for `MyScalar` from config
 @searchByExtendOperators(type: "MyScalar")  # same
 @searchByExtendOperators(type: "Int")       # Re-use operators from `Int` from schema
 @searchByOperatorEqual                      # Add package operator
 @myOperator                                 # Add custom operator
 ```
+
+Keep in mind, when you define/extend the scalar/enum, it will override all existing operators, so if you just want to add new operators, the `@searchByExtendOperators` directive should be used.
 
 [include:exec]: <../../../../dev/artisan dev:directive @searchByExtendOperators>
 [//]: # (start: fb9508c1688c78899393b1119463a14ebcc2c0872316ca676b2945a296312230)

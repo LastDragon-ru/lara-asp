@@ -6,7 +6,7 @@ on
     | ARGUMENT_DEFINITION
 
 """
-Marks that field/definition should be excluded from sort.
+Marks that field/definition should be excluded.
 """
 directive @sortByIgnored
 on

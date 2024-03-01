@@ -112,6 +112,12 @@ input SearchByConditionA {
     """
     c: SearchByEnumEnumAOrNull
     @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    d: SearchByScalarInt
+    @searchByOperatorCondition
 }
 
 """
@@ -196,6 +202,17 @@ input SearchByScalarDateOrNull {
 }
 
 """
+Available operators for `scalar Int` (only one operator allowed at a time).
+"""
+input SearchByScalarInt {
+    """
+    Equal (`=`).
+    """
+    equal: Int
+    @searchByOperatorEqual
+}
+
+"""
 Available operators for `scalar Mixed` (only one operator allowed at a time).
 """
 input SearchByScalarMixed {
@@ -204,12 +221,6 @@ input SearchByScalarMixed {
     """
     equal: Mixed
     @searchByOperatorEqual
-
-    """
-    Not Equal (`!=`).
-    """
-    notEqual: Mixed
-    @searchByOperatorNotEqual
 }
 
 scalar Date
@@ -233,7 +244,32 @@ scalar Mixed
 )
 @searchByOperatorEqual
 
+"""
+The scalar is used to add builder operators for `@searchBy` directive.
+"""
+scalar SearchByOperatorsExtra
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Builder\\Scalars\\Internal"
+)
+@searchByOperatorField
+@searchByOperatorAllOf
+
+"""
+The scalar is used to add builder operators for `@searchBy` directive.
+"""
+scalar SearchByOperatorsInt
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Builder\\Scalars\\Internal"
+)
+@searchByOperatorEqual
+
 type Query {
+    debug(
+        int: SearchByOperatorsInt
+        extra: SearchByOperatorsExtra
+    ): String!
+    @mock
+
     test(
         where: SearchByRootA
         @searchBy

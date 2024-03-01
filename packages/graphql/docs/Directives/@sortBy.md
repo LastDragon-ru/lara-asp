@@ -80,7 +80,7 @@ The `@sortByIgnored` can be used as Ignored marker.
 
 ```graphql
 """
-Marks that field/definition should be excluded from sort.
+Marks that field/definition should be excluded.
 """
 directive @sortByIgnored
 on
@@ -98,13 +98,21 @@ on
 
 The package defines only one's own type. To extend/replace the list of its operators, you can use config and/or add directives to scalar/enum inside the schema. Directives is the recommended way and have priority over the config. Please see [`@searchBy`](@searchBy.md#type-operators) for examples.
 
-* `SortByExtra` / [`Operators::Extra`](../../src/SortBy/Operators.php) - List of additional extra operators for all types. The list is empty by default.
+* `SortByOperatorsExtra` / [`Operators::Extra`](../../src/SortBy/Operators.php) - List of additional extra operators for all types. The list is empty by default.
+* `SortByOperatorsDisabled` / [`Operators::Disabled`](../../src/SortBy/Operators.php) - Disabled operators.
 
 ## Eloquent/Database
 
 ### Order by random
 
 It is also possible to sort records in random order, but it is not enabled by default. To enable it you just need to add [`Random`](../../src/SortBy/Operators/Extra/Random.php)/`@sortByOperatorRandom` operator/directive to `Extra` type:
+
+```graphql
+extend scalar SortByOperatorsExtra
+@sortByOperatorRandom
+```
+
+or via config
 
 ```php
 <?php declare(strict_types = 1);
@@ -135,13 +143,6 @@ $settings = [
 ];
 
 return $settings;
-```
-
-or
-
-```graphql
-scalar SortByExtra
-@sortByOperatorRandom
 ```
 
 And after this, you can 🎉
