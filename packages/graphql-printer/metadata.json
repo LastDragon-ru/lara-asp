@@ -1,11 +1,21 @@
 {
-    "version": "5.4.0",
+    "version": "6.0.0",
     "require": {
         "php": "PHP",
         "webonyx/graphql-php": "`webonyx/graphql-php`"
     },
     "requirements": {
         "HEAD": {
+            "php": [
+                "^8.3",
+                "^8.2",
+                "^8.1"
+            ],
+            "webonyx/graphql-php": [
+                "^15.4.0"
+            ]
+        },
+        "6.0.0": {
             "php": [
                 "^8.3",
                 "^8.2",

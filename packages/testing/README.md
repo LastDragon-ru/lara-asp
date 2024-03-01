@@ -22,7 +22,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
-|  PHPUnit  | `^10.1.0` |  `HEAD`   |
+|  PHPUnit  | `^10.1.0` |  `HEAD`  ,  `6.0.0`   |
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 

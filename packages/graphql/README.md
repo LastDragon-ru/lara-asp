@@ -258,15 +258,17 @@ on
 
 directive @searchByOperatorAllOf
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @searchByOperatorAnyOf
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
+
+directive @searchByOperatorCondition
+on
+    | INPUT_FIELD_DEFINITION
 
 directive @searchByOperatorContains
 on
@@ -288,7 +290,6 @@ on
 
 directive @searchByOperatorField
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
@@ -306,7 +307,6 @@ on
 
 directive @searchByOperatorNot
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
@@ -353,37 +353,48 @@ on
     | SCALAR
 
 """
-Available conditions for `type User` (only one property allowed at a time).
+Available conditions for `type User` (only one field allowed at a time).
 """
 input SearchByConditionUser {
-    """
-    All of the conditions must be true.
-    """
-    allOf: [SearchByConditionUser!]
-    @searchByOperatorAllOf
-
-    """
-    Any of the conditions must be true.
-    """
-    anyOf: [SearchByConditionUser!]
-    @searchByOperatorAnyOf
-
     """
     Field condition.
     """
     id: SearchByScalarID
-    @searchByOperatorField
+    @searchByOperatorCondition
 
     """
     Field condition.
     """
     name: SearchByScalarString
+    @searchByOperatorCondition
+}
+
+"""
+Available conditions for `type User` (only one field allowed at a time).
+"""
+input SearchByRootUser {
+    """
+    All of the conditions must be true.
+    """
+    allOf: [SearchByRootUser!]
+    @searchByOperatorAllOf
+
+    """
+    Any of the conditions must be true.
+    """
+    anyOf: [SearchByRootUser!]
+    @searchByOperatorAnyOf
+
+    """
+    Field.
+    """
+    field: SearchByConditionUser
     @searchByOperatorField
 
     """
     Not.
     """
-    not: SearchByConditionUser
+    not: SearchByRootUser
     @searchByOperatorNot
 }
 
@@ -510,7 +521,7 @@ type Query {
     List multiple users.
     """
     users(
-        where: SearchByConditionUser
+        where: SearchByRootUser
         @searchBy
     ): [User!]!
     @all
