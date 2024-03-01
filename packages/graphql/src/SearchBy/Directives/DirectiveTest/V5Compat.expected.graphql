@@ -168,6 +168,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorRelation
+on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 directive @searchByOperatorRelationship
 on
     | FIELD_DEFINITION
@@ -187,14 +193,6 @@ enum SearchByTypeFlag {
     @deprecated(
         reason: "Please use `Yes` instead."
     )
-}
-
-input Comment {
-    date: Date
-    text: String!
-
-    user: User
-    @belongsTo
 }
 
 """
@@ -271,6 +269,12 @@ input SearchByConditionUser {
     """
     not: SearchByConditionUser
     @searchByOperatorNot
+
+    """
+    Relationship condition.
+    """
+    parent: SearchByRelationshipUser
+    @searchByOperatorRelation
 }
 
 """
@@ -306,6 +310,35 @@ input SearchByConditionUsersQuery {
     """
     not: SearchByConditionUsersQuery
     @searchByOperatorNot
+}
+
+"""
+Conditions for the relationship (`has()`/`doesntHave()`) for `type User`.
+
+See also:
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-existence
+* https://laravel.com/docs/eloquent-relationships#querying-relationship-absence
+"""
+input SearchByRelationshipUser {
+    """
+    Count conditions.
+    """
+    count: SearchByScalarInt
+
+    """
+    Alias for `count: {greaterThanOrEqual: 1}`. Will be ignored if `count` used.
+    """
+    exists: Boolean
+
+    """
+    Alias for `count: {lessThan: 1}`. Will be ignored if `count` used.
+    """
+    notExists: Boolean! = false
+
+    """
+    Additional conditions.
+    """
+    where: SearchByConditionUser
 }
 
 """
@@ -630,6 +663,14 @@ scalar Date
     class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
 )
 
+type Comment {
+    date: Date
+    text: String!
+
+    user: User
+    @belongsTo
+}
+
 type Query {
     comments(
         where: SearchByConditionCommentsQuery
@@ -647,4 +688,7 @@ type Query {
 type User {
     id: ID!
     name: String!
+
+    parent: User
+    @searchByOperatorRelation
 }
