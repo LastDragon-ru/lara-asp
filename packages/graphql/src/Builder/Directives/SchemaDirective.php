@@ -42,6 +42,8 @@ use function str_starts_with;
  *
  * @see https://github.com/nuwave/lighthouse/issues/2509
  * @see https://github.com/nuwave/lighthouse/pull/2512
+ *
+ * @internal
  */
 abstract class SchemaDirective extends BaseDirective implements TypeManipulator {
     use WithManipulator;

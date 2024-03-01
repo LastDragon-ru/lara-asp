@@ -10,6 +10,9 @@ use ReflectionClassConstant;
 
 use function in_array;
 
+/**
+ * @internal
+ */
 class Schema extends SchemaDirective {
     #[Override]
     protected function getNamespace(): string {
