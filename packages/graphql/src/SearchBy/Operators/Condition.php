@@ -19,7 +19,7 @@ class Condition extends Operator {
      * @inheritDoc
      */
     #[Override]
-    protected static function getDirectiveLocations(): array {
+    protected static function getLocations(): array {
         return [
             // empty
         ];

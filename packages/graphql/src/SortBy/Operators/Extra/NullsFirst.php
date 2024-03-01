@@ -35,7 +35,7 @@ class NullsFirst extends Operator {
      * @inheritDoc
      */
     #[Override]
-    protected static function getDirectiveLocations(): array {
+    protected static function getLocations(): array {
         return [
             DirectiveLocation::SCALAR,
         ];
