@@ -57,7 +57,17 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => `LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object`.
 
-* [ ] `scalar SearchByCondition` => `scalar SearchByObject`.
+* [ ] Scalars to add operators were renamed
+
+  * [ ] `SearchByCondition` => `SearchByOperatorsObject`
+
+  * [ ] `SearchByNull` => `SearchByOperatorsNull`
+
+  * [ ] `SearchByExtra` => `SearchByOperatorsExtra`
+
+  * [ ] `SearchByNumber` => `SearchByOperatorsNumber`
+
+  * [ ] `SearchByEnum` => `SearchByOperatorsEnum`
 
 * [ ] Added the root type that will contain only extra operators and newly added `field` operator (always present and cannot be removed). The new query syntax is:
 
@@ -90,7 +100,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   2. Disable `LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective` operator to avoid possible conflict with field names (via schema or config)
 
       ```graphql
-      scalar SearchByDisabled
+      scalar SearchByOperatorsDisabled
       @searchByOperatorField
       ```
 
@@ -151,13 +161,17 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   2. Disable `LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective` operator to avoid possible conflict with field names (via schema or config)
 
       ```graphql
-      scalar SortByDisabled
+      scalar SortByOperatorsDisabled
       @sortByOperatorField
       ```
 
 * [ ] `@sortByOperatorRandom` cannot be added to `FIELD_DEFINITION` anymore.
 
 * [ ] If you define addition operators via `scalar SortBy*` use `extend scalar SortBy*` instead (or you will get `TypeDefinitionAlreadyDefined` error).
+
+* [ ] Scalars to add operators were renamed
+
+  * [ ] `SortByExtra` => `SortByOperatorsExtra`
 
 ## API
 

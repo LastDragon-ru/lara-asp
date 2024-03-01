@@ -207,7 +207,23 @@ final class SchemaDirectiveTest extends TestCase {
  */
 class SchemaDirective__Directive extends SchemaDirective {
     #[Override]
-    protected function getNamespace(): string {
+    protected function getDirective(): string {
+        return 'test';
+    }
+
+    #[Override]
+    protected function getScalar(): string {
         return 'Test';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getScalars(): array {
+        return [
+            'TestScalar',
+            'TestInt',
+        ];
     }
 }

@@ -208,18 +208,18 @@ By default, the package provide list of predefined operators for build-in GraphQ
 
 The package also defines a few own types in addition to the standard GraphQL types:
 
-* `SearchByObject` / [`Operators::Object`](../../src/SearchBy/Operators.php) - List of known operators for `Object`. If no other directive is found, the first supported operator from the list will be used.
-* `SearchByNumber` / [`Operators::Number`](../../src/SearchBy/Operators.php) - Any operator for this type will be available for `Int` and `Float`.
-* `SearchByNull` / [`Operators::Null`](../../src/SearchBy/Operators.php) - Additional operators available for nullable fields.
-* `SearchByExtra` / [`Operators::Extra`](../../src/SearchBy/Operators.php) - List of additional extra operators for all types.
-* `SearchByEnum` / [`Operators::Enum`](../../src/SearchBy/Operators.php) - Default operators for enums.
-* `SearchByDisabled` / [`Operators::Disabled`](../../src/SearchBy/Operators.php) - Disabled operators.
+* `SearchByOperatorsObject` / [`Operators::Object`](../../src/SearchBy/Operators.php) - List of known operators for `Object`. If no other directive is found, the first supported operator from the list will be used.
+* `SearchByOperatorsNumber` / [`Operators::Number`](../../src/SearchBy/Operators.php) - Any operator for this type will be available for `Int` and `Float`.
+* `SearchByOperatorsNull` / [`Operators::Null`](../../src/SearchBy/Operators.php) - Additional operators available for nullable fields.
+* `SearchByOperatorsExtra` / [`Operators::Extra`](../../src/SearchBy/Operators.php) - List of additional extra operators for all types.
+* `SearchByOperatorsEnum` / [`Operators::Enum`](../../src/SearchBy/Operators.php) - Default operators for enums.
+* `SearchByOperatorsDisabled` / [`Operators::Disabled`](../../src/SearchBy/Operators.php) - Disabled operators.
 
 ### GraphQL (recommended)
 
 ```graphql
-extend scalar SearchByEnum
-@searchByExtendOperators                    # Re-use operators for `SearchByEnum` from config
+extend scalar SearchByOperatorsEnum
+@searchByExtendOperators                    # Re-use operators for `SearchByOperatorsEnum` from config
 @searchByExtendOperators(type: "MyScalar")  # Re-use operators from `MyScalar` from schema
 
 scalar MyScalar

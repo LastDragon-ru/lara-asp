@@ -27,5 +27,5 @@ input Comment {
     date: Date
 }
 
-extend scalar SearchByDisabled
+extend scalar SearchByOperatorsDisabled
 @searchByOperatorField

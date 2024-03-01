@@ -2,8 +2,8 @@ type Query {
     test(where: A @searchBy): ID! @all
 
     debug(
-        int: SearchByInt
-        extra: SearchByExtra
+        int: SearchByOperatorsInt
+        extra: SearchByOperatorsExtra
     ): String! @mock
 }
 
@@ -29,10 +29,10 @@ enum EnumA
 extend scalar Int
 @searchByOperatorEqual
 
-extend scalar SearchByExtra
+extend scalar SearchByOperatorsExtra
 @searchByOperatorField
 
-extend scalar SearchByExtra
+extend scalar SearchByOperatorsExtra
 @searchByOperatorAllOf
 
 scalar Mixed

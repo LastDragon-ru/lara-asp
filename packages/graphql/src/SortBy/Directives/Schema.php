@@ -2,32 +2,43 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
+use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\SchemaDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 use Override;
 use ReflectionClass;
 use ReflectionClassConstant;
 
-use function in_array;
+use function is_string;
 
 /**
  * @internal
  */
 class Schema extends SchemaDirective {
     #[Override]
-    protected function getNamespace(): string {
-        return Directive::Name;
+    protected function getDirective(): string {
+        return Str::camel(Directive::Name);
     }
 
     #[Override]
-    protected function isScalar(string $name): bool {
-        if (!parent::isScalar($name)) {
-            return false;
+    protected function getScalar(): string {
+        return Directive::Name.'Operators';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getScalars(): array {
+        $constants = (new ReflectionClass(Operators::class))->getConstants(ReflectionClassConstant::IS_PUBLIC);
+        $scalars   = [];
+
+        foreach ($constants as $value) {
+            if (is_string($value)) {
+                $scalars[] = $value;
+            }
         }
 
-        $constants = (new ReflectionClass(Operators::class))->getConstants(ReflectionClassConstant::IS_PUBLIC);
-        $known     = in_array($name, $constants, true);
-
-        return $known;
+        return $scalars;
     }
 }

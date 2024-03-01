@@ -31,6 +31,7 @@ use Override;
 
 use function count;
 use function implode;
+use function in_array;
 use function str_starts_with;
 
 /**
@@ -77,9 +78,7 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
         foreach ($documentAST->typeExtensions as $type => $extensions) {
             // Supported?
             // (no way to extend standard types, we are trying to use alias instead)
-            $targetType = $manipulator->isStandard($type)
-                ? "{$this->getNamespace()}{$type}"
-                : $type;
+            $targetType = ($manipulator->isStandard($type) ? $this->getScalar() : '').$type;
 
             if (!$this->isScalar($targetType)) {
                 continue;
@@ -123,24 +122,32 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
         $manipulator->removeTypeDefinition($typeDefinition->getName()->value);
     }
 
-    abstract protected function getNamespace(): string;
-
-    protected function isScalar(string $name): bool {
-        return str_starts_with($name, Str::studly($this->getNamespace()));
+    protected function isDirective(string $name): bool {
+        return str_starts_with($name, $this->getDirective());
     }
 
-    protected function isDirective(string $name): bool {
-        return str_starts_with($name, Str::camel($this->getNamespace()));
+    abstract protected function getDirective(): string;
+
+    abstract protected function getScalar(): string;
+
+    /**
+     * @return array<array-key, string>
+     */
+    abstract protected function getScalars(): array;
+
+    protected function isScalar(string $name): bool {
+        return $name !== $this->getScalar()
+            && str_starts_with($name, $this->getScalar())
+            && in_array($name, $this->getScalars(), true);
     }
 
     protected function getScalarDefinition(string $name): string {
-        $directive = '@'.Str::camel($this->getNamespace());
-        $class     = Internal::class;
-        $value     = Cast::to(Node::class, AST::astFromValue($class, Type::string()));
-        $value     = Printer::doPrint($value);
-        $scalar    = <<<GRAPHQL
+        $class  = Internal::class;
+        $value  = Cast::to(Node::class, AST::astFromValue($class, Type::string()));
+        $value  = Printer::doPrint($value);
+        $scalar = <<<GRAPHQL
             """
-            The scalar is used to add builder operators for `{$directive}` directive.
+            The scalar is used to add builder operators for `@{$this->getDirective()}` directive.
             """
             scalar {$name}
             @scalar(

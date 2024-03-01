@@ -18,9 +18,10 @@ use function array_merge;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const Extra    = Directive::Name.'Extra';
-    public const Object   = Directive::Name.'Object';
-    public const Disabled = Directive::Name.'Disabled';
+    private const Prefix   = Directive::Name.'Operators';
+    public const  Extra    = self::Prefix.'Extra';
+    public const  Object   = self::Prefix.'Object';
+    public const  Disabled = self::Prefix.'Disabled';
 
     /**
      * @inheritDoc

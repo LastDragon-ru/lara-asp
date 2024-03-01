@@ -46,17 +46,18 @@ use function array_merge;
 use function config;
 
 class Operators extends BuilderOperators {
-    public const ID       = Directive::Name.Type::ID;
-    public const Int      = Directive::Name.Type::INT;
-    public const Float    = Directive::Name.Type::FLOAT;
-    public const String   = Directive::Name.Type::STRING;
-    public const Boolean  = Directive::Name.Type::BOOLEAN;
-    public const Null     = Directive::Name.'Null';
-    public const Extra    = Directive::Name.'Extra';
-    public const Number   = Directive::Name.'Number';
-    public const Enum     = Directive::Name.'Enum';
-    public const Object   = Directive::Name.'Object';
-    public const Disabled = Directive::Name.'Disabled';
+    private const Prefix   = Directive::Name.'Operators';
+    public const  ID       = self::Prefix.Type::ID;
+    public const  Int      = self::Prefix.Type::INT;
+    public const  Float    = self::Prefix.Type::FLOAT;
+    public const  String   = self::Prefix.Type::STRING;
+    public const  Boolean  = self::Prefix.Type::BOOLEAN;
+    public const  Null     = self::Prefix.'Null';
+    public const  Extra    = self::Prefix.'Extra';
+    public const  Number   = self::Prefix.'Number';
+    public const  Enum     = self::Prefix.'Enum';
+    public const  Object   = self::Prefix.'Object';
+    public const  Disabled = self::Prefix.'Disabled';
 
     /**
      * @inheritDoc

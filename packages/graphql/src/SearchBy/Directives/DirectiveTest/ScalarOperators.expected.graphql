@@ -247,7 +247,7 @@ scalar Mixed
 """
 The scalar is used to add builder operators for `@searchBy` directive.
 """
-scalar SearchByExtra
+scalar SearchByOperatorsExtra
 @scalar(
     class: "LastDragon_ru\\LaraASP\\GraphQL\\Builder\\Scalars\\Internal"
 )
@@ -257,7 +257,7 @@ scalar SearchByExtra
 """
 The scalar is used to add builder operators for `@searchBy` directive.
 """
-scalar SearchByInt
+scalar SearchByOperatorsInt
 @scalar(
     class: "LastDragon_ru\\LaraASP\\GraphQL\\Builder\\Scalars\\Internal"
 )
@@ -265,8 +265,8 @@ scalar SearchByInt
 
 type Query {
     debug(
-        int: SearchByInt
-        extra: SearchByExtra
+        int: SearchByOperatorsInt
+        extra: SearchByOperatorsExtra
     ): String!
     @mock
 
