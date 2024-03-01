@@ -7,13 +7,11 @@ on
 
 directive @searchByOperatorAllOf
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @searchByOperatorAnyOf
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
@@ -55,9 +53,7 @@ on
 
 directive @searchByOperatorCondition
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
-    | SCALAR
 
 directive @searchByOperatorContains
 on
@@ -127,7 +123,6 @@ on
 
 directive @searchByOperatorNot
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
@@ -175,7 +170,6 @@ on
 
 directive @searchByOperatorRelationship
 on
-    | ENUM
     | FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
     | SCALAR

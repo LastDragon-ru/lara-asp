@@ -46,7 +46,7 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
     }
 
     /**
-     * @return non-empty-list<string>
+     * @return list<string>
      */
     protected static function getDirectiveLocations(): array {
         return [

@@ -30,21 +30,17 @@ on
 
 directive @searchByOperatorAllOf
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @searchByOperatorChild
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @searchByOperatorCondition
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
-    | SCALAR
 
 directive @searchByOperatorEqual
 on
@@ -54,7 +50,6 @@ on
 
 directive @searchByOperatorField
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 

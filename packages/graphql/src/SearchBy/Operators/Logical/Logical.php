@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Logical;
 
+use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -22,6 +23,16 @@ use function count;
 use function is_array;
 
 abstract class Logical extends Operator {
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getDirectiveLocations(): array {
+        return [
+            DirectiveLocation::SCALAR,
+        ];
+    }
+
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         return $provider->getType(Root::class, $source, $context);

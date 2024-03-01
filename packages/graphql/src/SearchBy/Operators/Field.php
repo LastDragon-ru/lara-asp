@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
+use GraphQL\Language\DirectiveLocation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -16,6 +17,16 @@ use Override;
 class Field extends Operator {
     use HandlerOperator;
     use WithScoutSupport;
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getDirectiveLocations(): array {
+        return [
+            DirectiveLocation::SCALAR,
+        ];
+    }
 
     #[Override]
     public static function getName(): string {

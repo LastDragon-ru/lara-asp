@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 
+use GraphQL\Language\DirectiveLocation;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -14,6 +15,16 @@ use function is_a;
 
 class Child extends Operator {
     use HandlerOperator;
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getDirectiveLocations(): array {
+        return [
+            DirectiveLocation::SCALAR,
+        ];
+    }
 
     #[Override]
     public static function getName(): string {

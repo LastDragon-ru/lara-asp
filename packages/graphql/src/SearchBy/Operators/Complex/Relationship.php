@@ -21,7 +21,6 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Override;
 
-use function array_merge;
 use function is_a;
 use function reset;
 
@@ -40,9 +39,10 @@ class Relationship extends Operator {
      */
     #[Override]
     protected static function getDirectiveLocations(): array {
-        return array_merge(parent::getDirectiveLocations(), [
+        return [
+            DirectiveLocation::SCALAR,
             DirectiveLocation::FIELD_DEFINITION,
-        ]);
+        ];
     }
     // </editor-fold>
 

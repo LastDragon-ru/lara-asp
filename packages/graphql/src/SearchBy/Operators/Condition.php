@@ -15,6 +15,16 @@ class Condition extends Operator {
     use HandlerOperator;
     use WithScoutSupport;
 
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getDirectiveLocations(): array {
+        return [
+            // empty
+        ];
+    }
+
     #[Override]
     public static function getName(): string {
         return 'condition';
