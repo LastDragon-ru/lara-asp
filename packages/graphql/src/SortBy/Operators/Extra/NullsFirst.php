@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
+use GraphQL\Language\DirectiveLocation;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -28,6 +29,16 @@ class NullsFirst extends Operator {
         BuilderFieldResolver $resolver,
     ) {
         parent::__construct($resolver);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getDirectiveLocations(): array {
+        return [
+            DirectiveLocation::SCALAR,
+        ];
     }
 
     #[Override]

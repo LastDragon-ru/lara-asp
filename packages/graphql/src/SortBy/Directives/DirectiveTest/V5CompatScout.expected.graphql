@@ -7,15 +7,12 @@ on
 
 directive @sortByOperatorChild
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorSort
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
-    | SCALAR
 
 """
 Sort direction.

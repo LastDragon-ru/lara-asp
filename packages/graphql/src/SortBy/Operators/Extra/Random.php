@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Extra;
 
+use GraphQL\Language\DirectiveLocation;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -16,6 +17,19 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
 class Random extends Operator {
+    // <editor-fold desc="Directive">
+    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getDirectiveLocations(): array {
+        return [
+            DirectiveLocation::SCALAR,
+        ];
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Operator">
     // =========================================================================
     #[Override]

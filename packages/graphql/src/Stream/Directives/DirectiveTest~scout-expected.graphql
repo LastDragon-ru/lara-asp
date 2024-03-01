@@ -34,15 +34,12 @@ on
 
 directive @sortByOperatorField
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorSort
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
-    | SCALAR
 
 """
 Splits list of items into the chunks and returns one chunk specified

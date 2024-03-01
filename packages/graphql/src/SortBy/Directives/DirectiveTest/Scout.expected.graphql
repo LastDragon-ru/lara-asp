@@ -19,39 +19,32 @@ on
 
 directive @sortByOperatorChild
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorField
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorNullsFirst
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorNullsLast
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorRandom
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
 directive @sortByOperatorSort
 on
-    | ENUM
     | INPUT_FIELD_DEFINITION
-    | SCALAR
 
 enum EnumIgnored
 @sortByIgnored
