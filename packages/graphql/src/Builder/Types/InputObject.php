@@ -219,10 +219,7 @@ abstract class InputObject implements TypeDefinition {
         // (most likely) cannot be used to modify the Builder.
 
         // Operator?
-        $marker   = $this->getFieldMarkerOperator();
-        $operator = $marker
-            ? $manipulator->getDirective($field->getField(), $marker)
-            : null;
+        $operator = $this->getFieldOperatorDirective($manipulator, $field, $context, $this->getFieldMarkerOperator());
 
         if ($operator) {
             return true;
