@@ -217,7 +217,6 @@ final class AstManipulatorTest extends TestCase {
             <<<'GRAPHQL'
             extend scalar Int @aDirective @bDirective
             scalar CustomScalar @bDirective @cDirective
-            extend scalar CustomScalar @aDirective
 
             type Query {
                 test(arg: String @aDirective @cDirective): Test @all @bDirective

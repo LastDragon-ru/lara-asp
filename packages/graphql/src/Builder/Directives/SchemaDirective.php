@@ -38,8 +38,8 @@ use function str_starts_with;
  * Modifies the Schema for Directive.
  *
  * We are using special scalars to add operators. The directive provides a way
- * to add and extend them. Extending is required because Lighthouse doesn't
- * support adding directives from extensions nodes yet.
+ * to add and extend them. Extending is required because Lighthouse (until v6.34.0)
+ * doesn't support adding directives from extensions nodes yet.
  *
  * @see https://github.com/nuwave/lighthouse/issues/2509
  * @see https://github.com/nuwave/lighthouse/pull/2512
@@ -72,6 +72,10 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
 
     #[Override]
     public function manipulateTypeDefinition(DocumentAST &$documentAST, TypeDefinitionNode &$typeDefinition): void {
+        // todo(graphql): Lighthouse since v6.34.0 merges directives from
+        //      extension nodes except standard types. So the implementation can
+        //      be simplified.
+
         // Apply `extend scalar`.
         $manipulator = $this->getAstManipulator($documentAST);
 
