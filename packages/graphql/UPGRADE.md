@@ -116,6 +116,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are overriding Extra operators, you should to add `SortByOperators::Extra` to use new built-in:
 
+  ```graphql
+  extend scalar SortByOperatorsExtra
+  @sortByExtendOperators
+  @sortByOperatorRandom
+  ```
+
   ```php
   $settings = [
       'sort_by'   => [

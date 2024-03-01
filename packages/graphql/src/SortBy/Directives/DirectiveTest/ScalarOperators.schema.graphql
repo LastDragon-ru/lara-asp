@@ -1,0 +1,14 @@
+type Query {
+    test(where: A @sortBy): ID! @all
+
+    debug(
+        extra: SortByOperatorsExtra
+    ): String! @mock
+}
+
+input A {
+    a: Int!
+}
+extend scalar SortByOperatorsExtra
+@sortByExtendOperators
+@sortByOperatorRandom

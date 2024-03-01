@@ -109,6 +109,7 @@ It is also possible to sort records in random order, but it is not enabled by de
 
 ```graphql
 extend scalar SortByOperatorsExtra
+@sortByExtendOperators
 @sortByOperatorRandom
 ```
 

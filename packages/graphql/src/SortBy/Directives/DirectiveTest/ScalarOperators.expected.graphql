@@ -1,0 +1,137 @@
+"""
+Use Input as Sort Conditions for the current Builder.
+"""
+directive @sortBy
+on
+    | ARGUMENT_DEFINITION
+
+"""
+Extends the list of operators by the operators from the specified
+`type` or from the config if `null`.
+"""
+directive @sortByExtendOperators(
+    type: String
+)
+on
+    | ENUM
+    | SCALAR
+
+directive @sortByOperatorField
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsFirst
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorNullsLast
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorRandom
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+directive @sortByOperatorSort
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
+"""
+Sort direction.
+"""
+enum SortByTypeDirection {
+    Asc
+    Desc
+
+    asc
+    @deprecated(
+        reason: "Please use `Asc` instead."
+    )
+
+    desc
+    @deprecated(
+        reason: "Please use `Desc` instead."
+    )
+}
+
+enum SortByTypeFlag {
+    Yes
+
+    yes
+    @deprecated(
+        reason: "Please use `Yes` instead."
+    )
+}
+
+"""
+Sort clause for `input A` (only one field allowed at a time).
+"""
+input SortByClauseA {
+    """
+    Field clause.
+    """
+    a: SortByTypeDirection
+    @sortByOperatorSort
+}
+
+"""
+Sort clause for `input A` (only one field allowed at a time).
+"""
+input SortByRootA {
+    """
+    Field.
+    """
+    field: SortByClauseA
+    @sortByOperatorField
+
+    """
+    NULLs first
+    """
+    nullsFirst: SortByClauseA
+    @sortByOperatorNullsFirst
+
+    """
+    NULLs last
+    """
+    nullsLast: SortByClauseA
+    @sortByOperatorNullsLast
+
+    """
+    By random
+    """
+    random: SortByTypeFlag
+    @sortByOperatorRandom
+}
+
+"""
+The scalar is used to add builder operators for `@sortBy` directive.
+"""
+scalar SortByOperatorsExtra
+@scalar(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Builder\\Scalars\\Internal"
+)
+@sortByExtendOperators
+@sortByOperatorRandom
+
+type Query {
+    debug(
+        extra: SortByOperatorsExtra
+    ): String!
+    @mock
+
+    test(
+        where: [SortByRootA!]
+        @sortBy
+    ): ID!
+    @all
+}

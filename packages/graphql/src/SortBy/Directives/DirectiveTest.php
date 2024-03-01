@@ -597,6 +597,11 @@ final class DirectiveTest extends TestCase {
                 'Query.schema.graphql',
                 null,
             ],
+            'ScalarOperators'   => [
+                'ScalarOperators.expected.graphql',
+                'ScalarOperators.schema.graphql',
+                null,
+            ],
             'AllowedDirectives' => [
                 'AllowedDirectives.expected.graphql',
                 'AllowedDirectives.schema.graphql',
