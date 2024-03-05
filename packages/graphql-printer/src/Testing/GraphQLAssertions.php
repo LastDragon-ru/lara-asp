@@ -91,16 +91,23 @@ trait GraphQLAssertions {
     ): Result {
         // GraphQL
         $output   = $expected;
+        $schema   = null;
         $settings = null;
 
         if ($output instanceof GraphQLExpected) {
             $settings = $output->getSettings();
+            $schema   = $output->getSchema();
             $output   = $output->getPrintable();
         }
 
-        // Compare
+        // Printer
         $printer = $this->getGraphQLPrinter($settings);
 
+        if ($schema !== null) {
+            $printer = $printer->setSchema($schema);
+        }
+
+        // Compare
         if (!($output instanceof SplFileInfo) && !is_string($output)) {
             $output = (string) $print($printer, $output);
         } else {

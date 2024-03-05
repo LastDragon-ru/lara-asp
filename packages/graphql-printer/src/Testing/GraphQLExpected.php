@@ -25,6 +25,7 @@ class GraphQLExpected {
         protected ?array $usedTypes = null,
         protected ?array $usedDirectives = null,
         protected ?Settings $settings = null,
+        protected ?Schema $schema = null,
     ) {
         // empty
     }
@@ -71,6 +72,16 @@ class GraphQLExpected {
 
     public function setSettings(?Settings $settings): static {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    public function getSchema(): ?Schema {
+        return $this->schema;
+    }
+
+    public function setSchema(?Schema $schema): static {
+        $this->schema = $schema;
 
         return $this;
     }
