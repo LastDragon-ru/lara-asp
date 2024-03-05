@@ -32,7 +32,7 @@ composer require lastdragon-ru/lara-asp-graphql-printer
 
 [//]: # (end: dcf3043aff3a50970117872a9bba432cb3ef84a034a0fc88bcdc6d9dcae2ec06)
 
-## Usage
+# Usage
 
 There are two primary methods: `Printer::print()` and `Printer::export()`. The `print()` will print the current type only, meanwhile `export()` will print the current type and all used types/directives:
 
@@ -115,7 +115,7 @@ type B
 
 [//]: # (end: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
 
-## Customization
+# Customization
 
 Please see:
 
@@ -123,7 +123,7 @@ Please see:
 * [`Settings`](./src/Contracts/Settings.php) interface to see all supported settings;
 * [`DirectiveResolver`](./src/Contracts/DirectiveResolver.php) interface to define your own way to find all available directives and their definitions;
 
-## Filtering
+# Filtering
 
 The Printer allows filter out types and directives. This may be useful to exclude them from the schema completely. Filtering also works for queries. Please note that types filtering will work only if the schema is known (the schema is required to determine the type of argument nodes). For some AST node types, their type may also be required.
 
@@ -213,11 +213,11 @@ query {
 
 [//]: # (end: 292c33ba589c3d1a9a6b77c55aad173396a11c5fed1da07af456c995f3f55838)
 
-## Laravel/Lighthouse
+# Laravel/Lighthouse
 
 It is highly recommended to use [`lara-asp-graphql`][pkg:graphql#Printer] package to use the `Printer` within the Laravel/Lighthouse application.
 
-## Testing Assertions
+# Testing Assertions
 
 Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.php):
 
