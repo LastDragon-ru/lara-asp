@@ -221,10 +221,23 @@ It is highly recommended to use [`lara-asp-graphql`][pkg:graphql#Printer] packag
 
 Package also provides few great [GraphQL Assertions](./src/Testing/GraphQLAssertions.php):
 
-| Name                            | Description                                               |
-|---------------------------------|-----------------------------------------------------------|
-| `assertGraphQLPrintableEquals`  | Prints and compares two GraphQL schemas/types/nodes/etc.  |
-| `assertGraphQLExportableEquals` | Exports and compares two GraphQL schemas/types/nodes/etc. |
+[include:document-list]: ./docs/Assertions
+[//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+## `assertGraphQLExportableEquals`
+
+Exports and compares two GraphQL schemas/types/nodes/etc.
+
+[Read more](<docs/Assertions/AssertGraphQLExportableEquals.md>).
+
+## `assertGraphQLPrintableEquals`
+
+Prints and compares two GraphQL schemas/types/nodes/etc.
+
+[Read more](<docs/Assertions/AssertGraphQLPrintableEquals.md>).
+
+[//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 
 [include:file]: ../../docs/Shared/Upgrading.md
 [//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
