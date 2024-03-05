@@ -22,7 +22,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\ResultImpl;
@@ -215,8 +214,6 @@ class Printer implements PrinterContract {
                     if ($directive) {
                         $block          = $this->getBlock($context, $directive);
                         $printed[$name] = true;
-                    } else {
-                        throw new DirectiveDefinitionNotFound($name);
                     }
                 }
             } else {
