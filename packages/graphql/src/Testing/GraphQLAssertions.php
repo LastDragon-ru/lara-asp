@@ -2,11 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
+use Closure;
 use GraphQL\Language\AST\DocumentNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
+use GraphQL\Type\Definition\Argument;
+use GraphQL\Type\Definition\Directive;
+use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InputObjectField;
+use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions as PrinterGraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
@@ -21,12 +30,16 @@ use SplFileInfo;
 
 use function assert;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * @mixin TestCase
  */
 trait GraphQLAssertions {
     use MocksResolvers;
-    use PrinterGraphQLAssertions;
+    use PrinterGraphQLAssertions {
+        assertGraphQLResult as private printerAssertGraphQLResult;
+    }
 
     // <editor-fold desc="Assertions">
     // =========================================================================
@@ -37,11 +50,27 @@ trait GraphQLAssertions {
         GraphQLExpected|SplFileInfo|string $expected,
         string $message = '',
     ): void {
-        self::assertGraphQLPrintableEquals(
+        $this->assertGraphQLPrintableEquals(
             $expected,
             $this->getGraphQLSchema(),
             $message,
         );
+    }
+
+    /**
+     * @param Closure(Printer, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
+     */
+    private function assertGraphQLResult(
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        string $message,
+        Closure $print,
+    ): Result {
+        if (!($expected instanceof GraphQLExpected)) {
+            $expected = (new GraphQLExpected($expected))->setSchema($this->getGraphQLSchema());
+        }
+
+        return $this->printerAssertGraphQLResult($expected, $actual, $message, $print);
     }
     // </editor-fold>
 
