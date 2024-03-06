@@ -58,14 +58,6 @@ final class AssertGraphQLPrintableEquals extends TestCase {
 Example output:
 
 ```plain
-PHPUnit 10.5.10 by Sebastian Bergmann and contributors.
-
-Runtime:       PHP 8.1.24
-
-.                                                                   1 / 1 (100%)
-
-Time: 00:00.267, Memory: 16.00 MB
-
 OK (1 test, 2 assertions)
 ```
 
