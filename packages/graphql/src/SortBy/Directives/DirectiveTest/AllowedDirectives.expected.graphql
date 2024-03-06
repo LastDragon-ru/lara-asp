@@ -1,3 +1,13 @@
+directive @allowed
+on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+
+directive @forbidden
+on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+
 """
 Use Input as Sort Conditions for the current Builder.
 """

@@ -7,6 +7,7 @@ use Nuwave\Lighthouse\Exceptions\DirectiveException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Override;
+use ReflectionClass;
 
 use function explode;
 use function str_starts_with;
@@ -32,8 +33,10 @@ class LighthouseDirectiveFilter implements DirectiveFilter {
         $isLighthouse = false;
 
         try {
-            $class        = $this->locator->resolve($directive);
-            $isLighthouse = str_starts_with($class, explode('\\', BaseDirective::class)[0]);
+            $class        = new ReflectionClass($this->locator->resolve($directive));
+            $isAnonymous  = $class->isAnonymous();
+            $isLighthouse = !$isAnonymous
+                && str_starts_with($class->getName(), explode('\\', BaseDirective::class)[0]);
         } catch (DirectiveException) {
             // empty
         }
