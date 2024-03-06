@@ -2,6 +2,16 @@
 
 Compares default schema.
 
+[include:template]: ../../../../docs/Shared/Trait.md ({"data": {"trait": "GraphQLAssertions", "url": "../../src/Testing/GraphQLAssertions.php"}})
+[//]: # (start: 2719849e2d3e09ee8d70aea051e4028f594d16b50aa5788f9517daf12b5b3f2f)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+> [!NOTE]
+>
+> Provided by [`GraphQLAssertions`](<../../src/Testing/GraphQLAssertions.php>) trait.
+
+[//]: # (end: 2719849e2d3e09ee8d70aea051e4028f594d16b50aa5788f9517daf12b5b3f2f)
+
 [include:example]: ./AssertGraphQLSchemaEquals.php
 [//]: # (start: c27d84ed181bcfd0818ca15c55ac1ae5741cb924799f404121378db2cc219470)
 [//]: # (warning: Generated automatically. Do not edit.)
