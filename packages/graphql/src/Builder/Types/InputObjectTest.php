@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -93,12 +94,7 @@ final class InputObjectTest extends TestCase {
                 [
                     // empty
                 ],
-                new class () implements Directive {
-                    #[Override]
-                    public static function definition(): string {
-                        throw new Exception('Should not be called');
-                    }
-                },
+                new TestDirective(),
                 (new Context())->override([
                     HandlerContextImplicit::class => new HandlerContextImplicit(true),
                 ]),
@@ -108,12 +104,7 @@ final class InputObjectTest extends TestCase {
                 [
                     Directive::class,
                 ],
-                new class () implements Directive {
-                    #[Override]
-                    public static function definition(): string {
-                        throw new Exception('Should not be called');
-                    }
-                },
+                new TestDirective(),
                 (new Context())->override([
                     HandlerContextImplicit::class => new HandlerContextImplicit(true),
                 ]),
@@ -123,12 +114,7 @@ final class InputObjectTest extends TestCase {
                 [
                     // empty
                 ],
-                new class () implements Directive {
-                    #[Override]
-                    public static function definition(): string {
-                        throw new Exception('Should not be called');
-                    }
-                },
+                new TestDirective(),
                 (new Context())->override([
                     HandlerContextImplicit::class => new HandlerContextImplicit(false),
                 ]),
