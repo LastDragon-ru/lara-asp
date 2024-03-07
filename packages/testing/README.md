@@ -97,13 +97,13 @@ Enables query log for the test case.
 
 ## `\Illuminate\Testing\TestResponse`
 
-| Name                        | Description                                                    |
-|-----------------------------|----------------------------------------------------------------|
-| `assertThat()`              | Asserts that response satisfies given constraint.              |
-| `assertContentType()`       | Asserts that a response has a specified content type.          |
-| `assertStatusCode()`        | Asserts that a response has a specified status code.           |
-| `assertJsonMatchesSchema()` | Asserts that a response contains JSON that matches the schema. |
-| `assertXmlMatchesSchema()`  | Asserts that a response contains XML that matches the schema.  |
+| Name                                                                        | Description                                                    |
+|-----------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`assertThat()`](./docs/Assertions/AssertThatResponse.php)                  | Asserts that response satisfies given constraint.              |
+| [`assertContentType()`](./docs/Assertions/AssertThatResponse.php)           | Asserts that a response has a specified content type.          |
+| [`assertStatusCode()`](./docs/Assertions/AssertThatResponse.php)            | Asserts that a response has a specified status code.           |
+| [`assertJsonMatchesSchema()`](./docs/Assertions/AssertJsonMatchesSchema.md) | Asserts that a response contains JSON that matches the schema. |
+| [`assertXmlMatchesSchema()`](./docs/Assertions/AssertXmlMatchesSchema.md)   | Asserts that a response contains XML that matches the schema.  |
 
 # Assertions
 
@@ -111,24 +111,53 @@ Enables query log for the test case.
 >
 > By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
 
-## General
+[include:document-list]: ./docs/Assertions
+[//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (warning: Generated automatically. Do not edit.)
 
-These assertions can be used without Laravel at all (#4).
+## `assertDatabaseQueryEquals`
 
-| Name                                                                   | Description                                           |
-|------------------------------------------------------------------------|-------------------------------------------------------|
-| [`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17) | Asserts that JSON matches schema                      |
-| [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)   | Asserts that XML matches schema (XSD or Relax NG).    |
-| [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)  | Asserts that PSR Response satisfies given constraint. |
+Asserts that SQL Query equals SQL Query.
 
-## Laravel
+[Read more](<docs/Assertions/AssertDatabaseQueryEquals.md>).
 
-| Name                                                                       | Description                                                          |
-|----------------------------------------------------------------------------|----------------------------------------------------------------------|
-| [`assertDatabaseQueryEquals()`](./src/Assertions/DatabaseAssertions.php)   | Asserts that SQL Query equals SQL Query.                             |
-| [`assertScoutQueryEquals()`](./src/Assertions/ScoutAssertions.php)         | Asserts that Scout Query equals Scout Query.                         |
-| [`assertQueryLogEquals()`](./src/Database/QueryLog/WithQueryLog.php)       | Asserts that `QueryLog` equals `QueryLog`.                           |
-| [`assertScheduled()`](./src/Assertions/Application/ScheduleAssertions.php) | Asserts that Schedule contains task.                                 |
+## `assertJsonMatchesSchema`
+
+Asserts that JSON matches [schema](https://json-schema.org/). Validation based on the [Opis JSON Schema](https://github.com/opis/json-schema) package.
+
+[Read more](<docs/Assertions/AssertJsonMatchesSchema.md>).
+
+## `assertQueryLogEquals`
+
+Asserts that `QueryLog` equals `QueryLog`.
+
+[Read more](<docs/Assertions/AssertQueryLogEquals.md>).
+
+## `assertScheduled`
+
+Asserts that Schedule contains task.
+
+[Read more](<docs/Assertions/AssertScheduled.md>).
+
+## `assertScoutQueryEquals`
+
+Asserts that Scout Query equals Scout Query.
+
+[Read more](<docs/Assertions/AssertScoutQueryEquals.md>).
+
+## `assertThatResponse`
+
+Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
+
+[Read more](<docs/Assertions/AssertThatResponse.md>).
+
+## `assertXmlMatchesSchema`
+
+Asserts that XML matches schema [XSD](https://en.wikipedia.org/wiki/XML_Schema_(W3C)) or [Relax NG](https://en.wikipedia.org/wiki/RELAX_NG). Validation based on the standard methods of [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class.
+
+[Read more](<docs/Assertions/AssertXmlMatchesSchema.md>).
+
+[//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 
 # Laravel Response Testing
 
