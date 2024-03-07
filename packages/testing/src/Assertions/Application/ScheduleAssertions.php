@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
-use Illuminate\Console\Application;
-use Illuminate\Console\Scheduling\CallbackEvent;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers\CallbackEventMatcher;
+use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers\CommandMatcher;
+use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers\DescriptionMatcher;
 use PHPUnit\Framework\Assert;
 
 use function array_filter;
@@ -33,29 +34,26 @@ trait ScheduleAssertions {
 
     /**
      * @internal
-     *
      * @return array<array-key, Event>
      */
     private static function getScheduledEvents(string $task): array {
         $schedule = Container::getInstance()->make(Schedule::class);
-        $events   = array_filter($schedule->events(), static function (Event $event) use ($task): bool {
-            // Description?
-            if (isset($event->description)) {
-                return $event->description === $task;
+        $matchers = [
+            new DescriptionMatcher(),
+            new CommandMatcher(),
+            new CallbackEventMatcher(),
+        ];
+        $events   = array_filter($schedule->events(), static function (Event $event) use ($matchers, $task): bool {
+            $match = false;
+
+            foreach ($matchers as $matcher) {
+                if ($matcher->isMatch($event, $task)) {
+                    $match = true;
+                    break;
+                }
             }
 
-            // Command?
-            if (isset($event->command)) {
-                return $event->command === Application::formatCommandString($task);
-            }
-
-            // Callback?
-            if ($event instanceof CallbackEvent) {
-                return $event->getSummaryForDisplay() === $task;
-            }
-
-            // Nope
-            return false;
+            return $match;
         });
 
         return $events;
