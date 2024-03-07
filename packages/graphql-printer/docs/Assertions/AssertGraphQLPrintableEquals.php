@@ -12,9 +12,16 @@ use PHPUnit\Framework\TestCase;
  */
 #[CoversNothing]
 final class AssertGraphQLPrintableEquals extends TestCase {
+    /**
+     * Trait where assertion defined.
+     */
     use GraphQLAssertions;
 
+    /**
+     * Assertion test.
+     */
     public function testAssertion(): void {
+        // Prepare
         $schema = BuildSchema::build(
             <<<'GRAPHQL'
             type Query {
@@ -32,6 +39,7 @@ final class AssertGraphQLPrintableEquals extends TestCase {
 
         self::assertNotNull($type);
 
+        // Test
         $this->assertGraphQLPrintableEquals(
             <<<'GRAPHQL'
             type A

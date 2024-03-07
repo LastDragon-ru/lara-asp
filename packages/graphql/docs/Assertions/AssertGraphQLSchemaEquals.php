@@ -18,9 +18,14 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  */
 #[CoversNothing]
 final class AssertGraphQLSchemaEquals extends TestCase {
+    /**
+     * Trait where assertion defined.
+     */
     use GraphQLAssertions;
 
     /**
+     * Preparation for test.
+     *
      * @inheritDoc
      */
     #[Override]
@@ -32,7 +37,11 @@ final class AssertGraphQLSchemaEquals extends TestCase {
         ];
     }
 
+    /**
+     * Assertion test.
+     */
     public function testAssertion(): void {
+        // Prepare
         Container::getInstance()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class)
             ->setResolved('test', TestDirective::class);
@@ -54,6 +63,8 @@ final class AssertGraphQLSchemaEquals extends TestCase {
             }
             GRAPHQL,
         );
+
+        // Test
         $this->assertGraphQLSchemaEquals(
             <<<'GRAPHQL'
             directive @a(

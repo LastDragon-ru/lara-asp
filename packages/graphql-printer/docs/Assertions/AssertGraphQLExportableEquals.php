@@ -13,9 +13,16 @@ use PHPUnit\Framework\TestCase;
  */
 #[CoversNothing]
 final class AssertGraphQLExportableEquals extends TestCase {
+    /**
+     * Trait where assertion defined.
+     */
     use GraphQLAssertions;
 
+    /**
+     * Assertion test.
+     */
     public function testAssertion(): void {
+        // Prepare
         $schema   = BuildSchema::build(
             <<<'GRAPHQL'
             directive @a(b: B) on OBJECT
@@ -55,6 +62,8 @@ final class AssertGraphQLExportableEquals extends TestCase {
 
         self::assertNotNull($type);
 
+        // Test
+        // (schema required to find types/directives definition)
         $this->assertGraphQLExportableEquals(
             (new GraphQLExpected($expected))->setSchema($schema),
             $type,

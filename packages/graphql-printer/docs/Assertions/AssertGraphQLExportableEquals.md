@@ -2,16 +2,6 @@
 
 Exports and compares two GraphQL schemas/types/nodes/etc.
 
-[include:template]: ../../../../docs/Shared/Trait.md ({"data": {"trait": "GraphQLAssertions", "url": "../../src/Testing/GraphQLAssertions.php"}})
-[//]: # (start: 2719849e2d3e09ee8d70aea051e4028f594d16b50aa5788f9517daf12b5b3f2f)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-> [!NOTE]
->
-> Provided by [`GraphQLAssertions`](<../../src/Testing/GraphQLAssertions.php>) trait.
-
-[//]: # (end: 2719849e2d3e09ee8d70aea051e4028f594d16b50aa5788f9517daf12b5b3f2f)
-
 [include:example]: ./AssertGraphQLExportableEquals.php
 [//]: # (start: f557755e555b59192c22e63769cb3506d732684c28baab5b4407791d5675372d)
 [//]: # (warning: Generated automatically. Do not edit.)
@@ -32,9 +22,16 @@ use PHPUnit\Framework\TestCase;
  */
 #[CoversNothing]
 final class AssertGraphQLExportableEquals extends TestCase {
+    /**
+     * Trait where assertion defined.
+     */
     use GraphQLAssertions;
 
+    /**
+     * Assertion test.
+     */
     public function testAssertion(): void {
+        // Prepare
         $schema   = BuildSchema::build(
             <<<'GRAPHQL'
             directive @a(b: B) on OBJECT
@@ -74,6 +71,8 @@ final class AssertGraphQLExportableEquals extends TestCase {
 
         self::assertNotNull($type);
 
+        // Test
+        // (schema required to find types/directives definition)
         $this->assertGraphQLExportableEquals(
             (new GraphQLExpected($expected))->setSchema($schema),
             $type,
