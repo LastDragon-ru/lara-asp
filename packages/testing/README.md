@@ -111,7 +111,7 @@ Makes comparison of scalars strict.
 
 # Extensions
 
-## `TestCase`
+## PHPUnit `TestCase`
 
 ### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php)
 
@@ -176,6 +176,8 @@ associated with test)
 
 [//]: # (end: ca67a4f998b93fa54ef80b687ed7b9c81c10001161d64282afde47d9b923665f)
 
+## Laravel `TestCase`
+
 ### [`WithTranslations`](./src/Utils/WithTranslations.php)
 
 [include:docblock]: ./src/Utils/WithTranslations.php
@@ -185,6 +187,17 @@ associated with test)
 Allows to replace translation strings for Laravel.
 
 [//]: # (end: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
+
+### [`Override`](./src/Concerns/Override.php)
+
+[include:docblock]: ./src/Concerns/Override.php
+[//]: # (start: 0d844e46d631c5ddcead26ce0fe232ee3894cd4c98a426394ba836bbed51bbc2)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Similar to `Illuminate\Foundation\Testing\Concerns\InteractsWithContainer` but will mark test as failed if
+override was not used while test (that helps to find unused code).
+
+[//]: # (end: 0d844e46d631c5ddcead26ce0fe232ee3894cd4c98a426394ba836bbed51bbc2)
 
 ## Eloquent Model Factory
 

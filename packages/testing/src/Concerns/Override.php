@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use Illuminate\Container\Container;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithContainer;
 use LogicException;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
@@ -19,6 +20,11 @@ use function sprintf;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
+ * Similar to {@see InteractsWithContainer} but will mark test as failed if
+ * override was not used while test (that helps to find unused code).
+ *
+ * @see InteractsWithContainer
+ *
  * @phpstan-require-extends TestCase
  */
 trait Override {
