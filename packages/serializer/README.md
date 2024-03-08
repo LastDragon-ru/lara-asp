@@ -43,7 +43,7 @@ composer require lastdragon-ru/lara-asp-serializer
 // phpcs:disable PSR1.Files.SideEffects
 // phpcs:disable PSR1.Classes.ClassDeclaration
 
-namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples;
+namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage;
 
 use DateTimeInterface;
 use Illuminate\Container\Container;
@@ -80,7 +80,7 @@ The `$serialized` is:
 The `$deserialized` is:
 
 ```plain
-LastDragon_ru\LaraASP\Serializer\Docs\Examples\User {
+LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage\User {
   +id: 1
   +name: "User"
   +created: Illuminate\Support\Carbon {
@@ -123,7 +123,7 @@ You can use the [`LastDragon_ru\LaraASP\Serializer\Casts\AsSerializable`](./src/
 // phpcs:disable PSR1.Files.SideEffects
 // phpcs:disable PSR1.Classes.ClassDeclaration
 
-namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples;
+namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\AsSerializable;
 
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Dev\App\Example;
@@ -161,7 +161,7 @@ Example::dump($user->getAttributes());
 The `$user->settings` is:
 
 ```plain
-LastDragon_ru\LaraASP\Serializer\Docs\Examples\UserSettings {
+LastDragon_ru\LaraASP\Serializer\Docs\Examples\AsSerializable\UserSettings {
   +perPage: 35
   +showSidebar: false
 }
