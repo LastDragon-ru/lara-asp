@@ -74,7 +74,7 @@ class Preprocessor {
           .*?
           \[\/\/\]:\s\#\s\(end:\s(?P=hash)\)
         )?
-        $/imsx
+        $/imsxu
         REGEXP;
 
     /**
