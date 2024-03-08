@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLExportableEquals extends TestCase {
+final class AssertGraphQLPrintableEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -23,10 +22,8 @@ final class AssertGraphQLExportableEquals extends TestCase {
      */
     public function testAssertion(): void {
         // Prepare
-        $schema   = BuildSchema::build(
+        $schema = BuildSchema::build(
             <<<'GRAPHQL'
-            directive @a(b: B) on OBJECT
-
             type Query {
                 a: A
             }
@@ -35,37 +32,22 @@ final class AssertGraphQLExportableEquals extends TestCase {
                 id: ID!
             }
 
-            input B {
-                b: String!
-            }
+            directive @a on OBJECT
             GRAPHQL,
         );
-        $type     = $schema->getType('A');
-        $expected = <<<'GRAPHQL'
+        $type   = $schema->getType('A');
+
+        self::assertNotNull($type);
+
+        // Test
+        $this->assertGraphQLPrintableEquals(
+            <<<'GRAPHQL'
             type A
             @a
             {
                 id: ID!
             }
-
-            directive @a(
-                b: B
-            )
-            on
-                | OBJECT
-
-            input B {
-                b: String!
-            }
-
-            GRAPHQL;
-
-        self::assertNotNull($type);
-
-        // Test
-        // (schema required to find types/directives definition)
-        $this->assertGraphQLExportableEquals(
-            (new GraphQLExpected($expected))->setSchema($schema),
+            GRAPHQL,
             $type,
         );
     }

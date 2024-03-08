@@ -2,8 +2,8 @@
 
 Asserts that SQL Query equals SQL Query.
 
-[include:example]: ./AssertDatabaseQueryEquals.php
-[//]: # (start: ad02ced689148d3fd8631205ab5f989f84ee95e8841f6afa9af32bd40825bdf7)
+[include:example]: ./AssertDatabaseQueryEqualsTest.php
+[//]: # (start: 9693a703a5c0c92fcdfb0d85ff2776ced3b270c7fb0712f7c4af1f6d50f00502)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertDatabaseQueryEquals extends TestCase {
+final class AssertDatabaseQueryEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -57,10 +57,4 @@ final class AssertDatabaseQueryEquals extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-Tests: 1, Assertions: 1, Failures: 1.
-```
-
-[//]: # (end: ad02ced689148d3fd8631205ab5f989f84ee95e8841f6afa9af32bd40825bdf7)
+[//]: # (end: 9693a703a5c0c92fcdfb0d85ff2776ced3b270c7fb0712f7c4af1f6d50f00502)

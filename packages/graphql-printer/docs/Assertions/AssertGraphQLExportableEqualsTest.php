@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQLPrinter\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLPrintableEquals extends TestCase {
+final class AssertGraphQLExportableEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -22,8 +23,10 @@ final class AssertGraphQLPrintableEquals extends TestCase {
      */
     public function testAssertion(): void {
         // Prepare
-        $schema = BuildSchema::build(
+        $schema   = BuildSchema::build(
             <<<'GRAPHQL'
+            directive @a(b: B) on OBJECT
+
             type Query {
                 a: A
             }
@@ -32,22 +35,37 @@ final class AssertGraphQLPrintableEquals extends TestCase {
                 id: ID!
             }
 
-            directive @a on OBJECT
+            input B {
+                b: String!
+            }
             GRAPHQL,
         );
-        $type   = $schema->getType('A');
-
-        self::assertNotNull($type);
-
-        // Test
-        $this->assertGraphQLPrintableEquals(
-            <<<'GRAPHQL'
+        $type     = $schema->getType('A');
+        $expected = <<<'GRAPHQL'
             type A
             @a
             {
                 id: ID!
             }
-            GRAPHQL,
+
+            directive @a(
+                b: B
+            )
+            on
+                | OBJECT
+
+            input B {
+                b: String!
+            }
+
+            GRAPHQL;
+
+        self::assertNotNull($type);
+
+        // Test
+        // (schema required to find types/directives definition)
+        $this->assertGraphQLExportableEquals(
+            (new GraphQLExpected($expected))->setSchema($schema),
             $type,
         );
     }

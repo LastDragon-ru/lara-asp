@@ -2,8 +2,8 @@
 
 Asserts that Schedule contains task.
 
-[include:example]: ./AssertScheduled.php
-[//]: # (start: 40742ef445ccdf2f6bd00219e5e620a0f2e2972627292c6f7818883465dca83e)
+[include:example]: ./AssertScheduledTest.php
+[//]: # (start: 7b7d3362391a553d8728619185eafc2fe1f3dda4112eab18a7be8c53321dec70)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertScheduled extends TestCase {
+final class AssertScheduledTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -48,10 +48,4 @@ final class AssertScheduled extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 2 assertions)
-```
-
-[//]: # (end: 40742ef445ccdf2f6bd00219e5e620a0f2e2972627292c6f7818883465dca83e)
+[//]: # (end: 7b7d3362391a553d8728619185eafc2fe1f3dda4112eab18a7be8c53321dec70)

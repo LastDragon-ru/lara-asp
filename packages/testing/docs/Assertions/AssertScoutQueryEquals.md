@@ -2,8 +2,8 @@
 
 Asserts that Scout Query equals Scout Query.
 
-[include:example]: ./AssertScoutQueryEquals.php
-[//]: # (start: b9b47beb1873fcc14bf5d91e05842dff8f706ce96ec155913d5cf22c55e0d451)
+[include:example]: ./AssertScoutQueryEqualsTest.php
+[//]: # (start: e96037f5fdf72df5c84fc1257d56c11de0b67d95b37524ee7cd7889a212f5053)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -21,7 +21,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertScoutQueryEquals extends TestCase {
+final class AssertScoutQueryEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -54,10 +54,4 @@ final class AssertScoutQueryEquals extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 1 assertion)
-```
-
-[//]: # (end: b9b47beb1873fcc14bf5d91e05842dff8f706ce96ec155913d5cf22c55e0d451)
+[//]: # (end: e96037f5fdf72df5c84fc1257d56c11de0b67d95b37524ee7cd7889a212f5053)

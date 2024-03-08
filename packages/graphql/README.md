@@ -557,7 +557,7 @@ type User {
 
 Compares default schema.
 
-[Read more](<docs/Assertions/AssertGraphQLSchemaEqualsTest.md>).
+[Read more](<docs/Assertions/AssertGraphQLSchemaEquals.md>).
 
 [//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 

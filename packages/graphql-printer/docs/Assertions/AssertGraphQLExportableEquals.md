@@ -2,8 +2,8 @@
 
 Exports and compares two GraphQL schemas/types/nodes/etc.
 
-[include:example]: ./AssertGraphQLExportableEquals.php
-[//]: # (start: f557755e555b59192c22e63769cb3506d732684c28baab5b4407791d5675372d)
+[include:example]: ./AssertGraphQLExportableEqualsTest.php
+[//]: # (start: 133d4e1cb1ecae97bc0bc725a805d078526526302c85ce377f2d8494690c3070)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLExportableEquals extends TestCase {
+final class AssertGraphQLExportableEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -81,10 +81,4 @@ final class AssertGraphQLExportableEquals extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 2 assertions)
-```
-
-[//]: # (end: f557755e555b59192c22e63769cb3506d732684c28baab5b4407791d5675372d)
+[//]: # (end: 133d4e1cb1ecae97bc0bc725a805d078526526302c85ce377f2d8494690c3070)

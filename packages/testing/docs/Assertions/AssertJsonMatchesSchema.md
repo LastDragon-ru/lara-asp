@@ -2,8 +2,8 @@
 
 Asserts that JSON matches [schema](https://json-schema.org/). Validation based on the [Opis JSON Schema](https://github.com/opis/json-schema) package.
 
-[include:example]: ./AssertJsonMatchesSchema.php
-[//]: # (start: a1b1c0151decd9104f1b8cd2b8a469d1f4509e0d2216941b8e2647ca7db4e031)
+[include:example]: ./AssertJsonMatchesSchemaTest.php
+[//]: # (start: 37b5139d86f40272bd033e33712c5a9f63453e328c23a5d03d1366c4ac0c4b90)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertJsonMatchesSchema extends TestCase {
+final class AssertJsonMatchesSchemaTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -61,10 +61,4 @@ final class AssertJsonMatchesSchema extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 1 assertion)
-```
-
-[//]: # (end: a1b1c0151decd9104f1b8cd2b8a469d1f4509e0d2216941b8e2647ca7db4e031)
+[//]: # (end: 37b5139d86f40272bd033e33712c5a9f63453e328c23a5d03d1366c4ac0c4b90)

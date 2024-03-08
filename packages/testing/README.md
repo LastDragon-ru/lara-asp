@@ -99,9 +99,9 @@ Enables query log for the test case.
 
 | Name                                                                        | Description                                                    |
 |-----------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`assertThat()`](./docs/Assertions/AssertThatResponse.php)                  | Asserts that response satisfies given constraint.              |
-| [`assertContentType()`](./docs/Assertions/AssertThatResponse.php)           | Asserts that a response has a specified content type.          |
-| [`assertStatusCode()`](./docs/Assertions/AssertThatResponse.php)            | Asserts that a response has a specified status code.           |
+| [`assertThat()`](./docs/Assertions/AssertThatResponse.md)                   | Asserts that response satisfies given constraint.              |
+| [`assertContentType()`](./docs/Assertions/AssertThatResponse.md)            | Asserts that a response has a specified content type.          |
+| [`assertStatusCode()`](./docs/Assertions/AssertThatResponse.md)             | Asserts that a response has a specified status code.           |
 | [`assertJsonMatchesSchema()`](./docs/Assertions/AssertJsonMatchesSchema.md) | Asserts that a response contains JSON that matches the schema. |
 | [`assertXmlMatchesSchema()`](./docs/Assertions/AssertXmlMatchesSchema.md)   | Asserts that a response contains XML that matches the schema.  |
 

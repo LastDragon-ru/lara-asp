@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertJsonMatchesSchema extends TestCase {
+final class AssertJsonMatchesSchemaTest extends TestCase {
     /**
      * Trait where assertion defined.
      */

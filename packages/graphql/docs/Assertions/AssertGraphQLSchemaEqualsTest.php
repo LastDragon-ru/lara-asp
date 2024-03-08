@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLSchemaEquals extends TestCase {
+final class AssertGraphQLSchemaEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */

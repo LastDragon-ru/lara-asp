@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-"${BASH_SOURCE%/*}/../../../../vendor/bin/phpunit" "${BASH_SOURCE%.*}.php" | tail -n 1

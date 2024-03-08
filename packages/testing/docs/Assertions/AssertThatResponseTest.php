@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertThatResponse extends TestCase {
+final class AssertThatResponseTest extends TestCase {
     /**
      * Trait where assertion defined.
      */

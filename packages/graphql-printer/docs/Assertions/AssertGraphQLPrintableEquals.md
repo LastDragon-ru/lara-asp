@@ -2,8 +2,8 @@
 
 Prints and compares two GraphQL schemas/types/nodes/etc.
 
-[include:example]: ./AssertGraphQLPrintableEquals.php
-[//]: # (start: 605e6281cbe3b98cb8a0ab9cbe59b03cee95427b019b0db773f69a80c79ec3e6)
+[include:example]: ./AssertGraphQLPrintableEqualsTest.php
+[//]: # (start: 4db955285a38dee14fe701f8fbe05e7862fd773a0ea1c03e91009e86bbc0ca22)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLPrintableEquals extends TestCase {
+final class AssertGraphQLPrintableEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -63,10 +63,4 @@ final class AssertGraphQLPrintableEquals extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 2 assertions)
-```
-
-[//]: # (end: 605e6281cbe3b98cb8a0ab9cbe59b03cee95427b019b0db773f69a80c79ec3e6)
+[//]: # (end: 4db955285a38dee14fe701f8fbe05e7862fd773a0ea1c03e91009e86bbc0ca22)

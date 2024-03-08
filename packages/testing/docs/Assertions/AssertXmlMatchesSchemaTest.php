@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertXmlMatchesSchema extends TestCase {
+final class AssertXmlMatchesSchemaTest extends TestCase {
     /**
      * Trait where assertion defined.
      */

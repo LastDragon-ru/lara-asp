@@ -227,7 +227,7 @@ It is highly recommended to use [`lara-asp-graphql`][pkg:graphql#Printer] packag
 
 Exports and compares two GraphQL schemas/types/nodes/etc.
 
-[Read more](<docs/Assertions/AssertGraphQLExportableEqualsTest.md>).
+[Read more](<docs/Assertions/AssertGraphQLExportableEquals.md>).
 
 ## `assertGraphQLPrintableEquals`
 

@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertDatabaseQueryEquals extends TestCase {
+final class AssertDatabaseQueryEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */

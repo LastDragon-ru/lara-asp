@@ -2,8 +2,8 @@
 
 Asserts that `QueryLog` equals `QueryLog`.
 
-[include:example]: ./AssertQueryLogEquals.php
-[//]: # (start: a0daa9b516048283a6d056944632ce1755af092cb15ddba58bd54c897066dcc4)
+[include:example]: ./AssertQueryLogEqualsTest.php
+[//]: # (start: 3ef530658feaa07626c932caaaa1e1815225f65d1c36369abd30c445d65f18af)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertQueryLogEquals extends TestCase {
+final class AssertQueryLogEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -66,10 +66,4 @@ final class AssertQueryLogEquals extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-Tests: 1, Assertions: 0, Errors: 1.
-```
-
-[//]: # (end: a0daa9b516048283a6d056944632ce1755af092cb15ddba58bd54c897066dcc4)
+[//]: # (end: 3ef530658feaa07626c932caaaa1e1815225f65d1c36369abd30c445d65f18af)

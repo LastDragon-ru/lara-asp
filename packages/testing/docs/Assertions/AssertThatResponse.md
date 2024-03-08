@@ -2,8 +2,8 @@
 
 Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
 
-[include:example]: ./AssertThatResponse.php
-[//]: # (start: 61858f0f79e7244d2c5ce2740d3af36f9380fa412a79265c2a5f73f42809c73f)
+[include:example]: ./AssertThatResponseTest.php
+[//]: # (start: fef995e7dea4e96b1398204ed11e6026d59490486273866194ec75545254c806)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  */
 #[CoversNothing]
-final class AssertThatResponse extends TestCase {
+final class AssertThatResponseTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -97,10 +97,4 @@ final class AssertThatResponse extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 1 assertion)
-```
-
-[//]: # (end: 61858f0f79e7244d2c5ce2740d3af36f9380fa412a79265c2a5f73f42809c73f)
+[//]: # (end: fef995e7dea4e96b1398204ed11e6026d59490486273866194ec75545254c806)

@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertScheduled extends TestCase {
+final class AssertScheduledTest extends TestCase {
     /**
      * Trait where assertion defined.
      */

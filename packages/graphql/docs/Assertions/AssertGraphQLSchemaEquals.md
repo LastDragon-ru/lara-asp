@@ -2,8 +2,8 @@
 
 Compares default schema.
 
-[include:example]: ./AssertGraphQLSchemaEquals.php
-[//]: # (start: c27d84ed181bcfd0818ca15c55ac1ae5741cb924799f404121378db2cc219470)
+[include:example]: ./AssertGraphQLSchemaEqualsTest.php
+[//]: # (start: 78ece08930d16eb88ea81e7d464ee55ccbdbdc1f5fc092bd0903eaa297981bbe)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLSchemaEquals extends TestCase {
+final class AssertGraphQLSchemaEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -107,10 +107,4 @@ final class AssertGraphQLSchemaEquals extends TestCase {
 }
 ```
 
-Example output:
-
-```plain
-OK (1 test, 1 assertion)
-```
-
-[//]: # (end: c27d84ed181bcfd0818ca15c55ac1ae5741cb924799f404121378db2cc219470)
+[//]: # (end: 78ece08930d16eb88ea81e7d464ee55ccbdbdc1f5fc092bd0903eaa297981bbe)
