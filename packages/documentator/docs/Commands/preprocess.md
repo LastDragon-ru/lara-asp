@@ -37,8 +37,8 @@ Where:
   * `description` - Include the class description? (default `true`)
 
 Includes the docblock of the first PHP class/interface/trait/enum/etc
-from `<target>` file. Inline tags include as is. Other tags are
-ignored.
+from `<target>` file. Inline tags include as is except `@see`/`@link`
+which will be replaced to FQCN (if possible). Other tags are ignored.
 
 ### `[include:document-list]: <target> <parameters>`
 

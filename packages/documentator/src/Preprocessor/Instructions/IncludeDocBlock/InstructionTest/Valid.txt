@@ -1,11 +1,20 @@
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Instruction;
+
 /**
  * Summary A.
  *
  * Description description description description description description
  * description description description description description description
  * description description description description description description
+ *
+ * Description with inline tags:
+ *
+ * - {@see B}, {@link B}, {@see B::b()}
+ * - {@see A}, {@link A}, {@see A::a()}
+ * - {@see Instruction}
+ * - {@see Instruction::getName()}
  *
  * @see https://example.com/
  */
