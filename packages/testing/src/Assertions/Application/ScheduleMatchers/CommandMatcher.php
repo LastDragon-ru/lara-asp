@@ -3,11 +3,11 @@
 namespace LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers;
 
 use Illuminate\Console\Application;
+use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatcher;
 use Override;
-use Symfony\Component\Console\Command\Command;
 
 use function array_filter;
 use function array_unique;
