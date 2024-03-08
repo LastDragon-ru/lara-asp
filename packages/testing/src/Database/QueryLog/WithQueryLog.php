@@ -6,9 +6,9 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use PHPUnit\Framework\TestCase;
 use WeakMap;
 
 use function array_map;
@@ -19,7 +19,7 @@ use function sprintf;
 /**
  * QueryLog.
  *
- * @mixin TestCase
+ * @phpstan-require-extends TestCase
  */
 trait WithQueryLog {
     /**

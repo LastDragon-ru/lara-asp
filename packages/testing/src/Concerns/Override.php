@@ -3,13 +3,13 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use Illuminate\Container\Container;
-use Illuminate\Foundation\Testing\TestCase;
 use LogicException;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
 use Override as OverrideAttribute;
+use PHPUnit\Framework\TestCase;
 
 use function is_callable;
 use function is_string;
@@ -18,7 +18,7 @@ use function sprintf;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
- * @mixin TestCase
+ * @phpstan-require-extends TestCase
  */
 trait Override {
     /**

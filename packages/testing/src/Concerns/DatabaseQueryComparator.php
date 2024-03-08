@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator as Comparator;
-use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Adds {@link Comparator}
  *
  * @see Comparator
  *
- * @mixin Test
+ * @phpstan-require-extends TestCase
  */
 trait DatabaseQueryComparator {
     /**

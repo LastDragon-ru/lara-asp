@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator;
-use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Adds {@link EloquentModelComparator}
  *
  * @see EloquentModelComparator
  *
- * @mixin Test
+ * @phpstan-require-extends TestCase
  */
 trait ModelComparator {
     /**

@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @property-read Application $app
  *
- * @mixin TestCase
+ * @phpstan-require-extends TestCase
  */
 trait RefreshDatabaseIfEmpty {
     use RefreshDatabase {

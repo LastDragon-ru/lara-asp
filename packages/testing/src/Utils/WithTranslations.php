@@ -4,18 +4,13 @@ namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Foundation\Testing\TestCase as IlluminateTestCase;
 use Illuminate\Translation\Translator as TranslatorImpl;
 use LastDragon_ru\LaraASP\Testing\Exceptions\TranslatorUnsupported;
-use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
 use function is_callable;
 
 /**
  * Allows to replace translation strings for Laravel.
- *
- * @mixin IlluminateTestCase
- * @mixin TestbenchTestCase
  *
  * @phpstan-type Translations         array<string,array<string,string>>
  * @phpstan-type TranslationsCallback callable(static, string $currentLocale, string $fallbackLocale): Translations
