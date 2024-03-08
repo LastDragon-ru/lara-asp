@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\EloquentModelComparator;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,10 +15,10 @@ use PHPUnit\Framework\TestCase;
  */
 trait ModelComparator {
     /**
-     * @before
      * @internal
      */
-    public function initModelComparator(): void {
+    #[Before]
+    protected function initModelComparator(): void {
         $this->registerComparator(new EloquentModelComparator());
     }
 }

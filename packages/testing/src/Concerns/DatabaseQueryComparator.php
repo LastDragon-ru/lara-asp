@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator as Comparator;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,10 +15,10 @@ use PHPUnit\Framework\TestCase;
  */
 trait DatabaseQueryComparator {
     /**
-     * @before
      * @internal
      */
-    public function initDatabaseQueryComparator(): void {
+    #[Before]
+    protected function initDatabaseQueryComparator(): void {
         $this->registerComparator(new Comparator());
     }
 }

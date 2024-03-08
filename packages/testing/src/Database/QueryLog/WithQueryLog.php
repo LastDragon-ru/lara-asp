@@ -8,6 +8,7 @@ use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 use WeakMap;
 
@@ -28,10 +29,10 @@ trait WithQueryLog {
     private ?WeakMap $withQueryLog = null;
 
     /**
-     * @before
      * @internal
      */
-    public function initWithQueryLog(): void {
+    #[Before]
+    protected function initWithQueryLog(): void {
         $this->beforeApplicationDestroyed(function (): void {
             foreach ($this->withQueryLog ?? [] as $connection => $log) {
                 /** @var Connection $connection */

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,10 +13,10 @@ use PHPUnit\Framework\TestCase;
  */
 trait StrictAssertEquals {
     /**
-     * @before
      * @internal
      */
-    public function initStrictAssertEquals(): void {
+    #[Before]
+    protected function initStrictAssertEquals(): void {
         $this->registerComparator(new ScalarStrictComparator());
     }
 }

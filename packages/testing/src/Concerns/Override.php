@@ -9,6 +9,7 @@ use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
 use Override as OverrideAttribute;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
 use function is_callable;
@@ -27,10 +28,10 @@ trait Override {
     private array $overrides = [];
 
     /**
-     * @before
      * @internal
      */
-    public function initOverride(): void {
+    #[Before]
+    protected function initOverride(): void {
         $this->overrides = [];
     }
 
