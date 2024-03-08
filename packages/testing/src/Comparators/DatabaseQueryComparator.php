@@ -23,6 +23,11 @@ use const PREG_SET_ORDER;
 
 /**
  * Compares two {@link Query}.
+ *
+ * We are performing following normalization before comparison to be more precise:
+ *
+ * * Renumber `laravel_reserved_*` (it will always start from `0` and will not contain gaps)
+ * * Format the query by [`doctrine/sql-formatter`](https://github.com/doctrine/sql-formatter) package
  */
 class DatabaseQueryComparator extends ObjectComparator {
     #[Override]

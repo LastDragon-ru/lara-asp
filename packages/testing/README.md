@@ -62,6 +62,53 @@ abstract class TestCase extends BaseTestCase {
 }
 ```
 
+# Comparators
+
+> [!TIP]
+>
+> Should be registered before test, check/use [built-in traits](./src/Concerns).
+
+## [`DatabaseQueryComparator`](./src/Comparators/DatabaseQueryComparator.php)
+
+[include:docblock]: ./src/Comparators/DatabaseQueryComparator.php
+[//]: # (start: 7a62eb5ab5b51b15a59381fa5096469c57dcc949fdd58877a499377d9bf38783)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Compares two `LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query`.
+
+We are performing following normalization before comparison to be more precise:
+
+* Renumber `laravel_reserved_*` (it will always start from `0` and will not contain gaps)
+* Format the query by [`doctrine/sql-formatter`](https://github.com/doctrine/sql-formatter) package
+
+[//]: # (end: 7a62eb5ab5b51b15a59381fa5096469c57dcc949fdd58877a499377d9bf38783)
+
+## [`EloquentModelComparator`](./src/Comparators/EloquentModelComparator.php)
+
+[include:docblock]: ./src/Comparators/EloquentModelComparator.php
+[//]: # (start: 742d5ba3dd2046d479175b032d84d30a4df86f84392aaf531a00a6734f096a5d)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Compares two Eloquent Models.
+
+The problem is models after creating from the factory and selecting from
+the database may have different types for the same properties. For example,
+`factory()->create()` will set `key` as `int`, but `select` will set it to
+`string` and (strict) comparison will fail. This comparator normalizes
+properties types before comparison.
+
+[//]: # (end: 742d5ba3dd2046d479175b032d84d30a4df86f84392aaf531a00a6734f096a5d)
+
+## [`ScalarStrictComparator`](./src/Comparators/ScalarStrictComparator.php)
+
+[include:docblock]: ./src/Comparators/ScalarStrictComparator.php
+[//]: # (start: 3880fe84d738503ce8fff5b3ea187ef860c1d6bf96ce2347e9dc1daeb78f9815)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Makes comparison of scalars strict.
+
+[//]: # (end: 3880fe84d738503ce8fff5b3ea187ef860c1d6bf96ce2347e9dc1daeb78f9815)
+
 # Extensions
 
 ## `TestCase`
