@@ -44,6 +44,10 @@ composer require --dev lastdragon-ru/lara-asp-testing
 
 # Usage
 
+> [!IMPORTANT]
+>
+> By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
+
 In the general case, you just need to update `tests/TestCase.php` to include almost everything, but you also can include only desired features, please see base [`TestCase`](./src/TestCase.php) to found what is supported.
 
 ```php
@@ -60,9 +64,19 @@ abstract class TestCase extends BaseTestCase {
 
 # Extensions
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php)
+## `TestCase`
 
-This trait is very similar to standard `\Illuminate\Foundation\Testing\RefreshDatabase` but there is one difference: it will refresh the database only if it empty. This is very useful for local testing and allow significantly reduce bootstrap time.
+### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php)
+
+[include:docblock]: ./src/Database/RefreshDatabaseIfEmpty.php
+[//]: # (start: 8a2c47eb73624557058f09279338b44619ddc48d2bd07d975721ad9383bd1df3)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+The trait is very similar to standard `Illuminate\Foundation\Testing\RefreshDatabase` but there is one
+difference: it will refresh the database only if it is empty. This is very
+useful for local testing and allow significantly reduce bootstrap time.
+
+[//]: # (end: 8a2c47eb73624557058f09279338b44619ddc48d2bd07d975721ad9383bd1df3)
 
 ```php
 <?php declare(strict_types = 1);
@@ -82,16 +96,71 @@ abstract class TestCase extends BaseTestCase {
 }
 ```
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory`](./src/Database/Eloquent/Factories/Factory.php)
+### [`WithTempDirectory`](./src/Utils/WithTempDirectory.php)
 
-This class extends standard `\Illuminate\Database\Eloquent\Factories\Factory`:
+[include:docblock]: ./src/Utils/WithTempDirectory.php
+[//]: # (start: 78a4084c4d654afec0aa0997e7db4c9d90c1ea9c9d56013b4c7b76212e2a25d2)
+[//]: # (warning: Generated automatically. Do not edit.)
 
-* Fixes `wasRecentlyCreated` value, by default it will be `true`. In most cases, this is unwanted behavior. The factory will set it to `false` after creating the model;
-* Disables all model events while making/creating the instance.
+Allows to create a temporary directory. The directory will be removed
+automatically after script shutdown.
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog`](./src/Database/QueryLog/WithQueryLog.php)
+[//]: # (end: 78a4084c4d654afec0aa0997e7db4c9d90c1ea9c9d56013b4c7b76212e2a25d2)
 
-Enables query log for the test case.
+### [`WithTempFile`](./src/Utils/WithTempFile.php)
+
+[include:docblock]: ./src/Utils/WithTempFile.php
+[//]: # (start: 996fe2b95b3b243907ca30266266354dc6cf1609b6186cad7418b27f92e292a2)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Allows to create a temporary file. The file will be removed automatically
+after script shutdown.
+
+[//]: # (end: 996fe2b95b3b243907ca30266266354dc6cf1609b6186cad7418b27f92e292a2)
+
+### [`WithTestData`](./src/Utils/WithTestData.php)
+
+[include:docblock]: ./src/Utils/WithTestData.php
+[//]: # (start: ca67a4f998b93fa54ef80b687ed7b9c81c10001161d64282afde47d9b923665f)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Allows to get instance of `LastDragon_ru\LaraASP\Testing\Utils\TestData` (a small helper to load data
+associated with test)
+
+[//]: # (end: ca67a4f998b93fa54ef80b687ed7b9c81c10001161d64282afde47d9b923665f)
+
+### [`WithTranslations`](./src/Utils/WithTranslations.php)
+
+[include:docblock]: ./src/Utils/WithTranslations.php
+[//]: # (start: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Allows to replace translation strings for Laravel.
+
+[//]: # (end: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
+
+## Eloquent Model Factory
+
+### [`FixRecentlyCreated`](./src/Database/Eloquent/Factories/FixRecentlyCreated.php)
+
+[include:docblock]: ./src/Database/Eloquent/Factories/FixRecentlyCreated.php
+[//]: # (start: 064636127cefc5b4434785c3b9caa626aa8210d13353719070e53b480f4ec6b5)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+After creating the model will have `wasRecentlyCreated = true`, in most
+cases this is unwanted behavior, this trait fixes it.
+
+[//]: # (end: 064636127cefc5b4434785c3b9caa626aa8210d13353719070e53b480f4ec6b5)
+
+### [`WithoutModelEvents`](./src/Database/Eloquent/Factories/WithoutModelEvents.php)
+
+[include:docblock]: ./src/Database/Eloquent/Factories/WithoutModelEvents.php
+[//]: # (start: 18945dddaa888ad73a3bd3eb516b4aa1b74cdce6c2c112ae691ce5f0196b1e03)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Disable models events during make/create.
+
+[//]: # (end: 18945dddaa888ad73a3bd3eb516b4aa1b74cdce6c2c112ae691ce5f0196b1e03)
 
 # Mixins
 
@@ -106,10 +175,6 @@ Enables query log for the test case.
 | [`assertXmlMatchesSchema()`](./docs/Assertions/AssertXmlMatchesSchema.md)   | Asserts that a response contains XML that matches the schema.  |
 
 # Assertions
-
-> [!IMPORTANT]
->
-> By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
 
 [include:document-list]: ./docs/Assertions
 [//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)

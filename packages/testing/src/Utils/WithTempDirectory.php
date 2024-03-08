@@ -8,6 +8,10 @@ use Symfony\Component\Filesystem\Filesystem;
 use function register_shutdown_function;
 use function sys_get_temp_dir;
 
+/**
+ * Allows to create a temporary directory. The directory will be removed
+ * automatically after script shutdown.
+ */
 trait WithTempDirectory {
     public static function getTempDirectory(): string {
         $fs   = new Filesystem();

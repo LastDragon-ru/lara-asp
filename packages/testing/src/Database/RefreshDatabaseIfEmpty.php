@@ -10,8 +10,9 @@ use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unlike {@link RefreshDatabase} will refresh the database only if it empty
- * (very useful for local testing).
+ * The trait is very similar to standard {@link RefreshDatabase} but there is one
+ * difference: it will refresh the database only if it is empty. This is very
+ * useful for local testing and allow significantly reduce bootstrap time.
  *
  * @property-read Application $app
  *

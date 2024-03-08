@@ -12,6 +12,8 @@ use Orchestra\Testbench\TestCase as TestbenchTestCase;
 use function is_callable;
 
 /**
+ * Allows to replace translation strings for Laravel.
+ *
  * @mixin IlluminateTestCase
  * @mixin TestbenchTestCase
  *
