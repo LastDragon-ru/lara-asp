@@ -3,7 +3,7 @@
 // phpcs:disable PSR1.Files.SideEffects
 // phpcs:disable PSR1.Classes.ClassDeclaration
 
-namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\AsSerializable;
+namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples;
 
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Dev\App\Example;

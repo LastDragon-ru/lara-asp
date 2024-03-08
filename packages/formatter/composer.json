@@ -40,6 +40,14 @@
       "src/Testing/**.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "docs"
+    },
+    "exclude-from-classmap": [
+      "docs/"
+    ]
+  },
   "extra": {
     "laravel": {
       "providers": [
