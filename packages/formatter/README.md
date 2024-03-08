@@ -162,8 +162,8 @@ The `$locale->date($datetime, 'custom')` is:
 
 To format duration you can use built-in Intl formatter, but it doesn't support fraction seconds and have different format between locales (for example, `12345` seconds is `3:25:45` in `en_US` locale, and `12 345` in `ru_RU`). These reasons make difficult to use it in real applications. To make `duration()` more useful, the alternative syntax was added.
 
-[include:docblock]: ./src/Utils/DurationFormatter.php
-[//]: # (start: 8e359fc1ea71d4c4b58c4acdcd3289f180a89cbd39ebdbd10422908bd66b0268)
+[include:docblock]: ./src/Utils/DurationFormatter.php ({"summary": false})
+[//]: # (start: 363cfceaffb54119c82e514732db74b5265a5fc6724699580b2d3c677c1258f7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
@@ -181,7 +181,7 @@ The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.gith
 | `'`    | escape for text               |
 | `''`   | two single quotes produce one |
 
-[//]: # (end: 8e359fc1ea71d4c4b58c4acdcd3289f180a89cbd39ebdbd10422908bd66b0268)
+[//]: # (end: 363cfceaffb54119c82e514732db74b5265a5fc6724699580b2d3c677c1258f7)
 
 [include:example]: ./docs/Examples/Duration.php
 [//]: # (start: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)

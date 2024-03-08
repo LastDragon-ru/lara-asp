@@ -72,7 +72,7 @@ class Instruction implements ParameterizableInstruction {
     #[Override]
     public static function getParametersDescription(): array {
         return [
-            'summary'     => 'Include the class summary? (default `false`)',
+            'summary'     => 'Include the class summary? (default `true`)',
             'description' => 'Include the class description? (default `true`)',
         ];
     }

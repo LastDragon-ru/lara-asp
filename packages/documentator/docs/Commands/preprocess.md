@@ -33,7 +33,7 @@ Where:
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
-  * `summary` - Include the class summary? (default `false`)
+  * `summary` - Include the class summary? (default `true`)
   * `description` - Include the class description? (default `true`)
 
 Includes the docblock of the first PHP class/interface/trait/enum/etc

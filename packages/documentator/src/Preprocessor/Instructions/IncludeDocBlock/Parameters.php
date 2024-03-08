@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 
 class Parameters implements Serializable {
     public function __construct(
-        public readonly bool $summary = false,
+        public readonly bool $summary = true,
         public readonly bool $description = true,
     ) {
         // empty
