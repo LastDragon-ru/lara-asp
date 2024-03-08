@@ -135,15 +135,12 @@ class Instruction implements ParameterizableInstruction {
      */
     private function getClass(string $content, string $path, string $target): ?array {
         try {
-            $class     = null;
-            $resolver  = new NameResolver();
-            $traverser = new NodeTraverser($resolver);
-            $parser    = (new ParserFactory())->createForNewestSupportedVersion();
-            $stmts     = (array) $parser->parse($content);
-            $stmts     = $traverser->traverse($stmts);
-            $context   = $resolver->getNameContext();
-            $finder    = new NodeFinder();
-            $class     = $finder->findFirst($stmts, static function (Node $node): bool {
+            $class    = null;
+            $resolver = new NameResolver();
+            $stmts    = $this->parse($resolver, $content);
+            $context  = $resolver->getNameContext();
+            $finder   = new NodeFinder();
+            $class    = $finder->findFirst($stmts, static function (Node $node): bool {
                 return $node instanceof ClassLike;
             });
         } catch (Exception $exception) {
@@ -192,11 +189,25 @@ class Instruction implements ParameterizableInstruction {
         return $nodes;
     }
 
+    /**
+     * @return array<array-key, Node>
+     */
+    private function parse(NameResolver $resolver, string $content): array {
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($resolver);
+
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $stmts  = (array) $parser->parse($content);
+        $stmts  = $traverser->traverse($stmts);
+
+        return $stmts;
+    }
+
     private function preprocess(NameContext $context, string $string): string {
         return (string) preg_replace_callback(
             pattern : '/\{@(?:see|link)\s+(?P<class>[^}\s\/:]+)(?:::(?P<method>[^(]+\(\)))?\s?\}/imu',
             callback: static function (array $matches) use ($context): string {
-                $class  = $context->getResolvedClassName(new Name($matches['class']))->name;
+                $class  = (string) $context->getResolvedClassName(new Name($matches['class']));
                 $method = $matches['method'] ?? null;
                 $result = $method
                     ? "`{$class}::{$method}`"
