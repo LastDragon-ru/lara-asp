@@ -547,11 +547,19 @@ type User {
 
 [//]: # (end: 518647e0d4a82c1d00956d3649304d6a454b183b3a926a8b403e94d33fb4301c)
 
-There are also few great new [GraphQL Assertions](./src/Testing/GraphQLAssertions.php).
+# Testing Assertions
 
-| Name                        | Description              |
-|-----------------------------|--------------------------|
-| `assertGraphQLSchemaEquals` | Compares default schema. |
+[include:document-list]: ./docs/Assertions
+[//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+## `assertGraphQLSchemaEquals`
+
+Compares default schema.
+
+[Read more](<docs/Assertions/AssertGraphQLSchemaEquals.md>).
+
+[//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 
 [include:file]: ../../docs/Shared/Upgrading.md
 [//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)

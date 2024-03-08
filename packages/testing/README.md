@@ -44,6 +44,10 @@ composer require --dev lastdragon-ru/lara-asp-testing
 
 # Usage
 
+> [!IMPORTANT]
+>
+> By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
+
 In the general case, you just need to update `tests/TestCase.php` to include almost everything, but you also can include only desired features, please see base [`TestCase`](./src/TestCase.php) to found what is supported.
 
 ```php
@@ -58,11 +62,68 @@ abstract class TestCase extends BaseTestCase {
 }
 ```
 
+# Comparators
+
+> [!TIP]
+>
+> Should be registered before test, check/use [built-in traits](./src/Concerns).
+
+## [`DatabaseQueryComparator`](./src/Comparators/DatabaseQueryComparator.php)
+
+[include:docblock]: ./src/Comparators/DatabaseQueryComparator.php
+[//]: # (start: 7a62eb5ab5b51b15a59381fa5096469c57dcc949fdd58877a499377d9bf38783)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Compares two `LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query`.
+
+We are performing following normalization before comparison to be more precise:
+
+* Renumber `laravel_reserved_*` (it will always start from `0` and will not contain gaps)
+* Format the query by [`doctrine/sql-formatter`](https://github.com/doctrine/sql-formatter) package
+
+[//]: # (end: 7a62eb5ab5b51b15a59381fa5096469c57dcc949fdd58877a499377d9bf38783)
+
+## [`EloquentModelComparator`](./src/Comparators/EloquentModelComparator.php)
+
+[include:docblock]: ./src/Comparators/EloquentModelComparator.php
+[//]: # (start: 742d5ba3dd2046d479175b032d84d30a4df86f84392aaf531a00a6734f096a5d)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Compares two Eloquent Models.
+
+The problem is models after creating from the factory and selecting from
+the database may have different types for the same properties. For example,
+`factory()->create()` will set `key` as `int`, but `select` will set it to
+`string` and (strict) comparison will fail. This comparator normalizes
+properties types before comparison.
+
+[//]: # (end: 742d5ba3dd2046d479175b032d84d30a4df86f84392aaf531a00a6734f096a5d)
+
+## [`ScalarStrictComparator`](./src/Comparators/ScalarStrictComparator.php)
+
+[include:docblock]: ./src/Comparators/ScalarStrictComparator.php
+[//]: # (start: 3880fe84d738503ce8fff5b3ea187ef860c1d6bf96ce2347e9dc1daeb78f9815)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Makes comparison of scalars strict.
+
+[//]: # (end: 3880fe84d738503ce8fff5b3ea187ef860c1d6bf96ce2347e9dc1daeb78f9815)
+
 # Extensions
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php)
+## PHPUnit `TestCase`
 
-This trait is very similar to standard `\Illuminate\Foundation\Testing\RefreshDatabase` but there is one difference: it will refresh the database only if it empty. This is very useful for local testing and allow significantly reduce bootstrap time.
+### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php)
+
+[include:docblock]: ./src/Database/RefreshDatabaseIfEmpty.php
+[//]: # (start: 8a2c47eb73624557058f09279338b44619ddc48d2bd07d975721ad9383bd1df3)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+The trait is very similar to standard `Illuminate\Foundation\Testing\RefreshDatabase` but there is one
+difference: it will refresh the database only if it is empty. This is very
+useful for local testing and allow significantly reduce bootstrap time.
+
+[//]: # (end: 8a2c47eb73624557058f09279338b44619ddc48d2bd07d975721ad9383bd1df3)
 
 ```php
 <?php declare(strict_types = 1);
@@ -82,53 +143,146 @@ abstract class TestCase extends BaseTestCase {
 }
 ```
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories\Factory`](./src/Database/Eloquent/Factories/Factory.php)
+### [`WithTempDirectory`](./src/Utils/WithTempDirectory.php)
 
-This class extends standard `\Illuminate\Database\Eloquent\Factories\Factory`:
+[include:docblock]: ./src/Utils/WithTempDirectory.php
+[//]: # (start: 78a4084c4d654afec0aa0997e7db4c9d90c1ea9c9d56013b4c7b76212e2a25d2)
+[//]: # (warning: Generated automatically. Do not edit.)
 
-* Fixes `wasRecentlyCreated` value, by default it will be `true`. In most cases, this is unwanted behavior. The factory will set it to `false` after creating the model;
-* Disables all model events while making/creating the instance.
+Allows to create a temporary directory. The directory will be removed
+automatically after script shutdown.
 
-## [`\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog`](./src/Database/QueryLog/WithQueryLog.php)
+[//]: # (end: 78a4084c4d654afec0aa0997e7db4c9d90c1ea9c9d56013b4c7b76212e2a25d2)
 
-Enables query log for the test case.
+### [`WithTempFile`](./src/Utils/WithTempFile.php)
+
+[include:docblock]: ./src/Utils/WithTempFile.php
+[//]: # (start: 996fe2b95b3b243907ca30266266354dc6cf1609b6186cad7418b27f92e292a2)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Allows to create a temporary file. The file will be removed automatically
+after script shutdown.
+
+[//]: # (end: 996fe2b95b3b243907ca30266266354dc6cf1609b6186cad7418b27f92e292a2)
+
+### [`WithTestData`](./src/Utils/WithTestData.php)
+
+[include:docblock]: ./src/Utils/WithTestData.php
+[//]: # (start: ca67a4f998b93fa54ef80b687ed7b9c81c10001161d64282afde47d9b923665f)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Allows to get instance of `LastDragon_ru\LaraASP\Testing\Utils\TestData` (a small helper to load data
+associated with test)
+
+[//]: # (end: ca67a4f998b93fa54ef80b687ed7b9c81c10001161d64282afde47d9b923665f)
+
+## Laravel `TestCase`
+
+### [`WithTranslations`](./src/Utils/WithTranslations.php)
+
+[include:docblock]: ./src/Utils/WithTranslations.php
+[//]: # (start: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Allows to replace translation strings for Laravel.
+
+[//]: # (end: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
+
+### [`Override`](./src/Concerns/Override.php)
+
+[include:docblock]: ./src/Concerns/Override.php
+[//]: # (start: 0d844e46d631c5ddcead26ce0fe232ee3894cd4c98a426394ba836bbed51bbc2)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Similar to `Illuminate\Foundation\Testing\Concerns\InteractsWithContainer` but will mark test as failed if
+override was not used while test (that helps to find unused code).
+
+[//]: # (end: 0d844e46d631c5ddcead26ce0fe232ee3894cd4c98a426394ba836bbed51bbc2)
+
+## Eloquent Model Factory
+
+### [`FixRecentlyCreated`](./src/Database/Eloquent/Factories/FixRecentlyCreated.php)
+
+[include:docblock]: ./src/Database/Eloquent/Factories/FixRecentlyCreated.php
+[//]: # (start: 064636127cefc5b4434785c3b9caa626aa8210d13353719070e53b480f4ec6b5)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+After creating the model will have `wasRecentlyCreated = true`, in most
+cases this is unwanted behavior, this trait fixes it.
+
+[//]: # (end: 064636127cefc5b4434785c3b9caa626aa8210d13353719070e53b480f4ec6b5)
+
+### [`WithoutModelEvents`](./src/Database/Eloquent/Factories/WithoutModelEvents.php)
+
+[include:docblock]: ./src/Database/Eloquent/Factories/WithoutModelEvents.php
+[//]: # (start: 18945dddaa888ad73a3bd3eb516b4aa1b74cdce6c2c112ae691ce5f0196b1e03)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Disable models events during make/create.
+
+[//]: # (end: 18945dddaa888ad73a3bd3eb516b4aa1b74cdce6c2c112ae691ce5f0196b1e03)
 
 # Mixins
 
 ## `\Illuminate\Testing\TestResponse`
 
-| Name                        | Description                                                    |
-|-----------------------------|----------------------------------------------------------------|
-| `assertThat()`              | Asserts that response satisfies given constraint.              |
-| `assertContentType()`       | Asserts that a response has a specified content type.          |
-| `assertStatusCode()`        | Asserts that a response has a specified status code.           |
-| `assertJsonMatchesSchema()` | Asserts that a response contains JSON that matches the schema. |
-| `assertXmlMatchesSchema()`  | Asserts that a response contains XML that matches the schema.  |
+| Name                                                                        | Description                                                    |
+|-----------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`assertThat()`](./docs/Assertions/AssertThatResponse.md)                   | Asserts that response satisfies given constraint.              |
+| [`assertContentType()`](./docs/Assertions/AssertThatResponse.md)            | Asserts that a response has a specified content type.          |
+| [`assertStatusCode()`](./docs/Assertions/AssertThatResponse.md)             | Asserts that a response has a specified status code.           |
+| [`assertJsonMatchesSchema()`](./docs/Assertions/AssertJsonMatchesSchema.md) | Asserts that a response contains JSON that matches the schema. |
+| [`assertXmlMatchesSchema()`](./docs/Assertions/AssertXmlMatchesSchema.md)   | Asserts that a response contains XML that matches the schema.  |
 
 # Assertions
 
-> [!IMPORTANT]
->
-> By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
+[include:document-list]: ./docs/Assertions
+[//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (warning: Generated automatically. Do not edit.)
 
-## General
+## `assertDatabaseQueryEquals`
 
-These assertions can be used without Laravel at all (#4).
+Asserts that SQL Query equals SQL Query.
 
-| Name                                                                   | Description                                           |
-|------------------------------------------------------------------------|-------------------------------------------------------|
-| [`assertJsonMatchesSchema()`](./src/Assertions/JsonAssertions.php#L17) | Asserts that JSON matches schema                      |
-| [`assertXmlMatchesSchema()`](./src/Assertions/XmlAssertions.php#L15)   | Asserts that XML matches schema (XSD or Relax NG).    |
-| [`assertThatResponse()`](./src/Assertions/ResponseAssertions.php#L14)  | Asserts that PSR Response satisfies given constraint. |
+[Read more](<docs/Assertions/AssertDatabaseQueryEquals.md>).
 
-## Laravel
+## `assertJsonMatchesSchema`
 
-| Name                                                                       | Description                                                          |
-|----------------------------------------------------------------------------|----------------------------------------------------------------------|
-| [`assertDatabaseQueryEquals()`](./src/Assertions/DatabaseAssertions.php)   | Asserts that SQL Query equals SQL Query.                             |
-| [`assertScoutQueryEquals()`](./src/Assertions/ScoutAssertions.php)         | Asserts that Scout Query equals Scout Query.                         |
-| [`assertQueryLogEquals()`](./src/Database/QueryLog/WithQueryLog.php)       | Asserts that `QueryLog` equals `QueryLog`.                           |
-| [`assertScheduled()`](./src/Assertions/Application/ScheduleAssertions.php) | Asserts that Schedule contains task.                                 |
+Asserts that JSON matches [schema](https://json-schema.org/). Validation based on the [Opis JSON Schema](https://github.com/opis/json-schema) package.
+
+[Read more](<docs/Assertions/AssertJsonMatchesSchema.md>).
+
+## `assertQueryLogEquals`
+
+Asserts that `QueryLog` equals `QueryLog`.
+
+[Read more](<docs/Assertions/AssertQueryLogEquals.md>).
+
+## `assertScheduled`
+
+Asserts that Schedule contains task.
+
+[Read more](<docs/Assertions/AssertScheduled.md>).
+
+## `assertScoutQueryEquals`
+
+Asserts that Scout Query equals Scout Query.
+
+[Read more](<docs/Assertions/AssertScoutQueryEquals.md>).
+
+## `assertThatResponse`
+
+Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
+
+[Read more](<docs/Assertions/AssertThatResponse.md>).
+
+## `assertXmlMatchesSchema`
+
+Asserts that XML matches schema [XSD](https://en.wikipedia.org/wiki/XML_Schema_(W3C)) or [Relax NG](https://en.wikipedia.org/wiki/RELAX_NG). Validation based on the standard methods of [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class.
+
+[Read more](<docs/Assertions/AssertXmlMatchesSchema.md>).
+
+[//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 
 # Laravel Response Testing
 

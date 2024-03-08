@@ -10,6 +10,9 @@ use SebastianBergmann\Exporter\Exporter;
 use function is_string;
 use function mb_strtolower;
 
+/**
+ * Makes comparison of scalars strict.
+ */
 class ScalarStrictComparator extends ScalarComparator {
     /**
      * @param array<array-key, mixed> $processed

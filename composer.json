@@ -108,8 +108,21 @@
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Dev\\App\\": "dev/App",
       "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\": "dev/PhpStan",
-      "Larastan\\Larastan\\": "dev/Larastan"
-    }
+      "Larastan\\Larastan\\": "dev/Larastan",
+      "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/core/docs",
+      "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
+      "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
+      "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
+      "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/graphql/docs",
+      "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
+      "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/migrator/docs",
+      "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/serializer/docs",
+      "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/spa/docs",
+      "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
+    },
+    "exclude-from-classmap": [
+      "packages/*/docs"
+    ]
   },
   "extra": {
     "laravel": {

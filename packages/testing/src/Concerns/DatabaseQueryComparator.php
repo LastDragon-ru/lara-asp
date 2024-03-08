@@ -3,21 +3,22 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use LastDragon_ru\LaraASP\Testing\Comparators\DatabaseQueryComparator as Comparator;
-use PHPUnit\Framework\Test;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Adds {@link Comparator}
  *
  * @see Comparator
  *
- * @mixin Test
+ * @phpstan-require-extends TestCase
  */
 trait DatabaseQueryComparator {
     /**
-     * @before
      * @internal
      */
-    public function initDatabaseQueryComparator(): void {
+    #[Before]
+    protected function initDatabaseQueryComparator(): void {
         $this->registerComparator(new Comparator());
     }
 }

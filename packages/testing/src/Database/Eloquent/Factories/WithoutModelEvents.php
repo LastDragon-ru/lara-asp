@@ -3,13 +3,14 @@
 namespace LastDragon_ru\LaraASP\Testing\Database\Eloquent\Factories;
 
 use Closure;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Override;
 
 /**
  * Disable models events during make/create.
  *
- * @mixin \Illuminate\Database\Eloquent\Factories\Factory
+ * @phpstan-require-extends Factory
  */
 trait WithoutModelEvents {
     /**

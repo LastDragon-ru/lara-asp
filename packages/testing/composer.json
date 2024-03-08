@@ -44,6 +44,7 @@
   },
   "require-dev": {
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
+    "laravel/scout": "^9.8.0|^10.0.0",
     "orchestra/testbench": "^8.0.0"
   },
   "autoload": {
@@ -56,6 +57,14 @@
     "exclude-from-classmap": [
       "src/**Test.php",
       "src/Package/**.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "docs"
+    },
+    "exclude-from-classmap": [
+      "docs/"
     ]
   },
   "extra": {

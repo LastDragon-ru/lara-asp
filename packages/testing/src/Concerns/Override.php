@@ -3,13 +3,15 @@
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
 use Illuminate\Container\Container;
-use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithContainer;
 use LogicException;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
 use Mockery\MockInterface;
 use OutOfBoundsException;
 use Override as OverrideAttribute;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\TestCase;
 
 use function is_callable;
 use function is_string;
@@ -18,7 +20,12 @@ use function sprintf;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
- * @mixin TestCase
+ * Similar to {@see InteractsWithContainer} but will mark test as failed if
+ * override was not used while test (that helps to find unused code).
+ *
+ * @see InteractsWithContainer
+ *
+ * @phpstan-require-extends TestCase
  */
 trait Override {
     /**
@@ -27,10 +34,10 @@ trait Override {
     private array $overrides = [];
 
     /**
-     * @before
      * @internal
      */
-    public function initOverride(): void {
+    #[Before]
+    protected function initOverride(): void {
         $this->overrides = [];
     }
 

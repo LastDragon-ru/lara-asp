@@ -7,14 +7,17 @@
     <testsuites>
         <testsuite name="package">
             <directory suffix="Test.php">./src</directory>
+            <directory suffix="Test.php">./docs</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory suffix=".php">./src</directory>
+            <directory suffix=".php">./docs</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./src</directory>
+            <directory suffix="Test.php">./docs</directory>
         </exclude>
     </source>
     <coverage cacheDirectory=".phpunit/coverage.cache"/>

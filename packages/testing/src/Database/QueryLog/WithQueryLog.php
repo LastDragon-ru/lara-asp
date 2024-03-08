@@ -6,9 +6,10 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\TestCase;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\TestCase;
 use WeakMap;
 
 use function array_map;
@@ -19,7 +20,7 @@ use function sprintf;
 /**
  * QueryLog.
  *
- * @mixin TestCase
+ * @phpstan-require-extends TestCase
  */
 trait WithQueryLog {
     /**
@@ -28,10 +29,10 @@ trait WithQueryLog {
     private ?WeakMap $withQueryLog = null;
 
     /**
-     * @before
      * @internal
      */
-    public function initWithQueryLog(): void {
+    #[Before]
+    protected function initWithQueryLog(): void {
         $this->beforeApplicationDestroyed(function (): void {
             foreach ($this->withQueryLog ?? [] as $connection => $log) {
                 /** @var Connection $connection */
