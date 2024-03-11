@@ -553,6 +553,12 @@ type User {
 [//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
+## `assertGraphQLIntrospectionEquals`
+
+Compares default public schema (as the client sees it through introspection).
+
+[Read more](<docs/Assertions/AssertGraphQLIntrospectionEquals.md>).
+
 ## `assertGraphQLSchemaEquals`
 
 Compares default schema.

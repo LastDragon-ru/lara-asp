@@ -12,7 +12,9 @@ use GraphQL\Type\Definition\EnumValueDefinition;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\BuildClientSchema;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
@@ -43,6 +45,37 @@ trait GraphQLAssertions {
 
     // <editor-fold desc="Assertions">
     // =========================================================================
+    /**
+     * Compares GraphQL schema with current (application) public (client) schema.
+     */
+    public function assertGraphQLIntrospectionEquals(
+        GraphQLExpected|SplFileInfo|string $expected,
+        string $message = '',
+    ): void {
+        // Schema
+        $schema = $this->getGraphQLSchema();
+        $schema = Introspection::fromSchema($schema);
+        $schema = BuildClientSchema::build($schema);
+
+        if (!($expected instanceof GraphQLExpected)) {
+            $expected = (new GraphQLExpected($expected))->setSchema($schema);
+        }
+
+        // Settings
+        if ($expected->getSettings() === null) {
+            $filter   = static fn() => true;
+            $expected = $expected->setSettings(
+                (new TestSettings())
+                    ->setPrintUnusedDefinitions(true)
+                    ->setTypeDefinitionFilter($filter)
+                    ->setDirectiveDefinitionFilter($filter),
+            );
+        }
+
+        // Assert
+        $this->assertGraphQLPrintableEquals($expected, $schema, $message);
+    }
+
     /**
      * Compares GraphQL schema with current (application) schema.
      */
