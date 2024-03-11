@@ -561,7 +561,7 @@ Compares default public schema (as the client sees it through introspection).
 
 ## `assertGraphQLSchemaEquals`
 
-Compares default schema.
+Compares default internal schema (with all directives).
 
 [Read more](<docs/Assertions/AssertGraphQLSchemaEquals.md>).
 

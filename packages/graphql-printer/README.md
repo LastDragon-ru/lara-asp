@@ -125,6 +125,10 @@ Please see:
 
 # Filtering
 
+> [!NOTE]
+>
+> By default, built-in/internal type/directives are not printed, if you want/need them, you should allow them by type/directive definitions filters.
+
 The Printer allows filter out types and directives. This may be useful to exclude them from the schema completely. Filtering also works for queries. Please note that types filtering will work only if the schema is known (the schema is required to determine the type of argument nodes). For some AST node types, their type may also be required.
 
 [include:example]: ./docs/Examples/Filtering.php

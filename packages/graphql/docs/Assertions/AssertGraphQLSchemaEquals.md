@@ -1,6 +1,6 @@
 # `assertGraphQLSchemaEquals`
 
-Compares default schema.
+Compares default internal schema (with all directives).
 
 [include:example]: ./AssertGraphQLSchemaEqualsTest.php
 [//]: # (start: 78ece08930d16eb88ea81e7d464ee55ccbdbdc1f5fc092bd0903eaa297981bbe)
