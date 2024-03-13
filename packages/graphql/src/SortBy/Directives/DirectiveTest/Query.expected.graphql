@@ -60,7 +60,7 @@ input SortByQueryClauseInputA {
 }
 
 """
-Sort clause for `input TypeB` (only one field allowed at a time).
+Sort clause for `type TypeB` (only one field allowed at a time).
 """
 input SortByQueryClauseTypeB {
     """
@@ -100,7 +100,7 @@ input SortByQueryRootInputA {
 }
 
 """
-Sort clause for `input TypeB` (only one field allowed at a time).
+Sort clause for `type TypeB` (only one field allowed at a time).
 """
 input SortByQueryRootTypeB {
     """
@@ -122,18 +122,6 @@ input SortByQueryRootTypeB {
     @sortByOperatorNullsLast
 }
 
-input TypeA {
-    child: TypeB!
-    id: ID!
-    name: String!
-}
-
-input TypeB {
-    id: ID!
-    name: String
-    parent: TypeA!
-}
-
 type Query {
     a(
         order: [SortByQueryRootInputA!]
@@ -150,4 +138,16 @@ type Query {
     @all(
         builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
     )
+}
+
+type TypeA {
+    child: TypeB!
+    id: ID!
+    name: String!
+}
+
+type TypeB {
+    id: ID!
+    name: String
+    parent: TypeA
 }

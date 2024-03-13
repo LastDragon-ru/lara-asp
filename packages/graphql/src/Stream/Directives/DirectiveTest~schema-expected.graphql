@@ -251,6 +251,13 @@ implements
         limit: Int!
         offset: StreamOffset
     ): TestObjectsStream!
+
+    fieldWithDirectives(
+        a: SearchByRootTestObject
+        b: [SortByRootTestObject!]
+        c: Int!
+        d: StreamOffset
+    ): TestObjectsStream!
 }
 
 interface InterfaceC {
@@ -279,6 +286,7 @@ type Query
 implements
     & InterfaceA
     & InterfaceB
+    & InterfaceC
 {
     fieldNotSearchable(
         order: [SortByRootTestObject!]

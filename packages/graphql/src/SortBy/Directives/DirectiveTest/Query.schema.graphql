@@ -16,17 +16,17 @@ input InputA {
 input InputB {
     id: ID!
     name: String
-    parent: InputA!
+    parent: InputA
 }
 
-input TypeA {
+type TypeA {
     id: ID!
     name: String!
     child: TypeB!
 }
 
-input TypeB {
+type TypeB {
     id: ID!
     name: String
-    parent: TypeA!
+    parent: TypeA
 }

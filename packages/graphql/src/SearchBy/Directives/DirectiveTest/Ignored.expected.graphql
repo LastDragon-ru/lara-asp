@@ -38,37 +38,6 @@ enum IgnoredEnum
     One
 }
 
-input A {
-    """
-    Not ignored
-    """
-    a: String!
-
-    b: [String!]!
-
-    """
-    Marked by @searchByIgnored
-    """
-    c: IgnoredInput!
-
-    d: IgnoredDate!
-    e: [IgnoredDate!]!
-    f: IgnoredEnum!
-
-    g: String
-    @searchByIgnored
-}
-
-input IgnoredInput
-@searchByIgnored
-{
-    id: ID
-}
-
-input IgnoredType {
-    name: String!
-}
-
 """
 Available conditions for `input A` (only one field allowed at a time).
 """
@@ -185,6 +154,10 @@ scalar IgnoredDate
 )
 @searchByIgnored
 
+type IgnoredType {
+    name: String!
+}
+
 type ObjectA {
     id: ID!
 }
@@ -197,7 +170,7 @@ type Query {
     a(
         where: SearchByRootA
         @searchBy
-    ): A!
+    ): B!
     @all
 
     b(

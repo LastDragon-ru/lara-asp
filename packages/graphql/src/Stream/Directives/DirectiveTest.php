@@ -296,6 +296,7 @@ final class DirectiveTest extends TestCase {
         $this->assertGraphQLSchemaEquals(
             self::getTestData()->file('~schema-expected.graphql'),
         );
+        $this->assertGraphQLSchemaValid();
     }
 
     #[RequiresLaravelScout]
@@ -319,6 +320,7 @@ final class DirectiveTest extends TestCase {
         $this->assertGraphQLSchemaEquals(
             self::getTestData()->file('~scout-expected.graphql'),
         );
+        $this->assertGraphQLSchemaValid();
     }
 
     public function testManipulateFieldDefinitionBuilderUnknown(): void {

@@ -194,14 +194,6 @@ enum SearchByTypeFlag {
     )
 }
 
-input Comment {
-    date: Date
-    text: String!
-
-    user: User
-    @belongsTo
-}
-
 """
 Available conditions for `input CommentsQuery` (only one field allowed at a time).
 """
@@ -613,6 +605,14 @@ scalar Date
 @scalar(
     class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
 )
+
+type Comment {
+    date: Date
+    text: String!
+
+    user: User
+    @belongsTo
+}
 
 type Query {
     comments(

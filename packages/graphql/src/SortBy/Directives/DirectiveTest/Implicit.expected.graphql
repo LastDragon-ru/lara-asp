@@ -1,3 +1,9 @@
+directive @directiveTest__CustomOperator
+on
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 """
 Use Input as Sort Conditions for the current Builder.
 """
@@ -135,13 +141,13 @@ input SortByClauseA {
     Field clause.
     """
     operator: SortByClauseB
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     """
     Field clause.
     """
     operators: SortByClauseB
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     """
     Field clause.
@@ -232,13 +238,13 @@ input SortByClauseC {
     Field clause.
     """
     operator: SortByClauseB
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     """
     Field clause.
     """
     operators: SortByClauseB
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     """
     Field clause.
@@ -370,10 +376,10 @@ interface C {
     name: String!
 
     operator: B!
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     operators: [B!]
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     relation: B!
     @hasOne
@@ -514,10 +520,10 @@ type A {
     name: String!
 
     operator: B!
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     operators: [B!]
-    @sortByOperatorChild
+    @directiveTest__CustomOperator
 
     relation: B!
     @hasOne

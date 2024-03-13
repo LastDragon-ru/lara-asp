@@ -7,5 +7,5 @@ type TestObject {
 }
 
 interface InterfaceA {
-    fieldWithSearch(argument: String): [TestObject]
+    fieldWithSearch(search: String!): [TestObject]
 }

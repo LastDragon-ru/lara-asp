@@ -32,10 +32,6 @@ enum SortByTypeDirection {
     )
 }
 
-input A {
-    id: ID!
-}
-
 """
 Sort clause for `input A` (only one field allowed at a time).
 """
@@ -87,7 +83,7 @@ implements
 {
     a(
         order: [SortByRootA!]
-    ): A!
+    ): B!
 
     b(
         order: [SortByRootB!]
@@ -97,7 +93,7 @@ implements
 interface QueryInterfaceA {
     a(
         order: [SortByRootA!]
-    ): A!
+    ): B!
 }
 
 interface QueryInterfaceB {
@@ -113,11 +109,13 @@ type B {
 type Query
 implements
     & QueryInterface
+    & QueryInterfaceA
+    & QueryInterfaceB
 {
     a(
         order: [SortByRootA!]
         @sortBy
-    ): A!
+    ): B!
     @all
 
     b(

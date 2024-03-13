@@ -1,6 +1,6 @@
 type Query {
     a(order: A @sortBy): ID! @all
-    b(order: A @sortBy): [A!]! @paginate(
+    b(order: A @sortBy): [ID!]! @paginate(
         model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
     )
 }

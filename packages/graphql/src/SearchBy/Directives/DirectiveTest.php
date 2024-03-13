@@ -9,6 +9,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -113,9 +114,8 @@ final class DirectiveTest extends TestCase {
             self::getTestData()->file($graphql),
         );
 
-        self::assertGraphQLSchemaEquals(
-            new GraphQLExpected(self::getTestData()->file($expected)),
-        );
+        $this->assertGraphQLSchemaEquals(self::getTestData()->file($expected));
+        $this->assertGraphQLSchemaValid();
     }
 
     #[RequiresLaravelScout]
@@ -133,16 +133,15 @@ final class DirectiveTest extends TestCase {
             self::getTestData()->file('Scout.schema.graphql'),
         );
 
-        self::assertGraphQLSchemaEquals(
-            new GraphQLExpected(
-                static::getTestData()->file(
-                    match (true) {
-                        (new RequiresLaravelScout('>=10.3.0'))->isSatisfied() => 'Scout.expected.v10.3.0.graphql',
-                        default                                               => 'Scout.expected.graphql',
-                    },
-                ),
+        $this->assertGraphQLSchemaEquals(
+            static::getTestData()->file(
+                match (true) {
+                    (new RequiresLaravelScout('>=10.3.0'))->isSatisfied() => 'Scout.expected.v10.3.0.graphql',
+                    default                                               => 'Scout.expected.graphql',
+                },
             ),
         );
+        $this->assertGraphQLSchemaValid();
     }
 
     /**
@@ -174,7 +173,7 @@ final class DirectiveTest extends TestCase {
             self::getTestData()->file('V5CompatScout.schema.graphql'),
         );
 
-        self::assertGraphQLSchemaEquals(
+        $this->assertGraphQLSchemaEquals(
             new GraphQLExpected(
                 static::getTestData()->file('V5CompatScout.expected.graphql'),
             ),
@@ -733,7 +732,7 @@ final class DirectiveTest extends TestCase {
                                     'type' => Type::nonNull(Type::string()),
                                 ],
                             ],
-                        ]) extends InputObjectType implements Ignored {
+                        ]) extends ObjectType implements Ignored {
                             // empty
                         },
                     );

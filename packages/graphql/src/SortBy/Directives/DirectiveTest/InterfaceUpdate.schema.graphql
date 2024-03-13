@@ -1,5 +1,5 @@
-type Query implements QueryInterface {
-    a(order: A @sortBy): A! @all
+type Query implements QueryInterface & QueryInterfaceA & QueryInterfaceB {
+    a(order: A @sortBy): B! @all
     b(order: _ @sortBy): B! @all
 }
 
@@ -12,12 +12,12 @@ type B {
 }
 
 interface QueryInterface implements QueryInterfaceA & QueryInterfaceB {
-    a(order: A): A!
+    a(order: A): B!
     b(order: _): B!
 }
 
 interface QueryInterfaceA {
-    a(order: A): A!
+    a(order: A): B!
 }
 
 interface QueryInterfaceB {

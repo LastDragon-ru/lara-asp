@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 
 use Closure;
 use Exception;
+use GraphQL\Language\DirectiveLocation;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -26,6 +27,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirecti
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Child;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Clause;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\Root;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Clause\V5;
@@ -34,7 +36,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvi
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
@@ -98,9 +99,8 @@ final class DirectiveTest extends TestCase {
             self::getTestData()->file($graphql),
         );
 
-        self::assertGraphQLSchemaEquals(
-            new GraphQLExpected(self::getTestData()->file($expected)),
-        );
+        $this->assertGraphQLSchemaEquals(self::getTestData()->file($expected));
+        $this->assertGraphQLSchemaValid();
     }
 
     #[RequiresLaravelScout]
@@ -121,9 +121,10 @@ final class DirectiveTest extends TestCase {
             self::getTestData()->file('Scout.schema.graphql'),
         );
 
-        self::assertGraphQLSchemaEquals(
+        $this->assertGraphQLSchemaEquals(
             self::getTestData()->file('Scout.expected.graphql'),
         );
+        $this->assertGraphQLSchemaValid();
     }
 
     /**
@@ -141,7 +142,7 @@ final class DirectiveTest extends TestCase {
             self::getTestData()->file('V5CompatScout.schema.graphql'),
         );
 
-        self::assertGraphQLSchemaEquals(
+        $this->assertGraphQLSchemaEquals(
             self::getTestData()->file('V5CompatScout.expected.graphql'),
         );
     }
@@ -590,7 +591,13 @@ final class DirectiveTest extends TestCase {
             'Implicit'          => [
                 'Implicit.expected.graphql',
                 'Implicit.schema.graphql',
-                null,
+                static function (): void {
+                    Container::getInstance()->make(DirectiveLocator::class)
+                        ->setResolved(
+                            DirectiveLocator::directiveName(DirectiveTest__CustomOperatorDirective::class),
+                            DirectiveTest__CustomOperatorDirective::class,
+                        );
+                },
             ],
             'Query'             => [
                 'Query.expected.graphql',
@@ -657,7 +664,7 @@ final class DirectiveTest extends TestCase {
                                     'type' => Type::nonNull(Type::string()),
                                 ],
                             ],
-                        ]) extends InputObjectType implements Ignored {
+                        ]) extends ObjectType implements Ignored {
                             // empty
                         },
                     );
@@ -1562,5 +1569,19 @@ class DirectiveTest__Resolver {
 class DirectiveTest__QueryBuilderResolver {
     public function __invoke(): QueryBuilder {
         throw new Exception('Should not be called.');
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class DirectiveTest__CustomOperatorDirective extends Child {
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected static function getLocations(): array {
+        return array_merge(parent::getLocations(), [DirectiveLocation::FIELD_DEFINITION]);
     }
 }

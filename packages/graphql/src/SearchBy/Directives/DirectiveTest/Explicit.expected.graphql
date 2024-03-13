@@ -194,28 +194,6 @@ enum SearchByTypeFlag {
     )
 }
 
-input A {
-    field: B!
-    fields: [B!]!
-
-    """
-    Description should be copied.
-    """
-    id: ID!
-
-    name: String!
-}
-
-input B {
-    """
-    Description should be copied.
-    """
-    id: ID!
-
-    name: String
-    parent: A!
-}
-
 """
 Available conditions for `input A` (only one field allowed at a time).
 """
@@ -680,31 +658,6 @@ input SearchByTypeRangeInt {
 }
 
 """
-A paginated list of A items.
-"""
-type APaginator
-@model(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
-)
-{
-    """
-    A list of A items.
-    """
-    data: [A!]!
-    @field(
-        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
-    )
-
-    """
-    Pagination information about the list of items.
-    """
-    paginatorInfo: PaginatorInfo!
-    @field(
-        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
-    )
-}
-
-"""
 Information about pagination using a fully featured paginator.
 """
 type PaginatorInfo {
@@ -769,8 +722,33 @@ type Query {
         The offset from which items are returned.
         """
         page: Int
-    ): APaginator!
+    ): StringPaginator!
     @paginate(
         model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    )
+}
+
+"""
+A paginated list of String items.
+"""
+type StringPaginator
+@model(
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+)
+{
+    """
+    A list of String items.
+    """
+    data: [String!]!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
+    )
+
+    """
+    Pagination information about the list of items.
+    """
+    paginatorInfo: PaginatorInfo!
+    @field(
+        resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@paginatorInfoResolver"
     )
 }

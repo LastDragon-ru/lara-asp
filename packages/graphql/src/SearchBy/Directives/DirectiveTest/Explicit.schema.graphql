@@ -1,6 +1,6 @@
 type Query {
     a(where: A @searchBy): ID! @all
-    b(where: A @searchBy): [A!]! @paginate(
+    b(where: A @searchBy): [String!]! @paginate(
         model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
     )
 }
@@ -18,5 +18,5 @@ input B {
     "Description should be copied."
     id: ID!
     name: String
-    parent: A!
+    parent: A
 }

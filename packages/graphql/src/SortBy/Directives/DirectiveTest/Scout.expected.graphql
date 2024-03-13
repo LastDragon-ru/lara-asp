@@ -320,15 +320,6 @@ input SortByClauseProperties {
     """
     nestedNotNull: SortByClauseNested
     @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    resolver: SortByTypeDirection
-    @sortByOperatorSort
-    @field(
-        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
-    )
 }
 
 """
@@ -391,15 +382,6 @@ input SortByQueryClauseProperties {
     """
     idScalarNotNull: SortByTypeDirection
     @sortByOperatorSort
-
-    """
-    Field clause.
-    """
-    resolver: SortByTypeDirection
-    @sortByOperatorSort
-    @field(
-        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
-    )
 }
 
 """
@@ -607,15 +589,6 @@ input SortByScoutClauseProperties {
     """
     nestedNotNull: SortByScoutClauseNested
     @sortByOperatorChild
-
-    """
-    Field clause.
-    """
-    resolver: SortByTypeDirection
-    @sortByOperatorSort
-    @field(
-        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SortBy\\Directives\\DirectiveTest__QueryBuilderResolver"
-    )
 }
 
 """
@@ -636,6 +609,10 @@ implements
     eloquent(
         order: [SortByRootProperties!]
     ): ID!
+
+    placeholder(
+        order: [SortByRootObject!]
+    ): Object!
 }
 
 interface ObjectInterface {
@@ -793,6 +770,7 @@ type ObjectNested {
 type Query
 implements
     & Eloquent
+    & Placeholder
     & Scout
 {
     eloquent(

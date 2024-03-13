@@ -140,7 +140,7 @@ input SearchByQueryConditionInputA {
 }
 
 """
-Available conditions for `input TypeB` (only one field allowed at a time).
+Available conditions for `type TypeB` (only one field allowed at a time).
 """
 input SearchByQueryConditionTypeB {
     """
@@ -186,7 +186,7 @@ input SearchByQueryRootInputA {
 }
 
 """
-Available conditions for `input TypeB` (only one field allowed at a time).
+Available conditions for `type TypeB` (only one field allowed at a time).
 """
 input SearchByQueryRootTypeB {
     """
@@ -409,18 +409,6 @@ input SearchByQueryScalarStringOrNull {
     @searchByOperatorStartsWith
 }
 
-input TypeA {
-    child: TypeB!
-    id: ID!
-    name: String!
-}
-
-input TypeB {
-    id: ID!
-    name: String
-    parent: TypeA!
-}
-
 type Query {
     a(
         where: SearchByQueryRootInputA
@@ -437,4 +425,16 @@ type Query {
     @all(
         builder: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__QueryBuilderResolver"
     )
+}
+
+type TypeA {
+    child: TypeB!
+    id: ID!
+    name: String!
+}
+
+type TypeB {
+    id: ID!
+    name: String
+    parent: TypeA!
 }

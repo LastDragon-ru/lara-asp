@@ -50,40 +50,6 @@ enum SortByTypeDirection {
     )
 }
 
-input A {
-    """
-    Not ignored
-    """
-    a: String!
-
-    """
-    List
-    """
-    b: [String!]
-
-    """
-    Marked by @sortByIgnored
-    """
-    c: IgnoredInput!
-
-    d: IgnoredDate!
-    e: [IgnoredDate!]!
-    f: IgnoredEnum!
-
-    g: String
-    @sortByIgnored
-}
-
-input IgnoredInput
-@sortByIgnored
-{
-    id: ID
-}
-
-input IgnoredType {
-    name: String!
-}
-
 """
 Sort clause for `input A` (only one field allowed at a time).
 """
@@ -186,6 +152,10 @@ scalar IgnoredDate
 )
 @sortByIgnored
 
+type IgnoredType {
+    name: String!
+}
+
 type ObjectA {
     id: ID!
 }
@@ -198,7 +168,7 @@ type Query {
     a(
         order: [SortByRootA!]
         @sortBy
-    ): A!
+    ): B!
     @all
 
     b(

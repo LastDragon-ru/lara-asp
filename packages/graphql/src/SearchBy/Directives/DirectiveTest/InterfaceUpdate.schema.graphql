@@ -1,5 +1,5 @@
-type Query implements QueryInterface {
-    a(where: A @searchBy): A! @all
+type Query implements QueryInterface & QueryInterfaceA & QueryInterfaceB {
+    a(where: A @searchBy): B! @all
     b(where: _ @searchBy): B! @all
 }
 
@@ -12,12 +12,12 @@ type B {
 }
 
 interface QueryInterface implements QueryInterfaceA & QueryInterfaceB {
-    a(where: A): A!
+    a(where: A): B!
     b(where: _): B!
 }
 
 interface QueryInterfaceA {
-    a(where: A): A!
+    a(where: A): B!
 }
 
 interface QueryInterfaceB {

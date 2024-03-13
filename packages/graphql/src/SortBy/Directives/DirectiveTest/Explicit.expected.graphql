@@ -47,28 +47,6 @@ enum SortByTypeDirection {
     )
 }
 
-input A {
-    field: B!
-    fields: [B!]!
-
-    """
-    Description should be copied.
-    """
-    id: ID!
-
-    name: String!
-}
-
-input B {
-    """
-    Description should be copied.
-    """
-    id: ID!
-
-    name: String
-    parent: A!
-}
-
 """
 Sort clause for `input A` (only one field allowed at a time).
 """
@@ -145,17 +123,17 @@ input SortByRootA {
 }
 
 """
-A paginated list of A items.
+A paginated list of ID items.
 """
-type APaginator
+type IDPaginator
 @model(
     class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
 )
 {
     """
-    A list of A items.
+    A list of ID items.
     """
-    data: [A!]!
+    data: [ID!]!
     @field(
         resolver: "Nuwave\\Lighthouse\\Pagination\\PaginatorField@dataResolver"
     )
@@ -234,7 +212,7 @@ type Query {
         The offset from which items are returned.
         """
         page: Int
-    ): APaginator!
+    ): IDPaginator!
     @paginate(
         model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
     )

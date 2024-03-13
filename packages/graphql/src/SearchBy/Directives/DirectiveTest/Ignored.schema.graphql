@@ -1,5 +1,5 @@
 type Query {
-    a(where: A @searchBy): A! @all
+    a(where: A @searchBy): B! @all
     b(where: _ @searchBy): B! @all
 }
 

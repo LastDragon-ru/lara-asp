@@ -1,4 +1,4 @@
-type Query implements A & B {
+type Query implements A & B & C & F {
     a(search: String @search, where: InputA @searchBy): ID! @all
 
     b(search: String @search, where: NestedA @searchBy): ID! @all
@@ -16,6 +16,8 @@ type Query implements A & B {
 
 interface A implements C & F {
     a(where: InputA): ID!
+    c(where: TypeDoesntMatter): ID!
+    f(search: String, where: _): Object!
 }
 
 interface B {
@@ -48,9 +50,6 @@ input InputA {
     enumIgnored: EnumIgnored
     enumEnumIgnoredNotNull: EnumIgnored!
     ignored: String @searchByIgnored
-    resolver: Float @field(
-        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
-    )
     ignoredType: InputIgnored
     ignoredTypeList: [InputIgnored!]!
     ignoredTypeNonNull: InputIgnored!

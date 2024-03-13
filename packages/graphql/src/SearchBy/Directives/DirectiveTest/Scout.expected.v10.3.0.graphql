@@ -206,15 +206,6 @@ input SearchByScoutConditionInputA {
     """
     Field condition.
     """
-    resolver: SearchByScoutScalarFloatOrNull
-    @searchByOperatorCondition
-    @field(
-        resolver: "\\LastDragon_ru\\LaraASP\\GraphQL\\SearchBy\\Directives\\DirectiveTest__Resolver"
-    )
-
-    """
-    Field condition.
-    """
     stringScalar: SearchByScoutScalarStringOrNull
     @searchByOperatorCondition
 
@@ -971,6 +962,15 @@ implements
     a(
         where: SearchByScoutRootInputA
     ): ID!
+
+    c(
+        where: SearchByScoutRootInputB
+    ): ID!
+
+    f(
+        search: String
+        where: SearchByScoutRootObject
+    ): Object!
 }
 
 interface B {
@@ -1165,6 +1165,8 @@ type Query
 implements
     & A
     & B
+    & C
+    & F
 {
     a(
         search: String

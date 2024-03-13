@@ -1,4 +1,4 @@
-type Query implements InterfaceA & InterfaceB {
+type Query implements InterfaceA & InterfaceB & InterfaceC {
     fieldWithoutArguments: [TestObject] @stream
 
     fieldWithArguments(argument: String): [TestObject] @stream
@@ -57,6 +57,12 @@ interface InterfaceA {
 
 interface InterfaceB implements InterfaceC {
     fieldNotSearchable: [TestObject]
+    fieldWithDirectives(
+        a: TypeDoesntMatter,
+        b: TypeDoesntMatter,
+        c: TypeDoesntMatter,
+        d: TypeDoesntMatter,
+    ): [TestObject]
 }
 
 interface InterfaceC {

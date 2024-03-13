@@ -20,10 +20,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-input A {
-    id: ID!
-}
-
 """
 Available conditions for `input A` (only one field allowed at a time).
 """
@@ -86,7 +82,7 @@ implements
 {
     a(
         where: SearchByRootA
-    ): A!
+    ): B!
 
     b(
         where: SearchByRootB
@@ -96,7 +92,7 @@ implements
 interface QueryInterfaceA {
     a(
         where: SearchByRootA
-    ): A!
+    ): B!
 }
 
 interface QueryInterfaceB {
@@ -112,11 +108,13 @@ type B {
 type Query
 implements
     & QueryInterface
+    & QueryInterfaceA
+    & QueryInterfaceB
 {
     a(
         where: SearchByRootA
         @searchBy
-    ): A!
+    ): B!
     @all
 
     b(
