@@ -89,7 +89,7 @@ interface InterfaceC {
 
 extend interface InterfaceA @directive(location: "extend")
 
-extend interface InterfaceC implements InterfaceA & InterfaceB
+extend interface InterfaceC implements InterfaceA
 
 interface InterfaceUnused {
     a: Int
@@ -99,11 +99,12 @@ interface InterfaceUnused {
 Type description.
 """
 
-type TypeA implements InterfaceC @directive(location: "type") {
+type TypeA implements InterfaceA & InterfaceC @directive(location: "type") {
     "Field description."
     b: [String!]
     c: [Float!]!
     a: Int @deprecated
+    d: TypeHidden!
 }
 
 type TypeB {
@@ -117,7 +118,8 @@ type TypeC {
 extend type TypeA @directive(location: "extend")
 
 extend type TypeA implements InterfaceB {
-    d: [String!] @directive(location: "extend")
+    e(a: Int, b: InputHidden): Int
+    f: [String!] @directive(location: "extend")
 }
 
 type TypeUnused {

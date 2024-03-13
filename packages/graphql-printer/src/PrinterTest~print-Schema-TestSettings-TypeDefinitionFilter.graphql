@@ -113,7 +113,6 @@ implements
 interface InterfaceC
 implements
     & InterfaceA
-    & InterfaceB
 {
     a: Int
     b: [String!]
@@ -178,6 +177,7 @@ Type description.
 """
 type TypeA
 implements
+    & InterfaceA
     & InterfaceB
     & InterfaceC
 @directive(
@@ -196,8 +196,14 @@ implements
     b: [String!]
 
     c: [Float!]!
+    d: TypeHidden!
 
-    d: [String!]
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+
+    f: [String!]
     @directive(
         location: "extend"
     )

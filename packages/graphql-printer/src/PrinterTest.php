@@ -62,6 +62,10 @@ final class PrinterTest extends TestCase {
         $actual    = $printer->print($printable, $level, $used, $type);
 
         $this->assertGraphQLPrintableEquals($expected, $actual);
+
+        if ($printable instanceof Schema) {
+            $printable->assertValid();
+        }
     }
 
     /**
@@ -89,6 +93,10 @@ final class PrinterTest extends TestCase {
         $actual     = $printer->export($exportable, $level, $used, $type);
 
         $this->assertGraphQLPrintableEquals($expected, $actual);
+
+        if ($exportable instanceof Schema) {
+            $exportable->assertValid();
+        }
     }
     // </editor-fold>
 
@@ -549,7 +557,6 @@ final class PrinterTest extends TestCase {
                         'Int',
                         'Float',
                         'InterfaceA',
-                        'InterfaceB',
                         'InterfaceC',
                         'InputHidden',
                         'TypeHidden',

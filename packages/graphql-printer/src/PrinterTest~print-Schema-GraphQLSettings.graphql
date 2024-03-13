@@ -54,7 +54,7 @@ interface InterfaceB implements InterfaceA {
   b: [String!]
 }
 
-interface InterfaceC implements InterfaceA & InterfaceB {
+interface InterfaceC implements InterfaceA {
   b: [String!]
   c: [Float!]!
   a: Int
@@ -92,7 +92,7 @@ type Subscription {
 """
 Type description.
 """
-type TypeA implements InterfaceC & InterfaceB {
+type TypeA implements InterfaceA & InterfaceC & InterfaceB {
   """
   Field description.
   """
@@ -103,7 +103,9 @@ type TypeA implements InterfaceC & InterfaceB {
   a: Int
   @deprecated
 
-  d: [String!]
+  d: TypeHidden!
+  e(a: Int, b: InputHidden): Int
+  f: [String!]
 }
 
 type TypeB {

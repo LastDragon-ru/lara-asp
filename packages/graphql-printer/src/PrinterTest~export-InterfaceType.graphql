@@ -1,7 +1,6 @@
     interface InterfaceC
     implements
         & InterfaceA
-        & InterfaceB
     {
         a: Int
         b: [String!]
@@ -58,21 +57,6 @@
     )
     {
         a: Int
-    }
-
-    interface InterfaceB
-    implements
-        & InterfaceA
-    {
-        """
-        Field description.
-        """
-        a: Int
-
-        b: [String!]
-        @directive(
-            location: "field"
-        )
     }
 
     type TypeHidden {

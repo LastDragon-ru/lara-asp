@@ -161,7 +161,7 @@ enum Enum
 """
 Type description.
 """
-type TypeA implements InterfaceC & InterfaceB
+type TypeA implements InterfaceA & InterfaceC & InterfaceB
 @directive(
     location: "type"
 )
@@ -179,7 +179,14 @@ type TypeA implements InterfaceC & InterfaceB
     a: Int
     @deprecated
 
-    d: [String!]
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+
+    f: [String!]
     @directive(
         location: "extend"
     )
@@ -197,6 +204,18 @@ interface InterfaceB implements InterfaceA {
     )
 }
 
+interface InterfaceC implements InterfaceA {
+    b: [String!]
+    c: [Float!]!
+    a: Int
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+}
+
 """
 Interface description.
 """
@@ -209,16 +228,4 @@ interface InterfaceA
 )
 {
     a: Int
-}
-
-interface InterfaceC implements InterfaceA & InterfaceB {
-    b: [String!]
-    c: [Float!]!
-    a: Int
-    d: TypeHidden!
-
-    e(
-        a: Int
-        b: InputHidden
-    ): Int
 }
