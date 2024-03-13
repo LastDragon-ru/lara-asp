@@ -15,6 +15,7 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\BreakingChangesFinder;
 use GraphQL\Utils\BuildClientSchema;
 use GraphQL\Utils\BuildSchema;
 use Illuminate\Container\Container;
@@ -33,10 +34,15 @@ use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 
 use function assert;
+use function implode;
+use function ksort;
+use function trim;
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
+ * @phpstan-import-type Change from BreakingChangesFinder
+ *
  * @mixin TestCase
  */
 trait GraphQLAssertions {
@@ -104,23 +110,32 @@ trait GraphQLAssertions {
         // Why do not use `lighthouse:validate-schema` command? Because it loads
         // all existing directives (even not used) and thus extremely slow.
 
-        // Print
-        $schema = $this->getGraphQLSchema();
-        $schema = (string) $this
-            ->getGraphQLPrinter(new TestSettings())
-            ->print($schema);
-
-        // Validate
         $valid = true;
 
         try {
-            BuildSchema::build($schema)->assertValid();
+            BuildSchema::build($this->getGraphQLSchemaString())->assertValid();
         } catch (Exception $exception) {
             $valid   = false;
             $message = ($message ?: 'The schema is not valid.')."\n\n".$exception->getMessage();
         }
 
         self::assertTrue($valid, $message);
+    }
+
+    /**
+     * Checks the current (application) schema has no breaking changes.
+     */
+    public function assertGraphQLSchemaNoBreakingChanges(
+        SplFileInfo|string $expected,
+        string $message = '',
+    ): void {
+        $oldSchema = BuildSchema::build(Args::content($expected));
+        $newSchema = BuildSchema::build($this->getGraphQLSchemaString());
+        $changes   = BreakingChangesFinder::findBreakingChanges($oldSchema, $newSchema);
+        $changes   = $this->getGraphQLChanges($changes);
+        $message   = ($message ?: 'The breaking changes found!')."\n\n{$changes}\n";
+
+        self::assertTrue($changes === '', $message);
     }
 
     /**
@@ -206,6 +221,33 @@ trait GraphQLAssertions {
 
         // Return
         return $builder;
+    }
+
+    private function getGraphQLSchemaString(): string {
+        return (string) $this
+            ->getGraphQLPrinter(new TestSettings())
+            ->print($this->getGraphQLSchema());
+    }
+
+    /**
+     * @param array<array-key, Change> $changes
+     */
+    private function getGraphQLChanges(array $changes): string {
+        $message = '';
+        $groups  = [];
+
+        foreach ($changes as $change) {
+            $groups[$change['type']] ??= [];
+            $groups[$change['type']][] = $change['description'];
+        }
+
+        ksort($groups);
+
+        foreach ($groups as $type => $descriptions) {
+            $message .= "{$type}:\n\n* ".implode('* ', $descriptions)."\n\n";
+        }
+
+        return trim($message);
     }
     // </editor-fold>
 }
