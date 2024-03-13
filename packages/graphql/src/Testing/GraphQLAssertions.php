@@ -139,6 +139,22 @@ trait GraphQLAssertions {
     }
 
     /**
+     * Checks the current (application) schema has no dangerous changes.
+     */
+    public function assertGraphQLSchemaNoDangerousChanges(
+        SplFileInfo|string $expected,
+        string $message = '',
+    ): void {
+        $oldSchema = BuildSchema::build(Args::content($expected));
+        $newSchema = BuildSchema::build($this->getGraphQLSchemaString());
+        $changes   = BreakingChangesFinder::findDangerousChanges($oldSchema, $newSchema);
+        $changes   = $this->getGraphQLChanges($changes);
+        $message   = ($message ?: 'The dangerous changes found!')."\n\n{$changes}\n";
+
+        self::assertTrue($changes === '', $message);
+    }
+
+    /**
      * @param Closure(Printer, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
      */
     private function assertGraphQLResult(

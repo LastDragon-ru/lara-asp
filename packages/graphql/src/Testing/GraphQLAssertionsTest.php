@@ -206,4 +206,59 @@ final class GraphQLAssertionsTest extends TestCase {
             $message,
         );
     }
+
+    public function testAssertGraphQLSchemaNoDangerousChanges(): void {
+        // Prepare
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('a', TestDirective::class)
+            ->setResolved('test', TestDirective::class);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            directive @a(a: Boolean = true) on OBJECT
+
+            type Query @a {
+                a(a: Int = 321): Int! @test
+            }
+            GRAPHQL,
+        );
+
+        // Test
+        $valid   = true;
+        $message = null;
+
+        try {
+            $this->assertGraphQLSchemaNoDangerousChanges(
+                <<<'GRAPHQL'
+                directive @a(a: Boolean = false) on OBJECT
+                directive @test on FIELD_DEFINITION
+
+                type Query @a(a: "value") {
+                    a(a: Int = 123): Int! @test
+                }
+                GRAPHQL,
+            );
+        } catch (ExpectationFailedException $exception) {
+            $valid   = false;
+            $message = $exception->getMessage();
+        }
+
+        self::assertFalse($valid);
+
+        // todo(graphql-php): Strange breaking changes:
+        //      - `@a(a)` default value was changed but not detected
+
+        self::assertEquals(
+            <<<'STRING'
+            The dangerous changes found!
+
+            ARG_DEFAULT_VALUE_CHANGE:
+
+            * Query.a arg a has changed defaultValue
+
+            Failed asserting that false is true.
+            STRING,
+            $message,
+        );
+    }
 }

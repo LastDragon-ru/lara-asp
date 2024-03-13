@@ -571,6 +571,12 @@ Checks that no breaking changes in the default internal schema (with all directi
 
 [Read more](<docs/Assertions/AssertGraphQLSchemaNoBreakingChanges.md>).
 
+## `assertGraphQLSchemaNoDangerousChanges`
+
+Checks that no dangerous changes in the default internal schema (with all directives).
+
+[Read more](<docs/Assertions/AssertGraphQLSchemaNoDangerousChanges.md>).
+
 ## `assertGraphQLSchemaValid`
 
 Validates default internal schema (with all directives). Faster than `lighthouse:validate-schema` command because loads only used directives.
