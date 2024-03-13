@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use Closure;
+use Exception;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeList;
@@ -15,6 +16,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildClientSchema;
+use GraphQL\Utils\BuildSchema;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
@@ -63,7 +65,7 @@ trait GraphQLAssertions {
 
         // Settings
         if ($expected->getSettings() === null) {
-            $filter   = static fn() => true;
+            $filter   = static fn () => true;
             $expected = $expected->setSettings(
                 (new TestSettings())
                     ->setPrintUnusedDefinitions(true)
@@ -88,6 +90,37 @@ trait GraphQLAssertions {
             $this->getGraphQLSchema(),
             $message,
         );
+    }
+
+    /**
+     * Validates current (application) schema.
+     */
+    public function assertGraphQLSchemaValid(string $message = ''): void {
+        // To perform validation, we should load all directives first. This is
+        // required because they can be defined inside the schema (and it is
+        // fine) or as a PHP class (in this case, the definition should be added
+        // to the schema by hand).
+        //
+        // Why do not use `lighthouse:validate-schema` command? Because it loads
+        // all existing directives (even not used) and thus extremely slow.
+
+        // Print
+        $schema = $this->getGraphQLSchema();
+        $schema = (string) $this
+            ->getGraphQLPrinter(new TestSettings())
+            ->print($schema);
+
+        // Validate
+        $valid = true;
+
+        try {
+            BuildSchema::build($schema)->assertValid();
+        } catch (Exception $exception) {
+            $valid   = false;
+            $message = ($message ?: 'The schema is not valid.')."\n\n".$exception->getMessage();
+        }
+
+        self::assertTrue($valid, $message);
     }
 
     /**

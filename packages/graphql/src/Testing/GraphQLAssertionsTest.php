@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @internal
@@ -99,6 +100,45 @@ final class GraphQLAssertionsTest extends TestCase {
         $this->assertGraphQLPrintableEquals(
             $expected,
             $type,
+        );
+    }
+
+    public function testAssertGraphQLSchemaValid(): void {
+        // Prepare
+        Container::getInstance()->make(DirectiveLocator::class)
+            ->setResolved('a', TestDirective::class)
+            ->setResolved('test', TestDirective::class);
+
+        $this->useGraphQLSchema(
+            <<<'GRAPHQL'
+            directive @a(a: Int!) on OBJECT
+
+            type Query @a {
+                a: String @test
+            }
+            GRAPHQL,
+        );
+
+        // Test
+        $valid   = true;
+        $message = null;
+
+        try {
+            $this->assertGraphQLSchemaValid();
+        } catch (ExpectationFailedException $exception) {
+            $valid   = false;
+            $message = $exception->getMessage();
+        }
+
+        self::assertFalse($valid);
+        self::assertEquals(
+            <<<'STRING'
+            The schema is not valid.
+
+            Directive "@a" argument "a" of type "Int!" is required but not provided.
+            Failed asserting that false is true.
+            STRING,
+            $message,
         );
     }
 }
