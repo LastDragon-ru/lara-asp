@@ -91,7 +91,7 @@ class ConfigMerger {
         // Merge
         foreach ($config as $key => &$value) {
             // Current path
-            $current = $path ? "{$path}.{$key}" : $key;
+            $current = $path ? "{$path}.{$key}" : "{$key}";
 
             // Only scalars/nulls and arrays of them allowed
             if (!is_scalar($value) && !is_null($value) && !is_array($value)) {
