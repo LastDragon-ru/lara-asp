@@ -31,7 +31,7 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
             ' | ',
             array_unique(
                 array_merge(
-                    static::getLocations(),
+                    static::locations(),
                     [
                         // Location is mandatory to be able to call the operator
                         DirectiveLocation::INPUT_FIELD_DEFINITION,
@@ -48,11 +48,22 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
     /**
      * @return list<string>
      */
-    protected static function getLocations(): array {
-        return [
+    protected static function locations(): array {
+        return array_merge(static::getLocations(), [
             // Locations are required to be able to add operators inside the schema
             DirectiveLocation::SCALAR,
             DirectiveLocation::ENUM,
+        ]);
+    }
+
+    /**
+     * @deprecated 6.0.0 Use {@see self::locations()} instead.
+     *
+     * @return list<string>
+     */
+    protected static function getLocations(): array {
+        return [
+            // empty
         ];
     }
 

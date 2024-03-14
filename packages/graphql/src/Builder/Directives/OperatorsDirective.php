@@ -17,7 +17,7 @@ abstract class OperatorsDirective extends ExtendOperatorsDirective {
     #[Override]
     public static function definition(): string {
         $name      = DirectiveLocator::directiveName(static::class);
-        $locations = implode(' | ', array_unique(static::getDirectiveLocations()));
+        $locations = implode(' | ', array_unique(static::locations()));
 
         return <<<GRAPHQL
             """

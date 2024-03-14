@@ -22,7 +22,7 @@ class Field extends Operator {
      * @inheritDoc
      */
     #[Override]
-    protected static function getLocations(): array {
+    protected static function locations(): array {
         return [
             DirectiveLocation::SCALAR,
         ];

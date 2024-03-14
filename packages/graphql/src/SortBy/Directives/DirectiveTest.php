@@ -1581,7 +1581,7 @@ class DirectiveTest__CustomOperatorDirective extends Child {
      * @inheritDoc
      */
     #[Override]
-    protected static function getLocations(): array {
-        return array_merge(parent::getLocations(), [DirectiveLocation::FIELD_DEFINITION]);
+    protected static function locations(): array {
+        return array_merge(parent::locations(), [DirectiveLocation::FIELD_DEFINITION]);
     }
 }
