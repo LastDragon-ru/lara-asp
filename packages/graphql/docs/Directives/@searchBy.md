@@ -60,7 +60,7 @@ type User {
     name: String!
 }
 
-input Comment {
+type Comment {
     text: String!
     user: User @belongsTo
     date: Date

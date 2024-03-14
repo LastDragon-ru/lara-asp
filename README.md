@@ -124,6 +124,7 @@ Please follow [Upgrade Guide](UPGRADE.md).
 |  🧪  | Docs  | Experimental feature. Any feedback would be greatly appreciated. |
 |  🐝  | Docs  | Package intended to use in dev.                                  |
 |  🤝  | Docs  | Backward-compatible change.                                      |
+|  💀  | Docs  | Deprecated feature.                                              |
 |  🡹  | CI    | The highest versions of dependencies are used.                   |
 |  🔒  | CI    | The locked versions of dependencies are used.                    |
 |  🡻  | CI    | The lowest versions of dependencies are used.                    |
