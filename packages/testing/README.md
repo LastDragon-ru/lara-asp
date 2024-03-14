@@ -252,6 +252,12 @@ Asserts that JSON matches [schema](https://json-schema.org/). Validation based o
 
 [Read more](<docs/Assertions/AssertJsonMatchesSchema.md>).
 
+## `assertPsrResponse`
+
+Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
+
+[Read more](<docs/Assertions/AssertPsrResponse.md>).
+
 ## `assertQueryLogEquals`
 
 Asserts that `QueryLog` equals `QueryLog`.
