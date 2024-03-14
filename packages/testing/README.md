@@ -276,7 +276,7 @@ Asserts that Scout Query equals Scout Query.
 
 [Read more](<docs/Assertions/AssertScoutQueryEquals.md>).
 
-## `assertThatResponse`
+## `assertThatResponse` 💀
 
 Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
 

@@ -1,6 +1,10 @@
-# `assertThatResponse`
+# `assertThatResponse` 💀
 
 Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
+
+> [!WARNING]
+>
+> Assertion is deprecated, please use [`assertPsrResponse()`](./AssertPsrResponse.md) instead.
 
 [include:example]: ./AssertThatResponseTest.php
 [//]: # (start: fef995e7dea4e96b1398204ed11e6026d59490486273866194ec75545254c806)

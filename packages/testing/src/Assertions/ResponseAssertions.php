@@ -13,6 +13,8 @@ use Psr\Http\Message\ResponseInterface;
 trait ResponseAssertions {
     /**
      * Asserts that PSR Response satisfies given constraint.
+     *
+     * @deprecated 6.0.0 Please use {@see static::assertPsrResponse()}
      */
     public static function assertThatResponse(
         ResponseInterface $response,
