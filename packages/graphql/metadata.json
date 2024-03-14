@@ -1,5 +1,5 @@
 {
-    "version": "6.0.0",
+    "version": "6.1.0",
     "require": {
         "php": "PHP",
         "laravel/framework": "Laravel",
@@ -7,6 +7,19 @@
     },
     "requirements": {
         "HEAD": {
+            "laravel/framework": [
+                "^10.0.0"
+            ],
+            "nuwave/lighthouse": [
+                "^6.5.0"
+            ],
+            "php": [
+                "^8.3",
+                "^8.2",
+                "^8.1"
+            ]
+        },
+        "6.1.0": {
             "laravel/framework": [
                 "^10.0.0"
             ],
