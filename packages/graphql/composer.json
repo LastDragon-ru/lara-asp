@@ -22,7 +22,7 @@
     "ext-filter": "*",
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
-    "laravel/framework": "^10.0.0",
+    "laravel/framework": "^10.34.0",
     "nuwave/lighthouse": "^6.5.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",

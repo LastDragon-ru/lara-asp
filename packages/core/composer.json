@@ -20,7 +20,7 @@
   "require": {
     "php": "^8.1|^8.2|^8.3",
     "ext-mbstring": "*",
-    "laravel/framework": "^10.0.0",
+    "laravel/framework": "^10.34.0",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {

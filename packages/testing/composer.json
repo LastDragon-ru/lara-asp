@@ -29,7 +29,7 @@
     "doctrine/dbal": "^3.1.4",
     "doctrine/sql-formatter": "^1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",
-    "laravel/framework": "^10.0.0",
+    "laravel/framework": "^10.34.0",
     "mockery/mockery": "^1.6.2",
     "opis/json-schema": "^2.3.0",
     "phpunit/phpunit": "^10.1.0",
