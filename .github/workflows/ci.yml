@@ -30,6 +30,9 @@ jobs:
       - name: Check package versions
         run: |
           composer run-script monorepo-builder
+      - name: Check dependencies
+        run: |
+          composer run-script composer-dependency-analyser
       - name: Check packages
         run: |
           composer run-script composer-require-checker
@@ -66,6 +69,9 @@ jobs:
         uses: ramsey/composer-install@v2
         with:
           working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+      - name: Check dependencies
+        run: |
+          composer run-script composer-dependency-analyser -- --composer-json="${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
       - name: Check packages
         run: |
           composer run-script composer-require-checker -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
