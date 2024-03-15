@@ -8,6 +8,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
 
+use function array_column;
 use function in_array;
 use function is_string;
 
@@ -20,7 +21,7 @@ class SeederService {
     // =========================================================================
     public function isSeeded(): bool {
         $seeded  = false;
-        $tables  = $this->getConnection()->getDoctrineSchemaManager()->listTableNames();
+        $tables  = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
         $skipped = [
             Container::getInstance()->make(Repository::class)->get('database.migrations'),
         ];

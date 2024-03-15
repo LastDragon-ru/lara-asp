@@ -26,7 +26,7 @@ trait RefreshDatabaseIfEmpty {
     protected function refreshTestDatabase(): void {
         if (!RefreshDatabaseState::$migrated) {
             $connection = Container::getInstance()->make(DatabaseManager::class)->connection();
-            $tables     = $connection->getDoctrineSchemaManager()->listTableNames();
+            $tables     = $connection->getSchemaBuilder()->getTables();
 
             if ($tables) {
                 RefreshDatabaseState::$migrated = true;
