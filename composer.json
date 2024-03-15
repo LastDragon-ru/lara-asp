@@ -166,8 +166,9 @@
     ],
     "validate:dependencies": [
       "@monorepo-builder",
-      "@composer-unused",
-      "@composer-require-checker"
+      "@composer-dependency-analyser",
+      "@composer-require-checker",
+      "@composer-unused"
     ],
     "phpstan": [
       "./vendor-bin/phpstan/vendor/bin/phpstan analyse"
@@ -186,6 +187,9 @@
     ],
     "composer-require-checker": [
       "./vendor-bin/composer-require-checker/vendor/bin/composer-require-checker check"
+    ],
+    "composer-dependency-analyser": [
+      "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose"
     ],
     "monorepo-builder": [
       "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder validate"
