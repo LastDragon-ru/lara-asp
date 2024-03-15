@@ -7,7 +7,6 @@ use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Laravel\Prompts\Output\ConsoleOutput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,7 +37,7 @@ class App {
 
         $app    = static::create();
         $kernel = $app->make(ConsoleKernelContract::class);
-        $status = $kernel->handle($input, $output ?? new ConsoleOutput());
+        $status = $kernel->handle($input, $output);
 
         $kernel->terminate($input, $status);
 
