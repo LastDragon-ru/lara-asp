@@ -19,6 +19,7 @@ use function array_combine;
 use function array_diff_key;
 use function array_filter;
 use function array_keys;
+use function array_map;
 use function array_merge;
 use function array_search;
 use function array_unique;
@@ -33,9 +34,13 @@ use function is_array;
 use function json_decode;
 use function mb_strlen;
 use function mb_substr;
+use function natsort;
+use function preg_match;
+use function preg_quote;
 use function range;
 use function reset;
 use function str_starts_with;
+use function strtr;
 use function trim;
 use function uksort;
 
@@ -73,6 +78,18 @@ class Requirements extends Command {
             }
         }
         ```
+
+        You can also merge multiple requirements into one. For example, the
+        following will merge all `illuminate` into `laravel/framework` (the
+        package will be ignored if not listed in `require`):
+
+        ```json
+        {
+            "merge": {
+                "illuminate/*": "laravel/framework"
+            }
+        }
+        ```
         HELP;
 
     public function __invoke(PackageViewer $viewer, Git $git, Serializer $serializer): void {
@@ -86,6 +103,9 @@ class Requirements extends Command {
         $packages = $metadata->require ?: [
             'php'               => 'PHP',
             'laravel/framework' => 'Laravel',
+        ];
+        $merge    = $metadata->merge ?? [
+            'illuminate/*' => 'laravel/framework',
         ];
 
         foreach ($tags as $tag) {
@@ -106,13 +126,7 @@ class Requirements extends Command {
             }
 
             // Update
-            $metadata->requirements[$tag] = [];
-
-            foreach ($packages as $key => $title) {
-                $required                           = explode('|', Cast::toString($package['require'][$key] ?? ''));
-                $required                           = array_values(array_filter($required));
-                $metadata->requirements[$tag][$key] = $required;
-            }
+            $metadata->requirements[$tag] = $this->getPackageRequirements($packages, $merge, $package);
         }
 
         // Cleanup
@@ -190,6 +204,64 @@ class Requirements extends Command {
         }
 
         return $package;
+    }
+
+    /**
+     * @param array<string, string>   $require
+     * @param array<string, string>   $merge
+     * @param array<array-key, mixed> $package
+     *
+     * @return array<string, list<string>>
+     */
+    protected function getPackageRequirements(array $require, array $merge, array $package): array {
+        // Prepare
+        $regexps = [];
+
+        foreach ($require as $key => $title) {
+            $regexp           = '#^'.preg_quote($key).'$#u';
+            $regexps[$regexp] = $key;
+        }
+
+        foreach ($merge as $pattern => $key) {
+            $regexp           = '#^'.strtr(preg_quote($pattern), ['\\*' => '.+?']).'$#u';
+            $regexps[$regexp] = $key;
+        }
+
+        // Requirements
+        $requirements = [];
+
+        foreach ($package['require'] ?? [] as $requirement => $constraint) {
+            // Match?
+            $match = false;
+
+            foreach ($regexps as $regexp => $key) {
+                if (preg_match($regexp, $requirement)) {
+                    $requirement = $key;
+                    $match       = true;
+                    break;
+                }
+            }
+
+            if (!$match) {
+                continue;
+            }
+
+            // Wanted?
+            if (!isset($require[$requirement])) {
+                continue;
+            }
+
+            // Add
+            $required                   = explode('|', Cast::toString($constraint));
+            $required                   = array_values(array_filter(array_map(trim(...), $required)));
+            $requirement                = Cast::toString($requirement);
+            $requirements[$requirement] = array_merge($requirements[$requirement] ?? [], $required);
+            $requirements[$requirement] = array_values(array_unique($requirements[$requirement]));
+
+            natsort($requirements[$requirement]);
+        }
+
+        return $requirements;
     }
 
     /**

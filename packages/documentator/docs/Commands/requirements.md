@@ -22,6 +22,18 @@ PHP only:
 }
 ```
 
+You can also merge multiple requirements into one. For example, the
+following will merge all `illuminate` into `laravel/framework` (the
+package will be ignored if not listed in `require`):
+
+```json
+{
+    "merge": {
+        "illuminate/*": "laravel/framework"
+    }
+}
+```
+
 ## Arguments
 
 ### `cwd?`

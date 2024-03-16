@@ -8,13 +8,28 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
  * @internal
  */
 class Metadata implements Serializable {
-    /**
-     * @param array<string, string>                      $require
-     * @param array<string, array<string, list<string>>> $requirements
-     */
     public function __construct(
+        /**
+         * Package version.
+         */
         public ?string $version = null,
+        /**
+         * Requirements to show.
+         *
+         * @var array<string, string>
+         */
         public array $require = [],
+        /**
+         * Defines how to merge packages (`illuminate/*`, `symfony/*`, etc)
+         *
+         * @var array<string, string>|null
+         */
+        public ?array $merge = null,
+        /**
+         * Cached requirements.
+         *
+         * @var array<string, array<string, list<string>>>
+         */
         public array $requirements = [],
     ) {
         // empty

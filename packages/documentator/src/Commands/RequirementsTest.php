@@ -103,4 +103,58 @@ final class RequirementsTest extends TestCase {
             $command->getRequirements($packages, $metadata),
         );
     }
+
+    public function testGetPackageRequirements(): void {
+        $merge    = [
+            'illuminate/*'    => 'laravel/framework',
+            'example/package' => 'another/package',
+        ];
+        $packages = [
+            'laravel/framework' => 'Laravel',
+            'php'               => 'PHP',
+        ];
+        $package  = [
+            'require' => [
+                'php'                  => '^8.1|^8.2|^8.3',
+                'ext-mbstring'         => '*',
+                'composer/semver'      => '^3.2',
+                'laravel/framework'    => '^10.34.0',
+                'league/commonmark'    => '^2.4',
+                'illuminate/auth'      => '^10 || ^9',
+                'illuminate/bus'       => '^9 || ^10',
+                'illuminate/contracts' => '^9 || ^10 || ^11',
+                'example/package'      => '~1.0.0',
+            ],
+        ];
+        $command  = new class() extends Requirements {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getPackageRequirements(array $require, array $merge, array $package): array {
+                return parent::getPackageRequirements(
+                    $require,
+                    $merge,
+                    $package,
+                );
+            }
+        };
+
+        self::assertEquals(
+            [
+                'laravel/framework' => [
+                    '^9',
+                    '^10',
+                    '^10.34.0',
+                    '^11',
+                ],
+                'php'               => [
+                    '^8.1',
+                    '^8.2',
+                    '^8.3',
+                ],
+            ],
+            $command->getPackageRequirements($packages, $merge, $package),
+        );
+    }
 }
