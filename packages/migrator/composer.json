@@ -24,7 +24,7 @@
     "ext-json": "*",
     "laravel/framework": "^10.34.0",
     "lastdragon-ru/lara-asp-core": "self.version",
-    "symfony/filesystem": "^6.3.0",
+    "symfony/console": "^6.3.0",
     "symfony/finder": "^6.3.0",
     "symfony/polyfill-php83": "^1.28"
   },
