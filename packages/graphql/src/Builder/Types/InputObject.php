@@ -12,6 +12,8 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -34,7 +36,6 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Nuwave\Lighthouse\Support\Contracts\FieldResolver;
 use Override;
 
-use function config;
 use function count;
 use function is_a;
 use function is_string;
@@ -442,8 +443,9 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Allowed?
-        $isAllowed = false;
-        $allowed   = (array) config(Package::Name.'.builder.allowed_directives');
+        $repository = Container::getInstance()->make(Repository::class);
+        $isAllowed  = false;
+        $allowed    = (array) $repository->get(Package::Name.'.builder.allowed_directives');
 
         foreach ($allowed as $class) {
             if (is_string($class) && $directive instanceof $class) {

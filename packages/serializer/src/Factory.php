@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Serializer;
 
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizerContextBuilder;
@@ -26,7 +27,6 @@ use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
-use function config;
 
 use const JSON_BIGINT_AS_STRING;
 use const JSON_PRESERVE_ZERO_FRACTION;
@@ -92,7 +92,9 @@ class Factory {
 
     protected function getConfigFormat(?string $config): ?string {
         /** @var ?string $format */
-        $format = $config ? config("{$config}.default") : null;
+        $format = $config
+            ? Container::getInstance()->make(Repository::class)->get("{$config}.default")
+            : null;
 
         return $format;
     }
@@ -102,7 +104,9 @@ class Factory {
      */
     protected function getConfigContext(?string $config): array {
         /** @var array<string, mixed> $context */
-        $context = $config ? (array) config("{$config}.context") : [];
+        $context = $config
+            ? (array) Container::getInstance()->make(Repository::class)->get("{$config}.context")
+            : [];
 
         return $context;
     }
@@ -135,7 +139,9 @@ class Factory {
      */
     protected function getConfigEncoders(?string $config): array {
         /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders */
-        $encoders = $config ? (array) config("{$config}.encoders") : [];
+        $encoders = $config
+            ? (array) Container::getInstance()->make(Repository::class)->get("{$config}.encoders")
+            : [];
 
         return $encoders;
     }
@@ -195,7 +201,9 @@ class Factory {
      */
     protected function getConfigNormalizers(?string $config): array {
         /** @var array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers */
-        $normalizers = $config ? (array) config("{$config}.normalizers") : $config;
+        $normalizers = $config
+            ? (array) Container::getInstance()->make(Repository::class)->get("{$config}.normalizers")
+            : $config;
 
         return $normalizers;
     }

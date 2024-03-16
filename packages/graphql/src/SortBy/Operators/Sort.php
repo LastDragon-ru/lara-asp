@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -18,7 +20,6 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Types\Direction as DirectionType;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 
-use function config;
 use function is_array;
 
 class Sort extends Operator {
@@ -106,7 +107,7 @@ class Sort extends Operator {
 
         // Default
         $nulls     = null;
-        $config    = config(Package::Name.'.sort_by.nulls');
+        $config    = Container::getInstance()->make(Repository::class)->get(Package::Name.'.sort_by.nulls');
         $direction = match ($direction) {
             Direction::asc  => Direction::Asc,
             Direction::desc => Direction::Desc,

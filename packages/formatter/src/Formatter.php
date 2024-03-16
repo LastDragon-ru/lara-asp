@@ -7,6 +7,7 @@ use DateInterval;
 use DateTimeInterface;
 use DateTimeZone;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
@@ -24,7 +25,6 @@ use OutOfBoundsException;
 use function abs;
 use function bccomp;
 use function bcdiv;
-use function config;
 use function is_float;
 use function is_int;
 use function is_null;
@@ -451,21 +451,23 @@ class Formatter {
     }
 
     protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {
-        return config('app.timezone') ?: null;
+        return Container::getInstance()->make(Repository::class)->get('app.timezone') ?: null;
     }
 
     protected function getOptions(string $type, mixed $default = null): mixed {
-        $package = Package::Name;
-        $key     = "{$package}.options.{$type}";
+        $repository = Container::getInstance()->make(Repository::class);
+        $package    = Package::Name;
+        $key        = "{$package}.options.{$type}";
 
-        return config($key, $default);
+        return $repository->get($key, $default);
     }
 
     protected function getLocaleOptions(string $type, string $option): mixed {
-        $package = Package::Name;
-        $locale  = $this->getLocale();
-        $pattern = config("{$package}.locales.{$locale}.{$type}.{$option}")
-            ?: config("{$package}.all.{$type}.{$option}");
+        $repository = Container::getInstance()->make(Repository::class);
+        $package    = Package::Name;
+        $locale     = $this->getLocale();
+        $pattern    = $repository->get("{$package}.locales.{$locale}.{$type}.{$option}")
+            ?: $repository->get("{$package}.all.{$type}.{$option}");
 
         return $pattern;
     }
