@@ -1,6 +1,7 @@
 {
     "version": "6.1.0",
     "require": [],
+    "merge": null,
     "requirements": {
         "HEAD": {
             "laravel/framework": [

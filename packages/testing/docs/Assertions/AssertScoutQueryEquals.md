@@ -13,8 +13,8 @@ namespace LastDragon_ru\LaraASP\Testing\Docs\Assertions;
 
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\Testing\Assertions\ScoutAssertions;
+use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
  * @internal
  */
 #[CoversNothing]
-#[RequiresLaravelScout]
+#[RequiresComposerPackage('laravel/scout')]
 final class AssertScoutQueryEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.

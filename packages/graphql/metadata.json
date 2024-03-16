@@ -5,6 +5,7 @@
         "laravel/framework": "Laravel",
         "nuwave/lighthouse": "Lighthouse"
     },
+    "merge": null,
     "requirements": {
         "HEAD": {
             "laravel/framework": [
