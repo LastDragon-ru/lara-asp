@@ -28,7 +28,13 @@
     "composer/semver": "^3.2",
     "doctrine/sql-formatter": "^1.1",
     "http-interop/http-factory-guzzle": "^1.0.0",
-    "laravel/framework": "^10.34.0",
+    "illuminate/collections": "^10.34.0",
+    "illuminate/console": "^10.34.0",
+    "illuminate/container": "^10.34.0",
+    "illuminate/contracts": "^10.34.0",
+    "illuminate/database": "^10.34.0",
+    "illuminate/testing": "^10.34.0",
+    "illuminate/translation": "^10.34.0",
     "mockery/mockery": "^1.6.2",
     "opis/json-schema": "^2.3.0",
     "phpunit/phpunit": "^10.1.0",
@@ -43,6 +49,8 @@
   },
   "require-dev": {
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
+    "illuminate/http": "^10.34.0",
+    "illuminate/support": "^10.34.0",
     "laravel/scout": "^9.8.0|^10.0.0",
     "orchestra/testbench": "^8.0.0",
     "symfony/console": "^6.3.0",
@@ -74,6 +82,9 @@
         "required-extensions": {
           "league/flysystem": [
             "ext-fileinfo"
+          ],
+          "illuminate/console": [
+            "ext-mbstring"
           ]
         }
       }
