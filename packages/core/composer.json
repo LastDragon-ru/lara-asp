@@ -19,11 +19,13 @@
   },
   "require": {
     "php": "^8.1|^8.2|^8.3",
-    "ext-mbstring": "*",
-    "laravel/framework": "^10.34.0",
+    "illuminate/console": "^10.34.0",
+    "illuminate/container": "^10.34.0",
+    "illuminate/contracts": "^10.34.0",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
+    "illuminate/support": "^10.34.0",
     "phpunit/phpunit": "^10.1.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.2",
@@ -52,6 +54,9 @@
         "required-extensions": {
           "league/flysystem": [
             "ext-fileinfo"
+          ],
+          "illuminate/console": [
+            "ext-mbstring"
           ]
         }
       }
