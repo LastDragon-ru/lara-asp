@@ -30,7 +30,6 @@ use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function config;
 use function implode;
 
 /**
@@ -168,9 +167,7 @@ final class SortTest extends TestCase {
         Closure $contextFactory,
         Direction $direction,
     ): void {
-        if ($config) {
-            config($config);
-        }
+        $this->setConfig($config);
 
         $sorter   = $sorterFactory($this);
         $context  = $contextFactory($this);

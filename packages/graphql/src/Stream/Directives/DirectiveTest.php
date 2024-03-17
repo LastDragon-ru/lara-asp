@@ -76,7 +76,6 @@ use ReflectionClass;
 use stdClass;
 
 use function array_merge;
-use function config;
 use function is_string;
 use function json_encode;
 
@@ -207,7 +206,7 @@ final class DirectiveTest extends TestCase {
         string|int|null $offset,
     ): void {
         // Config
-        config([
+        $this->setConfig([
             'scout.driver' => 'database',
         ]);
 
@@ -281,7 +280,7 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testManipulateFieldDefinition(): void {
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models'       => [
                 (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],
@@ -301,7 +300,7 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testManipulateFieldDefinitionScoutBuilder(): void {
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models'       => [
                 (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],
@@ -474,7 +473,7 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testGetBuilder(): void {
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(Car::class))->getNamespaceName(),
             ],
@@ -551,7 +550,7 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testGetBuilderScoutBuilder(): void {
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(TestObjectSearchable::class))->getNamespaceName(),
             ],
@@ -617,7 +616,7 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testGetBuilderLighthouseEnhancer(): void {
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(Car::class))->getNamespaceName(),
             ],
@@ -798,7 +797,7 @@ final class DirectiveTest extends TestCase {
      */
     public function testGetResolverExplicit(array|null $expected, string $arguments): void {
         // Prepare
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(Car::class))->getNamespaceName(),
             ],
@@ -835,7 +834,7 @@ final class DirectiveTest extends TestCase {
 
     public function testGetResolverRelation(): void {
         // Prepare
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(Car::class))->getNamespaceName(),
             ],
@@ -931,7 +930,7 @@ final class DirectiveTest extends TestCase {
 
     public function testGetResolverQuery(): void {
         // Prepare
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.queries' => [
                 (new ReflectionClass(Query::class))->getNamespaceName(),
             ],
@@ -974,7 +973,7 @@ final class DirectiveTest extends TestCase {
 
     public function testGetResolverModel(): void {
         // Prepare
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(Car::class))->getNamespaceName(),
             ],
@@ -1100,7 +1099,7 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testResolveField(): void {
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(Car::class))->getNamespaceName(),
             ],

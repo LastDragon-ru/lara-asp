@@ -55,7 +55,6 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_merge;
-use function config;
 use function implode;
 use function is_array;
 use function json_encode;
@@ -105,7 +104,7 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testManipulateArgDefinitionScoutBuilder(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.sort_by.operators' => [
                 Operators::Extra => [
                     Operators::Extra,
@@ -148,7 +147,7 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.sort_by.operators' => [
                 Operators::Extra => [
                     SortByOperatorFieldDirective::class,
@@ -612,7 +611,7 @@ final class DirectiveTest extends TestCase {
             'AllowedDirectives' => [
                 'AllowedDirectives.expected.graphql',
                 'AllowedDirectives.schema.graphql',
-                static function (): void {
+                static function (TestCase $test): void {
                     $locator   = Container::getInstance()->make(DirectiveLocator::class);
                     $allowed   = new class () extends BaseDirective {
                         #[Override]
@@ -634,7 +633,7 @@ final class DirectiveTest extends TestCase {
                     $locator->setResolved('allowed', $allowed::class);
                     $locator->setResolved('forbidden', $forbidden::class);
 
-                    config([
+                    $test->setConfig([
                         Package::Name.'.builder.allowed_directives'          => [
                             RenameDirective::class,
                             $allowed::class,
@@ -648,8 +647,8 @@ final class DirectiveTest extends TestCase {
             'Ignored'           => [
                 'Ignored.expected.graphql',
                 'Ignored.schema.graphql',
-                static function (): void {
-                    config([
+                static function (TestCase $test): void {
+                    $test->setConfig([
                         Package::Name.'.sort_by.operators.'.Operators::Extra => [
                             SortByOperatorFieldDirective::class,
                         ],
@@ -673,8 +672,8 @@ final class DirectiveTest extends TestCase {
             'InterfaceUpdate'   => [
                 'InterfaceUpdate.expected.graphql',
                 'InterfaceUpdate.schema.graphql',
-                static function (): void {
-                    config([
+                static function (TestCase $test): void {
+                    $test->setConfig([
                         Package::Name.'.sort_by.operators.'.Operators::Extra => [
                             SortByOperatorFieldDirective::class,
                         ],
@@ -888,10 +887,10 @@ final class DirectiveTest extends TestCase {
                             'random' => 'yes',
                         ],
                     ],
-                    static function (): void {
+                    static function (TestCase $test): void {
                         $package = Package::Name;
 
-                        config([
+                        $test->setConfig([
                             "{$package}.sort_by.operators" => [
                                 Operators::Extra => [
                                     SortByOperatorFieldDirective::class,
@@ -927,10 +926,10 @@ final class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
-                    static function (): void {
+                    static function (TestCase $test): void {
                         $package = Package::Name;
 
-                        config([
+                        $test->setConfig([
                             "{$package}.sort_by.nulls" => [
                                 Direction::Asc->value  => Nulls::Last,
                                 Direction::Desc->value => Nulls::First,
@@ -1091,10 +1090,10 @@ final class DirectiveTest extends TestCase {
                             'random' => 'yes',
                         ],
                     ],
-                    static function (): void {
+                    static function (TestCase $test): void {
                         $package = Package::Name;
 
-                        config([
+                        $test->setConfig([
                             "{$package}.sort_by.operators" => [
                                 Operators::Extra => [
                                     SortByOperatorFieldDirective::class,
@@ -1126,10 +1125,10 @@ final class DirectiveTest extends TestCase {
                             'value' => 'desc',
                         ],
                     ],
-                    static function (): void {
+                    static function (TestCase $test): void {
                         $package = Package::Name;
 
-                        config([
+                        $test->setConfig([
                             "{$package}.sort_by.nulls" => [
                                 Direction::Asc->value  => Nulls::Last,
                                 Direction::Desc->value => Nulls::First,

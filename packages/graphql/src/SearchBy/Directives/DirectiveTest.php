@@ -70,7 +70,6 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_merge;
-use function config;
 use function implode;
 use function is_array;
 use function json_encode;
@@ -120,7 +119,7 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testManipulateArgDefinitionScoutBuilder(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.search_by.operators.Date' => [
                 SearchByOperatorEqualDirective::class,
             ],
@@ -160,7 +159,7 @@ final class DirectiveTest extends TestCase {
                 ->andReturn(false);
         });
 
-        config([
+        $this->setConfig([
             Package::Name.'.search_by.operators.Date' => [
                 SearchByOperatorEqualDirective::class,
             ],
@@ -674,7 +673,7 @@ final class DirectiveTest extends TestCase {
             'AllowedDirectives'     => [
                 'AllowedDirectives.expected.graphql',
                 'AllowedDirectives.schema.graphql',
-                static function (): void {
+                static function (TestCase $test): void {
                     $locator   = Container::getInstance()->make(DirectiveLocator::class);
                     $allowed   = new class () extends BaseDirective {
                         #[Override]
@@ -696,7 +695,7 @@ final class DirectiveTest extends TestCase {
                     $locator->setResolved('allowed', $allowed::class);
                     $locator->setResolved('forbidden', $forbidden::class);
 
-                    config([
+                    $test->setConfig([
                         Package::Name.'.builder.allowed_directives'            => [
                             RenameDirective::class,
                             $allowed::class,
@@ -713,8 +712,8 @@ final class DirectiveTest extends TestCase {
             'Ignored'               => [
                 'Ignored.expected.graphql',
                 'Ignored.schema.graphql',
-                static function (): void {
-                    config([
+                static function (TestCase $test): void {
+                    $test->setConfig([
                         Package::Name.'.search_by.operators.String'            => [
                             SearchByOperatorEqualDirective::class,
                         ],
@@ -741,8 +740,8 @@ final class DirectiveTest extends TestCase {
             'Example'               => [
                 'Example.expected.graphql',
                 'Example.schema.graphql',
-                static function (): void {
-                    config([
+                static function (TestCase $test): void {
+                    $test->setConfig([
                         Package::Name.'.search_by.operators.Date' => [
                             SearchByOperatorBetweenDirective::class,
                         ],
@@ -752,8 +751,8 @@ final class DirectiveTest extends TestCase {
             'InterfaceUpdate'       => [
                 'InterfaceUpdate.expected.graphql',
                 'InterfaceUpdate.schema.graphql',
-                static function (): void {
-                    config([
+                static function (TestCase $test): void {
+                    $test->setConfig([
                         Package::Name.'.search_by.operators.'.Operators::ID    => [
                             SearchByOperatorEqualDirective::class,
                         ],

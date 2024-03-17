@@ -20,8 +20,6 @@ use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function config;
-
 /**
  * @internal
  */
@@ -36,7 +34,7 @@ final class SpaControllerTest extends TestCase {
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
-        config([
+        $this->setConfig([
             Package::Name.'.routes.enabled' => false,
         ]);
     }
@@ -57,7 +55,7 @@ final class SpaControllerTest extends TestCase {
         array $headers = [],
         array $settings = [],
     ): void {
-        config([
+        $this->setConfig([
             Package::Name.'.routes.enabled' => $routes,
             Package::Name.'.routes.prefix'  => $prefix,
             Package::Name.'.spa'            => $settings,

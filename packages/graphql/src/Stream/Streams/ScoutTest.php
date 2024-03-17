@@ -16,7 +16,6 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_slice;
-use function config;
 use function max;
 use function usort;
 
@@ -39,7 +38,7 @@ final class ScoutTest extends TestCase {
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
-        config([
+        $this->setConfig([
             'scout.driver' => 'database',
         ]);
     }
