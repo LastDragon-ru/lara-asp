@@ -2,8 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 
+use Illuminate\Container\Container;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
@@ -20,13 +21,14 @@ trait WithTestObject {
     #[Before]
     protected function initWithTestObject(): void {
         $this->afterApplicationCreated(static function (): void {
-            $table = (new TestObject())->getTable();
+            $schema = Container::getInstance()->make(Builder::class);
+            $table  = (new TestObject())->getTable();
 
-            if (Schema::hasTable($table)) {
+            if ($schema->hasTable($table)) {
                 return;
             }
 
-            Schema::create($table, static function (Blueprint $table): void {
+            $schema->create($table, static function (Blueprint $table): void {
                 $table->string('id')->primary();
                 $table->string('value', 40)->nullable();
             });
@@ -39,13 +41,14 @@ trait WithTestObject {
     #[After]
     protected function withTestObjectAfter(): void {
         $this->beforeApplicationDestroyed(static function (): void {
-            $table = (new TestObject())->getTable();
+            $schema = Container::getInstance()->make(Builder::class);
+            $table  = (new TestObject())->getTable();
 
-            if (Schema::hasTable($table)) {
+            if ($schema->hasTable($table)) {
                 return;
             }
 
-            Schema::drop($table);
+            $schema->drop($table);
         });
     }
 }
