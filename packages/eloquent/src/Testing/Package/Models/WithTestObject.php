@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 
 /**
@@ -13,13 +13,11 @@ use PHPUnit\Framework\Attributes\Before;
  * @mixin TestCase
  */
 trait WithTestObject {
-    use RefreshDatabase;
-
     /**
      * @internal
      */
     #[Before]
-    protected function initWithTestObject(): void {
+    protected function withTestObjectBefore(): void {
         $this->afterApplicationCreated(static function (): void {
             $table = (new TestObject())->getTable();
 
@@ -31,6 +29,22 @@ trait WithTestObject {
                 $table->increments('id');
                 $table->string('value', 40)->nullable();
             });
+        });
+    }
+
+    /**
+     * @internal
+     */
+    #[After]
+    protected function withTestObjectAfter(): void {
+        $this->beforeApplicationDestroyed(static function (): void {
+            $table = (new TestObject())->getTable();
+
+            if (Schema::hasTable($table)) {
+                return;
+            }
+
+            Schema::drop($table);
         });
     }
 }

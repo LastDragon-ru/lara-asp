@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 
 /**
@@ -14,8 +14,6 @@ use PHPUnit\Framework\Attributes\Before;
  * @mixin TestCase
  */
 trait WithTestObject {
-    use RefreshDatabase;
-
     /**
      * @internal
      */
@@ -32,6 +30,22 @@ trait WithTestObject {
                 $table->string('id')->primary();
                 $table->string('value', 40)->nullable();
             });
+        });
+    }
+
+    /**
+     * @internal
+     */
+    #[After]
+    protected function withTestObjectAfter(): void {
+        $this->beforeApplicationDestroyed(static function (): void {
+            $table = (new TestObject())->getTable();
+
+            if (Schema::hasTable($table)) {
+                return;
+            }
+
+            Schema::drop($table);
         });
     }
 }
