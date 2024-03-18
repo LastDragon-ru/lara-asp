@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Foundation\Testing\WithFaker;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObjectSearchable;
@@ -25,7 +24,6 @@ use function usort;
 #[CoversClass(Scout::class)]
 #[RequiresLaravelScout]
 final class ScoutTest extends TestCase {
-    use WithFaker;
     use WithQueryLog;
     use WithTestObject;
 
@@ -47,8 +45,8 @@ final class ScoutTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testGetItems(): void {
-        $limit   = max(1, $this->faker->numberBetween(1, 4));
-        $offset  = max(0, $this->faker->numberBetween(0, 2));
+        $limit   = max(1, $this->getFaker()->numberBetween(1, 4));
+        $offset  = max(0, $this->getFaker()->numberBetween(0, 2));
         $builder = TestObjectSearchable::search();
         $stream  = new Scout($builder, $builder->model->getKeyName(), $limit, new Offset('path', $offset, null));
         $objects = [
@@ -96,7 +94,7 @@ final class ScoutTest extends TestCase {
     }
 
     public function testGetLength(): void {
-        $count   = $this->faker->numberBetween(1, 5);
+        $count   = $this->getFaker()->numberBetween(1, 5);
         $builder = TestObjectSearchable::search();
         $stream  = new Scout($builder, $builder->model->getKeyName(), 1, new Offset('path', 0, null));
 

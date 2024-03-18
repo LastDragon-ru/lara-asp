@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
@@ -21,13 +20,12 @@ use function usort;
  */
 #[CoversClass(Database::class)]
 final class DatabaseTest extends TestCase {
-    use WithFaker;
     use WithQueryLog;
     use WithTestObject;
 
     public function testGetItems(): void {
-        $limit   = max(1, $this->faker->numberBetween(1, 4));
-        $offset  = max(0, $this->faker->numberBetween(0, 2));
+        $limit   = max(1, $this->getFaker()->numberBetween(1, 4));
+        $offset  = max(0, $this->getFaker()->numberBetween(0, 2));
         $builder = TestObject::query();
         $stream  = new Database(
             $builder,
@@ -64,7 +62,7 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testGetLength(): void {
-        $count   = $this->faker->numberBetween(1, 5);
+        $count   = $this->getFaker()->numberBetween(1, 5);
         $builder = TestObject::query();
         $stream  = new Database($builder, 'key', 1, new Offset('path', 0, null));
 

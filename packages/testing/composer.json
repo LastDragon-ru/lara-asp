@@ -48,6 +48,7 @@
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
+    "fakerphp/faker": "^1.21.0",
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "illuminate/http": "^10.34.0",
     "illuminate/support": "^10.34.0",
