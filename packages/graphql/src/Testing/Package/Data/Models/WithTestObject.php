@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Schema;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\Before;
 
 /**

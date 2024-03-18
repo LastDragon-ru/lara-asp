@@ -49,19 +49,29 @@ composer require --dev lastdragon-ru/lara-asp-testing
 >
 > By default, package overrides scalar comparator to make it strict! So `assertEquals(true, 1)` is `false`.
 
-In the general case, you just need to update `tests/TestCase.php` to include almost everything, but you also can include only desired features, please see base [`TestCase`](./src/TestCase.php) to found what is supported.
+In the general case, you just need to update `tests/TestCase.php` to include most important things, but you also can include only desired features, please see related traits and extensions below.
+
+[include:example]: ./docs/Examples/TestCase.php
+[//]: # (start: d64050243e2262fdd649a43b4d5b7f9784ba701372776c15d760357c38e581e1)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
 
 namespace Tests;
 
-use LastDragon_ru\LaraASP\Testing\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
+use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 
 abstract class TestCase extends BaseTestCase {
+    use Assertions;         // Added
+    use Concerns;           // Added
     use CreatesApplication;
 }
 ```
+
+[//]: # (end: d64050243e2262fdd649a43b4d5b7f9784ba701372776c15d760357c38e581e1)
 
 # Comparators
 

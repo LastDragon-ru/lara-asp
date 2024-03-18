@@ -26,6 +26,7 @@ parameters:
         classes:
             - PHPUnit\Framework\TestCase
         ignored:
+            - Tests\TestCase
             - LastDragon_ru\LaraASP\Testing\TestCase
 
 includes:

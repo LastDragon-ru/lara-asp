@@ -1,4 +1,7 @@
 parameters:
+    excludePaths:
+        - packages/testing/docs/Examples/TestCase.php
+
     ignoreErrors:
         # Unwanted strict rules
         # (is there a better way to disable them?)

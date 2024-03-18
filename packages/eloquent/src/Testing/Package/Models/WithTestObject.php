@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Schema;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\Before;
 
 /**
