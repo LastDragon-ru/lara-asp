@@ -29,6 +29,16 @@ parameters:
             - Tests\TestCase
             - LastDragon_ru\LaraASP\Testing\TestCase
 
+    # Forbidden
+    disallowedNamespaces:
+        -
+            namespace: Illuminate\Support\Facades\*
+            exclude:
+                - Illuminate\Support\Facades\Date
+            allowIn:
+                - dev/App/*
+                - packages/*/docs/*
+
 includes:
     # Vendor
     - ./vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon
