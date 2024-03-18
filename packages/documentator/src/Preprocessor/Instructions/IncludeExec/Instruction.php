@@ -3,7 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 
 use Exception;
-use Illuminate\Support\Facades\Process;
+use Illuminate\Container\Container;
+use Illuminate\Process\Factory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use Override;
@@ -12,8 +13,10 @@ use function dirname;
 use function trim;
 
 class Instruction implements ProcessableInstruction {
+    protected readonly Factory $factory;
+
     public function __construct() {
-        // empty
+        $this->factory = Container::getInstance()->make(Factory::class); // next(documentator): Inject in constructor
     }
 
     #[Override]
@@ -34,7 +37,7 @@ class Instruction implements ProcessableInstruction {
     #[Override]
     public function process(string $path, string $target): string {
         try {
-            return trim(Process::path(dirname($path))->run($target)->throw()->output());
+            return trim($this->factory->newPendingProcess()->path(dirname($path))->run($target)->throw()->output());
         } catch (Exception $exception) {
             throw new TargetExecFailed($path, $target, $exception);
         }
