@@ -16,7 +16,6 @@ assert(isset($composerJson) && $composerJson instanceof ComposerJson);
 // General
 $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
-    ->disableReportingUnmatchedIgnores()
     ->ignoreUnknownClasses([
         Example::class,
     ])
@@ -27,6 +26,16 @@ $config = (new Configuration())
     ->ignoreErrorsOnPackage('phpstan/phpstan', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD]);
 
+// Load composer.json
+$path = Path::resolve($this->cwd, ($options->composerJson ?? 'composer.json'));
+$json = (string) file_get_contents($path);
+$json = json_decode($json, true, JSON_THROW_ON_ERROR);
+$root = Path::realpath(dirname(__FILE__).'/composer.json') === Path::realpath($path);
+
+if (!$root) {
+    $config->disableReportingUnmatchedIgnores();
+}
+
 // Configure paths
 //
 // In our case, tests located inside the same directory with class and
@@ -35,9 +44,6 @@ $config = (new Configuration())
 //
 // Also, we don't want to check examples. The `autoload-dev.exclude-from-classmap`
 // can be used to ignore them.
-$path     = Path::resolve($this->cwd, ($options->composerJson ?? 'composer.json'));
-$json     = (string) file_get_contents($path);
-$json     = json_decode($json, true, JSON_THROW_ON_ERROR);
 $excluded = $json['autoload']['exclude-from-classmap'] ?? [];
 $ignored  = $json['autoload-dev']['exclude-from-classmap'] ?? [];
 
