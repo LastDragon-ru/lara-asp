@@ -1,6 +1,11 @@
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\Dev\App\Example;
+use Illuminate\Foundation\Exceptions\Handler;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabaseState;
+use Illuminate\Foundation\Testing\TestCase;
+use Orchestra\Testbench\TestCase as TestbenchTestCase;
 use ShipMonk\ComposerDependencyAnalyser\CliOptions;
 use ShipMonk\ComposerDependencyAnalyser\ComposerJson;
 use ShipMonk\ComposerDependencyAnalyser\Config\Configuration;
@@ -16,15 +21,19 @@ assert(isset($composerJson) && $composerJson instanceof ComposerJson);
 // General
 $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
-    ->ignoreUnknownClasses([
-        Example::class,
-    ])
+    ->ignoreErrorsOnPackage('symfony/deprecation-contracts', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('symfony/polyfill-php83', [ErrorType::UNUSED_DEPENDENCY])
+    ->ignoreErrorsOnPackage('symfony/var-dumper', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
-    ->ignoreErrorsOnPackage('orchestra/testbench', [ErrorType::UNUSED_DEPENDENCY])
-    ->ignoreErrorsOnPackage('orchestra/testbench-core', [ErrorType::SHADOW_DEPENDENCY])
-    ->ignoreErrorsOnPackage('phpstan/phpstan', [ErrorType::SHADOW_DEPENDENCY])
-    ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD]);
+    ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
+    ->ignoreUnknownClasses([
+        Handler::class,
+        FormRequest::class,
+        RefreshDatabase::class,
+        RefreshDatabaseState::class,
+        TestCase::class,
+        TestbenchTestCase::class,
+    ]);
 
 // Load composer.json
 $path = Path::resolve($this->cwd, ($options->composerJson ?? 'composer.json'));
