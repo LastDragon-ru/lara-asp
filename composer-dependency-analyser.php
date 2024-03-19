@@ -32,43 +32,60 @@ $config = (new Configuration())
 // In our case, tests located inside the same directory with class and
 // `exclude-from-classmap` is used to exclude them from the class map.
 // So we need to mark these excluded files as "dev".
+//
+// Also, we don't want to check examples. The `autoload-dev.exclude-from-classmap`
+// can be used to ignore them.
 $path     = Path::resolve($this->cwd, ($options->composerJson ?? 'composer.json'));
 $json     = (string) file_get_contents($path);
 $json     = json_decode($json, true, JSON_THROW_ON_ERROR);
 $excluded = $json['autoload']['exclude-from-classmap'] ?? [];
+$ignored  = $json['autoload-dev']['exclude-from-classmap'] ?? [];
 
-if ($excluded) {
-    $config = $config->disableComposerAutoloadPathScan();
-    $regexp = array_map(
-        static function (string $exclude) use ($path): string {
-            // Similar to how composer process it, but not the exact match.
-            $exclude = dirname($path)."/{$exclude}";
-            $exclude = preg_replace('{/+}', '/', preg_quote(trim(strtr($exclude, '\\', '/'), '/')));
-            $exclude = strtr($exclude, ['\\*\\*' => '.+?', '\\*' => '[^/]+?']);
+if ($excluded || $ignored) {
+    $config    = $config->disableComposerAutoloadPathScan();
+    $regexp    = static function (array $excluded) use ($path): ?string {
+        $regexp = array_map(
+            static function (string $exclude) use ($path): string {
+                // Similar to how composer process it, but not the exact match.
+                $exclude = dirname($path)."/{$exclude}";
+                $exclude = preg_replace('{/+}', '/', preg_quote(trim(strtr($exclude, '\\', '/'), '/')));
+                $exclude = strtr($exclude, ['\\*\\*' => '.+?', '\\*' => '[^/]+?']);
 
-            return $exclude;
-        },
-        $excluded,
-    );
-    $regexp = '{('.implode(')|(', $regexp).')}';
+                return $exclude;
+            },
+            $excluded,
+        );
+        $regexp = $regexp
+            ? '{('.implode(')|(', $regexp).')}'
+            : null;
 
-    foreach ($composerJson->autoloadPaths as $absolutePath => $isDevPath) {
-        if ($isDevPath) {
-            $config = $config->addPathToScan($absolutePath, $isDevPath);
-        } elseif (is_file($absolutePath)) {
-            $config = $config->addPathToScan($absolutePath, (bool) preg_match($regexp, $absolutePath));
+        return $regexp;
+    };
+    $ignored   = $regexp($ignored);
+    $excluded  = $regexp($excluded);
+    $processor = static function (string $path, bool $isDev) use (&$processor, $config, $excluded, $ignored): void {
+        if (is_file($path)) {
+            $isDev     = $isDev || ($excluded && (bool) preg_match($excluded, $path));
+            $isIgnored = $isDev && ($ignored && (bool) preg_match($ignored, $path));
+
+            if (!$isIgnored) {
+                $config->addPathToScan($path, $isDev);
+            }
         } else {
-            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($absolutePath));
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
 
             foreach ($iterator as $entry) {
                 if (!$entry->isFile() || !in_array($entry->getExtension(), $config->getFileExtensions(), true)) {
                     continue;
                 }
 
-                $entryPath = $entry->getPathname();
-                $config    = $config->addPathToScan($entryPath, (bool) preg_match($regexp, $entryPath));
+                $processor($entry->getPathname(), $isDev);
             }
         }
+    };
+
+    foreach ($composerJson->autoloadPaths as $absolutePath => $isDevPath) {
+        $processor($absolutePath, $isDevPath);
     }
 }
 
