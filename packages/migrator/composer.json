@@ -35,7 +35,6 @@
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "composer/semver": "^3.2",
-    "illuminate/collections": "^10.34.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.2",
     "orchestra/testbench": "^8.0.0",
