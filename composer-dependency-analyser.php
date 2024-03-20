@@ -1,6 +1,5 @@
 <?php declare(strict_types = 1);
 
-use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
@@ -27,7 +26,6 @@ $config = (new Configuration())
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreUnknownClasses([
-        Handler::class,
         FormRequest::class,
         RefreshDatabase::class,
         RefreshDatabaseState::class,
