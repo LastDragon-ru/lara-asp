@@ -153,7 +153,7 @@ jobs:
           done <<< "${PACKAGES}"
 
       - name: Install dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@v3
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           dependency-versions: ${{ matrix.dependencies }}
