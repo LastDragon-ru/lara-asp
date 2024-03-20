@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
+ * @deprecated ${version}
  * @internal
  */
 #[CoversClass(RefreshDatabaseIfEmpty::class)]

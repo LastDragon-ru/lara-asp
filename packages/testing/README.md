@@ -124,7 +124,7 @@ Makes comparison of scalars strict.
 
 ## PHPUnit `TestCase`
 
-### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php)
+### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php) 💀
 
 [include:docblock]: ./src/Database/RefreshDatabaseIfEmpty.php
 [//]: # (start: 8a2c47eb73624557058f09279338b44619ddc48d2bd07d975721ad9383bd1df3)
