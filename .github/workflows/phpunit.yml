@@ -121,9 +121,9 @@ jobs:
         shell: bash
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          PACKAGES=$(echo '${{ inputs.packages-names }}' | jq 'map(select(. != "${{ inputs.package }}"))' | jq -c -r '.[]')
+          PACKAGES=$(echo '${{ inputs.packages-names }}' | jq 'map(select(. != "${{ inputs.package }}"))' | jq -c -r '.[]' | tr -d '\r')
 
-          while read -r PKG
+          while IFS= read -r PKG
           do
             composer config "repositories.${PKG}" path "../${PKG}"
           done <<< "${PACKAGES}"
@@ -144,9 +144,9 @@ jobs:
         shell: bash
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          PACKAGES=$(echo '"${{ matrix.optional }}"' | jq 'split(",")' | jq -c -r '.[]')
+          PACKAGES=$(echo '"${{ matrix.optional }}"' | jq 'split(",")' | jq -c -r '.[]' | tr -d '\r')
 
-          while read -r PKG
+          while IFS= read -r PKG
           do
             composer remove --no-interaction --no-progress --ansi --no-update "${PKG}"
             composer remove --no-interaction --no-progress --ansi --no-update --dev "${PKG}"

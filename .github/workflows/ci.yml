@@ -59,9 +59,9 @@ jobs:
         shell: bash
         working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
         run: |
-          PACKAGES=$(echo '${{ needs.settings.outputs.packages-names }}' | jq 'map(select(. != "${{ matrix.package }}"))' | jq -c -r '.[]')
+          PACKAGES=$(echo '${{ needs.settings.outputs.packages-names }}' | jq 'map(select(. != "${{ matrix.package }}"))' | jq -c -r '.[]' | tr -d '\r')
 
-          while read -r PKG
+          while IFS= read -r PKG
           do
             composer config "repositories.${PKG}" path "../${PKG}"
           done <<< "${PACKAGES}"
