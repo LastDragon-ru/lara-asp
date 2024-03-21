@@ -133,7 +133,7 @@ jobs:
       - name: Install Node.js
         uses: ./.github/actions/npm
       - name: Setup problem matcher
-        uses: xt0rted/markdownlint-problem-matcher@v2
+        uses: xt0rted/markdownlint-problem-matcher@v3
       - name: Execute
         run: |
           npm run markdownlint
