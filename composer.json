@@ -149,7 +149,8 @@
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
         "LastDragon_ru\\LaraASP\\Serializer\\Provider",
-        "LastDragon_ru\\LaraASP\\Documentator\\Provider"
+        "LastDragon_ru\\LaraASP\\Documentator\\Provider",
+        "LastDragon_ru\\LaraASP\\Eloquent\\Provider"
       ]
     },
     "bamarni-bin": {
