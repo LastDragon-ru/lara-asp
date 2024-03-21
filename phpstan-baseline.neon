@@ -1,9 +1,24 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method once\\(\\) on mixed\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Core\\\\Helpers\\\\Viewer\\>\\|LastDragon_ru\\\\LaraASP\\\\Core\\\\Helpers\\\\Viewer, array\\<int, \\(Illuminate\\\\Contracts\\\\View\\\\Factory&Mockery\\\\MockInterface\\)\\|\\(LastDragon_ru\\\\LaraASP\\\\Core\\\\Helpers\\\\Translator&Mockery\\\\MockInterface\\)\\|string\\> given\\.$#"
+			count: 1
+			path: packages/core/src/Helpers/ViewerTest.php
+
+		-
+			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:once\\(\\)\\.$#"
 			count: 1
 			path: packages/core/src/Observer/DispatcherTest.php
+
+		-
+			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
+			count: 2
+			path: packages/core/src/Observer/DispatcherTest.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<DateTime\\>\\|DateTime, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: packages/eloquent/src/Concerns/WithDateSerializationTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$offset of method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\IteratorImpl\\<TItem of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:setOffset\\(\\) expects int\\|string\\|null, mixed given\\.$#"
@@ -11,12 +26,22 @@ parameters:
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
 
 		-
-			message: "#^Cannot call method times\\(\\) on mixed\\.$#"
+			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:times\\(\\)\\.$#"
 			count: 2
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
 
 		-
-			message: "#^Cannot call method once\\(\\) on mixed\\.$#"
+			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
+			count: 2
+			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
+
+		-
+			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:once\\(\\)\\.$#"
+			count: 2
+			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
+
+		-
+			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
 			count: 2
 			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
 
@@ -24,6 +49,31 @@ parameters:
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Formatter\\\\Formatter\\:\\:getDefaultTimezone\\(\\) should return DateTimeZone\\|IntlTimeZone\\|string\\|null but returns mixed\\.$#"
 			count: 1
 			path: packages/formatter/src/Formatter.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQLPrinter\\\\Blocks\\\\BlockTest__Block\\>\\|LastDragon_ru\\\\LaraASP\\\\GraphQLPrinter\\\\Blocks\\\\BlockTest__Block, array\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQLPrinter\\\\Misc\\\\Context\\> given\\.$#"
+			count: 1
+			path: packages/graphql-printer/src/Blocks/BlockTest.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\>\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive, array\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Contracts\\\\StreamFactory&Mockery\\\\MockInterface\\> given\\.$#"
+			count: 2
+			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\>\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive, array\\<int, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Contracts\\\\StreamFactory\\> given\\.$#"
+			count: 3
+			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\>\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database, array\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Data\\\\Models\\\\TestObject\\>\\|int\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Offset\\|string\\> given\\.$#"
+			count: 1
+			path: packages/graphql/src/Stream/Streams/DatabaseTest.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Scout\\>\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Scout, array\\<int, int\\|Laravel\\\\Scout\\\\Builder\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Offset\\|string\\> given\\.$#"
+			count: 3
+			path: packages/graphql/src/Stream/Streams/ScoutTest.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"
@@ -91,9 +141,24 @@ parameters:
 			path: packages/testing/src/Mixins/TestResponseMixin.php
 
 		-
+			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
+			count: 1
+			path: packages/testing/src/Package/TestCase.php
+
+		-
 			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<array\\>, array\\<T\\> given\\.$#"
 			count: 1
 			path: packages/testing/src/Providers/TraversableDataProvider.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of static method Mockery\\:\\:mock\\(\\) expects class\\-string\\<LastDragon_ru\\\\LaraASP\\\\Testing\\\\Requirements\\\\PhpUnit\\\\Listener\\>\\|LastDragon_ru\\\\LaraASP\\\\Testing\\\\Requirements\\\\PhpUnit\\\\Listener, array\\<int, LastDragon_ru\\\\LaraASP\\\\Testing\\\\Requirements\\\\PhpUnit\\\\Checker&Mockery\\\\MockInterface\\> given\\.$#"
+			count: 1
+			path: packages/testing/src/Requirements/PhpUnit/ListenerTest.php
+
+		-
+			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
+			count: 1
+			path: packages/testing/src/TestCase.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
