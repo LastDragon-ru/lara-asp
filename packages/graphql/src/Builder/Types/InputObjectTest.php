@@ -28,8 +28,6 @@ use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function config;
-
 /**
  * @internal
  */
@@ -49,7 +47,7 @@ final class InputObjectTest extends TestCase {
         ContextContract $context,
     ): void {
         if ($allowed !== null) {
-            config([
+            $this->setConfig([
                 Package::Name.'.builder.allowed_directives' => $allowed,
             ]);
         }

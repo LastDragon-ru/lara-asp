@@ -10,6 +10,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
@@ -73,7 +74,6 @@ use ReflectionNamedType;
 use function array_key_exists;
 use function array_key_first;
 use function class_exists;
-use function config;
 use function count;
 use function explode;
 use function gettype;
@@ -189,6 +189,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
+        $repository  = Container::getInstance()->make(Repository::class);
         $manipulator = $this->getAstManipulator($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
@@ -220,7 +221,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         // Searchable?
         $searchable = Cast::toBool(
             $this->directiveArgValue(self::ArgSearchable)
-            ?? config("{$prefix}.search.enabled")
+            ?? $repository->get("{$prefix}.search.enabled")
             ?? false,
         );
 
@@ -229,7 +230,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 $manipulator,
                 $source,
                 SearchByDirective::class,
-                Cast::toString(config("{$prefix}.search.name") ?: 'where'),
+                Cast::toString($repository->get("{$prefix}.search.name") ?: 'where'),
                 $manipulator::Placeholder,
             );
         }
@@ -237,7 +238,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         // Sortable?
         $sortable = Cast::toBool(
             $this->directiveArgValue(self::ArgSortable)
-            ?? config("{$prefix}.sort.enabled")
+            ?? $repository->get("{$prefix}.sort.enabled")
             ?? false,
         );
 
@@ -246,7 +247,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 $manipulator,
                 $source,
                 SortByDirective::class,
-                Cast::toString(config("{$prefix}.sort.name") ?: 'order'),
+                Cast::toString($repository->get("{$prefix}.sort.name") ?: 'order'),
                 $manipulator::Placeholder,
             );
         }

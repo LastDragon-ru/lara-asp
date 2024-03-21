@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Routing;
 
+use Exception;
 use RuntimeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class UnresolvedValueException extends RuntimeException {
@@ -16,5 +18,9 @@ class UnresolvedValueException extends RuntimeException {
 
     public function getValue(): mixed {
         return $this->value;
+    }
+
+    public function getInnerException(): Exception {
+        return new NotFoundHttpException($this->getMessage() ?: 'Not found.', $this);
     }
 }

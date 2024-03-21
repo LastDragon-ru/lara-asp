@@ -3,7 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 
 use Exception;
-use Illuminate\Support\Facades\Process;
+use Illuminate\Container\Container;
+use Illuminate\Process\Factory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
@@ -25,9 +26,10 @@ use const PREG_UNMATCHED_AS_NULL;
 class Instruction implements ProcessableInstruction {
     public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
+    protected readonly Factory $factory;
 
     public function __construct() {
-        // empty
+        $this->factory = Container::getInstance()->make(Factory::class); // next(documentator): Inject in constructor
     }
 
     #[Override]
@@ -76,7 +78,7 @@ class Instruction implements ProcessableInstruction {
         if ($command) {
             // Call
             try {
-                $output = Process::path(dirname($path))->run($command)->throw()->output();
+                $output = $this->factory->newPendingProcess()->path(dirname($path))->run($command)->throw()->output();
                 $output = trim($output);
             } catch (Exception $exception) {
                 throw new TargetExecFailed($path, $target, $exception);

@@ -19,8 +19,6 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function config;
-
 /**
  * @internal
  */
@@ -29,7 +27,7 @@ final class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testConstructor(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.search_by.operators' => [
                 Operators::ID  => [
                     OperatorsTest__Operator::class,

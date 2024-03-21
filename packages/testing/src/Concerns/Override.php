@@ -13,6 +13,7 @@ use Override as OverrideAttribute;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
 use function is_callable;
 use function is_string;
 use function sprintf;
@@ -100,6 +101,8 @@ trait Override {
         $this->overrides[$class] = Mockery::spy(static function () use ($mock): mixed {
             return $mock;
         });
+
+        assert(is_callable($this->overrides[$class]));
 
         Container::getInstance()->bind(
             $class,

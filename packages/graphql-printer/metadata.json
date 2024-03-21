@@ -4,6 +4,7 @@
         "php": "PHP",
         "webonyx/graphql-php": "`webonyx/graphql-php`"
     },
+    "merge": null,
     "requirements": {
         "HEAD": {
             "php": [

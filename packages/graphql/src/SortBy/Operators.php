@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
@@ -15,7 +17,6 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Override;
 
 use function array_merge;
-use function config;
 
 class Operators extends BuilderOperators {
     private const Prefix   = Directive::Name.'Operators';
@@ -39,7 +40,8 @@ class Operators extends BuilderOperators {
 
     public function __construct() {
         /** @var array<string, list<class-string<BuilderOperator>|string>> $operators */
-        $operators = (array) config(Package::Name.'.sort_by.operators');
+        $operators = (array) Container::getInstance()->make(Repository::class)
+            ->get(Package::Name.'.sort_by.operators');
 
         parent::__construct($operators);
     }

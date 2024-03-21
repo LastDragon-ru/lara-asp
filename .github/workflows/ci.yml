@@ -27,15 +27,45 @@ jobs:
         uses: actions/checkout@v4
       - name: Install PHP
         uses: ./.github/actions/php
+        with:
+          dependencies: false
+      - name: Prepare
+        run: |
+          # Unwanted
+          # (because will install whole "laravel/framework")
+          composer remove --no-interaction --no-progress --ansi --no-update "orchestra/testbench"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "orchestra/testbench"
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Install monorepo-builder
+        uses: ./.github/actions/tool
+        with:
+          tool: monorepo-builder
       - name: Check package versions
         run: |
           composer run-script monorepo-builder
+
+      - name: Install composer-dependency-analyser
+        uses: ./.github/actions/tool
+        with:
+          tool: composer-dependency-analyser
       - name: Check dependencies
         run: |
           composer run-script composer-dependency-analyser
+
+      - name: Install composer-require-checker
+        uses: ./.github/actions/tool
+        with:
+          tool: composer-require-checker
       - name: Check packages
         run: |
           composer run-script composer-require-checker
+
+      - name: Install composer-unused
+        uses: ./.github/actions/tool
+        with:
+          tool: composer-unused
       - name: Check unused packages
         run: |
           composer run-script composer-unused
@@ -55,26 +85,50 @@ jobs:
         uses: actions/checkout@v4
       - name: Install PHP
         uses: ./.github/actions/php
-      - name: Composer repositories
+        with:
+          dependencies: false
+      - name: Prepare
         shell: bash
         working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
         run: |
+          # Unwanted
+          # (because will install whole "laravel/framework")
+          composer remove --no-interaction --no-progress --ansi --no-update "orchestra/testbench"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "orchestra/testbench"
+
+          # Repositories for packages
+          # (because we need local version of the packages)
           PACKAGES=$(echo '${{ needs.settings.outputs.packages-names }}' | jq 'map(select(. != "${{ matrix.package }}"))' | jq -c -r '.[]' | tr -d '\r')
 
           while IFS= read -r PKG
           do
             composer config "repositories.${PKG}" path "../${PKG}"
           done <<< "${PACKAGES}"
-      - name: Install package dependencies
+      - name: Install dependencies
         uses: ramsey/composer-install@v3
         with:
           working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+
+      - name: Install composer-dependency-analyser
+        uses: ./.github/actions/tool
+        with:
+          tool: composer-dependency-analyser
       - name: Check dependencies
         run: |
           composer run-script composer-dependency-analyser -- --composer-json="${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
+
+      - name: Install composer-require-checker
+        uses: ./.github/actions/tool
+        with:
+          tool: composer-require-checker
       - name: Check packages
         run: |
           composer run-script composer-require-checker -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
+
+      - name: Install composer-unused
+        uses: ./.github/actions/tool
+        with:
+          tool: composer-unused
       - name: Check unused packages
         run: |
           composer run-script composer-unused -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
@@ -87,6 +141,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Install PHP
         uses: ./.github/actions/php
+      - name: Install phpcs
+        uses: ./.github/actions/tool
+        with:
+          tool: phpcs
       - name: Execute
         run: |
           composer run-script phpcs -- --report=checkstyle | cs2pr
@@ -99,6 +157,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Install PHP
         uses: ./.github/actions/php
+      - name: Install phpstan
+        uses: ./.github/actions/tool
+        with:
+          tool: phpstan
       - name: Execute
         run: |
           composer run-script phpstan -- --error-format=checkstyle | cs2pr

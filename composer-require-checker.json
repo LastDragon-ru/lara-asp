@@ -1,6 +1,10 @@
 {
   "symbol-whitelist": [
     "Composer\\InstalledVersions",
-    "Laravel\\Scout\\Builder"
+    "Laravel\\Scout\\Builder",
+    "Illuminate\\Foundation\\Http\\FormRequest",
+    "Illuminate\\Foundation\\Testing\\RefreshDatabase",
+    "Illuminate\\Foundation\\Testing\\RefreshDatabaseState",
+    "Illuminate\\Foundation\\Testing\\TestCase"
   ]
 }

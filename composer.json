@@ -36,17 +36,31 @@
     "php": "^8.1|^8.2|^8.3",
     "ext-bcmath": "*",
     "ext-dom": "*",
-    "ext-intl": "*",
     "ext-filter": "*",
+    "ext-intl": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "ext-xmlreader": "*",
     "composer/semver": "^3.2",
     "doctrine/sql-formatter": "^1.1",
+    "illuminate/console": "^10.34.0",
+    "illuminate/container": "^10.34.0",
+    "illuminate/contracts": "^10.34.0",
+    "illuminate/support": "^10.34.0",
+    "illuminate/collections": "^10.34.0",
+    "illuminate/database": "^10.34.0",
+    "illuminate/macroable": "^10.34.0",
+    "illuminate/filesystem": "^10.34.0",
+    "illuminate/http": "^10.34.0",
+    "illuminate/pagination": "^10.34.0",
+    "illuminate/process": "^10.34.0",
+    "illuminate/routing": "^10.34.0",
+    "illuminate/validation": "^10.34.0",
+    "illuminate/testing": "^10.34.0",
+    "illuminate/translation": "^10.34.0",
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "http-interop/http-factory-guzzle": "^1.0.0",
-    "laravel/framework": "^10.34.0",
     "league/commonmark": "^2.4",
     "mockery/mockery": "^1.6.2",
     "nikic/php-parser": "^4.18|^5.0",
@@ -59,6 +73,7 @@
     "sebastian/comparator": "^5.0",
     "sebastian/exporter": "^5.0",
     "symfony/console": "^6.3.0",
+    "symfony/deprecation-contracts": "^3.0.0",
     "symfony/filesystem": "^6.3.0",
     "symfony/finder": "^6.3.0",
     "symfony/http-foundation": "^6.3.0",
@@ -75,6 +90,8 @@
     "ext-pdo_sqlite": "*",
     "bamarni/composer-bin-plugin": "^1.8",
     "composer/class-map-generator": "^1.0",
+    "illuminate/cache": "^10.34.0",
+    "fakerphp/faker": "^1.21.0",
     "laravel/scout": "^9.8.0|^10.0.0",
     "orchestra/testbench": "^8.0.0",
     "symfony/var-dumper": "^6.3.0"
@@ -120,7 +137,8 @@
       "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
     },
     "exclude-from-classmap": [
-      "packages/*/docs"
+      "packages/*/docs",
+      "dev/**.php"
     ]
   },
   "extra": {
@@ -131,7 +149,8 @@
         "LastDragon_ru\\LaraASP\\Spa\\Provider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
         "LastDragon_ru\\LaraASP\\Serializer\\Provider",
-        "LastDragon_ru\\LaraASP\\Documentator\\Provider"
+        "LastDragon_ru\\LaraASP\\Documentator\\Provider",
+        "LastDragon_ru\\LaraASP\\Eloquent\\Provider"
       ]
     },
     "bamarni-bin": {
@@ -143,6 +162,9 @@
         "required-extensions": {
           "league/flysystem": [
             "ext-fileinfo"
+          ],
+          "illuminate/console": [
+            "ext-mbstring"
           ]
         },
         "optional-packages": {
@@ -154,10 +176,6 @@
     }
   },
   "scripts": {
-    "validate:release": [
-      "@validate:dependencies",
-      "@validate:commit"
-    ],
     "validate:commit": [
       "@phpstan",
       "@phpunit",

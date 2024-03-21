@@ -140,14 +140,14 @@ EOT
     fi
   SHELL
 
-  config.vm.provision "PHP 8.1", type: "shell", privileged: false, inline: <<-SHELL
+  config.vm.provision "PHP 8.3", type: "shell", privileged: false, inline: <<-SHELL
     sudo add-apt-repository -y ppa:ondrej/php
-    sudo apt-get install -y php8.1-{cli,common,mbstring,bcmath,zip,intl,mbstring,xml,xdebug,curl,gd,imagick,ldap,pdo-sqlite}
-    sudo sed -i 's/^error_reporting = .\+$/error_reporting = E_ALL/'            /etc/php/8.1/cli/php.ini
-    sudo sed -i 's/^display_errors = .\+$/display_errors = On/'                 /etc/php/8.1/cli/php.ini
-    sudo sed -i 's/^;opcache\.enable=.\+$/opcache.enable=1/'                    /etc/php/8.1/cli/php.ini
-    sudo sed -i 's/^;opcache\.enable_cli=.\+$/opcache.enable_cli=1/'            /etc/php/8.1/cli/php.ini
-    sudo tee -a /etc/php/8.1/mods-available/xdebug.ini > /dev/null <<"EOT"
+    sudo apt-get install -y php8.3-{cli,common,mbstring,bcmath,zip,intl,mbstring,xml,xdebug,curl,pdo-sqlite}
+    sudo sed -i 's/^error_reporting = .\+$/error_reporting = E_ALL/'            /etc/php/8.3/cli/php.ini
+    sudo sed -i 's/^display_errors = .\+$/display_errors = On/'                 /etc/php/8.3/cli/php.ini
+    sudo sed -i 's/^;opcache\.enable=.\+$/opcache.enable=1/'                    /etc/php/8.3/cli/php.ini
+    sudo sed -i 's/^;opcache\.enable_cli=.\+$/opcache.enable_cli=1/'            /etc/php/8.3/cli/php.ini
+    sudo tee -a /etc/php/8.3/mods-available/xdebug.ini > /dev/null <<"EOT"
 xdebug.output_dir = /project/.xdebug
 xdebug.profiler_output_name = callgrind.out.%t.%r
 xdebug.client_host = 10.0.2.2
@@ -172,7 +172,7 @@ EOT
   config.vm.provision "composer install", type: "shell", privileged: false, inline: <<-SHELL
     if test -f "/project/composer.json"; then
       (cd /project && composer install)
-      (cs /project && composer bin all install)
+      (cd /project && composer bin all install)
     fi
   SHELL
 

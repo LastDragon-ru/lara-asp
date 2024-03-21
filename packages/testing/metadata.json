@@ -5,6 +5,7 @@
         "laravel/framework": "Laravel",
         "phpunit/phpunit": "PHPUnit"
     },
+    "merge": null,
     "requirements": {
         "HEAD": {
             "laravel/framework": [

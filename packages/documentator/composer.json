@@ -21,7 +21,11 @@
     "php": "^8.1|^8.2|^8.3",
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
-    "laravel/framework": "^10.34.0",
+    "illuminate/console": "^10.34.0",
+    "illuminate/container": "^10.34.0",
+    "illuminate/contracts": "^10.34.0",
+    "illuminate/process": "^10.34.0",
+    "illuminate/support": "^10.34.0",
     "league/commonmark": "^2.4",
     "nikic/php-parser": "^4.18|^5.0",
     "phpstan/phpdoc-parser": "^1.25",
@@ -67,6 +71,9 @@
         "required-extensions": {
           "league/flysystem": [
             "ext-fileinfo"
+          ],
+          "illuminate/console": [
+            "ext-mbstring"
           ]
         }
       }

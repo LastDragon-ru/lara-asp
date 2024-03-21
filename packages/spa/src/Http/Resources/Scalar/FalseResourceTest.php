@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Routing\Registrar;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,9 +14,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(FalseResource::class)]
 final class FalseResourceTest extends TestCase {
     public function testToResponse(): void {
-        Route::get(__METHOD__, static function (): mixed {
-            return new FalseResource();
-        });
+        Container::getInstance()->make(Registrar::class)
+            ->get(__METHOD__, static function (): mixed {
+                return new FalseResource();
+            });
 
         $this->get(__METHOD__)->assertThat(new OkResponse(FalseResource::class));
     }

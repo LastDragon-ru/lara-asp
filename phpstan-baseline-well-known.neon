@@ -1,4 +1,7 @@
 parameters:
+    excludePaths:
+        - packages/testing/docs/Examples/TestCase.php
+
     ignoreErrors:
         # Unwanted strict rules
         # (is there a better way to disable them?)
@@ -54,8 +57,6 @@ parameters:
             message: "#^Creating callable from Mockery\\\\MockInterface but it might not be a callable\\.$#"
             paths:
                 - packages/**/*Test.php
-                - packages/testing/src/Package/TestCase.php
-                - packages/testing/src/TestCase.php
 
         # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/18

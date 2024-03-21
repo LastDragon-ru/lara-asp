@@ -10,6 +10,8 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
@@ -21,7 +23,6 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Nuwave\Lighthouse\Validation\RulesDirective;
 use Override;
 
-use function config;
 use function max;
 use function min;
 use function strtr;
@@ -39,7 +40,8 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
      * @return array{name: string, default: int, max: int}
      */
     final public static function settings(): array {
-        $settings = (array) config(Directive::Settings.'.limit');
+        $repository = Container::getInstance()->make(Repository::class);
+        $settings   = (array) $repository->get(Directive::Settings.'.limit');
 
         return [
             'name'    => Cast::toString($settings['name'] ?? 'limit'),

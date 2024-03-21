@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
-use Illuminate\Support\Facades\Process;
+use Illuminate\Container\Container;
+use Illuminate\Process\Factory;
 
 use function array_filter;
 use function array_values;
@@ -10,8 +11,10 @@ use function explode;
 use function trim;
 
 class Git {
+    protected readonly Factory $factory;
+
     public function __construct() {
-        // empty
+        $this->factory = Container::getInstance()->make(Factory::class); // next(documentator): Inject in constructor
     }
 
     /**
@@ -44,7 +47,8 @@ class Git {
      * @param array<array-key, string>|string $command
      */
     private function run(array|string $command, string $root = null): string {
-        $process = $root !== null ? Process::path($root) : Process::command('');
+        $process = $this->factory->newPendingProcess();
+        $process = $root !== null ? $process->path($root) : $process->command('');
         $output  = $process->run($command)->throw()->output();
         $output  = trim($output);
 

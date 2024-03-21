@@ -18,15 +18,13 @@ use Symfony\Component\Serializer\Normalizer\DataUriNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
 
-use function config;
-
 /**
  * @internal
  */
 #[CoversClass(Factory::class)]
 final class FactoryTest extends TestCase {
     public function testCreate(): void {
-        config([
+        $this->setConfig([
             Package::Name => [
                 'default'     => 'format from config',
                 'encoders'    => [

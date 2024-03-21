@@ -4,8 +4,9 @@ namespace LastDragon_ru\LaraASP\Spa\Http;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Routing\Redirector;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -14,11 +15,10 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @deprecated ${version}
  * @internal
  */
-#[CoversClass(Request::class)]
-final class RequestTest extends TestCase {
+#[CoversClass(WithValueProvider::class)]
+final class WithValueProviderTest extends TestCase {
     public function testValidated(): void {
         $router        = Container::getInstance()->make(Router::class);
         $translator    = Container::getInstance()->make(Translator::class);
@@ -60,38 +60,7 @@ final class RequestTest extends TestCase {
                 return static::class;
             }
         };
-
-        $request = new class($rule, $resolverRuleA, $resolverRuleB) extends Request {
-            private Rule         $rule;
-            private ResolverRule $resolverRuleA;
-            private ResolverRule $resolverRuleB;
-
-            public function __construct(Rule $rule, ResolverRule $resolverRuleA, ResolverRule $resolverRuleB) {
-                $this->rule          = $rule;
-                $this->resolverRuleA = $resolverRuleA;
-                $this->resolverRuleB = $resolverRuleB;
-
-                parent::__construct();
-            }
-
-            /**
-             * @return array<string,mixed>
-             */
-            public function rules(): array {
-                return [
-                    'rule'              => ['required', $this->rule],
-                    'rule_nullable'     => ['nullable', 'int'],
-                    'resolver'          => ['required', $this->resolverRuleA],
-                    'resolver_nullable' => ['nullable', $this->resolverRuleA],
-                    'resolver_chained'  => ['required', $this->resolverRuleA, $this->resolverRuleB],
-                    'array'             => ['required', 'array'],
-                    'array.*.rule'      => ['required', $this->rule],
-                    'array.*.resolver'  => ['required', $this->resolverRuleA],
-                ];
-            }
-        };
-
-        $request->replace([
+        $data          = [
             'rule'              => true,
             'rule_nullable'     => null,
             'resolver'          => 1,
@@ -107,10 +76,45 @@ final class RequestTest extends TestCase {
                     'resolver' => 4,
                 ],
             ],
-        ]);
+        ];
 
-        $request->setContainer(Container::getInstance());
-        $request->setRedirector(Container::getInstance()->make(Redirector::class));
+        $request = new class($rule, $resolverRuleA, $resolverRuleB, $data) {
+            use WithValueProvider;
+
+            /**
+             * @param array<string, mixed> $data
+             */
+            public function __construct(
+                private readonly Rule $rule,
+                private readonly ResolverRule $resolverRuleA,
+                private readonly ResolverRule $resolverRuleB,
+                private readonly array $data,
+            ) {
+                // empty
+            }
+
+            /**
+             * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint
+             *
+             * @return Validator
+             */
+            #[Override]
+            protected function getValidatorInstance() {
+                $factory   = Container::getInstance()->make(Factory::class);
+                $validator = $factory->make($this->data, [
+                    'rule'              => ['required', $this->rule],
+                    'rule_nullable'     => ['nullable', 'int'],
+                    'resolver'          => ['required', $this->resolverRuleA],
+                    'resolver_nullable' => ['nullable', $this->resolverRuleA],
+                    'resolver_chained'  => ['required', $this->resolverRuleA, $this->resolverRuleB],
+                    'array'             => ['required', 'array'],
+                    'array.*.rule'      => ['required', $this->rule],
+                    'array.*.resolver'  => ['required', $this->resolverRuleA],
+                ]);
+
+                return $validator;
+            }
+        };
 
         self::assertEquals([
             'rule'              => true,

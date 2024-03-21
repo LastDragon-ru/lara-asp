@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Routing\Registrar;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,9 +14,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(StringResource::class)]
 final class StringResourceTest extends TestCase {
     public function testToResponse(): void {
-        Route::get(__METHOD__, static function (): mixed {
-            return new StringResource('123');
-        });
+        Container::getInstance()->make(Registrar::class)
+            ->get(__METHOD__, static function (): mixed {
+                return new StringResource('123');
+            });
 
         $this->get(__METHOD__)->assertThat(new OkResponse(StringResource::class));
     }

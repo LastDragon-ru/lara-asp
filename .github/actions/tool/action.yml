@@ -1,0 +1,27 @@
+name: 'Install Tool'
+description: 'Install Tool (requires PHP to be installed first)'
+
+inputs:
+  tool:
+    description: "Tool to install."
+    required: true
+    type: string
+  working-directory:
+    description: "The directory where `composer.json` is located (default repository root)."
+    required: false
+    type: string
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Detect path
+      id: path
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "value=$(jq '.extra."bamarni-bin"."target-directory" // "vendor-bin"' -r -c composer.json)" >> $GITHUB_OUTPUT
+    - name: Install
+      uses: ramsey/composer-install@v3
+      with:
+        working-directory: ${{ inputs.working-directory && inputs.working-directory || '.' }}/${{ steps.path.outputs.value }}/${{ inputs.tool }}

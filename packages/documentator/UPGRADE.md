@@ -39,7 +39,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Replace `LastDragon_ru\LaraASP\Documentator\Preprocessor\InstructionContract` by `LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction` or `LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction`.
 
-* [ ] Use [`Illuminate\Support\Facades\Process`](https://laravel.com/docs/processes) instead of `LastDragon_ru\LaraASP\Documentator\Utils\Process`.
+* [ ] Use [`illuminate/process`](https://laravel.com/docs/processes) instead of `LastDragon_ru\LaraASP\Documentator\Utils\Process`.
 
 * [ ] If you are extending built-in instructions, their classes were moved to `LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\<name>\Instruction` namespace.
 

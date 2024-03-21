@@ -29,7 +29,6 @@ use Override;
 use ReflectionClass;
 use SplFileInfo;
 
-use function config;
 use function mb_substr;
 
 /**
@@ -62,7 +61,7 @@ abstract class TestCase extends PackageTestCase {
     protected function getEnvironmentSetUp($app): void {
         parent::getEnvironmentSetUp($app);
 
-        config([
+        $this->setConfig([
             'lighthouse.namespaces.models' => [
                 (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],

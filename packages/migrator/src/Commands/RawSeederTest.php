@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
-use Illuminate\Support\Collection;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -37,12 +35,11 @@ final class RawSeederTest extends TestCase {
             'RawSeeder.php',
             'RawSeeder.sql',
         ];
-        $actual   = (new Collection($finder->files()->sortByName()))
-            ->map(static function (SplFileInfo $file): string {
-                return $file->getFilename();
-            })
-            ->values()
-            ->all();
+        $actual   = [];
+
+        foreach ($finder->files()->sortByName() as $file) {
+            $actual[] = $file->getFilename();
+        }
 
         self::assertEquals($expected, $actual);
     }

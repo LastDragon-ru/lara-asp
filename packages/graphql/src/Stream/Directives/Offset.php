@@ -7,6 +7,8 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
@@ -23,7 +25,6 @@ use Nuwave\Lighthouse\Support\Contracts\ArgManipulator;
 use Override;
 
 use function array_map;
-use function config;
 use function implode;
 use function is_int;
 use function max;
@@ -39,7 +40,8 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
      * @return array{name: string}
      */
     final public static function settings(): array {
-        $settings = (array) config(Directive::Settings.'.offset');
+        $repository = Container::getInstance()->make(Repository::class);
+        $settings   = (array) $repository->get(Directive::Settings.'.offset');
 
         return [
             'name' => Cast::toString($settings['name'] ?? 'offset'),

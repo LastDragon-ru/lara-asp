@@ -1,24 +1,29 @@
 <?php declare(strict_types = 1);
 
-use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Routing\Registrar;
 use LastDragon_ru\LaraASP\Spa\Http\Controllers\SpaController;
 use LastDragon_ru\LaraASP\Spa\Package;
 
+$repository = Container::getInstance()->make(Repository::class);
 $package    = Package::Name;
-$prefix     = config("{$package}.routes.prefix");
-$enabled    = config("{$package}.routes.enabled");
-$middleware = config("{$package}.routes.middleware");
+$prefix     = $repository->get("{$package}.routes.prefix");
+$enabled    = $repository->get("{$package}.routes.enabled");
+$middleware = $repository->get("{$package}.routes.middleware");
 
-if (!$enabled) {
+if (!$enabled || !Container::getInstance()->bound(Registrar::class)) {
     return;
 }
 
 // SPA Routes
-Route::group([
-    'middleware' => $middleware,
-    'prefix'     => $prefix,
-], static function (Router $router): void {
-    $router->get('settings', [SpaController::class, 'settings']);
-    $router->get('user', [SpaController::class, 'user']);
-});
+Container::getInstance()->make(Registrar::class)->group(
+    [
+        'middleware' => $middleware,
+        'prefix'     => $prefix,
+    ],
+    static function (Registrar $router): void {
+        $router->get('settings', [SpaController::class, 'settings']);
+        $router->get('user', [SpaController::class, 'user']);
+    },
+);

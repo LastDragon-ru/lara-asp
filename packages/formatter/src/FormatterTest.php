@@ -10,7 +10,6 @@ use NumberFormatter;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function config;
 use function pow;
 use function str_replace;
 
@@ -77,7 +76,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDecimalConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Decimal                                     => 4,
             Package::Name.'.locales.ru_RU.'.Formatter::Decimal.'.'.Formatter::IntlAttributes => [
                 NumberFormatter::FRACTION_DIGITS => 9, // should be ignored
@@ -118,7 +117,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testPercentConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Percent => 2,
         ]);
 
@@ -131,7 +130,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDurationConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Duration => NumberFormatter::DURATION,
         ]);
 
@@ -140,7 +139,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDurationCustomFormat(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Duration        => 'custom',
             Package::Name.'.all.'.Formatter::Duration.'.custom'  => 'mm:ss',
             Package::Name.'.all.'.Formatter::Duration.'.custom2' => 'H:mm:ss.SSS',
@@ -161,7 +160,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testTimeConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Time => IntlDateFormatter::MEDIUM,
         ]);
 
@@ -171,7 +170,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testTimeCustomFormat(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Time        => 'custom',
             Package::Name.'.all.'.Formatter::Time.'.custom'  => 'HH:mm:ss.SSS',
             Package::Name.'.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
@@ -191,7 +190,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDateConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Date => IntlDateFormatter::MEDIUM,
         ]);
 
@@ -201,7 +200,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDateCustomFormat(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Date        => 'custom',
             Package::Name.'.all.'.Formatter::Date.'.custom'  => 'd MMM YYYY',
             Package::Name.'.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
@@ -224,7 +223,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDatetimeConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::DateTime => IntlDateFormatter::MEDIUM,
         ]);
 
@@ -237,7 +236,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDatetimeCustomFormat(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::DateTime        => 'custom',
             Package::Name.'.all.'.Formatter::DateTime.'.custom'  => 'd MMM YYYY || HH:mm:ss',
             Package::Name.'.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
@@ -271,7 +270,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testSecretConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Secret => 3,
         ]);
 
@@ -328,7 +327,7 @@ final class FormatterTest extends TestCase {
     }
 
     public function testCurrencyConfig(): void {
-        config([
+        $this->setConfig([
             Package::Name.'.options.'.Formatter::Currency => 'RUB',
         ]);
 

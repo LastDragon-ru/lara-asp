@@ -38,6 +38,7 @@ jobs:
       php-versions: ${{ steps.settings.outputs.php-versions }}
       dependencies: ${{ steps.settings.outputs.dependencies }}
       laravel-versions: ${{ steps.settings.outputs.laravel-versions }}
+      laravel-packages: ${{ steps.settings.outputs.laravel-packages }}
       optional-packages: ${{ steps.settings.outputs.optional-packages }}
     steps:
       - name: Checkout
@@ -48,7 +49,6 @@ jobs:
         with:
           working-directory: ${{ env.WORKING_DIRECTORY }}
           dependencies: false
-          tools: false
 
       - name: Collect Settings
         id: settings
@@ -65,7 +65,8 @@ jobs:
           echo "dependencies=$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)" >> $GITHUB_OUTPUT
 
           # Laravel
-          echo "laravel-versions=$(jq '.require."laravel/framework" // "null" | split("|") | sort' -c composer.json)" >> $GITHUB_OUTPUT
+          echo "laravel-versions=$(jq '.require | to_entries | map(select( (.key | startswith("illuminate/")) or (.key == "laravel/framework "))) | map( .value | split("|") ) | flatten | unique | sort | if . == [] then ["null"] else . end' -c composer.json)" >> $GITHUB_OUTPUT
+          echo "laravel-packages=$(jq '.require + ."require-dev" | to_entries | map(select( (.key | startswith("illuminate/")) or (.key == "laravel/framework "))) | map( .key ) | flatten | unique | sort ' -c composer.json)" >> $GITHUB_OUTPUT
 
           # Optional packages
           echo "optional-packages=$(jq '([((."extra"."lara-asp"."ci"."optional-packages" // ["null"]) | flatten | unique | sort | join(","))] + ["null"]) | unique' -r -c composer.json)" >> $GITHUB_OUTPUT
@@ -112,7 +113,6 @@ jobs:
         with:
           version: ${{ matrix.php }}
           dependencies: false
-          tools: false
           working-directory: ${{ env.WORKING_DIRECTORY }}
 
       # Required to resolve packages correctly.
@@ -135,9 +135,13 @@ jobs:
         shell: bash
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          composer remove --no-interaction --no-progress --ansi --no-update laravel/framework
-          composer require --no-interaction --no-progress --ansi --no-update "laravel/framework:${{ matrix.laravel }}"
-          composer remove --no-interaction --no-progress --ansi --no-update --dev larastan/larastan
+          PACKAGES=$(echo '${{ needs.settings.outputs.laravel-packages }}' | jq -c -r '.[]' | tr -d '\r')
+
+          while IFS= read -r PKG
+          do
+            # It will move package to `require` section, not critical here
+            composer require --no-interaction --no-progress --ansi --no-update "${PKG}:${{ matrix.laravel }}"
+          done <<< "${PACKAGES}"
 
       - name: Remove optional packages
         if: ${{ matrix.optional != 'null' }}

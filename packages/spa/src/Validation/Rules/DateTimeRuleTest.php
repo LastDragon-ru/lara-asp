@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Throwable;
 
-use function config;
 use function is_array;
 
 /**
@@ -50,7 +49,7 @@ final class DateTimeRuleTest extends TestCase {
         $translator = Container::getInstance()->make(Translator::class);
         $rule       = new DateTimeRule($translator);
 
-        config([
+        $this->setConfig([
             'app.timezone' => $tz,
         ]);
 

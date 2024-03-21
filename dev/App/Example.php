@@ -21,7 +21,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 
 use function array_map;
 use function array_slice;
-use function config;
 use function debug_backtrace;
 use function end;
 use function file;
@@ -106,10 +105,11 @@ final class Example extends Command {
         self::getDumper();
 
         // Update
-        $config = (array) config($root, []);
-        $config = (new ConfigMerger())->merge([ConfigMerger::Strict => false], $config, $settings);
+        $repository = Container::getInstance()->make(Repository::class);
+        $config     = (array) $repository->get($root, []);
+        $config     = (new ConfigMerger())->merge([ConfigMerger::Strict => false], $config, $settings);
 
-        config([
+        $repository->set([
             $root => $config,
         ]);
     }

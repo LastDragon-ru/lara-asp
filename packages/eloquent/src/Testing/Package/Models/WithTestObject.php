@@ -2,9 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Container\Container;
+use Illuminate\Database\Schema\Builder;
+use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 
 /**
@@ -13,24 +14,40 @@ use PHPUnit\Framework\Attributes\Before;
  * @mixin TestCase
  */
 trait WithTestObject {
-    use RefreshDatabase;
-
     /**
      * @internal
      */
     #[Before]
-    protected function initWithTestObject(): void {
+    protected function withTestObjectBefore(): void {
         $this->afterApplicationCreated(static function (): void {
-            $table = (new TestObject())->getTable();
+            $schema = Container::getInstance()->make(Builder::class);
+            $table  = (new TestObject())->getTable();
 
-            if (Schema::hasTable($table)) {
+            if ($schema->hasTable($table)) {
                 return;
             }
 
-            Schema::create($table, static function ($table): void {
+            $schema->create($table, static function ($table): void {
                 $table->increments('id');
                 $table->string('value', 40)->nullable();
             });
+        });
+    }
+
+    /**
+     * @internal
+     */
+    #[After]
+    protected function withTestObjectAfter(): void {
+        $this->beforeApplicationDestroyed(static function (): void {
+            $schema = Container::getInstance()->make(Builder::class);
+            $table  = (new TestObject())->getTable();
+
+            if ($schema->hasTable($table)) {
+                return;
+            }
+
+            $schema->drop($table);
         });
     }
 }

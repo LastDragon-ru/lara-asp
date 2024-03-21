@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Testing\Database;
 
 use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * difference: it will refresh the database only if it is empty. This is very
  * useful for local testing and allow significantly reduce bootstrap time.
  *
- * @property-read Application $app
+ * @deprecated ${version} Please use own trait.
  *
  * @phpstan-require-extends TestCase
  */
