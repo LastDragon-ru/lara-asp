@@ -101,3 +101,11 @@ parameters:
             message: "#^Called 'env' outside of the config directory which returns null when the config is cached, use 'config'\\.$#"
             paths:
                 - dev/App/config/*.php
+
+        # Symfony v6 compatibility
+        -
+            message: "#^[^:]+::getSupportedTypes\\(\\) overrides method [^:]+::getSupportedTypes\\(\\) but is missing the \\#\\[\\\\Override\\] attribute\\.$#"
+            paths:
+                - packages/serializer/src/Normalizers/DateTimeNormalizer.php
+                - packages/serializer/src/Normalizers/SerializableNormalizer.php
+                - packages/serializer/src/Normalizers/UnitEnumNormalizer.php
