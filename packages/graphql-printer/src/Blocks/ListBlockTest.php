@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function assert;
 
@@ -22,10 +23,9 @@ final class ListBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderSerialize
-     *
      * @param array<string, Block> $blocks
      */
+    #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
         string $expected,
         Settings $settings,

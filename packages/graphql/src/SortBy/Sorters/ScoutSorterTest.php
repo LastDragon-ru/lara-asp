@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery\MockInterface;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function implode;
 use function is_array;
@@ -29,12 +30,11 @@ final class ScoutSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderSort
-     *
      * @param array<string, mixed>|Exception      $expected
      * @param Closure(object, Field): string|null $resolver
      * @param Closure():FieldResolver|null        $fieldResolver
      */
+    #[DataProvider('dataProviderSort')]
     public function testSort(
         array|Exception $expected,
         Field $field,

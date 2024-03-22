@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -17,9 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class OffsetTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderGetFieldArgumentValue
-     */
+    #[DataProvider('dataProviderGetFieldArgumentValue')]
     public function testGetFieldArgumentValue(Exception|StreamOffset $expected, ResolveInfo $info, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

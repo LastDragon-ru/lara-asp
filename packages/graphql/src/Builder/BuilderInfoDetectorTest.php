@@ -35,6 +35,7 @@ use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function json_encode;
 
@@ -52,11 +53,11 @@ final class BuilderInfoDetectorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderGetNodeBuilderInfo
      *
      * @param array{name: string, builder: string}                                                                                                       $expected
      * @param Closure(DirectiveLocator, AstManipulator): (InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      */
+    #[DataProvider('dataProviderGetNodeBuilderInfo')]
     public function testGetNodeBuilderInfo(array $expected, Closure $sourceFactory): void {
         $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
         $locator     = Container::getInstance()->make(DirectiveLocator::class);
@@ -74,11 +75,10 @@ final class BuilderInfoDetectorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetNodeBuilderInfoScoutBuilder
-     *
      * @param array{name: string, builder: string}                                                                                                       $expected
      * @param Closure(DirectiveLocator, AstManipulator): (InterfaceFieldArgumentSource|ObjectFieldArgumentSource|ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      */
+    #[DataProvider('dataProviderGetNodeBuilderInfoScoutBuilder')]
     #[RequiresLaravelScout]
     public function testGetNodeBuilderInfoScoutBuilder(array $expected, Closure $sourceFactory): void {
         $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));

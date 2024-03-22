@@ -14,6 +14,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function is_string;
 
@@ -24,9 +25,7 @@ use function is_string;
 final class OffsetTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderSerialize
-     */
+    #[DataProvider('dataProviderSerialize')]
     public function testSerialize(Exception|string|int $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -41,9 +40,7 @@ final class OffsetTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @dataProvider dataProviderParseValue
-     */
+    #[DataProvider('dataProviderParseValue')]
     public function testParseValue(Exception|StreamOffset|int $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -58,9 +55,7 @@ final class OffsetTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @dataProvider dataProviderParseLiteral
-     */
+    #[DataProvider('dataProviderParseLiteral')]
     public function testParseLiteral(Exception|StreamOffset|int $expected, Node&ValueNode $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

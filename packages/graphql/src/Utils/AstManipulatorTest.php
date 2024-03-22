@@ -39,6 +39,7 @@ use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 use function array_keys;
@@ -341,11 +342,10 @@ final class AstManipulatorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderAddArgument
-     *
      * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                      $definitionFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition) $fieldFactory
      */
+    #[DataProvider('dataProviderAddArgument')]
     public function testAddArgument(
         Exception|string $expected,
         string $schema,
@@ -430,11 +430,10 @@ final class AstManipulatorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderAddDirective
-     *
      * @param class-string<Directive> $directive
      * @param array<string, mixed>    $arguments
      */
+    #[DataProvider('dataProviderAddDirective')]
     public function testAddDirective(
         Exception|string $expected,
         FieldDefinitionNode|InputValueDefinitionNode|Argument $node,
@@ -461,9 +460,7 @@ final class AstManipulatorTest extends TestCase {
         }
     }
 
-    /**
-     * @dataProvider dataProviderIsDeprecated
-     */
+    #[DataProvider('dataProviderIsDeprecated')]
     public function testIsDeprecated(
         bool $expected,
         Node|Argument|EnumValueDefinition|FieldDefinition|InputObjectField $node,
@@ -472,12 +469,11 @@ final class AstManipulatorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderSetFieldType
-     *
      * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                      $definitionFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition) $fieldFactory
      * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType)                                                                                   $type
      */
+    #[DataProvider('dataProviderSetFieldType')]
     public function testSetFieldType(
         Exception|string $expected,
         string $schema,
@@ -502,13 +498,12 @@ final class AstManipulatorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderSetArgumentType
-     *
      * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                                                         $definitionFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition)                                    $fieldFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType, FieldDefinitionNode|FieldDefinition): (InputValueDefinitionNode|Argument) $argumentFactory
      * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType)                                                                                                                      $type
      */
+    #[DataProvider('dataProviderSetArgumentType')]
     public function testSetArgumentType(
         Exception|string $expected,
         string $schema,
@@ -587,9 +582,7 @@ final class AstManipulatorTest extends TestCase {
         self::assertEquals('c', $typeField->name);
     }
 
-    /**
-     * @dataProvider dataProviderGetOriginType
-     */
+    #[DataProvider('dataProviderGetOriginType')]
     public function testGetOriginType(string $expected, string $graphql): void {
         $ast         = Mockery::mock(DocumentAST::class);
         $types       = Container::getInstance()->make(TypeRegistry::class);

@@ -72,6 +72,7 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use stdClass;
 
@@ -106,13 +107,12 @@ final class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderDirective
-     *
      * @param array<string,mixed>|string $expected
      * @param Closure(static): void      $factory
      * @param array<string, mixed>|null  $where
      * @param array<int, mixed>|null     $order
      */
+    #[DataProvider('dataProviderDirective')]
     public function testDirective(
         array|string $expected,
         Closure $factory,
@@ -189,13 +189,12 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderDirective
-     *
      * @param array<string,mixed>|string $expected
      * @param Closure(static): void      $factory
      * @param array<string, mixed>|null  $where
      * @param array<int, mixed>|null     $order
      */
+    #[DataProvider('dataProviderDirective')]
     #[RequiresLaravelScout]
     public function testDirectiveScout(
         array|string $expected,
@@ -443,11 +442,10 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetBuilderInfo
-     *
      * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      * @param Closure():mixed|array{class-string, string}|null                  $resolver
      */
+    #[DataProvider('dataProviderGetBuilderInfo')]
     public function testGetBuilderInfo(
         Exception|BuilderInfo|null $expected,
         Closure $sourceFactory,
@@ -695,11 +693,10 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetBuilderInfoScoutBuilder
-     *
      * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      * @param Closure():mixed|array{class-string, string}|null                  $resolver
      */
+    #[DataProvider('dataProviderGetBuilderInfoScoutBuilder')]
     #[RequiresLaravelScout]
     public function testGetBuilderInfoScoutBuilder(
         Exception|BuilderInfo|null $expected,
@@ -791,10 +788,9 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetResolverExplicit
-     *
      * @param array{method: string, args: array<array-key, mixed>}|null $expected
      */
+    #[DataProvider('dataProviderGetResolverExplicit')]
     public function testGetResolverExplicit(array|null $expected, string $arguments): void {
         // Prepare
         $this->setConfig([
@@ -1061,10 +1057,9 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetArgKey
-     *
      * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
      */
+    #[DataProvider('dataProviderGetArgKey')]
     public function testGetArgKey(
         Exception|string $expected,
         string $schema,

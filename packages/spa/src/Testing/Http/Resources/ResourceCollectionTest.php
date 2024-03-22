@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
@@ -17,10 +18,9 @@ final class ResourceCollectionTest extends TestCase {
     /**
      * @coversNothing
      *
-     * @dataProvider dataProviderSchema
-     *
      * @param array<array-key, mixed> $json
      */
+    #[DataProvider('dataProviderSchema')]
     public function testSchema(bool $expected, array $json): void {
         $schema     = new ResourceCollection(self::class);
         $constraint = new JsonMatchesSchema($schema);

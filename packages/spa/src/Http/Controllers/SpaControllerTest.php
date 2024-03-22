@@ -13,12 +13,13 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\DataProvider as DataProviderContract;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -43,11 +44,10 @@ final class SpaControllerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderSettings
-     *
      * @param array<array-key, mixed> $headers
      * @param array<array-key, mixed> $settings
      */
+    #[DataProvider('dataProviderSettings')]
     public function testSettings(
         Response $expected,
         bool $routes = true,
@@ -98,7 +98,7 @@ final class SpaControllerTest extends TestCase {
         ))->getData();
     }
 
-    protected static function getEnabledDataProvider(): DataProvider {
+    protected static function getEnabledDataProvider(): DataProviderContract {
         return new ArrayDataProvider([
             'disabled' => [
                 new ExpectedFinal(new NotFound()),
@@ -111,7 +111,7 @@ final class SpaControllerTest extends TestCase {
         ]);
     }
 
-    protected static function getPrefixDataProvider(): DataProvider {
+    protected static function getPrefixDataProvider(): DataProviderContract {
         return new ArrayDataProvider([
             'without prefix' => [
                 new UnknownValue(),
@@ -124,7 +124,7 @@ final class SpaControllerTest extends TestCase {
         ]);
     }
 
-    protected static function getAcceptDataProvider(): DataProvider {
+    protected static function getAcceptDataProvider(): DataProviderContract {
         return new ArrayDataProvider([
             'accept html' => [
                 new UnknownValue(),

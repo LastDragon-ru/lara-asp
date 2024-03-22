@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Stringable;
 use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
@@ -42,9 +43,7 @@ final class ProviderTest extends TestCase {
         );
     }
 
-    /**
-     * @dataProvider dataProviderSerialization
-     */
+    #[DataProvider('dataProviderSerialization')]
     public function testSerialization(Exception|string $expected, Serializable $serializable): void {
         try {
             $serializer = Container::getInstance()->make(SerializerContract::class);
@@ -68,10 +67,9 @@ final class ProviderTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderDeserialization
-     *
      * @param class-string<Serializable> $class
      */
+    #[DataProvider('dataProviderDeserialization')]
     public function testDeserialization(Exception|Serializable $expected, string $class, string $serialized): void {
         try {
             $serializer   = Container::getInstance()->make(SerializerContract::class);

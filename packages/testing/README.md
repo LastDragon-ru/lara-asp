@@ -679,10 +679,10 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Unauthorized;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
-use LastDragon_ru\LaraASP\Testing\Providers\DataProvider;
+use LastDragon_ru\LaraASP\Testing\Providers\DataProvider as DataProviderContract;
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\ValidationErrorResponse;
-use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;use Tests\TestCase;
 
 class ExampleTest extends TestCase {
     // <editor-fold desc="Prepare">
@@ -706,9 +706,7 @@ class ExampleTest extends TestCase {
 
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderGet
-     */
+    #[DataProvider('dataProviderGet')]
     public function testGet(Response $expected, Closure $actingAs = null, Closure $user = null): void {
         $user = $user ? $user()->getKey() : 0;
 
@@ -719,9 +717,7 @@ class ExampleTest extends TestCase {
         $this->getJson("/users/{$user}")->assertThat($expected);
     }
 
-    /**
-     * @dataProvider dataProviderUpdate
-     */
+    #[DataProvider('dataProviderUpdate')]
     public function testUpdate(Response $expected, Closure $actingAs = null, Closure $user = null, array $data = []) {
         $user = $user ? $user()->getKey() : 0;
 
@@ -773,7 +769,7 @@ class ExampleTest extends TestCase {
 
     // <editor-fold desc="Shared">
     // =========================================================================
-    protected static function getUserDataProvider(): DataProvider {
+    protected static function getUserDataProvider(): DataProviderContract {
         return new ArrayDataProvider([
             'guest'         => [
                 new ExpectedFinal(new Unauthorized()),
@@ -788,7 +784,7 @@ class ExampleTest extends TestCase {
         ]);
     }
 
-    protected static function getModelDataProvider(): DataProvider {
+    protected static function getModelDataProvider(): DataProviderContract {
         return new ArrayDataProvider([
             'user not exists' => [
                 new ExpectedFinal(new NotFound()),

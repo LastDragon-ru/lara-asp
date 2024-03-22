@@ -32,6 +32,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function implode;
 use function is_array;
@@ -44,12 +45,11 @@ final class EloquentSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderSort
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): EloquentBuilder<EloquentModel>                   $builder
      * @param Closure(object, Field): string|null                               $resolver
      */
+    #[DataProvider('dataProviderSort')]
     public function testSort(
         array|Exception $expected,
         Closure $builder,

@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function count;
 use function iterator_to_array;
@@ -82,9 +83,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
             ->times(2);
     }
 
-    /**
-     * @dataProvider dataProviderGetIteratorColumn
-     */
+    #[DataProvider('dataProviderGetIteratorColumn')]
     public function testGetIteratorDefaults(string $column): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -101,9 +100,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
         self::assertEquals($expected, $actual);
     }
 
-    /**
-     * @dataProvider dataProviderGetIteratorColumn
-     */
+    #[DataProvider('dataProviderGetIteratorColumn')]
     public function testGetIteratorEloquentDefaults(string $column): void {
         TestObject::factory()->create(['value' => '1']);
         TestObject::factory()->create(['value' => '2']);
@@ -127,10 +124,9 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetDefaultColumn
-     *
      * @param Closure(): Builder<Model> $factory
      */
+    #[DataProvider('dataProviderGetDefaultColumn')]
     public function testGetDefaultColumn(string $expected, Closure $factory): void {
         $iterator = new class() extends ChunkedChangeSafeIterator {
             /** @noinspection PhpMissingParentConstructorInspection */

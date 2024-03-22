@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory as ResponseFactory;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -18,11 +19,10 @@ final class ValidationErrorResponseTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderEvaluate
-     *
      * @param array<string,string>      $rules
      * @param array<string,string>|null $errors
      */
+    #[DataProvider('dataProviderEvaluate')]
     public function testEvaluate(bool $expected, array $rules, ?array $errors): void {
         Container::getInstance()->make(Registrar::class)
             ->get(__FUNCTION__, static function (Request $request) use ($rules) {

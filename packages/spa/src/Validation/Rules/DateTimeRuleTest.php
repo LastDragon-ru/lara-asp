@@ -7,6 +7,7 @@ use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Throwable;
 
 use function is_array;
@@ -18,9 +19,7 @@ use function is_array;
 final class DateTimeRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderPasses
-     */
+    #[DataProvider('dataProviderPasses')]
     public function testPasses(bool $expected, string $value): void {
         $translator = Container::getInstance()->make(Translator::class);
         $rule       = new DateTimeRule($translator);
@@ -36,10 +35,9 @@ final class DateTimeRuleTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetValue
-     *
      * @param array{class: class-string<Throwable>, message: string}|string $expected
      */
+    #[DataProvider('dataProviderGetValue')]
     public function testGetValue(string|array $expected, ?string $tz, string $value): void {
         if (is_array($expected)) {
             self::expectException($expected['class']);

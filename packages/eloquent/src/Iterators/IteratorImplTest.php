@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -17,9 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class IteratorImplTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderCount
-     */
+    #[DataProvider('dataProviderCount')]
     public function testCount(int $expected, ?int $limit, int $count): void {
         $query = Mockery::mock(QueryBuilder::class);
         $query

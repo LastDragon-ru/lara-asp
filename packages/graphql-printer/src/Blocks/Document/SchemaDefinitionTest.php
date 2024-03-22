@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function str_starts_with;
 
@@ -25,9 +26,7 @@ use function str_starts_with;
 final class SchemaDefinitionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderSerialize
-     */
+    #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
         string $expected,
         Settings $settings,

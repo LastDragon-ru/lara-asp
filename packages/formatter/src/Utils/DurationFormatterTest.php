@@ -6,6 +6,7 @@ use DateInterval;
 use DateTime;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -14,16 +15,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class DurationFormatterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderGetTimestamp
-     */
+    #[DataProvider('dataProviderGetTimestamp')]
     public function testGetTimestamp(float $expected, DateInterval $interval): void {
         self::assertEquals($expected, DurationFormatter::getTimestamp($interval));
     }
 
-    /**
-     * @dataProvider dataProviderFormat
-     */
+    #[DataProvider('dataProviderFormat')]
     public function testFormat(string $expected, string $format, float|int $duration): void {
         $formatter = new DurationFormatter($format);
         $actual    = $formatter->format($duration);

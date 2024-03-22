@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function implode;
 
@@ -31,14 +32,13 @@ final class RelationshipTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderCall
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param BuilderFactory                                                    $builderFactory
      * @param Closure(static): Argument                                         $argumentFactory
      * @param Closure(static): Context|null                                     $contextFactory
      * @param Closure(object, Field): string|null                               $resolver
      */
+    #[DataProvider('dataProviderCall')]
     public function testCall(
         array|Exception $expected,
         Closure $builderFactory,

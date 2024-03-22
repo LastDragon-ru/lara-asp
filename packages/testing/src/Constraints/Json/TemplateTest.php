@@ -6,6 +6,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function json_decode;
 
@@ -17,10 +18,9 @@ final class TemplateTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderBuild
-     *
      * @param array<string,string> $parameters
      */
+    #[DataProvider('dataProviderBuild')]
     public function testBuild(Exception|string $expected, string $content, array $parameters): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

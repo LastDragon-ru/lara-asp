@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -16,9 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class IntrospectionPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderPrint
-     */
+    #[DataProvider('dataProviderPrint')]
     public function testPrint(string $expected, Settings $settings, int $level): void {
         $expected = self::getTestData()->content($expected);
         $printer  = (new IntrospectionPrinter())->setSettings($settings);

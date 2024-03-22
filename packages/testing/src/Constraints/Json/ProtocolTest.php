@@ -6,6 +6,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SplFileInfo;
 
 use function array_map;
@@ -27,10 +28,9 @@ final class ProtocolTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderInvoke
-     *
      * @param array<string,string> $parameters
      */
+    #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Exception|string $expected, string $content, array $parameters): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

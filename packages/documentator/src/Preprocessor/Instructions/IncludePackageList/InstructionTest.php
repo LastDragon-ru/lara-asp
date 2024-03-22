@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJs
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function basename;
 
@@ -18,9 +19,7 @@ use function basename;
 final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderProcess
-     */
+    #[DataProvider('dataProviderProcess')]
     public function testProcess(string $expected, string $template): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));

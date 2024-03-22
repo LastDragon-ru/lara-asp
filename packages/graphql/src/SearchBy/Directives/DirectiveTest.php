@@ -68,6 +68,7 @@ use Nuwave\Lighthouse\Scout\SearchDirective;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function array_merge;
 use function implode;
@@ -100,10 +101,9 @@ final class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderManipulateArgDefinition
-     *
      * @param Closure(static): void|null $prepare
      */
+    #[DataProvider('dataProviderManipulateArgDefinition')]
     public function testManipulateArgDefinition(string $expected, string $graphql, ?Closure $prepare = null): void {
         if ($prepare) {
             $prepare($this);
@@ -196,11 +196,10 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderHandleBuilder
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): object                                           $builderFactory
      */
+    #[DataProvider('dataProviderHandleBuilder')]
     public function testDirective(
         array|Exception $expected,
         Closure $builderFactory,
@@ -249,11 +248,10 @@ final class DirectiveTest extends TestCase {
     /**
      * @deprecated   5.5.0
      *
-     * @dataProvider dataProviderHandleBuilderV5Compat
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): object                                           $builderFactory
      */
+    #[DataProvider('dataProviderHandleBuilderV5Compat')]
     public function testDirectiveV5Compat(
         array|Exception $expected,
         Closure $builderFactory,
@@ -303,11 +301,10 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderHandleBuilder
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>)    $builderFactory
      */
+    #[DataProvider('dataProviderHandleBuilder')]
     public function testHandleBuilder(
         array|Exception $expected,
         Closure $builderFactory,
@@ -357,11 +354,10 @@ final class DirectiveTest extends TestCase {
     /**
      * @deprecated   5.5.0
      *
-     * @dataProvider dataProviderHandleBuilderV5Compat
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}|Exception $expected
      * @param Closure(static): (QueryBuilder|EloquentBuilder<EloquentModel>)    $builderFactory
      */
+    #[DataProvider('dataProviderHandleBuilderV5Compat')]
     public function testHandleBuilderV5Compat(
         array|Exception $expected,
         Closure $builderFactory,
@@ -412,13 +408,12 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderHandleScoutBuilder
-     *
      * @param array<string, mixed>|Exception      $expected
      * @param Closure(static): ScoutBuilder       $builderFactory
      * @param Closure(object, Field): string|null $resolver
      * @param Closure():FieldResolver|null        $fieldResolver
      */
+    #[DataProvider('dataProviderHandleScoutBuilder')]
     #[RequiresLaravelScout]
     public function testHandleScoutBuilder(
         array|Exception $expected,
@@ -488,13 +483,12 @@ final class DirectiveTest extends TestCase {
     /**
      * @deprecated   5.5.0
      *
-     * @dataProvider dataProviderHandleScoutBuilderV5Compat
-     *
      * @param array<string, mixed>|Exception      $expected
      * @param Closure(static): ScoutBuilder       $builderFactory
      * @param Closure(object, Field): string|null $resolver
      * @param Closure():FieldResolver|null        $fieldResolver
      */
+    #[DataProvider('dataProviderHandleScoutBuilderV5Compat')]
     #[RequiresLaravelScout]
     public function testHandleScoutBuilderV5Compat(
         array|Exception $expected,

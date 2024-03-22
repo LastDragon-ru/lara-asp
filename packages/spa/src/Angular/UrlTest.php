@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -15,10 +16,9 @@ final class UrlTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderConstruct
-     *
      * @param array<array-key, mixed> $expected
      */
+    #[DataProvider('dataProviderConstruct')]
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
 
@@ -27,10 +27,9 @@ final class UrlTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderBuild
-     *
      * @param array<array-key, mixed> $parameters
      */
+    #[DataProvider('dataProviderBuild')]
     public function testBuild(string|Exception $expected, string $template, array $parameters): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

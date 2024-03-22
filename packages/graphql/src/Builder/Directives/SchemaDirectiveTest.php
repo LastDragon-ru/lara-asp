@@ -18,6 +18,7 @@ use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function is_string;
 
@@ -46,9 +47,7 @@ final class SchemaDirectiveTest extends TestCase {
         self::assertGraphQLPrintableEquals($expected, $actual);
     }
 
-    /**
-     * @dataProvider dataProviderManipulateTypeDefinition
-     */
+    #[DataProvider('dataProviderManipulateTypeDefinition')]
     public function testManipulateTypeDefinition(Exception|string $expected, string $schema, string $type): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

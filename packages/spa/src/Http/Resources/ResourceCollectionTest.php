@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 use function get_class;
@@ -21,9 +22,7 @@ use function sprintf;
 final class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderConstruct
-     */
+    #[DataProvider('dataProviderConstruct')]
     public function testConstruct(bool|Exception $expected, string $class): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

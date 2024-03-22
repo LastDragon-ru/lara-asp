@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToCast;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -17,9 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class AsSerializableTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderGet
-     */
+    #[DataProvider('dataProviderGet')]
     public function testGet(?object $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

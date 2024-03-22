@@ -33,6 +33,7 @@ use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SplFileInfo;
 
 use function in_array;
@@ -48,14 +49,13 @@ final class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderPrintSchema
-     * @dataProvider dataProviderPrintType
-     * @dataProvider dataProviderPrintNode
-     *
      * @param Closure(static): (Schema|SplFileInfo|string)                                                                        $schemaFactory
      * @param Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $printableFactory
      * @param Closure(static, Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
+    #[DataProvider('dataProviderPrintSchema')]
+    #[DataProvider('dataProviderPrintType')]
+    #[DataProvider('dataProviderPrintNode')]
     public function testPrint(
         GraphQLExpected $expected,
         ?Settings $settings,
@@ -76,14 +76,13 @@ final class PrinterTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderPrintSchema
-     * @dataProvider dataProviderExportType
-     * @dataProvider dataProviderExportNode
-     *
      * @param Closure(static): (Schema|SplFileInfo|string)                                                                        $schemaFactory
      * @param Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $exportableFactory
      * @param Closure(static, Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
+    #[DataProvider('dataProviderPrintSchema')]
+    #[DataProvider('dataProviderExportType')]
+    #[DataProvider('dataProviderExportNode')]
     public function testExport(
         GraphQLExpected $expected,
         ?Settings $settings,

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 use Illuminate\Console\Parser;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -17,9 +18,7 @@ use function reset;
 final class ArtisanSerializerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderGetArgumentSignature
-     */
+    #[DataProvider('dataProviderGetArgumentSignature')]
     public function testGetArgumentSignature(string $signature): void {
         $parsed   = Parser::parse("command {{$signature}}")[1] ?? [];
         $argument = reset($parsed);
@@ -28,9 +27,7 @@ final class ArtisanSerializerTest extends TestCase {
         self::assertEquals($signature, (new ArtisanSerializer())->getArgumentSignature($argument));
     }
 
-    /**
-     * @dataProvider dataProviderGetOptionSignature
-     */
+    #[DataProvider('dataProviderGetOptionSignature')]
     public function testGetOptionSignature(string $signature): void {
         $parsed = Parser::parse("command {{$signature}}")[2] ?? [];
         $option = reset($parsed);

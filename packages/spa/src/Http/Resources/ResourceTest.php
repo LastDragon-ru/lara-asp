@@ -18,6 +18,7 @@ use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LogicException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function get_class;
 use function json_decode;
@@ -29,9 +30,7 @@ use function json_decode;
 final class ResourceTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderConstruct
-     */
+    #[DataProvider('dataProviderConstruct')]
     public function testConstruct(bool|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -45,10 +44,9 @@ final class ResourceTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderCollection
-     *
      * @param class-string $expected
      */
+    #[DataProvider('dataProviderCollection')]
     public function testCollection(string $expected, mixed $value): void {
         $class  = get_class(
             new class(null) extends Resource {
@@ -61,10 +59,9 @@ final class ResourceTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderMapResourceData
-     *
      * @param array<array-key, mixed>|Exception $expected
      */
+    #[DataProvider('dataProviderMapResourceData')]
     public function testMapResourceData(array|Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

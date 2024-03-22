@@ -27,6 +27,7 @@ use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -36,10 +37,9 @@ final class InputObjectTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderIsFieldDirectiveAllowed
-     *
      * @param list<class-string>|null $allowed
      */
+    #[DataProvider('dataProviderIsFieldDirectiveAllowed')]
     public function testIsFieldDirectiveAllowed(
         bool $expected,
         ?array $allowed,

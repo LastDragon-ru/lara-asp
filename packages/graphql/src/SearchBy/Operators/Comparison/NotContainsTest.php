@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function implode;
 
@@ -34,8 +35,6 @@ final class NotContainsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderCall
-     *
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param class-string<Grammar>                                   $grammar
@@ -43,6 +42,7 @@ final class NotContainsTest extends TestCase {
      * @param Closure(static): Context|null                           $contextFactory
      * @param Closure(object, Field): string|null                     $resolver
      */
+    #[DataProvider('dataProviderCall')]
     public function testCall(
         array $expected,
         Closure $builderFactory,

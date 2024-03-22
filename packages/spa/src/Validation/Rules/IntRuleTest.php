@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use const INF;
 use const NAN;
@@ -17,9 +18,7 @@ use const NAN;
 final class IntRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderPasses
-     */
+    #[DataProvider('dataProviderPasses')]
     public function testPasses(bool $expected, mixed $value): void {
         $translator = Container::getInstance()->make(Translator::class);
         $rule       = new IntRule($translator);

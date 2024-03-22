@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
@@ -13,9 +14,7 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 final class ScalarStrictComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderAssertEquals
-     */
+    #[DataProvider('dataProviderAssertEquals')]
     public function testAssertEquals(bool $equals, mixed $expected, mixed $actual): void {
         if (!$equals) {
             self::expectException(ComparisonFailure::class);

@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 /**
@@ -16,12 +17,11 @@ final class ConfigMergerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderMerge
-     *
      * @param array<array-key, mixed>|Exception $expected
      * @param array<array-key, mixed>           $target
      * @param array<array-key, mixed>           $configs
      */
+    #[DataProvider('dataProviderMerge')]
     public function testMerge(
         array|Exception $expected,
         array $target,

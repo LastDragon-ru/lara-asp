@@ -12,6 +12,7 @@ use GraphQL\Language\AST\ValueNode;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -20,9 +21,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class JsonStringTypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderSerialize
-     */
+    #[DataProvider('dataProviderSerialize')]
     public function testSerialize(?Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -38,9 +37,7 @@ final class JsonStringTypeTest extends TestCase {
         }
     }
 
-    /**
-     * @dataProvider dataProviderParseValue
-     */
+    #[DataProvider('dataProviderParseValue')]
     public function testParseValue(?Exception $expected, mixed $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -53,9 +50,7 @@ final class JsonStringTypeTest extends TestCase {
         self::assertEquals($value, $actual);
     }
 
-    /**
-     * @dataProvider dataProviderParseLiteral
-     */
+    #[DataProvider('dataProviderParseLiteral')]
     public function testParseLiteral(?Exception $expected, Node&ValueNode $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

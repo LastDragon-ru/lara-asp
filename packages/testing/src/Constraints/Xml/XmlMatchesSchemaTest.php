@@ -6,6 +6,7 @@ use DOMDocument;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SplFileInfo;
 
 use function is_string;
@@ -17,9 +18,7 @@ use function is_string;
 final class XmlMatchesSchemaTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderEvaluate
-     */
+    #[DataProvider('dataProviderEvaluate')]
     public function testEvaluate(bool|string $expected, SplFileInfo $schema, DOMDocument|SplFileInfo $xml): void {
         $constraint = new class($schema) extends XmlMatchesSchema {
             #[Override]

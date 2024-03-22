@@ -29,6 +29,7 @@ use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function implode;
 
@@ -44,14 +45,13 @@ final class SortTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderCall
-     *
      * @param array{query: string, bindings: array<array-key, mixed>} $expected
      * @param BuilderFactory                                          $builderFactory
      * @param Closure(static): Argument                               $argumentFactory
      * @param Closure(static): Context|null                           $contextFactory
      * @param Closure(object, Field): string|null                     $resolver
      */
+    #[DataProvider('dataProviderCall')]
     public function testCall(
         array $expected,
         Closure $builderFactory,
@@ -154,12 +154,11 @@ final class SortTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetNulls
-     *
      * @param array<string, mixed>            $config
      * @param Closure(static): Sorter<object> $sorterFactory
      * @param Closure(static): Context        $contextFactory
      */
+    #[DataProvider('dataProviderGetNulls')]
     public function testGetNulls(
         ?Nulls $expected,
         ?array $config,

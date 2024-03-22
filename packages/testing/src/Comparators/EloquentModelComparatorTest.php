@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Comparators;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory;
 use stdClass;
@@ -16,16 +17,12 @@ use stdClass;
 final class EloquentModelComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderAccepts
-     */
+    #[DataProvider('dataProviderAccepts')]
     public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
         self::assertEquals($equals, (new EloquentModelComparator())->accepts($expected, $actual));
     }
 
-    /**
-     * @dataProvider dataProviderAssertEquals
-     */
+    #[DataProvider('dataProviderAssertEquals')]
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
         if ($equals !== true) {
             self::expectException(ComparisonFailure::class);

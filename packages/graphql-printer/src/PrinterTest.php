@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function str_ends_with;
 
@@ -37,15 +38,15 @@ use function str_ends_with;
 final class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
+
     /**
-     * @dataProvider dataProviderPrintSchema
-     * @dataProvider dataProviderPrintType
-     * @dataProvider dataProviderPrintNode
-     *
      * @param Closure(static): ?Schema                                                                                             $schemaFactory
      * @param Closure(static, ?Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $printableFactory
      * @param Closure(static, ?Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
+    #[DataProvider('dataProviderPrintSchema')]
+    #[DataProvider('dataProviderPrintType')]
+    #[DataProvider('dataProviderPrintNode')]
     public function testPrint(
         GraphQLExpected $expected,
         ?Settings $settings,
@@ -67,16 +68,14 @@ final class PrinterTest extends TestCase {
             $printable->assertValid();
         }
     }
-
     /**
-     * @dataProvider dataProviderPrintSchema
-     * @dataProvider dataProviderExportType
-     * @dataProvider dataProviderExportNode
-     *
      * @param Closure(static): ?Schema                                                                                             $schemaFactory
      * @param Closure(static, ?Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $exportableFactory
      * @param Closure(static, ?Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
+    #[DataProvider('dataProviderPrintSchema')]
+    #[DataProvider('dataProviderExportType')]
+    #[DataProvider('dataProviderExportNode')]
     public function testExport(
         GraphQLExpected $expected,
         ?Settings $settings,

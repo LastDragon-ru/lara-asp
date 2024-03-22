@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Core\Package;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -20,12 +21,11 @@ final class TranslatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderChoice
-     *
      * @param list<string>|string  $key
      * @param TranslationsFactory  $translations
      * @param array<string, mixed> $replace
      */
+    #[DataProvider('dataProviderChoice')]
     public function testChoice(
         string $expected,
         mixed $translations,
@@ -45,12 +45,11 @@ final class TranslatorTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGet
-     *
      * @param list<string>|string  $key
      * @param TranslationsFactory  $translations
      * @param array<string, mixed> $replace
      */
+    #[DataProvider('dataProviderGet')]
     public function testGet(
         string $expected,
         mixed $translations,

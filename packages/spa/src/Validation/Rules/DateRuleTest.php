@@ -8,6 +8,7 @@ use Illuminate\Contracts\Translation\Translator;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -16,9 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class DateRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderPasses
-     */
+    #[DataProvider('dataProviderPasses')]
     public function testPasses(bool $expected, string $value): void {
         $translator = Container::getInstance()->make(Translator::class);
         $rule       = new DateRule($translator);
@@ -33,9 +32,7 @@ final class DateRuleTest extends TestCase {
         self::assertEquals('The :attribute is not a valid date.', $rule->message());
     }
 
-    /**
-     * @dataProvider dataProviderGetValue
-     */
+    #[DataProvider('dataProviderGetValue')]
     public function testGetValue(Exception|string|null $expected, string $value): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);

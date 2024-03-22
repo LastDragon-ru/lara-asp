@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 use function is_string;
@@ -27,11 +28,10 @@ final class ModelHelperTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderGetRelation
-     *
      * @param Exception|class-string                                $expected
      * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model
      */
+    #[DataProvider('dataProviderGetRelation')]
     public function testGetRelation(Exception|string $expected, Closure $model, string $name): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -45,11 +45,10 @@ final class ModelHelperTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderGetRelation
-     *
      * @param Exception|class-string                                $expected
      * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model
      */
+    #[DataProvider('dataProviderGetRelation')]
     public function testIsRelation(Exception|string $expected, Closure $model, string $name): void {
         $actual   = (new ModelHelper($model()))->isRelation($name);
         $expected = !($expected instanceof Exception);
@@ -58,10 +57,9 @@ final class ModelHelperTest extends TestCase {
     }
 
     /**
-     * @dataProvider dataProviderIsSoftDeletable
-     *
      * @param Closure(): (Builder<Model>|Model|class-string<Model>) $model
      */
+    #[DataProvider('dataProviderIsSoftDeletable')]
     public function testIsSoftDeletable(bool $expected, Closure $model): void {
         $actual = (new ModelHelper($model()))->isSoftDeletable();
 

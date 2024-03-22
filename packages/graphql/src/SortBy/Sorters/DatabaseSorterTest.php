@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function is_string;
 
@@ -31,12 +32,11 @@ final class DatabaseSorterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderSortByColumn
-     *
      * @param array{query: string, bindings: array<array-key, mixed>}               $expected
      * @param Closure(static): (EloquentBuilder<EloquentModel>|QueryBuilder)        $builderFactory
      * @param Closure(static): (EloquentBuilder<EloquentModel>|QueryBuilder)|string $columnFactory
      */
+    #[DataProvider('dataProviderSortByColumn')]
     public function testSortByColumn(
         array $expected,
         Closure $builderFactory,

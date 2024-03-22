@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Utils;
 
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
@@ -13,12 +14,11 @@ final class PageTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderConstruct
-     *
      * @param array<array-key, mixed> $expected
      * @param int<0, max>             $offset
      * @param int<1, max>             $limit
      */
+    #[DataProvider('dataProviderConstruct')]
     public function testConstruct(array $expected, int $offset, int $limit): void {
         $actual = new Page($limit, $offset);
         $actual = [

@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function str_replace;
 
@@ -17,9 +18,7 @@ use function str_replace;
 final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @dataProvider dataProviderProcess
-     */
+    #[DataProvider('dataProviderProcess')]
     public function testProcess(Exception|string $expected, string $file, Parameters $params): void {
         $file     = self::getTestData()->file($file);
         $instance = Container::getInstance()->make(Instruction::class);

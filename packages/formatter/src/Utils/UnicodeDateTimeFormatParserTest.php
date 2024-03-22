@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Formatter\Utils;
 
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function array_map;
 use function iterator_to_array;
@@ -16,10 +17,9 @@ final class UnicodeDateTimeFormatParserTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @dataProvider dataProviderGetIterator
-     *
      * @param array<array-key, array{string, string}> $expected
      */
+    #[DataProvider('dataProviderGetIterator')]
     public function testGetIterator(array $expected, string $format): void {
         $actual = iterator_to_array(new UnicodeDateTimeFormatParser($format));
         $actual = array_map(static fn (UnicodeDateTimeFormatToken $token) => [$token->pattern, $token->value], $actual);
