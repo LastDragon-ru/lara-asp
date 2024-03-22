@@ -66,10 +66,12 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
     }
 
     /**
+     * @param array<array-key, mixed> $context
+     *
      * @phpstan-assert-if-true UnitEnum $data
      */
     #[Override]
-    public function supportsNormalization(mixed $data, string $format = null): bool {
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool {
         return $data instanceof UnitEnum && !($data instanceof BackedEnum);
     }
 
@@ -122,10 +124,17 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
     }
 
     /**
+     * @param array<array-key, mixed> $context
+     *
      * @phpstan-assert-if-true class-string<UnitEnum> $type
      */
     #[Override]
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool {
+    public function supportsDenormalization(
+        mixed $data,
+        string $type,
+        string $format = null,
+        array $context = [],
+    ): bool {
         return is_a($type, UnitEnum::class, true) && !is_a($type, BackedEnum::class, true);
     }
 
