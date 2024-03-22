@@ -5,6 +5,8 @@
     "Illuminate\\Foundation\\Http\\FormRequest",
     "Illuminate\\Foundation\\Testing\\RefreshDatabase",
     "Illuminate\\Foundation\\Testing\\RefreshDatabaseState",
-    "Illuminate\\Foundation\\Testing\\TestCase"
+    "Illuminate\\Foundation\\Testing\\TestCase",
+    "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Testing\\Package\\GraphQLAstNode",
+    "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Testing\\Package\\GraphQLDefinition"
   ]
 }
