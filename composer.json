@@ -186,6 +186,10 @@
       "@composer-require-checker",
       "@composer-unused"
     ],
+    "merge:dependencies": [
+      "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder merge",
+      "jq --indent 2 '.' composer.json > composer.tmp && mv composer.tmp composer.json"
+    ],
     "phpstan": [
       "./vendor-bin/phpstan/vendor/bin/phpstan analyse"
     ],
