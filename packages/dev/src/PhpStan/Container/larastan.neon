@@ -14,7 +14,7 @@ parameters:
         - Eloquent
 
     bootstrapFiles:
-        - bootstrap.php
+        - ../../../../../larastan/larastan/bootstrap.php
 
     checkOctaneCompatibility: false
     noEnvCallsOutsideOfConfig: false
@@ -155,38 +155,6 @@ services:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
     -
-        class: Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
-        arguments:
-            className: Illuminate\Contracts\Container\Container
-
-    -
-        class: Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
-        arguments:
-            className: Illuminate\Container\Container
-
-    -
-        class: Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
-        arguments:
-            className: Illuminate\Foundation\Application
-
-    -
-        class: Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
-        arguments:
-            className: Illuminate\Contracts\Foundation\Application
-
-    -
         class: Larastan\Larastan\Properties\ModelRelationsExtension
         tags:
             - phpstan.broker.propertiesClassReflectionExtension
@@ -203,11 +171,6 @@ services:
 
     -
         class: Larastan\Larastan\ReturnTypes\ModelDynamicStaticMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
-
-    -
-        class: Larastan\Larastan\ReturnTypes\AppMakeDynamicReturnTypeExtension
         tags:
             - phpstan.broker.dynamicStaticMethodReturnTypeExtension
 
@@ -546,16 +509,6 @@ services:
         class: Larastan\Larastan\Support\ViewFileHelper
         arguments:
             viewDirectories: %viewDirectories%
-
-    -
-        class: Larastan\Larastan\ReturnTypes\ApplicationMakeDynamicReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
-    -
-        class: Larastan\Larastan\ReturnTypes\ContainerMakeDynamicReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
 
     -
         class: Larastan\Larastan\ReturnTypes\ConsoleCommand\ArgumentDynamicReturnTypeExtension
