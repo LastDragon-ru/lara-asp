@@ -19,9 +19,11 @@
   },
   "require": {
     "php": "^8.1|^8.2|^8.3",
-    "ext-mbstring": "*",
     "illuminate/container": "^10.34.0",
+    "illuminate/contracts": "^10.34.0",
+    "larastan/larastan": "^2.8.1",
     "lastdragon-ru/lara-asp-core": "self.version",
+    "nikic/php-parser": "^4.18|^5.0",
     "nette/neon": "^3.4",
     "phpstan/phpstan": "^1.10"
   },
@@ -39,5 +41,11 @@
   "config": {
     "sort-packages": true,
     "optimize-autoloader": true
+  },
+  "repositories": {
+    "core": {
+      "type": "path",
+      "url": "../core"
+    }
   }
 }

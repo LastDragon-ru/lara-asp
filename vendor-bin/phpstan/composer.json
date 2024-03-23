@@ -1,6 +1,5 @@
 {
   "require-dev": {
-    "larastan/larastan": "^2.8.1",
     "phpstan/phpstan": "^1.10.55",
     "phpstan/phpstan-mockery": "^1.1",
     "phpstan/phpstan-phpunit": "^1.3",
