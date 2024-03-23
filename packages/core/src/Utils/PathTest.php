@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Utils;
+namespace LastDragon_ru\LaraASP\Core\Utils;
 
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function dirname;

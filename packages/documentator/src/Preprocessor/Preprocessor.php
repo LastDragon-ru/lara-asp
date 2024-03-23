@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use Exception;
 use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
@@ -16,7 +17,6 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec\Ins
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile\Instruction as IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
-use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
 use function array_column;

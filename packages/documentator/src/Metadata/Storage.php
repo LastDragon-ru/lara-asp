@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Metadata;
 
-use LastDragon_ru\LaraASP\Documentator\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Utils\Version;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
