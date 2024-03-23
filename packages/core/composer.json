@@ -22,6 +22,7 @@
     "illuminate/console": "^10.34.0",
     "illuminate/container": "^10.34.0",
     "illuminate/contracts": "^10.34.0",
+    "symfony/filesystem": "^6.3.0",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {

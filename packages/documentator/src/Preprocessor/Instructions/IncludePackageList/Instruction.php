@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
 use Exception;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
@@ -10,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJs
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use Symfony\Component\Finder\Finder;

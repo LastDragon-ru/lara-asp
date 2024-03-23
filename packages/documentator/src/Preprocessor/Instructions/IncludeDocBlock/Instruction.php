@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
-use LastDragon_ru\LaraASP\Documentator\Utils\Path;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use PhpParser\NameContext;
