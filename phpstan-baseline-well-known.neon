@@ -94,7 +94,7 @@ parameters:
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"
             paths:
-                - dev/PhpStan/ClassMustBeInternal/RuleTest.php
+                - packages/dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
 
         # False positive for our dev app
         -

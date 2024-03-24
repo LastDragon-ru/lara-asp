@@ -1,0 +1,20 @@
+{
+    "version": "HEAD",
+    "require": {
+        "php": "PHP",
+        "phpstan/phpstan": "PHPStan"
+    },
+    "merge": null,
+    "requirements": {
+        "HEAD": {
+            "php": [
+                "^8.3",
+                "^8.2",
+                "^8.1"
+            ],
+            "phpstan/phpstan": [
+                "^1.10"
+            ]
+        }
+    }
+}

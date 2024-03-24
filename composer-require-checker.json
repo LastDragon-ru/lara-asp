@@ -7,6 +7,14 @@
     "Illuminate\\Foundation\\Testing\\RefreshDatabaseState",
     "Illuminate\\Foundation\\Testing\\TestCase",
     "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Testing\\Package\\GraphQLAstNode",
-    "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Testing\\Package\\GraphQLDefinition"
+    "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Testing\\Package\\GraphQLDefinition",
+    "PHPStan\\Analyser\\Scope",
+    "PHPStan\\Node\\InClassNode",
+    "PHPStan\\Reflection\\ClassReflection",
+    "PHPStan\\Reflection\\MethodReflection",
+    "PHPStan\\Rules\\Rule",
+    "PHPStan\\Rules\\RuleErrorBuilder",
+    "PHPStan\\Type\\DynamicMethodReturnTypeExtension",
+    "PHPStan\\Type\\ObjectType"
   ]
 }
