@@ -222,7 +222,7 @@
       "npm run markdownlint"
     ],
     "composer-unused": [
-      "./vendor-bin/composer-unused/vendor/bin/composer-unused unused"
+      "./vendor-bin/composer-unused/vendor/bin/composer-unused unused --output-format=default"
     ],
     "composer-require-checker": [
       "./vendor-bin/composer-require-checker/vendor/bin/composer-require-checker check"
