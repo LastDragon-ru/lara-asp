@@ -7,8 +7,8 @@ use Illuminate\Support\ServiceProvider;
 class Provider extends ServiceProvider {
     public function boot(): void {
         $this->commands(
-            Example::class,
             Directive::class,
+            Example::class,
         );
     }
 }

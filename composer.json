@@ -92,8 +92,7 @@
     "fakerphp/faker": "^1.21.0",
     "illuminate/cache": "^10.34.0|^11.0.0",
     "laravel/scout": "^9.8.0|^10.0.0",
-    "orchestra/testbench": "^8.0.0|^9.0.0",
-    "symfony/var-dumper": "^6.3.0|^7.0.0"
+    "orchestra/testbench": "^8.0.0|^9.0.0"
   },
   "autoload": {
     "exclude-from-classmap": [
@@ -137,7 +136,6 @@
   },
   "autoload-dev": {
     "exclude-from-classmap": [
-      "dev/**.php",
       "packages/core/docs/",
       "packages/documentator/docs/",
       "packages/eloquent/docs/",
@@ -151,7 +149,6 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/core/docs",
-      "LastDragon_ru\\LaraASP\\Dev\\App\\": "dev/App",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
       "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
