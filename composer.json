@@ -243,6 +243,7 @@
       "npm run markdownlint -- --fix || npm run markdownlint -- --fix"
     ]
   },
+  "prefer-stable": true,
   "config": {
     "sort-packages": true,
     "optimize-autoloader": true,
