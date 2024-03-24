@@ -3,8 +3,9 @@ parameters:
         - packages
         - dev
     excludePaths:
-        - dev/App/bootstrap/cache
-        - dev/App/storage
+        - dev/bootstrap
+        - dev/storage
+        - dev/vendor
     scanDirectories:
         - vendor-bin/phpstan/vendor/larastan/larastan
 
@@ -38,7 +39,7 @@ parameters:
             exclude:
                 - Illuminate\Support\Facades\Date
             allowIn:
-                - dev/App/*
+                - packages/dev/src/App/*
                 - packages/*/docs/*
 
 includes:

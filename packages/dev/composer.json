@@ -20,12 +20,19 @@
   "require": {
     "php": "^8.1|^8.2|^8.3",
     "illuminate/container": "^10.34.0|^11.0.0",
+    "illuminate/console": "^10.34.0|^11.0.0",
     "illuminate/contracts": "^10.34.0|^11.0.0",
+    "illuminate/support": "^10.34.0|^11.0.0",
     "larastan/larastan": "^2.8.1",
     "lastdragon-ru/lara-asp-core": "self.version",
+    "lastdragon-ru/lara-asp-graphql-printer": "self.version",
     "nikic/php-parser": "^4.18|^5.0",
     "nette/neon": "^3.4",
-    "phpstan/phpstan": "^1.10"
+    "nuwave/lighthouse": "^6.5.0|dev-laravel-11",
+    "phpstan/phpstan": "^1.10",
+    "symfony/console": "^6.3.0|^7.0.0",
+    "symfony/var-dumper": "^6.3.0|^7.0.0",
+    "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.1.0|^11.0.0"
@@ -37,6 +44,13 @@
     "exclude-from-classmap": [
       "src/**Test.php"
     ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LastDragon_ru\\LaraASP\\Dev\\App\\Provider"
+      ]
+    }
   },
   "config": {
     "sort-packages": true,
