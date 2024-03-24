@@ -16,10 +16,10 @@ use function array_keys;
 use function array_values;
 use function file_get_contents;
 use function file_put_contents;
+use function getcwd;
 use function implode;
 use function is_array;
 use function is_string;
-use function realpath;
 use function sprintf;
 
 use const PHP_EOL;
@@ -31,21 +31,23 @@ class Extension {
      * original file).
      */
     public static function dump(): void {
+        // Prepare
+        $origin = Path::join(self::getLarastanPath(), 'extension.neon');
+        $target = Path::getPath(self::getRootPath(), 'larastan.neon');
+
         // Load
-        $origin    = (string) file_get_contents(Path::join(self::getLarastanPath(), 'extension.neon'));
-        $extension = Neon::decode($origin);
+        $extension = Neon::decode((string) file_get_contents($origin));
 
         if (!is_array($extension)) {
             throw new Exception('The `$extension` expected to be an array.');
         }
 
         // Process
-        $extension = self::updateBootstrapFiles($extension);
-        $extension = self::updateServices($extension);
+        $extension = self::updateBootstrapFiles($target, $extension);
+        $extension = self::updateServices($target, $extension);
 
         // Save
-        $target = __DIR__.'/larastan.neon';
-        $neon   = Neon::encode($extension, true, '    ');
+        $neon = Neon::encode($extension, true, '    ');
 
         file_put_contents($target, $neon);
 
@@ -57,7 +59,7 @@ class Extension {
      *
      * @return array<array-key, mixed>
      */
-    private static function updateBootstrapFiles(array $extension): array {
+    private static function updateBootstrapFiles(string $path, array $extension): array {
         // Valid?
         if (!isset($extension['parameters']) || !is_array($extension['parameters'])) {
             throw new Exception('The `$extension[\'parameters\']` expected to be an array.');
@@ -66,8 +68,7 @@ class Extension {
         // Update
         $source = self::getLarastanPath();
         $files  = (array) ($extension['parameters']['bootstrapFiles'] ?? []);
-        $root   = self::getOwnPath();
-        $root   = Path::join($root, Path::getRelativePath((string) realpath($root), __DIR__));
+        $root   = Path::getDirname($path);
 
         foreach ($files as $index => $file) {
             if (!is_string($file)) {
@@ -92,7 +93,7 @@ class Extension {
      *
      * @return array<array-key, mixed>
      */
-    private static function updateServices(array $extension): array {
+    private static function updateServices(string $path, array $extension): array {
         // Remove
         $disabled = [
             ApplicationMakeDynamicReturnTypeExtension::class            => true,
@@ -130,8 +131,8 @@ class Extension {
         return $extension;
     }
 
-    private static function getOwnPath(): string {
-        return self::getPackagePath('lastdragon-ru/lara-asp-dev');
+    private static function getRootPath(): string {
+        return (string) getcwd();
     }
 
     private static function getLarastanPath(): string {
