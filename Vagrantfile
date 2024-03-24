@@ -173,6 +173,7 @@ EOT
     if test -f "/project/composer.json"; then
       (cd /project && composer install)
       (cd /project && composer bin all install)
+      (cd /project/dev && composer install)
     fi
   SHELL
 
