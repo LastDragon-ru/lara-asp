@@ -9,7 +9,13 @@
     "lastdragon-ru/lara-asp-dev": "self.version"
   },
   "scripts": {
+    "post-install-cmd": [
+      "composer run-script dump:larastan"
+    ],
     "post-update-cmd": [
+      "composer run-script dump:larastan"
+    ],
+    "dump:larastan": [
       "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\Larastan\\Extension::dump"
     ]
   },
