@@ -10,7 +10,7 @@
   },
   "scripts": {
     "post-update-cmd": [
-      "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\Container\\Installer::dump"
+      "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\Larastan\\Extension::dump"
     ]
   },
   "repositories": {

@@ -55,6 +55,7 @@ includes:
     - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
+    - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/Larastan/larastan.neon
     - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/Container/extension.neon
     - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/ClassMustBeFinal/extension.neon
     - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/ClassMustBeInternal/extension.neon

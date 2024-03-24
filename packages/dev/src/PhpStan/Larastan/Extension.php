@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Dev\PhpStan\Container;
+namespace LastDragon_ru\LaraASP\Dev\PhpStan\Larastan;
 
 use Composer\InstalledVersions;
 use Exception;
@@ -24,7 +24,7 @@ use function sprintf;
 
 use const PHP_EOL;
 
-class Installer {
+class Extension {
     /**
      * Removes unwanted/conflicting services from `larastan/extension.neon` and
      * dump remaining into `larastan.neon` (that should be used instead of the

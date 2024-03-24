@@ -3,6 +3,3 @@ services:
         class: LastDragon_ru\LaraASP\Dev\PhpStan\Container\Extension
         tags:
             - phpstan.broker.dynamicMethodReturnTypeExtension
-
-includes:
-    - ./larastan.neon
