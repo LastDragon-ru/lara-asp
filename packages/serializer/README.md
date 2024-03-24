@@ -13,7 +13,8 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `HEAD ⋯ 5.0.0-beta.0`   |
 |  | `^8.1` |   `HEAD ⋯ 5.0.0-beta.0`   |
-|  Laravel  | `^10.34.0` |  `HEAD`   |
+|  Laravel  | `^11.0.0` |  `HEAD`   |
+|  | `^10.34.0` |  `HEAD`   |
 |  | `^10.0.0` |   `6.1.0 ⋯ 5.0.0-beta.0`   |
 |  | `^9.21.0` |   `5.6.0 ⋯ 5.0.0-beta.1`   |
 |  | `^9.0.0` |  `5.0.0-beta.0`   |
@@ -130,6 +131,9 @@ use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Serializer\Casts\AsSerializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use Override;
+
+use function array_merge;
 
 class UserSettings implements Serializable {
     public function __construct(
@@ -145,11 +149,14 @@ class UserSettings implements Serializable {
  */
 class User extends Model {
     /**
-     * @inheritDoc
+     * @return array<array-key, mixed>
      */
-    protected $casts = [
-        'settings' => AsSerializable::class.':'.UserSettings::class,
-    ];
+    #[Override]
+    protected function casts(): array {
+        return array_merge(parent::casts(), [
+            'settings' => AsSerializable::using(UserSettings::class),
+        ]);
+    }
 }
 
 $user           = new User();
