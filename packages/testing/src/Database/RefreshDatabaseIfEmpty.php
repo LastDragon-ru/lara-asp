@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * difference: it will refresh the database only if it is empty. This is very
  * useful for local testing and allow significantly reduce bootstrap time.
  *
- * @deprecated ${version} Please use own trait.
+ * @deprecated %{VERSION} Please use own trait.
  *
  * @phpstan-require-extends TestCase
  */

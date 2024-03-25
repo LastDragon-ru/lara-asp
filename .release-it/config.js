@@ -152,6 +152,18 @@ module.exports = {
                 file: ['metadata.json', 'packages/*/metadata.json'],
             },
         },
+        '@j-ulrich/release-it-regex-bumper':  {
+            out: {
+                files:   [
+                    '*.md',
+                    'docs/*.md',
+                    'packages/**/*.php',
+                    'packages/**/*.md',
+                ],
+                search:  '%{VERSION}',
+                replace: '{{version}}',
+            },
+        },
         '@release-it/conventional-changelog': {
             preset:            {
                 name:  'conventionalcommits',

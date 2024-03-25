@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Override;
 
 /**
- * @deprecated ${version} Please use own class and {@see WithValueProvider} trait.
+ * @deprecated %{VERSION} Please use own class and {@see WithValueProvider} trait.
  */
 abstract class Request extends FormRequest {
     use WithValueProvider {

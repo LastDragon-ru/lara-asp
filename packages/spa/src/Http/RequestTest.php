@@ -14,7 +14,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @deprecated ${version}
+ * @deprecated %{VERSION}
  * @internal
  */
 #[CoversClass(Request::class)]
