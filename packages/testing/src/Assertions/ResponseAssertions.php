@@ -3,9 +3,12 @@
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
+use LastDragon_ru\LaraASP\Testing\Package;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Http\Message\ResponseInterface;
+
+use function trigger_deprecation;
 
 /**
  * @mixin Assert
@@ -21,6 +24,8 @@ trait ResponseAssertions {
         Constraint $constraint,
         string $message = '',
     ): void {
+        trigger_deprecation(Package::Name, '6.0.0', 'Please use `static::assertPsrResponse()` instead.');
+
         static::assertThat($response, $constraint, $message);
     }
 

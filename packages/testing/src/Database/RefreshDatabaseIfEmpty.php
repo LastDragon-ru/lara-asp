@@ -6,7 +6,14 @@ use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
+use LastDragon_ru\LaraASP\Testing\Package;
 use PHPUnit\Framework\TestCase;
+
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'Please use own trait.');
 
 /**
  * The trait is very similar to standard {@link RefreshDatabase} but there is one

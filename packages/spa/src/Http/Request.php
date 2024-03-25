@@ -3,7 +3,14 @@
 namespace LastDragon_ru\LaraASP\Spa\Http;
 
 use Illuminate\Foundation\Http\FormRequest;
+use LastDragon_ru\LaraASP\Spa\Package;
 use Override;
+
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'Please use own class and `%s` trait.', WithValueProvider::class);
 
 /**
  * @deprecated %{VERSION} Please use own class and {@see WithValueProvider} trait.

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Directives;
 
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Override;
 
@@ -9,6 +10,11 @@ use function array_unique;
 use function assert;
 use function implode;
 use function is_string;
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '5.6.0', 'Please use `%s` instead.', ExtendOperatorsDirective::class);
 
 /**
  * @deprecated 5.6.0 Use {@see ExtendOperatorsDirective} instead.
