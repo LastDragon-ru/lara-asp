@@ -2,7 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions;
 
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Complex\Relationship;
+
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '5.6.0', 'Please use `%s` instead.', SearchByOperatorRelationshipDirective::class);
 
 /**
  * @deprecated 5.6.0 Please use {@see SearchByOperatorRelationshipDirective}.

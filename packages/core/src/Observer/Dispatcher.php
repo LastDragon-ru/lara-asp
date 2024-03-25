@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Observer;
 
 use Closure;
+use LastDragon_ru\LaraASP\Core\Package;
 use Override;
 use SplObjectStorage;
 use function array_values;
@@ -60,6 +61,8 @@ class Dispatcher implements Subject {
      * @return list<Closure(TContext):void>
      */
     public function getObservers(): array {
+        trigger_deprecation(Package::Name, '5.1.0', 'The method should not be used.');
+
         return array_values(iterator_to_array($this->observers));
     }
 }
