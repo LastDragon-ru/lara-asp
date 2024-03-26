@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http;
 
+use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
@@ -46,18 +47,12 @@ final class WithValueProviderTest extends TestCase {
                 }
             },
         );
-        $rule          = new class() implements Rule {
-            /**
-             * @inheritDoc
-             */
+        $rule          = new class() implements ValidationRule {
             #[Override]
-            public function passes($attribute, $value): bool {
-                return (bool) $value;
-            }
-
-            #[Override]
-            public function message(): string {
-                return static::class;
+            public function validate(string $attribute, mixed $value, Closure $fail): void {
+                if (!$value) {
+                    $fail(static::class);
+                }
             }
         };
         $data          = [
@@ -85,7 +80,7 @@ final class WithValueProviderTest extends TestCase {
              * @param array<string, mixed> $data
              */
             public function __construct(
-                private readonly Rule $rule,
+                private readonly ValidationRule $rule,
                 private readonly ResolverRule $resolverRuleA,
                 private readonly ResolverRule $resolverRuleB,
                 private readonly array $data,

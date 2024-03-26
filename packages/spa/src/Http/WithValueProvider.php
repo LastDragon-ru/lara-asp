@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http;
 
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\InvokableValidationRule;
 use Illuminate\Validation\Validator;
 
 use function data_get;
@@ -25,11 +26,18 @@ trait WithValueProvider {
 
         // Replace values
         foreach ($validator->getRules() as $attribute => $rules) {
-            /** @var ValueProvider|null $provider */
-            $provider  = Arr::last($rules, static function ($rule): bool {
-                return $rule instanceof ValueProvider;
-            });
             $attribute = (string) $attribute;
+            $provider  = null;
+
+            foreach ($rules as $rule) {
+                if ($rule instanceof InvokableValidationRule) {
+                    $rule = $rule->invokable();
+                }
+
+                if ($rule instanceof ValueProvider) {
+                    $provider = $rule;
+                }
+            }
 
             if ($provider && Arr::has($validated, $attribute)) {
                 $value = Arr::get($validated, $attribute);
