@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use PhpParser\NameContext;
@@ -17,18 +18,9 @@ use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode as PhpDocBlockNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
-use PHPStan\PhpDocParser\Parser\TokenIterator;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 
-use function array_slice;
 use function dirname;
 use function file_get_contents;
-use function implode;
 use function preg_replace_callback;
 use function trim;
 
@@ -94,32 +86,19 @@ class Instruction implements ParameterizableInstruction {
             return '';
         }
 
-        // DocBlock?
-        $node = $this->getDocNode($class);
-
-        if (!$node) {
-            return '';
-        }
-
         // Parse
         $eol    = "\n";
-        $text   = $this->getDocText($node);
+        $doc    = new PhpDoc($class->getDocComment()?->getText(), $eol.$eol);
         $result = '';
 
-        if ($parameters->summary) {
-            $summary = trim(implode($eol.$eol, array_slice($text, 0, 1)));
-
-            if ($summary) {
-                $result .= $summary.$eol.$eol;
-            }
-        }
-
-        if ($parameters->description) {
-            $description = trim(implode($eol.$eol, array_slice($text, 1)));
-
-            if ($description) {
-                $result .= $description.$eol.$eol;
-            }
+        if ($parameters->summary && $parameters->description) {
+            $result .= trim($doc->getText());
+        } elseif ($parameters->summary) {
+            $result .= trim($doc->getSummary());
+        } elseif ($parameters->description) {
+            $result .= trim($doc->getDescription());
+        } else {
+            // empty
         }
 
         if ($result) {
@@ -150,43 +129,6 @@ class Instruction implements ParameterizableInstruction {
         return $class instanceof ClassLike
             ? [$class, $context]
             : null;
-    }
-
-    private function getDocNode(ClassLike $class): ?PhpDocBlockNode {
-        // Comment?
-        $comment = $class->getDocComment();
-
-        if (!$comment || trim($comment->getText()) === '') {
-            return null;
-        }
-
-        // Parse
-        $lexer  = new Lexer();
-        $parser = new PhpDocParser(new TypeParser(new ConstExprParser()), new ConstExprParser());
-        $tokens = new TokenIterator($lexer->tokenize($comment->getText()));
-        $node   = $parser->parse($tokens);
-
-        // Return
-        return $node;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function getDocText(PhpDocBlockNode $node): array {
-        $nodes = [];
-
-        foreach ($node->children as $child) {
-            if ($child instanceof PhpDocTextNode) {
-                if (trim($child->text) !== '') {
-                    $nodes[] = $child->text;
-                }
-            } else {
-                break;
-            }
-        }
-
-        return $nodes;
     }
 
     /**
