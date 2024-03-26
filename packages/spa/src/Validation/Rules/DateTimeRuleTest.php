@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Contracts\Validation\Factory;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,19 +20,32 @@ use function is_array;
 final class DateTimeRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    #[DataProvider('dataProviderPasses')]
-    public function testPasses(bool $expected, string $value): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $rule       = new DateTimeRule($translator);
+    #[DataProvider('dataProviderIsValid')]
+    public function testRule(bool $expected, mixed $value): void {
+        $rule      = Container::getInstance()->make(DateTimeRule::class);
+        $factory   = Container::getInstance()->make(Factory::class);
+        $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
-        self::assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, !$validator->fails());
+
+        if ($expected === false) {
+            self::assertEquals(
+                [
+                    'value' => [
+                        'The value is not a valid datetime.',
+                    ],
+                ],
+                $validator->errors()->toArray(),
+            );
+        }
     }
 
-    public function testMessage(): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $rule       = new DateTimeRule($translator);
+    #[DataProvider('dataProviderIsValid')]
+    public function testIsValid(bool $expected, string $value): void {
+        $rule   = Container::getInstance()->make(DateTimeRule::class);
+        $actual = $rule->isValid('attribute', $value);
 
-        self::assertEquals('The :attribute is not a valid datetime.', $rule->message());
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -62,7 +76,7 @@ final class DateTimeRuleTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderPasses(): array {
+    public static function dataProviderIsValid(): array {
         return [
             'valid date'                => [false, '2102-12-01'],
             'invalid date'              => [false, '02-12-01'],

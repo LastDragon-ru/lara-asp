@@ -10,11 +10,8 @@ use function is_bool;
  * Boolean value.
  */
 class BoolRule extends Rule {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function passes($attribute, $value) {
+    public function isValid(string $attribute, mixed $value): bool {
         return is_bool($value);
     }
 }

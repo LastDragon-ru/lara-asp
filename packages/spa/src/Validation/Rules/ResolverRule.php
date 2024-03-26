@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Spa\Routing\UnresolvedValueException;
 use Override;
 
 use function array_merge;
-use function get_class;
 
 class ResolverRule extends Rule implements ValueProvider {
     protected Resolver $resolver;
@@ -22,11 +21,8 @@ class ResolverRule extends Rule implements ValueProvider {
 
     // <editor-fold desc="Rule">
     // =========================================================================
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function passes($attribute, $value) {
+    public function isValid(string $attribute, mixed $value): bool {
         try {
             return (bool) $this->getValue($value);
         } catch (UnresolvedValueException $exception) {
@@ -42,7 +38,7 @@ class ResolverRule extends Rule implements ValueProvider {
     #[Override]
     protected function getMessageReplace(): array {
         return array_merge(parent::getMessageReplace(), [
-            'resolver' => get_class($this->resolver),
+            'resolver' => $this->resolver::class,
         ]);
     }
 
@@ -52,7 +48,7 @@ class ResolverRule extends Rule implements ValueProvider {
     #[Override]
     protected function getMessageVariants(): array {
         $defaults   = parent::getMessageVariants();
-        $resolver   = get_class($this->resolver);
+        $resolver   = $this->resolver::class;
         $variants   = [];
         $customized = [];
 

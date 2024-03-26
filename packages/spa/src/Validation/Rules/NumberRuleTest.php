@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Contracts\Validation\Factory;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -18,19 +18,32 @@ use const NAN;
 final class NumberRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    #[DataProvider('dataProviderPasses')]
-    public function testPasses(bool $expected, mixed $value): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $rule       = new NumberRule($translator);
+    #[DataProvider('dataProviderIsValid')]
+    public function testRule(bool $expected, mixed $value): void {
+        $rule      = Container::getInstance()->make(NumberRule::class);
+        $factory   = Container::getInstance()->make(Factory::class);
+        $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
-        self::assertEquals($expected, $rule->passes('attribute', $value));
+        self::assertEquals($expected, !$validator->fails());
+
+        if ($expected === false) {
+            self::assertEquals(
+                [
+                    'value' => [
+                        'The value is not an number.',
+                    ],
+                ],
+                $validator->errors()->toArray(),
+            );
+        }
     }
 
-    public function testMessage(): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $rule       = new NumberRule($translator);
+    #[DataProvider('dataProviderIsValid')]
+    public function testIsValid(bool $expected, mixed $value): void {
+        $rule   = Container::getInstance()->make(NumberRule::class);
+        $actual = $rule->isValid('attribute', $value);
 
-        self::assertEquals('The :attribute is not an number.', $rule->message());
+        self::assertEquals($expected, $actual);
     }
     // </editor-fold>
 
@@ -39,7 +52,7 @@ final class NumberRuleTest extends TestCase {
     /**
      * @return array<array-key, mixed>
      */
-    public static function dataProviderPasses(): array {
+    public static function dataProviderIsValid(): array {
         return [
             'true'  => [false, true],
             'false' => [false, false],
