@@ -1,4 +1,4 @@
-# SPA Helpers
+# (Laravel) SPA Helpers
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
 [//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)

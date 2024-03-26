@@ -48,7 +48,7 @@ use const JSON_THROW_ON_ERROR;
 
 #[AsCommand(
     name       : Requirements::Name,
-    description: 'Generates a table with the required versions of PHP/Laravel in Markdown format.',
+    description: 'Generates a table with the required versions of PHP/Laravel/etc in Markdown format.',
 )]
 class Requirements extends Command {
     public const  Name = Package::Name.':requirements';
@@ -85,6 +85,20 @@ class Requirements extends Command {
 
         ```json
         {
+            "merge": {
+                "illuminate/*": "laravel/framework"
+            }
+        }
+        ```
+
+        Defaults is:
+
+        ```json
+        {
+            "require": {
+                "php": "PHP",
+                "laravel/framework": "Laravel"
+            },
             "merge": {
                 "illuminate/*": "laravel/framework"
             }

@@ -2,7 +2,7 @@
 
 # `lara-asp-documentator:requirements`
 
-Generates a table with the required versions of PHP/Laravel in Markdown format.
+Generates a table with the required versions of PHP/Laravel/etc in Markdown format.
 
 ## Usages
 
@@ -28,6 +28,20 @@ package will be ignored if not listed in `require`):
 
 ```json
 {
+    "merge": {
+        "illuminate/*": "laravel/framework"
+    }
+}
+```
+
+Defaults is:
+
+```json
+{
+    "require": {
+        "php": "PHP",
+        "laravel/framework": "Laravel"
+    },
     "merge": {
         "illuminate/*": "laravel/framework"
     }

@@ -44,69 +44,69 @@ composer require lastdragon-ru/lara-asp-<package>
 [//]: # (start: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## Core
+## (Laravel) Core
 
 This package contains useful utilities and classes.
 
 [Read more](<packages/core/README.md>).
 
-## Dev 🐝
+## (Laravel) Documentator
 
-Various tools and helpers to develop the package.
-
-[Read more](<packages/dev/README.md>).
-
-## Documentator
-
-This package provides various utilities for documentation generation.
+This package provides various utilities for documentation generation such as Markdown Preprocessor, Requirements Dumper and more.
 
 [Read more](<packages/documentator/README.md>).
 
-## Eloquent Helpers
+## (Laravel) Eloquent Helpers
 
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/eloquent).
 
 [Read more](<packages/eloquent/README.md>).
 
-## Formatter
+## (Laravel) GraphQL Extensions for Lighthouse
 
-This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters.
+This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
+
+[Read more](<packages/graphql/README.md>).
+
+## (Laravel) Intl Formatter
+
+This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application.
 
 [Read more](<packages/formatter/README.md>).
 
-## GraphQL Extensions for Lighthouse
+## (Laravel) Raw SQL Migrator/Seeder
 
-This package provides highly powerful `@searchBy` and `@sortBy`  directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
+This package improves standard Laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
-[Read more](<packages/graphql/README.md>).
+[Read more](<packages/migrator/README.md>).
+
+## (Laravel) SPA Helpers
+
+[Read more](<packages/spa/README.md>).
+
+## (Laravel) Symfony Serializer
+
+This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html) to use it inside Laravel application.
+
+[Read more](<packages/serializer/README.md>).
+
+## (Laravel) Testing Helpers 🐝
+
+This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and better solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
+
+[Read more](<packages/testing/README.md>).
+
+## Dev 🐝
+
+Various internal tools and helpers to develop the package itself.
+
+[Read more](<packages/dev/README.md>).
 
 ## GraphQL Printer
 
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
 
 [Read more](<packages/graphql-printer/README.md>).
-
-## Migrator
-
-This package improves standard laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
-
-[Read more](<packages/migrator/README.md>).
-
-## SPA Helpers
-
-[Read more](<packages/spa/README.md>).
-
-## Serializer
-
-This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html).
-
-[Read more](<packages/serializer/README.md>).
-
-## Testing Helpers 🐝
-
-This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and alternative solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
-
-[Read more](<packages/testing/README.md>).
 
 [//]: # (end: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
 

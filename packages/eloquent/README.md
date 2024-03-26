@@ -1,4 +1,4 @@
-# Eloquent Helpers
+# (Laravel) Eloquent Helpers
 
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/eloquent).
 

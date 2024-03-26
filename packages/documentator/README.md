@@ -1,6 +1,6 @@
-# Documentator
+# (Laravel) Documentator
 
-This package provides various utilities for documentation generation.
+This package provides various utilities for documentation generation such as Markdown Preprocessor, Requirements Dumper and more.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
 [//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
@@ -51,7 +51,7 @@ Preprocess Markdown files.
 
 ## `lara-asp-documentator:requirements`
 
-Generates a table with the required versions of PHP/Laravel in Markdown format.
+Generates a table with the required versions of PHP/Laravel/etc in Markdown format.
 
 [Read more](<docs/Commands/requirements.md>).
 

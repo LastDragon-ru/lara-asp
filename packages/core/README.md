@@ -1,4 +1,4 @@
-# Core
+# (Laravel) Core
 
 This package contains useful utilities and classes.
 
