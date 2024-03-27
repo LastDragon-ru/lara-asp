@@ -14,7 +14,9 @@ interface ParameterizableInstruction extends Instruction {
     public static function getParameters(): string;
 
     /**
-     * @return non-empty-array<string, string>
+     * @deprecated %{VERSION} Use docblock instead.
+     *
+     * @return array<string, string>
      */
     public static function getParametersDescription(): array;
 

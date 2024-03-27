@@ -58,10 +58,7 @@ class Instruction implements ParameterizableInstruction {
      */
     #[Override]
     public static function getParametersDescription(): array {
-        return [
-            'depth'    => 'Default is `0` (no nested directories). The `null` removes limits.',
-            'template' => 'Blade template',
-        ];
+        return [];
     }
 
     #[Override]

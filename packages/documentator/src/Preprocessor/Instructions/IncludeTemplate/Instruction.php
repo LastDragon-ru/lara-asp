@@ -55,9 +55,7 @@ class Instruction implements ParameterizableInstruction {
      */
     #[Override]
     public static function getParametersDescription(): array {
-        return [
-            'data' => 'Array of variables (`${name}`) to replace (required).',
-        ];
+        return [];
     }
 
     #[Override]

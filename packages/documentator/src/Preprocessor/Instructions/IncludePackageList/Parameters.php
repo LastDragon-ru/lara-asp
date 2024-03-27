@@ -6,6 +6,9 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 
 class Parameters implements Serializable {
     public function __construct(
+        /**
+         * Blade template.
+         */
         public readonly string $template = 'default',
     ) {
         // empty

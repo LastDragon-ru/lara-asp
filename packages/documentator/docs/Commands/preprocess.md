@@ -33,8 +33,8 @@ Where:
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
-  * `summary` - Include the class summary? (default `true`)
-  * `description` - Include the class description? (default `true`)
+  * `summary: bool = true` - Include the class summary?
+  * `description: bool = true` - Include the class description?
 
 Includes the docblock of the first PHP class/interface/trait/enum/etc
 from `<target>` file. Inline tags include as is except `@see`/`@link`
@@ -44,8 +44,8 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `depth` - Default is `0` (no nested directories). The `null` removes limits.
-  * `template` - Blade template
+  * `depth: array|string|int|null = 0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth) (eg the `0` means no nested directories, the `null` removes limits).
+  * `template: string = 'default'` - Blade template.
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
@@ -79,7 +79,7 @@ Includes the `<target>` file.
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `template` - Blade template
+  * `template: string = 'default'` - Blade template.
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
@@ -88,7 +88,7 @@ used to determine package name and summary.
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
-  * `data` - Array of variables (`${name}`) to replace (required).
+  * `data: array` - Array of variables (`${name}`) to replace.
 
 Includes the `<target>` as a template.
 

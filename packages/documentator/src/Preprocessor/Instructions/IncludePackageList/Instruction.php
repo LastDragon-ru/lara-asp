@@ -66,9 +66,7 @@ class Instruction implements ParameterizableInstruction {
      */
     #[Override]
     public static function getParametersDescription(): array {
-        return [
-            'template' => 'Blade template',
-        ];
+        return [];
     }
 
     #[Override]
