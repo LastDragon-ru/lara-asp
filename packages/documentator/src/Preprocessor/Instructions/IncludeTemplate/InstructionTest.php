@@ -57,7 +57,7 @@ final class InstructionTest extends TestCase {
 
     public function testProcessNoData(): void {
         $file     = self::getTestData()->file('.md');
-        $params   = new Parameters();
+        $params   = new Parameters([]);
         $instance = Container::getInstance()->make(Instruction::class);
 
         self::expectExceptionObject(
