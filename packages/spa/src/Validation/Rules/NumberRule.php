@@ -11,11 +11,8 @@ use function is_float;
  * Number value.
  */
 class NumberRule extends IntRule {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function passes($attribute, $value) {
-        return (is_float($value) && is_finite($value)) || parent::passes($attribute, $value);
+    public function isValid(string $attribute, mixed $value): bool {
+        return (is_float($value) && is_finite($value)) || parent::isValid($attribute, $value);
     }
 }

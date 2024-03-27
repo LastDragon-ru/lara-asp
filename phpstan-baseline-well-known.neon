@@ -96,8 +96,10 @@ parameters:
             paths:
                 - packages/dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
 
-        # False positive for our dev app
+        # Symfony v6 compatibility
         -
-            message: "#^Called 'env' outside of the config directory which returns null when the config is cached, use 'config'\\.$#"
+            message: "#^[^:]+::getSupportedTypes\\(\\) overrides method [^:]+::getSupportedTypes\\(\\) but is missing the \\#\\[\\\\Override\\] attribute\\.$#"
             paths:
-                - dev/App/config/*.php
+                - packages/serializer/src/Normalizers/DateTimeNormalizer.php
+                - packages/serializer/src/Normalizers/SerializableNormalizer.php
+                - packages/serializer/src/Normalizers/UnitEnumNormalizer.php
