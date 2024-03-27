@@ -8,17 +8,28 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
+use ReflectionClass;
+use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
+use function array_map;
+use function explode;
 use function getcwd;
+use function gettype;
 use function implode;
 use function is_a;
+use function is_scalar;
 use function ksort;
+use function rtrim;
+use function str_replace;
 use function strtr;
 use function trim;
+use function var_export;
 
 /**
  * @see Preprocessor
@@ -116,7 +127,7 @@ class Preprocess extends Command {
             $desc   = $instruction::getDescription();
             $target = $instruction::getTargetDescription();
             $params = is_a($instruction, ParameterizableInstruction::class, true)
-                ? $instruction::getParametersDescription()
+                ? $this->getInstructionParameters($instruction)
                 : null;
 
             if ($target !== null && $params !== null) {
@@ -159,5 +170,77 @@ class Preprocess extends Command {
         ksort($help);
 
         return implode("\n\n", $help);
+    }
+
+    /**
+     * @template T of Serializable
+     *
+     * @param class-string<ParameterizableInstruction<T>> $instruction
+     *
+     * @return array<string, string>
+     */
+    protected function getInstructionParameters(string $instruction): array {
+        // Explicit? (deprecated)
+        $parameters = $instruction::getParametersDescription();
+
+        if ($parameters) {
+            return $parameters;
+        }
+
+        // Nope
+        $class      = new ReflectionClass($instruction::getParameters());
+        $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+        $parameters = [];
+
+        foreach ($properties as $property) {
+            // Ignored?
+            if (!$property->isPublic() || $property->isStatic()) {
+                continue;
+            }
+
+            // Name
+            $name       = $property->getName();
+            $definition = $name;
+            $hasDefault = $property->hasDefaultValue();
+            $theDefault = $hasDefault
+                ? $property->getDefaultValue()
+                : null;
+
+            if ($property->hasType()) {
+                $definition = "{$definition}: {$property->getType()}";
+            }
+
+            if ($property->isPromoted()) {
+                foreach ($class->getConstructor()?->getParameters() ?? [] as $parameter) {
+                    if ($parameter->getName() === $name) {
+                        $hasDefault = $parameter->isDefaultValueAvailable();
+                        $theDefault = $hasDefault
+                            ? $parameter->getDefaultValue()
+                            : null;
+
+                        break;
+                    }
+                }
+            }
+
+            if ($hasDefault) {
+                $default    = is_scalar($theDefault) ? var_export($theDefault, true) : '<'.gettype($theDefault).'>';
+                $definition = "{$definition} = {$default}";
+            } else {
+                // empty
+            }
+
+            // Description
+            $doc         = new PhpDoc($property->getDocComment() ?: null);
+            $description = $doc->getSummary() ?: '_No description provided_.';
+            $description = trim(
+                implode(' ', array_map(rtrim(...), explode("\n", str_replace("\r\n", "\n", $description)))),
+            );
+
+            // Add
+            $parameters[$definition] = $description;
+        }
+
+        return $parameters;
     }
 }
