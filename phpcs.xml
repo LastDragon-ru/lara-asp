@@ -6,8 +6,9 @@
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
     <file>./packages</file>
     <file>./dev</file>
-    <exclude-pattern>dev/App/bootstrap/cache</exclude-pattern>
-    <exclude-pattern>dev/App/storage</exclude-pattern>
+    <exclude-pattern>dev/bootstrap</exclude-pattern>
+    <exclude-pattern>dev/storage</exclude-pattern>
+    <exclude-pattern>dev/vendor</exclude-pattern>
     <exclude-pattern>*.blade.php</exclude-pattern>
     <rule ref="PSR12">
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase"/>

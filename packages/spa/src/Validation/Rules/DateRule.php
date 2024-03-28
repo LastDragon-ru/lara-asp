@@ -13,21 +13,18 @@ use Override;
  * ISO 8601 Date.
  */
 class DateRule extends Rule implements ValueProvider {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function passes($attribute, $value) {
-        $passes = false;
+    public function isValid(string $attribute, mixed $value): bool {
+        $valid = false;
 
         try {
-            $date   = $this->getValue($value);
-            $passes = $date && $date->format($this->getFormat()) === $value;
+            $date  = $this->getValue($value);
+            $valid = $date && $date->format($this->getFormat()) === $value;
         } catch (InvalidArgumentException $exception) {
             // ignored
         }
 
-        return $passes;
+        return $valid;
     }
 
     #[Override]

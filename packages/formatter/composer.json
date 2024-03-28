@@ -22,17 +22,17 @@
     "ext-bcmath": "*",
     "ext-intl": "*",
     "ext-mbstring": "*",
-    "illuminate/container": "^10.34.0",
-    "illuminate/contracts": "^10.34.0",
-    "illuminate/macroable": "^10.34.0",
-    "illuminate/support": "^10.34.0",
+    "illuminate/container": "^10.34.0|^11.0.0",
+    "illuminate/contracts": "^10.34.0|^11.0.0",
+    "illuminate/macroable": "^10.34.0|^11.0.0",
+    "illuminate/support": "^10.34.0|^11.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "orchestra/testbench": "^8.0.0",
-    "phpunit/phpunit": "^10.1.0"
+    "orchestra/testbench": "^8.0.0|^9.0.0",
+    "phpunit/phpunit": "^10.1.0|^11.0.0"
   },
   "autoload": {
     "psr-4": {

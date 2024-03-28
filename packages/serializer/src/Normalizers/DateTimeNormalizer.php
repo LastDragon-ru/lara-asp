@@ -81,8 +81,11 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
         );
     }
 
+    /**
+     * @param array<array-key, mixed> $context
+     */
     #[Override]
-    public function supportsNormalization(mixed $data, string $format = null): bool {
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool {
         return $data instanceof DateTimeInterface;
     }
 
@@ -148,8 +151,16 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
         return $result;
     }
 
+    /**
+     * @param array<array-key, mixed> $context
+     */
     #[Override]
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool {
+    public function supportsDenormalization(
+        mixed $data,
+        string $type,
+        string $format = null,
+        array $context = [],
+    ): bool {
         return is_a($type, DateTimeInterface::class, true);
     }
 

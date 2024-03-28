@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Routing\Router;
 use LastDragon_ru\LaraASP\Spa\Routing\Resolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -18,7 +19,43 @@ use stdClass;
 final class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testPasses(): void {
+    public function testRule(): void {
+        $translator = Container::getInstance()->make(Translator::class);
+        $router     = Container::getInstance()->make(Router::class);
+        $resolver   = new class($router) extends Resolver {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            protected function resolve(mixed $value, array $parameters): mixed {
+                return $value ? new stdClass() : null;
+            }
+        };
+        $rule       = new ResolverRule($translator, $resolver);
+        $factory    = Container::getInstance()->make(Factory::class);
+        $validator  = $factory->make(
+            [
+                'a' => true,
+                'b' => false,
+            ],
+            [
+                'a' => $rule,
+                'b' => $rule,
+            ],
+        );
+
+        self::assertTrue($validator->fails());
+        self::assertEquals(
+            [
+                'b' => [
+                    'The b not found.',
+                ],
+            ],
+            $validator->errors()->toArray(),
+        );
+    }
+
+    public function testIsValid(): void {
         $translator = Container::getInstance()->make(Translator::class);
         $router     = Container::getInstance()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
@@ -32,10 +69,10 @@ final class ResolverRuleTest extends TestCase {
         };
         $rule       = new ResolverRule($translator, $resolver);
 
-        self::assertTrue($rule->passes('attribute', 'value'));
+        self::assertTrue($rule->isValid('attribute', 'value'));
     }
 
-    public function testPassesUnresolved(): void {
+    public function testIsValidUnresolved(): void {
         $translator = Container::getInstance()->make(Translator::class);
         $router     = Container::getInstance()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
@@ -49,24 +86,7 @@ final class ResolverRuleTest extends TestCase {
         };
         $rule       = new ResolverRule($translator, $resolver);
 
-        self::assertFalse($rule->passes('attribute', 'value'));
-    }
-
-    public function testMessage(): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $router     = Container::getInstance()->make(Router::class);
-        $resolver   = new class($router) extends Resolver {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            protected function resolve(mixed $value, array $parameters): mixed {
-                return new stdClass();
-            }
-        };
-        $rule       = new ResolverRule($translator, $resolver);
-
-        self::assertEquals('The :attribute not found.', $rule->message());
+        self::assertFalse($rule->isValid('attribute', 'value'));
     }
     // </editor-fold>
 }

@@ -10,11 +10,8 @@ use function is_int;
  * Int value.
  */
 class IntRule extends Rule {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function passes($attribute, $value) {
+    public function isValid(string $attribute, mixed $value): bool {
         return is_int($value);
     }
 }

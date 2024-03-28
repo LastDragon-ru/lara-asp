@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Serializer\Casts\AsSerializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use Override;
+
+use function array_merge;
 
 class UserSettings implements Serializable {
     public function __construct(
@@ -24,11 +27,14 @@ class UserSettings implements Serializable {
  */
 class User extends Model {
     /**
-     * @inheritDoc
+     * @return array<array-key, mixed>
      */
-    protected $casts = [
-        'settings' => AsSerializable::class.':'.UserSettings::class,
-    ];
+    #[Override]
+    protected function casts(): array {
+        return array_merge(parent::casts(), [
+            'settings' => AsSerializable::using(UserSettings::class),
+        ]);
+    }
 }
 
 $user           = new User();

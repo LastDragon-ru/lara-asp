@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 return [
+    'default'   => 'The :attribute is invalid.',
     'bool'      => 'The :attribute is not a boolean.',
     'string'    => 'The :attribute is not a string.',
     'int'       => 'The :attribute is not an integer.',
