@@ -11,10 +11,10 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use own base TestCase class.');
+trigger_deprecation(Package::Name, '6.2.0', 'Please use own base TestCase class.');
 
 /**
- * @deprecated %{VERSION} Please use own class.
+ * @deprecated 6.2.0 Please use own class.
  */
 abstract class TestCase extends BaseTestCase {
     use Assertions;

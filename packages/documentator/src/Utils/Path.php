@@ -9,10 +9,10 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', CorePath::class);
+trigger_deprecation(Package::Name, '6.2.0', 'Please use `%s` instead.', CorePath::class);
 
 /**
- * @deprecated %{VERSION} Use {@see CorePath} instead.
+ * @deprecated 6.2.0 Use {@see CorePath} instead.
  */
 class Path extends CorePath {
     // empty

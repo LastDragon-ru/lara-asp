@@ -13,14 +13,14 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use own trait.');
+trigger_deprecation(Package::Name, '6.2.0', 'Please use own trait.');
 
 /**
  * The trait is very similar to standard {@link RefreshDatabase} but there is one
  * difference: it will refresh the database only if it is empty. This is very
  * useful for local testing and allow significantly reduce bootstrap time.
  *
- * @deprecated %{VERSION} Please use own trait.
+ * @deprecated 6.2.0 Please use own trait.
  *
  * @phpstan-require-extends TestCase
  */

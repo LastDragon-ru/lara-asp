@@ -36,7 +36,7 @@ abstract class Rule implements RuleContract, ValidationRule {
     protected function isValid(string $attribute, mixed $value): bool {
         trigger_deprecation(
             Package::Name,
-            '%{VERSION}',
+            '6.2.0',
             'Implementing `%s` is deprecated, use `%s` instead.',
             RuleContract::class,
             ValidationRule::class,
@@ -55,7 +55,7 @@ abstract class Rule implements RuleContract, ValidationRule {
     public function passes($attribute, $value): bool {
         trigger_deprecation(
             Package::Name,
-            '%{VERSION}',
+            '6.2.0',
             'Implementing `%s` is deprecated, use `%s` instead.',
             RuleContract::class,
             ValidationRule::class,
@@ -65,7 +65,7 @@ abstract class Rule implements RuleContract, ValidationRule {
     }
 
     /**
-     * @deprecated %{VERSION}
+     * @deprecated 6.2.0
      *
      * @return array<array-key, mixed>|string
      */
@@ -73,7 +73,7 @@ abstract class Rule implements RuleContract, ValidationRule {
     public function message(): array|string {
         trigger_deprecation(
             Package::Name,
-            '%{VERSION}',
+            '6.2.0',
             'Implementing `%s` is deprecated, use `%s` instead.',
             RuleContract::class,
             ValidationRule::class,

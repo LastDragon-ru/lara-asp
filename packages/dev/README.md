@@ -10,10 +10,10 @@ Various internal tools and helpers to develop the package itself.
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.3` |  `HEAD`   |
-|  | `^8.2` |  `HEAD`   |
-|  | `^8.1` |  `HEAD`   |
-|  PHPStan  | `^1.10` |  `HEAD`   |
+|  PHP  | `^8.3` |  `HEAD`  ,  `6.2.0`   |
+|  | `^8.2` |  `HEAD`  ,  `6.2.0`   |
+|  | `^8.1` |  `HEAD`  ,  `6.2.0`   |
+|  PHPStan  | `^1.10` |  `HEAD`  ,  `6.2.0`   |
 
 [//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
 

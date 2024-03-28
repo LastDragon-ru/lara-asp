@@ -10,10 +10,10 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use own class and `%s` trait.', WithValueProvider::class);
+trigger_deprecation(Package::Name, '6.2.0', 'Please use own class and `%s` trait.', WithValueProvider::class);
 
 /**
- * @deprecated %{VERSION} Please use own class and {@see WithValueProvider} trait.
+ * @deprecated 6.2.0 Please use own class and {@see WithValueProvider} trait.
  */
 abstract class Request extends FormRequest {
     use WithValueProvider {
