@@ -157,10 +157,14 @@ module.exports = {
                 files:   [
                     '*.md',
                     'docs/*.md',
+                    'docs/**/.md',
                     'packages/**/*.php',
                     'packages/**/*.md',
                 ],
-                search:  '%{VERSION}',
+                search:  {
+                    pattern: '%{VERSION}',
+                    flags: 'g'
+                },
                 replace: '{{version}}',
             },
         },
