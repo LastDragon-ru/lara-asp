@@ -1,0 +1,36 @@
+version: "3"
+name: lara-asp
+
+x-project: &project
+    init: true
+    build: .
+    volumes:
+        - ./:/project
+    working_dir: /project
+
+services:
+    app:
+        <<: *project
+        depends_on:
+            - setup
+        command: sleep infinity
+
+    setup:
+        <<: *project
+        command: |
+            sh -c '
+                set -eux
+
+                if test -f "./composer.json" -a ! -d "./vendor"; then
+                    composer install
+                    composer bin all install
+                fi
+
+                if test -f "./dev/composer.json" -a ! -d "./dev/vendor"; then
+                    (cd ./dev && composer install)
+                fi
+
+                if test -f "./package.json" -a ! -d "./node_modules"; then
+                    npm install
+                fi
+            '
