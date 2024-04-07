@@ -28,5 +28,4 @@ Thumbs.db
 
 # Project
 /composer.lock
-/Vagrant.yml
 /compose.yaml
