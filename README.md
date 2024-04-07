@@ -125,6 +125,13 @@ Please follow [Upgrade Guide](UPGRADE.md).
 [//]: # (start: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
+# Development
+
+1. Fork & clone
+2. `docker compose up`
+3. ...
+4. Enjoy
+
 # Legend
 
 | Icon | Place | Description                                                      |
