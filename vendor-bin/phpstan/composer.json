@@ -19,6 +19,12 @@
       "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\Larastan\\Extension::dump"
     ]
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
   "repositories": {
     "dev": {
       "type": "path",
@@ -27,6 +33,10 @@
     "core": {
       "type": "path",
       "url": "../../packages/core"
+    },
+    "graphql-printer": {
+      "type": "path",
+      "url": "../../packages/graphql-printer"
     }
   }
 }
