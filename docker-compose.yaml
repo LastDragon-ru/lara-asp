@@ -12,7 +12,8 @@ services:
     app:
         <<: *project
         depends_on:
-            - setup
+            setup:
+                condition: service_completed_successfully
         command: sleep infinity
 
     setup:
