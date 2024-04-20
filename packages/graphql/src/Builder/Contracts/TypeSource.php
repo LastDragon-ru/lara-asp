@@ -9,17 +9,11 @@ use GraphQL\Type\Definition\Type;
 use Stringable;
 
 interface TypeSource extends Stringable {
-    /**
-     * @return (TypeDefinitionNode&Node)|(TypeNode&Node)|Type
-     */
-    public function getType(): TypeDefinitionNode|TypeNode|Type;
+    public function getType(): (TypeDefinitionNode&Node)|(TypeNode&Node)|Type;
 
     public function getTypeName(): string;
 
-    /**
-     * @return (TypeDefinitionNode&Node)|Type
-     */
-    public function getTypeDefinition(): TypeDefinitionNode|Type;
+    public function getTypeDefinition(): (TypeDefinitionNode&Node)|Type;
 
     public function isNullable(): bool;
 

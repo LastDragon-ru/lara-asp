@@ -97,24 +97,15 @@ abstract class Block {
 
     // <editor-fold desc="Types">
     // =========================================================================
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
-     */
-    public function isTypeAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
+    public function isTypeAllowed((TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type): bool {
         return $type === null || $this->getContext()->isTypeAllowed($this->getTypeName($type));
     }
 
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type
-     */
-    public function isTypeDefinitionAllowed(TypeDefinitionNode|TypeNode|Type|string|null $type): bool {
+    public function isTypeDefinitionAllowed((TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string|null $type): bool {
         return $type === null || $this->getContext()->isTypeDefinitionAllowed($this->getTypeName($type));
     }
 
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type
-     */
-    protected function getTypeName(TypeDefinitionNode|TypeNode|Type|string $type): string {
+    protected function getTypeName((TypeDefinitionNode&Node)|(TypeNode&Node)|Type|string $type): string {
         return is_object($type)
             ? $this->getContext()->getTypeName($type)
             : $type;

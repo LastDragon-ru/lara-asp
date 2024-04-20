@@ -20,14 +20,11 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 class ObjectFieldSource extends Source {
     use Field;
 
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         AstManipulator $manipulator,
         ObjectSource $parent,
         private FieldDefinitionNode|FieldDefinition $field,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ) {
         parent::__construct(
             $manipulator,
@@ -49,12 +46,9 @@ class ObjectFieldSource extends Source {
 
     // <editor-fold desc="Helpers">
     // =================================================================================================================
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function getArgument(
         InputValueDefinitionNode|Argument $argument,
-        TypeNode|Type $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): ObjectFieldArgumentSource {
         return new ObjectFieldArgumentSource($this->getManipulator(), $this, $argument, $type);
     }

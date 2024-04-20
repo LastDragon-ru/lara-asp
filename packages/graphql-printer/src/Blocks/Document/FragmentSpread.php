@@ -20,13 +20,10 @@ use Override;
  */
 #[GraphQLAstNode(FragmentSpreadNode::class)]
 class FragmentSpread extends DefinitionBlock implements ExecutableDefinitionBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         FragmentSpreadNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context, $definition);
     }

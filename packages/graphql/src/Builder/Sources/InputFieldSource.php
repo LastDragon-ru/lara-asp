@@ -21,14 +21,11 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 class InputFieldSource extends Source {
     use Field;
 
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         AstManipulator $manipulator,
         InputSource $parent,
         private InputValueDefinitionNode|InputObjectField $field,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ) {
         parent::__construct(
             $manipulator,

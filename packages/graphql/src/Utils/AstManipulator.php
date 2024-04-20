@@ -101,30 +101,21 @@ class AstManipulator {
 
     // <editor-fold desc="AST Helpers">
     // =========================================================================
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
-     */
     public function isStandard(
-        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): bool {
         return in_array($this->getTypeName($node), Type::STANDARD_TYPE_NAMES, true);
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
-     */
     public function isPlaceholder(
-        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): bool {
         // Lighthouse uses `_` type as a placeholder for directives like `@orderBy`
         return $this->getTypeName($node) === static::Placeholder;
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node) $node
-     */
     public function isNullable(
-        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
     ): bool {
         $type = null;
 
@@ -142,11 +133,8 @@ class AstManipulator {
             && !($type instanceof NonNullTypeNode);
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node) $node
-     */
     public function isList(
-        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
     ): bool {
         $type = null;
 
@@ -172,11 +160,8 @@ class AstManipulator {
             || $type instanceof ListTypeNode;
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
-     */
     public function isUnion(
-        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition $node,
     ): bool {
         $type = $this->getType($node);
 
@@ -184,11 +169,8 @@ class AstManipulator {
             || $type instanceof UnionType;
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
-     */
     public function isObject(
-        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition $node,
     ): bool {
         $type = $this->getType($node);
 
@@ -200,11 +182,8 @@ class AstManipulator {
             || $type instanceof InputObjectType;
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
-     */
     public function isScalar(
-        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition $node,
     ): bool {
         $type = $this->getType($node);
 
@@ -212,11 +191,8 @@ class AstManipulator {
             || $type instanceof ScalarType;
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
-     */
     public function isEnum(
-        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition $node,
     ): bool {
         $type = $this->getType($node);
 
@@ -246,12 +222,9 @@ class AstManipulator {
         }
     }
 
-    /**
-     * @return (TypeDefinitionNode&Node)|Type
-     */
     public function getTypeDefinition(
-        Node|Type|InputObjectField|FieldDefinition|Argument|string $node,
-    ): TypeDefinitionNode|Type {
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|Argument|string $node,
+    ): (TypeDefinitionNode&Node)|Type {
         if ($node instanceof TypeDefinitionNode && $node instanceof Node) {
             return $node;
         }
@@ -282,7 +255,9 @@ class AstManipulator {
      *
      * @return TDefinition
      */
-    public function addTypeDefinition(TypeDefinitionNode|TypeReference $definition): TypeDefinitionNode|TypeReference {
+    public function addTypeDefinition(
+        (TypeDefinitionNode&Node)|TypeReference $definition,
+    ): (TypeDefinitionNode&Node)|TypeReference {
         $name = $this->getName($definition);
 
         if ($this->isTypeDefinitionExists($name)) {
@@ -320,12 +295,9 @@ class AstManipulator {
         unset($this->getDocument()->types[$name]);
     }
 
-    /**
-     * @return (TypeNode&Node)|Type
-     */
     public function getOriginType(
         FieldDefinitionNode|FieldDefinition|InputValueDefinitionNode|InputObjectField $field,
-    ): TypeNode|Type {
+    ): (TypeNode&Node)|Type {
         $directive = $this->getDirective($field, Directive::class, static function (Directive $directive): bool {
             return $directive instanceof StreamDirective
                 || $directive instanceof PaginateDirective
@@ -369,14 +341,13 @@ class AstManipulator {
     /**
      * @template T
      *
-     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
-     * @param class-string<T>                                                               $class
-     * @param Closure(T): bool|null                                                         $callback
+     * @param class-string<T>       $class
+     * @param Closure(T): bool|null $callback
      *
      * @return (T&Directive)|null
      */
     public function getDirective(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument $node,
         string $class,
         ?Closure $callback = null,
     ): ?Directive {
@@ -407,14 +378,13 @@ class AstManipulator {
     /**
      * @template T
      *
-     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
-     * @param class-string<T>|null                                                          $class
-     * @param Closure(($class is null ? Directive : T&Directive)): bool|null                $callback
+     * @param class-string<T>|null                                           $class
+     * @param Closure(($class is null ? Directive : T&Directive)): bool|null $callback
      *
      * @return ($class is null ? array<array-key, Directive> : array<array-key, T&Directive>)
      */
     public function getDirectives(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument $node,
         ?string $class = null,
         ?Closure $callback = null,
     ): array {
@@ -456,11 +426,8 @@ class AstManipulator {
         return $directives;
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|Argument|(TypeDefinitionNode&Node)|string $node
-     */
     public function getTypeName(
-        Node|Type|InputObjectField|FieldDefinition|Argument|TypeDefinitionNode|string $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|Argument|string $node,
     ): string {
         $name = null;
 
@@ -492,11 +459,8 @@ class AstManipulator {
         return $name;
     }
 
-    /**
-     * @param InputValueDefinitionNode|(TypeDefinitionNode&Node)|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|ArgumentNode|Type|TypeReference $node
-     */
     public function getName(
-        InputValueDefinitionNode|TypeDefinitionNode|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|ArgumentNode|Type|TypeReference $node,
+        InputValueDefinitionNode|(TypeDefinitionNode&Node)|FieldDefinitionNode|InputObjectField|FieldDefinition|Argument|ArgumentNode|Type|TypeReference $node,
     ): string {
         if ($node instanceof TypeDefinitionNode) {
             $node = $node->getName();
@@ -524,11 +488,8 @@ class AstManipulator {
         return $name;
     }
 
-    /**
-     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|string $node
-     */
     public function getTypeFullName(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition|string $node,
     ): string {
         $name   = $this->getTypeName($node);
         $prefix = null;
@@ -813,15 +774,14 @@ class AstManipulator {
     /**
      * @template T of FieldDefinitionNode|FieldDefinition
      *
-     * @param T                                                           $field
-     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
+     * @param T $field
      *
      * @return T
      */
     public function setFieldType(
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
         FieldDefinitionNode|FieldDefinition $field,
-        TypeNode|Type $type,
+        (Type&InputType)|NamedTypeNode|ListTypeNode|NonNullTypeNode $type,
     ): FieldDefinitionNode|FieldDefinition {
         // Update
         $this->setType($field, $type);
@@ -849,8 +809,7 @@ class AstManipulator {
     /**
      * @template T of InputValueDefinitionNode|Argument
      *
-     * @param T                                                           $argument
-     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
+     * @param T $argument
      *
      * @return T
      */
@@ -858,7 +817,7 @@ class AstManipulator {
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType $definition,
         FieldDefinitionNode|FieldDefinition $field,
         InputValueDefinitionNode|Argument $argument,
-        TypeNode|Type $type,
+        (Type&InputType)|NamedTypeNode|ListTypeNode|NonNullTypeNode $type,
     ): InputValueDefinitionNode|Argument {
         // Update
         $this->setType($argument, $type);
@@ -894,12 +853,11 @@ class AstManipulator {
     /**
      * @template T
      *
-     * @param (TypeNode&Node)|string $name
-     * @param class-string<T>        $expected
+     * @param class-string<T> $expected
      *
      * @return Type&T
      */
-    private function toType(TypeNode|string $name, string $expected): Type {
+    private function toType((TypeNode&Node)|string $name, string $expected): Type {
         // todo(graphql): Is there a better way to get Type?
         $type = null;
         $node = is_string($name) ? Parser::typeReference($name) : $name;
@@ -923,12 +881,9 @@ class AstManipulator {
         return $type;
     }
 
-    /**
-     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType) $type
-     */
     private function setType(
         FieldDefinitionNode|FieldDefinition|InputValueDefinitionNode|Argument $node,
-        TypeNode|Type $type,
+        (Type&InputType)|NamedTypeNode|ListTypeNode|NonNullTypeNode $type,
     ): void {
         // It seems that we can only modify types of AST nodes :(
         if ($node instanceof Node) {
@@ -940,14 +895,9 @@ class AstManipulator {
         }
     }
 
-    /**
-     * @param Node|Type|InputObjectField|FieldDefinition|(TypeDefinitionNode&Node) $node
-     *
-     * @return (Node&TypeDefinitionNode)|Type|null
-     */
     private function getType(
-        Node|Type|InputObjectField|FieldDefinition|TypeDefinitionNode $node,
-    ): TypeDefinitionNode|Type|null {
+        (TypeDefinitionNode&Node)|(TypeNode&Node)|FieldDefinitionNode|InputValueDefinitionNode|Type|InputObjectField|FieldDefinition $node,
+    ): (Node&TypeDefinitionNode)|Type|null {
         if ($node instanceof InputObjectField || $node instanceof FieldDefinition) {
             $node = $node->getType();
         } elseif ($node instanceof Node) {

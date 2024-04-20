@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextBuilderInfo;
@@ -37,7 +38,7 @@ class Scalar implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|string|null {
+    ): (TypeDefinitionNode&Node)|string|null {
         // Scalar?
         if (!$source->isScalar()) {
             return null;

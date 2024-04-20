@@ -88,15 +88,12 @@ class Printer implements PrinterContract {
 
     // <editor-fold desc="Printer">
     // =========================================================================
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     #[Override]
     public function print(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
         int $used = 0,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): Result {
         // Schema?
         if ($printable instanceof Schema) {
@@ -113,15 +110,12 @@ class Printer implements PrinterContract {
         return $printed;
     }
 
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     #[Override]
     public function export(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
         int $used = 0,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): Result {
         // Exportable?
         if (!$this->isExportable($printable)) {
@@ -160,13 +154,10 @@ class Printer implements PrinterContract {
         return new Context($this->getSettings(), $this->getDirectiveResolver(), $schema);
     }
 
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     protected function getBlock(
         Context $context,
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $definition,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): Block {
         return new PrintableBlock($context, $definition, $type);
     }
@@ -174,7 +165,7 @@ class Printer implements PrinterContract {
     /**
      * @return Block&ArrayAccess<Block, Block>
      */
-    protected function getList(Context $context, bool $root = false, bool $eof = true): Block {
+    protected function getList(Context $context, bool $root = false, bool $eof = true): Block&ArrayAccess {
         return new PrintableList($context, $root, $eof);
     }
 
@@ -186,10 +177,10 @@ class Printer implements PrinterContract {
     protected function process(
         Collector $collector,
         Context $context,
-        Block $root,
+        Block&ArrayAccess $root,
         int $level,
         int $used,
-    ): Block {
+    ): Block&ArrayAccess {
         $root       = $this->analyze($collector, $root, $level, $used);
         $stack      = $collector->getUsedDirectives() + $collector->getUsedTypes();
         $output     = $this->getList($context);

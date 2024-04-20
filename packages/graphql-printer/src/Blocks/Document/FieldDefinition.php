@@ -60,10 +60,7 @@ class FieldDefinition extends DefinitionBlock {
         return $arguments;
     }
 
-    /**
-     * @return (TypeNode&Node)|(GraphQLType&(OutputType|InputType))
-     */
-    private function getType(): TypeNode|GraphQLType {
+    private function getType(): (TypeNode&Node)|(GraphQLType&OutputType)|(GraphQLType&InputType) {
         $definition = $this->getDefinition();
         $type       = $definition instanceof FieldDefinitionNode
             ? $definition->type

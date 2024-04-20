@@ -24,13 +24,10 @@ use Override;
  */
 #[GraphQLAstNode(SelectionSetNode::class)]
 class SelectionSet extends ListBlock implements ExecutableDefinitionBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         SelectionSetNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context, $definition->selections);
     }

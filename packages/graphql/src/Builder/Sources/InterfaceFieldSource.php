@@ -20,14 +20,11 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 class InterfaceFieldSource extends Source {
     use Field;
 
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         AstManipulator $manipulator,
         InterfaceSource $parent,
         private FieldDefinitionNode|FieldDefinition $field,
-        TypeNode|Type|null $type,
+        (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct(
             $manipulator,
@@ -49,12 +46,9 @@ class InterfaceFieldSource extends Source {
 
     // <editor-fold desc="Helpers">
     // =================================================================================================================
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function getArgument(
         InputValueDefinitionNode|Argument $argument,
-        TypeNode|Type $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): InterfaceFieldArgumentSource {
         return new InterfaceFieldArgumentSource($this->getManipulator(), $this, $argument, $type);
     }

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\FieldDefinitionNode;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\BlockString;
@@ -60,7 +61,7 @@ abstract class InputObject implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|string|null {
+    ): (TypeDefinitionNode&Node)|string|null {
         // Source?
         $source = $manipulator->getTypeSource($source->getTypeDefinition());
 

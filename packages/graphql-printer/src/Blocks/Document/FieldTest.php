@@ -24,9 +24,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class FieldTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
         string $expected,
@@ -34,7 +31,7 @@ final class FieldTest extends TestCase {
         int $level,
         int $used,
         FieldNode $definition,
-        TypeNode|Type|null $type,
+        (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
         $collector = new Collector();

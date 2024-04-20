@@ -25,5 +25,5 @@ interface TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|string|null;
+    ): (TypeDefinitionNode&Node)|string|null;
 }

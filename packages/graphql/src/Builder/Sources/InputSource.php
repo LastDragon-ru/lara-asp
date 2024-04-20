@@ -14,12 +14,9 @@ use GraphQL\Type\Definition\Type;
  * @extends Source<InputObjectTypeDefinitionNode|InputObjectType, null>
  */
 class InputSource extends Source {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function getField(
         InputValueDefinitionNode|InputObjectField $field,
-        TypeNode|Type $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): InputFieldSource {
         return new InputFieldSource($this->getManipulator(), $this, $field, $type);
     }

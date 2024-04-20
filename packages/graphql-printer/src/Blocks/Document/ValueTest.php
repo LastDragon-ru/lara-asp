@@ -37,16 +37,13 @@ use function assert;
 final class ValueTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @param ValueNode&Node $node
-     */
     #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
         string $expected,
         Settings $settings,
         int $level,
         int $used,
-        ValueNode $node,
+        ValueNode&Node $node,
         ?Schema $schema,
         ?Type $type,
     ): void {

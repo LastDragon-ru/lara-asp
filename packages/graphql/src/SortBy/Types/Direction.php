@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Types;
 
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
@@ -27,7 +28,7 @@ class Direction implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|string|null {
+    ): (TypeDefinitionNode&Node)|string|null {
         return DirectionEnum::class;
     }
 }

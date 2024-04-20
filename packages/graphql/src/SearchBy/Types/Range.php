@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Types;
 
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -30,7 +31,7 @@ class Range implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|string|null {
+    ): (TypeDefinitionNode&Node)|string|null {
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             input {$name} {

@@ -18,13 +18,10 @@ use Override;
  * @extends ListBlock<Value, array-key, ValueNode&Node>
  */
 class ListValue extends ListBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         ListValueNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context, $definition->values);
     }
