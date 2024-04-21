@@ -5,11 +5,6 @@ parameters:
     ignoreErrors:
         # Unwanted strict rules
         # (is there a better way to disable them?)
-        - "#^Only booleans are allowed in an if condition, .+? given\\.$#"
-        - "#^Only booleans are allowed in a negated boolean, .+? given\\.$#"
-        - "#^Only booleans are allowed in a ternary operator condition, .+? given\\.$#"
-        - "#^Only booleans are allowed in an elseif condition, .+? given\\.$#"
-        - "#^Only booleans are allowed in &&, .+? given on the (left|right) side\\.$#"
         - "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
         -
             message: "#does not call parent constructor from#"
