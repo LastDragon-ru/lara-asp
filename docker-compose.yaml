@@ -6,6 +6,8 @@ x-project: &project
     volumes:
         - ./:/project
     working_dir: /project
+    environment:
+        LANG: C.utf8
 
 services:
     app:
