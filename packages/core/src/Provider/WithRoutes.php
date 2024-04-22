@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Core\Provider;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * @mixin ServiceProvider
+ * @phpstan-require-extends ServiceProvider
  */
 trait WithRoutes {
     use Helper;

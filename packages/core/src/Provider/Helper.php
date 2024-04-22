@@ -2,15 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Core\Provider;
 
-use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
 
 use function dirname;
 use function ltrim;
 
-/**
- * @mixin ServiceProvider
- */
 trait Helper {
     /**
      * Should return the name of the package.

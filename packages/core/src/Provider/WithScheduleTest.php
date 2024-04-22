@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Core\Provider;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
@@ -26,13 +25,13 @@ final class WithScheduleTest extends TestCase {
                 ->andReturn(true);
         });
 
-        $provider = Container::getInstance()->make(WithScheduleTest_Provider::class, [
-            'app' => $this->app,
+        $provider = $this->app()->make(WithScheduleTest_Provider::class, [
+            'app' => $this->app(),
         ]);
 
         $provider->boot();
 
-        Container::getInstance()->make(Schedule::class);
+        $this->app()->make(Schedule::class);
     }
 
     public function testApplication(): void {
@@ -46,7 +45,7 @@ final class WithScheduleTest extends TestCase {
             ->with(Schedule::class, Mockery::any())
             ->never();
 
-        $provider = Container::getInstance()->make(WithScheduleTest_Provider::class, [
+        $provider = $this->app()->make(WithScheduleTest_Provider::class, [
             'app' => $app,
         ]);
 
@@ -69,7 +68,7 @@ final class WithScheduleTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $provider = Container::getInstance()->make(WithScheduleTest_Provider::class, [
+        $provider = $this->app()->make(WithScheduleTest_Provider::class, [
             'app' => $app,
         ]);
 
