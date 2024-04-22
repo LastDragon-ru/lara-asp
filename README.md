@@ -121,16 +121,16 @@ Please follow [Upgrade Guide](UPGRADE.md).
 
 [//]: # (end: 58c515c01daf29a92b704a09f78da2fa719462cc37e47d3abde0331a7b1da0a3)
 
-[include:file]: ./docs/Legend.md
-[//]: # (start: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
-[//]: # (warning: Generated automatically. Do not edit.)
-
 # Development
 
 1. Fork & clone
 2. `docker compose up`
 3. ...
 4. Enjoy
+
+[include:file]: ./docs/Legend.md
+[//]: # (start: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
+[//]: # (warning: Generated automatically. Do not edit.)
 
 # Legend
 
