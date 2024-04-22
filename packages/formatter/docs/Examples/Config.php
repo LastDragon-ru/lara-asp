@@ -1,6 +1,5 @@
 <?php declare(strict_types = 1);
 
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -26,7 +25,7 @@ Example::config(Package::Name, [
 ]);
 
 $datetime = Date::make('2023-12-30T20:41:40.000018+04:00');
-$default  = Container::getInstance()->make(Formatter::class);
+$default  = Example::app()->make(Formatter::class);
 $locale   = $default->forLocale('ru_RU');
 
 Example::dump($default->date($datetime));

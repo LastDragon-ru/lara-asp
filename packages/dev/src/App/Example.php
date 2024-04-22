@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Dev\App;
 
 use Illuminate\Console\Command;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LogicException;
@@ -37,7 +37,8 @@ use const DEBUG_BACKTRACE_IGNORE_ARGS;
 final class Example extends Command {
     private const Name = 'dev:example';
 
-    private static ?Dumper $dumper = null;
+    private static ?Application $app    = null;
+    private static ?Dumper      $dumper = null;
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
@@ -62,11 +63,8 @@ final class Example extends Command {
 
     public function __invoke(Dumper $dumper): void {
         self::$dumper = $dumper;
-        $container    = Container::getInstance();
-        $config       = $container->make(Repository::class);
+        self::$app    = $this->laravel;
         $file         = Cast::toString($this->argument('file'));
-
-        $container[Repository::class] = clone $config;
 
         try {
             // Run
@@ -82,10 +80,8 @@ final class Example extends Command {
                 $this->output->writeln("<markdown>{$output}</markdown>");
             }
         } finally {
-            Container::setInstance($container);
-
-            $container[Repository::class] = $config;
-            self::$dumper                 = null;
+            self::$app    = null;
+            self::$dumper = null;
         }
     }
 
@@ -97,15 +93,28 @@ final class Example extends Command {
         self::getDumper()->raw($value, $expression ?? self::getExpression(__FUNCTION__), $type);
     }
 
+    public static function app(): Application {
+        if (!self::$app) {
+            throw new LogicException(
+                sprintf(
+                    'The `%s` can be called only within example context.',
+                    __METHOD__,
+                ),
+            );
+        }
+
+        return self::$app;
+    }
+
     /**
      * @param array<string, mixed> $settings
      */
     public static function config(string $root, array $settings): void {
         // Example?
-        self::getDumper();
+        self::app();
 
         // Update
-        $repository = Container::getInstance()->make(Repository::class);
+        $repository = self::app()->make(Repository::class);
         $config     = (array) $repository->get($root, []);
         $config     = (new ConfigMerger())->merge([ConfigMerger::Strict => false], $config, $settings);
 
