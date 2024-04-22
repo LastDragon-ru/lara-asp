@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\Before;
 /**
  * @internal
  *
- * @mixin TestCase
+ * @phpstan-require-extends TestCase
  */
 trait WithTestObject {
     /**
@@ -44,11 +44,7 @@ trait WithTestObject {
             $schema = Container::getInstance()->make(Builder::class);
             $table  = (new TestObject())->getTable();
 
-            if ($schema->hasTable($table)) {
-                return;
-            }
-
-            $schema->drop($table);
+            $schema->dropIfExists($table);
         });
     }
 }
