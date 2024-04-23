@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 use function array_map;
 use function explode;
-use function get_class;
 use function implode;
 use function json_decode;
 use function json_encode;
@@ -28,7 +27,7 @@ use function trim;
 #[CoversClass(Provider::class)]
 final class SmartMigratorTest extends TestCase {
     public function testProvider(): void {
-        self::assertEquals(SmartMigrator::class, get_class($this->app()->make('migrator')));
+        self::assertInstanceOf(SmartMigrator::class, $this->app()->make('migrator'));
     }
 
     public function testMigrate(): void {
