@@ -2,16 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Migrator;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawMigration;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
+use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 use Override;
+
+use function is_array;
 
 class Provider extends ServiceProvider {
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
@@ -23,6 +29,7 @@ class Provider extends ServiceProvider {
     public function register() {
         parent::register();
 
+        $this->registerSeeder();
         $this->registerMigrator();
         $this->registerMigrationCreator();
     }
@@ -37,6 +44,22 @@ class Provider extends ServiceProvider {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    protected function registerSeeder(): void {
+        $this->app->scopedIf(SeederService::class, static function (Application $app): SeederService {
+            $default = 'migrations';
+            $table   = $app->make(Repository::class)->get('database.migrations', $default);
+            $table   = is_array($table) ? ($table['table'] ?: $default) : $table;
+            $table   = Cast::toString($table);
+
+            return new SeederService(
+                $app->make(DatabaseManager::class),
+                [
+                    $table,
+                ],
+            );
+        });
+    }
+
     protected function registerMigrator(): void {
         $this->app->extend('migrator', static function (Migrator $migrator): Migrator {
             return SmartMigrator::create($migrator);
