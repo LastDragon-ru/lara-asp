@@ -2,8 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
+use Illuminate\Container\Container;
+use Illuminate\Database\Connection;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Migrations\Migration;
 use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
+use Override;
 
 abstract class RawMigration extends Migration {
     use RawSqlHelper;
@@ -33,6 +37,14 @@ abstract class RawMigration extends Migration {
 
     protected function runRawDown(): void {
         $this->runRaw('down');
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="RawSqlHelper">
+    // =========================================================================
+    #[Override]
+    private function getConnectionInstance(): Connection {
+        return Container::getInstance()->make(DatabaseManager::class)->connection($this->getConnection());
     }
     // </editor-fold>
 }

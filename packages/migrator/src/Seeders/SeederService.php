@@ -59,7 +59,7 @@ class SeederService {
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function getConnection(): Connection {
+    public function getConnection(): Connection {
         return $this->manager->connection();
     }
     // </editor-fold>
