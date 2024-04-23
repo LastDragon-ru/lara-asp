@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Formatter;
 
 use DateTime;
-use Illuminate\Container\Container;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use NumberFormatter;
@@ -28,7 +27,7 @@ final class FormatterTest extends TestCase {
     public function setUp(): void {
         parent::setUp();
 
-        $this->formatter = Container::getInstance()->make(Formatter::class);
+        $this->formatter = $this->app()->make(Formatter::class);
     }
 
     #[Override]
