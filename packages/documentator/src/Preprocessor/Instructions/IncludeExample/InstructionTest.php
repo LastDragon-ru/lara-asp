@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 
-use Illuminate\Container\Container;
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -23,12 +22,12 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('~example.md');
         $file     = basename(self::getTestData()->path('~example.md'));
         $expected = trim(self::getTestData()->content('~example.md'));
-        $factory  = $this->override(Factory::class, static function (): Factory {
-            return Container::getInstance()->make(Factory::class)
+        $factory  = $this->override(Factory::class, function (): Factory {
+            return $this->app()->make(Factory::class)
                 ->preventStrayProcesses()
                 ->fake();
         });
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<EXPECTED
@@ -48,8 +47,8 @@ final class InstructionTest extends TestCase {
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = 'command output';
-        $factory  = $this->override(Factory::class, static function () use ($command, $output): Factory {
-            $factory = Container::getInstance()->make(Factory::class);
+        $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
+            $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
             $factory->fake([
                 $command => $factory->result($output),
@@ -57,7 +56,7 @@ final class InstructionTest extends TestCase {
 
             return $factory;
         });
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<EXPECTED
@@ -86,8 +85,8 @@ final class InstructionTest extends TestCase {
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = implode("\n", range(0, Instruction::Limit + 1));
-        $factory  = $this->override(Factory::class, static function () use ($command, $output): Factory {
-            $factory = Container::getInstance()->make(Factory::class);
+        $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
+            $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
             $factory->fake([
                 $command => $factory->result($output),
@@ -95,7 +94,7 @@ final class InstructionTest extends TestCase {
 
             return $factory;
         });
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<EXPECTED
@@ -126,8 +125,8 @@ final class InstructionTest extends TestCase {
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = 'command output';
-        $factory  = $this->override(Factory::class, static function () use ($command, $output): Factory {
-            $factory = Container::getInstance()->make(Factory::class);
+        $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
+            $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
             $factory->fake([
                 $command => $factory->result("<markdown>{$output}</markdown>"),
@@ -135,7 +134,7 @@ final class InstructionTest extends TestCase {
 
             return $factory;
         });
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<EXPECTED
@@ -160,8 +159,8 @@ final class InstructionTest extends TestCase {
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim(self::getTestData()->content('~runnable.md'));
         $output   = implode("\n", range(0, Instruction::Limit + 1));
-        $factory  = $this->override(Factory::class, static function () use ($command, $output): Factory {
-            $factory = Container::getInstance()->make(Factory::class);
+        $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
+            $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
             $factory->fake([
                 $command => $factory->result("<markdown>{$output}</markdown>"),
@@ -169,7 +168,7 @@ final class InstructionTest extends TestCase {
 
             return $factory;
         });
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<EXPECTED

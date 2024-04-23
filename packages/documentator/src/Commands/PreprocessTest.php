@@ -3,8 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -14,7 +16,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Preprocess::class)]
 final class PreprocessTest extends TestCase {
     public function testGetInstructionParameters(): void {
-        $command = new class() extends Preprocess {
+        $preprocessor = Mockery::mock(Preprocessor::class);
+        $command      = new class($preprocessor) extends Preprocess {
             /**
              * @inheritDoc
              */

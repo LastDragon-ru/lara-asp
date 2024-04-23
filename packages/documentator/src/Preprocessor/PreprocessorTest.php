@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
@@ -90,7 +89,7 @@ final class PreprocessorTest extends TestCase {
             ->once()
             ->andReturn('empty');
 
-        $preprocessor = Container::getInstance()->make(Preprocessor::class)
+        $preprocessor = $this->app()->make(Preprocessor::class)
             ->addInstruction($parameterizableInstruction)
             ->addInstruction($processableInstruction)
             ->addInstruction($emptyInstruction);

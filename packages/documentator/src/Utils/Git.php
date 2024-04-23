@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
-use Illuminate\Container\Container;
 use Illuminate\Process\Factory;
 
 use function array_filter;
@@ -11,10 +10,10 @@ use function explode;
 use function trim;
 
 class Git {
-    protected readonly Factory $factory;
-
-    public function __construct() {
-        $this->factory = Container::getInstance()->make(Factory::class); // next(documentator): Inject in constructor
+    public function __construct(
+        protected readonly Factory $factory,
+    ) {
+        // empty
     }
 
     /**

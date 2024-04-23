@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec;
 
-use Illuminate\Container\Container;
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -19,8 +18,8 @@ final class InstructionTest extends TestCase {
         $path     = 'current/working/directory/file.md';
         $expected = 'result';
         $command  = 'command to execute';
-        $factory  = $this->override(Factory::class, static function () use ($command, $expected): Factory {
-            $factory = Container::getInstance()->make(Factory::class);
+        $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
+            $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
             $factory->fake([
                 $command => $factory->result($expected),
@@ -28,7 +27,7 @@ final class InstructionTest extends TestCase {
 
             return $factory;
         });
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals($expected, $instance->process($path, $command));
 

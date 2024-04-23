@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
@@ -82,7 +81,13 @@ class Preprocess extends Command {
         * Nested `<instruction>` doesn't support.
         HELP;
 
-    public function __invoke(Filesystem $filesystem, Preprocessor $preprocessor): void {
+    public function __construct(
+        protected readonly Preprocessor $preprocessor,
+    ) {
+        parent::__construct();
+    }
+
+    public function __invoke(Filesystem $filesystem): void {
         $cwd    = getcwd();
         $path   = Cast::toString($this->argument('path') ?? $cwd);
         $finder = Finder::create()
@@ -96,10 +101,10 @@ class Preprocess extends Command {
         foreach ($finder as $file) {
             $this->components->task(
                 $file->getPathname(),
-                static function () use ($filesystem, $preprocessor, $file): void {
+                function () use ($filesystem, $file): void {
                     $path    = $file->getPathname();
                     $content = $file->getContents();
-                    $result  = $preprocessor->process($path, $content);
+                    $result  = $this->preprocessor->process($path, $content);
 
                     if ($content !== $result) {
                         $filesystem->dumpFile($path, $result);
@@ -111,15 +116,13 @@ class Preprocess extends Command {
 
     #[Override]
     public function getProcessedHelp(): string {
-        $preprocessor = Container::getInstance()->make(Preprocessor::class);
-
         return strtr(parent::getProcessedHelp(), [
-            '%instructions%' => $this->getInstructionsHelp($preprocessor),
+            '%instructions%' => $this->getInstructionsHelp(),
         ]);
     }
 
-    protected function getInstructionsHelp(Preprocessor $preprocessor): string {
-        $instructions = $preprocessor->getInstructions();
+    protected function getInstructionsHelp(): string {
+        $instructions = $this->preprocessor->getInstructions();
         $help         = [];
 
         foreach ($instructions as $instruction) {
