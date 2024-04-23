@@ -9,7 +9,6 @@ use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\Encrypter;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -34,7 +33,7 @@ final class OffsetTest extends TestCase {
         $scalar = new Offset();
         $actual = $scalar->serialize($value);
         $actual = is_string($actual)
-            ? Container::getInstance()->make(Encrypter::class)->decrypt($actual, false)
+            ? $this->app()->make(Encrypter::class)->decrypt($actual, false)
             : $actual;
 
         self::assertEquals($expected, $actual);
@@ -47,7 +46,7 @@ final class OffsetTest extends TestCase {
         }
 
         $value  = is_string($value)
-            ? Container::getInstance()->make(Encrypter::class)->encrypt($value, false)
+            ? $this->app()->make(Encrypter::class)->encrypt($value, false)
             : $value;
         $scalar = new Offset();
         $actual = $scalar->parseValue($value);
@@ -62,7 +61,7 @@ final class OffsetTest extends TestCase {
         }
 
         if ($value instanceof StringValueNode) {
-            $value->value = Container::getInstance()->make(Encrypter::class)->encrypt($value->value, false);
+            $value->value = $this->app()->make(Encrypter::class)->encrypt($value->value, false);
         }
 
         $scalar = new Offset();

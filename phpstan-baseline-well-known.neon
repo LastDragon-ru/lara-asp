@@ -15,7 +15,6 @@ parameters:
         - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesConfiguration\\:\\:(configurationIsCached|routesAreCached|langPath)\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Validation\\\\Factory\\:\\:(validate)\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
-        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Connection(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"

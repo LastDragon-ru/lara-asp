@@ -14,7 +14,6 @@ Compares default public schema (as the client sees it through introspection).
 
 namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
@@ -58,7 +57,7 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
      */
     public function testAssertion(): void {
         // Prepare
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class)
             ->setResolved('test', TestDirective::class);
 

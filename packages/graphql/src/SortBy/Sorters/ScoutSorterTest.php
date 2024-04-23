@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
@@ -63,8 +62,8 @@ final class ScoutSorterTest extends TestCase {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 
-        $sorter  = Container::getInstance()->make(ScoutSorter::class);
-        $builder = Container::getInstance()->make(ScoutBuilder::class, [
+        $sorter  = $this->app()->make(ScoutSorter::class);
+        $builder = $this->app()->make(ScoutBuilder::class, [
             'query' => '',
             'model' => new class() extends Model {
                 // empty

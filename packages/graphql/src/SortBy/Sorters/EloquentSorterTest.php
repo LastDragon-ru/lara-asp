@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -74,7 +73,7 @@ final class EloquentSorterTest extends TestCase {
             );
         }
 
-        $sorter  = Container::getInstance()->make(EloquentSorter::class);
+        $sorter  = $this->app()->make(EloquentSorter::class);
         $builder = $builder($this);
         $builder = $sorter->sort($builder, $field, $direction, $nulls);
 

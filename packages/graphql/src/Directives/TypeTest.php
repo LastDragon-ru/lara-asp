@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Directives;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Type\Definition\PhpEnumType;
 use GraphQL\Type\Definition\StringType;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\PhpEnumTypeHelper;
 use Nuwave\Lighthouse\Exceptions\DefinitionException;
@@ -33,7 +32,7 @@ final class TypeTest extends TestCase {
             GRAPHQL,
         );
 
-        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $registry = $this->app()->make(TypeRegistry::class);
         $type     = $registry->get($name);
 
         self::assertInstanceOf(PhpEnumType::class, $type);
@@ -52,7 +51,7 @@ final class TypeTest extends TestCase {
             GRAPHQL,
         );
 
-        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $registry = $this->app()->make(TypeRegistry::class);
         $type     = $registry->get($name);
 
         self::assertInstanceOf($class, $type);
@@ -75,7 +74,7 @@ final class TypeTest extends TestCase {
             GRAPHQL,
         );
 
-        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $registry = $this->app()->make(TypeRegistry::class);
         $type     = $registry->get($name);
 
         self::assertInstanceOf($class, $type);
@@ -100,7 +99,7 @@ final class TypeTest extends TestCase {
             "The type name must be `{$name}`, `{$name}-changed` given (`scalar {$name}`).",
         );
 
-        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $registry = $this->app()->make(TypeRegistry::class);
         $registry->get($name);
     }
 
@@ -120,7 +119,7 @@ final class TypeTest extends TestCase {
             "The `{$class}` is not a GraphQL type (`scalar {$name}`).",
         );
 
-        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $registry = $this->app()->make(TypeRegistry::class);
         $registry->get($name);
     }
 }

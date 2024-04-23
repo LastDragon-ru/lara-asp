@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
 use Exception;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
@@ -37,8 +36,8 @@ final class OperatorsTest extends TestCase {
 
         $source      = Mockery::mock(TypeSource::class);
         $context     = Mockery::mock(Context::class);
-        $operators   = Container::getInstance()->make(Operators::class);
-        $manipulator = Container::getInstance()->make(Manipulator::class, [
+        $operators   = $this->app()->make(Operators::class);
+        $manipulator = $this->app()->make(Manipulator::class, [
             'document' => Mockery::mock(DocumentAST::class),
         ]);
 

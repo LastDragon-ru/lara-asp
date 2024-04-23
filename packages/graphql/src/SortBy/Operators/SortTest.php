@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -85,9 +84,9 @@ final class SortTest extends TestCase {
                 ->andReturns();
         });
 
-        $directive = Container::getInstance()->make(Directive::class);
+        $directive = $this->app()->make(Directive::class);
         $field     = new Field();
-        $operator  = Container::getInstance()->make(Sort::class);
+        $operator  = $this->app()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -112,9 +111,9 @@ final class SortTest extends TestCase {
                 ->once();
         });
 
-        $directive = Container::getInstance()->make(Directive::class);
+        $directive = $this->app()->make(Directive::class);
         $field     = new Field();
-        $operator  = Container::getInstance()->make(Sort::class);
+        $operator  = $this->app()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -139,9 +138,9 @@ final class SortTest extends TestCase {
                 ->once();
         });
 
-        $directive = Container::getInstance()->make(Directive::class);
+        $directive = $this->app()->make(Directive::class);
         $field     = new Field();
-        $operator  = Container::getInstance()->make(Sort::class);
+        $operator  = $this->app()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,

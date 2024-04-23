@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
@@ -44,7 +43,7 @@ final class AssertGraphQLSchemaNoDangerousChangesTest extends TestCase {
      */
     public function testAssertion(): void {
         // Prepare
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('test', TestDirective::class);
 
         $this->useGraphQLSchema(

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -15,7 +14,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 #[CoversClass(GraphQLAssertions::class)]
 final class GraphQLAssertionsTest extends TestCase {
     public function testAssertGraphQLExportableEquals(): void {
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class);
 
         $this->useGraphQLSchema(
@@ -65,7 +64,7 @@ final class GraphQLAssertionsTest extends TestCase {
     }
 
     public function testAssertGraphQLPrintableEquals(): void {
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class);
 
         $this->useGraphQLSchema(
@@ -105,7 +104,7 @@ final class GraphQLAssertionsTest extends TestCase {
 
     public function testAssertGraphQLSchemaValid(): void {
         // Prepare
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class)
             ->setResolved('test', TestDirective::class);
 
@@ -144,7 +143,7 @@ final class GraphQLAssertionsTest extends TestCase {
 
     public function testAssertGraphQLSchemaNoBreakingChanges(): void {
         // Prepare
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class)
             ->setResolved('test', TestDirective::class);
 
@@ -209,7 +208,7 @@ final class GraphQLAssertionsTest extends TestCase {
 
     public function testAssertGraphQLSchemaNoDangerousChanges(): void {
         // Prepare
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class)
             ->setResolved('test', TestDirective::class);
 

@@ -20,7 +20,6 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -67,7 +66,7 @@ final class PrinterTest extends TestCase {
     ): void {
         $schema    = $schemaFactory($this);
         $schema    = $this->useGraphQLSchema($schema)->getGraphQLSchema();
-        $printer   = Container::getInstance()->make(Printer::class)->setSettings($settings);
+        $printer   = $this->app()->make(Printer::class)->setSettings($settings);
         $type      = $typeFactory ? $typeFactory($this, $schema) : null;
         $printable = $printableFactory($this, $schema);
         $actual    = $printer->print($printable, $level, $used, $type);
@@ -94,7 +93,7 @@ final class PrinterTest extends TestCase {
     ): void {
         $schema     = $schemaFactory($this);
         $schema     = $this->useGraphQLSchema($schema)->getGraphQLSchema();
-        $printer    = Container::getInstance()->make(Printer::class)->setSettings($settings);
+        $printer    = $this->app()->make(Printer::class)->setSettings($settings);
         $type       = $typeFactory ? $typeFactory($this, $schema) : null;
         $exportable = $exportableFactory($this, $schema);
         $actual     = $printer->export($exportable, $level, $used, $type);
@@ -841,8 +840,8 @@ final class PrinterTest extends TestCase {
     private static function getSchemaFactory(): Closure {
         return static function (TestCase $test): SplFileInfo {
             // Types
-            $directives = Container::getInstance()->make(DirectiveLocator::class);
-            $registry   = Container::getInstance()->make(TypeRegistry::class);
+            $directives = $test->app()->make(DirectiveLocator::class);
+            $registry   = $test->app()->make(TypeRegistry::class);
             $directive  = (new class() extends BaseDirective {
                 #[Override]
                 public static function definition(): string {
