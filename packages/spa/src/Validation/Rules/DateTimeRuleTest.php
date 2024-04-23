@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
 use InvalidArgumentException;
@@ -22,8 +21,8 @@ final class DateTimeRuleTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderIsValid')]
     public function testRule(bool $expected, mixed $value): void {
-        $rule      = Container::getInstance()->make(DateTimeRule::class);
-        $factory   = Container::getInstance()->make(Factory::class);
+        $rule      = $this->app()->make(DateTimeRule::class);
+        $factory   = $this->app()->make(Factory::class);
         $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
         self::assertEquals($expected, !$validator->fails());
@@ -42,7 +41,7 @@ final class DateTimeRuleTest extends TestCase {
 
     #[DataProvider('dataProviderIsValid')]
     public function testIsValid(bool $expected, string $value): void {
-        $rule   = Container::getInstance()->make(DateTimeRule::class);
+        $rule   = $this->app()->make(DateTimeRule::class);
         $actual = $rule->isValid('attribute', $value);
 
         self::assertEquals($expected, $actual);
@@ -58,7 +57,7 @@ final class DateTimeRuleTest extends TestCase {
             self::expectExceptionMessageMatches($expected['message']);
         }
 
-        $translator = Container::getInstance()->make(Translator::class);
+        $translator = $this->app()->make(Translator::class);
         $rule       = new DateTimeRule($translator);
 
         $this->setConfig([

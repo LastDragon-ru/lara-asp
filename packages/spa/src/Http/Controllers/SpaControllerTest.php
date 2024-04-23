@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
@@ -145,7 +144,7 @@ final class SpaControllerTest extends TestCase {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function loadRoutes(): void {
-        (new class(Container::getInstance()->make(Application::class)) extends Provider {
+        (new class($this->app()->make(Application::class)) extends Provider {
             #[Override]
             public function bootRoutes(): void {
                 parent::bootRoutes();

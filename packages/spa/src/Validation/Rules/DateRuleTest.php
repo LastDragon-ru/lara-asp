@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
 use InvalidArgumentException;
@@ -20,8 +19,8 @@ final class DateRuleTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderIsValid')]
     public function testRule(bool $expected, mixed $value): void {
-        $rule      = Container::getInstance()->make(DateRule::class);
-        $factory   = Container::getInstance()->make(Factory::class);
+        $rule      = $this->app()->make(DateRule::class);
+        $factory   = $this->app()->make(Factory::class);
         $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
         self::assertEquals($expected, !$validator->fails());
@@ -40,7 +39,7 @@ final class DateRuleTest extends TestCase {
 
     #[DataProvider('dataProviderIsValid')]
     public function testIsValid(bool $expected, string $value): void {
-        $rule   = Container::getInstance()->make(DateRule::class);
+        $rule   = $this->app()->make(DateRule::class);
         $actual = $rule->isValid('attribute', $value);
 
         self::assertEquals($expected, $actual);
@@ -52,7 +51,7 @@ final class DateRuleTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $translator = Container::getInstance()->make(Translator::class);
+        $translator = $this->app()->make(Translator::class);
         $rule       = new DateRule($translator);
         $date       = $rule->getValue($value);
 

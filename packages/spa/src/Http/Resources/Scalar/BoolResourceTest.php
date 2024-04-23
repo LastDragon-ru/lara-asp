@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Routing\Registrar;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
@@ -14,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(BoolResource::class)]
 final class BoolResourceTest extends TestCase {
     public function testToResponse(): void {
-        Container::getInstance()->make(Registrar::class)
+        $this->app()->make(Registrar::class)
             ->get(__METHOD__, static function (): mixed {
                 return new BoolResource(true);
             });
