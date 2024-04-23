@@ -17,6 +17,10 @@ use function is_string;
  * - Nested directories support
  */
 class SmartMigrator extends Migrator {
+    public static function create(Migrator $migrator): self {
+        return new self($migrator->repository, $migrator->resolver, $migrator->files, $migrator->events);
+    }
+
     // <editor-fold desc="\Illuminate\Database\Migrations\Migrator">
     // =========================================================================
     /**

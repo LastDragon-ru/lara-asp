@@ -2,11 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator;
 
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Filesystem\Filesystem;
@@ -17,9 +13,7 @@ use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 use Override;
 
-use function array_merge;
-
-class Provider extends ServiceProvider implements DeferrableProvider {
+class Provider extends ServiceProvider {
     // <editor-fold desc="\Illuminate\Support\ServiceProvider">
     // =========================================================================
     /**
@@ -41,27 +35,11 @@ class Provider extends ServiceProvider implements DeferrableProvider {
     }
     // </editor-fold>
 
-    // <editor-fold desc="\Illuminate\Contracts\Support\DeferrableProvider">
-    // =========================================================================
-    /**
-     * @return array<array-key, string>
-     */
-    #[Override]
-    public function provides(): array {
-        return array_merge(parent::provides(), ['migrator', 'command.seeder.make', RawMigrationCreator::class]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function registerMigrator(): void {
-        $this->app->singleton('migrator', static function (Container $container): Migrator {
-            return new SmartMigrator(
-                $container->make('migration.repository'),
-                $container->make(ConnectionResolverInterface::class),
-                $container->make(Filesystem::class),
-                $container->make(Dispatcher::class),
-            );
+        $this->app->extend('migrator', static function (Migrator $migrator): Migrator {
+            return SmartMigrator::create($migrator);
         });
     }
 
