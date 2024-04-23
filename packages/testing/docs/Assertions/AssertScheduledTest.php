@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Testing\Docs\Assertions;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -23,8 +22,11 @@ final class AssertScheduledTest extends TestCase {
      */
     public function testAssertion(): void {
         // Prepare
-        /** @var Schedule $schedule */
-        $schedule = Container::getInstance()->make(Schedule::class);
+        $schedule = $this->app?->make(Schedule::class);
+
+        self::assertNotNull($schedule);
+
+        // Schedule
         $schedule
             ->command('emails:send Example')
             ->daily();

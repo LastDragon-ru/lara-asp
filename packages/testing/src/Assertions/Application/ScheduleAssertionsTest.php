@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[CoversClass(ScheduleAssertions::class)]
 final class ScheduleAssertionsTest extends TestCase {
     public function testGetScheduleEvents(): void {
-        $schedule         = Container::getInstance()->make(Schedule::class);
+        $schedule         = $this->app()->make(Schedule::class);
         $assertions       = new class() {
             use ScheduleAssertions {
                 isScheduledEvent as public;
