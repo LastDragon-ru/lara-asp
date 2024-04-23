@@ -13,10 +13,10 @@ use function is_subclass_of;
  * database already seeded.
  */
 abstract class SmartSeeder extends Seeder {
-    protected SeederService $service;
-
-    public function __construct(SeederService $service) {
-        $this->service = $service;
+    public function __construct(
+        protected readonly SeederService $service,
+    ) {
+        // empty
     }
 
     // <editor-fold desc="Extension">

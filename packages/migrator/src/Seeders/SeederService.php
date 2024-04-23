@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
@@ -13,21 +11,24 @@ use function in_array;
 use function is_string;
 
 class SeederService {
-    public function __construct() {
+    public function __construct(
+        protected readonly DatabaseManager $manager,
+        /**
+         * @var array<array-key, string>
+         */
+        protected readonly array $skipped = [],
+    ) {
         // empty
     }
 
     // <editor-fold desc="API">
     // =========================================================================
     public function isSeeded(): bool {
-        $seeded  = false;
-        $tables  = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
-        $skipped = [
-            Container::getInstance()->make(Repository::class)->get('database.migrations'),
-        ];
+        $seeded = false;
+        $tables = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
 
         foreach ($tables as $table) {
-            if (in_array($table, $skipped, true)) {
+            if (in_array($table, $this->skipped, true)) {
                 continue;
             }
 
@@ -59,7 +60,7 @@ class SeederService {
     // <editor-fold desc="Functions">
     // =========================================================================
     protected function getConnection(): Connection {
-        return Container::getInstance()->make(DatabaseManager::class)->connection();
+        return $this->manager->connection();
     }
     // </editor-fold>
 }
