@@ -62,6 +62,11 @@
           ]
         }
       }
+    },
+    "laravel": {
+      "providers": [
+        "LastDragon_ru\\LaraASP\\Core\\Provider"
+      ]
     }
   },
   "config": {

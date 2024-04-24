@@ -182,6 +182,7 @@
     },
     "laravel": {
       "providers": [
+        "LastDragon_ru\\LaraASP\\Core\\Provider",
         "LastDragon_ru\\LaraASP\\Documentator\\Provider",
         "LastDragon_ru\\LaraASP\\Eloquent\\Provider",
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
