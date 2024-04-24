@@ -6,6 +6,7 @@ use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
@@ -16,6 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Root;
+use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -28,6 +30,13 @@ use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
     final public const Name = 'SearchBy';
+
+    public function __construct(
+        protected readonly ConfigResolver $config,
+        ArgumentFactory $argumentFactory,
+    ) {
+        parent::__construct($argumentFactory);
+    }
 
     #[Override]
     public static function definition(): string {
@@ -55,7 +64,9 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
-        $context = $context->override([HandlerContextOperators::class => new HandlerContextOperators(new Operators())]);
+        $context = $context->override([
+            HandlerContextOperators::class => new HandlerContextOperators(new Operators($this->config)),
+        ]);
         $type    = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
 
         if (!$type) {

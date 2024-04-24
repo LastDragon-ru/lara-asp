@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -58,7 +59,8 @@ final class DateTimeRuleTest extends TestCase {
         }
 
         $translator = $this->app()->make(Translator::class);
-        $rule       = new DateTimeRule($translator);
+        $config     = $this->app()->make(ConfigResolver::class);
+        $rule       = new DateTimeRule($config, $translator);
 
         $this->setConfig([
             'app.timezone' => $tz,

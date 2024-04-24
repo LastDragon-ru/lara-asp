@@ -6,13 +6,12 @@ use Closure;
 use DateInterval;
 use DateTimeInterface;
 use DateTimeZone;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
@@ -215,6 +214,7 @@ class Formatter {
 
     public function __construct(
         protected readonly ApplicationResolver $application,
+        protected readonly ConfigResolver $config,
         private PackageTranslator $translator,
     ) {
         // empty
@@ -452,11 +452,11 @@ class Formatter {
     }
 
     protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {
-        return Container::getInstance()->make(Repository::class)->get('app.timezone') ?: null;
+        return $this->config->getInstance()->get('app.timezone') ?: null;
     }
 
     protected function getOptions(string $type, mixed $default = null): mixed {
-        $repository = Container::getInstance()->make(Repository::class);
+        $repository = $this->config->getInstance();
         $package    = Package::Name;
         $key        = "{$package}.options.{$type}";
 
@@ -464,7 +464,7 @@ class Formatter {
     }
 
     protected function getLocaleOptions(string $type, string $option): mixed {
-        $repository = Container::getInstance()->make(Repository::class);
+        $repository = $this->config->getInstance();
         $package    = Package::Name;
         $locale     = $this->getLocale();
         $pattern    = $repository->get("{$package}.locales.{$locale}.{$type}.{$option}")

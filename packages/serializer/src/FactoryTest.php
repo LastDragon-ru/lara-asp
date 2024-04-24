@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
@@ -51,7 +52,8 @@ final class FactoryTest extends TestCase {
             ],
         ]);
 
-        $factory = Mockery::mock(Factory::class)
+        $config  = $this->app()->make(ConfigResolver::class);
+        $factory = Mockery::mock(Factory::class, [$config])
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
 

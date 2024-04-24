@@ -5,18 +5,18 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 use function array_column;
-use function in_array;
+use function is_array;
 use function is_string;
+use function mb_strtolower;
 
 class SeederService {
     public function __construct(
+        protected readonly ConfigResolver $config,
         protected readonly DatabaseManager $manager,
-        /**
-         * @var array<array-key, string>
-         */
-        protected readonly array $skipped = [],
     ) {
         // empty
     }
@@ -24,11 +24,15 @@ class SeederService {
     // <editor-fold desc="API">
     // =========================================================================
     public function isSeeded(): bool {
-        $seeded = false;
-        $tables = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
+        $seeded  = false;
+        $tables  = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
+        $default = 'migrations';
+        $skipped = $this->config->getInstance()->get('database.migrations', $default);
+        $skipped = is_array($skipped) ? ($skipped['table'] ?: $default) : $skipped;
+        $skipped = mb_strtolower(Cast::toString($skipped));
 
         foreach ($tables as $table) {
-            if (in_array($table, $this->skipped, true)) {
+            if ($skipped === mb_strtolower($table)) {
                 continue;
             }
 

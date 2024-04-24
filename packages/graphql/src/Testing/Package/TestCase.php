@@ -49,6 +49,7 @@ abstract class TestCase extends PackageTestCase {
             Provider::class,
             CoreProvider::class,
             TestProvider::class,
+            CoreProvider::class,
             SerializerProvider::class,
             LighthouseServiceProvider::class,
             LighthouseTestingServiceProvider::class,

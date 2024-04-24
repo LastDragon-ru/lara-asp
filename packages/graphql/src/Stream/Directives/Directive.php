@@ -10,12 +10,12 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -104,6 +104,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
      * @param StreamFactory<object> $factory
      */
     public function __construct(
+        protected readonly ConfigResolver $config,
         protected readonly StreamFactory $factory,
     ) {
         // empty
@@ -189,7 +190,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
-        $repository  = Container::getInstance()->make(Repository::class);
+        $repository  = $this->config->getInstance();
         $manipulator = $this->getAstManipulator($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
