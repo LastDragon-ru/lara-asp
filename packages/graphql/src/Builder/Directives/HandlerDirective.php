@@ -29,10 +29,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOper
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -52,12 +52,12 @@ use function reset;
  * @see HandlerContextImplicit
  */
 abstract class HandlerDirective extends BaseDirective implements Handler, Enhancer {
-    use WithManipulator;
     use WithSource;
 
     public function __construct(
-        protected readonly BuilderInfoDetector $detector,
-        protected readonly ArgumentFactory $argumentFactory,
+        private readonly ManipulatorFactory $manipulatorFactory,
+        private readonly ArgumentFactory $argumentFactory,
+        private readonly BuilderInfoDetector $detector,
         private readonly Operators $operators,
     ) {
         // empty
@@ -231,7 +231,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         // Converted?
         $detector    = $this->detector;
         $builder     = $detector->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
-        $manipulator = $this->getAstManipulator($documentAST);
+        $manipulator = $this->manipulatorFactory->create($documentAST);
 
         if ($this->isTypeName($manipulator->getTypeName($argDefinition))) {
             return;

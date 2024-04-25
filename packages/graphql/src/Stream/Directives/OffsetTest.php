@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Directives;
 
 use Exception;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\CursorInvalidPath;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -24,8 +25,9 @@ final class OffsetTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $directive = new Offset();
-        $actual    = $directive->getFieldArgumentValue($info, $value);
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $directive          = new Offset($manipulatorFactory);
+        $actual             = $directive->getFieldArgumentValue($info, $value);
 
         self::assertEquals($expected, $actual);
     }

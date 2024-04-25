@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Exceptions\FailedToCreateSearchCondition;
@@ -31,11 +32,12 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     final public const Name = 'SearchBy';
 
     public function __construct(
+        ManipulatorFactory $manipulatorFactory,
         BuilderInfoDetector $detector,
         ArgumentFactory $argumentFactory,
         Operators $operators,
     ) {
-        parent::__construct($detector, $argumentFactory, $operators);
+        parent::__construct($manipulatorFactory, $argumentFactory, $detector, $operators);
     }
 
     #[Override]

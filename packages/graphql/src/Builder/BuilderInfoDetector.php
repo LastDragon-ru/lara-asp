@@ -16,7 +16,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
@@ -40,10 +39,11 @@ use function class_exists;
 use function reset;
 
 class BuilderInfoDetector {
-    use WithManipulator;
     use WithSource;
 
-    public function __construct() {
+    public function __construct(
+        private readonly ManipulatorFactory $manipulatorFactory,
+    ) {
         // empty
     }
 
@@ -52,7 +52,7 @@ class BuilderInfoDetector {
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode $type,
         FieldDefinitionNode $field,
     ): BuilderInfo {
-        $manipulator = $this->getAstManipulator($document);
+        $manipulator = $this->manipulatorFactory->create($document);
         $fieldSource = $this->getFieldSource($manipulator, $type, $field);
         $builder     = $this->getSourceBuilderInfo($manipulator, $fieldSource);
 
@@ -65,7 +65,7 @@ class BuilderInfoDetector {
         FieldDefinitionNode $field,
         InputValueDefinitionNode $argument,
     ): BuilderInfo {
-        $manipulator = $this->getAstManipulator($document);
+        $manipulator = $this->manipulatorFactory->create($document);
         $argSource   = $this->getFieldArgumentSource($manipulator, $type, $field, $argument);
         $builder     = $this->getSourceBuilderInfo($manipulator, $argSource);
 

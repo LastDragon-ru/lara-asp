@@ -11,9 +11,11 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionIsNotScalarExtension;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\Internal;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use Mockery;
 use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Override;
@@ -30,10 +32,11 @@ final class SchemaDirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testInvoke(): void {
-        $directive = new SchemaDirective__Directive();
-        $actual    = $directive(new BuildSchemaString(''));
-        $class     = self::getGraphQLStringValue(Internal::class);
-        $expected  = <<<GRAPHQL
+        $manipulatorFactory = Mockery::mock(ManipulatorFactory::class);
+        $directive          = new SchemaDirective__Directive($manipulatorFactory);
+        $actual             = $directive(new BuildSchemaString(''));
+        $class              = self::getGraphQLStringValue(Internal::class);
+        $expected           = <<<GRAPHQL
             """
             The scalar is used to add builder operators for `@test` directive.
             """
@@ -53,7 +56,8 @@ final class SchemaDirectiveTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $directive                          = new SchemaDirective__Directive();
+        $manipulatorFactory                 = $this->app()->make(ManipulatorFactory::class);
+        $directive                          = new SchemaDirective__Directive($manipulatorFactory);
         $document                           = DocumentAST::fromSource($schema);
         $root                               = Parser::scalarTypeDefinition($directive(new BuildSchemaString($schema)));
         $document->types['SchemaDirective'] = $root;

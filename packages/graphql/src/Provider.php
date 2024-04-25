@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver as BuilderFieldResolverContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Defaults\BuilderFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Directives\Definitions\TypeDirective;
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
@@ -66,6 +67,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerBindings(): void {
+        $this->app->scopedIf(ManipulatorFactory::class);
         $this->app->scopedIf(SorterFactoryContract::class, SorterFactory::class);
         $this->app->scopedIf(StreamFactoryContract::class, StreamFactory::class);
         $this->app->scopedIf(BuilderFieldResolverContract::class, BuilderFieldResolver::class);

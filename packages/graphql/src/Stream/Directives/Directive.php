@@ -24,12 +24,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Enhancer;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
@@ -89,7 +89,6 @@ use function uksort;
 use const JSON_THROW_ON_ERROR;
 
 class Directive extends BaseDirective implements FieldResolver, FieldManipulator, BuilderInfoProvider {
-    use WithManipulator;
     use WithSource;
 
     final public const Name          = 'Stream';
@@ -107,6 +106,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         protected readonly ContainerResolver $container,
         protected readonly ConfigResolver $config,
         protected readonly StreamFactory $factory,
+        private readonly ManipulatorFactory $manipulatorFactory,
     ) {
         // empty
     }
@@ -193,7 +193,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         // Prepare
         $container   = $this->container->getInstance();
         $repository  = $this->config->getInstance();
-        $manipulator = $this->getAstManipulator($documentAST);
+        $manipulator = $this->manipulatorFactory->create($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
 
@@ -284,7 +284,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        $type = $this->getAstManipulator($documentAST)->getType(StreamType::class, $source, new Context());
+        $type = $manipulator->getType(StreamType::class, $source, new Context());
         $type = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(
@@ -433,7 +433,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     public function resolveField(FieldValue $fieldValue): callable {
         return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): StreamValue {
             // Offset
-            $manipulator = $this->getAstManipulator(new DocumentAST());
+            $manipulator = $this->manipulatorFactory->create(new DocumentAST());
             $source      = (new ObjectSource($manipulator, $info->parentType))->getField($info->fieldDefinition);
             $offset      = $this->getFieldValue(StreamOffsetDirective::class, $manipulator, $source, $info, $args);
 
