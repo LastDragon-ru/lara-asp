@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
 use Exception;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
@@ -142,7 +143,8 @@ final class OperatorsTest extends TestCase {
         ];
         $source      = Mockery::mock(TypeSource::class);
         $context     = Mockery::mock(Context::class);
-        $operators   = new OperatorsTest__Operators($config, $default);
+        $container   = $this->app()->make(ContainerResolver::class);
+        $operators   = new OperatorsTest__Operators($container, $config, $default);
         $document    = $this->app()->make(ASTBuilder::class)->documentAST();
         $manipulator = $this->app()->make(Manipulator::class, [
             'document' => $document,
@@ -274,8 +276,12 @@ class OperatorsTest__Operators extends Operators {
      * @param array<string, list<class-string<Operator>|string>> $operators
      * @param array<string, list<class-string<Operator>|string>> $default
      */
-    public function __construct(array $operators = [], array $default = []) {
-        parent::__construct($operators);
+    public function __construct(
+        ContainerResolver $container,
+        array $operators = [],
+        array $default = [],
+    ) {
+        parent::__construct($container, $operators);
 
         $this->default = $default;
     }

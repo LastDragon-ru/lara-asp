@@ -37,13 +37,14 @@ trait ScheduleAssertions {
      * @return array<array-key, Event>
      */
     private static function getScheduledEvents(string $task): array {
-        $schedule = Container::getInstance()->make(Schedule::class);
-        $matchers = [
+        $container = Container::getInstance();
+        $schedule  = $container->make(Schedule::class);
+        $matchers  = [
             new DescriptionMatcher(),
-            new CommandMatcher(),
+            new CommandMatcher($container),
             new CallbackEventMatcher(),
         ];
-        $events   = array_filter($schedule->events(), static function (Event $event) use ($matchers, $task): bool {
+        $events    = array_filter($schedule->events(), static function (Event $event) use ($matchers, $task): bool {
             $match = false;
 
             foreach ($matchers as $matcher) {

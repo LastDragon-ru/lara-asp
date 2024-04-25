@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use DateTimeZone;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Contracts\Schedulable;
 
 use function array_intersect_key;
@@ -25,7 +25,7 @@ use function sprintf;
  */
 class Scheduler {
     public function __construct(
-        private readonly Container $container, // fixme(core): `Container` constructor injection.
+        private readonly ContainerResolver $container,
     ) {
         // empty
     }
@@ -35,7 +35,7 @@ class Scheduler {
      */
     public function register(Schedule $schedule, string $class): bool {
         // Config
-        $instance = $this->container->make($class);
+        $instance = $this->container->getInstance()->make($class);
         $settings = $this->getSettings($class, $instance);
 
         // Enabled?

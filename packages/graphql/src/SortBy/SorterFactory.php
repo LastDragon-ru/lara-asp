@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\BuilderHelperFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter as SorterContract;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory as SorterFactoryContract;
@@ -23,7 +25,9 @@ use function assert;
 class SorterFactory implements SorterFactoryContract {
     use BuilderHelperFactory;
 
-    public function __construct() {
+    public function __construct(
+        protected readonly ContainerResolver $container,
+    ) {
         $this->addHelper(EloquentBuilder::class, EloquentSorter::class);
         $this->addHelper(QueryBuilder::class, QuerySorter::class);
         $this->addHelper(ScoutBuilder::class, ScoutSorter::class);
@@ -41,5 +45,10 @@ class SorterFactory implements SorterFactoryContract {
         assert($helper instanceof SorterContract);
 
         return $helper;
+    }
+
+    #[Override]
+    private function getContainer(): Container {
+        return $this->container->getInstance();
     }
 }

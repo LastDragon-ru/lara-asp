@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy;
 
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
 use LastDragon_ru\LaraASP\GraphQL\Package;
@@ -167,13 +168,14 @@ class Operators extends BuilderOperators {
     ];
 
     public function __construct(
+        ContainerResolver $container,
         protected readonly ConfigResolver $config,
     ) {
         /** @var array<string, list<class-string<BuilderOperator>|string>> $operators */
         $operators = (array) $this->config->getInstance()
             ->get(Package::Name.'.search_by.operators');
 
-        parent::__construct($operators);
+        parent::__construct($container, $operators);
     }
 
     #[Override]

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
 
+use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
@@ -33,6 +34,7 @@ final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
             Provider::class,
+            CoreProvider::class,
             TestProvider::class,
             LighthouseServiceProvider::class,
         ]);

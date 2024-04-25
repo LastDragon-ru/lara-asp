@@ -10,7 +10,6 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -55,6 +54,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     use WithSource;
 
     public function __construct(
+        protected readonly BuilderInfoDetector $detector,
         protected readonly ArgumentFactory $argumentFactory,
     ) {
         // empty
@@ -226,7 +226,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Converted?
-        $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
+        $detector    = $this->detector;
         $builder     = $detector->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
         $manipulator = $this->getAstManipulator($documentAST);
 

@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers;
 use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Event;
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatcher;
 use Override;
 
@@ -19,7 +19,9 @@ use function is_string;
  * @internal
  */
 class CommandMatcher implements ScheduleMatcher {
-    public function __construct() {
+    public function __construct(
+        protected readonly Container $container,
+    ) {
         // empty
     }
 
@@ -33,7 +35,7 @@ class CommandMatcher implements ScheduleMatcher {
         // Check
         $variants = match (true) {
             is_string($task) && is_a($task, Command::class, true) => array_unique(array_filter([
-                Application::formatCommandString(Container::getInstance()->make($task)->getName() ?? ''),
+                Application::formatCommandString($this->container->make($task)->getName() ?? ''),
                 Application::formatCommandString($task::getDefaultName() ?? ''),
             ])),
             is_string($task)                                      => [

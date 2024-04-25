@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizerContextBuilder;
@@ -37,6 +37,7 @@ use const JSON_UNESCAPED_UNICODE;
 
 class Factory {
     public function __construct(
+        protected readonly ContainerResolver $container,
         protected readonly ConfigResolver $config,
     ) {
         // empty
@@ -77,7 +78,7 @@ class Factory {
         array $context,
         string $format,
     ): SerializerContract {
-        $container           = Container::getInstance();
+        $container           = $this->container->getInstance();
         $encoderInstances    = [];
         $normalizerInstances = [];
 

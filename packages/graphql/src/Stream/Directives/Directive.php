@@ -9,13 +9,13 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -104,6 +104,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
      * @param StreamFactory<object> $factory
      */
     public function __construct(
+        protected readonly ContainerResolver $container,
         protected readonly ConfigResolver $config,
         protected readonly StreamFactory $factory,
     ) {
@@ -190,13 +191,14 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
+        $container   = $this->container->getInstance();
         $repository  = $this->config->getInstance();
         $manipulator = $this->getAstManipulator($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
 
         // Updated?
-        if (Container::getInstance()->make(StreamType::class)->is($source->getTypeName())) {
+        if ($container->make(StreamType::class)->is($source->getTypeName())) {
             return;
         }
 
@@ -216,7 +218,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Builder?
-        Container::getInstance()->make(BuilderInfoDetector::class)
+        $container->make(BuilderInfoDetector::class)
             ->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
 
         // Searchable?
@@ -558,7 +560,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             if (!$resolver) {
                 $resolver = RootType::isRootType($parent)
                     ? $this->getResolverModel(
-                        Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName()),
+                        $this->container->getInstance()->make(StreamType::class)->getOriginalTypeName(
+                            $source->getTypeName(),
+                        ),
                     )
                     : $this->getResolverRelation($parent, $source->getName());
             }
@@ -594,7 +598,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     protected function getResolverQuery(string $type, string $field): ?array {
         // We are mimicking to default Lighthouse resolver resolution, thus
         // custom implementations may not work.
-        $provider = Container::getInstance()->get(ProvidesResolver::class);
+        $provider = $this->container->getInstance()->get(ProvidesResolver::class);
 
         if (!($provider instanceof ResolverProvider)) {
             return null;
@@ -680,7 +684,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Search for field with `ID!` type
-        $type  = Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName());
+        $type  = $this->container->getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName());
         $type  = $manipulator->getTypeDefinition($type);
         $field = null;
 
