@@ -25,6 +25,8 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
+use function array_merge;
+
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
@@ -44,11 +46,11 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
      */
     #[Override]
     protected function getPackageProviders(mixed $app): array {
-        return [
+        return array_merge(parent::getPackageProviders($app), [
             Provider::class,
             TestProvider::class,
             LighthouseServiceProvider::class,
-        ];
+        ]);
     }
 
     /**

@@ -29,6 +29,7 @@ use Override;
 use ReflectionClass;
 use SplFileInfo;
 
+use function array_merge;
 use function mb_substr;
 
 /**
@@ -44,14 +45,14 @@ abstract class TestCase extends PackageTestCase {
      */
     #[Override]
     protected function getPackageProviders(mixed $app): array {
-        return [
+        return array_merge(parent::getPackageProviders($app), [
             Provider::class,
             TestProvider::class,
             SerializerProvider::class,
             LighthouseServiceProvider::class,
             LighthouseTestingServiceProvider::class,
             LighthouseValidationServiceProvider::class,
-        ];
+        ]);
     }
 
     /**
