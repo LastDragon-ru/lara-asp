@@ -29,6 +29,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOper
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
@@ -47,6 +48,7 @@ use function reset;
 
 /**
  * @see HandlerContextBuilderInfo
+ * @see HandlerContextOperators
  * @see HandlerContextImplicit
  */
 abstract class HandlerDirective extends BaseDirective implements Handler, Enhancer {
@@ -56,6 +58,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     public function __construct(
         protected readonly BuilderInfoDetector $detector,
         protected readonly ArgumentFactory $argumentFactory,
+        private readonly Operators $operators,
     ) {
         // empty
     }
@@ -237,6 +240,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         // Argument
         $context = (new Context())->override([
             HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo($builder),
+            HandlerContextOperators::class   => new HandlerContextOperators($this->operators),
             HandlerContextImplicit::class    => new HandlerContextImplicit(
                 $manipulator->isPlaceholder($argDefinition),
             ),

@@ -5,10 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Directives;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
@@ -31,12 +28,11 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     final public const Name = 'SortBy';
 
     public function __construct(
-        protected readonly ContainerResolver $container,
-        protected readonly ConfigResolver $config,
         BuilderInfoDetector $detector,
         ArgumentFactory $argumentFactory,
+        Operators $operators,
     ) {
-        parent::__construct($detector, $argumentFactory);
+        parent::__construct($detector, $argumentFactory, $operators);
     }
 
     #[Override]
@@ -65,12 +61,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
         ObjectFieldArgumentSource|InterfaceFieldArgumentSource $argument,
         Context $context,
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
-        $context = $context->override([
-            HandlerContextOperators::class => new HandlerContextOperators(
-                new Operators($this->container, $this->config),
-            ),
-        ]);
-        $type    = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
+        $type = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
 
         if (!$type) {
             throw new FailedToCreateSortClause($argument);
