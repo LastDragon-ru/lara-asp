@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator;
 
-use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 use LastDragon_ru\LaraASP\Core\Helpers\Translator;
+use Override;
 
 class PackageTranslator extends Translator {
-    public function __construct(TranslatorContract $translator) {
-        parent::__construct($translator, Package::Name);
+    #[Override]
+    protected function getName(): string {
+        return Package::Name;
     }
 }
