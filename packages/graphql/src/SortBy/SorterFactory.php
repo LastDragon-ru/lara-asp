@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -48,7 +47,7 @@ class SorterFactory implements SorterFactoryContract {
     }
 
     #[Override]
-    private function getContainer(): Container {
-        return $this->container->getInstance();
+    private function getContainerResolver(): ContainerResolver {
+        return $this->container;
     }
 }

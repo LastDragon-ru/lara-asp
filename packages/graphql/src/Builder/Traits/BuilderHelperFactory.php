@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
 
-
-use Illuminate\Contracts\Container\Container;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 
 use function array_key_exists;
 use function is_a;
@@ -49,7 +48,7 @@ trait BuilderHelperFactory {
         if (!array_key_exists($builder, $this->instances)) {
             $class                     = $this->getHelperClass($builder);
             $this->instances[$builder] = $class
-                ? $this->getContainer()->make($class)
+                ? $this->getContainerResolver()->getInstance()->make($class)
                 : null;
         }
 
@@ -78,5 +77,5 @@ trait BuilderHelperFactory {
         return $this->classes[$builder];
     }
 
-    abstract private function getContainer(): Container;
+    abstract private function getContainerResolver(): ContainerResolver;
 }
