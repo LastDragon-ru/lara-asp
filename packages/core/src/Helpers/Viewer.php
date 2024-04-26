@@ -10,21 +10,21 @@ use Illuminate\Contracts\View\View as ViewContract;
  */
 abstract class Viewer {
     public function __construct(
-        protected readonly Translator $translator,
         protected readonly ViewFactoryContract $factory,
-        protected readonly string $package,
     ) {
         // empty
     }
 
     /**
+     * Should return the name of the package.
+     */
+    abstract protected function getName(): string;
+
+    /**
      * @param array<string, mixed> $data
      */
     public function get(string $view, array $data = []): ViewContract {
-        return $this->factory->make(
-            "{$this->package}::{$view}",
-            $this->getDefaultData() + $data,
-        );
+        return $this->factory->make("{$this->getName()}::{$view}", $data);
     }
 
     /**
@@ -32,14 +32,5 @@ abstract class Viewer {
      */
     public function render(string $view, array $data = []): string {
         return $this->get($view, $data)->render();
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getDefaultData(): array {
-        return [
-            'translator' => $this->translator,
-        ];
     }
 }

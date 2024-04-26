@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator;
 
-use Illuminate\Contracts\View\Factory as ViewFactory;
 use LastDragon_ru\LaraASP\Core\Helpers\Viewer;
+use Override;
 
 class PackageViewer extends Viewer {
-    public function __construct(PackageTranslator $translator, ViewFactory $factory) {
-        parent::__construct($translator, $factory, Package::Name);
+    #[Override]
+    protected function getName(): string {
+        return Package::Name;
     }
 }
