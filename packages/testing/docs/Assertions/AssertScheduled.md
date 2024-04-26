@@ -12,8 +12,11 @@ Asserts that Schedule contains task.
 namespace LastDragon_ru\LaraASP\Testing\Docs\Assertions;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions;
+use LogicException;
 use Orchestra\Testbench\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
@@ -25,6 +28,11 @@ final class AssertScheduledTest extends TestCase {
      * Trait where assertion defined.
      */
     use ScheduleAssertions;
+
+    #[Override]
+    protected function app(): Application {
+        return $this->app ?? throw new LogicException('Application not yet initialized.');
+    }
 
     /**
      * Assertion test.
@@ -44,8 +52,8 @@ final class AssertScheduledTest extends TestCase {
             ->daily();
 
         // Test
-        self::assertScheduled('emails:send Example');
-        self::assertScheduled('/path/to/command');
+        $this->assertScheduled('emails:send Example');
+        $this->assertScheduled('/path/to/command');
     }
 }
 ```

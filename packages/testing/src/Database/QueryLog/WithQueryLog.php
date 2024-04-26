@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Database\QueryLog;
 
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +27,8 @@ trait WithQueryLog {
      * @var WeakMap<Connection, QueryLog>|null
      */
     private ?WeakMap $withQueryLog = null;
+
+    abstract protected function app(): Application;
 
     /**
      * @internal
@@ -60,7 +62,7 @@ trait WithQueryLog {
         } elseif ($connection instanceof ConnectionResolverInterface) {
             $connection = $connection->connection();
         } else {
-            $connection = Container::getInstance()->make(ConnectionResolverInterface::class)->connection($connection);
+            $connection = $this->app()->make(ConnectionResolverInterface::class)->connection($connection);
         }
 
         // Valid?

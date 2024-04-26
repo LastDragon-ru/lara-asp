@@ -27,6 +27,23 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: c70a9a43c0a80bd2e7fa6010a9b2c0fbcab4cb4d536d7a498216d9df7431f7e2)
 
+# Upgrade from v6
+
+* [ ] Following traits required `app()` method to get access to the Container (#151)
+  * `\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions`
+  * `\LastDragon_ru\LaraASP\Testing\Concerns\Override`
+  * `\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog`
+  * `\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty`
+  * `\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations`
+
+  ```php
+  protected function app(): Application {
+      return $this->app;
+  }
+  ```
+
+* [ ] `\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions` methods became non-static (#151).
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers\CallbackEventMatcher;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers\CommandMatcher;
 use LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleMatchers\DescriptionMatcher;
@@ -15,29 +15,39 @@ use function count;
 use function sprintf;
 
 trait ScheduleAssertions {
+    // <editor-fold desc="Abstract">
+    // =========================================================================
+    abstract protected function app(): Application;
+    // </editor-fold>
+
+    // <editor-fold desc="Assertions">
+    // =========================================================================
     /**
      * Asserts that Schedule contains task.
      */
-    public static function assertScheduled(string $expected, string $message = ''): void {
+    public function assertScheduled(string $expected, string $message = ''): void {
         $message   = $message ?: sprintf('The `%s` is not scheduled.', $expected);
-        $scheduled = self::isScheduledEvent($expected);
+        $scheduled = $this->isScheduledEvent($expected);
 
         Assert::assertTrue($scheduled, $message);
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Helpers">
+    // =========================================================================
     /**
      * @internal
      */
-    private static function isScheduledEvent(string $task): bool {
-        return count(self::getScheduledEvents($task)) === 1;
+    private function isScheduledEvent(string $task): bool {
+        return count($this->getScheduledEvents($task)) === 1;
     }
 
     /**
      * @internal
      * @return array<array-key, Event>
      */
-    private static function getScheduledEvents(string $task): array {
-        $container = Container::getInstance();
+    private function getScheduledEvents(string $task): array {
+        $container = $this->app();
         $schedule  = $container->make(Schedule::class);
         $matchers  = [
             new DescriptionMatcher(),
@@ -59,4 +69,5 @@ trait ScheduleAssertions {
 
         return $events;
     }
+    //</editor-fold>
 }

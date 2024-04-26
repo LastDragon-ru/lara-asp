@@ -24,21 +24,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 #[CoversClass(SpaController::class)]
 final class SpaControllerTest extends TestCase {
-    // <editor-fold desc="Prepare">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getEnvironmentSetUp($app): void {
-        parent::getEnvironmentSetUp($app);
-
-        $this->setConfig([
-            Package::Name.'.routes.enabled' => false,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**

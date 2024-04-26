@@ -10,7 +10,6 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
@@ -26,7 +25,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
 use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
 use Override;
-use ReflectionClass;
 use SplFileInfo;
 
 use function array_merge;
@@ -54,20 +52,6 @@ abstract class TestCase extends PackageTestCase {
             LighthouseServiceProvider::class,
             LighthouseTestingServiceProvider::class,
             LighthouseValidationServiceProvider::class,
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getEnvironmentSetUp($app): void {
-        parent::getEnvironmentSetUp($app);
-
-        $this->setConfig([
-            'lighthouse.namespaces.models' => [
-                (new ReflectionClass(TestObject::class))->getNamespaceName(),
-            ],
         ]);
     }
 

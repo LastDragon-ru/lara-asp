@@ -9,9 +9,9 @@ use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
+use LogicException;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
-
-use function assert;
+use Override;
 
 /**
  * Special test case for packages with application.
@@ -30,9 +30,8 @@ abstract class TestCase extends TestbenchTestCase {
     use WithTempDirectory;
     use WithTranslations;
 
+    #[Override]
     protected function app(): Application {
-        assert($this->app !== null);
-
-        return $this->app;
+        return $this->app ?? throw new LogicException('Application not yet initialized.');
     }
 }

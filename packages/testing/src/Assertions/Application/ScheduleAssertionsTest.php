@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\Testing\Assertions\Application;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -16,9 +18,20 @@ use Symfony\Component\Console\Attribute\AsCommand;
 final class ScheduleAssertionsTest extends TestCase {
     public function testGetScheduleEvents(): void {
         $schedule         = $this->app()->make(Schedule::class);
-        $assertions       = new class() {
+        $assertions       = new class($this->app()) {
             use ScheduleAssertions {
                 isScheduledEvent as public;
+            }
+
+            public function __construct(
+                private readonly Application $app,
+            ) {
+                // empty
+            }
+
+            #[Override]
+            protected function app(): Application {
+                return $this->app;
             }
         };
         $taskExec         = '/path/to/command';
@@ -39,11 +52,11 @@ final class ScheduleAssertionsTest extends TestCase {
         $schedule->call($taskInvoke::class)->weekly();
         $schedule->exec($taskExec)->weekly();
 
-        self::assertTrue($assertions::isScheduledEvent("{$taskCommand} --a=123"));
-        self::assertTrue($assertions::isScheduledEvent($taskCommandClass));
-        self::assertTrue($assertions::isScheduledEvent($taskInvoke::class));
-        self::assertTrue($assertions::isScheduledEvent($taskShouldQueue::class));
-        self::assertTrue($assertions::isScheduledEvent($taskExec));
+        self::assertTrue($assertions->isScheduledEvent("{$taskCommand} --a=123"));
+        self::assertTrue($assertions->isScheduledEvent($taskCommandClass));
+        self::assertTrue($assertions->isScheduledEvent($taskInvoke::class));
+        self::assertTrue($assertions->isScheduledEvent($taskShouldQueue::class));
+        self::assertTrue($assertions->isScheduledEvent($taskExec));
     }
 }
 

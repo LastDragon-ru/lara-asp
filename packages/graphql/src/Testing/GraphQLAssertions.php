@@ -18,7 +18,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\BreakingChangesFinder;
 use GraphQL\Utils\BuildClientSchema;
 use GraphQL\Utils\BuildSchema;
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
@@ -50,6 +50,11 @@ trait GraphQLAssertions {
     use PrinterGraphQLAssertions {
         assertGraphQLResult as private printerAssertGraphQLResult;
     }
+
+    // <editor-fold desc="Abstract">
+    // =========================================================================
+    abstract protected function app(): Application;
+    // </editor-fold>
 
     // <editor-fold desc="Assertions">
     // =========================================================================
@@ -192,7 +197,7 @@ trait GraphQLAssertions {
             : Args::content($schema);
         $provider = new TestSchemaProvider($schema);
 
-        $this->getGraphQLSchemaBuilder()->setSchema($provider);
+        $this->getGraphQLSchemaBuilder()->setSchema($this->app(), $provider);
 
         return $this;
     }
@@ -201,7 +206,7 @@ trait GraphQLAssertions {
      * Resets the current (application) schema to the default schema.
      */
     protected function resetGraphQLSchema(): static {
-        $this->getGraphQLSchemaBuilder()->setSchema(null);
+        $this->getGraphQLSchemaBuilder()->setSchema($this->app(), null);
 
         return $this;
     }
@@ -211,12 +216,12 @@ trait GraphQLAssertions {
     }
 
     protected function getGraphQLPrinter(Settings $settings = null): Printer {
-        return Container::getInstance()->make(Printer::class)->setSettings($settings ?? new TestSettings());
+        return $this->app()->make(Printer::class)->setSettings($settings ?? new TestSettings());
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {
         // Wrap
-        $container = Container::getInstance();
+        $container = $this->app();
         $builder   = $container->resolved(SchemaBuilder::class)
             ? $container->make(SchemaBuilder::class)
             : null;
