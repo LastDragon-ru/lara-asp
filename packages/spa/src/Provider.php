@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Spa;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\Core\Provider\WithRoutes;
 use LastDragon_ru\LaraASP\Core\Provider\WithTranslations;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use Override;
 
 class Provider extends ServiceProvider {
@@ -17,8 +19,20 @@ class Provider extends ServiceProvider {
     // =========================================================================
     public function boot(): void {
         $this->bootConfig();
-        $this->bootRoutes();
         $this->bootTranslations();
+        $this->bootRoutes(function (): array {
+            $package  = Package::Name;
+            $config   = (array) $this->app->make(Repository::class)->get("{$package}.routes");
+            $settings = [
+                'enabled'    => Cast::toBool($config['enabled'] ?? false),
+                'attributes' => [
+                    'prefix'     => Cast::toString($config['prefix'] ?? ''),
+                    'middleware' => Cast::toString($config['middleware'] ?? ''),
+                ],
+            ];
+
+            return $settings;
+        });
     }
     // </editor-fold>
 

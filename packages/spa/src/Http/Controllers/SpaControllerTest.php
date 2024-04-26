@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\DataProvider as DataProviderContract
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -44,7 +43,11 @@ final class SpaControllerTest extends TestCase {
             Package::Name.'.spa'            => $settings,
         ]);
 
-        $this->loadRoutes();
+        $provider = new class($this->app()) extends Provider {
+            // empty
+        };
+        $provider->boot();
+        $provider->callBootedCallbacks();
 
         $this->get("{$prefix}/settings", $headers)->assertThat($expected);
     }
@@ -122,18 +125,6 @@ final class SpaControllerTest extends TestCase {
                 ],
             ],
         ]);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Helpers">
-    // =========================================================================
-    protected function loadRoutes(): void {
-        (new class($this->app()) extends Provider {
-            #[Override]
-            public function bootRoutes(): void {
-                parent::bootRoutes();
-            }
-        })->bootRoutes();
     }
     // </editor-fold>
 }
