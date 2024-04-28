@@ -806,6 +806,72 @@ class ExampleTest extends TestCase {
 
 Enjoy 😸
 
+# Mocking properties (Mockery) 🧪
+
+> [!IMPORTANT]
+>
+> Working prototype for [How to mock protected properties? (#1142)](https://github.com/mockery/mockery/issues/1142). Please note that implementation relies on Reflection and internal Mockery methods/properties.
+
+[include:docblock]: ./src/Mockery/MockProperties.php ({"summary": false})
+[//]: # (start: 998fe7ccccc11e3c54b93f9d6ea507c288be425a1dc4eca1cf5abe09d77c572e)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Limitations/Notes:
+
+* Readonly properties should be uninitialized.
+* Private properties aren't supported.
+* Property value must be an object.
+* Property must be used while test.
+* Property can be mocked only once.
+* Objects without methods will be marked as unused.
+
+[//]: # (end: 998fe7ccccc11e3c54b93f9d6ea507c288be425a1dc4eca1cf5abe09d77c572e)
+
+[include:example]: ./docs/Examples/MockProperties.php
+[//]: # (start: 412cdd988d467ebb6083e17127a01aae689692590c8bf6273d2f3073cbf068cd)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+// phpcs:disable PSR1.Files.SideEffects
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
+namespace LastDragon_ru\LaraASP\Testing\Docs\Examples\MockProperties;
+
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use Mockery;
+
+class A {
+    public function __construct(
+        protected readonly B $b,
+    ) {
+        // empty
+    }
+
+    public function a(): void {
+        $this->b->b();
+    }
+}
+
+class B {
+    public function b(): void {
+        echo 1;
+    }
+}
+
+$mock = Mockery::mock(A::class, MockProperties::class);
+$mock
+    ->shouldUseProperty('b')
+    ->value(
+        Mockery::mock(B::class), // or just `new B()`.
+    );
+
+$mock->a();
+```
+
+[//]: # (end: 412cdd988d467ebb6083e17127a01aae689692590c8bf6273d2f3073cbf068cd)
+
 # Custom Test Requirements
 
 Unfortunately, PHPUnit doesn't allow to add/extend existing requirements and probably will not:
