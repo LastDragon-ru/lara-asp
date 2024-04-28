@@ -100,13 +100,16 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgKey        = 'key';
 
     /**
-     * @param StreamFactory<object> $factory
+     * @param StreamFactory<object> $streamFactory
      */
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly ConfigResolver $config,
-        protected readonly StreamFactory $factory,
-        private readonly ManipulatorFactory $manipulatorFactory,
+        protected readonly BuilderInfoDetector $detector,
+        protected readonly StreamFactory $streamFactory,
+        protected readonly StreamType $streamType,
+        protected readonly ProvidesResolver $provider,
+        protected readonly ManipulatorFactory $manipulatorFactory,
     ) {
         // empty
     }
@@ -191,14 +194,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
-        $container   = $this->container->getInstance();
         $repository  = $this->config->getInstance();
         $manipulator = $this->manipulatorFactory->create($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
 
         // Updated?
-        if ($container->make(StreamType::class)->is($source->getTypeName())) {
+        if ($this->streamType->is($source->getTypeName())) {
             return;
         }
 
@@ -218,8 +220,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Builder?
-        $container->make(BuilderInfoDetector::class)
-            ->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
+        $this->detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
 
         // Searchable?
         $searchable = Cast::toBool(
@@ -409,7 +410,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Not supported?
-            if ($type !== null && !$this->factory->isSupported($type)) {
+            if ($type !== null && !$this->streamFactory->isSupported($type)) {
                 throw new BuilderUnsupported($source, $type);
             }
         } catch (ReflectionException) {
@@ -448,7 +449,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
             if (!is_object($builder)) {
                 throw new BuilderInvalid($source, gettype($builder));
-            } elseif (!$this->factory->isSupported($builder)) {
+            } elseif (!$this->streamFactory->isSupported($builder)) {
                 throw new BuilderUnsupported($source, $builder::class);
             } else {
                 // ok
@@ -457,7 +458,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             // Stream
             $key    = $this->getArgKey($manipulator, $source);
             $limit  = $this->getFieldValue(StreamLimitDirective::class, $manipulator, $source, $info, $args);
-            $stream = $this->factory->create($builder, $key, $limit, $offset);
+            $stream = $this->streamFactory->create($builder, $key, $limit, $offset);
             $stream = new StreamValue($stream);
 
             return $stream;
@@ -560,9 +561,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             if (!$resolver) {
                 $resolver = RootType::isRootType($parent)
                     ? $this->getResolverModel(
-                        $this->container->getInstance()->make(StreamType::class)->getOriginalTypeName(
-                            $source->getTypeName(),
-                        ),
+                        $this->streamType->getOriginalTypeName($source->getTypeName()),
                     )
                     : $this->getResolverRelation($parent, $source->getName());
             }
@@ -598,9 +597,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     protected function getResolverQuery(string $type, string $field): ?array {
         // We are mimicking to default Lighthouse resolver resolution, thus
         // custom implementations may not work.
-        $provider = $this->container->getInstance()->get(ProvidesResolver::class);
-
-        if (!($provider instanceof ResolverProvider)) {
+        if (!($this->provider instanceof ResolverProvider)) {
             return null;
         }
 
@@ -636,7 +633,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 return $provider->findResolverClass($value, $method);
             }
         };
-        $class    = $helper->getResolverClass($provider, $value, $method);
+        $class    = $helper->getResolverClass($this->provider, $value, $method);
         $resolver = $class ? [$class, $method] : null;
 
         return $resolver;
@@ -684,7 +681,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Search for field with `ID!` type
-        $type  = $this->container->getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName());
+        $type  = $this->streamType->getOriginalTypeName($source->getTypeName());
         $type  = $manipulator->getTypeDefinition($type);
         $field = null;
 
