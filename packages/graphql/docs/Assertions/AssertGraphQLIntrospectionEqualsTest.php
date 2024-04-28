@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Assertions;
+namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
 
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
