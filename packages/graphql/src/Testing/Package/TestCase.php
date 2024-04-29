@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
@@ -47,6 +48,7 @@ abstract class TestCase extends PackageTestCase {
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
             Provider::class,
+            CoreProvider::class,
             TestProvider::class,
             SerializerProvider::class,
             LighthouseServiceProvider::class,
