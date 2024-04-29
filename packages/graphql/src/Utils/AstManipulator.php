@@ -42,13 +42,13 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\GraphQL\Directives\Definitions\TypeDirective;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -301,7 +301,7 @@ class AstManipulator {
 
             $this->getDocument()->setTypeDefinition($scalar);
         } elseif ($definition instanceof PhpEnumType) {
-            $enum   = DirectiveLocator::directiveName(LaraAspAsEnumDirective::class);
+            $enum   = DirectiveLocator::directiveName(TypeDirective::class);
             $class  = PhpEnumTypeHelper::getEnumClass($definition);
             $class  = json_encode($class, JSON_THROW_ON_ERROR);
             $scalar = Parser::scalarTypeDefinition(

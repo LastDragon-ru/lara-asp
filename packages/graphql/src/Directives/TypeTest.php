@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Utils\Directives;
+namespace LastDragon_ru\LaraASP\GraphQL\Directives;
 
 use GraphQL\Type\Definition\PhpEnumType;
 use Illuminate\Container\Container;
@@ -18,16 +18,16 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  */
-#[CoversClass(AsEnum::class)]
-final class AsEnumTest extends TestCase {
+#[CoversClass(Type::class)]
+final class TypeTest extends TestCase {
     public function testResolveNode(): void {
-        $class = AsEnumTest_Enum::class;
+        $class = TypeTest_Enum::class;
         $enum  = json_encode($class, JSON_THROW_ON_ERROR);
         $name  = 'TestEnum';
 
         $this->useGraphQLSchema(
             <<<GRAPHQL
-            scalar {$name} @laraAspAsEnum(class: {$enum})
+            scalar {$name} @type(class: {$enum})
             GRAPHQL,
         );
 
@@ -46,7 +46,7 @@ final class AsEnumTest extends TestCase {
 
         $this->useGraphQLSchema(
             <<<GRAPHQL
-            scalar {$name} @laraAspAsEnum(class: {$enum})
+            scalar {$name} @type(class: {$enum})
             GRAPHQL,
         );
 
@@ -66,6 +66,6 @@ final class AsEnumTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-enum AsEnumTest_Enum {
+enum TypeTest_Enum {
     case A;
 }

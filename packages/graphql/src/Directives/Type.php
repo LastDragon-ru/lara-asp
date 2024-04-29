@@ -1,11 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Utils\Directives;
+namespace LastDragon_ru\LaraASP\GraphQL\Directives;
 
 use GraphQL\Type\Definition\PhpEnumType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\Type as GraphQLType;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Nuwave\Lighthouse\Exceptions\DefinitionException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -16,26 +15,21 @@ use UnitEnum;
 
 use function is_a;
 
-/**
- * @internal
- */
-class AsEnum extends BaseDirective implements TypeResolver {
+class Type extends BaseDirective implements TypeResolver {
     final protected const ArgClass = 'class';
 
     #[Override]
     public static function definition(): string {
-        $name                = DirectiveLocator::directiveName(static::class);
-        $argClass            = self::ArgClass;
-        $classPhpEnumType    = PhpEnumType::class;
-        $classAstManipulator = AstManipulator::class;
+        $name     = DirectiveLocator::directiveName(static::class);
+        $argClass = self::ArgClass;
 
         return <<<GRAPHQL
             """
-            Internal directive that used by `{$classAstManipulator}` to register `{$classPhpEnumType}`.
+            Converts scalar into GraphQL Type.
             """
             directive @{$name}(
                 """
-                Reference to a PHP Enum class.
+                Reference to a PHP Class/Enum (FQN).
                 """
                 {$argClass}: String!
             ) on SCALAR
@@ -43,7 +37,7 @@ class AsEnum extends BaseDirective implements TypeResolver {
     }
 
     #[Override]
-    public function resolveNode(TypeValue $value): Type {
+    public function resolveNode(TypeValue $value): GraphQLType {
         // Enum?
         $class = Cast::toString($this->directiveArgValue(self::ArgClass));
 
