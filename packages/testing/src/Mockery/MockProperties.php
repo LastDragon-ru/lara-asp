@@ -38,56 +38,48 @@ trait MockProperties {
         $class = (new ReflectionProperty($this, $name))->getDeclaringClass();
 
         return new MockedProperty(function (object $value) use ($class, $name): void {
+            // Defined?
+            $method   = "\${$name}";
+            $property = "{$this->mockery_getName()}::\${$name}";
+            $director = $this->mockery_getExpectationsFor($method);
+
+            if ($director) {
+                throw new BadMethodCallException(
+                    "The property `{$property}` already mocked.",
+                );
+            }
+
             // Wrap to be able to check usage
             if (!($value instanceof MockInterface)) {
                 $value = Mockery::mock($value);
             }
 
             // Set value
-            // * property can be redefined in subclasses, we should update them
-            //   too or may get "must not be accessed before initialization" error.
-            $defined = $class;
-
-            do {
-                $property = $defined->hasProperty($name) ? $defined->getProperty($name) : null;
-                $defined  = $defined->getParentClass();
-
-                $property?->setValue($this, $value);
-            } while ($defined);
+            $class->getProperty($name)->setValue($this, $value);
 
             // Expectation
             // * required to detect unused properties
             // * todo(testing): is there a better way for this?
-            $name     = "{$this->mockery_getName()}::\${$name}";
-            $method   = "\${$name}";
-            $director = $this->mockery_getExpectationsFor($method);
+            $director = new class ($property, $value) extends ExpectationDirector {
+                #[Override]
+                public function verify(): void {
+                    $count = 0;
+                    $calls = (new ReflectionClass($this->_mock))
+                        ->getProperty('_mockery_receivedMethodCalls')
+                        ->getValue($this->_mock);
 
-            if (!$director) {
-                $director = new class ($name, $value) extends ExpectationDirector {
-                    #[Override]
-                    public function verify(): void {
-                        $count = 0;
-                        $calls = (new ReflectionClass($this->_mock))
-                            ->getProperty('_mockery_receivedMethodCalls')
-                            ->getValue($this->_mock);
-
-                        if ($calls instanceof ReceivedMethodCalls) {
-                            $property = (new ReflectionClass($calls))->getProperty('methodCalls');
-                            $count    = count((array) $property->getValue($calls));
-                        }
-
-                        if ($count === 0) {
-                            throw new LogicException("Mocked property `{$this->_name}` is not used.");
-                        }
+                    if ($calls instanceof ReceivedMethodCalls) {
+                        $property = (new ReflectionClass($calls))->getProperty('methodCalls');
+                        $count    = count((array) $property->getValue($calls));
                     }
-                };
 
-                $this->mockery_setExpectationsFor($method, $director);
-            } else {
-                throw new BadMethodCallException(
-                    "The property `{$name}` already mocked.",
-                );
-            }
+                    if ($count === 0) {
+                        throw new LogicException("Mocked property `{$this->_name}` is not used.");
+                    }
+                }
+            };
+
+            $this->mockery_setExpectationsFor($method, $director);
         });
     }
 }

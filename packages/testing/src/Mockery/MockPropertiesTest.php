@@ -176,6 +176,22 @@ class MockPropertiesTest_ObjectPrivate {
     public function getValue(): string {
         return $this->value->getValue();
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class MockPropertiesTest_ObjectProtected {
+    public function __construct(
+        protected MockPropertiesTest_Value $value,
+    ) {
+        // empty
+    }
+
+    public function getValue(): string {
+        return $this->value->getValue();
+    }
 
     public function getDefault(): string {
         return 'default';
@@ -186,19 +202,7 @@ class MockPropertiesTest_ObjectPrivate {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class MockPropertiesTest_ObjectProtected extends MockPropertiesTest_ObjectPrivate {
-    public function __construct(
-        protected MockPropertiesTest_Value $value,
-    ) {
-        parent::__construct($this->value);
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class MockPropertiesTest_ObjectPublic extends MockPropertiesTest_ObjectPrivate {
+class MockPropertiesTest_ObjectPublic extends MockPropertiesTest_ObjectProtected {
     public function __construct(
         public MockPropertiesTest_Value $value,
     ) {
