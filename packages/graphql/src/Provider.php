@@ -72,16 +72,19 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerSchemaPrinter(): void {
-        $this->app->bindIf(SettingsContract::class, DefaultSettings::class);
-        $this->app->bindIf(DirectiveResolverContract::class, DirectiveResolver::class);
-        $this->app->bindIf(SchemaPrinterContract::class, static function (Container $container): SchemaPrinterContract {
-            $settings = $container->make(SettingsContract::class);
-            $resolver = $container->make(DirectiveResolverContract::class);
-            $schema   = $container->make(SchemaBuilder::class)->schema();
-            $printer  = new Printer($settings, $resolver, $schema);
+        $this->app->scopedIf(SettingsContract::class, DefaultSettings::class);
+        $this->app->scopedIf(DirectiveResolverContract::class, DirectiveResolver::class);
+        $this->app->scopedIf(
+            SchemaPrinterContract::class,
+            static function (Container $container): SchemaPrinterContract {
+                $settings = $container->make(SettingsContract::class);
+                $resolver = $container->make(DirectiveResolverContract::class);
+                $schema   = $container->make(SchemaBuilder::class)->schema();
+                $printer  = new Printer($settings, $resolver, $schema);
 
-            return $printer;
-        });
+                return $printer;
+            },
+        );
     }
 
     #[Override]
