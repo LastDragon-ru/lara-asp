@@ -44,7 +44,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerMigrationCreator(): void {
-        $this->app->bind(RawMigrationCreator::class, static function (Application $app): MigrationCreator {
+        $this->app->bindIf(RawMigrationCreator::class, static function (Application $app): MigrationCreator {
             return new RawMigrationCreator($app->make(Filesystem::class), $app->basePath('stubs'));
         });
     }
