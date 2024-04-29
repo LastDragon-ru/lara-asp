@@ -15,7 +15,14 @@ services:
         depends_on:
             setup:
                 condition: service_completed_successfully
-        command: sleep infinity
+        command: |
+            php -S localhost:8000 -t ./dev/public
+        healthcheck:
+          test: curl -f http://localhost:8000/up || exit 1
+          start_period: 1m
+          interval: 1m
+          timeout: 10s
+          retries: 3
 
     setup:
         <<: *project
