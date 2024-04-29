@@ -4,9 +4,11 @@ namespace LastDragon_ru\LaraASP\Migrator\Extenders;
 
 use Illuminate\Database\Migrations\Migrator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use Override;
 use Symfony\Component\Finder\Finder;
 
+use function array_unique;
 use function is_string;
 
 // todo(migrator): [laravel] [update] \Illuminate\Database\Migrations\Migrator
@@ -38,11 +40,11 @@ class SmartMigrator extends Migrator {
 
         foreach ($paths as $path) {
             foreach (Finder::create()->in(Cast::toString($path))->directories() as $dir) {
-                $paths[] = $dir->getPathname();
+                $paths[] = Path::normalize($dir->getPathname());
             }
         }
 
-        return parent::getMigrationFiles($paths);
+        return parent::getMigrationFiles(array_unique($paths));
     }
     // </editor-fold>
 }
