@@ -51,6 +51,7 @@ use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
@@ -70,6 +71,7 @@ use function json_encode;
 use function mb_strlen;
 use function mb_substr;
 use function sprintf;
+use function trigger_deprecation;
 use function trim;
 
 use const JSON_THROW_ON_ERROR;
@@ -281,7 +283,7 @@ class AstManipulator {
     /**
      * @template TDefinition of (TypeDefinitionNode&Node)|(Type&NamedType)
      *
-     * @param TDefinition $definition
+     * @param TDefinition $definition Passing {@see Type} is deprecated, please use {@see TypeReference} instead.
      *
      * @return TDefinition
      */
@@ -306,6 +308,15 @@ class AstManipulator {
 
             $this->getDocument()->setTypeDefinition($node);
         } elseif ($definition instanceof ScalarType) {
+            trigger_deprecation(
+                Package::Name,
+                '%{VERSION}',
+                'Passing `%s` into `%s` is deprecated, please use `%s` instead.',
+                ScalarType::class,
+                __METHOD__,
+                TypeReference::class,
+            );
+
             $class  = json_encode($definition::class, JSON_THROW_ON_ERROR);
             $scalar = Parser::scalarTypeDefinition(
                 <<<GRAPHQL
@@ -315,6 +326,15 @@ class AstManipulator {
 
             $this->getDocument()->setTypeDefinition($scalar);
         } elseif ($definition instanceof PhpEnumType) {
+            trigger_deprecation(
+                Package::Name,
+                '%{VERSION}',
+                'Passing `%s` into `%s` is deprecated, please use `%s` instead.',
+                PhpEnumType::class,
+                __METHOD__,
+                TypeReference::class,
+            );
+
             $directive = DirectiveLocator::directiveName(TypeDirective::class);
             $class     = PhpEnumTypeHelper::getEnumClass($definition);
             $class     = json_encode($class, JSON_THROW_ON_ERROR);

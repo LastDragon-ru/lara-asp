@@ -7,6 +7,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 
 interface TypeDefinition {
     /**
@@ -17,7 +18,10 @@ interface TypeDefinition {
     /**
      * Returns the type definition for given Source if possible. The name must be equal to `$name`.
      *
-     * @return (TypeDefinitionNode&Node)|(Type&NamedType)|null
+     * @see TypeReference
+     *
+     * @return (TypeDefinitionNode&Node)|(Type&NamedType)|null Returning {@see Type} is deprecated, please use
+     *      {@see TypeReference} instead.
      */
     public function getTypeDefinition(
         Manipulator $manipulator,
