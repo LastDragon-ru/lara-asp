@@ -42,9 +42,9 @@ final class TypeTest extends TestCase {
     }
 
     public function testResolveNodeType(): void {
-        $class = TypeTest_Scalar::class;
+        $class = TypeTest_Type::class;
         $attr  = json_encode($class, JSON_THROW_ON_ERROR);
-        $name  = 'TestScalar';
+        $name  = 'TestType';
 
         $this->useGraphQLSchema(
             <<<GRAPHQL
@@ -57,6 +57,30 @@ final class TypeTest extends TestCase {
 
         self::assertInstanceOf($class, $type);
         self::assertEquals($name, $type->name());
+        self::assertEquals($class, $type::class);
+    }
+
+    public function testResolveNodeScalar(): void {
+        $class = TypeTest_Scalar::class;
+        $attr  = json_encode($class, JSON_THROW_ON_ERROR);
+        $name  = 'TestScalar';
+        $desc  = 'Description.';
+
+        $this->useGraphQLSchema(
+            <<<GRAPHQL
+            """
+            {$desc}
+            """
+            scalar {$name} @type(class: {$attr})
+            GRAPHQL,
+        );
+
+        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $type     = $registry->get($name);
+
+        self::assertInstanceOf($class, $type);
+        self::assertEquals($name, $type->name());
+        self::assertEquals($desc, $type->description());
         self::assertEquals($class, $type::class);
     }
 
@@ -116,13 +140,21 @@ enum TypeTest_Enum {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TypeTest_Scalar extends StringType {
+class TypeTest_Type extends StringType {
     public function __construct(string $name, ScalarTypeDefinitionNode $node) {
         parent::__construct([
             'name'    => $name,
             'astNode' => $node,
         ]);
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class TypeTest_Scalar extends StringType {
+    // empty
 }
 
 /**
