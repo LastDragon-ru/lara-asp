@@ -43,7 +43,8 @@ class Type extends BaseDirective implements TypeResolver {
         return <<<GRAPHQL
             """
             Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar`
-            directive, but uses Laravel Container to resolve instance.
+            directive, but uses Laravel Container to resolve instance and also
+            supports PHP enums.
             """
             directive @{$name}(
                 """

@@ -75,6 +75,12 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 
 [Read more](<docs/Directives/@stream.md>).
 
+## `@type`
+
+Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, but uses Laravel Container to resolve instance and also supports PHP enums.
+
+[Read more](<docs/Directives/@type.md>).
+
 [//]: # (end: 73f7f4a1d86b7731354837c827f1b9f9aa729879639aeab4fe63985913469f48)
 
 # Scalars
