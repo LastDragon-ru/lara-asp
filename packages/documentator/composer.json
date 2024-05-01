@@ -36,6 +36,7 @@
     "symfony/polyfill-php83": "^1.28",
     "symfony/serializer": "^6.3.3|^7.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
+    "lastdragon-ru/lara-asp-graphql-printer": "self.version",
     "lastdragon-ru/lara-asp-serializer": "self.version"
   },
   "require-dev": {
