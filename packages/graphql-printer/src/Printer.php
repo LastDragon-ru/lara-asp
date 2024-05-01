@@ -29,8 +29,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Override;
 
 use function array_pop;
+use function mb_substr;
 use function str_starts_with;
-use function substr;
 
 class Printer implements PrinterContract {
     private ?DirectiveResolver $directiveResolver;
@@ -209,7 +209,7 @@ class Printer implements PrinterContract {
 
             if (str_starts_with($name, '@')) {
                 if ($directives) {
-                    $directive = $context->getDirective(substr($name, 1));
+                    $directive = $context->getDirective(mb_substr($name, 1));
 
                     if ($directive) {
                         $block          = $this->getBlock($context, $directive);
