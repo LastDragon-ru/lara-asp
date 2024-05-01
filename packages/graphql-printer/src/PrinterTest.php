@@ -38,15 +38,13 @@ use function str_ends_with;
 final class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-
     /**
      * @param Closure(static): ?Schema                                                                                             $schemaFactory
      * @param Closure(static, ?Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $printableFactory
      * @param Closure(static, ?Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
     #[DataProvider('dataProviderPrintSchema')]
-    #[DataProvider('dataProviderPrintType')]
-    #[DataProvider('dataProviderPrintNode')]
+    #[DataProvider('dataProviderPrint')]
     public function testPrint(
         GraphQLExpected $expected,
         ?Settings $settings,
@@ -68,14 +66,14 @@ final class PrinterTest extends TestCase {
             $printable->assertValid();
         }
     }
+
     /**
      * @param Closure(static): ?Schema                                                                                             $schemaFactory
      * @param Closure(static, ?Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $exportableFactory
      * @param Closure(static, ?Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
     #[DataProvider('dataProviderPrintSchema')]
-    #[DataProvider('dataProviderExportType')]
-    #[DataProvider('dataProviderExportNode')]
+    #[DataProvider('dataProviderExport')]
     public function testExport(
         GraphQLExpected $expected,
         ?Settings $settings,
@@ -470,13 +468,305 @@ final class PrinterTest extends TestCase {
     /**
      * @return array<string, array<array-key, mixed>>
      */
-    public static function dataProviderExportType(): array {
+    public static function dataProviderPrint(): array {
+        $schemaFactory = static function (): ?Schema {
+            return null;
+        };
+
+        return [
+            'UnionType'                                   => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                        union CodeUnion =
+                            | CodeType
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'CodeType',
+                        'CodeUnion',
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                new TestSettings(),
+                1,
+                0,
+                $schemaFactory,
+                static function (): Type {
+                    return new UnionType([
+                        'name'  => 'CodeUnion',
+                        'types' => [
+                            new ObjectType([
+                                'name'   => 'CodeType',
+                                'fields' => [
+                                    'field' => [
+                                        'type' => Type::string(),
+                                    ],
+                                ],
+                            ]),
+                        ],
+                    ]);
+                },
+            ],
+            'InputObjectType'                             => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    input CodeInput
+                    @schemaDirective
+                    {
+                        a: Boolean
+                    }
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'CodeInput',
+                    ])
+                    ->setUsedDirectives([
+                        '@schemaDirective',
+                    ]),
+                new TestSettings(),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Type {
+                    return new InputObjectType([
+                        'name'        => 'CodeInput',
+                        'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
+                        'description' => 'Description',
+                        'fields'      => [
+                            [
+                                'name' => 'a',
+                                'type' => Type::boolean(),
+                            ],
+                        ],
+                    ]);
+                },
+            ],
+            'InterfaceType'                               => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    interface CodeInterface {
+                        a: Boolean!
+                    }
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'CodeInterface',
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectives(false),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Type {
+                    return new InterfaceType([
+                        'name'        => 'CodeInterface',
+                        'astNode'     => Parser::interfaceTypeDefinition('interface CodeInterface @codeDirective'),
+                        'description' => 'Description',
+                        'fields'      => [
+                            [
+                                'name' => 'a',
+                                'type' => Type::nonNull(Type::boolean()),
+                            ],
+                        ],
+                    ]);
+                },
+            ],
+            'UnionTypeDefinitionNode'                     => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                        union CodeUnion =
+                            | CodeType
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'CodeType',
+                        'CodeUnion',
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                new TestSettings(),
+                1,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::unionTypeDefinition(
+                        'union CodeUnion = CodeType',
+                    );
+                },
+            ],
+            'InputObjectTypeDefinition'                   => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    input CodeInput
+                    @schemaDirective
+                    {
+                        a: Boolean
+                    }
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        'Boolean',
+                        'CodeInput',
+                    ])
+                    ->setUsedDirectives([
+                        '@schemaDirective',
+                    ]),
+                new TestSettings(),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::inputObjectTypeDefinition(
+                        '"Description" input CodeInput @schemaDirective { a: Boolean }',
+                    );
+                },
+            ],
+            'DirectiveNode (forbidden)'                   => [
+                (new GraphQLExpected(''))
+                    ->setUsedTypes([
+                        // empty
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectiveDefinitions(true)
+                    ->setPrintDirectives(true)
+                    ->setDirectiveDefinitionFilter(static fn () => false)
+                    ->setDirectiveFilter(static fn () => false),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::directive(
+                        '@test',
+                    );
+                },
+            ],
+            'DirectiveNode (printing disabled)'           => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                    @test
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        // empty
+                    ])
+                    ->setUsedDirectives([
+                        '@test',
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectiveDefinitions(false)
+                    ->setPrintDirectives(false),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::directive(
+                        '@test',
+                    );
+                },
+            ],
+            'DirectiveDefinitionNode (forbidden)'         => [
+                (new GraphQLExpected(''))
+                    ->setUsedTypes([
+                        // empty
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectiveDefinitions(true)
+                    ->setPrintDirectives(true)
+                    ->setDirectiveDefinitionFilter(static fn () => false)
+                    ->setDirectiveFilter(static fn () => false),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::directiveDefinition(
+                        '"Description" directive @test on SCALAR',
+                    );
+                },
+            ],
+            'DirectiveDefinitionNode (printing disabled)' => [
+                (new GraphQLExpected(
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    directive @test
+                    on
+                        | SCALAR
+                    GRAPHQL,
+                ))
+                    ->setUsedTypes([
+                        // empty
+                    ])
+                    ->setUsedDirectives([
+                        '@test',
+                    ]),
+                (new TestSettings())
+                    ->setPrintDirectiveDefinitions(false)
+                    ->setPrintDirectives(false),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::directiveDefinition(
+                        '"Description" directive @test on SCALAR',
+                    );
+                },
+            ],
+            'ScalarTypeDefinitionNode (forbidden)'        => [
+                (new GraphQLExpected(''))
+                    ->setUsedTypes([
+                        // empty
+                    ])
+                    ->setUsedDirectives([
+                        // empty
+                    ]),
+                (new TestSettings())
+                    ->setTypeDefinitionFilter(static fn () => false)
+                    ->setTypeFilter(static fn () => false),
+                0,
+                0,
+                $schemaFactory,
+                static function (): Node {
+                    return Parser::scalarTypeDefinition(
+                        '"Description" scalar test',
+                    );
+                },
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array<array-key, mixed>>
+     */
+    public static function dataProviderExport(): array {
         $schemaFactory = static function (): Schema {
             return BuildSchema::build(self::getTestData()->content('~schema.graphql'));
         };
 
         return [
-            'UnionType'     => [
+            'UnionType'                 => [
                 (new GraphQLExpected(
                     self::getTestData()->file('~export-UnionType.graphql'),
                 ))
@@ -516,7 +806,7 @@ final class PrinterTest extends TestCase {
                     ]);
                 },
             ],
-            'ObjectType'    => [
+            'ObjectType'                => [
                 (new GraphQLExpected(
                     self::getTestData()->file('~export-ObjectType.graphql'),
                 ))
@@ -547,7 +837,7 @@ final class PrinterTest extends TestCase {
                     return $type;
                 },
             ],
-            'InterfaceType' => [
+            'InterfaceType'             => [
                 (new GraphQLExpected(
                     self::getTestData()->file('~export-InterfaceType.graphql'),
                 ))
@@ -575,205 +865,6 @@ final class PrinterTest extends TestCase {
                     return $type;
                 },
             ],
-        ];
-    }
-
-    /**
-     * @return array<string, array<array-key, mixed>>
-     */
-    public static function dataProviderPrintType(): array {
-        $schemaFactory = static function (): ?Schema {
-            return null;
-        };
-
-        return [
-            'UnionType'       => [
-                (new GraphQLExpected(
-                    <<<'GRAPHQL'
-                        union CodeUnion =
-                            | CodeType
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
-                        'CodeType',
-                        'CodeUnion',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
-                new TestSettings(),
-                1,
-                0,
-                $schemaFactory,
-                static function (): Type {
-                    return new UnionType([
-                        'name'  => 'CodeUnion',
-                        'types' => [
-                            new ObjectType([
-                                'name'   => 'CodeType',
-                                'fields' => [
-                                    'field' => [
-                                        'type' => Type::string(),
-                                    ],
-                                ],
-                            ]),
-                        ],
-                    ]);
-                },
-            ],
-            'InputObjectType' => [
-                (new GraphQLExpected(
-                    <<<'GRAPHQL'
-                    """
-                    Description
-                    """
-                    input CodeInput
-                    @schemaDirective
-                    {
-                        a: Boolean
-                    }
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
-                        'Boolean',
-                        'CodeInput',
-                    ])
-                    ->setUsedDirectives([
-                        '@schemaDirective',
-                    ]),
-                new TestSettings(),
-                0,
-                0,
-                $schemaFactory,
-                static function (): Type {
-                    return new InputObjectType([
-                        'name'        => 'CodeInput',
-                        'astNode'     => Parser::inputObjectTypeDefinition('input InputObjectType @schemaDirective'),
-                        'description' => 'Description',
-                        'fields'      => [
-                            [
-                                'name' => 'a',
-                                'type' => Type::boolean(),
-                            ],
-                        ],
-                    ]);
-                },
-            ],
-            'InterfaceType'   => [
-                (new GraphQLExpected(
-                    <<<'GRAPHQL'
-                    """
-                    Description
-                    """
-                    interface CodeInterface {
-                        a: Boolean!
-                    }
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
-                        'Boolean',
-                        'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
-                (new TestSettings())
-                    ->setPrintDirectives(false),
-                0,
-                0,
-                $schemaFactory,
-                static function (): Type {
-                    return new InterfaceType([
-                        'name'        => 'CodeInterface',
-                        'astNode'     => Parser::interfaceTypeDefinition('interface CodeInterface @codeDirective'),
-                        'description' => 'Description',
-                        'fields'      => [
-                            [
-                                'name' => 'a',
-                                'type' => Type::nonNull(Type::boolean()),
-                            ],
-                        ],
-                    ]);
-                },
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array<array-key, mixed>>
-     */
-    public static function dataProviderPrintNode(): array {
-        $schemaFactory = static function (): ?Schema {
-            return null;
-        };
-
-        return [
-            'UnionTypeDefinitionNode'   => [
-                (new GraphQLExpected(
-                    <<<'GRAPHQL'
-                        union CodeUnion =
-                            | CodeType
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
-                        'CodeType',
-                        'CodeUnion',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
-                new TestSettings(),
-                1,
-                0,
-                $schemaFactory,
-                static function (): Node {
-                    return Parser::unionTypeDefinition(
-                        'union CodeUnion = CodeType',
-                    );
-                },
-            ],
-            'InputObjectTypeDefinition' => [
-                (new GraphQLExpected(
-                    <<<'GRAPHQL'
-                    """
-                    Description
-                    """
-                    input CodeInput
-                    @schemaDirective
-                    {
-                        a: Boolean
-                    }
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
-                        'Boolean',
-                        'CodeInput',
-                    ])
-                    ->setUsedDirectives([
-                        '@schemaDirective',
-                    ]),
-                new TestSettings(),
-                0,
-                0,
-                $schemaFactory,
-                static function (): Node {
-                    return Parser::inputObjectTypeDefinition(
-                        '"Description" input CodeInput @schemaDirective { a: Boolean }',
-                    );
-                },
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array<array-key, mixed>>
-     */
-    public static function dataProviderExportNode(): array {
-        $schemaFactory = static function (): Schema {
-            return BuildSchema::build(self::getTestData()->content('~schema.graphql'));
-        };
-
-        return [
             'UnionTypeDefinitionNode'   => [
                 (new GraphQLExpected(
                     self::getTestData()->file('~export-UnionTypeDefinitionNode.graphql'),

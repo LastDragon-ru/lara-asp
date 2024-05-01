@@ -279,8 +279,7 @@ class Context {
 
         // Allowed?
         $settings  = $this->getSettings();
-        $isAllowed = $settings->isPrintDirectiveDefinitions()
-            && $this->isDirectiveAllowed($directive);
+        $isAllowed = $this->isDirectiveAllowed($directive);
 
         if ($isAllowed) {
             $filter    = $settings->getDirectiveDefinitionFilter();
