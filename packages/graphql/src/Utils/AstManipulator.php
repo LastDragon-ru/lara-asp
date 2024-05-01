@@ -22,6 +22,7 @@ use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -41,14 +42,17 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use GraphQL\Utils\AST;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\GraphQL\Directives\Definitions\TypeDirective;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeUnexpected;
+use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive as StreamDirective;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
 use Nuwave\Lighthouse\Pagination\PaginateDirective;
 use Nuwave\Lighthouse\Schema\AST\ASTHelper;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -67,6 +71,7 @@ use function json_encode;
 use function mb_strlen;
 use function mb_substr;
 use function sprintf;
+use function trigger_deprecation;
 use function trim;
 
 use const JSON_THROW_ON_ERROR;
@@ -278,7 +283,7 @@ class AstManipulator {
     /**
      * @template TDefinition of (TypeDefinitionNode&Node)|(Type&NamedType)
      *
-     * @param TDefinition $definition
+     * @param TDefinition $definition Passing {@see Type} is deprecated, please use {@see TypeReference} instead.
      *
      * @return TDefinition
      */
@@ -291,7 +296,27 @@ class AstManipulator {
 
         if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
             $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof TypeReference) {
+            $directive = DirectiveLocator::directiveName(TypeDirective::class);
+            $class     = Cast::to(Node::class, AST::astFromValue($definition->type, Type::string()));
+            $class     = Printer::doPrint($class);
+            $node      = Parser::scalarTypeDefinition(
+                <<<GRAPHQL
+                scalar {$name} @{$directive}(class: {$class})
+                GRAPHQL,
+            );
+
+            $this->getDocument()->setTypeDefinition($node);
         } elseif ($definition instanceof ScalarType) {
+            trigger_deprecation(
+                Package::Name,
+                '%{VERSION}',
+                'Passing `%s` into `%s` is deprecated, please use `%s` instead.',
+                ScalarType::class,
+                __METHOD__,
+                TypeReference::class,
+            );
+
             $class  = json_encode($definition::class, JSON_THROW_ON_ERROR);
             $scalar = Parser::scalarTypeDefinition(
                 <<<GRAPHQL
@@ -301,12 +326,21 @@ class AstManipulator {
 
             $this->getDocument()->setTypeDefinition($scalar);
         } elseif ($definition instanceof PhpEnumType) {
-            $enum   = DirectiveLocator::directiveName(LaraAspAsEnumDirective::class);
-            $class  = PhpEnumTypeHelper::getEnumClass($definition);
-            $class  = json_encode($class, JSON_THROW_ON_ERROR);
-            $scalar = Parser::scalarTypeDefinition(
+            trigger_deprecation(
+                Package::Name,
+                '%{VERSION}',
+                'Passing `%s` into `%s` is deprecated, please use `%s` instead.',
+                PhpEnumType::class,
+                __METHOD__,
+                TypeReference::class,
+            );
+
+            $directive = DirectiveLocator::directiveName(TypeDirective::class);
+            $class     = PhpEnumTypeHelper::getEnumClass($definition);
+            $class     = json_encode($class, JSON_THROW_ON_ERROR);
+            $scalar    = Parser::scalarTypeDefinition(
                 <<<GRAPHQL
-                scalar {$name} @{$enum}(class: {$class})
+                scalar {$name} @{$directive}(class: {$class})
                 GRAPHQL,
             );
 

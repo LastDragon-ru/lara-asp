@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Provider\WithConfig;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver as BuilderFieldResolverContract;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Defaults\BuilderFieldResolver;
+use LastDragon_ru\LaraASP\GraphQL\Directives\Definitions\TypeDirective;
 use LastDragon_ru\LaraASP\GraphQL\Printer\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchBySchemaDirective;
@@ -18,7 +19,6 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\StreamFactory as StreamFactoryContract;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Definitions\StreamDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\StreamFactory;
-use LastDragon_ru\LaraASP\GraphQL\Utils\Definitions\LaraAspAsEnumDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver as DirectiveResolverContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as SchemaPrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings as SettingsContract;
@@ -57,7 +57,7 @@ class Provider extends ServiceProvider {
                     implode('\\', array_slice(explode('\\', SearchByDirective::class), 0, -1)),
                     implode('\\', array_slice(explode('\\', SortByDirective::class), 0, -1)),
                     implode('\\', array_slice(explode('\\', StreamDirective::class), 0, -1)),
-                    implode('\\', array_slice(explode('\\', LaraAspAsEnumDirective::class), 0, -1)),
+                    implode('\\', array_slice(explode('\\', TypeDirective::class), 0, -1)),
                 ];
             },
         );

@@ -46,7 +46,7 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Models/Image.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\) should return TDefinition of \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|\\(GraphQL\\\\Type\\\\Definition\\\\NamedType&GraphQL\\\\Type\\\\Definition\\\\Type\\) but returns GraphQL\\\\Type\\\\Definition\\\\PhpEnumType\\|GraphQL\\\\Type\\\\Definition\\\\ScalarType\\|TDefinition of GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\.$#"
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator\\:\\:addTypeDefinition\\(\\) should return TDefinition of \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|\\(GraphQL\\\\Type\\\\Definition\\\\NamedType&GraphQL\\\\Type\\\\Definition\\\\Type\\) but returns GraphQL\\\\Type\\\\Definition\\\\PhpEnumType\\|GraphQL\\\\Type\\\\Definition\\\\ScalarType\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\TypeReference\\|TDefinition of GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\.$#"
 			count: 1
 			path: packages/graphql/src/Utils/AstManipulator.php
 
