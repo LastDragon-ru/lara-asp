@@ -6,9 +6,11 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruc
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 use Override;
 
 use function mb_substr;
+use function trim;
 
 class Instruction implements ProcessableInstruction {
     public function __construct(
@@ -50,12 +52,19 @@ class Instruction implements ProcessableInstruction {
         }
 
         // Print
-        $printed  = $this->printer->print($definition);
-        $markdown = <<<MARKDOWN
-            ```graphql
-            {$printed}
-            ```
-            MARKDOWN;
+        $origin = $this->printer->getSettings();
+
+        try {
+            $settings = ImmutableSettings::createFrom($origin)->setPrintDirectives(false);
+            $exported = trim((string) $this->printer->setSettings($settings)->export($definition));
+            $markdown = <<<MARKDOWN
+                ```graphql
+                {$exported}
+                ```
+                MARKDOWN;
+        } finally {
+            $this->printer->setSettings($origin);
+        }
 
         // Return
         return $markdown;

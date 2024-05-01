@@ -32,6 +32,7 @@ final class InstructionTest extends TestCase {
             $resolver
                 ->shouldReceive('getDefinition')
                 ->with('test')
+                ->atLeast()
                 ->once()
                 ->andReturn(
                     Parser::directiveDefinition($directive),
