@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 use function is_string;
@@ -97,7 +98,7 @@ class JsonStringType extends StringType implements TypeDefinition {
         Context $context,
         string $name,
     ): TypeDefinitionNode|Type|null {
-        return $this;
+        return new TypeReference($name, self::class);
     }
     // </editor-fold>
 }

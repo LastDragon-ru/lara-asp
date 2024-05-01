@@ -84,6 +84,29 @@ on
     | ARGUMENT_DEFINITION
 
 """
+Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar`
+directive, but uses Laravel Container to resolve instance.
+"""
+directive @type(
+    """
+    Reference to a PHP Class/Enum (FQN).
+
+    If not PHP Enum, the Laravel Container with the following additional
+    arguments will be used to resolver the instance:
+
+    * `string $name` - the type name.
+    * `GraphQL\Language\AST\ScalarTypeDefinitionNode $node` - the AST node.
+    * `array&ScalarConfig $config` - the scalar configuration (if `GraphQL\Type\Definition\ScalarType`).
+
+    Resolved instance must be an `GraphQL\Type\Definition\Type&GraphQL\Type\Definition\NamedType` and have a name equal
+    to `$name` argument.
+    """
+    class: String!
+)
+on
+    | SCALAR
+
+"""
 Options for the `type` argument of `@hasMany`.
 """
 enum HasManyType {
@@ -498,7 +521,7 @@ navigation only to the previous/current/next pages (= cursor
 pagination).
 """
 scalar StreamOffset
-@scalar(
+@type(
     class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Offset"
 )
 

@@ -22,6 +22,7 @@ use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Parser;
+use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -41,7 +42,9 @@ use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
+use GraphQL\Utils\AST;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Directives\Definitions\TypeDirective;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
@@ -291,6 +294,17 @@ class AstManipulator {
 
         if ($definition instanceof TypeDefinitionNode && $definition instanceof Node) {
             $this->getDocument()->setTypeDefinition($definition);
+        } elseif ($definition instanceof TypeReference) {
+            $directive = DirectiveLocator::directiveName(TypeDirective::class);
+            $class     = Cast::to(Node::class, AST::astFromValue($definition->type, Type::string()));
+            $class     = Printer::doPrint($class);
+            $node      = Parser::scalarTypeDefinition(
+                <<<GRAPHQL
+                scalar {$name} @{$directive}(class: {$class})
+                GRAPHQL,
+            );
+
+            $this->getDocument()->setTypeDefinition($node);
         } elseif ($definition instanceof ScalarType) {
             $class  = json_encode($definition::class, JSON_THROW_ON_ERROR);
             $scalar = Parser::scalarTypeDefinition(
@@ -301,12 +315,12 @@ class AstManipulator {
 
             $this->getDocument()->setTypeDefinition($scalar);
         } elseif ($definition instanceof PhpEnumType) {
-            $enum   = DirectiveLocator::directiveName(TypeDirective::class);
-            $class  = PhpEnumTypeHelper::getEnumClass($definition);
-            $class  = json_encode($class, JSON_THROW_ON_ERROR);
-            $scalar = Parser::scalarTypeDefinition(
+            $directive = DirectiveLocator::directiveName(TypeDirective::class);
+            $class     = PhpEnumTypeHelper::getEnumClass($definition);
+            $class     = json_encode($class, JSON_THROW_ON_ERROR);
+            $scalar    = Parser::scalarTypeDefinition(
                 <<<GRAPHQL
-                scalar {$name} @{$enum}(class: {$class})
+                scalar {$name} @{$directive}(class: {$class})
                 GRAPHQL,
             );
 
