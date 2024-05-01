@@ -43,7 +43,8 @@
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.2",
     "orchestra/testbench": "^8.0.0|^9.0.0",
-    "phpunit/phpunit": "^10.1.0|^11.0.0"
+    "phpunit/phpunit": "^10.1.0|^11.0.0",
+    "webonyx/graphql-php": "^15.4.0"
   },
   "autoload": {
     "psr-4": {
