@@ -259,4 +259,5 @@ MD053:
     "include:package-list",
     "include:template",
     "include:docblock",
+    "include:graphql-directive"
   ]

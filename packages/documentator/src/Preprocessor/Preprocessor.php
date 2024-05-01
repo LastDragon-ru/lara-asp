@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 use Exception;
 use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
@@ -15,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocument
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Instruction as IncludeExample;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec\Instruction as IncludeExec;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile\Instruction as IncludeFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -92,6 +95,7 @@ class Preprocessor {
         $this->addInstruction(IncludeDocBlock::class);
         $this->addInstruction(IncludePackageList::class);
         $this->addInstruction(IncludeDocumentList::class);
+        $this->addInstruction(IncludeGraphqlDirective::class);
     }
 
     /**

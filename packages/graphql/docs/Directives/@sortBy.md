@@ -2,8 +2,8 @@
 
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
-[include:exec]: <../../../../dev/artisan dev:directive @sortBy>
-[//]: # (start: 43598e15e6936de056c8a256e3edb09c54520b27272d7b94115993712e8bec0b)
+[include:graphql-directive]: @sortBy
+[//]: # (start: e2d33c9307e49d5f53ac135415329a0b01b87bd56ea6f0dc6ca4ac9143395ffa)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -15,7 +15,7 @@ on
     | ARGUMENT_DEFINITION
 ```
 
-[//]: # (end: 43598e15e6936de056c8a256e3edb09c54520b27272d7b94115993712e8bec0b)
+[//]: # (end: e2d33c9307e49d5f53ac135415329a0b01b87bd56ea6f0dc6ca4ac9143395ffa)
 
 ## Basic usage
 
@@ -74,8 +74,8 @@ Addition rules for Implicit type:
 
 The `@sortByIgnored` can be used as Ignored marker.
 
-[include:exec]: <../../../../dev/artisan dev:directive @sortByIgnored>
-[//]: # (start: 08dddca7c96cf62e6e6e632190eb16fa49d5c1652e35e29b74417dc9d52c29ff)
+[include:graphql-directive]: @sortByIgnored
+[//]: # (start: a49887f25c9b44ee37b7df8d7fe960d16fcb8a2ddc8681ffad8100c6b4a7462e)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -92,7 +92,7 @@ on
     | SCALAR
 ```
 
-[//]: # (end: 08dddca7c96cf62e6e6e632190eb16fa49d5c1652e35e29b74417dc9d52c29ff)
+[//]: # (end: a49887f25c9b44ee37b7df8d7fe960d16fcb8a2ddc8681ffad8100c6b4a7462e)
 
 ## Operators
 

@@ -6,8 +6,8 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 >
 > The directive is experimental. The true cursor pagination is not implemented yet, the limit/offset is used internally. Any feedback would be greatly appreciated.
 
-[include:exec]: <../../../../dev/artisan dev:directive @stream>
-[//]: # (start: e110071ff260e742f8c8869e7521a4ee1215e74d006f9e61387396f2fcb368c3)
+[include:graphql-directive]: @stream
+[//]: # (start: edeacae9cacd4fc8137617d32f19385275282061c175ced459f6a6ac36d4f74a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -69,7 +69,7 @@ input StreamBuilder {
 }
 ```
 
-[//]: # (end: e110071ff260e742f8c8869e7521a4ee1215e74d006f9e61387396f2fcb368c3)
+[//]: # (end: edeacae9cacd4fc8137617d32f19385275282061c175ced459f6a6ac36d4f74a)
 
 ## Motivation
 
