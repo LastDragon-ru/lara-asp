@@ -2,8 +2,8 @@
 
 Probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
 
-[include:exec]: <../../../../dev/artisan dev:directive @searchBy>
-[//]: # (start: 69bf42cd0808d9d802898c40232dceb47e32be7a3a3d7ffca61cbdd6aa8a3e5b)
+[include:graphql-directive]: @searchBy
+[//]: # (start: c9edf68d4e62631cb07d4200b30e989eaa67d65012ea5f605060a4567a197392)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -15,11 +15,11 @@ on
     | ARGUMENT_DEFINITION
 ```
 
-[//]: # (end: 69bf42cd0808d9d802898c40232dceb47e32be7a3a3d7ffca61cbdd6aa8a3e5b)
+[//]: # (end: c9edf68d4e62631cb07d4200b30e989eaa67d65012ea5f605060a4567a197392)
 
 ## Basic usage
 
-Out the box directives provides following features:
+Out of the box directives provides following features:
 
 * Strictly typed - you can define supported operators for each Scalar;
 * Eloquent Builder, Query Builder and Custom Builder support;
@@ -157,8 +157,8 @@ As you can see in the example above you can use the special placeholder `_` inst
 
 The `@searchByIgnored` can be used as Ignored marker.
 
-[include:exec]: <../../../../dev/artisan dev:directive @searchByIgnored>
-[//]: # (start: 20d300e04ef04c52684a5d3db6a419825ada6f67a950a418e26dee5c9b5d218c)
+[include:graphql-directive]: @searchByIgnored
+[//]: # (start: 0344645522503dd5c49c35bbe2e023f2b8c6c02dfbc8d2fa2d41ae285d9cf0a1)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -175,7 +175,7 @@ on
     | SCALAR
 ```
 
-[//]: # (end: 20d300e04ef04c52684a5d3db6a419825ada6f67a950a418e26dee5c9b5d218c)
+[//]: # (end: 0344645522503dd5c49c35bbe2e023f2b8c6c02dfbc8d2fa2d41ae285d9cf0a1)
 
 ## Operators
 
@@ -233,8 +233,8 @@ scalar MyScalar
 
 Keep in mind, when you define/extend the scalar/enum, it will override all existing operators, so if you just want to add new operators, the `@searchByExtendOperators` directive should be used.
 
-[include:exec]: <../../../../dev/artisan dev:directive @searchByExtendOperators>
-[//]: # (start: fb9508c1688c78899393b1119463a14ebcc2c0872316ca676b2945a296312230)
+[include:graphql-directive]: @searchByExtendOperators
+[//]: # (start: fcfc25099864ad3b862835be85a0b621ab899c318715cd7e9fcee13691868eba)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -250,7 +250,7 @@ on
     | SCALAR
 ```
 
-[//]: # (end: fb9508c1688c78899393b1119463a14ebcc2c0872316ca676b2945a296312230)
+[//]: # (end: fcfc25099864ad3b862835be85a0b621ab899c318715cd7e9fcee13691868eba)
 
 ### Schema
 

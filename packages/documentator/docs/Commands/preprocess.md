@@ -75,6 +75,12 @@ Executes the `<target>` and returns result.
 
 Includes the `<target>` file.
 
+### `[include:graphql-directive]: <target>`
+
+* `<target>` - Directive name (started with `@` sign)
+
+Includes the definition of the directive as a Markdown code block.
+
 ### `[include:package-list]: <target> <parameters>`
 
 * `<target>` - Directory path.
