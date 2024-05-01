@@ -1,5 +1,5 @@
 {
-    "version": "6.2.0",
+    "version": "6.3.0",
     "require": {
         "php": "PHP",
         "laravel/framework": "Laravel",
@@ -8,6 +8,21 @@
     "merge": null,
     "requirements": {
         "HEAD": {
+            "laravel/framework": [
+                "^11.0.0",
+                "^10.34.0"
+            ],
+            "php": [
+                "^8.3",
+                "^8.2",
+                "^8.1"
+            ],
+            "phpunit/phpunit": [
+                "^11.0.0",
+                "^10.1.0"
+            ]
+        },
+        "6.3.0": {
             "laravel/framework": [
                 "^11.0.0",
                 "^10.34.0"

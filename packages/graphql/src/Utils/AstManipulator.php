@@ -310,7 +310,7 @@ class AstManipulator {
         } elseif ($definition instanceof ScalarType) {
             trigger_deprecation(
                 Package::Name,
-                '%{VERSION}',
+                '6.3.0',
                 'Passing `%s` into `%s` is deprecated, please use `%s` instead.',
                 ScalarType::class,
                 __METHOD__,
@@ -328,7 +328,7 @@ class AstManipulator {
         } elseif ($definition instanceof PhpEnumType) {
             trigger_deprecation(
                 Package::Name,
-                '%{VERSION}',
+                '6.3.0',
                 'Passing `%s` into `%s` is deprecated, please use `%s` instead.',
                 PhpEnumType::class,
                 __METHOD__,

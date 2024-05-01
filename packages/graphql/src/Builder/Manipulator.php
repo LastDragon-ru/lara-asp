@@ -70,7 +70,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         if ($node instanceof Type && !($node instanceof TypeReference)) {
             trigger_deprecation(
                 Package::Name,
-                '%{VERSION}',
+                '6.3.0',
                 'Returning `%s` from `%s` is deprecated, please use `%s` instead.',
                 Type::class,
                 TypeDefinition::class.'::getTypeDefinition()',
