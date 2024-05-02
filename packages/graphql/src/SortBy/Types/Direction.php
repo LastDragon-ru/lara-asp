@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction as DirectionEnum;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 class Direction implements TypeDefinition {
@@ -28,7 +27,7 @@ class Direction implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
-        return new TypeReference($name, DirectionEnum::class);
+    ): TypeDefinitionNode|string|null {
+        return DirectionEnum::class;
     }
 }

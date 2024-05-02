@@ -21,7 +21,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 
@@ -163,8 +162,8 @@ class Offset extends ScalarType implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
-        return new TypeReference($name, self::class);
+    ): TypeDefinitionNode|string|null {
+        return self::class;
     }
     // </editor-fold>
 }

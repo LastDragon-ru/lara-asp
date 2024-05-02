@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Condition\Root;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Types\Scalar;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 class RelationshipType implements TypeDefinition {
@@ -36,7 +35,7 @@ class RelationshipType implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
+    ): TypeDefinitionNode|string|null {
         // Object?
         if (!$source->isObject()) {
             return null;

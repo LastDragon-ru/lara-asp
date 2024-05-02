@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 use function str_ends_with;
@@ -41,7 +40,7 @@ class Stream implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
+    ): TypeDefinitionNode|string|null {
         $type       = $source->getTypeName();
         $navigation = $manipulator->getType(Navigation::class, $source, $context);
 

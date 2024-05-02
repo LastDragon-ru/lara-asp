@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 class Navigation implements TypeDefinition {
@@ -28,7 +27,7 @@ class Navigation implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
+    ): TypeDefinitionNode|string|null {
         $offset = $manipulator->getType(Offset::class, $source, $context);
 
         return Parser::objectTypeDefinition(

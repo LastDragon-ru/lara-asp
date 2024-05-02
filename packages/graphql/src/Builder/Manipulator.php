@@ -35,6 +35,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
@@ -43,6 +44,7 @@ use function array_map;
 use function array_unshift;
 use function count;
 use function implode;
+use function is_string;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="TypeProvider">
@@ -65,6 +67,10 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         if (!$node) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source, $context);
+        }
+
+        if (is_string($node)) {
+            $node = new TypeReference($name, $node);
         }
 
         if ($name !== $this->getName($node)) {

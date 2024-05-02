@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Contracts;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Type\Definition\NamedType;
+use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
+use UnitEnum;
 
 interface TypeDefinition {
     /**
@@ -16,12 +18,12 @@ interface TypeDefinition {
     /**
      * Returns the type definition for given Source if possible. The name must be equal to `$name`.
      *
-     * @return (TypeDefinitionNode&Node)|TypeReference|null
+     * @return (TypeDefinitionNode&Node)|class-string<(Type&NamedType)|UnitEnum>|null
      */
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null;
+    ): TypeDefinitionNode|string|null;
 }

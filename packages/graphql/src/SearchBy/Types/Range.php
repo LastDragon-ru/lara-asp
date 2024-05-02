@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 class Range implements TypeDefinition {
@@ -31,7 +30,7 @@ class Range implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
+    ): TypeDefinitionNode|string|null {
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             input {$name} {

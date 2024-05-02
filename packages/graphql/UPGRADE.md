@@ -37,6 +37,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] The `\LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType` is not implement `\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` anymore. To add the scalar into the Schema, you can use `@type`/`@scalar` directive, or create a custom implementation of `TypeDefinition` contract to use with `Builder`/`Manipulator`.
 
+* [ ] `\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition::getTypeDefinition()` return type changed.
+
 # Upgrade from v5
 
 ## General

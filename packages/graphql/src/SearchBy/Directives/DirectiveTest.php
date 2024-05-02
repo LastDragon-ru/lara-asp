@@ -47,7 +47,6 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\QueryBuilderData
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesFragment;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
@@ -1622,7 +1621,7 @@ class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefin
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|TypeReference|null {
+    ): TypeDefinitionNode|string|null {
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             """
