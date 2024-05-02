@@ -303,7 +303,7 @@ pagination).
 """
 scalar StreamOffset
 @type(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Types\\Offset"
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Scalars\\Offset"
 )
 
 type Query

@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives;
 
 use Closure;
 use Exception;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
@@ -1622,7 +1621,7 @@ class DirectiveTest__CustomComplexOperator extends Operator implements TypeDefin
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode&Node {
+    ): TypeDefinitionNode|string|null {
         return Parser::inputObjectTypeDefinition(
             <<<GRAPHQL
             """

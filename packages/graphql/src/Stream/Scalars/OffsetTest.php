@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Stream\Types;
+namespace LastDragon_ru\LaraASP\GraphQL\Stream\Scalars;
 
 use Exception;
 use GraphQL\Error\Error;

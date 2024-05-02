@@ -53,16 +53,13 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): string;
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|Type|null {
+    ): TypeDefinitionNode|string|null {
         // Source?
         $source = $manipulator->getTypeSource($source->getTypeDefinition());
 

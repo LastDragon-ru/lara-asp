@@ -91,7 +91,7 @@ Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, 
 >
 > ```graphql
 > scalar JsonString
-> @scalar(
+> @type(
 >     class: "LastDragon_ru\\LaraASP\\GraphQL\\Scalars\\JsonStringType"
 > )
 > ```

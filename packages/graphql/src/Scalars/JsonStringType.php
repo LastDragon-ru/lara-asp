@@ -8,22 +8,15 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\StringValueNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\StringType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\Utils;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 use function is_string;
 use function json_validate;
 use function sprintf;
 
-class JsonStringType extends StringType implements TypeDefinition {
+class JsonStringType extends StringType {
     public string  $name        = 'JsonString';
     public ?string $description = 'Represents JSON string.';
 
@@ -81,24 +74,6 @@ class JsonStringType extends StringType implements TypeDefinition {
         }
 
         return $value;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="TypeDefinition">
-    // =========================================================================
-    #[Override]
-    public function getTypeName(TypeSource $source, Context $context): string {
-        return $this->name();
-    }
-
-    #[Override]
-    public function getTypeDefinition(
-        Manipulator $manipulator,
-        TypeSource $source,
-        Context $context,
-        string $name,
-    ): TypeDefinitionNode|Type|null {
-        return new TypeReference($name, self::class);
     }
     // </editor-fold>
 }

@@ -35,7 +35,7 @@ class RelationshipType implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|Type|null {
+    ): TypeDefinitionNode|string|null {
         // Object?
         if (!$source->isObject()) {
             return null;
