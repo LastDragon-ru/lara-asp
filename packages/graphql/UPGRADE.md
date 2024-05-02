@@ -33,6 +33,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 >
 > Maybe a good idea to add test (at least) with `LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions::assertGraphQLSchemaEquals()` assertion before the upgrade 🤗
 
+# Upgrade from v6
+
+* [ ] The `\LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType` is not implement `\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` anymore. To add the scalar into the Schema, you can use `@type`/`@scalar` directive, or create a custom implementation of `TypeDefinition` contract to use with `Builder`/`Manipulator`.
+
 # Upgrade from v5
 
 ## General
