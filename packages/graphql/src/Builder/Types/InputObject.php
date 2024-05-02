@@ -30,6 +30,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
@@ -53,16 +54,13 @@ abstract class InputObject implements TypeDefinition {
         Context $context,
     ): string;
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
     public function getTypeDefinition(
         Manipulator $manipulator,
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|Type|null {
+    ): TypeDefinitionNode|TypeReference|null {
         // Source?
         $source = $manipulator->getTypeSource($source->getTypeDefinition());
 

@@ -11,7 +11,6 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\Utils;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\StringEncrypter;
@@ -164,7 +163,7 @@ class Offset extends ScalarType implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|Type|null {
+    ): TypeDefinitionNode|TypeReference|null {
         return new TypeReference($name, self::class);
     }
     // </editor-fold>

@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Types;
 
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Type\Definition\Type;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
+use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Override;
 
 use function str_ends_with;
@@ -41,7 +41,7 @@ class Stream implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|Type|null {
+    ): TypeDefinitionNode|TypeReference|null {
         $type       = $source->getTypeName();
         $navigation = $manipulator->getType(Navigation::class, $source, $context);
 

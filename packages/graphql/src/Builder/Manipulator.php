@@ -23,7 +23,6 @@ use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\FakeTypeDefinitionIsNotFake;
@@ -35,9 +34,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InputSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
-use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
-use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
@@ -46,7 +43,6 @@ use function array_map;
 use function array_unshift;
 use function count;
 use function implode;
-use function trigger_deprecation;
 
 class Manipulator extends AstManipulator implements TypeProvider {
     // <editor-fold desc="TypeProvider">
@@ -66,17 +62,6 @@ class Manipulator extends AstManipulator implements TypeProvider {
 
         // Create new
         $node = $instance->getTypeDefinition($this, $source, $context, $name);
-
-        if ($node instanceof Type && !($node instanceof TypeReference)) {
-            trigger_deprecation(
-                Package::Name,
-                '6.3.0',
-                'Returning `%s` from `%s` is deprecated, please use `%s` instead.',
-                Type::class,
-                TypeDefinition::class.'::getTypeDefinition()',
-                TypeReference::class,
-            );
-        }
 
         if (!$node) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source, $context);
