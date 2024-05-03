@@ -110,6 +110,72 @@ Publish the config and add normalizers/denormalizers if you need more:
 php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provider --tag=config
 ```
 
+# Eloquent Accessor/Mutator[^1]
+
+You can use the [`LastDragon_ru\LaraASP\Serializer\Casts\Serialized`](./src/Casts/Serialized.php) attribute to populate a model attribute to/from an object:
+
+[include:example]: ./docs/Examples/Attribute.php
+[//]: # (start: 211a5dc77435fa2d79fcb5afce955fdd851bd0be575b7eae03d69d3fe5111b0a)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+// phpcs:disable PSR1.Files.SideEffects
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
+namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\Attribute;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Serializer\Casts\Serialized;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+
+class UserSettings implements Serializable {
+    public function __construct(
+        public int $perPage,
+        public bool $showSidebar,
+    ) {
+        // empty
+    }
+}
+
+class User extends Model {
+    /**
+     * @return Attribute<?UserSettings, ?UserSettings>
+     */
+    protected function settings(): Attribute {
+        return app()->make(Serialized::class)->attribute(UserSettings::class);
+    }
+}
+
+$user           = new User();
+$user->settings = new UserSettings(35, false);
+
+Example::dump($user->settings);
+Example::dump($user->getAttributes());
+```
+
+The `$user->settings` is:
+
+```plain
+LastDragon_ru\LaraASP\Serializer\Docs\Examples\Attribute\UserSettings {
+  +perPage: 35
+  +showSidebar: false
+}
+```
+
+The `$user->getAttributes()` is:
+
+```plain
+[
+  "settings" => "{"perPage":35,"showSidebar":false}",
+]
+```
+
+[//]: # (end: 211a5dc77435fa2d79fcb5afce955fdd851bd0be575b7eae03d69d3fe5111b0a)
+
 # Eloquent Cast[^1]
 
 You can use the [`LastDragon_ru\LaraASP\Serializer\Casts\AsSerializable`](./src/Casts/AsSerializable.php) cast class to cast a model string attribute to an object:
