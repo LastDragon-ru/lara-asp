@@ -7,11 +7,19 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToCast;
+use LastDragon_ru\LaraASP\Serializer\Package;
 use Override;
 
 use function is_string;
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', Serialized::class);
 
 /**
+ * @deprecated %{VERSION} Please use {@see Serialized} instead.
+ *
  * @template TGet of object
  * @template TSet of object
  *
