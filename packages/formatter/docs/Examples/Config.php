@@ -25,7 +25,7 @@ Example::config(Package::Name, [
 ]);
 
 $datetime = Date::make('2023-12-30T20:41:40.000018+04:00');
-$default  = Example::app()->make(Formatter::class);
+$default  = app()->make(Formatter::class);
 $locale   = $default->forLocale('ru_RU');
 
 Example::dump($default->date($datetime));

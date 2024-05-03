@@ -53,8 +53,8 @@ Formatter is very simple to use:
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 
-$default = Example::app()->make(Formatter::class); // For default app locale
-$locale  = $default->forLocale('ru_RU');           // For ru_RU locale
+$default = app()->make(Formatter::class); // For default app locale
+$locale  = $default->forLocale('ru_RU');  // For ru_RU locale
 
 Example::dump($default->integer(123.454321));
 Example::dump($default->decimal(123.454321));
@@ -123,7 +123,7 @@ Example::config(Package::Name, [
 ]);
 
 $datetime = Date::make('2023-12-30T20:41:40.000018+04:00');
-$default  = Example::app()->make(Formatter::class);
+$default  = app()->make(Formatter::class);
 $locale   = $default->forLocale('ru_RU');
 
 Example::dump($default->date($datetime));
@@ -193,8 +193,8 @@ The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.gith
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 
-$default = Example::app()->make(Formatter::class); // For default app locale
-$locale  = $default->forLocale('ru_RU');           // For ru_RU locale
+$default = app()->make(Formatter::class); // For default app locale
+$locale  = $default->forLocale('ru_RU');  // For ru_RU locale
 
 Example::dump($default->duration(123.454321));
 Example::dump($locale->duration(123.4543));

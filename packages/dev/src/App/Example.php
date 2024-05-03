@@ -93,7 +93,7 @@ final class Example extends Command {
         self::getDumper()->raw($value, $expression ?? self::getExpression(__FUNCTION__), $type);
     }
 
-    public static function app(): Application {
+    protected static function app(): Application {
         if (!self::$app) {
             throw new LogicException(
                 sprintf(
@@ -110,9 +110,6 @@ final class Example extends Command {
      * @param array<string, mixed> $settings
      */
     public static function config(string $root, array $settings): void {
-        // Example?
-        self::app();
-
         // Update
         $repository = self::app()->make(Repository::class);
         $config     = (array) $repository->get($root, []);

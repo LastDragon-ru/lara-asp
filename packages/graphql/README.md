@@ -233,8 +233,8 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
-$schema   = Example::app()->make(SchemaBuilder::class)->schema();
-$printer  = Example::app()->make(Printer::class);
+$schema   = app()->make(SchemaBuilder::class)->schema();
+$printer  = app()->make(Printer::class);
 $settings = new DefaultSettings();
 
 $printer->setSettings(
