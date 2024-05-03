@@ -30,7 +30,6 @@
     "http-interop/http-factory-guzzle": "^1.0.0",
     "illuminate/collections": "^10.34.0|^11.0.0",
     "illuminate/console": "^10.34.0|^11.0.0",
-    "illuminate/container": "^10.34.0|^11.0.0",
     "illuminate/contracts": "^10.34.0|^11.0.0",
     "illuminate/database": "^10.34.0|^11.0.0",
     "illuminate/testing": "^10.34.0|^11.0.0",
