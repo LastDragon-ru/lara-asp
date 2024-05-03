@@ -51,6 +51,11 @@ parameters:
 			path: packages/graphql/src/Utils/AstManipulator.php
 
 		-
+			message: "#^Callable callable\\(\\)\\: \\(object\\|null\\) invoked with 1 parameter, 0 required\\.$#"
+			count: 3
+			path: packages/serializer/src/Casts/SerializedAttributeTest.php
+
+		-
 			message: "#^Parameter \\#2 \\.\\.\\.\\$configs of method LastDragon_ru\\\\LaraASP\\\\Core\\\\Utils\\\\ConfigMerger\\:\\:merge\\(\\) expects array, mixed given\\.$#"
 			count: 1
 			path: packages/spa/src/Http/Controllers/SpaController.php

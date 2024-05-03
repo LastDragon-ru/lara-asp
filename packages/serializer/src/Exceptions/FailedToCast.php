@@ -20,7 +20,7 @@ class FailedToCast extends PackageException {
     ) {
         parent::__construct(
             sprintf(
-                'Failed to cast value into `%1$s`. The `%1$s|string|null` expected, `%2$s` given.',
+                'Failed to cast `%2$s` to `%1$s`.',
                 $this->target,
                 is_object($this->value)
                     ? $this->value::class
