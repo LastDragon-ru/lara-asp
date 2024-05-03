@@ -2,14 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Spa\Package;
 
 class SpaController extends Controller {
+    public function __construct(
+        protected readonly ConfigResolver $config,
+    ) {
+        // empty
+    }
+
     // <editor-fold desc="Actions">
     // =========================================================================
     /**
@@ -28,7 +33,7 @@ class SpaController extends Controller {
      * @return array<string, mixed>
      */
     protected function getSettings(): array {
-        $repository = Container::getInstance()->make(Repository::class);
+        $repository = $this->config->getInstance();
         $package    = Package::Name;
         $default    = [
             ConfigMerger::Strict => false,

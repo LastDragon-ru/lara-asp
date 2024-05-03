@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -72,10 +71,10 @@ trait OperatorTests {
             );
         }
 
-        $operator = Container::getInstance()->make($this->getOperator());
+        $operator = $this->app()->make($this->getOperator());
         $argument = $argumentFactory($this);
         $context  = $contextFactory ? $contextFactory($this) : new Context();
-        $handler  = Container::getInstance()->make($directive);
+        $handler  = $this->app()->make($directive);
         $builder  = $builderFactory($this);
         $actual   = $operator->call($handler, $builder, $field, $argument, $context);
 

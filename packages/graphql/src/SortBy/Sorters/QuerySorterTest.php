@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
@@ -56,7 +55,7 @@ final class QuerySorterTest extends TestCase {
             );
         }
 
-        $sorter  = Container::getInstance()->make(QuerySorter::class);
+        $sorter  = $this->app()->make(QuerySorter::class);
         $builder = $builder($this);
         $builder = $sorter->sort($builder, $field, $direction, null);
 

@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Migrator\Commands\RawMigration;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
+use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 use Override;
 
 class Provider extends ServiceProvider {
@@ -23,6 +24,7 @@ class Provider extends ServiceProvider {
     public function register() {
         parent::register();
 
+        $this->registerSeeder();
         $this->registerMigrator();
         $this->registerMigrationCreator();
     }
@@ -37,6 +39,10 @@ class Provider extends ServiceProvider {
 
     // <editor-fold desc="Functions">
     // =========================================================================
+    protected function registerSeeder(): void {
+        $this->app->scopedIf(SeederService::class);
+    }
+
     protected function registerMigrator(): void {
         $this->app->extend('migrator', static function (Migrator $migrator): Migrator {
             return SmartMigrator::create($migrator);

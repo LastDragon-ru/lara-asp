@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use LastDragon_ru\LaraASP\Core\Contracts\Schedulable;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
@@ -66,8 +65,8 @@ final class SchedulerTest extends TestCase {
                 ->andReturnSelf();
         });
 
-        $schedule  = Container::getInstance()->make(Schedule::class);
-        $scheduler = Container::getInstance()->make(Scheduler::class);
+        $schedule  = $this->app()->make(Schedule::class);
+        $scheduler = $this->app()->make(Scheduler::class);
 
         self::assertTrue(
             $scheduler->register($schedule, $job::class),
@@ -111,8 +110,8 @@ final class SchedulerTest extends TestCase {
                 ->never();
         });
 
-        $schedule  = Container::getInstance()->make(Schedule::class);
-        $scheduler = Container::getInstance()->make(Scheduler::class);
+        $schedule  = $this->app()->make(Schedule::class);
+        $scheduler = $this->app()->make(Scheduler::class);
 
         self::assertTrue(
             $scheduler->register($schedule, $job::class),
@@ -134,7 +133,7 @@ final class SchedulerTest extends TestCase {
         };
 
         $schedule  = Mockery::mock(Schedule::class);
-        $scheduler = Container::getInstance()->make(Scheduler::class);
+        $scheduler = $this->app()->make(Scheduler::class);
 
         self::assertFalse(
             $scheduler->register($schedule, $job::class),
@@ -156,7 +155,7 @@ final class SchedulerTest extends TestCase {
         };
 
         $schedule  = Mockery::mock(Schedule::class);
-        $scheduler = Container::getInstance()->make(Scheduler::class);
+        $scheduler = $this->app()->make(Scheduler::class);
 
         self::assertFalse(
             $scheduler->register($schedule, $job::class),
@@ -169,7 +168,7 @@ final class SchedulerTest extends TestCase {
         };
 
         $schedule  = Mockery::mock(Schedule::class);
-        $scheduler = Container::getInstance()->make(Scheduler::class);
+        $scheduler = $this->app()->make(Scheduler::class);
 
         self::assertFalse(
             $scheduler->register($schedule, $job::class),

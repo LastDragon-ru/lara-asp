@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Serializer;
 
 use DateTimeInterface;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Support\Carbon;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -38,15 +37,15 @@ final class ProviderTest extends TestCase {
     // =========================================================================
     public function testRegister(): void {
         self::assertSame(
-            Container::getInstance()->make(SerializerContract::class),
-            Container::getInstance()->make(SerializerContract::class),
+            $this->app()->make(SerializerContract::class),
+            $this->app()->make(SerializerContract::class),
         );
     }
 
     #[DataProvider('dataProviderSerialization')]
     public function testSerialization(Exception|string $expected, Serializable $serializable): void {
         try {
-            $serializer = Container::getInstance()->make(SerializerContract::class);
+            $serializer = $this->app()->make(SerializerContract::class);
             $serialized = $serializer->serialize($serializable);
 
             if (is_string($expected)) {
@@ -72,7 +71,7 @@ final class ProviderTest extends TestCase {
     #[DataProvider('dataProviderDeserialization')]
     public function testDeserialization(Exception|Serializable $expected, string $class, string $serialized): void {
         try {
-            $serializer   = Container::getInstance()->make(SerializerContract::class);
+            $serializer   = $this->app()->make(SerializerContract::class);
             $deserialized = $serializer->deserialize($class, $serialized);
 
             if ($expected instanceof Serializable) {

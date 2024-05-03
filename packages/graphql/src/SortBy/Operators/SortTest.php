@@ -4,14 +4,16 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use Closure;
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
@@ -85,9 +87,9 @@ final class SortTest extends TestCase {
                 ->andReturns();
         });
 
-        $directive = Container::getInstance()->make(Directive::class);
+        $directive = $this->app()->make(Directive::class);
         $field     = new Field();
-        $operator  = Container::getInstance()->make(Sort::class);
+        $operator  = $this->app()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -112,9 +114,9 @@ final class SortTest extends TestCase {
                 ->once();
         });
 
-        $directive = Container::getInstance()->make(Directive::class);
+        $directive = $this->app()->make(Directive::class);
         $field     = new Field();
-        $operator  = Container::getInstance()->make(Sort::class);
+        $operator  = $this->app()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -139,9 +141,9 @@ final class SortTest extends TestCase {
                 ->once();
         });
 
-        $directive = Container::getInstance()->make(Directive::class);
+        $directive = $this->app()->make(Directive::class);
         $field     = new Field();
-        $operator  = Container::getInstance()->make(Sort::class);
+        $operator  = $this->app()->make(Sort::class);
         $argument  = $this->getGraphQLArgument(
             'Test',
             Direction::Asc,
@@ -170,7 +172,10 @@ final class SortTest extends TestCase {
 
         $sorter   = $sorterFactory($this);
         $context  = $contextFactory($this);
-        $operator = Mockery::mock(Sort::class);
+        $config   = $this->app()->make(ConfigResolver::class);
+        $factory  = Mockery::mock(SorterFactory::class);
+        $resolver = Mockery::mock(BuilderFieldResolver::class);
+        $operator = Mockery::mock(Sort::class, [$config, $factory, $resolver]);
         $operator->shouldAllowMockingProtectedMethods();
         $operator->makePartial();
 

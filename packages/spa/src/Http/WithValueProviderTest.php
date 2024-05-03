@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Spa\Http;
 
 use Closure;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -21,8 +20,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(WithValueProvider::class)]
 final class WithValueProviderTest extends TestCase {
     public function testValidated(): void {
-        $router        = Container::getInstance()->make(Router::class);
-        $translator    = Container::getInstance()->make(Translator::class);
+        $router        = $this->app()->make(Router::class);
+        $translator    = $this->app()->make(Translator::class);
         $resolverRuleA = new ResolverRule(
             $translator,
             new class($router) extends Resolver {
@@ -73,13 +72,15 @@ final class WithValueProviderTest extends TestCase {
             ],
         ];
 
-        $request = new class($rule, $resolverRuleA, $resolverRuleB, $data) {
+        $factory = $this->app()->make(Factory::class);
+        $request = new class($factory, $rule, $resolverRuleA, $resolverRuleB, $data) {
             use WithValueProvider;
 
             /**
              * @param array<string, mixed> $data
              */
             public function __construct(
+                private readonly Factory $factory,
                 private readonly ValidationRule $rule,
                 private readonly ResolverRule $resolverRuleA,
                 private readonly ResolverRule $resolverRuleB,
@@ -95,8 +96,7 @@ final class WithValueProviderTest extends TestCase {
              */
             #[Override]
             protected function getValidatorInstance() {
-                $factory   = Container::getInstance()->make(Factory::class);
-                $validator = $factory->make($this->data, [
+                return $this->factory->make($this->data, [
                     'rule'              => ['required', $this->rule],
                     'rule_nullable'     => ['nullable', 'int'],
                     'resolver'          => ['required', $this->resolverRuleA],
@@ -106,8 +106,6 @@ final class WithValueProviderTest extends TestCase {
                     'array.*.rule'      => ['required', $this->rule],
                     'array.*.resolver'  => ['required', $this->resolverRuleA],
                 ]);
-
-                return $validator;
             }
         };
 

@@ -19,7 +19,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -36,7 +36,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\Source;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Utils\TypeReference;
+use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
+use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
 use Override;
 
@@ -47,12 +49,21 @@ use function implode;
 use function is_string;
 
 class Manipulator extends AstManipulator implements TypeProvider {
+    public function __construct(
+        protected readonly ContainerResolver $container,
+        DirectiveLocator $directiveLocator,
+        DocumentAST $document,
+        TypeRegistry $types,
+    ) {
+        parent::__construct($directiveLocator, $document, $types);
+    }
+
     // <editor-fold desc="TypeProvider">
     // =========================================================================
     #[Override]
     public function getType(string $definition, TypeSource $source, Context $context): string {
         // Exists?
-        $instance = Container::getInstance()->make($definition);
+        $instance = $this->container->getInstance()->make($definition);
         $name     = $instance->getTypeName($source, $context);
 
         if ($this->isTypeDefinitionExists($name)) {

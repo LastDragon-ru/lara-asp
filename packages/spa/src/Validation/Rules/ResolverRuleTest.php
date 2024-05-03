@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Routing\Router;
@@ -20,8 +19,8 @@ final class ResolverRuleTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testRule(): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $router     = Container::getInstance()->make(Router::class);
+        $translator = $this->app()->make(Translator::class);
+        $router     = $this->app()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
              * @inheritDoc
@@ -32,7 +31,7 @@ final class ResolverRuleTest extends TestCase {
             }
         };
         $rule       = new ResolverRule($translator, $resolver);
-        $factory    = Container::getInstance()->make(Factory::class);
+        $factory    = $this->app()->make(Factory::class);
         $validator  = $factory->make(
             [
                 'a' => true,
@@ -56,8 +55,8 @@ final class ResolverRuleTest extends TestCase {
     }
 
     public function testIsValid(): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $router     = Container::getInstance()->make(Router::class);
+        $translator = $this->app()->make(Translator::class);
+        $router     = $this->app()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
              * @inheritDoc
@@ -73,8 +72,8 @@ final class ResolverRuleTest extends TestCase {
     }
 
     public function testIsValidUnresolved(): void {
-        $translator = Container::getInstance()->make(Translator::class);
-        $router     = Container::getInstance()->make(Router::class);
+        $translator = $this->app()->make(Translator::class);
+        $router     = $this->app()->make(Router::class);
         $resolver   = new class($router) extends Resolver {
             /**
              * @inheritDoc

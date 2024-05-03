@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 use Exception;
-use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
@@ -86,6 +86,7 @@ class Preprocessor {
     private array $instructions = [];
 
     public function __construct(
+        protected readonly ContainerResolver $container,
         protected readonly Serializer $serializer,
     ) {
         $this->addInstruction(IncludeFile::class);
@@ -122,7 +123,7 @@ class Preprocessor {
         }
 
         if (!isset($this->instructions[$name][1])) {
-            $this->instructions[$name][1] = Container::getInstance()->make(
+            $this->instructions[$name][1] = $this->container->getInstance()->make(
                 $this->instructions[$name][0],
             );
         }

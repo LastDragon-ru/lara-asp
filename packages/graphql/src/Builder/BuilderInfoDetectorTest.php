@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
@@ -17,7 +16,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
@@ -48,8 +46,6 @@ use const JSON_THROW_ON_ERROR;
  */
 #[CoversClass(BuilderInfoDetector::class)]
 final class BuilderInfoDetectorTest extends TestCase {
-    use WithManipulator;
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -59,11 +55,12 @@ final class BuilderInfoDetectorTest extends TestCase {
      */
     #[DataProvider('dataProviderGetNodeBuilderInfo')]
     public function testGetNodeBuilderInfo(array $expected, Closure $sourceFactory): void {
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
-        $locator     = Container::getInstance()->make(DirectiveLocator::class);
-        $source      = $sourceFactory($locator, $manipulator);
-        $directive   = new BuilderInfoDetectorTest__BuilderInfoDetector();
-        $actual      = $directive->getBuilderInfo($manipulator, $source);
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
+        $locator            = $this->app()->make(DirectiveLocator::class);
+        $source             = $sourceFactory($locator, $manipulator);
+        $directive          = new BuilderInfoDetectorTest__BuilderInfoDetector($manipulatorFactory);
+        $actual             = $directive->getBuilderInfo($manipulator, $source);
 
         self::assertEquals(
             $expected,
@@ -81,11 +78,12 @@ final class BuilderInfoDetectorTest extends TestCase {
     #[DataProvider('dataProviderGetNodeBuilderInfoScoutBuilder')]
     #[RequiresLaravelScout]
     public function testGetNodeBuilderInfoScoutBuilder(array $expected, Closure $sourceFactory): void {
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
-        $locator     = Container::getInstance()->make(DirectiveLocator::class);
-        $source      = $sourceFactory($locator, $manipulator);
-        $directive   = new BuilderInfoDetectorTest__BuilderInfoDetector();
-        $actual      = $directive->getBuilderInfo($manipulator, $source);
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
+        $locator            = $this->app()->make(DirectiveLocator::class);
+        $source             = $sourceFactory($locator, $manipulator);
+        $directive          = new BuilderInfoDetectorTest__BuilderInfoDetector($manipulatorFactory);
+        $actual             = $directive->getBuilderInfo($manipulator, $source);
 
         self::assertEquals(
             $expected,

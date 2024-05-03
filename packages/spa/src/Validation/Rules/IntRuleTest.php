@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,8 +19,8 @@ final class IntRuleTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderIsValid')]
     public function testRule(bool $expected, mixed $value): void {
-        $rule      = Container::getInstance()->make(IntRule::class);
-        $factory   = Container::getInstance()->make(Factory::class);
+        $rule      = $this->app()->make(IntRule::class);
+        $factory   = $this->app()->make(Factory::class);
         $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
         self::assertEquals($expected, !$validator->fails());
@@ -40,7 +39,7 @@ final class IntRuleTest extends TestCase {
 
     #[DataProvider('dataProviderIsValid')]
     public function testIsValid(bool $expected, mixed $value): void {
-        $rule   = Container::getInstance()->make(IntRule::class);
+        $rule   = $this->app()->make(IntRule::class);
         $actual = $rule->isValid('attribute', $value);
 
         self::assertEquals($expected, $actual);

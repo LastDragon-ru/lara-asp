@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
@@ -24,7 +23,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));
         $params   = new Parameters(template: $template);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($path, $target, $params);
 
         self::assertEquals(
@@ -41,7 +40,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/invalid'));
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new PackageComposerJsonIsMissing(
@@ -58,7 +57,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no readme'));
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new PackageReadmeIsMissing(
@@ -75,7 +74,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no title'));
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

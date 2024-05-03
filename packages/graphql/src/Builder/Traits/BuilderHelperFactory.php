@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Traits;
 
-use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 
 use function array_key_exists;
 use function is_a;
 use function is_object;
+
+// todo(graphql): Do we really need this?
 
 /**
  * @internal
@@ -48,7 +50,7 @@ trait BuilderHelperFactory {
         if (!array_key_exists($builder, $this->instances)) {
             $class                     = $this->getHelperClass($builder);
             $this->instances[$builder] = $class
-                ? Container::getInstance()->make($class)
+                ? $this->getContainerResolver()->getInstance()->make($class)
                 : null;
         }
 
@@ -76,4 +78,6 @@ trait BuilderHelperFactory {
 
         return $this->classes[$builder];
     }
+
+    abstract private function getContainerResolver(): ContainerResolver;
 }

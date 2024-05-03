@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Helpers\Translator;
 /**
  * @see Translator
  *
- * @mixin ServiceProvider
+ * @phpstan-require-extends ServiceProvider
  */
 trait WithTranslations {
     use Helper;

@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 
 use Exception;
-use Illuminate\Container\Container;
 use Illuminate\Process\Factory;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
@@ -26,10 +25,11 @@ use const PREG_UNMATCHED_AS_NULL;
 class Instruction implements ProcessableInstruction {
     public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
-    protected readonly Factory $factory;
 
-    public function __construct() {
-        $this->factory = Container::getInstance()->make(Factory::class); // next(documentator): Inject in constructor
+    public function __construct(
+        protected readonly Factory $factory,
+    ) {
+        // empty
     }
 
     #[Override]

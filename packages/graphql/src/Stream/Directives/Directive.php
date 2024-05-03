@@ -9,13 +9,13 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\HasFieldsType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
@@ -24,12 +24,12 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderInfoProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Enhancer;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
@@ -89,7 +89,6 @@ use function uksort;
 use const JSON_THROW_ON_ERROR;
 
 class Directive extends BaseDirective implements FieldResolver, FieldManipulator, BuilderInfoProvider {
-    use WithManipulator;
     use WithSource;
 
     final public const Name          = 'Stream';
@@ -101,10 +100,16 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     final public const ArgKey        = 'key';
 
     /**
-     * @param StreamFactory<object> $factory
+     * @param StreamFactory<object> $streamFactory
      */
     public function __construct(
-        protected readonly StreamFactory $factory,
+        protected readonly ContainerResolver $container,
+        protected readonly ConfigResolver $config,
+        protected readonly BuilderInfoDetector $detector,
+        protected readonly StreamFactory $streamFactory,
+        protected readonly StreamType $streamType,
+        protected readonly ProvidesResolver $provider,
+        protected readonly ManipulatorFactory $manipulatorFactory,
     ) {
         // empty
     }
@@ -189,13 +194,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
-        $repository  = Container::getInstance()->make(Repository::class);
-        $manipulator = $this->getAstManipulator($documentAST);
+        $repository  = $this->config->getInstance();
+        $manipulator = $this->manipulatorFactory->create($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
         $prefix      = self::Settings;
 
         // Updated?
-        if (Container::getInstance()->make(StreamType::class)->is($source->getTypeName())) {
+        if ($this->streamType->is($source->getTypeName())) {
             return;
         }
 
@@ -215,8 +220,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Builder?
-        Container::getInstance()->make(BuilderInfoDetector::class)
-            ->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
+        $this->detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
 
         // Searchable?
         $searchable = Cast::toBool(
@@ -281,7 +285,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         // Update type
-        $type = $this->getAstManipulator($documentAST)->getType(StreamType::class, $source, new Context());
+        $type = $manipulator->getType(StreamType::class, $source, new Context());
         $type = Parser::typeReference("{$type}!");
 
         $manipulator->setFieldType(
@@ -406,7 +410,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
 
             // Not supported?
-            if ($type !== null && !$this->factory->isSupported($type)) {
+            if ($type !== null && !$this->streamFactory->isSupported($type)) {
                 throw new BuilderUnsupported($source, $type);
             }
         } catch (ReflectionException) {
@@ -430,7 +434,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     public function resolveField(FieldValue $fieldValue): callable {
         return function (mixed $root, array $args, GraphQLContext $context, ResolveInfo $info): StreamValue {
             // Offset
-            $manipulator = $this->getAstManipulator(new DocumentAST());
+            $manipulator = $this->manipulatorFactory->create(new DocumentAST());
             $source      = (new ObjectSource($manipulator, $info->parentType))->getField($info->fieldDefinition);
             $offset      = $this->getFieldValue(StreamOffsetDirective::class, $manipulator, $source, $info, $args);
 
@@ -445,7 +449,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
 
             if (!is_object($builder)) {
                 throw new BuilderInvalid($source, gettype($builder));
-            } elseif (!$this->factory->isSupported($builder)) {
+            } elseif (!$this->streamFactory->isSupported($builder)) {
                 throw new BuilderUnsupported($source, $builder::class);
             } else {
                 // ok
@@ -454,7 +458,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             // Stream
             $key    = $this->getArgKey($manipulator, $source);
             $limit  = $this->getFieldValue(StreamLimitDirective::class, $manipulator, $source, $info, $args);
-            $stream = $this->factory->create($builder, $key, $limit, $offset);
+            $stream = $this->streamFactory->create($builder, $key, $limit, $offset);
             $stream = new StreamValue($stream);
 
             return $stream;
@@ -557,7 +561,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             if (!$resolver) {
                 $resolver = RootType::isRootType($parent)
                     ? $this->getResolverModel(
-                        Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName()),
+                        $this->streamType->getOriginalTypeName($source->getTypeName()),
                     )
                     : $this->getResolverRelation($parent, $source->getName());
             }
@@ -593,9 +597,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     protected function getResolverQuery(string $type, string $field): ?array {
         // We are mimicking to default Lighthouse resolver resolution, thus
         // custom implementations may not work.
-        $provider = Container::getInstance()->get(ProvidesResolver::class);
-
-        if (!($provider instanceof ResolverProvider)) {
+        if (!($this->provider instanceof ResolverProvider)) {
             return null;
         }
 
@@ -631,7 +633,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 return $provider->findResolverClass($value, $method);
             }
         };
-        $class    = $helper->getResolverClass($provider, $value, $method);
+        $class    = $helper->getResolverClass($this->provider, $value, $method);
         $resolver = $class ? [$class, $method] : null;
 
         return $resolver;
@@ -679,7 +681,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Search for field with `ID!` type
-        $type  = Container::getInstance()->make(StreamType::class)->getOriginalTypeName($source->getTypeName());
+        $type  = $this->streamType->getOriginalTypeName($source->getTypeName());
         $type  = $manipulator->getTypeDefinition($type);
         $field = null;
 

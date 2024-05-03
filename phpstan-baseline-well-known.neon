@@ -13,9 +13,9 @@ parameters:
         # Larastan doesn't support phpstan/phpstan-strict-rules
         # https://github.com/phpstan/phpstan-strict-rules/issues/140
         - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesConfiguration\\:\\:(configurationIsCached|routesAreCached|langPath)\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesRoutes\\:\\:routesAreCached\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Validation\\\\Factory\\:\\:(validate)\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
-        - "#^Dynamic call to static method Illuminate\\\\Database\\\\Connection(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
@@ -56,7 +56,7 @@ parameters:
         # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/18
         -
-            message: "#^Call to protected method getResolver\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+            message: "#^Call to protected method (getResolverRelation|getResolverModel|getResolverClass|getFieldValue)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
                 - packages/graphql/src/Stream/Directives/DirectiveTest.php
         -

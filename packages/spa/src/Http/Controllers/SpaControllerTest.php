@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Spa\Package;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
@@ -17,7 +15,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\DataProvider as DataProviderContract
 use LastDragon_ru\LaraASP\Testing\Providers\ExpectedFinal;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;
 use LastDragon_ru\LaraASP\Testing\Responses\JsonResponse;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -26,21 +23,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 #[CoversClass(SpaController::class)]
 final class SpaControllerTest extends TestCase {
-    // <editor-fold desc="Prepare">
-    // =========================================================================
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getEnvironmentSetUp($app): void {
-        parent::getEnvironmentSetUp($app);
-
-        $this->setConfig([
-            Package::Name.'.routes.enabled' => false,
-        ]);
-    }
-    // </editor-fold>
-
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -61,7 +43,11 @@ final class SpaControllerTest extends TestCase {
             Package::Name.'.spa'            => $settings,
         ]);
 
-        $this->loadRoutes();
+        $provider = new class($this->app()) extends Provider {
+            // empty
+        };
+        $provider->boot();
+        $provider->callBootedCallbacks();
 
         $this->get("{$prefix}/settings", $headers)->assertThat($expected);
     }
@@ -139,18 +125,6 @@ final class SpaControllerTest extends TestCase {
                 ],
             ],
         ]);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="Helpers">
-    // =========================================================================
-    protected function loadRoutes(): void {
-        (new class(Container::getInstance()->make(Application::class)) extends Provider {
-            #[Override]
-            public function bootRoutes(): void {
-                parent::bootRoutes();
-            }
-        })->bootRoutes();
     }
     // </editor-fold>
 }

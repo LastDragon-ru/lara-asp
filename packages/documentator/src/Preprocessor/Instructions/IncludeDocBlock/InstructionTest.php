@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -21,7 +20,7 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderProcess')]
     public function testProcess(Exception|string $expected, string $file, Parameters $params): void {
         $file     = self::getTestData()->file($file);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -36,7 +35,7 @@ final class InstructionTest extends TestCase {
         $path     = 'invalid/directory';
         $file     = self::getTestData()->path('Valid.txt');
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content('ValidExpected.txt');
 
         self::assertEquals($expected, $instance->process($path, $file, $params));

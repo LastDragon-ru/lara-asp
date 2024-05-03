@@ -62,14 +62,21 @@ In the general case, you just need to update `tests/TestCase.php` to include mos
 
 namespace Tests;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
+use Override;
 
 abstract class TestCase extends BaseTestCase {
     use Assertions;         // Added
     use Concerns;           // Added
     use CreatesApplication;
+
+    #[Override]
+    protected function app(): Application {
+        return $this->app;
+    }
 }
 ```
 
@@ -197,7 +204,7 @@ associated with test)
 [//]: # (start: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-Allows to replace translation strings for Laravel.
+Allows replacing translation strings for Laravel.
 
 [//]: # (end: 0e8393713b25b89be1ee5c685bf900c5886a18a09f340b910b310e5026c4af1f)
 

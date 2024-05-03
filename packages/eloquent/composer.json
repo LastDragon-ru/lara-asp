@@ -26,7 +26,6 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
-    "illuminate/container": "^10.34.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.2",
     "orchestra/testbench": "^8.0.0|^9.0.0",

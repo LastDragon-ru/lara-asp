@@ -27,6 +27,16 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: c70a9a43c0a80bd2e7fa6010a9b2c0fbcab4cb4d536d7a498216d9df7431f7e2)
 
+# Upgrade from v6
+
+[include:file]: ../../docs/Shared/Upgrade/FromV6.md
+[//]: # (start: 6b55bf5daea407a4590344596d41efd8368a783e2666bfe431a88a5eeaff3a95)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+* [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
+
+[//]: # (end: 6b55bf5daea407a4590344596d41efd8368a783e2666bfe431a88a5eeaff3a95)
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md

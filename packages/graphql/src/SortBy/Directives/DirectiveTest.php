@@ -8,7 +8,6 @@ use GraphQL\Language\DirectiveLocation;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -113,7 +112,7 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
         $this->useGraphQLSchema(
@@ -134,7 +133,7 @@ final class DirectiveTest extends TestCase {
         $this->override(Root::class, V5::class);
         $this->override(Clause::class, V5::class);
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
         $this->useGraphQLSchema(
@@ -169,7 +168,7 @@ final class DirectiveTest extends TestCase {
             new TypeDefinitionImpossibleToCreateType(Clause::class, 'type TestType', new Context()),
         );
 
-        $registry = Container::getInstance()->make(TypeRegistry::class);
+        $registry = $this->app()->make(TypeRegistry::class);
         $registry->register($type);
 
         $this->useGraphQLSchema(
@@ -251,8 +250,8 @@ final class DirectiveTest extends TestCase {
         mixed $value,
         ?Closure $prepare = null,
     ): void {
-        Container::getInstance()->bind(Root::class, V5::class);
-        Container::getInstance()->bind(Clause::class, V5::class);
+        $this->app()->bind(Root::class, V5::class);
+        $this->app()->bind(Clause::class, V5::class);
 
         if ($prepare) {
             $prepare($this);
@@ -369,8 +368,8 @@ final class DirectiveTest extends TestCase {
         mixed $value,
         ?Closure $prepare = null,
     ): void {
-        Container::getInstance()->bind(Root::class, V5::class);
-        Container::getInstance()->bind(Clause::class, V5::class);
+        $this->app()->bind(Root::class, V5::class);
+        $this->app()->bind(Clause::class, V5::class);
 
         if ($prepare) {
             $prepare($this);
@@ -435,7 +434,7 @@ final class DirectiveTest extends TestCase {
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
         if ($resolver) {
@@ -507,13 +506,13 @@ final class DirectiveTest extends TestCase {
         ?Closure $resolver,
         ?Closure $fieldResolver,
     ): void {
-        Container::getInstance()->bind(Root::class, V5::class);
-        Container::getInstance()->bind(Clause::class, V5::class);
+        $this->app()->bind(Root::class, V5::class);
+        $this->app()->bind(Clause::class, V5::class);
 
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
         if ($resolver) {
@@ -584,8 +583,8 @@ final class DirectiveTest extends TestCase {
             'Implicit'          => [
                 'Implicit.expected.graphql',
                 'Implicit.schema.graphql',
-                static function (): void {
-                    Container::getInstance()->make(DirectiveLocator::class)
+                static function (TestCase $test): void {
+                    $test->app()->make(DirectiveLocator::class)
                         ->setResolved(
                             DirectiveLocator::directiveName(DirectiveTest__CustomOperatorDirective::class),
                             DirectiveTest__CustomOperatorDirective::class,
@@ -606,7 +605,7 @@ final class DirectiveTest extends TestCase {
                 'AllowedDirectives.expected.graphql',
                 'AllowedDirectives.schema.graphql',
                 static function (TestCase $test): void {
-                    $locator   = Container::getInstance()->make(DirectiveLocator::class);
+                    $locator   = $test->app()->make(DirectiveLocator::class);
                     $allowed   = new class () extends BaseDirective {
                         #[Override]
                         public static function definition(): string {
@@ -648,7 +647,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ]);
 
-                    Container::getInstance()->make(TypeRegistry::class)->register(
+                    $test->app()->make(TypeRegistry::class)->register(
                         new class([
                             'name'   => 'IgnoredType',
                             'fields' => [
@@ -677,7 +676,7 @@ final class DirectiveTest extends TestCase {
             'TypeRegistry'      => [
                 'Example.expected.graphql',
                 'Example.schema.graphql',
-                static function (): void {
+                static function (TestCase $test): void {
                     $i = new class([
                         'name'   => 'I',
                         'fields' => [
@@ -746,7 +745,7 @@ final class DirectiveTest extends TestCase {
                         ],
                     ]);
 
-                    $registry = Container::getInstance()->make(TypeRegistry::class);
+                    $registry = $test->app()->make(TypeRegistry::class);
                     $registry->register($a);
                     $registry->register($b);
                     $registry->register($c);

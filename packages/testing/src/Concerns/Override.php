@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithContainer;
 use LogicException;
 use Mockery;
@@ -33,6 +33,8 @@ trait Override {
      * @var array<class-string,MockInterface>
      */
     private array $overrides = [];
+
+    abstract protected function app(): Application;
 
     /**
      * @internal
@@ -92,7 +94,7 @@ trait Override {
             /** @phpstan-ignore-next-line it may return `void` so it is fine here */
             $mock = $factory($mock, $this) ?: $mock;
         } elseif (is_string($factory)) {
-            $mock = Container::getInstance()->make($factory);
+            $mock = $this->app()->make($factory);
         } else {
             // empty
         }
@@ -104,7 +106,7 @@ trait Override {
 
         assert(is_callable($this->overrides[$class]));
 
-        Container::getInstance()->bind(
+        $this->app()->bind(
             $class,
             ($this->overrides[$class])(...),
         );

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
 use Exception;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
@@ -54,7 +55,9 @@ final class InputObjectTest extends TestCase {
 
         $manipulator = Mockery::mock(Manipulator::class);
         $field       = Mockery::mock(ObjectFieldSource::class);
-        $input       = new InputObjectTest__InputObject();
+        $input       = new InputObjectTest__InputObject(
+            $this->app()->make(ConfigResolver::class),
+        );
 
         self::assertEquals($expected, $input->isFieldDirectiveAllowed($manipulator, $field, $context, $directive));
     }

@@ -24,7 +24,6 @@ use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -87,7 +86,7 @@ final class AstManipulatorTest extends TestCase {
 
     public function testGetInterfaces(): void {
         // Object
-        $types       = Container::getInstance()->make(TypeRegistry::class);
+        $types       = $this->app()->make(TypeRegistry::class);
         $manipulator = $this->getManipulator(
             <<<'GRAPHQL'
             interface InterfaceA {
@@ -198,7 +197,7 @@ final class AstManipulatorTest extends TestCase {
 
     public function testGetDirectives(): void {
         // Types
-        $types = Container::getInstance()->make(TypeRegistry::class);
+        $types = $this->app()->make(TypeRegistry::class);
 
         $types->register(
             new CustomScalarType([
@@ -207,7 +206,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         // Directives
-        $locator = Container::getInstance()->make(DirectiveLocator::class);
+        $locator = $this->app()->make(DirectiveLocator::class);
 
         $locator->setResolved('aDirective', AstManipulatorTest_ADirective::class);
         $locator->setResolved('bDirective', AstManipulatorTest_BDirective::class);
@@ -279,7 +278,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         // Field
-        $schema   = Container::getInstance()->make(SchemaBuilder::class)->schema();
+        $schema   = $this->app()->make(SchemaBuilder::class)->schema();
         $query    = $schema->getQueryType();
         $field    = $query ? $manipulator->getField($query, 'test') : null;
         $expected = [
@@ -374,7 +373,7 @@ final class AstManipulatorTest extends TestCase {
 
     public function testFindArgument(): void {
         // Directives
-        $locator = Container::getInstance()->make(DirectiveLocator::class);
+        $locator = $this->app()->make(DirectiveLocator::class);
 
         $locator->setResolved('aDirective', AstManipulatorTest_ADirective::class);
 
@@ -444,7 +443,7 @@ final class AstManipulatorTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $locator = Container::getInstance()->make(DirectiveLocator::class);
+        $locator = $this->app()->make(DirectiveLocator::class);
 
         $locator->setResolved(
             DirectiveLocator::directiveName($directive),
@@ -585,8 +584,8 @@ final class AstManipulatorTest extends TestCase {
     #[DataProvider('dataProviderGetOriginType')]
     public function testGetOriginType(string $expected, string $graphql): void {
         $ast         = Mockery::mock(DocumentAST::class);
-        $types       = Container::getInstance()->make(TypeRegistry::class);
-        $directives  = Container::getInstance()->make(DirectiveLocator::class);
+        $types       = $this->app()->make(TypeRegistry::class);
+        $directives  = $this->app()->make(DirectiveLocator::class);
         $manipulator = new AstManipulator($directives, $ast, $types);
 
         $schema = $this->useGraphQLSchema($graphql)->getGraphQLSchema();
@@ -608,8 +607,8 @@ final class AstManipulatorTest extends TestCase {
     protected function getManipulator(string $schema = null): AstManipulator {
         $document    = $schema
             ? DocumentAST::fromSource($schema)
-            : Container::getInstance()->make(ASTBuilder::class)->documentAST();
-        $manipulator = Container::getInstance()->make(AstManipulator::class, [
+            : $this->app()->make(ASTBuilder::class)->documentAST();
+        $manipulator = $this->app()->make(AstManipulator::class, [
             'document' => $document,
         ]);
 

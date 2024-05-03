@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 
-use Illuminate\Container\Container;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
@@ -20,8 +19,8 @@ trait WithTestObject {
      */
     #[Before]
     protected function initWithTestObject(): void {
-        $this->afterApplicationCreated(static function (): void {
-            $schema = Container::getInstance()->make(Builder::class);
+        $this->afterApplicationCreated(function (): void {
+            $schema = $this->app()->make(Builder::class);
             $table  = (new TestObject())->getTable();
 
             if ($schema->hasTable($table)) {
@@ -40,8 +39,8 @@ trait WithTestObject {
      */
     #[After]
     protected function withTestObjectAfter(): void {
-        $this->beforeApplicationDestroyed(static function (): void {
-            $schema = Container::getInstance()->make(Builder::class);
+        $this->beforeApplicationDestroyed(function (): void {
+            $schema = $this->app()->make(Builder::class);
             $table  = (new TestObject())->getTable();
 
             $schema->dropIfExists($table);

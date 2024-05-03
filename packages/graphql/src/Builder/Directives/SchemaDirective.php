@@ -20,8 +20,8 @@ use GraphQL\Utils\AST;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionIsNotScalarExtension;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\Internal;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -47,7 +47,11 @@ use function str_starts_with;
  * @internal
  */
 abstract class SchemaDirective extends BaseDirective implements TypeManipulator {
-    use WithManipulator;
+    public function __construct(
+        private readonly ManipulatorFactory $manipulatorFactory,
+    ) {
+        // empty
+    }
 
     #[Override]
     public static function definition(): string {
@@ -77,7 +81,7 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
         //      be simplified.
 
         // Apply `extend scalar`.
-        $manipulator = $this->getAstManipulator($documentAST);
+        $manipulator = $this->manipulatorFactory->create($documentAST);
 
         foreach ($documentAST->typeExtensions as $type => $extensions) {
             // Supported?

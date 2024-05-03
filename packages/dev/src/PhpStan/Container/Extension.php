@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Dev\PhpStan\Container;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container as ContainerContract;
 use Override;
 use PhpParser\Node\Arg;
@@ -11,14 +9,10 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 
-use function count;
 use function in_array;
-use function is_object;
 
 /**
  * Provides proper return types for {@see Container::make()} without resolving
@@ -62,42 +56,8 @@ final class Extension implements DynamicMethodReturnTypeExtension {
 
         // Return
         return match (true) {
-            $argType->isClassStringType()->yes()  => $argType->getClassStringObjectType(),
-            $argType->getConstantStrings() !== [] => $this->getFromContainer($argType->getConstantStrings()),
-            default                               => null,
+            $argType->isClassStringType()->yes() => $argType->getClassStringObjectType(),
+            default                              => null,
         };
-    }
-
-    /**
-     * @param list<ConstantStringType> $constants
-     */
-    protected function getFromContainer(array $constants): ?ObjectType {
-        // Unions are not supported
-        if (count($constants) !== 1) {
-            return null;
-        }
-
-        // In the most cases, `$abstract` is the class/interface, but there are
-        // few of them which are not.
-        $abstract = $constants[0]->getValue();
-        $strings  = [
-            'migration.repository',
-            'migrator',
-        ];
-        $type     = null;
-
-        if (in_array($abstract, $strings, true)) {
-            try {
-                $concrete = Container::getInstance()->make($abstract);
-
-                if (is_object($concrete)) {
-                    $type = new ObjectType($concrete::class);
-                }
-            } catch (BindingResolutionException) {
-                // ignore
-            }
-        }
-
-        return $type;
     }
 }

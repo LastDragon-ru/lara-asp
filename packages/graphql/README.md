@@ -227,15 +227,14 @@ The package provides bindings for [`Printer`][pkg:graphql-printer] so you can si
 ```php
 <?php declare(strict_types = 1);
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
-$schema   = Container::getInstance()->make(SchemaBuilder::class)->schema();
-$printer  = Container::getInstance()->make(Printer::class);
+$schema   = app()->make(SchemaBuilder::class)->schema();
+$printer  = app()->make(Printer::class);
 $settings = new DefaultSettings();
 
 $printer->setSettings(

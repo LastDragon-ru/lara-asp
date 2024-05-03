@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -27,6 +26,7 @@ class Sort extends Operator {
      * @param SorterFactory<object> $factory
      */
     public function __construct(
+        protected readonly ConfigResolver $config,
         protected readonly SorterFactory $factory,
         BuilderFieldResolver $resolver,
     ) {
@@ -107,7 +107,7 @@ class Sort extends Operator {
 
         // Default
         $nulls     = null;
-        $config    = Container::getInstance()->make(Repository::class)->get(Package::Name.'.sort_by.nulls');
+        $config    = $this->config->getInstance()->get(Package::Name.'.sort_by.nulls');
         $direction = match ($direction) {
             Direction::asc  => Direction::Asc,
             Direction::desc => Direction::Desc,

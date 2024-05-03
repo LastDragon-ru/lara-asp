@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
-use Illuminate\Container\Container;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
@@ -48,7 +48,10 @@ abstract class Operators {
     /**
      * @param array<string, list<class-string<Operator>|string>> $operators
      */
-    public function __construct(array $operators = []) {
+    public function __construct(
+        protected readonly ContainerResolver $container,
+        array $operators = [],
+    ) {
         $this->types   = new WeakMap();
         $this->enabled = new WeakMap();
 
@@ -80,7 +83,7 @@ abstract class Operators {
         }
 
         if (is_string($operator)) {
-            $operator = Container::getInstance()->make($operator);
+            $operator = $this->container->getInstance()->make($operator);
         }
 
         if (!$this->isEnabled($manipulator, $operator)) {

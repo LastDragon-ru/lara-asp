@@ -50,12 +50,11 @@ Formatter is very simple to use:
 ```php
 <?php declare(strict_types = 1);
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 
-$default = Container::getInstance()->make(Formatter::class); // For default app locale
-$locale  = $default->forLocale('ru_RU');                     // For ru_RU locale
+$default = app()->make(Formatter::class); // For default app locale
+$locale  = $default->forLocale('ru_RU');  // For ru_RU locale
 
 Example::dump($default->integer(123.454321));
 Example::dump($default->decimal(123.454321));
@@ -99,7 +98,6 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\Provide
 ```php
 <?php declare(strict_types = 1);
 
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -125,7 +123,7 @@ Example::config(Package::Name, [
 ]);
 
 $datetime = Date::make('2023-12-30T20:41:40.000018+04:00');
-$default  = Container::getInstance()->make(Formatter::class);
+$default  = app()->make(Formatter::class);
 $locale   = $default->forLocale('ru_RU');
 
 Example::dump($default->date($datetime));
@@ -192,12 +190,11 @@ The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.gith
 ```php
 <?php declare(strict_types = 1);
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 
-$default = Container::getInstance()->make(Formatter::class); // For default app locale
-$locale  = $default->forLocale('ru_RU');                     // For ru_RU locale
+$default = app()->make(Formatter::class); // For default app locale
+$locale  = $default->forLocale('ru_RU');  // For ru_RU locale
 
 Example::dump($default->duration(123.454321));
 Example::dump($locale->duration(123.4543));

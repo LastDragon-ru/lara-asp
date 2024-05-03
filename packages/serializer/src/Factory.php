@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizerContextBuilder;
@@ -36,6 +36,13 @@ use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 class Factory {
+    public function __construct(
+        protected readonly ContainerResolver $container,
+        protected readonly ConfigResolver $config,
+    ) {
+        // empty
+    }
+
     /**
      * @param array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>>              $encoders
      * @param array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers
@@ -71,7 +78,7 @@ class Factory {
         array $context,
         string $format,
     ): SerializerContract {
-        $container           = Container::getInstance();
+        $container           = $this->container->getInstance();
         $encoderInstances    = [];
         $normalizerInstances = [];
 
@@ -93,7 +100,7 @@ class Factory {
     protected function getConfigFormat(?string $config): ?string {
         /** @var ?string $format */
         $format = $config
-            ? Container::getInstance()->make(Repository::class)->get("{$config}.default")
+            ? $this->config->getInstance()->get("{$config}.default")
             : null;
 
         return $format;
@@ -105,7 +112,7 @@ class Factory {
     protected function getConfigContext(?string $config): array {
         /** @var array<string, mixed> $context */
         $context = $config
-            ? (array) Container::getInstance()->make(Repository::class)->get("{$config}.context")
+            ? (array) $this->config->getInstance()->get("{$config}.context")
             : [];
 
         return $context;
@@ -140,7 +147,7 @@ class Factory {
     protected function getConfigEncoders(?string $config): array {
         /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders */
         $encoders = $config
-            ? (array) Container::getInstance()->make(Repository::class)->get("{$config}.encoders")
+            ? (array) $this->config->getInstance()->get("{$config}.encoders")
             : [];
 
         return $encoders;
@@ -202,7 +209,7 @@ class Factory {
     protected function getConfigNormalizers(?string $config): array {
         /** @var array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers */
         $normalizers = $config
-            ? (array) Container::getInstance()->make(Repository::class)->get("{$config}.normalizers")
+            ? (array) $this->config->getInstance()->get("{$config}.normalizers")
             : $config;
 
         return $normalizers;

@@ -2,13 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Package;
 
+use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
+use LogicException;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
+use Override;
 
 /**
  * Special test case for packages with application.
@@ -26,4 +29,9 @@ abstract class TestCase extends TestbenchTestCase {
     use WithTempFile;
     use WithTempDirectory;
     use WithTranslations;
+
+    #[Override]
+    protected function app(): Application {
+        return $this->app ?? throw new LogicException('Application not yet initialized.');
+    }
 }

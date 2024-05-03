@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use GraphQL\Type\Schema;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -11,7 +10,6 @@ use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
 use LastDragon_ru\LaraASP\GraphQL\Provider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter\LighthouseDirectiveFilter;
@@ -27,7 +25,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
 use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
 use Override;
-use ReflectionClass;
 use SplFileInfo;
 
 use function array_merge;
@@ -50,6 +47,7 @@ abstract class TestCase extends PackageTestCase {
             Provider::class,
             CoreProvider::class,
             TestProvider::class,
+            CoreProvider::class,
             SerializerProvider::class,
             LighthouseServiceProvider::class,
             LighthouseTestingServiceProvider::class,
@@ -57,23 +55,9 @@ abstract class TestCase extends PackageTestCase {
         ]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getEnvironmentSetUp($app): void {
-        parent::getEnvironmentSetUp($app);
-
-        $this->setConfig([
-            'lighthouse.namespaces.models' => [
-                (new ReflectionClass(TestObject::class))->getNamespaceName(),
-            ],
-        ]);
-    }
-
     protected function getGraphQLPrinter(Settings $settings = null): Printer {
         $settings ??= (new TestSettings())
-            ->setDirectiveDefinitionFilter(Container::getInstance()->make(LighthouseDirectiveFilter::class));
+            ->setDirectiveDefinitionFilter($this->app()->make(LighthouseDirectiveFilter::class));
         $printer    = $this->getDefaultGraphQLPrinter($settings);
 
         return $printer;
@@ -89,7 +73,7 @@ abstract class TestCase extends PackageTestCase {
                 $this->useGraphQLSchema($schema);
             }
 
-            $factory  = Container::getInstance()->make(ArgumentFactory::class);
+            $factory  = $this->app()->make(ArgumentFactory::class);
             $argument = $factory->getArgument($type, $value);
 
             return $argument;
@@ -113,7 +97,7 @@ abstract class TestCase extends PackageTestCase {
         $directive::$builder = $builder;
         $directive::$result  = $builder;
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved(mb_substr($directive::getName(), 1), $directive::class);
 
         return $directive;

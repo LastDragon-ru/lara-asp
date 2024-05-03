@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Formatter;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -13,8 +12,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class ProviderTest extends TestCase {
     public function testRegister(): void {
         self::assertSame(
-            Container::getInstance()->make(Formatter::class),
-            Container::getInstance()->make(Formatter::class),
+            $this->app()->make(Formatter::class),
+            $this->app()->make(Formatter::class),
         );
     }
 }

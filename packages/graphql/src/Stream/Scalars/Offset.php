@@ -9,16 +9,10 @@ use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\StringValueNode;
-use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Utils\Utils;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -31,7 +25,10 @@ use function sprintf;
 
 use const FILTER_VALIDATE_INT;
 
-class Offset extends ScalarType implements TypeDefinition {
+/**
+ * @phpstan-import-type ScalarConfig from ScalarType
+ */
+class Offset extends ScalarType {
     public string  $name        = Directive::Name.'Offset';
     public ?string $description = <<<'DESCRIPTION'
         Represents a offset for the `@stream` directive. The value can be a
@@ -42,16 +39,16 @@ class Offset extends ScalarType implements TypeDefinition {
         pagination).
         DESCRIPTION;
 
-    // <editor-fold desc="Getters/Setters">
-    // =========================================================================
-    protected function getEncrypter(): StringEncrypter {
-        return Container::getInstance()->make(StringEncrypter::class);
+    /**
+     * @param ScalarConfig $config
+     */
+    public function __construct(
+        protected readonly StringEncrypter $encrypter,
+        protected readonly Serializer $serializer,
+        array $config = [],
+    ) {
+        parent::__construct($config);
     }
-
-    protected function getSerializer(): Serializer {
-        return Container::getInstance()->make(Serializer::class);
-    }
-    // </editor-fold>
 
     // <editor-fold desc="ScalarType">
     // =========================================================================
@@ -63,8 +60,8 @@ class Offset extends ScalarType implements TypeDefinition {
         $value = $this->validate($value, InvariantViolation::class);
 
         if ($value instanceof StreamOffset) {
-            $value = $this->getSerializer()->serialize($value, 'json');
-            $value = $this->encrypt($value);
+            $value = $this->serializer->serialize($value, 'json');
+            $value = $this->encrypter->encryptString($value);
         }
 
         return $value;
@@ -77,8 +74,8 @@ class Offset extends ScalarType implements TypeDefinition {
     public function parseValue(mixed $value): StreamOffset|int {
         if (is_string($value)) {
             try {
-                $value = $this->decrypt($value);
-                $value = $this->getSerializer()->deserialize(StreamOffset::class, $value, 'json');
+                $value = Cast::toString($this->encrypter->decryptString($value));
+                $value = $this->serializer->deserialize(StreamOffset::class, $value, 'json');
             } catch (Exception) {
                 throw new Error('The cursor is not valid.');
             }
@@ -139,31 +136,4 @@ class Offset extends ScalarType implements TypeDefinition {
 
         return $value;
     }
-
-    protected function encrypt(string $value): string {
-        return $this->getEncrypter()->encryptString($value);
-    }
-
-    protected function decrypt(string $value): string {
-        return Cast::toString($this->getEncrypter()->decryptString($value));
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="TypeDefinition">
-    // =========================================================================
-    #[Override]
-    public function getTypeName(TypeSource $source, Context $context): string {
-        return $this->name();
-    }
-
-    #[Override]
-    public function getTypeDefinition(
-        Manipulator $manipulator,
-        TypeSource $source,
-        Context $context,
-        string $name,
-    ): TypeDefinitionNode|string|null {
-        return self::class;
-    }
-    // </editor-fold>
 }

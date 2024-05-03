@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Translation\Translator;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Spa\Package;
 use Override;
 
@@ -14,11 +14,17 @@ use Override;
  * ISO 8601 DateTime.
  */
 class DateTimeRule extends DateRule {
+    public function __construct(
+        protected readonly ConfigResolver $config,
+        Translator $translator,
+    ) {
+        parent::__construct($translator);
+    }
+
     #[Override]
     public function getValue(mixed $value): DateTimeInterface|null {
-        $repository = Container::getInstance()->make(Repository::class);
-        $value      = parent::getValue($value);
-        $tz         = $repository->get('app.timezone') ?: 'UTC';
+        $value = parent::getValue($value);
+        $tz    = $this->config->getInstance()->get('app.timezone') ?: 'UTC';
 
         if ($value instanceof DateTime || $value instanceof DateTimeImmutable) {
             $value = $value->setTimezone($tz);

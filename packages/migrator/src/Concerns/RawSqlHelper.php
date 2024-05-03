@@ -2,17 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Concerns;
 
-use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
-use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\SchemaState;
-use Illuminate\Filesystem\Filesystem;
 use ReflectionClass;
 use RuntimeException;
 
 use function basename;
 use function dirname;
+use function file_get_contents;
+use function is_file;
 use function method_exists;
 
 /**
@@ -23,14 +21,13 @@ trait RawSqlHelper {
         $connection = $this->getConnectionInstance();
         $state      = $this->getSchemaState($connection);
         $path       = $this->getRawPath($type);
-        $fs         = Container::getInstance()->make(Filesystem::class);
 
-        if ($fs->isFile($path)) {
+        if (is_file($path)) {
             if (!$connection->pretending()) {
                 $state->load($path);
             }
 
-            $connection->logQuery($fs->get($path), [], 0);
+            $connection->logQuery((string) file_get_contents($path), [], 0);
         }
     }
 
@@ -44,14 +41,7 @@ trait RawSqlHelper {
             : "{$dir}/{$file}.sql";
     }
 
-    private function getConnectionInstance(): Connection {
-        $connection = $this instanceof Migration
-            ? $this->getConnection()
-            : null;
-        $connection = Container::getInstance()->make(DatabaseManager::class)->connection($connection);
-
-        return $connection;
-    }
+    abstract private function getConnectionInstance(): Connection;
 
     private function getSchemaState(Connection $connection): SchemaState {
         if (!method_exists($connection, 'getSchemaState')) {

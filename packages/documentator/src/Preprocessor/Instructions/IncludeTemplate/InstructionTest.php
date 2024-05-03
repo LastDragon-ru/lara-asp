@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
@@ -20,7 +19,7 @@ final class InstructionTest extends TestCase {
             'a' => 'Relative',
             'b' => 'Inner reference ${a}',
         ]);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<'FILE'
@@ -41,7 +40,7 @@ final class InstructionTest extends TestCase {
             'a' => 'Absolute',
             'b' => 'Inner reference ${a}',
         ]);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
             <<<'FILE'
@@ -58,7 +57,7 @@ final class InstructionTest extends TestCase {
     public function testProcessNoData(): void {
         $file     = self::getTestData()->file('.md');
         $params   = new Parameters([]);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateDataMissed(
@@ -78,7 +77,7 @@ final class InstructionTest extends TestCase {
             'c' => 'C',
             'd' => 'D',
         ]);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesUnused(
@@ -96,7 +95,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters([
             'a' => 'A',
         ]);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesMissed(

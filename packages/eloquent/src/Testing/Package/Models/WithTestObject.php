@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
-use Illuminate\Container\Container;
-use Illuminate\Database\Schema\Builder;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
@@ -20,8 +18,9 @@ trait WithTestObject {
     #[Before]
     protected function withTestObjectBefore(): void {
         $this->afterApplicationCreated(static function (): void {
-            $schema = Container::getInstance()->make(Builder::class);
-            $table  = (new TestObject())->getTable();
+            $instance = new TestObject();
+            $schema   = $instance->getConnection()->getSchemaBuilder();
+            $table    = $instance->getTable();
 
             if ($schema->hasTable($table)) {
                 return;
@@ -40,8 +39,9 @@ trait WithTestObject {
     #[After]
     protected function withTestObjectAfter(): void {
         $this->beforeApplicationDestroyed(static function (): void {
-            $schema = Container::getInstance()->make(Builder::class);
-            $table  = (new TestObject())->getTable();
+            $instance = new TestObject();
+            $schema   = $instance->getConnection()->getSchemaBuilder();
+            $table    = $instance->getTable();
 
             $schema->dropIfExists($table);
         });

@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
 use Composer\InstalledVersions;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
@@ -90,7 +89,7 @@ final class NotInTest extends TestCase {
         }
 
         // Supported?
-        $operator = Container::getInstance()->make(NotInTest_Operator::class);
+        $operator = $this->app()->make(NotInTest_Operator::class);
 
         if (!$operator->isScoutSupported()) {
             self::markTestSkipped(

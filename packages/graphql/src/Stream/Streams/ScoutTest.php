@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
@@ -33,12 +34,11 @@ final class ScoutTest extends TestCase {
      * @inheritDoc
      */
     #[Override]
-    protected function getEnvironmentSetUp($app): void {
-        parent::getEnvironmentSetUp($app);
+    protected function defineEnvironment($app): void {
+        parent::defineEnvironment($app);
 
-        $this->setConfig([
-            'scout.driver' => 'database',
-        ]);
+        $app->make(Repository::class)
+            ->set('scout.driver', 'database');
     }
     // </editor-fold>
 

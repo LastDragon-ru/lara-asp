@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Core\Helpers;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Core\Helpers\Translator as PackageTranslator;
 use LastDragon_ru\LaraASP\Core\Package;
 use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -36,9 +36,12 @@ final class TranslatorTest extends TestCase {
     ): void {
         $this->setTranslations($translations);
 
-        $implementation = Container::getInstance()->make(Translator::class);
-        $translator     = new class($implementation, Package::Name, null) extends PackageTranslator {
-            // empty
+        $implementation = $this->app()->make(Translator::class);
+        $translator     = new class($implementation) extends PackageTranslator {
+            #[Override]
+            protected function getName(): string {
+                return Package::Name;
+            }
         };
 
         self::assertEquals($expected, $translator->choice($key, $number, $replace, $locale));
@@ -59,9 +62,12 @@ final class TranslatorTest extends TestCase {
     ): void {
         $this->setTranslations($translations);
 
-        $implementation = Container::getInstance()->make(Translator::class);
-        $translator     = new class($implementation, Package::Name, null) extends PackageTranslator {
-            // empty
+        $implementation = $this->app()->make(Translator::class);
+        $translator     = new class($implementation) extends PackageTranslator {
+            #[Override]
+            protected function getName(): string {
+                return Package::Name;
+            }
         };
 
         self::assertEquals($expected, $translator->get($key, $replace, $locale));
@@ -89,7 +95,7 @@ final class TranslatorTest extends TestCase {
                 static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
                     return [
                         $currentLocale => [
-                            Package::Name.'::should.be.translated' => 'translated :value',
+                            Package::Name.'::messages.should.be.translated' => 'translated :value',
                         ],
                     ];
                 },
@@ -104,7 +110,7 @@ final class TranslatorTest extends TestCase {
                 static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
                     return [
                         $currentLocale => [
-                            Package::Name.'::should.be.translated' => 'translated',
+                            Package::Name.'::messages.should.be.translated' => 'translated',
                         ],
                     ];
                 },
@@ -119,7 +125,7 @@ final class TranslatorTest extends TestCase {
                 static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
                     return [
                         'unk' => [
-                            Package::Name.'::should.be.translated' => 'translated :value',
+                            Package::Name.'::messages.should.be.translated' => 'translated :value',
                         ],
                     ];
                 },
@@ -152,7 +158,7 @@ final class TranslatorTest extends TestCase {
                 static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
                     return [
                         $currentLocale => [
-                            Package::Name.'::should.be.translated' => '{1} one |[2,*] translated :value',
+                            Package::Name.'::messages.should.be.translated' => '{1} one |[2,*] translated :value',
                         ],
                     ];
                 },
@@ -168,7 +174,7 @@ final class TranslatorTest extends TestCase {
                 static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
                     return [
                         $currentLocale => [
-                            Package::Name.'::should.be.translated' => '{1} one |[2,*] translated :value',
+                            Package::Name.'::messages.should.be.translated' => '{1} one |[2,*] translated :value',
                         ],
                     ];
                 },
@@ -184,7 +190,7 @@ final class TranslatorTest extends TestCase {
                 static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
                     return [
                         'unk' => [
-                            Package::Name.'::should.be.translated' => '{1} one |[2,*] translated :value',
+                            Package::Name.'::messages.should.be.translated' => '{1} one |[2,*] translated :value',
                         ],
                     ];
                 },

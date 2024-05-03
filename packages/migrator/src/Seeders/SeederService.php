@@ -2,18 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 use function array_column;
-use function in_array;
+use function is_array;
 use function is_string;
+use function mb_strtolower;
 
 class SeederService {
-    public function __construct() {
+    public function __construct(
+        protected readonly ConfigResolver $config,
+        protected readonly DatabaseManager $manager,
+    ) {
         // empty
     }
 
@@ -22,12 +26,13 @@ class SeederService {
     public function isSeeded(): bool {
         $seeded  = false;
         $tables  = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
-        $skipped = [
-            Container::getInstance()->make(Repository::class)->get('database.migrations'),
-        ];
+        $default = 'migrations';
+        $skipped = $this->config->getInstance()->get('database.migrations', $default);
+        $skipped = is_array($skipped) ? ($skipped['table'] ?: $default) : $skipped;
+        $skipped = mb_strtolower(Cast::toString($skipped));
 
         foreach ($tables as $table) {
-            if (in_array($table, $skipped, true)) {
+            if ($skipped === mb_strtolower($table)) {
                 continue;
             }
 
@@ -58,8 +63,8 @@ class SeederService {
 
     // <editor-fold desc="Functions">
     // =========================================================================
-    protected function getConnection(): Connection {
-        return Container::getInstance()->make(DatabaseManager::class)->connection();
+    public function getConnection(): Connection {
+        return $this->manager->connection();
     }
     // </editor-fold>
 }

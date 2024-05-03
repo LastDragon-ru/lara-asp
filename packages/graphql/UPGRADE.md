@@ -35,9 +35,36 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v6
 
+## General
+
+[include:file]: ../../docs/Shared/Upgrade/FromV6.md
+[//]: # (start: 6b55bf5daea407a4590344596d41efd8368a783e2666bfe431a88a5eeaff3a95)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+* [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
+
+[//]: # (end: 6b55bf5daea407a4590344596d41efd8368a783e2666bfe431a88a5eeaff3a95)
+
 * [ ] The `\LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType` is not implement `\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition` anymore. To add the scalar into the Schema, you can use `@type`/`@scalar` directive, or create a custom implementation of `TypeDefinition` contract to use with `Builder`/`Manipulator`.
 
+## Tests
+
+* [ ] Following traits required `app()` method to get access to the Container (#151)
+  * `\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions`
+
+  ```php
+  protected function app(): Application {
+      return $this->app;
+  }
+  ```
+
+## API
+
+This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):
+
 * [ ] `\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition::getTypeDefinition()` return type changed.
+
+* [ ] `\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator` removed, create instance by hand instead (reason #151).
 
 # Upgrade from v5
 

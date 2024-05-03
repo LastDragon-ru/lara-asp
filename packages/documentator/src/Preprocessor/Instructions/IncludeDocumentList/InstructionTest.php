@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -17,7 +16,7 @@ final class InstructionTest extends TestCase {
     public function testProcessSameDirectory(): void {
         $path     = self::getTestData()->file('Document.md');
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
@@ -33,7 +32,7 @@ final class InstructionTest extends TestCase {
     public function testProcessAnotherDirectory(): void {
         $path     = self::getTestData()->file('~AnotherDirectory.md');
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')), $params);
 
         self::assertEquals(
@@ -49,7 +48,7 @@ final class InstructionTest extends TestCase {
     public function testProcessNestedDirectories(): void {
         $path     = self::getTestData()->file('nested/Document.md');
         $params   = new Parameters(null);
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($path->getPathname(), './', $params);
 
         self::assertEquals(
@@ -66,7 +65,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('invalid/Document.md');
         $target   = './';
         $params   = new Parameters();
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

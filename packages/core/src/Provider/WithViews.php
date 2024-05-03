@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Helpers\Viewer;
 /**
  * @see Viewer
  *
- * @mixin ServiceProvider
+ * @phpstan-require-extends ServiceProvider
  */
 trait WithViews {
     use Helper;

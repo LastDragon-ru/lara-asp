@@ -10,19 +10,19 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\StringEncrypter;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
+use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
@@ -42,6 +42,7 @@ use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\FieldIsUnion;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\KeyUnknown;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Stream;
+use LastDragon_ru\LaraASP\GraphQL\Stream\Types\Stream as StreamType;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObjectSearchable;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
@@ -58,6 +59,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSetFactory;
@@ -69,6 +71,7 @@ use Nuwave\Lighthouse\Schema\Values\FieldValue;
 use Nuwave\Lighthouse\Scout\ScoutServiceProvider;
 use Nuwave\Lighthouse\Support\Contracts\Directive as DirectiveContract;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Nuwave\Lighthouse\Support\Contracts\ProvidesResolver;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -77,6 +80,7 @@ use ReflectionClass;
 use stdClass;
 
 use function array_merge;
+use function count;
 use function is_string;
 use function json_encode;
 
@@ -88,7 +92,6 @@ use const JSON_THROW_ON_ERROR;
 #[CoversClass(Directive::class)]
 final class DirectiveTest extends TestCase {
     use WithTestObject;
-    use WithManipulator;
     use MakesGraphQLRequests;
 
     // <editor-fold desc="Prepare">
@@ -310,7 +313,7 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
+        $directives = $this->app()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -325,16 +328,37 @@ final class DirectiveTest extends TestCase {
         self::expectException(BuilderUnknown::class);
         self::expectExceptionMessage('Impossible to determine builder type for `type Query { field }`.');
 
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
-        $factory    = Mockery::mock(StreamFactory::class);
-        $directive  = new class($factory) extends StreamDirective {
-            #[Override]
-            public function getBuilderInfo(TypeSource $source): ?BuilderInfo {
-                return null;
-            }
-        };
+        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive->makePartial();
+        $directive
+            ->shouldUseProperty('config')
+            ->value(
+                $this->app()->make(ConfigResolver::class),
+            );
+        $directive
+            ->shouldUseProperty('detector')
+            ->value(
+                $this->app()->make(BuilderInfoDetector::class),
+            );
+        $directive
+            ->shouldUseProperty('streamType')
+            ->value(
+                $this->app()->make(StreamType::class),
+            );
+        $directive
+            ->shouldUseProperty('manipulatorFactory')
+            ->value(
+                $this->app()->make(ManipulatorFactory::class),
+            );
+        $directive
+            ->shouldReceive('getBuilderInfo')
+            ->once()
+            ->andReturn(null);
 
-        $directives->setResolved('stream', $directive::class);
+        $this->override(Directive::class, $directive);
+
+        $directives = $this->app()->make(DirectiveLocator::class);
+        $directives->setResolved('stream', Directive::class);
 
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
@@ -355,7 +379,7 @@ final class DirectiveTest extends TestCase {
             'The `type Test { field }` is not a list.',
         );
 
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
+        $directives = $this->app()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -376,7 +400,7 @@ final class DirectiveTest extends TestCase {
         self::expectException(ArgumentAlreadyDefined::class);
         self::expectExceptionMessage('Argument `type Query { field(where) }` already defined.');
 
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
+        $directives = $this->app()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -399,7 +423,7 @@ final class DirectiveTest extends TestCase {
             'The `type Subscription { field }` is a Subscription. Subscriptions are not supported.',
         );
 
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
+        $directives = $this->app()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -418,7 +442,7 @@ final class DirectiveTest extends TestCase {
             'The `type Query { field }` us a union. Unions are not supported.',
         );
 
-        $directives = Container::getInstance()->make(DirectiveLocator::class);
+        $directives = $this->app()->make(DirectiveLocator::class);
 
         $directives->setResolved('stream', StreamDirective::class);
 
@@ -450,15 +474,16 @@ final class DirectiveTest extends TestCase {
         Exception|BuilderInfo|null $expected,
         Closure $sourceFactory,
         Closure|array|null $resolver,
+        ?string $builder,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
-        $source      = $sourceFactory($manipulator);
-        $factory     = Container::getInstance()->make(StreamFactory::class);
-        $directive   = Mockery::mock(Directive::class, [$factory]);
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
+        $source             = $sourceFactory($manipulator);
+        $directive          = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -466,6 +491,19 @@ final class DirectiveTest extends TestCase {
             ->with($source)
             ->once()
             ->andReturn($resolver);
+
+        if ($builder !== null) {
+            $directive
+                ->shouldUseProperty('streamFactory')
+                ->value(
+                    Mockery::mock(StreamFactory::class)
+                        ->shouldReceive('isSupported')
+                        ->with($builder)
+                        ->once()
+                        ->andReturn(true)
+                        ->getMock(),
+                );
+        }
 
         self::assertEquals($expected, $directive->getBuilderInfo($source));
     }
@@ -513,7 +551,7 @@ final class DirectiveTest extends TestCase {
         $info->path            = ['field'];
         $info->parentType      = $type;
         $info->fieldDefinition = $field;
-        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo(
+        $info->argumentSet     = $this->app()->make(ArgumentSetFactory::class)->fromResolveInfo(
             [
                 'limit' => 10,
                 'where' => [
@@ -587,7 +625,7 @@ final class DirectiveTest extends TestCase {
         $info->path            = ['field'];
         $info->parentType      = $type;
         $info->fieldDefinition = $field;
-        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo(
+        $info->argumentSet     = $this->app()->make(ArgumentSetFactory::class)->fromResolveInfo(
             [
                 'search' => '*',
             ],
@@ -656,7 +694,7 @@ final class DirectiveTest extends TestCase {
         $info->path            = ['field'];
         $info->parentType      = $type;
         $info->fieldDefinition = $field;
-        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo(
+        $info->argumentSet     = $this->app()->make(ArgumentSetFactory::class)->fromResolveInfo(
             [
                 'id'    => 123,
                 'where' => [
@@ -702,15 +740,15 @@ final class DirectiveTest extends TestCase {
         Exception|BuilderInfo|null $expected,
         Closure $sourceFactory,
         Closure|array|null $resolver,
+        ?string $builder,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
+        $manipulator = $this->app()->make(ManipulatorFactory::class)->create(Mockery::mock(DocumentAST::class));
         $source      = $sourceFactory($manipulator);
-        $factory     = Container::getInstance()->make(StreamFactory::class);
-        $directive   = Mockery::mock(Directive::class, [$factory]);
+        $directive   = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -718,6 +756,19 @@ final class DirectiveTest extends TestCase {
             ->with($source)
             ->once()
             ->andReturn($resolver);
+
+        if ($builder !== null) {
+            $directive
+                ->shouldUseProperty('streamFactory')
+                ->value(
+                    Mockery::mock(StreamFactory::class)
+                        ->shouldReceive('isSupported')
+                        ->with($builder)
+                        ->once()
+                        ->andReturn(true)
+                        ->getMock(),
+                );
+        }
 
         self::assertEquals($expected, $directive->getBuilderInfo($source));
     }
@@ -728,9 +779,14 @@ final class DirectiveTest extends TestCase {
             Mockery::mock(AstManipulator::class)->makePartial(),
             new ObjectType(['name' => 'Car', 'fields' => []]),
         );
-        $directive = Mockery::mock(Directive::class);
+        $directive = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
+        $directive
+            ->shouldUseProperty('streamType')
+            ->value(
+                $this->app()->make(StreamType::class),
+            );
 
         // Query
         $source   = $parent->getField(Parser::fieldDefinition('query: String'));
@@ -805,7 +861,7 @@ final class DirectiveTest extends TestCase {
             new ObjectType(['name' => 'Car', 'fields' => []]),
         );
         $source    = $object->getField($field);
-        $directive = Mockery::mock(Directive::class);
+        $directive = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive->hydrate(
@@ -813,7 +869,7 @@ final class DirectiveTest extends TestCase {
             $field,
         );
 
-        if ($expected !== null) {
+        if ($expected) {
             $directive
                 ->shouldReceive($expected['method'])
                 ->withArgs($expected['args'])
@@ -839,19 +895,13 @@ final class DirectiveTest extends TestCase {
         $args      = [];
         $info      = Mockery::mock(ResolveInfo::class);
         $context   = Mockery::mock(GraphQLContext::class);
-        $factory   = Mockery::mock(StreamFactory::class);
-        $namespace = json_encode((new ReflectionClass(TestObject::class))->getNamespaceName(), JSON_THROW_ON_ERROR);
-        $directive = new class($factory) extends Directive {
-            #[Override]
-            public function name(): string {
-                return 'stream';
-            }
-
-            #[Override]
-            public function getResolverRelation(string $model, string $relation): ?Closure {
-                return parent::getResolverRelation($model, $relation);
-            }
-        };
+        $namespace = json_encode(
+            (new ReflectionClass(TestObject::class))->getNamespaceName(),
+            JSON_THROW_ON_ERROR,
+        );
+        $directive = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
 
         $directive->hydrate(
             Parser::directive('@stream'),
@@ -935,21 +985,14 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $factory   = Mockery::mock(StreamFactory::class);
-        $directive = new class($factory) extends Directive {
-            #[Override]
-            public function name(): string {
-                return 'stream';
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getResolverQuery(string $type, string $field): ?array {
-                return parent::getResolverQuery($type, $field);
-            }
-        };
+        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+        $directive
+            ->shouldUseProperty('provider')
+            ->value(
+                $this->app()->make(ProvidesResolver::class),
+            );
 
         $directive->hydrate(
             Parser::directive('@stream'),
@@ -979,19 +1022,18 @@ final class DirectiveTest extends TestCase {
         $args      = [];
         $info      = Mockery::mock(ResolveInfo::class);
         $context   = Mockery::mock(GraphQLContext::class);
-        $factory   = Mockery::mock(StreamFactory::class);
-        $namespace = json_encode((new ReflectionClass(TestObject::class))->getNamespaceName(), JSON_THROW_ON_ERROR);
-        $directive = new class($factory) extends Directive {
-            #[Override]
-            public function name(): string {
-                return 'stream';
-            }
-
-            #[Override]
-            public function getResolverModel(string $model): Closure {
-                return parent::getResolverModel($model);
-            }
-        };
+        $namespace = json_encode(
+            (new ReflectionClass(TestObject::class))->getNamespaceName(),
+            JSON_THROW_ON_ERROR,
+        );
+        $directive = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+        $directive
+            ->shouldReceive('name')
+            ->atLeast()
+            ->once()
+            ->andReturn('stream');
 
         $directive->hydrate(
             Parser::directive('@stream'),
@@ -1019,22 +1061,15 @@ final class DirectiveTest extends TestCase {
 
     public function testGetResolverClass(): void {
         // Prepare
-        $factory   = Mockery::mock(StreamFactory::class);
         $namespace = json_encode(__NAMESPACE__, JSON_THROW_ON_ERROR);
-        $directive = new class($factory) extends Directive {
-            #[Override]
-            public function name(): string {
-                return 'stream';
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getResolverClass(string $class): array {
-                return parent::getResolverClass($class);
-            }
-        };
+        $directive = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+        $directive
+            ->shouldReceive('name')
+            ->atLeast()
+            ->once()
+            ->andReturn('stream');
 
         $directive->hydrate(
             Parser::directive('@stream'),
@@ -1066,23 +1101,24 @@ final class DirectiveTest extends TestCase {
         DirectiveNode $directiveNode,
         Closure $sourceFactory,
     ): void {
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
+        $manipulator = $this->app()->make(ManipulatorFactory::class)->create(Mockery::mock(DocumentAST::class));
         $source      = $sourceFactory($manipulator);
         $field       = $source->getField();
-        $factory     = Mockery::mock(StreamFactory::class);
-        $directive   = new class($factory) extends Directive {
-            #[Override]
-            public function getArgKey(
-                AstManipulator $manipulator,
-                ObjectFieldSource|InterfaceFieldSource $source,
-            ): string {
-                return parent::getArgKey($manipulator, $source);
-            }
-        };
+        $directive   = Mockery::mock(Directive::class, MockProperties::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
 
         self::assertInstanceOf(FieldDefinitionNode::class, $field);
 
         $directive->hydrate($directiveNode, $field);
+
+        if (count($directiveNode->arguments) === 0) {
+            $directive
+                ->shouldUseProperty('streamType')
+                ->value(
+                    $this->app()->make(StreamType::class),
+                );
+        }
 
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -1123,7 +1159,7 @@ final class DirectiveTest extends TestCase {
         $info->path            = ['field'];
         $info->parentType      = $type;
         $info->fieldDefinition = $field;
-        $info->argumentSet     = Container::getInstance()->make(ArgumentSetFactory::class)->fromResolveInfo([], $info);
+        $info->argumentSet     = $this->app()->make(ArgumentSetFactory::class)->fromResolveInfo([], $info);
         $info
             ->shouldReceive('enhanceBuilder')
             ->never();
@@ -1133,22 +1169,35 @@ final class DirectiveTest extends TestCase {
         $value     = Mockery::mock(FieldValue::class);
         $context   = Mockery::mock(GraphQLContext::class);
         $builder   = Mockery::mock(EloquentBuilder::class);
-        $factory   = Container::getInstance()->make(StreamFactory::class);
-        $directive = Mockery::mock(Directive::class, [$factory]);
+        $directive = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
-
-        $directive->hydrate(
-            Parser::directive('@stream'),
-            $field->astNode,
-        );
-
+        $directive
+            ->shouldUseProperty('manipulatorFactory')
+            ->value(
+                $this->app()->make(ManipulatorFactory::class),
+            );
+        $directive
+            ->shouldUseProperty('streamFactory')
+            ->value(
+                $this->app()->make(StreamFactory::class),
+            );
+        $directive
+            ->shouldUseProperty('streamType')
+            ->value(
+                $this->app()->make(StreamType::class),
+            );
         $directive
             ->shouldReceive('getResolver')
             ->once()
             ->andReturn(
                 static fn () => $builder,
             );
+
+        $directive->hydrate(
+            Parser::directive('@stream'),
+            $field->astNode,
+        );
 
         $stream = $directive->resolveField($value)($root, $args, $context, $info)->stream;
         $helper = new class() extends Stream {
@@ -1227,10 +1276,14 @@ final class DirectiveTest extends TestCase {
         $info->fieldDefinition = new FieldDefinition(['name' => 'field', 'type' => Type::string()]);
         $value                 = Mockery::mock(FieldValue::class);
         $context               = Mockery::mock(GraphQLContext::class);
-        $factory               = Mockery::mock(StreamFactory::class);
-        $directive             = Mockery::mock(Directive::class, [$factory]);
+        $directive             = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
+        $directive
+            ->shouldUseProperty('manipulatorFactory')
+            ->value(
+                $this->app()->make(ManipulatorFactory::class),
+            );
 
         $directive->hydrate(
             Parser::directive('@stream'),
@@ -1265,9 +1318,19 @@ final class DirectiveTest extends TestCase {
         $value                 = Mockery::mock(FieldValue::class);
         $context               = Mockery::mock(GraphQLContext::class);
         $factory               = Mockery::mock(StreamFactory::class)->makePartial();
-        $directive             = Mockery::mock(Directive::class, [$factory]);
+        $directive             = Mockery::mock(Directive::class, MockProperties::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
+        $directive
+            ->shouldUseProperty('manipulatorFactory')
+            ->value(
+                $this->app()->make(ManipulatorFactory::class),
+            );
+        $directive
+            ->shouldUseProperty('streamFactory')
+            ->value(
+                $factory,
+            );
 
         $directive->hydrate(
             Parser::directive('@stream'),
@@ -1308,49 +1371,32 @@ final class DirectiveTest extends TestCase {
 
     public function testGetFieldValue(): void {
         // Prepare
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
-        $factory     = Mockery::mock(StreamFactory::class);
-        $directive   = new class($factory) extends Directive {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getFieldValue(
-                string $directive,
-                AstManipulator $manipulator,
-                ObjectFieldSource $source,
-                ResolveInfo $info,
-                array $args,
-            ): mixed {
-                return parent::getFieldValue(
-                    $directive,
-                    $manipulator,
-                    $source,
-                    $info,
-                    $args,
-                );
-            }
-        };
-        $markerA     = new class() extends DirectiveTest_Directive {
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
+        $directive          = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $markerA = new class() extends DirectiveTest_Directive {
             // empty
         };
-        $markerB     = new class() extends DirectiveTest_Directive {
+        $markerB = new class() extends DirectiveTest_Directive {
             #[Override]
             public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
                 return parent::getFieldArgumentValue($info, $value) ?? 'default-b';
             }
         };
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $info        = Mockery::mock(ResolveInfo::class);
-        $args        = [
+        $object  = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info    = Mockery::mock(ResolveInfo::class);
+        $args    = [
             'a' => null,
             'b' => 'b',
         ];
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('markerA', $markerA::class)
             ->setResolved('markerB', $markerB::class);
-        Container::getInstance()->make(TypeRegistry::class)
+        $this->app()->make(TypeRegistry::class)
             ->register($object);
 
         // Arg
@@ -1390,38 +1436,21 @@ final class DirectiveTest extends TestCase {
             '/The `type Object { test }` must have at least one argument marked by `[^`]+` directive./',
         );
 
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
-        $factory     = Mockery::mock(StreamFactory::class);
-        $directive   = new class($factory) extends Directive {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getFieldValue(
-                string $directive,
-                AstManipulator $manipulator,
-                ObjectFieldSource $source,
-                ResolveInfo $info,
-                array $args,
-            ): mixed {
-                return parent::getFieldValue(
-                    $directive,
-                    $manipulator,
-                    $source,
-                    $info,
-                    $args,
-                );
-            }
-        };
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $info        = Mockery::mock(ResolveInfo::class);
-        $args        = [
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
+        $directive          = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $object = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info   = Mockery::mock(ResolveInfo::class);
+        $args   = [
             'a' => null,
             'b' => 'b',
             'c' => 123,
         ];
 
-        Container::getInstance()->make(TypeRegistry::class)
+        $this->app()->make(TypeRegistry::class)
             ->register($object);
 
         $directive->getFieldValue(
@@ -1441,41 +1470,24 @@ final class DirectiveTest extends TestCase {
         self::expectException(ArgumentsMutuallyExclusive::class);
         self::expectExceptionMessage('The arguments `a`, `b` of `type Object { test }` are mutually exclusive.');
 
-        $manipulator = $this->getAstManipulator(Mockery::mock(DocumentAST::class));
-        $factory     = Mockery::mock(StreamFactory::class);
-        $directive   = new class($factory) extends Directive {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getFieldValue(
-                string $directive,
-                AstManipulator $manipulator,
-                ObjectFieldSource $source,
-                ResolveInfo $info,
-                array $args,
-            ): mixed {
-                return parent::getFieldValue(
-                    $directive,
-                    $manipulator,
-                    $source,
-                    $info,
-                    $args,
-                );
-            }
-        };
-        $marker      = Mockery::mock(DirectiveContract::class, FieldArgumentDirective::class);
-        $object      = new ObjectType(['name' => 'Object', 'fields' => []]);
-        $info        = Mockery::mock(ResolveInfo::class);
-        $args        = [
+        $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
+        $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
+        $directive          = Mockery::mock(Directive::class);
+        $directive->shouldAllowMockingProtectedMethods();
+        $directive->makePartial();
+
+        $marker = Mockery::mock(DirectiveContract::class, FieldArgumentDirective::class);
+        $object = new ObjectType(['name' => 'Object', 'fields' => []]);
+        $info   = Mockery::mock(ResolveInfo::class);
+        $args   = [
             'a' => null,
             'b' => 'b',
             'c' => 123,
         ];
 
-        Container::getInstance()->make(DirectiveLocator::class)
+        $this->app()->make(DirectiveLocator::class)
             ->setResolved('marker', $marker::class);
-        Container::getInstance()->make(TypeRegistry::class)
+        $this->app()->make(TypeRegistry::class)
             ->register($object);
 
         $directive->getFieldValue(
@@ -1741,7 +1753,8 @@ final class DirectiveTest extends TestCase {
      * @return array<string, array{
      *      Exception|BuilderInfo|null,
      *      Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource),
-     *      Closure():mixed|array{string, string}|null
+     *      Closure():mixed|array{string, string}|null,
+     *      ?string,
      *      }>
      */
     public static function dataProviderGetBuilderInfo(): array {
@@ -1758,6 +1771,7 @@ final class DirectiveTest extends TestCase {
                 null,
                 $factory,
                 null,
+                null,
             ],
             'Closure(): mixed'            => [
                 null,
@@ -1765,6 +1779,7 @@ final class DirectiveTest extends TestCase {
                 static function (): mixed {
                     return null;
                 },
+                null,
             ],
             'Closure(): class'            => [
                 BuilderInfo::create(EloquentBuilder::class),
@@ -1772,6 +1787,7 @@ final class DirectiveTest extends TestCase {
                 static function (): EloquentBuilder {
                     throw new Exception('Should not be called.');
                 },
+                EloquentBuilder::class,
             ],
             'Closure(): union'            => [
                 null,
@@ -1779,26 +1795,31 @@ final class DirectiveTest extends TestCase {
                 static function () use ($class): stdClass|self {
                     return $class->union();
                 },
+                null,
             ],
             'array(Unknown, method)'      => [
                 null,
                 $factory,
                 ['Unknown', 'method'],
+                null,
             ],
             'array(Class, unknownMethod)' => [
                 null,
                 $factory,
                 [stdClass::class, 'unknownMethod'],
+                null,
             ],
             'array(Class, method: union)' => [
                 null,
                 $factory,
                 [$class::class, 'union'],
+                null,
             ],
             'array(Class, method)'        => [
                 BuilderInfo::create(EloquentBuilder::class),
                 $factory,
                 [$class::class, 'method'],
+                EloquentBuilder::class,
             ],
         ];
     }
@@ -1807,7 +1828,8 @@ final class DirectiveTest extends TestCase {
      * @return array<string, array{
      *      Exception|BuilderInfo|null,
      *      Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource),
-     *      Closure():mixed|array{string, string}|null
+     *      Closure():mixed|array{string, string}|null,
+     *      ?string,
      *      }>
      */
     public static function dataProviderGetBuilderInfoScoutBuilder(): array {
@@ -1823,6 +1845,7 @@ final class DirectiveTest extends TestCase {
                 BuilderInfo::create(ScoutBuilder::class),
                 $factory,
                 [DirectiveTest_Model::class, 'method'],
+                ScoutBuilder::class,
             ],
             '@search: Closure(): class'              => [
                 null,
@@ -1830,6 +1853,7 @@ final class DirectiveTest extends TestCase {
                 static function (): QueryBuilder {
                     throw new Exception('Should not be called.');
                 },
+                null,
             ],
         ];
     }
@@ -1843,7 +1867,13 @@ final class DirectiveTest extends TestCase {
     public static function dataProviderGetResolverExplicit(): array {
         return [
             'empty'    => [
-                null,
+                [
+                    'method' => 'getResolverQuery',
+                    'args'   => [
+                        'Car',
+                        'test',
+                    ],
+                ],
                 '{}',
             ],
             'builder'  => [

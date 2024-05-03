@@ -9,10 +9,12 @@ use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\Encrypter;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -31,10 +33,24 @@ final class OffsetTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $scalar = new Offset();
+        $encrypter = $this->app()->make(Encrypter::class);
+        $scalar    = Mockery::mock(Offset::class, MockProperties::class);
+        $scalar->makePartial();
+
+        if (is_string($expected)) {
+            $scalar
+                ->shouldUseProperty('encrypter')
+                ->value($encrypter);
+            $scalar
+                ->shouldUseProperty('serializer')
+                ->value(
+                    $this->app()->make(Serializer::class),
+                );
+        }
+
         $actual = $scalar->serialize($value);
         $actual = is_string($actual)
-            ? Container::getInstance()->make(Encrypter::class)->decrypt($actual, false)
+            ? $encrypter->decrypt($actual, false)
             : $actual;
 
         self::assertEquals($expected, $actual);
@@ -46,10 +62,24 @@ final class OffsetTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
+        $encrypter = $this->app()->make(Encrypter::class);
+        $scalar    = Mockery::mock(Offset::class, MockProperties::class);
+        $scalar->makePartial();
+
+        if (is_string($value)) {
+            $scalar
+                ->shouldUseProperty('encrypter')
+                ->value($encrypter);
+            $scalar
+                ->shouldUseProperty('serializer')
+                ->value(
+                    $this->app()->make(Serializer::class),
+                );
+        }
+
         $value  = is_string($value)
-            ? Container::getInstance()->make(Encrypter::class)->encrypt($value, false)
+            ? $encrypter->encrypt($value, false)
             : $value;
-        $scalar = new Offset();
         $actual = $scalar->parseValue($value);
 
         self::assertEquals($expected, $actual);
@@ -61,11 +91,22 @@ final class OffsetTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
+        $encrypter = $this->app()->make(Encrypter::class);
+        $scalar    = Mockery::mock(Offset::class, MockProperties::class);
+        $scalar->makePartial();
+
         if ($value instanceof StringValueNode) {
-            $value->value = Container::getInstance()->make(Encrypter::class)->encrypt($value->value, false);
+            $value->value = $encrypter->encrypt($value->value, false);
+            $scalar
+                ->shouldUseProperty('encrypter')
+                ->value($encrypter);
+            $scalar
+                ->shouldUseProperty('serializer')
+                ->value(
+                    $this->app()->make(Serializer::class),
+                );
         }
 
-        $scalar = new Offset();
         $actual = $scalar->parseLiteral($value);
 
         self::assertEquals($expected, $actual);

@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Validation\Rules;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -22,8 +22,8 @@ final class DateTimeRuleTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderIsValid')]
     public function testRule(bool $expected, mixed $value): void {
-        $rule      = Container::getInstance()->make(DateTimeRule::class);
-        $factory   = Container::getInstance()->make(Factory::class);
+        $rule      = $this->app()->make(DateTimeRule::class);
+        $factory   = $this->app()->make(Factory::class);
         $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
         self::assertEquals($expected, !$validator->fails());
@@ -42,7 +42,7 @@ final class DateTimeRuleTest extends TestCase {
 
     #[DataProvider('dataProviderIsValid')]
     public function testIsValid(bool $expected, string $value): void {
-        $rule   = Container::getInstance()->make(DateTimeRule::class);
+        $rule   = $this->app()->make(DateTimeRule::class);
         $actual = $rule->isValid('attribute', $value);
 
         self::assertEquals($expected, $actual);
@@ -58,8 +58,9 @@ final class DateTimeRuleTest extends TestCase {
             self::expectExceptionMessageMatches($expected['message']);
         }
 
-        $translator = Container::getInstance()->make(Translator::class);
-        $rule       = new DateTimeRule($translator);
+        $translator = $this->app()->make(Translator::class);
+        $config     = $this->app()->make(ConfigResolver::class);
+        $rule       = new DateTimeRule($config, $translator);
 
         $this->setConfig([
             'app.timezone' => $tz,

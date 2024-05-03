@@ -48,7 +48,6 @@ composer require lastdragon-ru/lara-asp-serializer
 namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage;
 
 use DateTimeInterface;
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Date;
 use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -65,7 +64,7 @@ class User implements Serializable {
 }
 
 $user         = new User(1, 'User', Date::parse('2023-08-27T08:30:44.473+00:00'));
-$serializer   = Container::getInstance()->make(Serializer::class);
+$serializer   = app()->make(Serializer::class);
 $serialized   = $serializer->serialize($user);
 $deserialized = $serializer->deserialize(User::class, $serialized);
 

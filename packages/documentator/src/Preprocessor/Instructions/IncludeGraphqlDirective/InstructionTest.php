@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective;
 
 use GraphQL\Language\Parser;
-use Illuminate\Container\Container;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -41,7 +40,7 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process('path/to/file.md', '@test');
 
         self::assertEquals(
@@ -55,11 +54,11 @@ final class InstructionTest extends TestCase {
     }
 
     public function testProcessNoPrinter(): void {
-        unset(Container::getInstance()[PrinterContract::class]);
+        unset($this->app()[PrinterContract::class]);
 
         $path     = 'path/to/file.md';
         $target   = '@test';
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DependencyIsMissing($path, $target, PrinterContract::class),
@@ -84,7 +83,7 @@ final class InstructionTest extends TestCase {
 
         $path     = 'path/to/file.md';
         $target   = '@test';
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TargetIsNotDirective($path, $target),
@@ -100,7 +99,7 @@ final class InstructionTest extends TestCase {
 
         $path     = 'path/to/file.md';
         $target   = '@test';
-        $instance = Container::getInstance()->make(Instruction::class);
+        $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TargetIsNotDirective($path, $target),

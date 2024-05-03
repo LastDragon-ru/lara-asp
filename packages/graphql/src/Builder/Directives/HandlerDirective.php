@@ -10,7 +10,6 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -30,9 +29,10 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyOper
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\HandlerInvalidConditions;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
+use LastDragon_ru\LaraASP\GraphQL\Builder\Operators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldArgumentSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldArgumentSource;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -48,14 +48,17 @@ use function reset;
 
 /**
  * @see HandlerContextBuilderInfo
+ * @see HandlerContextOperators
  * @see HandlerContextImplicit
  */
 abstract class HandlerDirective extends BaseDirective implements Handler, Enhancer {
-    use WithManipulator;
     use WithSource;
 
     public function __construct(
-        protected readonly ArgumentFactory $argumentFactory,
+        private readonly ManipulatorFactory $manipulatorFactory,
+        private readonly ArgumentFactory $argumentFactory,
+        private readonly BuilderInfoDetector $detector,
+        private readonly Operators $operators,
     ) {
         // empty
     }
@@ -226,9 +229,9 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Converted?
-        $detector    = Container::getInstance()->make(BuilderInfoDetector::class);
+        $detector    = $this->detector;
         $builder     = $detector->getFieldArgumentBuilderInfo($documentAST, $parentType, $parentField, $argDefinition);
-        $manipulator = $this->getAstManipulator($documentAST);
+        $manipulator = $this->manipulatorFactory->create($documentAST);
 
         if ($this->isTypeName($manipulator->getTypeName($argDefinition))) {
             return;
@@ -237,6 +240,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         // Argument
         $context = (new Context())->override([
             HandlerContextBuilderInfo::class => new HandlerContextBuilderInfo($builder),
+            HandlerContextOperators::class   => new HandlerContextOperators($this->operators),
             HandlerContextImplicit::class    => new HandlerContextImplicit(
                 $manipulator->isPlaceholder($argDefinition),
             ),

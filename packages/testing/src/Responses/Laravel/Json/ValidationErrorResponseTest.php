@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Http\Request;
@@ -24,10 +23,9 @@ final class ValidationErrorResponseTest extends TestCase {
      */
     #[DataProvider('dataProviderEvaluate')]
     public function testEvaluate(bool $expected, array $rules, ?array $errors): void {
-        Container::getInstance()->make(Registrar::class)
-            ->get(__FUNCTION__, static function (Request $request) use ($rules) {
-                return Container::getInstance()
-                    ->make(ValidatorFactory::class)
+        $this->app()->make(Registrar::class)
+            ->get(__FUNCTION__, function (Request $request) use ($rules) {
+                return $this->app()->make(ValidatorFactory::class)
                     ->validate($request->all(), $rules);
             });
 

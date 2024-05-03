@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Database;
 
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
@@ -29,9 +29,11 @@ trait RefreshDatabaseIfEmpty {
         refreshTestDatabase as protected laravelRefreshTestDatabase;
     }
 
+    abstract protected function app(): Application;
+
     protected function refreshTestDatabase(): void {
         if (!RefreshDatabaseState::$migrated) {
-            $connection = Container::getInstance()->make(DatabaseManager::class)->connection();
+            $connection = $this->app()->make(DatabaseManager::class)->connection();
             $tables     = $connection->getSchemaBuilder()->getTables();
 
             if ($tables) {

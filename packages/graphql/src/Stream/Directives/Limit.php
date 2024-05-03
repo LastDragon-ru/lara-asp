@@ -13,7 +13,7 @@ use GraphQL\Utils\AST;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator;
+use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -31,10 +31,14 @@ use function strtr;
  * @implements FieldArgumentDirective<int<1, max>>
  */
 class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
-    use WithManipulator;
-
     final public const ArgDefault = 'default';
     final public const ArgMax     = 'max';
+
+    public function __construct(
+        private readonly ManipulatorFactory $manipulatorFactory,
+    ) {
+        // empty
+    }
 
     /**
      * @return array{name: string, default: int, max: int}
@@ -73,7 +77,7 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
     ): void {
         // Type
         $type          = Type::nonNull(Type::int());
-        $manipulator   = $this->getAstManipulator($documentAST);
+        $manipulator   = $this->manipulatorFactory->create($documentAST);
         $argDefinition = $manipulator->setArgumentType(
             $parentType,
             $parentField,

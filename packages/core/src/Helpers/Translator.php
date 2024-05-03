@@ -16,11 +16,14 @@ use function end;
 abstract class Translator {
     public function __construct(
         protected TranslatorContract $translator,
-        protected string $package,
-        protected string|null $group = 'messages',
     ) {
         // empty
     }
+
+    /**
+     * Should return the name of the package.
+     */
+    abstract protected function getName(): string;
 
     /**
      * @param list<string>|string  $key
@@ -59,9 +62,7 @@ abstract class Translator {
     }
 
     protected function key(string $key): string {
-        return $this->group
-            ? "{$this->package}::{$this->group}.{$key}"
-            : "{$this->package}::{$key}";
+        return "{$this->getName()}::messages.{$key}";
     }
 
     /**

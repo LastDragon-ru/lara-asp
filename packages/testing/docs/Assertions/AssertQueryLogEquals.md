@@ -11,11 +11,14 @@ Asserts that `QueryLog` equals `QueryLog`.
 
 namespace LastDragon_ru\LaraASP\Testing\Docs\Assertions;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use LastDragon_ru\LaraASP\Testing\Concerns\DatabaseQueryComparator;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
+use LogicException;
 use Orchestra\Testbench\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
@@ -28,6 +31,11 @@ final class AssertQueryLogEqualsTest extends TestCase {
      */
     use WithQueryLog;
     use DatabaseQueryComparator;
+
+    #[Override]
+    protected function app(): Application {
+        return $this->app ?? throw new LogicException('Application not yet initialized.');
+    }
 
     /**
      * Assertion test.
