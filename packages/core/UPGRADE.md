@@ -29,6 +29,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v6
 
+[include:file]: ../../docs/Shared/Upgrade/FromV6.md
+[//]: # (start: 6b55bf5daea407a4590344596d41efd8368a783e2666bfe431a88a5eeaff3a95)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+* [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
+
+[//]: # (end: 6b55bf5daea407a4590344596d41efd8368a783e2666bfe431a88a5eeaff3a95)
+
 * [ ] `\LastDragon_ru\LaraASP\Core\Provider\WithRoutes::bootRoutes()` requires settings.
 
 # Upgrade from v5
