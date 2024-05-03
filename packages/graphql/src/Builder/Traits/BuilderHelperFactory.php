@@ -8,6 +8,8 @@ use function array_key_exists;
 use function is_a;
 use function is_object;
 
+// todo(graphql): Do we really need this?
+
 /**
  * @internal
  */

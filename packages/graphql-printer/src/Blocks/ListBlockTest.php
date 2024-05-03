@@ -800,7 +800,6 @@ class ListBlockTest__Block extends Block {
  * @extends PropertyBlock<Block>
  */
 class ListBlockTest__NamedBlock extends PropertyBlock {
-    /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(
         protected string $name,
         protected string $serialized,
