@@ -14,9 +14,7 @@ use function is_file;
 /**
  * File path.
  *
- * @template TParameters
- *
- * @implements TargetResolver<TParameters, string>
+ * @implements TargetResolver<null, string>
  */
 class FilePath implements TargetResolver {
     public function __construct() {

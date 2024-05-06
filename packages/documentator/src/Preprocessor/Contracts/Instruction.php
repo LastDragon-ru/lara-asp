@@ -5,15 +5,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 
 /**
+ * @template TTarget
  * @template TParameters
- * @template TTargetValue
- * @template TTargetResolver of TargetResolver<TParameters, TTargetValue>
  */
 interface Instruction {
     public static function getName(): string;
 
     /**
-     * @return class-string<TTargetResolver>
+     * @return class-string<TargetResolver<TParameters, TTarget>|TargetResolver<null, TTarget>>
      */
     public static function getTarget(): string;
 
@@ -24,7 +23,7 @@ interface Instruction {
 
     /**
      * @param Context      $context
-     * @param TTargetValue $target
+     * @param TTarget $target
      * @param TParameters  $parameters
      */
     public function process(Context $context, mixed $target, mixed $parameters): string;

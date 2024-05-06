@@ -23,7 +23,7 @@ use function usort;
  * must have `# Header` as the first construction. The first paragraph
  * after the Header will be used as a summary.
  *
- * @implements InstructionContract<Parameters, string, DirectoryPath<Parameters>>
+ * @implements InstructionContract<string, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(

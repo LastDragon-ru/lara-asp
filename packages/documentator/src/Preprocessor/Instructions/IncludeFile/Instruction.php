@@ -12,7 +12,7 @@ use function rtrim;
 /**
  * Includes the `<target>` file.
  *
- * @implements InstructionContract<null, string, FileContent<null>>
+ * @implements InstructionContract<string, null>
  */
 class Instruction implements InstructionContract {
     public function __construct() {

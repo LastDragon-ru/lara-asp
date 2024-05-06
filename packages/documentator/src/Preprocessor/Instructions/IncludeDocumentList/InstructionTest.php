@@ -20,7 +20,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($path->getPathname(), './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, $params);
+        $target   = (new DirectoryPath())->resolve($context, null);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -38,7 +38,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($path->getPathname(), basename(self::getTestData()->path('/')), '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, $params);
+        $target   = (new DirectoryPath())->resolve($context, null);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -56,7 +56,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters(null);
         $context  = new Context($path->getPathname(), './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, $params);
+        $target   = (new DirectoryPath())->resolve($context, null);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -71,11 +71,10 @@ final class InstructionTest extends TestCase {
 
     public function testProcessWithoutTitle(): void {
         $path     = self::getTestData()->file('invalid/Document.md');
-        $target   = './';
         $params   = new Parameters();
         $context  = new Context($path->getPathname(), './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, $params);
+        $target   = (new DirectoryPath())->resolve($context, null);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(

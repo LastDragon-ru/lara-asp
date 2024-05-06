@@ -16,7 +16,7 @@ use function trim;
 /**
  * Includes the definition of the directive as a Markdown code block.
  *
- * @implements InstructionContract<null, string, Target<null>>
+ * @implements InstructionContract<string, null>
  */
 class Instruction implements InstructionContract {
     public function __construct(

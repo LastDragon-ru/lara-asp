@@ -28,7 +28,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * from `<target>` file. Inline tags include as is except `@see`/`@link`
  * which will be replaced to FQCN (if possible). Other tags are ignored.
  *
- * @implements InstructionContract<Parameters, string, FileContent<Parameters>>
+ * @implements InstructionContract<string, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {

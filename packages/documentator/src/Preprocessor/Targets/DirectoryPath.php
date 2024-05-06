@@ -14,9 +14,7 @@ use function is_dir;
 /**
  * Directory path.
  *
- * @template TParameters
- *
- * @implements TargetResolver<TParameters, string>
+ * @implements TargetResolver<null, string>
  */
 class DirectoryPath implements TargetResolver {
     public function __construct() {

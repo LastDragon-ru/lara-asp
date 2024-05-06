@@ -31,7 +31,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * block. You can wrap the output into `<markdown>text</markdown>` tags to
  * insert it as is.
  *
- * @implements InstructionContract<null, string, FileContent<null>>
+ * @implements InstructionContract<string, null>
  */
 class Instruction implements InstructionContract {
     public const    Limit          = 50;

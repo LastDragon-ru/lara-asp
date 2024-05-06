@@ -8,11 +8,6 @@ use Override;
 
 use function file_get_contents;
 
-/**
- * @template TParameters
- *
- * @extends FilePath<TParameters>
- */
 class FileContent extends FilePath {
     #[Override]
     public function resolve(Context $context, mixed $parameters): string {

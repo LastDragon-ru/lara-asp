@@ -22,7 +22,7 @@ use const PREG_UNMATCHED_AS_NULL;
 /**
  * Includes the `<target>` as a template.
  *
- * @implements InstructionContract<Parameters, string, FileContent<Parameters>>
+ * @implements InstructionContract<string, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {

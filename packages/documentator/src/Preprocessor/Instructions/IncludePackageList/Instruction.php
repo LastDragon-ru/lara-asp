@@ -31,7 +31,7 @@ use const JSON_THROW_ON_ERROR;
  * Generates package list from `<target>` directory. The readme file will be
  * used to determine package name and summary.
  *
- * @implements InstructionContract<Parameters, string, DirectoryPath<Parameters>>
+ * @implements InstructionContract<string, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(

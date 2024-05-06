@@ -15,7 +15,7 @@ use function trim;
 /**
  * Executes the `<target>` and returns result.
  *
- * @implements InstructionContract<null, string, Target<null>>
+ * @implements InstructionContract<string, null>
  */
 class Instruction implements InstructionContract {
     public function __construct(
