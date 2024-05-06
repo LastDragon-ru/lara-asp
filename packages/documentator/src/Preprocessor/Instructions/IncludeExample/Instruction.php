@@ -5,13 +5,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 use Exception;
 use Illuminate\Process\Factory;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
 use Override;
 
 use function dirname;
-use function file_get_contents;
 use function is_file;
 use function pathinfo;
 use function preg_match;
@@ -22,7 +22,18 @@ use function trim;
 use const PATHINFO_EXTENSION;
 use const PREG_UNMATCHED_AS_NULL;
 
-class Instruction implements ProcessableInstruction {
+/**
+ * Includes contents of the `<target>` file as an example wrapped into
+ * ` ```code block``` `. It also searches for `<target>.run` file, execute
+ * it if found, and include its result right after the code block.
+ *
+ * By default, output of `<target>.run` will be included as ` ```plain text``` `
+ * block. You can wrap the output into `<markdown>text</markdown>` tags to
+ * insert it as is.
+ *
+ * @implements InstructionContract<null, string, FileContent<null>>
+ */
+class Instruction implements InstructionContract {
     public const    Limit          = 50;
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
@@ -38,32 +49,21 @@ class Instruction implements ProcessableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return <<<'DESC'
-        Includes contents of the `<target>` file as an example wrapped into
-        ` ```code block``` `. It also searches for `<target>.run` file, execute
-        it if found, and include its result right after the code block.
-
-        By default, output of `<target>.run` will be included as ` ```plain text``` `
-        block. You can wrap the output into `<markdown>text</markdown>` tags to
-        insert it as is.
-        DESC;
+    public static function getTarget(): string {
+        return FileContent::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'Example file path.';
+    public static function getParameters(): ?string {
+        return null;
     }
 
     #[Override]
-    public function process(string $path, string $target): string {
-        // Content
-        $file    = Path::getPath(dirname($path), $target);
-        $content = file_get_contents($file);
-
-        if ($content === false) {
-            throw new TargetIsNotFile($path, $target);
-        }
+    public function process(Context $context, mixed $target, mixed $parameters): string {
+        // Prepare
+        $content = $target;
+        $target  = $context->target;
+        $path    = $context->path;
 
         // Process
         $language = $this->getLanguage($path, $target);

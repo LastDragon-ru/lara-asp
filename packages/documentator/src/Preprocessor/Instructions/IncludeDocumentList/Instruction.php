@@ -4,25 +4,28 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDo
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use Symfony\Component\Finder\Finder;
 
 use function basename;
 use function dirname;
 use function file_get_contents;
-use function is_dir;
 use function strcmp;
 use function usort;
 
 /**
- * @implements ParameterizableInstruction<Parameters>
+ * Returns the list of `*.md` files in the `<target>` directory. Each file
+ * must have `# Header` as the first construction. The first paragraph
+ * after the Header will be used as a summary.
+ *
+ * @implements InstructionContract<Parameters, string, DirectoryPath<Parameters>>
  */
-class Instruction implements ParameterizableInstruction {
+class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {
@@ -35,45 +38,23 @@ class Instruction implements ParameterizableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return <<<'DESC'
-            Returns the list of `*.md` files in the `<target>` directory. Each file
-            must have `# Header` as the first construction. The first paragraph
-            after the Header will be used as a summary.
-            DESC;
+    public static function getTarget(): string {
+        return DirectoryPath::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'Directory path.';
-    }
-
-    #[Override]
-    public static function getParameters(): string {
+    public static function getParameters(): ?string {
         return Parameters::class;
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public static function getParametersDescription(): array {
-        return [];
-    }
-
-    #[Override]
-    public function process(string $path, string $target, Serializable $parameters): string {
-        // Directory?
-        $base = dirname($path);
-        $root = Path::getPath($base, $target);
-
-        if (!is_dir($root)) {
-            throw new TargetIsNotDirectory($path, $target);
-        }
-
+    public function process(Context $context, mixed $target, mixed $parameters): string {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
-        $target    = Path::normalize($target);
+        $path      = basename($context->path);
+        $base      = dirname($context->path);
+        $root      = $target;
+        $target    = Path::normalize($context->target);
         $finder    = Finder::create()->in($root)->name('*.md');
 
         if ($parameters->depth !== null) {
@@ -82,7 +63,7 @@ class Instruction implements ParameterizableInstruction {
 
         foreach ($finder->files() as $file) {
             // Same?
-            if ($target === '' && $file->getFilename() === basename($path)) {
+            if ($target === '' && $file->getFilename() === $path) {
                 continue;
             }
 
@@ -104,7 +85,7 @@ class Instruction implements ParameterizableInstruction {
                     'summary' => Markdown::getSummary($content),
                 ];
             } else {
-                throw new DocumentTitleIsMissing($path, $target, $docPath);
+                throw new DocumentTitleIsMissing($context->path, $context->target, $docPath);
             }
         }
 

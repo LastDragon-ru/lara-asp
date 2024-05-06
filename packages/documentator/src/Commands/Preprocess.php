@@ -183,14 +183,6 @@ class Preprocess extends Command {
      * @return array<string, string>
      */
     protected function getInstructionParameters(string $instruction): array {
-        // Explicit? (deprecated)
-        $parameters = $instruction::getParametersDescription();
-
-        if ($parameters) {
-            return $parameters;
-        }
-
-        // Nope
         $class      = new ReflectionClass($instruction::getParameters());
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         $parameters = [];

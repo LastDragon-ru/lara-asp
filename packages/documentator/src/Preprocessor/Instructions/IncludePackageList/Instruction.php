@@ -5,21 +5,20 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePa
 use Exception;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use Symfony\Component\Finder\Finder;
 
 use function assert;
-use function dirname;
+use function basename;
 use function file_get_contents;
 use function is_array;
-use function is_dir;
 use function is_file;
 use function is_string;
 use function json_decode;
@@ -29,9 +28,12 @@ use function usort;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * @implements ParameterizableInstruction<Parameters>
+ * Generates package list from `<target>` directory. The readme file will be
+ * used to determine package name and summary.
+ *
+ * @implements InstructionContract<Parameters, string, DirectoryPath<Parameters>>
  */
-class Instruction implements ParameterizableInstruction {
+class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
     ) {
@@ -44,45 +46,23 @@ class Instruction implements ParameterizableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return <<<'DESC'
-        Generates package list from `<target>` directory. The readme file will be
-        used to determine package name and summary.
-        DESC;
+    public static function getTarget(): string {
+        return DirectoryPath::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'Directory path.';
-    }
-
-    #[Override]
-    public static function getParameters(): string {
+    public static function getParameters(): ?string {
         return Parameters::class;
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public static function getParametersDescription(): array {
-        return [];
-    }
-
-    #[Override]
-    public function process(string $path, string $target, Serializable $parameters): string {
-        // Directory?
-        $root = Path::getPath(dirname($path), $target);
-
-        if (!is_dir($root)) {
-            throw new TargetIsNotDirectory($path, $target);
-        }
-
+    public function process(Context $context, mixed $target, mixed $parameters): string {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
+        $basePath    = basename($target);
         $directories = Finder::create()
             ->ignoreVCSIgnored(true)
-            ->in($root)
+            ->in($target)
             ->depth(0)
             ->exclude('vendor')
             ->exclude('node_modules')
@@ -94,7 +74,11 @@ class Instruction implements ParameterizableInstruction {
             $packageInfo = $this->getPackageInfo($packagePath);
 
             if (!$packageInfo) {
-                throw new PackageComposerJsonIsMissing($path, $target, Path::join($target, $package->getFilename()));
+                throw new PackageComposerJsonIsMissing(
+                    $context->path,
+                    $context->target,
+                    Path::join($basePath, $package->getFilename()),
+                );
             }
 
             // Readme
@@ -104,17 +88,21 @@ class Instruction implements ParameterizableInstruction {
                 : false;
 
             if (!$readme || $content === false) {
-                throw new PackageReadmeIsMissing($path, $target, Path::join($target, $package->getFilename()));
+                throw new PackageReadmeIsMissing(
+                    $context->path,
+                    $context->target,
+                    Path::join($basePath, $package->getFilename()),
+                );
             }
 
             // Extract
             $packageTitle = Markdown::getTitle($content);
-            $readmePath   = Path::join($target, $package->getFilename(), $readme);
+            $readmePath   = Path::join($basePath, $package->getFilename(), $readme);
 
             if ($packageTitle) {
                 $upgrade     = $this->getPackageUpgrade($packagePath, $packageInfo);
                 $upgradePath = $upgrade
-                    ? Path::join($target, $package->getFilename(), $upgrade)
+                    ? Path::join($basePath, $package->getFilename(), $upgrade)
                     : null;
 
                 $packages[] = [
@@ -124,7 +112,7 @@ class Instruction implements ParameterizableInstruction {
                     'upgrade' => $upgradePath,
                 ];
             } else {
-                throw new DocumentTitleIsMissing($path, $target, $readmePath);
+                throw new DocumentTitleIsMissing($context->path, $context->target, $readmePath);
             }
         }
 

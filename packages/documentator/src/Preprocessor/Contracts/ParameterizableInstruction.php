@@ -5,20 +5,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 
 /**
+ * @deprecated
  * @template TParameters of Serializable
  */
-interface ParameterizableInstruction extends Instruction {
+interface ParameterizableInstruction {
     /**
      * @return class-string<TParameters>
      */
     public static function getParameters(): string;
-
-    /**
-     * @deprecated 6.2.0 Use docblock instead.
-     *
-     * @return array<string, string>
-     */
-    public static function getParametersDescription(): array;
 
     /**
      * @param TParameters $parameters

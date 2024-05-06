@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -16,8 +18,10 @@ final class InstructionTest extends TestCase {
     public function testProcessSameDirectory(): void {
         $path     = self::getTestData()->file('Document.md');
         $params   = new Parameters();
+        $context  = new Context($path->getPathname(), './', '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($path->getPathname(), './', $params);
+        $target   = (new DirectoryPath())->resolve($context, $params);
+        $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('~SameDirectory.md'),
@@ -32,8 +36,10 @@ final class InstructionTest extends TestCase {
     public function testProcessAnotherDirectory(): void {
         $path     = self::getTestData()->file('~AnotherDirectory.md');
         $params   = new Parameters();
+        $context  = new Context($path->getPathname(), basename(self::getTestData()->path('/')), '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($path->getPathname(), basename(self::getTestData()->path('/')), $params);
+        $target   = (new DirectoryPath())->resolve($context, $params);
+        $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('~AnotherDirectory.md'),
@@ -48,8 +54,10 @@ final class InstructionTest extends TestCase {
     public function testProcessNestedDirectories(): void {
         $path     = self::getTestData()->file('nested/Document.md');
         $params   = new Parameters(null);
+        $context  = new Context($path->getPathname(), './', '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($path->getPathname(), './', $params);
+        $target   = (new DirectoryPath())->resolve($context, $params);
+        $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('~NestedDirectories.md'),
@@ -65,7 +73,9 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('invalid/Document.md');
         $target   = './';
         $params   = new Parameters();
+        $context  = new Context($path->getPathname(), './', '');
         $instance = $this->app()->make(Instruction::class);
+        $target   = (new DirectoryPath())->resolve($context, $params);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(
@@ -75,6 +85,6 @@ final class InstructionTest extends TestCase {
             ),
         );
 
-        $instance->process($path->getPathname(), $target, $params);
+        $instance->process($context, $target, $params);
     }
 }

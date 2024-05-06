@@ -2,16 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
 use Override;
 
-use function dirname;
-use function file_get_contents;
 use function rtrim;
 
-class Instruction implements ProcessableInstruction {
+/**
+ * Includes the `<target>` file.
+ *
+ * @implements InstructionContract<null, string, FileContent<null>>
+ */
+class Instruction implements InstructionContract {
     public function __construct() {
         // empty
     }
@@ -22,26 +25,17 @@ class Instruction implements ProcessableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return 'Includes the `<target>` file.';
+    public static function getTarget(): string {
+        return FileContent::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'File path.';
+    public static function getParameters(): ?string {
+        return null;
     }
 
     #[Override]
-    public function process(string $path, string $target): string {
-        // Content
-        $file    = Path::getPath(dirname($path), $target);
-        $content = file_get_contents($file);
-
-        if ($content === false) {
-            throw new TargetIsNotFile($path, $target);
-        }
-
-        // Return
-        return rtrim($content)."\n";
+    public function process(Context $context, mixed $target, mixed $parameters): string {
+        return rtrim($target)."\n";
     }
 }

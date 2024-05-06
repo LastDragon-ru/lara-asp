@@ -81,7 +81,7 @@ class Preprocessor {
         REGEXP;
 
     /**
-     * @var array<string, array{class-string<Instruction>, ?Instruction}>
+     * @var array<string, array{class-string<Instruction<*,*,*>>, ?Instruction<*,*,*>}>
      */
     private array $instructions = [];
 
@@ -100,14 +100,16 @@ class Preprocessor {
     }
 
     /**
-     * @return list<class-string<Instruction>>
+     * @return list<class-string<Instruction<*,*,*>>>
      */
     public function getInstructions(): array {
         return array_column($this->instructions, 0);
     }
 
     /**
-     * @param Instruction|class-string<Instruction> $instruction
+     * @template I of Instruction<*,*,*>
+     *
+     * @param I|class-string<I> $instruction
      */
     public function addInstruction(Instruction|string $instruction): static {
         $this->instructions[$instruction::getName()] = $instruction instanceof Instruction
@@ -117,6 +119,9 @@ class Preprocessor {
         return $this;
     }
 
+    /**
+     * @return Instruction<*,*,*>|null
+     */
     protected function getInstruction(string $name): ?Instruction {
         if (!isset($this->instructions[$name])) {
             return null;

@@ -2,6 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts;
 
-interface ProcessableInstruction extends Instruction {
+/**
+ * @deprecated
+ */
+interface ProcessableInstruction {
     public function process(string $path, string $target): string;
 }
