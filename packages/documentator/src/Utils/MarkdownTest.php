@@ -139,4 +139,63 @@ final class MarkdownTest extends TestCase {
             ),
         );
     }
+
+    public function testSetPadding(): void {
+        self::assertEquals(
+            <<<'TEXT'
+                # Header
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                * a
+                  * a.a
+                  * a.b
+                * b
+            TEXT,
+            Markdown::setPadding(
+                <<<'MARKDOWN'
+                # Header
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                * a
+                  * a.a
+                  * a.b
+                * b
+                MARKDOWN,
+                4,
+            ),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+                    # Header
+
+                    fsdfsdfsdf
+                    fsdfsdfsdf
+
+                * a
+                  * a.a
+                  * a.b
+
+                * b
+            MARKDOWN,
+            Markdown::setPadding(
+                <<<'MARKDOWN'
+                    # Header
+
+                    fsdfsdfsdf
+                    fsdfsdfsdf
+
+                * a
+                  * a.a
+                  * a.b
+
+                * b
+                MARKDOWN,
+                4,
+            ),
+        );
+    }
 }
