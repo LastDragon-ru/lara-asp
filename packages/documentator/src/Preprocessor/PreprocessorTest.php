@@ -20,7 +20,7 @@ use const JSON_THROW_ON_ERROR;
 #[CoversClass(Preprocessor::class)]
 final class PreprocessorTest extends TestCase {
     public function testProcess(): void {
-        $content      = <<<'MARKDOWN'
+        $content = <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
 
             [unknown]: ./path/to/file

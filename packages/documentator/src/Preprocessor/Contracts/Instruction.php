@@ -24,7 +24,6 @@ interface Instruction {
     public static function getParameters(): ?string;
 
     /**
-     * @param Context     $context
      * @param TTarget     $target
      * @param TParameters $parameters
      */

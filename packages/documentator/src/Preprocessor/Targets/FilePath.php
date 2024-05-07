@@ -10,6 +10,7 @@ use Override;
 
 use function dirname;
 use function is_file;
+use function is_readable;
 
 /**
  * File path.
