@@ -147,19 +147,25 @@ class Preprocessor {
             $result = preg_replace_callback(
                 pattern : static::Regexp,
                 callback: function (array $matches) use (&$cache, $path): string {
-                    // Hash
+                    // Instruction?
                     $instruction = $this->getInstruction($matches['instruction']);
-                    $target      = $matches['target'];
-                    $target      = str_starts_with($target, '<') && str_ends_with($target, '>')
+
+                    if (!$instruction) {
+                        return $matches['expression'];
+                    }
+
+                    // Hash
+                    $target = $matches['target'];
+                    $target = str_starts_with($target, '<') && str_ends_with($target, '>')
                         ? mb_substr($target, 1, -1)
                         : rawurldecode($target);
-                    $json        = $this->getParametersJson($matches['parameters'] ?: '{}');
-                    $hash        = $this->getHash("{$matches['instruction']}({$target}, {$json})");
+                    $json   = $this->getParametersJson($matches['parameters'] ?: '{}');
+                    $hash   = $this->getHash("{$matches['instruction']}({$target}, {$json})");
 
                     // Content
                     $content = $cache[$hash] ?? null;
 
-                    if ($instruction && $content === null) {
+                    if ($content === null) {
                         $params       = $instruction::getParameters();
                         $params       = $params ? $this->serializer->deserialize($params, $json, 'json') : null;
                         $context      = new Context($path, $target, $matches['parameters']);
@@ -189,14 +195,12 @@ class Preprocessor {
 
                         {$suffix}
                         RESULT;
-                    } elseif ($instruction) {
+                    } else {
                         $content = <<<RESULT
                         {$prefix}
                         [//]: # (empty)
                         {$suffix}
                         RESULT;
-                    } else {
-                        $content = $matches['expression'];
                     }
 
                     return $content;

@@ -23,7 +23,7 @@ final class PreprocessorTest extends TestCase {
         $content = <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
 
-            [unknown]: ./path/to/file
+            [unknown]: ./path/to/file (should not be parsed)
 
             [test:empty]: ./path/to/file
 
@@ -58,7 +58,7 @@ final class PreprocessorTest extends TestCase {
             <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
 
-            [unknown]: ./path/to/file
+            [unknown]: ./path/to/file (should not be parsed)
 
             [test:empty]: ./path/to/file
             [//]: # (start: caf14319a44edf638bf2ba4b4c76caab5a3d85ee06d5c86387fbdb703c8b5c84)
