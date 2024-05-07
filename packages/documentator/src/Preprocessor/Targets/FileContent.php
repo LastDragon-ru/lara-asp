@@ -8,6 +8,9 @@ use Override;
 
 use function file_get_contents;
 
+/**
+ * File path.
+ */
 class FileContent extends FilePath {
     #[Override]
     public function resolve(Context $context, mixed $parameters): string {

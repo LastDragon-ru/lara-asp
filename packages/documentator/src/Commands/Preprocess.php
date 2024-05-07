@@ -112,7 +112,7 @@ class Preprocess extends Command {
             $name       = $instruction::getName();
             $desc       = $this->getDocBlock($class);
             $resolver   = $this->getProcessedHelpInstructionResolver($instruction, 2);
-            $resolver   = trim($resolver);
+            $resolver   = trim($resolver ?: '_No description provided_.');
             $parameters = $this->getProcessedHelpInstructionParameters($instruction, 2);
 
             if ($parameters !== null) {
