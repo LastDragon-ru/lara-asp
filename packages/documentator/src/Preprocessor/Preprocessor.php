@@ -158,7 +158,7 @@ class Preprocessor {
                         $params       = $instruction::getParameters();
                         $params       = $params ? $this->serializer->deserialize($params, $json, 'json') : null;
                         $context      = new Context($path, $target, $matches['parameters']);
-                        $resolver     = $this->container->getInstance()->make($instruction::getTarget());
+                        $resolver     = $this->container->getInstance()->make($instruction::getResolver());
                         $resolved     = $resolver->resolve($context, $params);
                         $content      = $instruction->process($context, $resolved, $params);
                         $content      = trim($content);

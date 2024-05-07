@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\TargetResolver;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use Override;
 
@@ -14,9 +14,9 @@ use function is_dir;
 /**
  * Directory path.
  *
- * @implements TargetResolver<null, string>
+ * @implements Resolver<null, string>
  */
-class DirectoryPath implements TargetResolver {
+class DirectoryPath implements Resolver {
     public function __construct() {
         // empty
     }

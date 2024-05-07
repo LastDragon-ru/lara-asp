@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
  * @template TParameters
  * @template TValue
  */
-interface TargetResolver {
+interface Resolver {
     /**
      * @param TParameters $parameters
      *

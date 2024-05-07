@@ -12,9 +12,9 @@ interface Instruction {
     public static function getName(): string;
 
     /**
-     * @return class-string<TargetResolver<TParameters, TTarget>|TargetResolver<null, TTarget>>
+     * @return class-string<Resolver<TParameters, TTarget>|Resolver<null, TTarget>>
      */
-    public static function getTarget(): string;
+    public static function getResolver(): string;
 
     /**
      * @return class-string<object>|null

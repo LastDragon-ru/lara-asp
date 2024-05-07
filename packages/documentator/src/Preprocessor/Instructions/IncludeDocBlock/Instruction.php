@@ -41,7 +41,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getTarget(): string {
+    public static function getResolver(): string {
         return FileContent::class;
     }
 

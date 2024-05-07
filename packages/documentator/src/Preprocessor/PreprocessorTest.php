@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\TargetResolver;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
@@ -135,8 +135,8 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
-    public static function getTarget(): string {
-        return PreprocessorTest__TargetAsIs::class;
+    public static function getResolver(): string {
+        return PreprocessorTest__TargetResolverAsIs::class;
     }
 
     #[Override]
@@ -163,8 +163,8 @@ class PreprocessorTest__TestInstruction implements Instruction {
     }
 
     #[Override]
-    public static function getTarget(): string {
-        return PreprocessorTest__TargetAsValue::class;
+    public static function getResolver(): string {
+        return PreprocessorTest__TargetResolverAsValue::class;
     }
 
     #[Override]
@@ -194,9 +194,9 @@ class PreprocessorTest__Value {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements TargetResolver<null, string>
+ * @implements Resolver<null, string>
  */
-class PreprocessorTest__TargetAsIs implements TargetResolver {
+class PreprocessorTest__TargetResolverAsIs implements Resolver {
     #[Override]
     public function resolve(Context $context, mixed $parameters): mixed {
         return $context->target;
@@ -207,9 +207,9 @@ class PreprocessorTest__TargetAsIs implements TargetResolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements TargetResolver<PreprocessorTest__Parameters, PreprocessorTest__Value>
+ * @implements Resolver<PreprocessorTest__Parameters, PreprocessorTest__Value>
  */
-class PreprocessorTest__TargetAsValue implements TargetResolver {
+class PreprocessorTest__TargetResolverAsValue implements Resolver {
     #[Override]
     public function resolve(Context $context, mixed $parameters): mixed {
         return new PreprocessorTest__Value("{$context->target}/{$parameters->a}");
