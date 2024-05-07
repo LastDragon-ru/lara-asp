@@ -3,7 +3,7 @@
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
 [include:graphql-directive]: @sortBy
-[//]: # (start: e2d33c9307e49d5f53ac135415329a0b01b87bd56ea6f0dc6ca4ac9143395ffa)
+[//]: # (start: b8a3b70da2455b8cbed2b3385a56c1e1cd9865302ab83b073700e4608bd628d2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -15,14 +15,14 @@ on
     | ARGUMENT_DEFINITION
 ```
 
-[//]: # (end: e2d33c9307e49d5f53ac135415329a0b01b87bd56ea6f0dc6ca4ac9143395ffa)
+[//]: # (end: b8a3b70da2455b8cbed2b3385a56c1e1cd9865302ab83b073700e4608bd628d2)
 
 ## Basic usage
 
 How to use (and [generated GraphQL schema](../../src/SortBy/Directives/DirectiveTest/Example.expected.graphql)):
 
 [include:example]: ../../src/SortBy/Directives/DirectiveTest/Example.schema.graphql
-[//]: # (start: f4e6a88c853cd9b15aa5c3388c1b61148589eddbc18b410b0e846695c5765e4f)
+[//]: # (start: 49b8762fdb7c1c571d71e331c248f86862b782b2981072697949f5dd0f8616ee)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -50,7 +50,7 @@ type User {
 }
 ```
 
-[//]: # (end: f4e6a88c853cd9b15aa5c3388c1b61148589eddbc18b410b0e846695c5765e4f)
+[//]: # (end: 49b8762fdb7c1c571d71e331c248f86862b782b2981072697949f5dd0f8616ee)
 
 And:
 
@@ -75,7 +75,7 @@ Addition rules for Implicit type:
 The `@sortByIgnored` can be used as Ignored marker.
 
 [include:graphql-directive]: @sortByIgnored
-[//]: # (start: a49887f25c9b44ee37b7df8d7fe960d16fcb8a2ddc8681ffad8100c6b4a7462e)
+[//]: # (start: 9466556f0c9243ad61ee9e72054a332e844bfe6346c488ba279f76aa7a3a0609)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -92,7 +92,7 @@ on
     | SCALAR
 ```
 
-[//]: # (end: a49887f25c9b44ee37b7df8d7fe960d16fcb8a2ddc8681ffad8100c6b4a7462e)
+[//]: # (end: 9466556f0c9243ad61ee9e72054a332e844bfe6346c488ba279f76aa7a3a0609)
 
 ## Operators
 

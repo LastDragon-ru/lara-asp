@@ -3,7 +3,7 @@
 Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](../../src/Constraints/Response) and [responses](../../src/Responses), but, of course, you can create a custom).
 
 [include:example]: ./AssertPsrResponseTest.php
-[//]: # (start: 6deaa19d07c3e7b38c7a395e63719237f3d6ac13d2c044357eb3630b7625cea5)
+[//]: # (start: d56396d7203ebdf44cbccb48d522ccf24fea7657aac3b2508e11e1850086dd37)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -97,4 +97,4 @@ final class AssertPsrResponseTest extends TestCase {
 }
 ```
 
-[//]: # (end: 6deaa19d07c3e7b38c7a395e63719237f3d6ac13d2c044357eb3630b7625cea5)
+[//]: # (end: d56396d7203ebdf44cbccb48d522ccf24fea7657aac3b2508e11e1850086dd37)

@@ -3,7 +3,7 @@
 Prints and compares two GraphQL schemas/types/nodes/etc.
 
 [include:example]: ./AssertGraphQLPrintableEqualsTest.php
-[//]: # (start: 4db955285a38dee14fe701f8fbe05e7862fd773a0ea1c03e91009e86bbc0ca22)
+[//]: # (start: 50e51325f68526f816540bf59f9479e5a12f5183dcf5feacf1ed62c2a5bcadb7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -63,4 +63,4 @@ final class AssertGraphQLPrintableEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: 4db955285a38dee14fe701f8fbe05e7862fd773a0ea1c03e91009e86bbc0ca22)
+[//]: # (end: 50e51325f68526f816540bf59f9479e5a12f5183dcf5feacf1ed62c2a5bcadb7)

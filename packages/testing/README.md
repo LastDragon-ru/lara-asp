@@ -3,7 +3,7 @@
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and better solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (start: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -27,7 +27,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |  PHPUnit  | `^11.0.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.1.0` |   `HEAD ⋯ 6.0.0`   |
 
-[//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (end: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 
 [include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "testing"}})
 [//]: # (start: 9c57d43303e5ef82308c0c83e328e2a47be808a50cd12d6fc5bcfd9229e2fa7c)
@@ -54,7 +54,7 @@ composer require --dev lastdragon-ru/lara-asp-testing
 In the general case, you just need to update `tests/TestCase.php` to include most important things, but you also can include only desired features, please see related traits and extensions below.
 
 [include:example]: ./docs/Examples/TestCase.php
-[//]: # (start: d64050243e2262fdd649a43b4d5b7f9784ba701372776c15d760357c38e581e1)
+[//]: # (start: e4763d33cca5eca34565862b6815638a0c60d817f1a34476f47915afd0ad952e)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -80,7 +80,7 @@ abstract class TestCase extends BaseTestCase {
 }
 ```
 
-[//]: # (end: d64050243e2262fdd649a43b4d5b7f9784ba701372776c15d760357c38e581e1)
+[//]: # (end: e4763d33cca5eca34565862b6815638a0c60d817f1a34476f47915afd0ad952e)
 
 # Comparators
 
@@ -835,7 +835,7 @@ Limitations/Notes:
 [//]: # (end: 998fe7ccccc11e3c54b93f9d6ea507c288be425a1dc4eca1cf5abe09d77c572e)
 
 [include:example]: ./docs/Examples/MockProperties.php
-[//]: # (start: 412cdd988d467ebb6083e17127a01aae689692590c8bf6273d2f3073cbf068cd)
+[//]: # (start: bbc1e289c2ec3a43c467e48c9785aea2ba6bbff92b4c966f1ac934c1b1b6c9d1)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -877,7 +877,7 @@ $mock
 $mock->a();
 ```
 
-[//]: # (end: 412cdd988d467ebb6083e17127a01aae689692590c8bf6273d2f3073cbf068cd)
+[//]: # (end: bbc1e289c2ec3a43c467e48c9785aea2ba6bbff92b4c966f1ac934c1b1b6c9d1)
 
 # Custom Test Requirements
 
@@ -913,21 +913,21 @@ class SomePackageTest extends TestCase {
 ```
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (start: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (end: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)

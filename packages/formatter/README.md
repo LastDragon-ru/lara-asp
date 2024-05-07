@@ -3,7 +3,7 @@
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (start: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -25,7 +25,7 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (end: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "formatter"}})
 [//]: # (start: ca18ec42d5b2c99e52f3a550acc6e29f65958871ab3405d38e82ef8eab2ad415)
@@ -44,7 +44,7 @@ composer require lastdragon-ru/lara-asp-formatter
 Formatter is very simple to use:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
+[//]: # (start: c709a4b715d1bde109a5d27982a2a5d6f481b5c72338e162e394ccbb6fc9208a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -79,7 +79,7 @@ The `$locale->decimal(123.454321)` is:
 "123,45"
 ```
 
-[//]: # (end: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
+[//]: # (end: c709a4b715d1bde109a5d27982a2a5d6f481b5c72338e162e394ccbb6fc9208a)
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
@@ -92,7 +92,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\Provide
 ```
 
 [include:example]: ./docs/Examples/Config.php
-[//]: # (start: a0315c77f2fd2868ad7a67f118ff4816a93add9ae6e7d35899828ddc32cfac37)
+[//]: # (start: 5a587883c875573a9d3678bc736730f7a394c6f0ed287bfe4ccd2d2b9009a42e)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -156,7 +156,7 @@ The `$locale->date($datetime, 'custom')` is:
 "30.12.2023"
 ```
 
-[//]: # (end: a0315c77f2fd2868ad7a67f118ff4816a93add9ae6e7d35899828ddc32cfac37)
+[//]: # (end: 5a587883c875573a9d3678bc736730f7a394c6f0ed287bfe4ccd2d2b9009a42e)
 
 # Duration
 
@@ -184,7 +184,7 @@ The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.gith
 [//]: # (end: 363cfceaffb54119c82e514732db74b5265a5fc6724699580b2d3c677c1258f7)
 
 [include:example]: ./docs/Examples/Duration.php
-[//]: # (start: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)
+[//]: # (start: faff341985cd0ca05372c01461e1e4c151f5131fc7a76722fd00aac905a68ff9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -219,24 +219,24 @@ The `$locale->duration(1234543)` is:
 "342:55:43.000"
 ```
 
-[//]: # (end: bb574f6b1315aa7b33a56d897b23ecc4d18dece9ea201b85b54154e144931d3b)
+[//]: # (end: faff341985cd0ca05372c01461e1e4c151f5131fc7a76722fd00aac905a68ff9)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (start: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (end: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
