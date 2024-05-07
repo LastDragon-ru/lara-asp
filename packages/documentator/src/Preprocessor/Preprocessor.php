@@ -35,28 +35,31 @@ use const JSON_THROW_ON_ERROR;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
- * Replaces special instructions in Markdown. Instruction is the link reference
- * definition, so the syntax is:
+ * Replaces special instructions in Markdown. Instruction is the [link
+ * reference definition](https://github.github.com/gfm/#link-reference-definitions),
+ * so the syntax is:
  *
- *      [<instruction>]: <target>
- *      [<instruction>]: <target> (<params>)
- *      [<instruction>=name]: <target>
+ * ```plain
+ * [<instruction>]: <target>
+ * [<instruction>]: <target> (<parameters>)
+ * [<instruction>=name]: <target>
+ * [<instruction>=name]: <target> (<parameters>)
+ * ```
  *
  * Where:
- *  - `<instruction>` the instruction name (unknown instructions will be ignored)
- *  - `<target>` usually the path to the file or directory, but see the
- *      instruction description
- *  - `<params>` optional JSON string with additional parameters (can be wrapped
- *      by `(...)`, `"..."`, or `'...'`)
+ * * `<instruction>` the instruction name (unknown instructions will be ignored)
+ * * `<target>` usually the path to the file or directory, but see the instruction description
+ * * `<parameters>` optional JSON string with additional parameters
+ *   (can be wrapped by `(...)`, `"..."`, or `'...'`)
  *
- * Limitations:
- * - `<instruction>` will be processed everywhere in the file (eg within the code
- *   block) and may give unpredictable results.
- * - `<instruction>` cannot be inside text.
- * - Nested `<instruction>` doesn't supported.
+ * ## Limitations
+ *
+ * * `<instruction>` will be processed everywhere in the file (eg within
+ *   the code block) and may give unpredictable results.
+ * * `<instruction>` cannot be inside text.
+ * * Nested `<instruction>` doesn't support.
  *
  * @todo Use https://github.com/thephpleague/commonmark?
- * @todo Sync with {@see Preprocess} command
  *
  * @see  Preprocess
  */
