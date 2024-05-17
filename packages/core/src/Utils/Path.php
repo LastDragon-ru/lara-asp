@@ -39,6 +39,10 @@ class Path {
         return SymfonyPath::isAbsolute(static::normalize($path));
     }
 
+    public static function isNormalized(string $path): bool {
+        return static::normalize($path) === $path;
+    }
+
     public static function normalize(string $path): string {
         return SymfonyPath::canonicalize($path);
     }

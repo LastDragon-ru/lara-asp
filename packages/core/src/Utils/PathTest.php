@@ -26,4 +26,29 @@ final class PathTest extends TestCase {
         self::assertEquals('../to/file', Path::getRelativePath('/any/path', '/any/path/../to/file'));
         self::assertEquals('to/file', Path::getRelativePath('/absolute/path', 'to/./file'));
     }
+
+    public function testJoin(): void {
+        self::assertEquals('/any/path', Path::join('/any/path'));
+        self::assertEquals('/any/path', Path::join('/any', 'path'));
+        self::assertEquals('/path', Path::join('/any', '..', 'path'));
+        self::assertEquals('any/path', Path::join('.', 'any', '.', 'path'));
+        self::assertEquals('../any/path', Path::join('..', 'any', '.', 'path'));
+    }
+
+    public function testNormalize(): void {
+        self::assertEquals('/any/path', Path::normalize('/any/path'));
+        self::assertEquals('any/path', Path::normalize('any/path'));
+        self::assertEquals('any/path', Path::normalize('./any/path'));
+        self::assertEquals('any/path', Path::normalize('././any/path'));
+        self::assertEquals('../any/path', Path::normalize('./../any/path'));
+        self::assertEquals('path', Path::normalize('./any/../path'));
+    }
+
+    public function testIsNormalized(): void {
+        self::assertTrue(Path::isNormalized('/any/path'));
+        self::assertTrue(Path::isNormalized('any/path'));
+        self::assertFalse(Path::isNormalized('./any/path'));
+        self::assertFalse(Path::isNormalized('././any/path'));
+        self::assertFalse(Path::isNormalized('./../any/path'));
+    }
 }
