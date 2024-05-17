@@ -1,0 +1,213 @@
+<?php declare(strict_types = 1);
+
+namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
+
+use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+
+use function array_map;
+use function basename;
+use function iterator_to_array;
+use function sprintf;
+
+/**
+ * @internal
+ */
+#[CoversClass(Directory::class)]
+final class DirectoryTest extends TestCase {
+    public function testConstruct(): void {
+        $file = new Directory(__DIR__, false);
+
+        self::assertEquals(__DIR__, $file->getPath());
+    }
+
+    public function testConstructNotNormalized(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Path must be normalized, `/../path` given.');
+
+        new Directory('/../path', false);
+    }
+
+    public function testConstructNotAbsolute(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Path must be absolute, `../path` given.');
+
+        new Directory('../path', false);
+    }
+
+    public function testConstructNotDirectory(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage(sprintf('The `%s` is not a directory.', __FILE__));
+
+        new Directory(__FILE__, false);
+    }
+
+    public function testIsInside(): void {
+        $path      = __FILE__;
+        $file      = new File($path, false);
+        $directory = new Directory(__DIR__, true);
+
+        self::assertTrue($directory->isInside($path));
+        self::assertTrue($directory->isInside($file));
+        self::assertTrue($directory->isInside(__DIR__));
+        self::assertTrue($directory->isInside($directory));
+        self::assertTrue($directory->isInside('./file.txt'));
+        self::assertFalse($directory->isInside('./../file.txt'));
+        self::assertTrue($directory->isInside('./path/../file.txt'));
+    }
+
+    public function testGetFile(): void {
+        $directory = new Directory(__DIR__, false);
+        $readonly  = $directory->getFile(__FILE__);
+        $relative  = $directory->getFile(basename(__FILE__));
+        $notfound  = $directory->getFile('not found');
+        $writable  = new Directory(__DIR__, true);
+        $internal  = $writable->getFile(basename(__FILE__));
+        $external  = $writable->getFile('../Processor.php');
+
+        self::assertNotNull($readonly);
+        self::assertFalse($readonly->isWritable());
+        self::assertEquals(__FILE__, $readonly->getPath());
+
+        self::assertNotNull($relative);
+        self::assertFalse($relative->isWritable());
+        self::assertEquals(__FILE__, $relative->getPath());
+
+        self::assertNull($notfound);
+
+        self::assertNotNull($internal);
+        self::assertTrue($internal->isWritable());
+        self::assertEquals(__FILE__, $internal->getPath());
+
+        self::assertNotNull($external);
+        self::assertFalse($external->isWritable());
+        self::assertEquals(Path::getPath(__FILE__, '../Processor.php'), $external->getPath());
+    }
+
+    public function testGetDirectory(): void {
+        // Prepare
+        $directory = new Directory(Path::getPath(__DIR__, '..'), false);
+        $writable  = new Directory(Path::getPath(__DIR__, '..'), true);
+
+        // Self
+        self::assertSame($directory, $directory->getDirectory('.'));
+
+        // Readonly
+        $readonly = $directory->getDirectory(__DIR__);
+
+        self::assertNotNull($readonly);
+        self::assertFalse($readonly->isWritable());
+        self::assertEquals(__DIR__, $readonly->getPath());
+
+        // Relative
+        $relative = $directory->getDirectory(basename(__DIR__));
+
+        self::assertNotNull($relative);
+        self::assertFalse($relative->isWritable());
+        self::assertEquals(__DIR__, $relative->getPath());
+
+        // Not directory
+        $notDirectory = $directory->getDirectory('not directory');
+
+        self::assertNull($notDirectory);
+
+        // Internal
+        $internal = $writable->getDirectory(basename(__DIR__));
+
+        self::assertNotNull($internal);
+        self::assertTrue($internal->isWritable());
+        self::assertEquals(__DIR__, $internal->getPath());
+
+        // External
+        $external = $writable->getDirectory('../Testing');
+
+        self::assertNotNull($external);
+        self::assertFalse($external->isWritable());
+        self::assertEquals(Path::getPath(__DIR__, '../../Testing'), $external->getPath());
+
+        // From file
+        $fromFile = $writable->getDirectory(new File(__FILE__, true));
+
+        self::assertNotNull($fromFile);
+        self::assertTrue($fromFile->isWritable());
+        self::assertEquals(__DIR__, $fromFile->getPath());
+    }
+
+    public function testGetFilesIterator(): void {
+        $root      = Path::normalize(self::getTestData()->path(''));
+        $directory = new Directory($root, false);
+        $map       = static function (File $file) use ($root): string {
+            return Path::getRelativePath($root, $file->getPath());
+        };
+
+        self::assertEquals(
+            [
+                'a/a/aa.txt',
+                'a/a.html',
+                'a/a.txt',
+                'a/b/ab.txt',
+                'b/a/ba.txt',
+                'b/b/bb.txt',
+                'b/b.html',
+                'b/b.txt',
+                'c.html',
+                'c.txt',
+            ],
+            array_map($map, iterator_to_array($directory->getFilesIterator())),
+        );
+
+        self::assertEquals(
+            [
+                'a/a.html',
+                'b/b.html',
+                'c.html',
+            ],
+            array_map($map, iterator_to_array($directory->getFilesIterator('*.html'))),
+        );
+
+        self::assertEquals(
+            [
+                'c.html',
+                'c.txt',
+            ],
+            array_map($map, iterator_to_array($directory->getFilesIterator(depth: 0))),
+        );
+
+        self::assertEquals(
+            [
+                'c.html',
+            ],
+            array_map($map, iterator_to_array($directory->getFilesIterator('*.html', 0))),
+        );
+    }
+
+    public function testGetDirectoriesIterator(): void {
+        $root      = Path::normalize(self::getTestData()->path(''));
+        $directory = new Directory($root, false);
+        $map       = static function (Directory $directory) use ($root): string {
+            return Path::getRelativePath($root, $directory->getPath());
+        };
+
+        self::assertEquals(
+            [
+                'a',
+                'a/a',
+                'a/b',
+                'b',
+                'b/a',
+                'b/b',
+            ],
+            array_map($map, iterator_to_array($directory->getDirectoriesIterator())),
+        );
+
+        self::assertEquals(
+            [
+                'a',
+                'b',
+            ],
+            array_map($map, iterator_to_array($directory->getDirectoriesIterator(depth: 0))),
+        );
+    }
+}
