@@ -7,6 +7,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 interface Task {
     /**
+     * Returns the file extensions which task is processing.
+     *
+     * @return non-empty-list<string>
+     */
+    public function getExtensions(): array;
+
+    /**
      * Should return all files on which `$file` depends.
      *
      * @return array<array-key, string>

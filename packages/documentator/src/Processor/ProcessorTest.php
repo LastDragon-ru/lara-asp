@@ -22,7 +22,20 @@ use function count;
 final class ProcessorTest extends TestCase {
     public function testRun(): void {
         $mock = Mockery::mock(Task::class);
+        $mock
+            ->shouldReceive('getExtensions')
+            ->once()
+            ->andReturns(['php']);
+
         $task = new class() implements Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['txt'];
+            }
+
             /**
              * @inheritDoc
              */
@@ -59,9 +72,9 @@ final class ProcessorTest extends TestCase {
         $events = [];
 
         (new Processor())
-            ->task('php', $mock)
-            ->task('txt', $task)
-            ->run($root, static function (string $path, bool $result, float $duration) use (&$events): void {
+            ->task($mock)
+            ->task($task)
+            ->run($root, static function (string $path) use (&$events): void {
                 $events[] = $path;
             });
 
@@ -85,6 +98,14 @@ final class ProcessorTest extends TestCase {
 
     public function testRunCircularDependency(): void {
         $task = new class() implements Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['txt'];
+            }
+
             /**
              * @inheritDoc
              */
@@ -138,12 +159,20 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor())
-            ->task('txt', $task)
+            ->task($task)
             ->run($root);
     }
 
     public function testRunCircularDependencySelf(): void {
         $task = new class() implements Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['txt'];
+            }
+
             /**
              * @inheritDoc
              */
@@ -185,7 +214,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor())
-            ->task('txt', $task)
+            ->task($task)
             ->run($root);
     }
 }

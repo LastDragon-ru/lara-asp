@@ -17,7 +17,9 @@ use WeakMap;
 
 use function array_keys;
 use function array_map;
+use function array_unique;
 use function array_values;
+use function in_array;
 use function microtime;
 
 class Processor {
@@ -30,12 +32,15 @@ class Processor {
         // empty
     }
 
-    /**
-     * @param non-empty-list<string>|non-empty-string $extension
-     */
-    public function task(array|string $extension, Task $task): static {
-        foreach ((array) $extension as $ext) {
-            $this->tasks[$ext][] = $task;
+    public function task(Task $task): static {
+        foreach (array_unique($task->getExtensions()) as $ext) {
+            if (!isset($this->tasks[$ext])) {
+                $this->tasks[$ext] = [];
+            }
+
+            if (!in_array($task, $this->tasks[$ext], true)) {
+                $this->tasks[$ext][] = $task;
+            }
         }
 
         return $this;
