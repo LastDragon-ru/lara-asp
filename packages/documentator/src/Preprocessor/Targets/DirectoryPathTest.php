@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -21,7 +22,10 @@ final class DirectoryPathTest extends TestCase {
         $context  = new Context($dir, $target, null);
         $resolver = new DirectoryPath();
 
-        self::assertSame($dir, $resolver->resolve($context, $params));
+        self::assertSame(
+            Path::normalize($dir),
+            $resolver->resolve($context, $params),
+        );
     }
 
     public function testResolveAbsolute(): void {
@@ -31,7 +35,10 @@ final class DirectoryPathTest extends TestCase {
         $context  = new Context($dir, $target, null);
         $resolver = new DirectoryPath();
 
-        self::assertSame($dir, $resolver->resolve($context, $params));
+        self::assertSame(
+            Path::normalize($dir),
+            $resolver->resolve($context, $params),
+        );
     }
 
     public function testResolveNotADirectory(): void {
@@ -44,6 +51,6 @@ final class DirectoryPathTest extends TestCase {
         self::expectException(TargetIsNotDirectory::class);
         self::expectExceptionMessage("The `{$target}` is not a directory (in `{$dir}`).");
 
-        self::assertSame($dir, $resolver->resolve($context, $params));
+        $resolver->resolve($context, $params);
     }
 }

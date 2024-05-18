@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -21,7 +22,10 @@ final class FilePathTest extends TestCase {
         $context  = new Context($file, $target, null);
         $resolver = new FilePath();
 
-        self::assertSame($file, $resolver->resolve($context, $params));
+        self::assertSame(
+            Path::normalize($file),
+            $resolver->resolve($context, $params),
+        );
     }
 
     public function testResolveAbsolute(): void {
@@ -31,7 +35,10 @@ final class FilePathTest extends TestCase {
         $context  = new Context($file, $target, null);
         $resolver = new FilePath();
 
-        self::assertSame($file, $resolver->resolve($context, $params));
+        self::assertSame(
+            Path::normalize($file),
+            $resolver->resolve($context, $params),
+        );
     }
 
     public function testResolveNotAFile(): void {
@@ -44,6 +51,6 @@ final class FilePathTest extends TestCase {
         self::expectException(TargetIsNotFile::class);
         self::expectExceptionMessage("The `{$target}` is not a file (in `{$file}`).");
 
-        self::assertSame($file, $resolver->resolve($context, $params));
+        $resolver->resolve($context, $params);
     }
 }
