@@ -9,7 +9,8 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessorError;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Instruction as IncludeDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Instruction as IncludeExample;
@@ -208,14 +209,14 @@ class Preprocessor {
                 subject : $string,
                 flags   : PREG_UNMATCHED_AS_NULL,
             );
-        } catch (PreprocessFailed $exception) {
+        } catch (PreprocessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new PreprocessFailed('Preprocess failed.', $exception);
+            throw new PreprocessingFailed($exception);
         }
 
         if ($result === null) {
-            throw new PreprocessFailed('Unexpected error.');
+            throw new PreprocessingFailed();
         }
 
         return $result;
