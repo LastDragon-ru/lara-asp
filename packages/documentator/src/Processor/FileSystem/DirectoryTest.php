@@ -18,9 +18,10 @@ use function sprintf;
 #[CoversClass(Directory::class)]
 final class DirectoryTest extends TestCase {
     public function testConstruct(): void {
-        $file = new Directory(__DIR__, false);
+        $path = Path::normalize(__DIR__);
+        $file = new Directory($path, false);
 
-        self::assertEquals(__DIR__, $file->getPath());
+        self::assertEquals($path, $file->getPath());
     }
 
     public function testConstructNotNormalized(): void {
@@ -39,15 +40,15 @@ final class DirectoryTest extends TestCase {
 
     public function testConstructNotDirectory(): void {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage(sprintf('The `%s` is not a directory.', __FILE__));
+        self::expectExceptionMessage(sprintf('The `%s` is not a directory.', Path::normalize(__FILE__)));
 
-        new Directory(__FILE__, false);
+        new Directory(Path::normalize(__FILE__), false);
     }
 
     public function testIsInside(): void {
         $path      = __FILE__;
-        $file      = new File($path, false);
-        $directory = new Directory(__DIR__, true);
+        $file      = new File(Path::normalize($path), false);
+        $directory = new Directory(Path::normalize(__DIR__), true);
 
         self::assertTrue($directory->isInside($path));
         self::assertTrue($directory->isInside($file));
@@ -59,27 +60,27 @@ final class DirectoryTest extends TestCase {
     }
 
     public function testGetFile(): void {
-        $directory = new Directory(__DIR__, false);
+        $directory = new Directory(Path::normalize(__DIR__), false);
         $readonly  = $directory->getFile(__FILE__);
         $relative  = $directory->getFile(basename(__FILE__));
         $notfound  = $directory->getFile('not found');
-        $writable  = new Directory(__DIR__, true);
+        $writable  = new Directory(Path::normalize(__DIR__), true);
         $internal  = $writable->getFile(basename(__FILE__));
         $external  = $writable->getFile('../Processor.php');
 
         self::assertNotNull($readonly);
         self::assertFalse($readonly->isWritable());
-        self::assertEquals(__FILE__, $readonly->getPath());
+        self::assertEquals(Path::normalize(__FILE__), $readonly->getPath());
 
         self::assertNotNull($relative);
         self::assertFalse($relative->isWritable());
-        self::assertEquals(__FILE__, $relative->getPath());
+        self::assertEquals(Path::normalize(__FILE__), $relative->getPath());
 
         self::assertNull($notfound);
 
         self::assertNotNull($internal);
         self::assertTrue($internal->isWritable());
-        self::assertEquals(__FILE__, $internal->getPath());
+        self::assertEquals(Path::normalize(__FILE__), $internal->getPath());
 
         self::assertNotNull($external);
         self::assertFalse($external->isWritable());
@@ -99,14 +100,14 @@ final class DirectoryTest extends TestCase {
 
         self::assertNotNull($readonly);
         self::assertFalse($readonly->isWritable());
-        self::assertEquals(__DIR__, $readonly->getPath());
+        self::assertEquals(Path::normalize(__DIR__), $readonly->getPath());
 
         // Relative
         $relative = $directory->getDirectory(basename(__DIR__));
 
         self::assertNotNull($relative);
         self::assertFalse($relative->isWritable());
-        self::assertEquals(__DIR__, $relative->getPath());
+        self::assertEquals(Path::normalize(__DIR__), $relative->getPath());
 
         // Not directory
         $notDirectory = $directory->getDirectory('not directory');
@@ -118,7 +119,7 @@ final class DirectoryTest extends TestCase {
 
         self::assertNotNull($internal);
         self::assertTrue($internal->isWritable());
-        self::assertEquals(__DIR__, $internal->getPath());
+        self::assertEquals(Path::normalize(__DIR__), $internal->getPath());
 
         // External
         $external = $writable->getDirectory('../Testing');
@@ -128,11 +129,11 @@ final class DirectoryTest extends TestCase {
         self::assertEquals(Path::getPath(__DIR__, '../../Testing'), $external->getPath());
 
         // From file
-        $fromFile = $writable->getDirectory(new File(__FILE__, true));
+        $fromFile = $writable->getDirectory(new File(Path::normalize(__FILE__), true));
 
         self::assertNotNull($fromFile);
         self::assertTrue($fromFile->isWritable());
-        self::assertEquals(__DIR__, $fromFile->getPath());
+        self::assertEquals(Path::normalize(__DIR__), $fromFile->getPath());
     }
 
     public function testGetFilesIterator(): void {
@@ -144,14 +145,14 @@ final class DirectoryTest extends TestCase {
 
         self::assertEquals(
             [
-                'a/a/aa.txt',
                 'a/a.html',
                 'a/a.txt',
+                'a/a/aa.txt',
                 'a/b/ab.txt',
                 'b/a/ba.txt',
-                'b/b/bb.txt',
                 'b/b.html',
                 'b/b.txt',
+                'b/b/bb.txt',
                 'c.html',
                 'c.txt',
             ],

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
@@ -18,9 +19,10 @@ use function sprintf;
 #[CoversClass(File::class)]
 final class FileTest extends TestCase {
     public function testConstruct(): void {
-        $file = new File(__FILE__, false);
+        $path = Path::normalize(__FILE__);
+        $file = new File($path, false);
 
-        self::assertEquals(__FILE__, $file->getPath());
+        self::assertEquals($path, $file->getPath());
         self::assertEquals('php', $file->getExtension());
         self::assertEquals('FileTest.php', $file->getName());
     }
@@ -41,13 +43,13 @@ final class FileTest extends TestCase {
 
     public function testConstructNotFile(): void {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage(sprintf('The `%s` is not a file.', __DIR__));
+        self::expectExceptionMessage(sprintf('The `%s` is not a file.', Path::normalize(__DIR__)));
 
-        new File(__DIR__, false);
+        new File(Path::normalize(Path::normalize(__DIR__)), false);
     }
 
     public function testGetContent(): void {
-        $temp = self::getTempFile(__FILE__)->getPathname();
+        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
         $file = new File($temp, false);
 
         self::assertEquals(__FILE__, $file->getContent());
@@ -57,7 +59,7 @@ final class FileTest extends TestCase {
     }
 
     public function testSetContent(): void {
-        $temp = self::getTempFile(__FILE__)->getPathname();
+        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
         $file = new File($temp, false);
 
         self::assertEquals(__FILE__, $file->getContent());
@@ -68,7 +70,7 @@ final class FileTest extends TestCase {
     }
 
     public function testSave(): void {
-        $temp = self::getTempFile(__FILE__)->getPathname();
+        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
         $file = new File($temp, true);
 
         self::assertTrue($file->save()); // because no changes
@@ -81,7 +83,7 @@ final class FileTest extends TestCase {
     }
 
     public function testSaveReadonly(): void {
-        $temp = self::getTempFile(__FILE__)->getPathname();
+        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
         $file = new File($temp, false);
 
         self::assertTrue($file->save()); // because no changes
@@ -96,7 +98,7 @@ final class FileTest extends TestCase {
     public function testContext(): void {
         // Prepare
         $context = new stdClass();
-        $path    = __FILE__;
+        $path    = Path::normalize(__FILE__);
 
         // Base
         $file = new File($path, false);
@@ -117,8 +119,8 @@ final class FileTest extends TestCase {
     }
 
     public function testGetRelativePath(): void {
-        $internal  = new File(__FILE__, false);
-        $directory = new Directory(__DIR__, true);
+        $internal  = new File(Path::normalize(__FILE__), false);
+        $directory = new Directory(Path::normalize(__DIR__), true);
 
         self::assertEquals(basename(__FILE__), $internal->getRelativePath($directory));
     }
