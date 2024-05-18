@@ -6,11 +6,6 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
-			count: 2
-			path: packages/core/src/Observer/DispatcherTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$offset of method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\IteratorImpl\\<TItem of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:setOffset\\(\\) expects int\\|string\\|null, mixed given\\.$#"
 			count: 1
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
@@ -21,17 +16,7 @@ parameters:
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
 
 		-
-			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
-			count: 2
-			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
-
-		-
 			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:once\\(\\)\\.$#"
-			count: 2
-			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
-
-		-
-			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
 			count: 2
 			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
 
@@ -111,19 +96,9 @@ parameters:
 			path: packages/testing/src/Mixins/TestResponseMixin.php
 
 		-
-			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
-			count: 1
-			path: packages/testing/src/Package/TestCase.php
-
-		-
 			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<array\\>, array\\<T\\> given\\.$#"
 			count: 1
 			path: packages/testing/src/Providers/TraversableDataProvider.php
-
-		-
-			message: "#^Return type of call to static method Mockery\\:\\:spy\\(\\) contains unresolvable type\\.$#"
-			count: 1
-			path: packages/testing/src/TestCase.php
 
 		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
