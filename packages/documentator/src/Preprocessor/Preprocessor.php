@@ -9,9 +9,8 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessorError;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Instruction as IncludeDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Instruction as IncludeExample;
@@ -39,30 +38,33 @@ use const JSON_THROW_ON_ERROR;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
- * Replaces special instructions in Markdown. Instruction is the link  reference
- * definition, so the syntax is:
+ * Replaces special instructions in Markdown. Instruction is the [link
+ * reference definition](https://github.github.com/gfm/#link-reference-definitions),
+ * so the syntax is:
  *
- *      [<instruction>]: <target>
- *      [<instruction>]: <target> (<params>)
- *      [<instruction>=name]: <target>
+ * ```plain
+ * [<instruction>]: <target>
+ * [<instruction>]: <target> (<parameters>)
+ * [<instruction>=name]: <target>
+ * [<instruction>=name]: <target> (<parameters>)
+ * ```
  *
  * Where:
- *  - `<instruction>` the instruction name (unknown instructions will be ignored)
- *  - `<target>` usually the path to the file or directory, but see the
- *      instruction description
- *  - `<params>` optional JSON string with additional parameters (can be wrapped
- *      by `(...)`, `"..."`, or `'...'`)
+ * * `<instruction>` the instruction name (unknown instructions will be ignored)
+ * * `<target>` usually the path to the file or directory, but see the instruction description
+ * * `<parameters>` optional JSON string with additional parameters
+ *   (can be wrapped by `(...)`, `"..."`, or `'...'`)
  *
- * Limitations:
- * - `<instruction>` will be processed everywhere in the file (eg within the code
- *   block) and may give unpredictable results.
- * - `<instruction>` cannot be inside text.
- * - Nested `<instruction>` doesn't supported.
+ * ## Limitations
+ *
+ * * `<instruction>` will be processed everywhere in the file (eg within
+ *   the code block) and may give unpredictable results.
+ * * `<instruction>` cannot be inside text.
+ * * Nested `<instruction>` doesn't support.
  *
  * @todo Use https://github.com/thephpleague/commonmark?
- * @todo Sync with {@see Preprocess} command
  *
- * @see Preprocess
+ * @see  Preprocess
  */
 class Preprocessor {
     protected const Warning = 'Generated automatically. Do not edit.';
@@ -81,7 +83,7 @@ class Preprocessor {
         REGEXP;
 
     /**
-     * @var array<string, array{class-string<Instruction>, ?Instruction}>
+     * @var array<string, array{class-string<Instruction<mixed, ?object>>,?Instruction<mixed, ?object>}>
      */
     private array $instructions = [];
 
@@ -100,16 +102,19 @@ class Preprocessor {
     }
 
     /**
-     * @return list<class-string<Instruction>>
+     * @return list<class-string<Instruction<mixed, ?object>>>
      */
     public function getInstructions(): array {
         return array_column($this->instructions, 0);
     }
 
     /**
-     * @param Instruction|class-string<Instruction> $instruction
+     * @template I of Instruction<covariant mixed, covariant ?object>
+     *
+     * @param I|class-string<I> $instruction
      */
     public function addInstruction(Instruction|string $instruction): static {
+        // @phpstan-ignore-next-line Assigment is fine...
         $this->instructions[$instruction::getName()] = $instruction instanceof Instruction
             ? [$instruction::class, $instruction]
             : [$instruction, null];
@@ -117,6 +122,9 @@ class Preprocessor {
         return $this;
     }
 
+    /**
+     * @return Instruction<mixed, ?object>|null
+     */
     protected function getInstruction(string $name): ?Instruction {
         if (!isset($this->instructions[$name])) {
             return null;
@@ -140,37 +148,31 @@ class Preprocessor {
             $result = preg_replace_callback(
                 pattern : static::Regexp,
                 callback: function (array $matches) use (&$cache, $path): string {
-                    // Hash
+                    // Instruction?
                     $instruction = $this->getInstruction($matches['instruction']);
-                    $target      = $matches['target'];
-                    $target      = str_starts_with($target, '<') && str_ends_with($target, '>')
+
+                    if (!$instruction) {
+                        return $matches['expression'];
+                    }
+
+                    // Hash
+                    $target = $matches['target'];
+                    $target = str_starts_with($target, '<') && str_ends_with($target, '>')
                         ? mb_substr($target, 1, -1)
                         : rawurldecode($target);
-                    $params      = null;
-                    $hash        = $this->getHash("{$matches['instruction']}({$target})");
-
-                    if ($instruction instanceof ParameterizableInstruction) {
-                        $json   = $this->getParametersJson($matches['parameters'] ?: '{}');
-                        $hash   = $this->getHash("{$matches['instruction']}({$target}, {$json})");
-                        $params = $this->serializer->deserialize(
-                            $instruction::getParameters(),
-                            $matches['parameters'] ?: '{}',
-                            'json',
-                        );
-                    }
+                    $json   = $this->getParametersJson($matches['parameters'] ?: '{}');
+                    $hash   = $this->getHash("{$matches['instruction']}({$target}, {$json})");
 
                     // Content
                     $content = $cache[$hash] ?? null;
 
                     if ($content === null) {
-                        if ($instruction instanceof ParameterizableInstruction) {
-                            $content = $instruction->process($path, $target, $params);
-                        } elseif ($instruction instanceof ProcessableInstruction) {
-                            $content = $instruction->process($path, $target);
-                        } else {
-                            $content = '';
-                        }
-
+                        $params       = $instruction::getParameters();
+                        $params       = $params ? $this->serializer->deserialize($params, $json, 'json') : null;
+                        $context      = new Context($path, $target, $matches['parameters']);
+                        $resolver     = $this->container->getInstance()->make($instruction::getResolver());
+                        $resolved     = $resolver->resolve($context, $params);
+                        $content      = $instruction->process($context, $resolved, $params);
                         $content      = trim($content);
                         $cache[$hash] = $content;
                     }
@@ -194,14 +196,12 @@ class Preprocessor {
 
                         {$suffix}
                         RESULT;
-                    } elseif ($instruction) {
+                    } else {
                         $content = <<<RESULT
                         {$prefix}
                         [//]: # (empty)
                         {$suffix}
                         RESULT;
-                    } else {
-                        $content = $matches['expression'];
                     }
 
                     return $content;
@@ -209,14 +209,14 @@ class Preprocessor {
                 subject : $string,
                 flags   : PREG_UNMATCHED_AS_NULL,
             );
-        } catch (PreprocessFailed $exception) {
+        } catch (PreprocessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new PreprocessFailed('Preprocess failed.', $exception);
+            throw new PreprocessingFailed($exception);
         }
 
         if ($result === null) {
-            throw new PreprocessFailed('Unexpected error.');
+            throw new PreprocessingFailed();
         }
 
         return $result;

@@ -3,12 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use PhpParser\NameContext;
 use PhpParser\Node;
@@ -19,17 +18,19 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 
-use function dirname;
-use function file_get_contents;
 use function preg_replace_callback;
 use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
- * @implements ParameterizableInstruction<Parameters>
+ * Includes the docblock of the first PHP class/interface/trait/enum/etc
+ * from `<target>` file. Inline tags include as is except `@see`/`@link`
+ * which will be replaced to FQCN (if possible). Other tags are ignored.
+ *
+ * @implements InstructionContract<string, Parameters>
  */
-class Instruction implements ParameterizableInstruction {
+class Instruction implements InstructionContract {
     public function __construct() {
         // empty
     }
@@ -40,44 +41,19 @@ class Instruction implements ParameterizableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return <<<'DESC'
-            Includes the docblock of the first PHP class/interface/trait/enum/etc
-            from `<target>` file. Inline tags include as is except `@see`/`@link`
-            which will be replaced to FQCN (if possible). Other tags are ignored.
-            DESC;
+    public static function getResolver(): string {
+        return FileContent::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'File path.';
-    }
-
-    #[Override]
-    public static function getParameters(): string {
+    public static function getParameters(): ?string {
         return Parameters::class;
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public static function getParametersDescription(): array {
-        return [];
-    }
-
-    #[Override]
-    public function process(string $path, string $target, Serializable $parameters): string {
-        // File?
-        $file    = Path::getPath(dirname($path), $target);
-        $content = file_get_contents($file);
-
-        if ($content === false) {
-            throw new TargetIsNotFile($path, $target);
-        }
-
+    public function process(Context $context, mixed $target, mixed $parameters): string {
         // Class?
-        [$class, $context] = ((array) $this->getClass($content, $path, $target) + [null, null]);
+        [$class, $context] = ((array) $this->getClass($context, $target) + [null, null]);
 
         if (!$class || !$context) {
             return '';
@@ -109,22 +85,21 @@ class Instruction implements ParameterizableInstruction {
     /**
      * @return array{ClassLike, NameContext}|null
      */
-    private function getClass(string $content, string $path, string $target): ?array {
+    private function getClass(Context $context, string $content): ?array {
         try {
             $class    = null;
             $resolver = new NameResolver();
             $stmts    = $this->parse($resolver, $content);
-            $context  = $resolver->getNameContext();
             $finder   = new NodeFinder();
             $class    = $finder->findFirst($stmts, static function (Node $node): bool {
                 return $node instanceof ClassLike;
             });
         } catch (Exception $exception) {
-            throw new TargetIsNotValidPhpFile($path, $target, $exception);
+            throw new TargetIsNotValidPhpFile($context, $exception);
         }
 
         return $class instanceof ClassLike
-            ? [$class, $context]
+            ? [$class, $resolver->getNameContext()]
             : null;
     }
 

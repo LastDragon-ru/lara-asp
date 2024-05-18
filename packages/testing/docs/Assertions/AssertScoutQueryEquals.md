@@ -3,7 +3,7 @@
 Asserts that Scout Query equals Scout Query.
 
 [include:example]: ./AssertScoutQueryEqualsTest.php
-[//]: # (start: e96037f5fdf72df5c84fc1257d56c11de0b67d95b37524ee7cd7889a212f5053)
+[//]: # (start: 5046607ec467c82fe8c461c1bb3f7ca5d3c8ea78b67a4cd01448cc96ac775551)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -56,4 +56,4 @@ final class AssertScoutQueryEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: e96037f5fdf72df5c84fc1257d56c11de0b67d95b37524ee7cd7889a212f5053)
+[//]: # (end: 5046607ec467c82fe8c461c1bb3f7ca5d3c8ea78b67a4cd01448cc96ac775551)

@@ -3,7 +3,7 @@
 Checks that no dangerous changes in the default internal schema (with all directives).
 
 [include:example]: ./AssertGraphQLSchemaNoDangerousChangesTest.php
-[//]: # (start: e89808347215c25407fece361d856f4087c43ac0599c7f65bba42fc4afc4fd51)
+[//]: # (start: b1e5a522b2299596e819ef4f028b17963100062611b89a1ee97699e6e847dc6c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -79,4 +79,4 @@ final class AssertGraphQLSchemaNoDangerousChangesTest extends TestCase {
 }
 ```
 
-[//]: # (end: e89808347215c25407fece361d856f4087c43ac0599c7f65bba42fc4afc4fd51)
+[//]: # (end: b1e5a522b2299596e819ef4f028b17963100062611b89a1ee97699e6e847dc6c)

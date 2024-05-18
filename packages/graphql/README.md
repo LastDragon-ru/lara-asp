@@ -3,7 +3,7 @@
 This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (start: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -29,7 +29,7 @@ This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directiv
 |  | `^5.6.1` |  `0.12.0`  ,  `0.11.0`   |
 |  | `^5.4` |   `0.10.0 ⋯ 0.5.0`   |
 
-[//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (end: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql"}})
 [//]: # (start: 3672f37b7c4365391f12ad7a15e2e629126d25f774c584c29e7930695f44040a)
@@ -182,7 +182,7 @@ class Comment extends Model {
 If you implement custom directives which internally enhance the Builder (like standard directives do), you may get `BuilderUnknown` error because the proper/expected builder type was not detected. In this case, your directive should implement [`BuilderInfoProvider`](./src/Builder/Contracts/BuilderInfoProvider.php) interface and to specify the builder type explicitly.
 
 [include:example]: docs/Examples/BuilderInfoProvider.php
-[//]: # (start: 1484174aafe709bdcddfbae43df1e4400693ef8a41420873835aea07d36a63b3)
+[//]: # (start: b68f7337a010486bff0e1669240841cc48572f37ac74466da4fc0364db6a1067)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -214,14 +214,14 @@ class CustomDirective implements Directive, BuilderInfoProvider {
 }
 ```
 
-[//]: # (end: 1484174aafe709bdcddfbae43df1e4400693ef8a41420873835aea07d36a63b3)
+[//]: # (end: b68f7337a010486bff0e1669240841cc48572f37ac74466da4fc0364db6a1067)
 
 # Printer
 
 The package provides bindings for [`Printer`][pkg:graphql-printer] so you can simply use:
 
 [include:example]: ./docs/Examples/Printer.php
-[//]: # (start: 518647e0d4a82c1d00956d3649304d6a454b183b3a926a8b403e94d33fb4301c)
+[//]: # (start: 7a581dc1c9875e776a31524d2dd484da37a2b4dd60025986e9ef348c06d29a3d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -552,7 +552,7 @@ type User {
 
 </details>
 
-[//]: # (end: 518647e0d4a82c1d00956d3649304d6a454b183b3a926a8b403e94d33fb4301c)
+[//]: # (end: 7a581dc1c9875e776a31524d2dd484da37a2b4dd60025986e9ef348c06d29a3d)
 
 # Testing Assertions
 
@@ -593,27 +593,27 @@ Validates default internal schema (with all directives). Faster than `lighthouse
 [//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (start: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (end: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 
 [include:file]: ../../docs/Shared/Links.md
-[//]: # (start: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
+[//]: # (start: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
@@ -622,4 +622,4 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
-[//]: # (end: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
+[//]: # (end: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)

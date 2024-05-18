@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective;
 
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -41,7 +42,8 @@ final class InstructionTest extends TestCase {
         });
 
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process('path/to/file.md', '@test');
+        $context  = new Context('path/to/file.md', '@test', null);
+        $actual   = $instance->process($context, $context->target, null);
 
         self::assertEquals(
             <<<MARKDOWN
@@ -58,13 +60,14 @@ final class InstructionTest extends TestCase {
 
         $path     = 'path/to/file.md';
         $target   = '@test';
+        $context  = new Context($path, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new DependencyIsMissing($path, $target, PrinterContract::class),
+            new DependencyIsMissing($context, PrinterContract::class),
         );
 
-        $instance->process($path, $target);
+        $instance->process($context, $context->target, null);
     }
 
     public function testProcessNoDirective(): void {
@@ -83,13 +86,14 @@ final class InstructionTest extends TestCase {
 
         $path     = 'path/to/file.md';
         $target   = '@test';
+        $context  = new Context($path, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TargetIsNotDirective($path, $target),
+            new TargetIsNotDirective($context),
         );
 
-        $instance->process($path, $target);
+        $instance->process($context, $context->target, null);
     }
 
     public function testProcessNoDirectiveResolver(): void {
@@ -99,12 +103,13 @@ final class InstructionTest extends TestCase {
 
         $path     = 'path/to/file.md';
         $target   = '@test';
+        $context  = new Context($path, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TargetIsNotDirective($path, $target),
+            new TargetIsNotDirective($context),
         );
 
-        $instance->process($path, $target);
+        $instance->process($context, $context->target, null);
     }
 }

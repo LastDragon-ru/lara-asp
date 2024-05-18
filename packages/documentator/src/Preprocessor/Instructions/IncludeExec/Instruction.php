@@ -4,14 +4,20 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 
 use Exception;
 use Illuminate\Process\Factory;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use Override;
 
 use function dirname;
 use function trim;
 
-class Instruction implements ProcessableInstruction {
+/**
+ * Executes the `<target>` and returns result.
+ *
+ * @implements InstructionContract<string, null>
+ */
+class Instruction implements InstructionContract {
     public function __construct(
         protected readonly Factory $factory,
     ) {
@@ -24,21 +30,23 @@ class Instruction implements ProcessableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return 'Executes the `<target>` and returns result.';
+    public static function getResolver(): string {
+        return Resolver::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'Path to the executable.';
+    public static function getParameters(): ?string {
+        return null;
     }
 
     #[Override]
-    public function process(string $path, string $target): string {
+    public function process(Context $context, mixed $target, mixed $parameters): string {
         try {
-            return trim($this->factory->newPendingProcess()->path(dirname($path))->run($target)->throw()->output());
+            return trim(
+                $this->factory->newPendingProcess()->path(dirname($context->path))->run($target)->throw()->output(),
+            );
         } catch (Exception $exception) {
-            throw new TargetExecFailed($path, $target, $exception);
+            throw new TargetExecFailed($context, $exception);
         }
     }
 }

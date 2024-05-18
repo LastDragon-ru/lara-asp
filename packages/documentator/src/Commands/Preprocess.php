@@ -5,8 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Package;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
+use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
@@ -16,8 +17,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-use function array_map;
-use function explode;
 use function getcwd;
 use function gettype;
 use function implode;
@@ -25,7 +24,6 @@ use function is_a;
 use function is_scalar;
 use function ksort;
 use function rtrim;
-use function str_replace;
 use function strtr;
 use function trim;
 use function var_export;
@@ -53,32 +51,11 @@ class Preprocess extends Command {
      * @var string
      */
     public $help = <<<'HELP'
-        Replaces special instructions in Markdown. Instruction is the [link
-        reference definition](https://github.github.com/gfm/#link-reference-definitions),
-        so the syntax is:
-
-        ```plain
-        [<instruction>]: <target>
-        [<instruction>]: <target> (<parameters>)
-        [<instruction>=name]: <target>
-        ```
-
-        Where:
-        * `<instruction>` the instruction name (unknown instructions will be ignored)
-        * `<target>` usually the path to the file or directory, but see the instruction description
-        * `<parameters>` optional JSON string with additional parameters
-            (can be wrapped by `(...)`, `"..."`, or `'...'`)
+        %description%
 
         ## Instructions
 
         %instructions%
-
-        ## Limitations
-
-        * `<instruction>` will be processed everywhere in the file (eg within
-          the code block) and may give unpredictable results.
-        * `<instruction>` cannot be inside text.
-        * Nested `<instruction>` doesn't support.
         HELP;
 
     public function __construct(
@@ -117,56 +94,49 @@ class Preprocess extends Command {
     #[Override]
     public function getProcessedHelp(): string {
         return strtr(parent::getProcessedHelp(), [
-            '%instructions%' => $this->getInstructionsHelp(),
+            '%description%'  => $this->getProcessedHelpDescription(),
+            '%instructions%' => $this->getProcessedHelpInstructions(),
         ]);
     }
 
-    protected function getInstructionsHelp(): string {
+    protected function getProcessedHelpDescription(): string {
+        return $this->getDocBlock(new ReflectionClass(Preprocessor::class));
+    }
+
+    protected function getProcessedHelpInstructions(): string {
         $instructions = $this->preprocessor->getInstructions();
         $help         = [];
 
         foreach ($instructions as $instruction) {
-            $name   = $instruction::getName();
-            $desc   = $instruction::getDescription();
-            $target = $instruction::getTargetDescription();
-            $params = is_a($instruction, ParameterizableInstruction::class, true)
-                ? $this->getInstructionParameters($instruction)
-                : null;
+            $class      = new ReflectionClass($instruction);
+            $name       = $instruction::getName();
+            $desc       = $this->getDocBlock($class);
+            $resolver   = $this->getProcessedHelpInstructionResolver($instruction, 2);
+            $resolver   = trim($resolver ?: '_No description provided_.');
+            $parameters = $this->getProcessedHelpInstructionParameters($instruction, 2);
 
-            if ($target !== null && $params !== null) {
-                $parameters = [];
-
-                foreach ($params as $paramName => $paramDescription) {
-                    $paramName        = trim($paramName);
-                    $paramDescription = trim($paramDescription);
-                    $parameters[]     = "`{$paramName}` - {$paramDescription}";
-                }
-
-                $prefix      = '  * ';
-                $parameters  = $prefix.implode("\n{$prefix}", $parameters);
-                $help[$name] = <<<HELP
+            if ($parameters !== null) {
+                $help[$name] = rtrim(
+                    <<<HELP
                     ### `[{$name}]: <target> <parameters>`
 
-                    * `<target>` - {$target}
+                    * `<target>` - {$resolver}
                     * `<parameters>` - additional parameters
                     {$parameters}
 
                     {$desc}
-                    HELP;
-            } elseif ($target !== null) {
-                $help[$name] = <<<HELP
+                    HELP,
+                );
+            } else {
+                $help[$name] = rtrim(
+                    <<<HELP
                     ### `[{$name}]: <target>`
 
-                    * `<target>` - {$target}
+                    * `<target>` - {$resolver}
 
                     {$desc}
-                    HELP;
-            } else {
-                $help[$name] = <<<HELP
-                    ### `[{$name}]: .`
-
-                    {$desc}
-                    HELP;
+                    HELP,
+                );
             }
         }
 
@@ -176,22 +146,35 @@ class Preprocess extends Command {
     }
 
     /**
-     * @template T of Serializable
-     *
-     * @param class-string<ParameterizableInstruction<T>> $instruction
-     *
-     * @return array<string, string>
+     * @param class-string<Instruction<covariant mixed, covariant ?object>> $instruction
+     * @param int<0, max>                                                   $padding
      */
-    protected function getInstructionParameters(string $instruction): array {
-        // Explicit? (deprecated)
-        $parameters = $instruction::getParametersDescription();
+    protected function getProcessedHelpInstructionResolver(string $instruction, int $padding): string {
+        $class = new ReflectionClass($instruction::getResolver());
+        $help  = $this->getDocBlock($class, $padding);
+        $help  = rtrim($help);
 
-        if ($parameters) {
-            return $parameters;
+        return $help;
+    }
+
+    /**
+     * @param class-string<Instruction<covariant mixed, covariant ?object>> $instruction
+     * @param int<0, max>                                                   $padding
+     */
+    protected function getProcessedHelpInstructionParameters(string $instruction, int $padding): ?string {
+        // Has?
+        $class = $instruction::getParameters();
+
+        if ($class === null) {
+            return null;
+        } elseif (!is_a($class, Serializable::class, true)) {
+            return ''; // not yet supported...
+        } else {
+            // empty
         }
 
-        // Nope
-        $class      = new ReflectionClass($instruction::getParameters());
+        // Extract
+        $class      = new ReflectionClass($class);
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         $parameters = [];
 
@@ -233,17 +216,36 @@ class Preprocess extends Command {
                 // empty
             }
 
-            // Description
-            $doc         = new PhpDoc($property->getDocComment() ?: null);
-            $description = $doc->getSummary() ?: '_No description provided_.';
-            $description = trim(
-                implode(' ', array_map(rtrim(...), explode("\n", str_replace("\r\n", "\n", $description)))),
-            );
-
             // Add
-            $parameters[$definition] = $description;
+            $parameters[trim($definition)] = trim(
+                $this->getDocBlock($property, $padding) ?: '_No description provided_.',
+            );
         }
 
-        return $parameters;
+        // Serialize
+        $list = '';
+
+        foreach ($parameters as $definition => $description) {
+            $list .= "* `{$definition}` - {$description}\n";
+        }
+
+        $list = Markdown::setPadding($list, $padding);
+        $list = rtrim($list);
+
+        // Return
+        return $list;
+    }
+
+    /**
+     * @param ReflectionClass<object>|ReflectionProperty $object
+     * @param int<0, max>                                $padding
+     */
+    private function getDocBlock(ReflectionClass|ReflectionProperty $object, int $padding = 0): string {
+        $doc  = new PhpDoc($object->getDocComment() ?: null);
+        $help = $doc->getText();
+        $help = Markdown::setPadding($help, $padding);
+        $help = rtrim($help);
+
+        return $help;
     }
 }

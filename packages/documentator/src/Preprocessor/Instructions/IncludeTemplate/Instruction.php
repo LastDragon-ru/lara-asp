@@ -2,30 +2,29 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
 use Override;
 
 use function array_diff;
 use function array_key_exists;
 use function array_keys;
 use function array_values;
-use function dirname;
-use function file_get_contents;
 use function preg_replace_callback;
 use function rtrim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
- * @implements ParameterizableInstruction<Parameters>
+ * Includes the `<target>` as a template.
+ *
+ * @implements InstructionContract<string, Parameters>
  */
-class Instruction implements ParameterizableInstruction {
+class Instruction implements InstructionContract {
     public function __construct() {
         // empty
     }
@@ -36,48 +35,28 @@ class Instruction implements ParameterizableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return 'Includes the `<target>` as a template.';
+    public static function getResolver(): string {
+        return FileContent::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'File path.';
-    }
-
-    #[Override]
-    public static function getParameters(): string {
+    public static function getParameters(): ?string {
         return Parameters::class;
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public static function getParametersDescription(): array {
-        return [];
-    }
-
-    #[Override]
-    public function process(string $path, string $target, Serializable $parameters): string {
-        // Content
-        $file    = Path::getPath(dirname($path), $target);
-        $content = file_get_contents($file);
-
-        if ($content === false) {
-            throw new TargetIsNotFile($path, $target);
-        }
-
+    public function process(Context $context, mixed $target, mixed $parameters): string {
         // Data?
         if (!$parameters->data) {
-            throw new TemplateDataMissed($path, $target);
+            throw new TemplateDataMissed($context);
         }
 
         // Replace
-        $vars  = array_keys($parameters->data);
-        $used  = [];
-        $known = [];
-        $count = 0;
+        $vars    = array_keys($parameters->data);
+        $used    = [];
+        $known   = [];
+        $count   = 0;
+        $content = $target;
 
         do {
             $content = (string) preg_replace_callback(
@@ -104,14 +83,14 @@ class Instruction implements ParameterizableInstruction {
         $unused = array_diff($vars, $used);
 
         if ($unused) {
-            throw new TemplateVariablesUnused($path, $target, array_values($unused));
+            throw new TemplateVariablesUnused($context, array_values($unused));
         }
 
         // Missed
         $missed = array_diff($known, $used);
 
         if ($missed) {
-            throw new TemplateVariablesMissed($path, $target, array_values($missed));
+            throw new TemplateVariablesMissed($context, array_values($missed));
         }
 
         // Return

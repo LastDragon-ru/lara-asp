@@ -3,11 +3,13 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function file_get_contents;
 use function str_replace;
 
 /**
@@ -19,26 +21,18 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderProcess')]
     public function testProcess(Exception|string $expected, string $file, Parameters $params): void {
-        $file     = self::getTestData()->file($file);
-        $instance = $this->app()->make(Instruction::class);
-
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         } else {
             $expected = self::getTestData()->content($expected);
         }
 
-        self::assertEquals($expected, $instance->process($file->getPathname(), $file->getFilename(), $params));
-    }
-
-    public function testProcessAbsolute(): void {
-        $path     = 'invalid/directory';
-        $file     = self::getTestData()->path('Valid.txt');
-        $params   = new Parameters();
+        $file     = self::getTestData()->file($file);
+        $target   = (string) file_get_contents($file->getPathname());
+        $context  = new Context($file->getPathname(), $file->getFilename(), null);
         $instance = $this->app()->make(Instruction::class);
-        $expected = self::getTestData()->content('ValidExpected.txt');
 
-        self::assertEquals($expected, $instance->process($path, $file, $params));
+        self::assertEquals($expected, $instance->process($context, $target, $params));
     }
     //</editor-fold>
 
@@ -71,8 +65,11 @@ final class InstructionTest extends TestCase {
             ],
             'invalid'      => [
                 new TargetIsNotValidPhpFile(
-                    str_replace('\\', '/', __DIR__.'/InstructionTest/Invalid.txt'),
-                    'Invalid.txt',
+                    new Context(
+                        str_replace('\\', '/', __DIR__.'/InstructionTest/Invalid.txt'),
+                        'Invalid.txt',
+                        null,
+                    ),
                 ),
                 'Invalid.txt',
                 new Parameters(),

@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -23,8 +25,10 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/packages'));
         $params   = new Parameters(template: $template);
+        $context  = new Context($path, $target, '');
+        $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($path, $target, $params);
+        $actual   = $instance->process($context, $resolved, $params);
 
         self::assertEquals(
             self::getTestData()->content($expected),
@@ -40,51 +44,45 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/invalid'));
         $params   = new Parameters();
+        $context  = new Context($path, $target, '');
+        $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new PackageComposerJsonIsMissing(
-                $path,
-                $target,
-                'invalid/package',
-            ),
+            new PackageComposerJsonIsMissing($context, 'invalid/package'),
         );
 
-        $instance->process($path, $target, $params);
+        $instance->process($context, $resolved, $params);
     }
 
     public function testProcessNoReadme(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no readme'));
         $params   = new Parameters();
+        $context  = new Context($path, $target, '');
+        $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new PackageReadmeIsMissing(
-                $path,
-                $target,
-                'no readme/package',
-            ),
+            new PackageReadmeIsMissing($context, 'no readme/package'),
         );
 
-        $instance->process($path, $target, $params);
+        $instance->process($context, $resolved, $params);
     }
 
     public function testProcessNoTitle(): void {
         $path     = self::getTestData()->file('Document.md')->getPathname();
         $target   = basename(self::getTestData()->path('/no title'));
         $params   = new Parameters();
+        $context  = new Context($path, $target, '');
+        $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new DocumentTitleIsMissing(
-                $path,
-                $target,
-                'no title/package/README.md',
-            ),
+            new DocumentTitleIsMissing($context, 'no title/package/README.md'),
         );
 
-        $instance->process($path, $target, $params);
+        $instance->process($context, $resolved, $params);
     }
     //</editor-fold>
 

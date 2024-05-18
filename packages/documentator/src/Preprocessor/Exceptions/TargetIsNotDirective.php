@@ -2,19 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use Throwable;
 
 use function sprintf;
 
 class TargetIsNotDirective extends InstructionFailed {
-    public function __construct(string $path, string $target, Throwable $previous = null) {
+    public function __construct(Context $context, Throwable $previous = null) {
         parent::__construct(
-            $path,
-            $target,
+            $context,
             sprintf(
                 'The `%s` is not a directive (in `%s`).',
-                $target,
-                $path,
+                $context->target,
+                $context->path,
             ),
             $previous,
         );

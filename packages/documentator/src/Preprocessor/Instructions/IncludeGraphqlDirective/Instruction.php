@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective;
 
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
@@ -12,7 +13,12 @@ use Override;
 use function mb_substr;
 use function trim;
 
-class Instruction implements ProcessableInstruction {
+/**
+ * Includes the definition of the directive as a Markdown code block.
+ *
+ * @implements InstructionContract<string, null>
+ */
+class Instruction implements InstructionContract {
     public function __construct(
         protected readonly ?Printer $printer = null,
     ) {
@@ -25,22 +31,20 @@ class Instruction implements ProcessableInstruction {
     }
 
     #[Override]
-    public static function getDescription(): string {
-        return <<<'DESC'
-            Includes the definition of the directive as a Markdown code block.
-            DESC;
+    public static function getResolver(): string {
+        return Resolver::class;
     }
 
     #[Override]
-    public static function getTargetDescription(): ?string {
-        return 'Directive name (started with `@` sign)';
+    public static function getParameters(): ?string {
+        return null;
     }
 
     #[Override]
-    public function process(string $path, string $target): string {
+    public function process(Context $context, mixed $target, mixed $parameters): string {
         // Dependencies?
         if (!$this->printer) {
-            throw new DependencyIsMissing($path, $target, Printer::class);
+            throw new DependencyIsMissing($context, Printer::class);
         }
 
         // Directive?
@@ -48,7 +52,7 @@ class Instruction implements ProcessableInstruction {
         $definition = $this->printer->getDirectiveResolver()?->getDefinition($directive);
 
         if ($definition === null) {
-            throw new TargetIsNotDirective($path, $target);
+            throw new TargetIsNotDirective($context);
         }
 
         // Print

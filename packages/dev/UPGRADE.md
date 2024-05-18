@@ -1,7 +1,7 @@
 # Upgrade Guide
 
 [include:file]: ../../docs/Shared/Upgrade.md
-[//]: # (start: c70a9a43c0a80bd2e7fa6010a9b2c0fbcab4cb4d536d7a498216d9df7431f7e2)
+[//]: # (start: 5af9759519da3fa710fb21785e61682fda687a6ebdfb6f0dde4ed03162cb031d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Instructions
@@ -25,4 +25,4 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
 |:--:|:--------------------------------------------------------------------------------------------------------------------|
 
-[//]: # (end: c70a9a43c0a80bd2e7fa6010a9b2c0fbcab4cb4d536d7a498216d9df7431f7e2)
+[//]: # (end: 5af9759519da3fa710fb21785e61682fda687a6ebdfb6f0dde4ed03162cb031d)

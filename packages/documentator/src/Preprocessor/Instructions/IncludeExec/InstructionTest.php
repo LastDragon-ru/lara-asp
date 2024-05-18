@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -16,8 +17,10 @@ use function dirname;
 final class InstructionTest extends TestCase {
     public function testProcess(): void {
         $path     = 'current/working/directory/file.md';
+        $params   = null;
         $expected = 'result';
         $command  = 'command to execute';
+        $context  = new Context($path, $command, $params);
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
@@ -29,7 +32,7 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, $instance->process($path, $command));
+        self::assertEquals($expected, $instance->process($context, $command, $params));
 
         $factory->assertRan(static function (PendingProcess $process) use ($path, $command): bool {
             return $process->path === dirname($path)

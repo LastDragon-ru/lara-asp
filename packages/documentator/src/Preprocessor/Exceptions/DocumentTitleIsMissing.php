@@ -2,24 +2,23 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use Throwable;
 
 use function sprintf;
 
 class DocumentTitleIsMissing extends InstructionFailed {
     public function __construct(
-        string $path,
-        string $target,
+        Context $context,
         private readonly string $document,
         Throwable $previous = null,
     ) {
         parent::__construct(
-            $path,
-            $target,
+            $context,
             sprintf(
                 "The `%s` doesn't contain `# Header` (in `%s`).",
                 $this->document,
-                $path,
+                $context->path,
             ),
             $previous,
         );

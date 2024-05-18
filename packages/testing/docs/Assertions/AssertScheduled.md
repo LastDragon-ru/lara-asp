@@ -3,7 +3,7 @@
 Asserts that Schedule contains task.
 
 [include:example]: ./AssertScheduledTest.php
-[//]: # (start: 7b7d3362391a553d8728619185eafc2fe1f3dda4112eab18a7be8c53321dec70)
+[//]: # (start: f506843658b5143b195bd01075e1807073a382bfbeb5f689afa2063fed136a69)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -58,4 +58,4 @@ final class AssertScheduledTest extends TestCase {
 }
 ```
 
-[//]: # (end: 7b7d3362391a553d8728619185eafc2fe1f3dda4112eab18a7be8c53321dec70)
+[//]: # (end: f506843658b5143b195bd01075e1807073a382bfbeb5f689afa2063fed136a69)

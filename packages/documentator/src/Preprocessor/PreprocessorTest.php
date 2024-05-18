@@ -3,13 +3,16 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
-use Mockery;
-use Mockery\Matcher\IsEqual;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+
+use function json_encode;
+use function sprintf;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
@@ -17,19 +20,19 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Preprocessor::class)]
 final class PreprocessorTest extends TestCase {
     public function testProcess(): void {
-        $content                    = <<<'MARKDOWN'
+        $content = <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
 
-            [unknown]: ./path/to/file
+            [unknown]: ./path/to/file (should not be parsed)
 
-            [empty]: ./path/to/file
+            [test:empty]: ./path/to/file
 
-            [processable]: ./path/to/file
+            [test:instruction]: ./path/to/file
 
-            [processable]: <./path/to/file>
+            [test:instruction]: <./path/to/file>
             [//]: # (start: hash)
 
-            [processable]: ./path/to/file
+            [test:instruction]: ./path/to/file
             [//]: # (start: nested-hash)
 
             outdated
@@ -38,121 +41,78 @@ final class PreprocessorTest extends TestCase {
 
             [//]: # (end: hash)
 
-            [parameterizable]: ./path/to/file
+            [test:instruction]: ./path/to/file
 
-            [parameterizable]: ./path/to/file
+            [test:instruction]: ./path/to/file
 
-            [parameterizable]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
+            [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
 
-            [parameterizable]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
+            [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
             MARKDOWN;
-        $parameterizableInstruction = Mockery::mock(ParameterizableInstruction::class);
-        $parameterizableInstruction
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('parameterizable');
-        $parameterizableInstruction
-            ->shouldReceive('getParameters')
-            ->times(4)
-            ->andReturn(PreprocessorTest__Parameters::class);
-        $parameterizableInstruction
-            ->shouldReceive('process')
-            ->with('path', './path/to/file', new IsEqual(new PreprocessorTest__Parameters()))
-            ->once()
-            ->andReturn('parameterizable()');
-        $parameterizableInstruction
-            ->shouldReceive('process')
-            ->with(
-                'path',
-                './path/to/file/parametrized',
-                new IsEqual(
-                    new PreprocessorTest__Parameters('aa', ['a' => 'a', 'b' => 'b']),
-                ),
-            )
-            ->once()
-            ->andReturn('parameterizable(aa, bb)');
-
-        $processableInstruction = Mockery::mock(ProcessableInstruction::class);
-        $processableInstruction
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('processable');
-        $processableInstruction
-            ->shouldReceive('process')
-            ->with('path', './path/to/file')
-            ->once()
-            ->andReturn('content');
-
-        $emptyInstruction = Mockery::mock(Instruction::class);
-        $emptyInstruction
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('empty');
 
         $preprocessor = $this->app()->make(Preprocessor::class)
-            ->addInstruction($parameterizableInstruction)
-            ->addInstruction($processableInstruction)
-            ->addInstruction($emptyInstruction);
+            ->addInstruction(new PreprocessorTest__EmptyInstruction())
+            ->addInstruction(new PreprocessorTest__TestInstruction());
 
         self::assertEquals(
             <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
 
-            [unknown]: ./path/to/file
+            [unknown]: ./path/to/file (should not be parsed)
 
-            [empty]: ./path/to/file
-            [//]: # (start: 8619b6a617a04e2b1ed8916cd29b8e9947a9157ffdef8d2e8a51fe60fbc13948)
+            [test:empty]: ./path/to/file
+            [//]: # (start: caf14319a44edf638bf2ba4b4c76caab5a3d85ee06d5c86387fbdb703c8b5c84)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: 8619b6a617a04e2b1ed8916cd29b8e9947a9157ffdef8d2e8a51fe60fbc13948)
+            [//]: # (end: caf14319a44edf638bf2ba4b4c76caab5a3d85ee06d5c86387fbdb703c8b5c84)
 
-            [processable]: ./path/to/file
-            [//]: # (start: 378a07bc67ecbe88f5d2f642e70681461f61d3f2f5e83379015b879110c83947)
+            [test:instruction]: ./path/to/file
+            [//]: # (start: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            content
+            result(./path/to/file/a, {"a":"a","b":[]})
 
-            [//]: # (end: 378a07bc67ecbe88f5d2f642e70681461f61d3f2f5e83379015b879110c83947)
+            [//]: # (end: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
 
-            [processable]: <./path/to/file>
-            [//]: # (start: 378a07bc67ecbe88f5d2f642e70681461f61d3f2f5e83379015b879110c83947)
+            [test:instruction]: <./path/to/file>
+            [//]: # (start: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            content
+            result(./path/to/file/a, {"a":"a","b":[]})
 
-            [//]: # (end: 378a07bc67ecbe88f5d2f642e70681461f61d3f2f5e83379015b879110c83947)
+            [//]: # (end: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
 
-            [parameterizable]: ./path/to/file
-            [//]: # (start: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
+            [test:instruction]: ./path/to/file
+            [//]: # (start: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            parameterizable()
+            result(./path/to/file/a, {"a":"a","b":[]})
 
-            [//]: # (end: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
+            [//]: # (end: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
 
-            [parameterizable]: ./path/to/file
-            [//]: # (start: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
+            [test:instruction]: ./path/to/file
+            [//]: # (start: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            parameterizable()
+            result(./path/to/file/a, {"a":"a","b":[]})
 
-            [//]: # (end: 5d070af95e5691621d63e901616cc0fa03d3253c24d1dcf27023d8a1ce01d9fb)
+            [//]: # (end: 15a77bf03e0261f0d7d2af698861fc23733fb4f09e0570e3b2570f4fe7b2694c)
 
-            [parameterizable]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
-            [//]: # (start: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
+            [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
+            [//]: # (start: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            parameterizable(aa, bb)
+            result(./path/to/file/parametrized/aa, {"a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
+            [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
 
-            [parameterizable]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
-            [//]: # (start: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
+            [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
+            [//]: # (start: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            parameterizable(aa, bb)
+            result(./path/to/file/parametrized/aa, {"a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: a91869c99598538f0f98ed293004603fd2c24d938c8c6d5a8e7267ba56aeb86e)
+            [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
             MARKDOWN,
             $preprocessor->process('path', $content),
         );
@@ -161,6 +121,100 @@ final class PreprocessorTest extends TestCase {
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements Instruction<string, null>
+ */
+class PreprocessorTest__EmptyInstruction implements Instruction {
+    #[Override]
+    public static function getName(): string {
+        return 'test:empty';
+    }
+
+    #[Override]
+    public static function getResolver(): string {
+        return PreprocessorTest__TargetResolverAsIs::class;
+    }
+
+    #[Override]
+    public static function getParameters(): ?string {
+        return null;
+    }
+
+    #[Override]
+    public function process(Context $context, mixed $target, mixed $parameters): string {
+        return '';
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements Instruction<PreprocessorTest__Value, PreprocessorTest__Parameters>
+ */
+class PreprocessorTest__TestInstruction implements Instruction {
+    #[Override]
+    public static function getName(): string {
+        return 'test:instruction';
+    }
+
+    #[Override]
+    public static function getResolver(): string {
+        return PreprocessorTest__TargetResolverAsValue::class;
+    }
+
+    #[Override]
+    public static function getParameters(): ?string {
+        return PreprocessorTest__Parameters::class;
+    }
+
+    #[Override]
+    public function process(Context $context, mixed $target, mixed $parameters): string {
+        return sprintf('result(%s, %s)', $target->value, json_encode($parameters, JSON_THROW_ON_ERROR));
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class PreprocessorTest__Value {
+    public function __construct(
+        public string $value,
+    ) {
+        // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements Resolver<null, string>
+ */
+class PreprocessorTest__TargetResolverAsIs implements Resolver {
+    #[Override]
+    public function resolve(Context $context, mixed $parameters): mixed {
+        return $context->target;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements Resolver<PreprocessorTest__Parameters, PreprocessorTest__Value>
+ */
+class PreprocessorTest__TargetResolverAsValue implements Resolver {
+    #[Override]
+    public function resolve(Context $context, mixed $parameters): mixed {
+        return new PreprocessorTest__Value("{$context->target}/{$parameters->a}");
+    }
+}
 
 /**
  * @internal

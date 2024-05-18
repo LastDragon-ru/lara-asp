@@ -3,7 +3,7 @@
 The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
 [include:exec]: <./dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 3d045d7a4689231a18ef4436deb0b7c931a93959113b45d9f544bd2b0edcf45d)
+[//]: # (start: 5a6479e01ca04242d936b5543af76210a1af5db5468e2f480f167a2a046b62db)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -25,7 +25,7 @@ The set provides best practices to make development more fun and classes/service
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 3d045d7a4689231a18ef4436deb0b7c931a93959113b45d9f544bd2b0edcf45d)
+[//]: # (end: 5a6479e01ca04242d936b5543af76210a1af5db5468e2f480f167a2a046b62db)
 
 # Installation
 
@@ -112,14 +112,14 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 [//]: # (end: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
 
 [include:file]: ./docs/Shared/Upgrading.md
-[//]: # (start: 58c515c01daf29a92b704a09f78da2fa719462cc37e47d3abde0331a7b1da0a3)
+[//]: # (start: cdb14a15bab8920d27c60204790e96bf814a9d780f6a55d5e93422db9bf56f64)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: 58c515c01daf29a92b704a09f78da2fa719462cc37e47d3abde0331a7b1da0a3)
+[//]: # (end: cdb14a15bab8920d27c60204790e96bf814a9d780f6a55d5e93422db9bf56f64)
 
 # Development
 
@@ -129,7 +129,7 @@ Please follow [Upgrade Guide](UPGRADE.md).
 4. Enjoy
 
 [include:file]: ./docs/Legend.md
-[//]: # (start: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
+[//]: # (start: 68b5a2c9955bc3698c6033103ab34e32d67edfcff7b726f187662b5ce2e15a67)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Legend
@@ -148,4 +148,4 @@ Please follow [Upgrade Guide](UPGRADE.md).
 |  🆆  | CI    | Running on Windows                                               |
 |  🅼  | CI    | Running on Mac OS X                                              |
 
-[//]: # (end: a974316bcb5b40e0fcedb0c38b2c3c43c80c2cadfbf95a8caf27d6f163abff0d)
+[//]: # (end: 68b5a2c9955bc3698c6033103ab34e32d67edfcff7b726f187662b5ce2e15a67)

@@ -3,7 +3,7 @@
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (start: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -18,7 +18,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 |  | `^15.2.4` |   `4.2.0 ⋯ 4.0.0`   |
 |  | `^14.11.9` |  `3.0.0`   |
 
-[//]: # (end: 876a9177c0e8e3722ac84e8f3888245fc9070a64a87dedfe7c9d9ba2a13b374b)
+[//]: # (end: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql-printer"}})
 [//]: # (start: dcf3043aff3a50970117872a9bba432cb3ef84a034a0fc88bcdc6d9dcae2ec06)
@@ -37,7 +37,7 @@ composer require lastdragon-ru/lara-asp-graphql-printer
 There are two primary methods: `Printer::print()` and `Printer::export()`. The `print()` will print the current type only, meanwhile `export()` will print the current type and all used types/directives:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
+[//]: # (start: c709a4b715d1bde109a5d27982a2a5d6f481b5c72338e162e394ccbb6fc9208a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -113,7 +113,7 @@ type B
 }
 ```
 
-[//]: # (end: 25c8cf0ee2862aeda3cd8ff6bf8d2d3592fee1c00042550be5ee7686ead4cc44)
+[//]: # (end: c709a4b715d1bde109a5d27982a2a5d6f481b5c72338e162e394ccbb6fc9208a)
 
 # Customization
 
@@ -132,7 +132,7 @@ Please see:
 The Printer allows filter out types and directives. This may be useful to exclude them from the schema completely. Filtering also works for queries. Please note that types filtering will work only if the schema is known (the schema is required to determine the type of argument nodes). For some AST node types, their type may also be required.
 
 [include:example]: ./docs/Examples/Filtering.php
-[//]: # (start: 292c33ba589c3d1a9a6b77c55aad173396a11c5fed1da07af456c995f3f55838)
+[//]: # (start: 963f066509a17e2999eaa0fa940bd0f608ad2fc212eb6511f11b69eae9f7478e)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -215,7 +215,7 @@ query {
 }
 ```
 
-[//]: # (end: 292c33ba589c3d1a9a6b77c55aad173396a11c5fed1da07af456c995f3f55838)
+[//]: # (end: 963f066509a17e2999eaa0fa940bd0f608ad2fc212eb6511f11b69eae9f7478e)
 
 # Laravel/Lighthouse
 
@@ -242,29 +242,29 @@ Prints and compares two GraphQL schemas/types/nodes/etc.
 [//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (start: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
+[//]: # (end: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 057ec3a599c54447e95d6dd2e9f0f6a6621d9eb75446a5e5e471ba9b2f414b89)
+[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
 
 [include:file]: ../../docs/Shared/Links.md
-[//]: # (start: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
+[//]: # (start: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
 
-[//]: # (end: 6c180b37114202a8766bad1a59a3c0699948cc875617c85fd14a024e3bca64fe)
+[//]: # (end: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)

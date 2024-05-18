@@ -3,7 +3,7 @@
 Compares default internal schema (with all directives).
 
 [include:example]: ./AssertGraphQLSchemaEqualsTest.php
-[//]: # (start: 78ece08930d16eb88ea81e7d464ee55ccbdbdc1f5fc092bd0903eaa297981bbe)
+[//]: # (start: 1bcc4bdce373bad283736df3c40bf88ff6b8faa72cbd12e3a5750ae22ac6f439)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -110,4 +110,4 @@ final class AssertGraphQLSchemaEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: 78ece08930d16eb88ea81e7d464ee55ccbdbdc1f5fc092bd0903eaa297981bbe)
+[//]: # (end: 1bcc4bdce373bad283736df3c40bf88ff6b8faa72cbd12e3a5750ae22ac6f439)

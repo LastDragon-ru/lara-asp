@@ -3,7 +3,7 @@
 Exports and compares two GraphQL schemas/types/nodes/etc.
 
 [include:example]: ./AssertGraphQLExportableEqualsTest.php
-[//]: # (start: 133d4e1cb1ecae97bc0bc725a805d078526526302c85ce377f2d8494690c3070)
+[//]: # (start: f79b9dacbf93b9659f2c2a8a84646ad6b8603e38651064954060c16eac2f3fc0)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -81,4 +81,4 @@ final class AssertGraphQLExportableEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: 133d4e1cb1ecae97bc0bc725a805d078526526302c85ce377f2d8494690c3070)
+[//]: # (end: f79b9dacbf93b9659f2c2a8a84646ad6b8603e38651064954060c16eac2f3fc0)

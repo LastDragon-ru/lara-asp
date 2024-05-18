@@ -18,6 +18,7 @@ so the syntax is:
 [<instruction>]: <target>
 [<instruction>]: <target> (<parameters>)
 [<instruction>=name]: <target>
+[<instruction>=name]: <target> (<parameters>)
 ```
 
 Where:
@@ -25,7 +26,14 @@ Where:
 * `<instruction>` the instruction name (unknown instructions will be ignored)
 * `<target>` usually the path to the file or directory, but see the instruction description
 * `<parameters>` optional JSON string with additional parameters
-    (can be wrapped by `(...)`, `"..."`, or `'...'`)
+  (can be wrapped by `(...)`, `"..."`, or `'...'`)
+
+## Limitations
+
+* `<instruction>` will be processed everywhere in the file (eg within
+  the code block) and may give unpredictable results.
+* `<instruction>` cannot be inside text.
+* Nested `<instruction>` doesn't support.
 
 ## Instructions
 
@@ -44,7 +52,8 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `depth: array|string|int|null = 0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth) (eg the `0` means no nested directories, the `null` removes limits).
+  * `depth: array|string|int|null = 0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
+    (eg the `0` means no nested directories, the `null` removes limits).
   * `template: string = 'default'` - Blade template.
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
@@ -53,7 +62,7 @@ after the Header will be used as a summary.
 
 ### `[include:example]: <target>`
 
-* `<target>` - Example file path.
+* `<target>` - File path.
 
 Includes contents of the `<target>` file as an example wrapped into
 ` ```code block``` `. It also searches for `<target>.run` file, execute
@@ -97,13 +106,6 @@ used to determine package name and summary.
   * `data: array` - Array of variables (`${name}`) to replace.
 
 Includes the `<target>` as a template.
-
-## Limitations
-
-* `<instruction>` will be processed everywhere in the file (eg within
-  the code block) and may give unpredictable results.
-* `<instruction>` cannot be inside text.
-* Nested `<instruction>` doesn't support.
 
 ## Arguments
 

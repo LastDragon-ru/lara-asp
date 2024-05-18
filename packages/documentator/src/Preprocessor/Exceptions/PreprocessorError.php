@@ -4,6 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\PackageException;
 
-class PreprocessFailed extends PackageException {
+abstract class PreprocessorError extends PackageException {
     // empty
 }

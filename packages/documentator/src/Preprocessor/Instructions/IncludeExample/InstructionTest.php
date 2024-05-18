@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -21,13 +22,17 @@ final class InstructionTest extends TestCase {
     public function testProcessNoRun(): void {
         $path     = self::getTestData()->path('~example.md');
         $file     = basename(self::getTestData()->path('~example.md'));
-        $expected = trim(self::getTestData()->content('~example.md'));
+        $params   = null;
+        $context  = new Context($path, $file, $params);
+        $content  = self::getTestData()->content('~example.md');
+        $expected = trim($content);
         $factory  = $this->override(Factory::class, function (): Factory {
             return $this->app()->make(Factory::class)
                 ->preventStrayProcesses()
                 ->fake();
         });
         $instance = $this->app()->make(Instruction::class);
+        $actual   = $instance->process($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -35,7 +40,7 @@ final class InstructionTest extends TestCase {
             {$expected}
             ```
             EXPECTED,
-            $instance->process($path, $file),
+            $actual,
         );
 
         $factory->assertNothingRan();
@@ -44,8 +49,11 @@ final class InstructionTest extends TestCase {
     public function testProcess(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $file     = basename(self::getTestData()->path('~runnable.md'));
+        $params   = null;
+        $context  = new Context($path, $file, $params);
+        $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
-        $expected = trim(self::getTestData()->content('~runnable.md'));
+        $expected = trim($content);
         $output   = 'command output';
         $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
             $factory = $this->app()->make(Factory::class);
@@ -57,6 +65,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
+        $actual   = $instance->process($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -70,7 +79,7 @@ final class InstructionTest extends TestCase {
             {$output}
             ```
             EXPECTED,
-            $instance->process($path, $file),
+            $actual,
         );
 
         $factory->assertRan(static function (PendingProcess $process) use ($path, $command): bool {
@@ -82,8 +91,11 @@ final class InstructionTest extends TestCase {
     public function testProcessLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $file     = self::getTestData()->path('~runnable.md');
+        $params   = null;
+        $context  = new Context($path, $file, $params);
+        $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
-        $expected = trim(self::getTestData()->content('~runnable.md'));
+        $expected = trim($content);
         $output   = implode("\n", range(0, Instruction::Limit + 1));
         $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
             $factory = $this->app()->make(Factory::class);
@@ -95,6 +107,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
+        $actual   = $instance->process($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -110,7 +123,7 @@ final class InstructionTest extends TestCase {
 
             </details>
             EXPECTED,
-            $instance->process($path, $file),
+            $actual,
         );
 
         $factory->assertRan(static function (PendingProcess $process) use ($path, $command): bool {
@@ -122,8 +135,11 @@ final class InstructionTest extends TestCase {
     public function testProcessMarkdown(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $file     = basename(self::getTestData()->path('~runnable.md'));
+        $params   = null;
+        $context  = new Context($path, $file, $params);
+        $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
-        $expected = trim(self::getTestData()->content('~runnable.md'));
+        $expected = trim($content);
         $output   = 'command output';
         $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
             $factory = $this->app()->make(Factory::class);
@@ -135,6 +151,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
+        $actual   = $instance->process($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -144,7 +161,7 @@ final class InstructionTest extends TestCase {
 
             {$output}
             EXPECTED,
-            $instance->process($path, $file),
+            $actual,
         );
 
         $factory->assertRan(static function (PendingProcess $process) use ($path, $command): bool {
@@ -156,8 +173,11 @@ final class InstructionTest extends TestCase {
     public function testProcessMarkdownLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $file     = self::getTestData()->path('~runnable.md');
+        $params   = null;
+        $context  = new Context($path, $file, $params);
+        $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
-        $expected = trim(self::getTestData()->content('~runnable.md'));
+        $expected = trim($content);
         $output   = implode("\n", range(0, Instruction::Limit + 1));
         $factory  = $this->override(Factory::class, function () use ($command, $output): Factory {
             $factory = $this->app()->make(Factory::class);
@@ -169,6 +189,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
+        $actual   = $instance->process($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -182,7 +203,7 @@ final class InstructionTest extends TestCase {
 
             </details>
             EXPECTED,
-            $instance->process($path, $file),
+            $actual,
         );
 
         $factory->assertRan(static function (PendingProcess $process) use ($path, $command): bool {

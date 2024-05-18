@@ -14,10 +14,16 @@ use League\CommonMark\Parser\MarkdownParser;
 use function array_slice;
 use function implode;
 use function ltrim;
+use function mb_strlen;
+use function mb_substr;
+use function min;
 use function preg_split;
 use function str_ends_with;
+use function str_repeat;
 use function str_starts_with;
 use function trim;
+
+use const PHP_INT_MAX;
 
 class Markdown {
     /**
@@ -42,6 +48,29 @@ class Markdown {
             : null;
 
         return $summary;
+    }
+
+    /**
+     * @param int<0, max> $spaces
+     */
+    public static function setPadding(string $string, int $spaces): string {
+        $prefix = str_repeat(' ', $spaces);
+        $lines  = preg_split('/\R/u', $string) ?: [];
+        $cut    = PHP_INT_MAX;
+
+        foreach ($lines as $line) {
+            $trimmed = ltrim($line);
+            $padding = mb_strlen($line) - mb_strlen($trimmed);
+            $cut     = min($cut, $padding);
+        }
+
+        foreach ($lines as $i => $line) {
+            $line      = mb_substr($line, $cut);
+            $line      = ($line ? $prefix : '').$line;
+            $lines[$i] = $line;
+        }
+
+        return implode("\n", $lines);
     }
 
     protected static function getDocumentNode(string $string): Document {
