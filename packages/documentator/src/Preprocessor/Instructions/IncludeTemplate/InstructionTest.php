@@ -43,7 +43,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateDataMissed($file, $file),
+            new TemplateDataMissed($context),
         );
 
         $instance->process($context, $content, $params);
@@ -62,11 +62,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateVariablesUnused(
-                $file->getPathname(),
-                $file->getFilename(),
-                ['c', 'd'],
-            ),
+            new TemplateVariablesUnused($context, ['c', 'd']),
         );
 
         $instance->process($context, $content, $params);
@@ -82,11 +78,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateVariablesMissed(
-                $file->getPathname(),
-                $file->getFilename(),
-                ['b'],
-            ),
+            new TemplateVariablesMissed($context, ['b']),
         );
 
         $instance->process($context, $content, $params);

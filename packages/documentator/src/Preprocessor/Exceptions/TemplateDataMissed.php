@@ -2,22 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use Throwable;
 
 use function sprintf;
 
 class TemplateDataMissed extends InstructionFailed {
-    public function __construct(
-        string $path,
-        string $target,
-        Throwable $previous = null,
-    ) {
+    public function __construct(Context $context, Throwable $previous = null) {
         parent::__construct(
-            $path,
-            $target,
+            $context,
             sprintf(
                 'The `data` is required for `%s`.',
-                $path,
+                $context->path,
             ),
             $previous,
         );

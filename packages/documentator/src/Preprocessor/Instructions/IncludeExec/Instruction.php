@@ -46,7 +46,7 @@ class Instruction implements InstructionContract {
                 $this->factory->newPendingProcess()->path(dirname($context->path))->run($target)->throw()->output(),
             );
         } catch (Exception $exception) {
-            throw new TargetExecFailed($context->path, $context->target, $exception);
+            throw new TargetExecFailed($context, $exception);
         }
     }
 }

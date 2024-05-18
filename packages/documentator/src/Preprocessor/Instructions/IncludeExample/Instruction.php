@@ -81,7 +81,7 @@ class Instruction implements InstructionContract {
                 $output = $this->factory->newPendingProcess()->path(dirname($path))->run($command)->throw()->output();
                 $output = trim($output);
             } catch (Exception $exception) {
-                throw new TargetExecFailed($path, $target, $exception);
+                throw new TargetExecFailed($context, $exception);
             }
 
             // Markdown?

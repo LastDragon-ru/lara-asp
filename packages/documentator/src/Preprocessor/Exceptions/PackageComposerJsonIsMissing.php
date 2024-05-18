@@ -2,24 +2,23 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use Throwable;
 
 use function sprintf;
 
 class PackageComposerJsonIsMissing extends InstructionFailed {
     public function __construct(
-        string $path,
-        string $target,
+        Context $context,
         private readonly string $package,
         Throwable $previous = null,
     ) {
         parent::__construct(
-            $path,
-            $target,
+            $context,
             sprintf(
                 "The package `%s` doesn't contain `composer.json` (in `%s`).",
                 $this->package,
-                $path,
+                $context->path,
             ),
             $previous,
         );

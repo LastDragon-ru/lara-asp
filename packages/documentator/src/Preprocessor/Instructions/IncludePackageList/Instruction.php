@@ -75,8 +75,7 @@ class Instruction implements InstructionContract {
 
             if (!$packageInfo) {
                 throw new PackageComposerJsonIsMissing(
-                    $context->path,
-                    $context->target,
+                    $context,
                     Path::join($basePath, $package->getFilename()),
                 );
             }
@@ -89,8 +88,7 @@ class Instruction implements InstructionContract {
 
             if (!$readme || $content === false) {
                 throw new PackageReadmeIsMissing(
-                    $context->path,
-                    $context->target,
+                    $context,
                     Path::join($basePath, $package->getFilename()),
                 );
             }
@@ -112,7 +110,7 @@ class Instruction implements InstructionContract {
                     'upgrade' => $upgradePath,
                 ];
             } else {
-                throw new DocumentTitleIsMissing($context->path, $context->target, $readmePath);
+                throw new DocumentTitleIsMissing($context, $readmePath);
             }
         }
 

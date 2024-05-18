@@ -18,7 +18,7 @@ class FileContent extends FilePath {
         $content = file_get_contents($path);
 
         if ($content === false) {
-            throw new TargetIsNotFile($context->path, $context->target);
+            throw new TargetIsNotFile($context);
         }
 
         return $content;

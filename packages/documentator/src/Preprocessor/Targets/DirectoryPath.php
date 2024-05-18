@@ -26,7 +26,7 @@ class DirectoryPath implements Resolver {
         $path = Path::getPath(dirname($context->path), $context->target);
 
         if (!is_dir($path)) {
-            throw new TargetIsNotDirectory($context->path, $context->target);
+            throw new TargetIsNotDirectory($context);
         }
 
         return $path;

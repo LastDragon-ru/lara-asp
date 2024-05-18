@@ -95,7 +95,7 @@ class Instruction implements InstructionContract {
                 return $node instanceof ClassLike;
             });
         } catch (Exception $exception) {
-            throw new TargetIsNotValidPhpFile($context->path, $context->target, $exception);
+            throw new TargetIsNotValidPhpFile($context, $exception);
         }
 
         return $class instanceof ClassLike

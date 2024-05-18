@@ -2,23 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use Throwable;
 
 abstract class InstructionFailed extends PreprocessFailed {
     public function __construct(
-        private readonly string $path,
-        private readonly string $target,
+        private readonly Context $context,
         string $message,
         Throwable $previous = null,
     ) {
         parent::__construct($message, $previous);
     }
 
-    public function getPath(): string {
-        return $this->path;
-    }
-
-    public function getTarget(): string {
-        return $this->target;
+    public function getContext(): Context {
+        return $this->context;
     }
 }

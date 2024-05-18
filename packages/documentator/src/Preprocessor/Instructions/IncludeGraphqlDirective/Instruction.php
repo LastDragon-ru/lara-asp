@@ -44,7 +44,7 @@ class Instruction implements InstructionContract {
     public function process(Context $context, mixed $target, mixed $parameters): string {
         // Dependencies?
         if (!$this->printer) {
-            throw new DependencyIsMissing($context->path, $context->target, Printer::class);
+            throw new DependencyIsMissing($context, Printer::class);
         }
 
         // Directive?
@@ -52,7 +52,7 @@ class Instruction implements InstructionContract {
         $definition = $this->printer->getDirectiveResolver()?->getDefinition($directive);
 
         if ($definition === null) {
-            throw new TargetIsNotDirective($context->path, $context->target);
+            throw new TargetIsNotDirective($context);
         }
 
         // Print

@@ -65,8 +65,11 @@ final class InstructionTest extends TestCase {
             ],
             'invalid'      => [
                 new TargetIsNotValidPhpFile(
-                    str_replace('\\', '/', __DIR__.'/InstructionTest/Invalid.txt'),
-                    'Invalid.txt',
+                    new Context(
+                        str_replace('\\', '/', __DIR__.'/InstructionTest/Invalid.txt'),
+                        'Invalid.txt',
+                        null,
+                    ),
                 ),
                 'Invalid.txt',
                 new Parameters(),

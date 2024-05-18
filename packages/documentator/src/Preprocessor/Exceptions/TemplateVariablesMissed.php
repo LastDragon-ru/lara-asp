@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use Throwable;
 
 use function implode;
@@ -12,18 +13,16 @@ class TemplateVariablesMissed extends InstructionFailed {
      * @param non-empty-list<string> $variables
      */
     public function __construct(
-        string $path,
-        string $target,
+        Context $context,
         private readonly array $variables,
         Throwable $previous = null,
     ) {
         parent::__construct(
-            $path,
-            $target,
+            $context,
             sprintf(
                 'Variables `%s` required in `%s`, but missed.',
                 '`'.implode('`, `', $this->variables).'`',
-                $path,
+                $context->path,
             ),
             $previous,
         );

@@ -49,11 +49,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new PackageComposerJsonIsMissing(
-                $path,
-                $target,
-                'invalid/package',
-            ),
+            new PackageComposerJsonIsMissing($context, 'invalid/package'),
         );
 
         $instance->process($context, $resolved, $params);
@@ -68,11 +64,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new PackageReadmeIsMissing(
-                $path,
-                $target,
-                'no readme/package',
-            ),
+            new PackageReadmeIsMissing($context, 'no readme/package'),
         );
 
         $instance->process($context, $resolved, $params);
@@ -87,11 +79,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new DocumentTitleIsMissing(
-                $path,
-                $target,
-                'no title/package/README.md',
-            ),
+            new DocumentTitleIsMissing($context, 'no title/package/README.md'),
         );
 
         $instance->process($context, $resolved, $params);

@@ -27,7 +27,7 @@ class FilePath implements Resolver {
         $path = Path::getPath(dirname($context->path), $context->target);
 
         if (!is_file($path) || !is_readable($path)) {
-            throw new TargetIsNotFile($context->path, $context->target);
+            throw new TargetIsNotFile($context);
         }
 
         return $path;

@@ -78,8 +78,11 @@ final class InstructionTest extends TestCase {
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing(
-                $path->getPathname(),
-                $target,
+                new Context(
+                    $path->getPathname(),
+                    $target,
+                    null,
+                ),
                 'WithoutTitle.md',
             ),
         );

@@ -85,7 +85,7 @@ class Instruction implements InstructionContract {
                     'summary' => Markdown::getSummary($content),
                 ];
             } else {
-                throw new DocumentTitleIsMissing($context->path, $context->target, $docPath);
+                throw new DocumentTitleIsMissing($context, $docPath);
             }
         }
 

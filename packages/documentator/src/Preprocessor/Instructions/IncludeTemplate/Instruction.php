@@ -48,7 +48,7 @@ class Instruction implements InstructionContract {
     public function process(Context $context, mixed $target, mixed $parameters): string {
         // Data?
         if (!$parameters->data) {
-            throw new TemplateDataMissed($context->path, $context->target);
+            throw new TemplateDataMissed($context);
         }
 
         // Replace
@@ -83,14 +83,14 @@ class Instruction implements InstructionContract {
         $unused = array_diff($vars, $used);
 
         if ($unused) {
-            throw new TemplateVariablesUnused($context->path, $context->target, array_values($unused));
+            throw new TemplateVariablesUnused($context, array_values($unused));
         }
 
         // Missed
         $missed = array_diff($known, $used);
 
         if ($missed) {
-            throw new TemplateVariablesMissed($context->path, $context->target, array_values($missed));
+            throw new TemplateVariablesMissed($context, array_values($missed));
         }
 
         // Return
