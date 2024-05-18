@@ -37,6 +37,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: 8dae6cc48a78a268dcc7b747e512f85b410c9a9392ffac0734f4b17d390f1883)
 
+* [ ] Migrate to the new contract `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction`.
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
