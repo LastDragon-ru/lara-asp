@@ -160,7 +160,8 @@ class Directory {
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
-            ->in($this->path);
+            ->in($this->path)
+            ->sortByName(true);
 
         if ($patterns !== null) {
             $finder = $finder->name($patterns);
