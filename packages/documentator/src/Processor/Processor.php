@@ -161,6 +161,11 @@ class Processor {
                     continue;
                 }
 
+                // Inside?
+                if (!$root->isInside($taskDependency)) {
+                    continue;
+                }
+
                 // Yield
                 yield from $this->getFileIterator($root, $taskDependency, $stack);
 

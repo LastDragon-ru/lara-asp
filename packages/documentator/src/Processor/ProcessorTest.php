@@ -39,7 +39,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public function getExtensions(): array {
-                return ['txt'];
+                return ['txt', 'md'];
             }
 
             /**
@@ -59,6 +59,7 @@ final class ProcessorTest extends TestCase {
                     $path === 'bb.txt' => [
                         '../../b/a/ba.txt',
                         '../../c.txt',
+                        '../../../../../README.md',
                     ],
                     default            => [
                         // empty
@@ -128,8 +129,9 @@ final class ProcessorTest extends TestCase {
                     'ProcessorTest',
                     'b/b/bb.txt',
                     [
-                        '../../b/a/ba.txt' => 'b/a/ba.txt',
-                        '../../c.txt'      => 'c.txt',
+                        '../../b/a/ba.txt'         => 'b/a/ba.txt',
+                        '../../c.txt'              => 'c.txt',
+                        '../../../../../README.md' => '../../../README.md',
                     ],
                 ],
                 [
