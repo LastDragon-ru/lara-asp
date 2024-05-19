@@ -181,4 +181,8 @@ class Directory {
 
         yield from [];
     }
+
+    public function getRelativePath(self $root): string {
+        return Path::getRelativePath($root->getPath(), $this->path);
+    }
 }

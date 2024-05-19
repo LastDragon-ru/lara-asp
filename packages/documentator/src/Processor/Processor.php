@@ -53,14 +53,14 @@ class Processor {
         $root = new Directory($path, true);
 
         try {
-            foreach ($this->getIterator($root) as [$file, $dependencies]) {
+            foreach ($this->getIterator($root) as [$directory, $file, $dependencies]) {
                 $tasks = $this->tasks[$file->getExtension()] ?? [];
                 $start = microtime(true);
 
                 try {
                     foreach ($tasks as $task) {
                         try {
-                            if (!$task->run($root, $file, $dependencies[$task] ?? [])) {
+                            if (!$task->run($root, $directory, $file, $dependencies[$task] ?? [])) {
                                 throw new FileTaskFailed($root, $file, $task);
                             }
                         } catch (ProcessorError $exception) {
@@ -93,21 +93,23 @@ class Processor {
     }
 
     /**
-     * @return Iterator<array-key, array{File, WeakMap<Task, array<string, ?File>>}>
+     * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<string, ?File>>}>
      */
     protected function getIterator(Directory $root): Iterator {
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
         $processed  = [];
 
         foreach ($root->getFilesIterator($extensions) as $item) {
-            foreach ($this->getFileIterator($root, $item, [$item->getPath() => $item]) as [$file, $dependencies]) {
+            $files = $this->getFileIterator($root, $item, [$item->getPath() => $item]);
+
+            foreach ($files as [$directory, $file, $dependencies]) {
                 if (isset($processed[$file->getPath()])) {
                     continue;
                 }
 
                 $processed[$file->getPath()] = true;
 
-                yield [$file, $dependencies];
+                yield [$directory, $file, $dependencies];
             }
         }
     }
@@ -115,7 +117,7 @@ class Processor {
     /**
      * @param array<string, File> $stack
      *
-     * @return Iterator<array-key, array{File, WeakMap<Task, array<string, ?File>>}>
+     * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<string, ?File>>}>
      */
     private function getFileIterator(Directory $root, File $file, array $stack): Iterator {
         // Prepare
@@ -133,7 +135,7 @@ class Processor {
 
         foreach ($tasks as $task) {
             $taskDependencies = [];
-            $dependencies     = $task->getDependencies($directory, $file);
+            $dependencies     = $task->getDependencies($root, $directory, $file);
 
             foreach ($dependencies as $dependency) {
                 // File?
@@ -176,6 +178,6 @@ class Processor {
         }
 
         // File
-        yield [$file, $fileDependencies];
+        yield [$directory, $file, $fileDependencies];
     }
 }

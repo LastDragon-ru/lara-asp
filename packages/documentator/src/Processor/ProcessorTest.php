@@ -46,7 +46,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getDependencies(Directory $directory, File $file): array {
+            public function getDependencies(Directory $root, Directory $directory, File $file): array {
                 $path = $file->getRelativePath($directory);
 
                 return match (true) {
@@ -71,13 +71,13 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function run(Directory $directory, File $file, array $dependencies): bool {
+            public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
                 $this->processed[] = [
-                    Path::getRelativePath(__DIR__, $directory->getPath()),
+                    $directory->getRelativePath($root),
                     $file->getRelativePath($directory),
                     array_map(
-                        static function (?File $file) use ($directory): ?string {
-                            return $file?->getRelativePath($directory);
+                        static function (?File $file) use ($root): ?string {
+                            return $file?->getRelativePath($root);
                         },
                         $dependencies,
                     ),
@@ -116,18 +116,18 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'ProcessorTest',
-                    'b/a/ba.txt',
+                    'b/a',
+                    'ba.txt',
                     [],
                 ],
                 [
-                    'ProcessorTest',
+                    '',
                     'c.txt',
                     [],
                 ],
                 [
-                    'ProcessorTest',
-                    'b/b/bb.txt',
+                    'b/b',
+                    'bb.txt',
                     [
                         '../../b/a/ba.txt'         => 'b/a/ba.txt',
                         '../../c.txt'              => 'c.txt',
@@ -135,8 +135,8 @@ final class ProcessorTest extends TestCase {
                     ],
                 ],
                 [
-                    'ProcessorTest',
-                    'a/a.txt',
+                    'a',
+                    'a.txt',
                     [
                         '../b/b/bb.txt' => 'b/b/bb.txt',
                         '../c.txt'      => 'c.txt',
@@ -145,18 +145,18 @@ final class ProcessorTest extends TestCase {
                     ],
                 ],
                 [
-                    'ProcessorTest',
-                    'a/a/aa.txt',
+                    'a/a',
+                    'aa.txt',
                     [],
                 ],
                 [
-                    'ProcessorTest',
-                    'a/b/ab.txt',
+                    'a/b',
+                    'ab.txt',
                     [],
                 ],
                 [
-                    'ProcessorTest',
-                    'b/b.txt',
+                    'b',
+                    'b.txt',
                     [],
                 ],
             ],
@@ -178,7 +178,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getDependencies(Directory $directory, File $file): array {
+            public function getDependencies(Directory $root, Directory $directory, File $file): array {
                 $path = $file->getRelativePath($directory);
 
                 return match (true) {
@@ -204,7 +204,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function run(Directory $directory, File $file, array $dependencies): bool {
+            public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
                 return true;
             }
         };
@@ -245,7 +245,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getDependencies(Directory $directory, File $file): array {
+            public function getDependencies(Directory $root, Directory $directory, File $file): array {
                 $path = $file->getRelativePath($directory);
 
                 return match (true) {
@@ -262,7 +262,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function run(Directory $directory, File $file, array $dependencies): bool {
+            public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
                 return true;
             }
         };

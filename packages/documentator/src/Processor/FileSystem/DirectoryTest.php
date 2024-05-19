@@ -211,4 +211,11 @@ final class DirectoryTest extends TestCase {
             array_map($map, iterator_to_array($directory->getDirectoriesIterator(depth: 0))),
         );
     }
+
+    public function testGetRelativePath(): void {
+        $internal  = new Directory(Path::normalize(__DIR__), false);
+        $directory = new Directory(Path::join(__DIR__, '..'), true);
+
+        self::assertEquals(basename(__DIR__), $internal->getRelativePath($directory));
+    }
 }

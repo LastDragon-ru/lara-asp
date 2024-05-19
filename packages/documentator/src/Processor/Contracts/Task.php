@@ -18,12 +18,12 @@ interface Task {
      *
      * @return array<array-key, string>
      */
-    public function getDependencies(Directory $directory, File $file): array;
+    public function getDependencies(Directory $root, Directory $directory, File $file): array;
 
     /**
      * Performs action on the `$file`.
      *
      * @param array<string, ?File> $dependencies
      */
-    public function run(Directory $directory, File $file, array $dependencies): bool;
+    public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool;
 }
