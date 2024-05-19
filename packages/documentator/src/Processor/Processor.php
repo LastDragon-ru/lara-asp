@@ -49,7 +49,7 @@ class Processor {
     /**
      * @param Closure(string $path, bool $result, float $duration): void|null $listener
      */
-    public function run(string $path, ?Closure $listener = null): bool {
+    public function run(string $path, ?Closure $listener = null): void {
         $root = new Directory($path, true);
 
         try {
@@ -90,12 +90,10 @@ class Processor {
         } catch (Exception $exception) {
             throw new ProcessingFailed($root, $exception);
         }
-
-        return true;
     }
 
     /**
-     * @return Iterator<array-key, array{File, WeakMap<Task, array<string, File>>}>
+     * @return Iterator<array-key, array{File, WeakMap<Task, array<string, ?File>>}>
      */
     protected function getIterator(Directory $root): Iterator {
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
@@ -117,7 +115,7 @@ class Processor {
     /**
      * @param array<string, File> $stack
      *
-     * @return Iterator<array-key, array{File, WeakMap<Task, array<string, File>>}>
+     * @return Iterator<array-key, array{File, WeakMap<Task, array<string, ?File>>}>
      */
     private function getFileIterator(Directory $root, File $file, array $stack): Iterator {
         // Prepare
@@ -128,51 +126,51 @@ class Processor {
         }
 
         // Dependencies
-        /** @var WeakMap<Task, array<string, File>> $dependencies */
-        $dependencies = new WeakMap();
-        $tasks        = $this->tasks[$file->getExtension()] ?? [];
-        $map          = [];
+        /** @var WeakMap<Task, array<string, ?File>> $fileDependencies */
+        $fileDependencies = new WeakMap();
+        $tasks            = $this->tasks[$file->getExtension()] ?? [];
+        $map              = [];
 
         foreach ($tasks as $task) {
             $taskDependencies = [];
-            $deps             = $task->getDependencies($directory, $file);
+            $dependencies     = $task->getDependencies($directory, $file);
 
-            foreach ($deps as $path) {
+            foreach ($dependencies as $dependency) {
                 // File?
-                $dependency = $map[$path] ?? $directory->getFile($path);
-                $dependency = $map[$dependency?->getPath()] ?? $dependency;
-                $key        = $dependency?->getPath();
+                $taskDependency                = $map[$dependency] ?? $directory->getFile($dependency);
+                $taskDependency                = $map[$taskDependency?->getPath()] ?? $taskDependency;
+                $taskDependencies[$dependency] = $taskDependency;
+                $dependencyKey                 = $taskDependency?->getPath();
 
-                if ($dependency === null) {
+                if ($taskDependency === null) {
                     continue;
                 }
 
                 // Circular?
-                if (isset($stack[$key])) {
-                    throw new CircularDependency($root, $dependency, array_values($stack));
+                if (isset($stack[$dependencyKey])) {
+                    throw new CircularDependency($root, $taskDependency, array_values($stack));
                 }
 
                 // Save
-                $map[$key]               = $dependency;
-                $map[$path]              = $dependency;
-                $stack[$key]             = $dependency;
-                $taskDependencies[$path] = $dependency;
+                $map[$dependency]      = $taskDependency;
+                $map[$dependencyKey]   = $taskDependency;
+                $stack[$dependencyKey] = $taskDependency;
 
                 // Tasks?
-                if (!isset($this->tasks[$dependency->getExtension()])) {
+                if (!isset($this->tasks[$taskDependency->getExtension()])) {
                     continue;
                 }
 
                 // Yield
-                yield from $this->getFileIterator($root, $dependency, $stack);
+                yield from $this->getFileIterator($root, $taskDependency, $stack);
 
-                unset($stack[$key]);
+                unset($stack[$dependencyKey]);
             }
 
-            $dependencies[$task] = $taskDependencies;
+            $fileDependencies[$task] = $taskDependencies;
         }
 
         // File
-        yield [$file, $dependencies];
+        yield [$file, $fileDependencies];
     }
 }

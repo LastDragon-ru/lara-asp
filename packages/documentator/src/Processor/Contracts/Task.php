@@ -23,7 +23,7 @@ interface Task {
     /**
      * Performs action on the `$file`.
      *
-     * @param array<array-key, File> $dependencies
+     * @param array<string, ?File> $dependencies
      */
     public function run(Directory $directory, File $file, array $dependencies): bool;
 }

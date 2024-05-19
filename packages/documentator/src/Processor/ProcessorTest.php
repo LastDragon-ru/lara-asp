@@ -12,6 +12,7 @@ use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_map;
 use function array_unique;
 use function count;
 
@@ -29,6 +30,11 @@ final class ProcessorTest extends TestCase {
 
         $task = new class() implements Task {
             /**
+             * @var array<array-key, array{string, string, array<string, ?string>}>
+             */
+            public array $processed = [];
+
+            /**
              * @inheritDoc
              */
             #[Override]
@@ -44,10 +50,11 @@ final class ProcessorTest extends TestCase {
                 $path = $file->getRelativePath($directory);
 
                 return match (true) {
-                    $path === 'aa.txt' => [
-                        '../../b/b/bb.txt',
-                        '../../c.txt',
-                        '../../c.html',
+                    $path === 'a.txt'  => [
+                        '../b/b/bb.txt',
+                        '../c.txt',
+                        '../c.html',
+                        '404.html',
                     ],
                     $path === 'bb.txt' => [
                         '../../b/a/ba.txt',
@@ -64,6 +71,17 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public function run(Directory $directory, File $file, array $dependencies): bool {
+                $this->processed[] = [
+                    Path::getRelativePath(__DIR__, $directory->getPath()),
+                    $file->getRelativePath($directory),
+                    array_map(
+                        static function (?File $file) use ($directory): ?string {
+                            return $file?->getRelativePath($directory);
+                        },
+                        $dependencies,
+                    ),
+                ];
+
                 return true;
             }
         };
@@ -83,8 +101,8 @@ final class ProcessorTest extends TestCase {
                 'b/a/ba.txt',
                 'c.txt',
                 'b/b/bb.txt',
-                'a/a/aa.txt',
                 'a/a.txt',
+                'a/a/aa.txt',
                 'a/b/ab.txt',
                 'b/b.txt',
             ],
@@ -93,6 +111,54 @@ final class ProcessorTest extends TestCase {
         self::assertCount(
             count(array_unique($events)),
             $events,
+        );
+        self::assertEquals(
+            [
+                [
+                    'ProcessorTest',
+                    'b/a/ba.txt',
+                    [],
+                ],
+                [
+                    'ProcessorTest',
+                    'c.txt',
+                    [],
+                ],
+                [
+                    'ProcessorTest',
+                    'b/b/bb.txt',
+                    [
+                        '../../b/a/ba.txt' => 'b/a/ba.txt',
+                        '../../c.txt'      => 'c.txt',
+                    ],
+                ],
+                [
+                    'ProcessorTest',
+                    'a/a.txt',
+                    [
+                        '../b/b/bb.txt' => 'b/b/bb.txt',
+                        '../c.txt'      => 'c.txt',
+                        '../c.html'     => 'c.html',
+                        '404.html'      => null,
+                    ],
+                ],
+                [
+                    'ProcessorTest',
+                    'a/a/aa.txt',
+                    [],
+                ],
+                [
+                    'ProcessorTest',
+                    'a/b/ab.txt',
+                    [],
+                ],
+                [
+                    'ProcessorTest',
+                    'b/b.txt',
+                    [],
+                ],
+            ],
+            $task->processed,
         );
     }
 
