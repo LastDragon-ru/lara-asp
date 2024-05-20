@@ -23,6 +23,7 @@ final class FileTest extends TestCase {
         $file = new File($path, false);
 
         self::assertEquals($path, $file->getPath());
+        self::assertEquals("{$path}", $file->getPath());
         self::assertEquals('php', $file->getExtension());
         self::assertEquals('FileTest.php', $file->getName());
     }

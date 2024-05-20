@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use Override;
+use Stringable;
 use WeakMap;
 
 use function file_get_contents;
@@ -16,7 +18,7 @@ use function sprintf;
 use const PATHINFO_BASENAME;
 use const PATHINFO_EXTENSION;
 
-class File {
+class File implements Stringable {
     /**
      * @var ?WeakMap<object, mixed>
      */
@@ -113,5 +115,10 @@ class File {
 
     public function getRelativePath(Directory $root): string {
         return Path::getRelativePath($root->getPath(), $this->path);
+    }
+
+    #[Override]
+    public function __toString(): string {
+        return $this->getPath();
     }
 }

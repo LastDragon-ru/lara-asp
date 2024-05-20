@@ -6,6 +6,8 @@ use Closure;
 use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use Override;
+use Stringable;
 use Symfony\Component\Finder\Finder;
 
 use function is_dir;
@@ -19,7 +21,7 @@ use function str_starts_with;
 use const PATHINFO_BASENAME;
 use const PATHINFO_DIRNAME;
 
-class Directory {
+class Directory implements Stringable {
     public function __construct(
         private readonly string $path,
         private readonly bool $writable,
@@ -184,5 +186,10 @@ class Directory {
 
     public function getRelativePath(self $root): string {
         return Path::getRelativePath($root->getPath(), $this->path);
+    }
+
+    #[Override]
+    public function __toString(): string {
+        return $this->getPath();
     }
 }

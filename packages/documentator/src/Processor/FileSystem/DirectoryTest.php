@@ -18,10 +18,11 @@ use function sprintf;
 #[CoversClass(Directory::class)]
 final class DirectoryTest extends TestCase {
     public function testConstruct(): void {
-        $path = Path::normalize(__DIR__);
-        $file = new Directory($path, false);
+        $path      = Path::normalize(__DIR__);
+        $directory = new Directory($path, false);
 
-        self::assertEquals($path, $file->getPath());
+        self::assertEquals($path, $directory->getPath());
+        self::assertEquals("{$path}", $directory->getPath());
     }
 
     public function testConstructNotNormalized(): void {
