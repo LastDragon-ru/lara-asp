@@ -149,6 +149,95 @@ final class PreprocessorTest extends TestCase {
         );
     }
 
+    public function testRun(): void {
+        $actual = null;
+        $root   = Mockery::mock(Directory::class);
+        $file   = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getContent')
+            ->atLeast()
+            ->once()
+            ->andReturn(static::MARKDOWN);
+        $file
+            ->shouldReceive('setContent')
+            ->once()
+            ->andReturnUsing(
+                static function (string $content) use ($file, &$actual): File {
+                    $actual = $content;
+
+                    return $file;
+                },
+            );
+
+        $preprocessor = $this->app()->make(Preprocessor::class)
+            ->addInstruction(new PreprocessorTest__EmptyInstruction())
+            ->addInstruction(new PreprocessorTest__TestInstruction());
+
+        self::assertTrue($preprocessor->run($root, $root, $file, []));
+        self::assertEquals(
+            <<<'MARKDOWN'
+            Bla bla bla [processable]: ./path/to/file should be ignored.
+
+            [unknown]: ./path/to/file (should not be parsed)
+
+            [test:empty]: ./path/to/file
+            [//]: # (start: 88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62)
+            [//]: # (warning: Generated automatically. Do not edit.)
+            [//]: # (empty)
+            [//]: # (end: 88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62)
+
+            [test:instruction]: ./path/to/file
+            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            result(./path/to/file/a, {"a":"a","b":[]})
+
+            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+
+            [test:instruction]: <./path/to/file>
+            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            result(./path/to/file/a, {"a":"a","b":[]})
+
+            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+
+            [test:instruction]: ./path/to/file
+            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            result(./path/to/file/a, {"a":"a","b":[]})
+
+            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+
+            [test:instruction]: ./path/to/file
+            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            result(./path/to/file/a, {"a":"a","b":[]})
+
+            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+
+            [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
+            [//]: # (start: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            result(./path/to/file/parametrized/aa, {"a":"aa","b":{"a":"a","b":"b"}})
+
+            [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+
+            [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
+            [//]: # (start: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            result(./path/to/file/parametrized/aa, {"a":"aa","b":{"a":"a","b":"b"}})
+
+            [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            MARKDOWN,
+            $actual,
+        );
+    }
+
     public function testProcess(): void {
         $content = static::MARKDOWN;
 

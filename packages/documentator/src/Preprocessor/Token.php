@@ -15,7 +15,7 @@ class Token {
         /**
          * @var Instruction<TTarget, TParameters>
          */
-        public readonly Instruction $instance,
+        public readonly Instruction $instruction,
         public readonly Context $context,
         /**
          * @var TTarget

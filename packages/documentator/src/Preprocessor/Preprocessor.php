@@ -33,13 +33,16 @@ use function is_array;
 use function json_decode;
 use function json_encode;
 use function ksort;
+use function mb_strlen;
 use function mb_substr;
 use function preg_match_all;
 use function preg_replace_callback;
 use function rawurldecode;
 use function str_ends_with;
 use function str_starts_with;
+use function strtr;
 use function trim;
+use function uksort;
 
 use const JSON_THROW_ON_ERROR;
 use const PREG_SET_ORDER;
@@ -169,8 +172,59 @@ class Preprocessor implements Task {
      */
     #[Override]
     public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
-        // TODO: Implement run() method.
-        return false;
+        // Parse
+        // TODO: Check if Context contains tokens
+        $parsed = $this->parse($root, $directory, $file);
+
+        // Prepare
+        $replace = [];
+        $warning = static::Warning;
+
+        foreach ($parsed->tokens as $hash => $token) {
+            try {
+                $content = $token->instruction->process($token->context, $token->target, $token->parameters);
+                $content = trim($content);
+            } catch (PreprocessorError $exception) {
+                throw $exception;
+            } catch (Exception $exception) {
+                throw new PreprocessingFailed($exception);
+            }
+
+            foreach ($token->matches as $match => $expression) {
+                $prefix          = <<<RESULT
+                    {$expression}
+                    [//]: # (start: {$hash})
+                    [//]: # (warning: {$warning})
+                    RESULT;
+                $suffix          = <<<RESULT
+                    [//]: # (end: {$hash})
+                    RESULT;
+                $replace[$match] = match (true) {
+                    $content !== '' => <<<RESULT
+                        {$prefix}
+
+                        {$content}
+
+                        {$suffix}
+                        RESULT,
+                    default         => <<<RESULT
+                        {$prefix}
+                        [//]: # (empty)
+                        {$suffix}
+                        RESULT,
+                };
+            }
+        }
+
+        // Sort
+        uksort($replace, static function (string $a, string $b): int {
+            return mb_strlen($b) <=> mb_strlen($a);
+        });
+
+        // Replace
+        $file->setContent(strtr($file->getContent(), $replace));
+
+        return true;
     }
 
     protected function parse(Directory $root, Directory $directory, File $file): TokenList {
