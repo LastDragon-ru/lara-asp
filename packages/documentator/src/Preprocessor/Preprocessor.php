@@ -19,8 +19,11 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile\Ins
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use Override;
 
 use function array_column;
 use function assert;
@@ -31,6 +34,7 @@ use function json_decode;
 use function json_encode;
 use function ksort;
 use function mb_substr;
+use function preg_match_all;
 use function preg_replace_callback;
 use function rawurldecode;
 use function str_ends_with;
@@ -38,6 +42,7 @@ use function str_starts_with;
 use function trim;
 
 use const JSON_THROW_ON_ERROR;
+use const PREG_SET_ORDER;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
@@ -69,7 +74,7 @@ use const PREG_UNMATCHED_AS_NULL;
  *
  * @see  Preprocess
  */
-class Preprocessor {
+class Preprocessor implements Task {
     protected const Warning = 'Generated automatically. Do not edit.';
     protected const Regexp  = <<<'REGEXP'
         /^
@@ -142,6 +147,95 @@ class Preprocessor {
         return $this->instructions[$name][1];
     }
 
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function getExtensions(): array {
+        return ['md'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function getDependencies(Directory $root, Directory $directory, File $file): array {
+        // TODO: Implement getDependencies() method.
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
+        // TODO: Implement run() method.
+        return false;
+    }
+
+    protected function parse(Directory $root, Directory $directory, File $file): TokenList {
+        // Extract all possible instructions
+        $tokens  = [];
+        $matches = [];
+
+        if (!preg_match_all(static::Regexp, $file->getContent(), $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL)) {
+            return new TokenList($tokens);
+        }
+
+        // Parse each of them
+        foreach ($matches as $match) {
+            // Instruction?
+            $name        = (string) $match['instruction'];
+            $instruction = $this->getInstruction($name);
+
+            if (!$instruction) {
+                continue;
+            }
+
+            // Hash
+            $parameters = $instruction::getParameters();
+            $target     = (string) $match['target'];
+            $target     = str_starts_with($target, '<') && str_ends_with($target, '>')
+                ? mb_substr($target, 1, -1)
+                : rawurldecode($target);
+            $params     = $parameters && $match['parameters']
+                ? $this->getParametersJson($match['parameters'])
+                : '{}';
+            $hash       = $this->getHash("{$name}({$target}, {$params})");
+
+            // Parsed?
+            if (isset($tokens[$hash])) {
+                $tokens[$hash]->matches[$match[0]] = (string) $match['expression'];
+
+                continue;
+            }
+
+            // Parse
+            $context    = new Context($root, $directory, $file, $target, $match['parameters']);
+            $parameters = $parameters
+                ? $this->serializer->deserialize($parameters, $params, 'json')
+                : null;
+            $resolver   = $this->container->getInstance()->make($instruction::getResolver());
+            $resolved   = $resolver->resolve($context, $parameters);
+
+            $tokens[$hash] = new Token(
+                $instruction,
+                $context,
+                $resolved,
+                $parameters,
+                [
+                    $match[0] => (string) $match['expression'],
+                ],
+            );
+        }
+
+        // Return
+        return new TokenList($tokens);
+    }
+
+    /**
+     * @deprecated ! remove
+     */
     public function process(string $path, string $string): string {
         $path   = Path::normalize($path);
         $root   = new Directory(dirname($path), true);
