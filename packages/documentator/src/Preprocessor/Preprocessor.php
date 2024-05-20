@@ -6,7 +6,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
@@ -26,8 +25,6 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 
 use function array_column;
-use function assert;
-use function dirname;
 use function hash;
 use function is_array;
 use function json_decode;
@@ -36,7 +33,6 @@ use function ksort;
 use function mb_strlen;
 use function mb_substr;
 use function preg_match_all;
-use function preg_replace_callback;
 use function rawurldecode;
 use function str_ends_with;
 use function str_starts_with;
@@ -285,96 +281,6 @@ class Preprocessor implements Task {
 
         // Return
         return new TokenList($tokens);
-    }
-
-    /**
-     * @deprecated ! remove
-     */
-    public function process(string $path, string $string): string {
-        $path   = Path::normalize($path);
-        $root   = new Directory(dirname($path), true);
-        $file   = $root->getFile($path);
-        $cache  = [];
-        $result = null;
-
-        assert($file !== null);
-
-        try {
-            $result = preg_replace_callback(
-                pattern : static::Regexp,
-                callback: function (array $matches) use (&$cache, $root, $file): string {
-                    // Instruction?
-                    $instruction = $this->getInstruction($matches['instruction']);
-
-                    if (!$instruction) {
-                        return $matches['expression'];
-                    }
-
-                    // Hash
-                    $target = $matches['target'];
-                    $target = str_starts_with($target, '<') && str_ends_with($target, '>')
-                        ? mb_substr($target, 1, -1)
-                        : rawurldecode($target);
-                    $json   = $this->getParametersJson($matches['parameters'] ?: '{}');
-                    $hash   = $this->getHash("{$matches['instruction']}({$target}, {$json})");
-
-                    // Content
-                    $content = $cache[$hash] ?? null;
-
-                    if ($content === null) {
-                        $params       = $instruction::getParameters();
-                        $params       = $params ? $this->serializer->deserialize($params, $json, 'json') : null;
-                        $context      = new Context($root, $root, $file, $target, $matches['parameters']);
-                        $resolver     = $this->container->getInstance()->make($instruction::getResolver());
-                        $resolved     = $resolver->resolve($context, $params);
-                        $content      = $instruction->process($context, $resolved, $params);
-                        $content      = trim($content);
-                        $cache[$hash] = $content;
-                    }
-
-                    // Return
-                    $warning = static::Warning;
-                    $prefix  = <<<RESULT
-                    {$matches['expression']}
-                    [//]: # (start: {$hash})
-                    [//]: # (warning: {$warning})
-                    RESULT;
-                    $suffix  = <<<RESULT
-                    [//]: # (end: {$hash})
-                    RESULT;
-
-                    if ($content) {
-                        $content = <<<RESULT
-                        {$prefix}
-
-                        {$content}
-
-                        {$suffix}
-                        RESULT;
-                    } else {
-                        $content = <<<RESULT
-                        {$prefix}
-                        [//]: # (empty)
-                        {$suffix}
-                        RESULT;
-                    }
-
-                    return $content;
-                },
-                subject : $string,
-                flags   : PREG_UNMATCHED_AS_NULL,
-            );
-        } catch (PreprocessorError $exception) {
-            throw $exception;
-        } catch (Exception $exception) {
-            throw new PreprocessingFailed($exception);
-        }
-
-        if ($result === null) {
-            throw new PreprocessingFailed();
-        }
-
-        return $result;
     }
 
     protected function getHash(string $identifier): string {

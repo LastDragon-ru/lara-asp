@@ -4,18 +4,20 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Console\Terminal;
 
 use function getcwd;
 use function gettype;
@@ -23,7 +25,11 @@ use function implode;
 use function is_a;
 use function is_scalar;
 use function ksort;
+use function mb_strlen;
+use function microtime;
+use function min;
 use function rtrim;
+use function str_repeat;
 use function strtr;
 use function trim;
 use function var_export;
@@ -64,31 +70,29 @@ class Preprocess extends Command {
         parent::__construct();
     }
 
-    public function __invoke(Filesystem $filesystem): void {
-        $cwd    = getcwd();
-        $path   = Cast::toString($this->argument('path') ?? $cwd);
-        $finder = Finder::create()
-            ->ignoreVCSIgnored(true)
-            ->in($path)
-            ->exclude('vendor')
-            ->exclude('node_modules')
-            ->files()
-            ->name('*.md');
+    public function __invoke(Formatter $formatter): void {
+        $cwd   = getcwd();
+        $path  = Cast::toString($this->argument('path') ?? $cwd);
+        $path  = Path::normalize($path);
+        $width = min((new Terminal())->getWidth(), 150);
+        $start = microtime(true);
 
-        foreach ($finder as $file) {
-            $this->components->task(
-                $file->getPathname(),
-                function () use ($filesystem, $file): void {
-                    $path    = $file->getPathname();
-                    $content = $file->getContents();
-                    $result  = $this->preprocessor->process($path, $content);
+        (new Processor())
+            ->task($this->preprocessor)
+            ->run($path, function (string $path, bool $success, float $duration) use ($formatter, $width): void {
+                $duration = $formatter->duration($duration);
+                $result   = $success ? 'DONE' : 'FAIL';
+                $length   = $width - (mb_strlen($path) + mb_strlen($duration) + mb_strlen($result) + 5);
+                $line     = $path
+                    .' '.($length > 0 ? '<fg=gray>'.str_repeat('.', $length).'</>' : '')
+                    .' '."<fg=gray>{$duration}</>"
+                    .' '.($success ? "<fg=green;options=bold>{$result}</>" : "<fg=red;options=bold>{$result}</>");
 
-                    if ($content !== $result) {
-                        $filesystem->dumpFile($path, $result);
-                    }
-                },
-            );
-        }
+                $this->output->writeln($line);
+            });
+
+        $this->output->newLine();
+        $this->output->writeln("<fg=green;options=bold>OK ({$formatter->duration(microtime(true) - $start)})</>");
     }
 
     #[Override]
