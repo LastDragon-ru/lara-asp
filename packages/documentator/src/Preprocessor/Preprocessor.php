@@ -19,9 +19,12 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile\Ins
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
 use function array_column;
+use function assert;
+use function dirname;
 use function hash;
 use function is_array;
 use function json_decode;
@@ -141,13 +144,17 @@ class Preprocessor {
 
     public function process(string $path, string $string): string {
         $path   = Path::normalize($path);
+        $root   = new Directory(dirname($path), true);
+        $file   = $root->getFile($path);
         $cache  = [];
         $result = null;
+
+        assert($file !== null);
 
         try {
             $result = preg_replace_callback(
                 pattern : static::Regexp,
-                callback: function (array $matches) use (&$cache, $path): string {
+                callback: function (array $matches) use (&$cache, $root, $file): string {
                     // Instruction?
                     $instruction = $this->getInstruction($matches['instruction']);
 
@@ -169,7 +176,7 @@ class Preprocessor {
                     if ($content === null) {
                         $params       = $instruction::getParameters();
                         $params       = $params ? $this->serializer->deserialize($params, $json, 'json') : null;
-                        $context      = new Context($path, $target, $matches['parameters']);
+                        $context      = new Context($root, $root, $file, $target, $matches['parameters']);
                         $resolver     = $this->container->getInstance()->make($instruction::getResolver());
                         $resolved     = $resolver->resolve($context, $params);
                         $content      = $instruction->process($context, $resolved, $params);

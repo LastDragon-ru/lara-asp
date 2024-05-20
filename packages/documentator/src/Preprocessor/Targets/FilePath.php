@@ -2,15 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use Override;
-
-use function dirname;
-use function is_file;
-use function is_readable;
 
 /**
  * File path.
@@ -24,12 +19,12 @@ class FilePath implements Resolver {
 
     #[Override]
     public function resolve(Context $context, mixed $parameters): string {
-        $path = Path::getPath(dirname($context->path), $context->target);
+        $file = $context->directory->getFile($context->target);
 
-        if (!is_file($path) || !is_readable($path)) {
+        if (!$file) {
             throw new TargetIsNotFile($context);
         }
 
-        return $path;
+        return $file->getPath();
     }
 }

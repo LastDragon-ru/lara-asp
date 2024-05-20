@@ -18,7 +18,7 @@ class PackageReadmeIsMissing extends InstructionFailed {
             sprintf(
                 "The package `%s` doesn't contain readme (in `%s`).",
                 $this->package,
-                $context->path,
+                $context->file->getRelativePath($context->root),
             ),
             $previous,
         );

@@ -63,7 +63,7 @@ class Instruction implements InstructionContract {
         // Prepare
         $content = $target;
         $target  = $context->target;
-        $path    = $context->path;
+        $path    = $context->file->getPath();
 
         // Process
         $language = $this->getLanguage($path, $target);

@@ -2,14 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
 use Override;
-
-use function dirname;
-use function is_dir;
 
 /**
  * Directory path.
@@ -23,12 +19,12 @@ class DirectoryPath implements Resolver {
 
     #[Override]
     public function resolve(Context $context, mixed $parameters): string {
-        $path = Path::getPath(dirname($context->path), $context->target);
+        $directory = $context->directory->getDirectory($context->target);
 
-        if (!is_dir($path)) {
+        if (!$directory) {
             throw new TargetIsNotDirectory($context);
         }
 
-        return $path;
+        return $directory->getPath();
     }
 }

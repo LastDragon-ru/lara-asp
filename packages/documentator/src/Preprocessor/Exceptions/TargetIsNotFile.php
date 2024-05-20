@@ -14,7 +14,7 @@ class TargetIsNotFile extends InstructionFailed {
             sprintf(
                 'The `%s` is not a file (in `%s`).',
                 $context->target,
-                $context->path,
+                $context->file->getRelativePath($context->root),
             ),
             $previous,
         );

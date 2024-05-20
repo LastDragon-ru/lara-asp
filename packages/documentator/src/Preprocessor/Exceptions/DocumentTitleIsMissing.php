@@ -18,7 +18,7 @@ class DocumentTitleIsMissing extends InstructionFailed {
             sprintf(
                 "The `%s` doesn't contain `# Header` (in `%s`).",
                 $this->document,
-                $context->path,
+                $context->file->getRelativePath($context->root),
             ),
             $previous,
         );

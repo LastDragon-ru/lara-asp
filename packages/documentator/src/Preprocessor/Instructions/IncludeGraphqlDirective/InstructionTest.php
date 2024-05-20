@@ -3,9 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective;
 
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
@@ -41,8 +44,10 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
+        $root     = Mockery::mock(Directory::class);
+        $file     = Mockery::mock(File::class);
+        $context  = new Context($root, $root, $file, '@test', null);
         $instance = $this->app()->make(Instruction::class);
-        $context  = new Context('path/to/file.md', '@test', null);
         $actual   = $instance->process($context, $context->target, null);
 
         self::assertEquals(
@@ -58,9 +63,10 @@ final class InstructionTest extends TestCase {
     public function testProcessNoPrinter(): void {
         unset($this->app()[PrinterContract::class]);
 
-        $path     = 'path/to/file.md';
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($path, $target, null);
+        $context  = new Context($root, $root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -84,9 +90,10 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $path     = 'path/to/file.md';
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($path, $target, null);
+        $context  = new Context($root, $root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -101,9 +108,10 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver(null);
         });
 
-        $path     = 'path/to/file.md';
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($path, $target, null);
+        $context  = new Context($root, $root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

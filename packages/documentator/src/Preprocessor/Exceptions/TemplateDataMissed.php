@@ -13,7 +13,7 @@ class TemplateDataMissed extends InstructionFailed {
             $context,
             sprintf(
                 'The `data` is required for `%s`.',
-                $context->path,
+                $context->file->getRelativePath($context->root),
             ),
             $previous,
         );

@@ -5,10 +5,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function basename;
 use function dirname;
 use function implode;
 use function range;
@@ -21,9 +22,10 @@ use function trim;
 final class InstructionTest extends TestCase {
     public function testProcessNoRun(): void {
         $path     = self::getTestData()->path('~example.md');
-        $file     = basename(self::getTestData()->path('~example.md'));
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~example.md');
         $expected = trim($content);
         $factory  = $this->override(Factory::class, function (): Factory {
@@ -48,9 +50,10 @@ final class InstructionTest extends TestCase {
 
     public function testProcess(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = basename(self::getTestData()->path('~runnable.md'));
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -90,9 +93,10 @@ final class InstructionTest extends TestCase {
 
     public function testProcessLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = self::getTestData()->path('~runnable.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $root, $file, $file->getPath(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -134,9 +138,10 @@ final class InstructionTest extends TestCase {
 
     public function testProcessMarkdown(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = basename(self::getTestData()->path('~runnable.md'));
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -172,9 +177,10 @@ final class InstructionTest extends TestCase {
 
     public function testProcessMarkdownLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = self::getTestData()->path('~runnable.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $root, $file, $file->getPath(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);

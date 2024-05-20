@@ -12,8 +12,6 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
 use Symfony\Component\Finder\Finder;
 
-use function basename;
-use function dirname;
 use function file_get_contents;
 use function strcmp;
 use function usort;
@@ -51,8 +49,8 @@ class Instruction implements InstructionContract {
     public function process(Context $context, mixed $target, mixed $parameters): string {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
-        $path      = basename($context->path);
-        $base      = dirname($context->path);
+        $path      = $context->file->getName();
+        $base      = $context->directory->getPath();
         $root      = $target;
         $target    = Path::normalize($context->target);
         $finder    = Finder::create()->in($root)->name('*.md');

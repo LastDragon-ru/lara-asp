@@ -5,10 +5,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirectory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
+use function sprintf;
 
 /**
  * @internal
@@ -16,40 +19,50 @@ use function basename;
 #[CoversClass(DirectoryPath::class)]
 final class DirectoryPathTest extends TestCase {
     public function testResolveRelative(): void {
-        $dir      = __DIR__;
-        $target   = basename($dir);
+        $dir      = new Directory(Path::join(__DIR__, '..'), false);
+        $root     = new Directory(Path::join(__DIR__, '../..'), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $params   = null;
-        $context  = new Context($dir, $target, null);
+        $context  = new Context($root, $dir, $file, basename(__DIR__), null);
         $resolver = new DirectoryPath();
 
         self::assertSame(
-            Path::normalize($dir),
+            $dir->getDirectory(__DIR__)?->getPath(),
             $resolver->resolve($context, $params),
         );
     }
 
     public function testResolveAbsolute(): void {
-        $dir      = __DIR__;
-        $target   = $dir;
+        $dir      = new Directory(Path::join(__DIR__, '..'), false);
+        $root     = new Directory(Path::join(__DIR__, '../..'), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $params   = null;
-        $context  = new Context($dir, $target, null);
+        $context  = new Context($root, $dir, $file, $dir->getPath(), null);
         $resolver = new DirectoryPath();
 
         self::assertSame(
-            Path::normalize($dir),
+            $dir->getPath(),
             $resolver->resolve($context, $params),
         );
     }
 
     public function testResolveNotADirectory(): void {
-        $dir      = __DIR__;
+        $dir      = new Directory(Path::join(__DIR__, '..'), false);
+        $root     = new Directory(Path::join(__DIR__, '../..'), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = 'not/a/directory';
         $params   = null;
-        $context  = new Context($dir, $target, null);
+        $context  = new Context($root, $dir, $file, $target, null);
         $resolver = new DirectoryPath();
 
         self::expectException(TargetIsNotDirectory::class);
-        self::expectExceptionMessage("The `{$target}` is not a directory (in `{$dir}`).");
+        self::expectExceptionMessage(
+            sprintf(
+                'The `%s` is not a directory (in `%s`).',
+                $target,
+                $context->file->getRelativePath($context->root),
+            ),
+        );
 
         $resolver->resolve($context, $params);
     }

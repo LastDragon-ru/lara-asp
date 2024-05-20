@@ -2,16 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function basename;
+use function dirname;
 
 /**
  * @internal
@@ -22,10 +26,12 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderProcess')]
     public function testProcess(string $expected, string $template): void {
-        $path     = self::getTestData()->file('Document.md')->getPathname();
+        $path     = self::getTestData()->path('Document.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = basename(self::getTestData()->path('/packages'));
         $params   = new Parameters(template: $template);
-        $context  = new Context($path, $target, '');
+        $context  = new Context($root, $root, $file, $target, '');
         $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($context, $resolved, $params);
@@ -41,10 +47,12 @@ final class InstructionTest extends TestCase {
     }
 
     public function testProcessNotAPackage(): void {
-        $path     = self::getTestData()->file('Document.md')->getPathname();
+        $path     = self::getTestData()->path('Document.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = basename(self::getTestData()->path('/invalid'));
         $params   = new Parameters();
-        $context  = new Context($path, $target, '');
+        $context  = new Context($root, $root, $file, $target, '');
         $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
 
@@ -56,10 +64,12 @@ final class InstructionTest extends TestCase {
     }
 
     public function testProcessNoReadme(): void {
-        $path     = self::getTestData()->file('Document.md')->getPathname();
+        $path     = self::getTestData()->path('Document.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = basename(self::getTestData()->path('/no readme'));
         $params   = new Parameters();
-        $context  = new Context($path, $target, '');
+        $context  = new Context($root, $root, $file, $target, '');
         $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
 
@@ -71,10 +81,12 @@ final class InstructionTest extends TestCase {
     }
 
     public function testProcessNoTitle(): void {
-        $path     = self::getTestData()->file('Document.md')->getPathname();
+        $path     = self::getTestData()->path('Document.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = basename(self::getTestData()->path('/no title'));
         $params   = new Parameters();
-        $context  = new Context($path, $target, '');
+        $context  = new Context($root, $root, $file, $target, '');
         $resolved = (new DirectoryPath())->resolve($context, null);
         $instance = $this->app()->make(Instruction::class);
 

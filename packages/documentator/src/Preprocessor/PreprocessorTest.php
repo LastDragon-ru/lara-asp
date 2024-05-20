@@ -114,7 +114,7 @@ final class PreprocessorTest extends TestCase {
 
             [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
             MARKDOWN,
-            $preprocessor->process('path', $content),
+            $preprocessor->process(__FILE__, $content),
         );
     }
 }

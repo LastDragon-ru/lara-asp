@@ -14,7 +14,7 @@ class TargetIsNotDirectory extends InstructionFailed {
             sprintf(
                 'The `%s` is not a directory (in `%s`).',
                 $context->target,
-                $context->path,
+                $context->file->getRelativePath($context->root),
             ),
             $previous,
         );
