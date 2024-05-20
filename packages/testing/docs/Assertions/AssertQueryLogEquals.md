@@ -3,7 +3,7 @@
 Asserts that `QueryLog` equals `QueryLog`.
 
 [include:example]: ./AssertQueryLogEqualsTest.php
-[//]: # (start: 709fad07f8fc6f28709758f6f33f1a1773cf0652c99028faa15f621efa619a93)
+[//]: # (start: a49e0d438a4dffcc57ee95b71e064d88cc63d12932af4825af3a26db59bce0a3)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -74,4 +74,4 @@ final class AssertQueryLogEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: 709fad07f8fc6f28709758f6f33f1a1773cf0652c99028faa15f621efa619a93)
+[//]: # (end: a49e0d438a4dffcc57ee95b71e064d88cc63d12932af4825af3a26db59bce0a3)

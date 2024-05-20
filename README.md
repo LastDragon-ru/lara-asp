@@ -3,7 +3,7 @@
 The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
 [include:exec]: <./dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 5a6479e01ca04242d936b5543af76210a1af5db5468e2f480f167a2a046b62db)
+[//]: # (start: cf085248b2284f354e6966f146d7c1c32821f3031a0316e73df3a80e038e704f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -25,7 +25,7 @@ The set provides best practices to make development more fun and classes/service
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 5a6479e01ca04242d936b5543af76210a1af5db5468e2f480f167a2a046b62db)
+[//]: # (end: cf085248b2284f354e6966f146d7c1c32821f3031a0316e73df3a80e038e704f)
 
 # Installation
 
@@ -42,7 +42,7 @@ composer require lastdragon-ru/lara-asp-<package>
 |:--:|---------------------------------|
 
 [include:package-list]: ./packages
-[//]: # (start: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
+[//]: # (start: 2d5a58effc8f1949a8d20851019e2cefc9eeb2ea45725bf2b8147fee917f0b0c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## (Laravel) Core
@@ -109,17 +109,17 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 [Read more](<packages/graphql-printer/README.md>).
 
-[//]: # (end: df3ee6374fabefbdeb79b26164b3f2ef88f6ed94646bb5d44751ea6da758de19)
+[//]: # (end: 2d5a58effc8f1949a8d20851019e2cefc9eeb2ea45725bf2b8147fee917f0b0c)
 
 [include:file]: ./docs/Shared/Upgrading.md
-[//]: # (start: cdb14a15bab8920d27c60204790e96bf814a9d780f6a55d5e93422db9bf56f64)
+[//]: # (start: cbfccea895cb6cddbed8d1e403e510b43171341972c83ab9373a1bc25f6c2e65)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: cdb14a15bab8920d27c60204790e96bf814a9d780f6a55d5e93422db9bf56f64)
+[//]: # (end: cbfccea895cb6cddbed8d1e403e510b43171341972c83ab9373a1bc25f6c2e65)
 
 # Development
 
@@ -129,7 +129,7 @@ Please follow [Upgrade Guide](UPGRADE.md).
 4. Enjoy
 
 [include:file]: ./docs/Legend.md
-[//]: # (start: 68b5a2c9955bc3698c6033103ab34e32d67edfcff7b726f187662b5ce2e15a67)
+[//]: # (start: 9a1322b3ab69b4443131311847c0af0cf6f86c6024c1436b67733d42ba3e2e4a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Legend
@@ -148,4 +148,4 @@ Please follow [Upgrade Guide](UPGRADE.md).
 |  🆆  | CI    | Running on Windows                                               |
 |  🅼  | CI    | Running on Mac OS X                                              |
 
-[//]: # (end: 68b5a2c9955bc3698c6033103ab34e32d67edfcff7b726f187662b5ce2e15a67)
+[//]: # (end: 9a1322b3ab69b4443131311847c0af0cf6f86c6024c1436b67733d42ba3e2e4a)

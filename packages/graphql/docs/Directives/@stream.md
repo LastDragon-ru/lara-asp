@@ -7,7 +7,7 @@ Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform
 > The directive is experimental. The true cursor pagination is not implemented yet, the limit/offset is used internally. Any feedback would be greatly appreciated.
 
 [include:graphql-directive]: @stream
-[//]: # (start: c6aae43244e8267f05923095595267c57bd8ff8b55fd9ff5cf802851fbf5c3de)
+[//]: # (start: 40989476b2e056faf0b02b1ab9461df23fa334344e79278fa983f269f3fd0363)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -69,7 +69,7 @@ input StreamBuilder {
 }
 ```
 
-[//]: # (end: c6aae43244e8267f05923095595267c57bd8ff8b55fd9ff5cf802851fbf5c3de)
+[//]: # (end: 40989476b2e056faf0b02b1ab9461df23fa334344e79278fa983f269f3fd0363)
 
 ## Motivation
 
@@ -176,11 +176,11 @@ Keep in mind:
 * Some engines may perform counting (seems actual for `Database` only)
 
 [include:file]: ../../../../docs/Shared/Links.md
-[//]: # (start: a1d73b35e4ad53ef7c5e723c17abd87804cf0221167e796513476212788cd826)
+[//]: # (start: d7f8daa25a800052b6112dd44af19f2413af63e989683a3dc13efa8a95084aba)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
 
 [pkg:graphql#@sortBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
 
-[//]: # (end: a1d73b35e4ad53ef7c5e723c17abd87804cf0221167e796513476212788cd826)
+[//]: # (end: d7f8daa25a800052b6112dd44af19f2413af63e989683a3dc13efa8a95084aba)
