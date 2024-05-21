@@ -131,6 +131,7 @@ class Processor {
         // Dependencies
         /** @var WeakMap<Task, array<array-key, ?File>> $fileDependencies */
         $fileDependencies = new WeakMap();
+        $processed        = [];
         $tasks            = $this->tasks[$file->getExtension()] ?? [];
         $map              = [];
 
@@ -145,7 +146,7 @@ class Processor {
                 $taskDependency         = $resolved[$dependencyKey] ?? $map[$dependencyKey] ?? $taskDependency;
                 $taskDependencies[$key] = $taskDependency;
 
-                if ($taskDependency === null) {
+                if ($taskDependency === null || isset($processed[$dependencyKey])) {
                     continue;
                 }
 
@@ -155,10 +156,11 @@ class Processor {
                 }
 
                 // Save
-                $map[$dependency]         = $taskDependency;
-                $map[$dependencyKey]      = $taskDependency;
-                $stack[$dependencyKey]    = $taskDependency;
-                $resolved[$dependencyKey] = $taskDependency;
+                $map[$dependency]          = $taskDependency;
+                $map[$dependencyKey]       = $taskDependency;
+                $stack[$dependencyKey]     = $taskDependency;
+                $resolved[$dependencyKey]  = $taskDependency;
+                $processed[$dependencyKey] = true;
 
                 // Tasks?
                 if (!isset($this->tasks[$taskDependency->getExtension()])) {
