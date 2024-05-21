@@ -116,10 +116,11 @@ class Processor {
 
     /**
      * @param array<string, File> $stack
+     * @param array<string, File> $resolved
      *
      * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<string, ?File>>}>
      */
-    private function getFileIterator(Directory $root, File $file, array $stack): Iterator {
+    private function getFileIterator(Directory $root, File $file, array $stack, array $resolved = []): Iterator {
         // Prepare
         $directory = $root->getDirectory($file);
 
@@ -140,9 +141,9 @@ class Processor {
             foreach ($dependencies as $dependency) {
                 // File?
                 $taskDependency                = $map[$dependency] ?? $directory->getFile($dependency);
-                $taskDependency                = $map[$taskDependency?->getPath()] ?? $taskDependency;
-                $taskDependencies[$dependency] = $taskDependency;
                 $dependencyKey                 = $taskDependency?->getPath();
+                $taskDependency                = $resolved[$dependencyKey] ?? $map[$dependencyKey] ?? $taskDependency;
+                $taskDependencies[$dependency] = $taskDependency;
 
                 if ($taskDependency === null) {
                     continue;
@@ -154,9 +155,10 @@ class Processor {
                 }
 
                 // Save
-                $map[$dependency]      = $taskDependency;
-                $map[$dependencyKey]   = $taskDependency;
-                $stack[$dependencyKey] = $taskDependency;
+                $map[$dependency]         = $taskDependency;
+                $map[$dependencyKey]      = $taskDependency;
+                $stack[$dependencyKey]    = $taskDependency;
+                $resolved[$dependencyKey] = $taskDependency;
 
                 // Tasks?
                 if (!isset($this->tasks[$taskDependency->getExtension()])) {
@@ -169,7 +171,7 @@ class Processor {
                 }
 
                 // Yield
-                yield from $this->getFileIterator($root, $taskDependency, $stack);
+                yield from $this->getFileIterator($root, $taskDependency, $stack, $resolved);
 
                 unset($stack[$dependencyKey]);
             }
