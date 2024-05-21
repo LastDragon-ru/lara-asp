@@ -93,7 +93,7 @@ class Processor {
     }
 
     /**
-     * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<string, ?File>>}>
+     * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<array-key, ?File>>}>
      */
     protected function getIterator(Directory $root): Iterator {
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
@@ -118,7 +118,7 @@ class Processor {
      * @param array<string, File> $stack
      * @param array<string, File> $resolved
      *
-     * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<string, ?File>>}>
+     * @return Iterator<array-key, array{Directory, File, WeakMap<Task, array<array-key, ?File>>}>
      */
     private function getFileIterator(Directory $root, File $file, array $stack, array $resolved = []): Iterator {
         // Prepare
@@ -129,7 +129,7 @@ class Processor {
         }
 
         // Dependencies
-        /** @var WeakMap<Task, array<string, ?File>> $fileDependencies */
+        /** @var WeakMap<Task, array<array-key, ?File>> $fileDependencies */
         $fileDependencies = new WeakMap();
         $tasks            = $this->tasks[$file->getExtension()] ?? [];
         $map              = [];
@@ -138,12 +138,12 @@ class Processor {
             $taskDependencies = [];
             $dependencies     = $task->getDependencies($root, $directory, $file);
 
-            foreach ($dependencies as $dependency) {
+            foreach ($dependencies as $key => $dependency) {
                 // File?
-                $taskDependency                = $map[$dependency] ?? $directory->getFile($dependency);
-                $dependencyKey                 = $taskDependency?->getPath();
-                $taskDependency                = $resolved[$dependencyKey] ?? $map[$dependencyKey] ?? $taskDependency;
-                $taskDependencies[$dependency] = $taskDependency;
+                $taskDependency         = $map[$dependency] ?? $directory->getFile($dependency);
+                $dependencyKey          = $taskDependency?->getPath();
+                $taskDependency         = $resolved[$dependencyKey] ?? $map[$dependencyKey] ?? $taskDependency;
+                $taskDependencies[$key] = $taskDependency;
 
                 if ($taskDependency === null) {
                     continue;

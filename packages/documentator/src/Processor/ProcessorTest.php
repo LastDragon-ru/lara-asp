@@ -51,10 +51,10 @@ final class ProcessorTest extends TestCase {
 
                 return match (true) {
                     $path === 'a.txt'  => [
-                        '../b/b/bb.txt',
-                        '../c.txt',
-                        '../c.html',
-                        '404.html',
+                        '../b/b/bb.txt' => '../b/b/bb.txt',
+                        '../c.txt'  => '../c.txt',
+                        '../c.html' => '../c.html',
+                        '404.html'  => '404.html',
                     ],
                     $path === 'bb.txt' => [
                         '../../b/a/ba.txt',
@@ -129,9 +129,9 @@ final class ProcessorTest extends TestCase {
                     'b/b',
                     'bb.txt',
                     [
-                        '../../b/a/ba.txt'         => 'b/a/ba.txt',
-                        '../../c.txt'              => 'c.txt',
-                        '../../../../../README.md' => '../../../README.md',
+                        0 => 'b/a/ba.txt',
+                        1 => 'c.txt',
+                        2 => '../../../README.md',
                     ],
                 ],
                 [
