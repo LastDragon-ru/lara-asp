@@ -12,9 +12,12 @@ use function file_get_contents;
  * File path.
  */
 class FileContent extends FilePath {
+    /**
+     * @inheritDoc
+     */
     #[Override]
-    public function resolve(Context $context, mixed $parameters): string {
-        $path    = parent::resolve($context, $parameters);
+    public function resolve(Context $context, mixed $parameters, array $dependencies): string {
+        $path    = parent::resolve($context, $parameters, $dependencies);
         $content = file_get_contents($path);
 
         if ($content === false) {

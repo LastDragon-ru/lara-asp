@@ -22,13 +22,14 @@ final class DirectoryPathTest extends TestCase {
         $dir      = new Directory(Path::join(__DIR__, '..'), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
+        $deps     = [];
         $params   = null;
         $context  = new Context($root, $dir, $file, basename(__DIR__), null);
         $resolver = new DirectoryPath();
 
         self::assertSame(
             $dir->getDirectory(__DIR__)?->getPath(),
-            $resolver->resolve($context, $params),
+            $resolver->resolve($context, $params, $deps),
         );
     }
 
@@ -36,13 +37,14 @@ final class DirectoryPathTest extends TestCase {
         $dir      = new Directory(Path::join(__DIR__, '..'), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
+        $deps     = [];
         $params   = null;
         $context  = new Context($root, $dir, $file, $dir->getPath(), null);
         $resolver = new DirectoryPath();
 
         self::assertSame(
             $dir->getPath(),
-            $resolver->resolve($context, $params),
+            $resolver->resolve($context, $params, $deps),
         );
     }
 
@@ -50,6 +52,7 @@ final class DirectoryPathTest extends TestCase {
         $dir      = new Directory(Path::join(__DIR__, '..'), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
+        $deps     = [];
         $target   = 'not/a/directory';
         $params   = null;
         $context  = new Context($root, $dir, $file, $target, null);
@@ -64,6 +67,6 @@ final class DirectoryPathTest extends TestCase {
             ),
         );
 
-        $resolver->resolve($context, $params);
+        $resolver->resolve($context, $params, $deps);
     }
 }

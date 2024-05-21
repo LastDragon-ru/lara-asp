@@ -269,8 +269,19 @@ class PreprocessTest__InstructionNotSerializable implements Instruction {
  * @implements Resolver<null, string>
  */
 class PreprocessTest__Target implements Resolver {
+    /**
+     * @inheritDoc
+     */
     #[Override]
-    public function resolve(Context $context, mixed $parameters): mixed {
+    public function getDependencies(Context $context, mixed $parameters): array {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed {
         return $context->target;
     }
 }

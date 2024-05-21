@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
 
 use function json_encode;
 use function sprintf;
@@ -151,9 +152,17 @@ final class PreprocessorTest extends TestCase {
     }
 
     public function testRun(): void {
-        $actual = null;
-        $root   = Mockery::mock(Directory::class);
-        $file   = Mockery::mock(File::class);
+        $preprocessor = $this->app()->make(Preprocessor::class)
+            ->addInstruction(new PreprocessorTest__EmptyInstruction())
+            ->addInstruction(new PreprocessorTest__TestInstruction());
+        $actual       = null;
+        $root         = Mockery::mock(Directory::class);
+        $file         = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getContext')
+            ->once()
+            ->with($preprocessor)
+            ->andReturn(null);
         $file
             ->shouldReceive('getContent')
             ->atLeast()
@@ -169,10 +178,6 @@ final class PreprocessorTest extends TestCase {
                     return $file;
                 },
             );
-
-        $preprocessor = $this->app()->make(Preprocessor::class)
-            ->addInstruction(new PreprocessorTest__EmptyInstruction())
-            ->addInstruction(new PreprocessorTest__TestInstruction());
 
         self::assertTrue($preprocessor->run($root, $root, $file, []));
         self::assertEquals(
@@ -237,6 +242,84 @@ final class PreprocessorTest extends TestCase {
             MARKDOWN,
             $actual,
         );
+    }
+
+    public function testRunCached(): void {
+        $a          = Mockery::mock(File::class);
+        $b          = Mockery::mock(File::class);
+        $c          = Mockery::mock(File::class);
+        $d          = Mockery::mock(File::class);
+        $e          = Mockery::mock(File::class);
+        $context    = Mockery::mock(Context::class);
+        $parameters = new stdClass();
+
+        $preprocessor = Mockery::mock(Preprocessor::class);
+        $preprocessor->shouldAllowMockingProtectedMethods();
+        $preprocessor->makePartial();
+        $preprocessor
+            ->shouldReceive('parse')
+            ->never();
+
+        $instruction = Mockery::mock(Instruction::class);
+        $instruction
+            ->shouldReceive('process')
+            ->with($context, 'a', $parameters)
+            ->once()
+            ->andReturn('a');
+        $instruction
+            ->shouldReceive('process')
+            ->with($context, 'b', $parameters)
+            ->once()
+            ->andReturn('b');
+
+        $resolver = Mockery::mock(Resolver::class);
+        $resolver
+            ->shouldReceive('resolve')
+            ->with($context, $parameters, [
+                'a' => $a,
+                'c' => $c,
+            ])
+            ->once()
+            ->andReturn('a');
+        $resolver
+            ->shouldReceive('resolve')
+            ->with($context, $parameters, [
+                'b' => $b,
+                'd' => $d,
+            ])
+            ->once()
+            ->andReturn('b');
+
+        $tokens = new TokenList([
+            'a' => new Token($instruction, $resolver, $context, $parameters, []),
+            'b' => new Token($instruction, $resolver, $context, $parameters, []),
+        ]);
+
+        $root = Mockery::mock(Directory::class);
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getContext')
+            ->once()
+            ->with($preprocessor)
+            ->andReturn($tokens);
+        $file
+            ->shouldReceive('getContent')
+            ->atLeast()
+            ->once()
+            ->andReturn('file content');
+        $file
+            ->shouldReceive('setContent')
+            ->with('file content')
+            ->once()
+            ->andReturnSelf();
+
+        self::assertTrue($preprocessor->run($root, $root, $file, [
+            'a@a' => $a,
+            'b@b' => $b,
+            'a@c' => $c,
+            'b@d' => $d,
+            'c@e' => $e,
+        ]));
     }
 }
 
@@ -318,8 +401,19 @@ class PreprocessorTest__Value {
  * @implements Resolver<null, string>
  */
 class PreprocessorTest__TargetResolverAsIs implements Resolver {
+    /**
+     * @inheritDoc
+     */
     #[Override]
-    public function resolve(Context $context, mixed $parameters): mixed {
+    public function getDependencies(Context $context, mixed $parameters): array {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed {
         return $context->target;
     }
 }
@@ -331,8 +425,19 @@ class PreprocessorTest__TargetResolverAsIs implements Resolver {
  * @implements Resolver<PreprocessorTest__Parameters, PreprocessorTest__Value>
  */
 class PreprocessorTest__TargetResolverAsValue implements Resolver {
+    /**
+     * @inheritDoc
+     */
     #[Override]
-    public function resolve(Context $context, mixed $parameters): mixed {
+    public function getDependencies(Context $context, mixed $parameters): array {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed {
         return new PreprocessorTest__Value("{$context->target}/{$parameters->a}");
     }
 }

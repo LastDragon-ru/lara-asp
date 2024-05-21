@@ -25,7 +25,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null);
+        $target   = (new DirectoryPath())->resolve($context, null, []);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -45,7 +45,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, basename(self::getTestData()->path('/')), '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null);
+        $target   = (new DirectoryPath())->resolve($context, null, []);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -65,7 +65,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters(null);
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null);
+        $target   = (new DirectoryPath())->resolve($context, null, []);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -85,7 +85,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null);
+        $target   = (new DirectoryPath())->resolve($context, null, []);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing($context, 'WithoutTitle.md'),

@@ -32,7 +32,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/packages'));
         $params   = new Parameters(template: $template);
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null);
+        $resolved = (new DirectoryPath())->resolve($context, null, []);
         $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($context, $resolved, $params);
 
@@ -53,7 +53,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/invalid'));
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null);
+        $resolved = (new DirectoryPath())->resolve($context, null, []);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -70,7 +70,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/no readme'));
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null);
+        $resolved = (new DirectoryPath())->resolve($context, null, []);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -87,7 +87,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/no title'));
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null);
+        $resolved = (new DirectoryPath())->resolve($context, null, []);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

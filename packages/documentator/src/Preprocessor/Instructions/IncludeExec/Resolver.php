@@ -16,8 +16,19 @@ class Resolver implements ResolverContract {
         // empty
     }
 
+    /**
+     * @inheritDoc
+     */
     #[Override]
-    public function resolve(Context $context, mixed $parameters): string {
+    public function getDependencies(Context $context, mixed $parameters): array {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function resolve(Context $context, mixed $parameters, array $dependencies): string {
         return $context->target;
     }
 }

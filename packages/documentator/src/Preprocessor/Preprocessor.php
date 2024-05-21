@@ -26,6 +26,7 @@ use Override;
 
 use function array_map;
 use function array_values;
+use function explode;
 use function hash;
 use function is_array;
 use function json_decode;
@@ -141,8 +142,23 @@ class Preprocessor implements Task {
      */
     #[Override]
     public function getDependencies(Directory $root, Directory $directory, File $file): array {
-        // TODO: Implement getDependencies() method.
-        return [];
+        // Parse
+        $parsed = $this->parse($root, $directory, $file);
+
+        $file->setContext($this, $parsed);
+
+        // Extract dependencies
+        $dependencies = [];
+
+        foreach ($parsed->tokens as $hash => $token) {
+            $raw = $token->resolver->getDependencies($token->context, $token->parameters);
+
+            foreach ($raw as $key => $value) {
+                $dependencies["{$hash}@{$key}"] = $value;
+            }
+        }
+
+        return $dependencies;
     }
 
     /**
@@ -151,16 +167,30 @@ class Preprocessor implements Task {
     #[Override]
     public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
         // Parse
-        // TODO: Check if Context contains tokens
-        $parsed = $this->parse($root, $directory, $file);
+        $parsed = $file->getContext($this) ?? $this->parse($root, $directory, $file);
+
+        if (!($parsed instanceof TokenList)) {
+            return false;
+        }
 
         // Prepare
+        $deps = [];
+
+        foreach ($dependencies as $key => $value) {
+            [$hash, $key] = explode('@', (string) $key, 2) + [null, null];
+
+            if ($hash !== null && $key !== null) {
+                $deps[$hash][$key] = $value;
+            }
+        }
+
+        // Process
         $replace = [];
         $warning = static::Warning;
 
         foreach ($parsed->tokens as $hash => $token) {
             try {
-                $target  = $token->resolver->resolve($token->context, $token->parameters);
+                $target  = $token->resolver->resolve($token->context, $token->parameters, $deps[$hash] ?? []);
                 $content = $token->instruction->process($token->context, $target, $token->parameters);
                 $content = trim($content);
             } catch (PreprocessorError $exception) {

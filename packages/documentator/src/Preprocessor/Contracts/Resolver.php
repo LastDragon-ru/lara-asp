@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 /**
  * @template TParameters
@@ -10,9 +11,19 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
  */
 interface Resolver {
     /**
-     * @param TParameters $parameters
+     * Should return all files on which resolver/instruction depends.
+     *
+     * @return array<array-key, string>
+     */
+    public function getDependencies(Context $context, mixed $parameters): array;
+
+    /**
+     * Resolves target into the expected type/value.
+     *
+     * @param TParameters             $parameters
+     * @param array<array-key, ?File> $dependencies
      *
      * @return TValue
      */
-    public function resolve(Context $context, mixed $parameters): mixed;
+    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed;
 }
