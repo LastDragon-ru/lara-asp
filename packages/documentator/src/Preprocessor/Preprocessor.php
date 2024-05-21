@@ -24,7 +24,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 
-use function array_column;
+use function array_map;
+use function array_values;
 use function hash;
 use function is_array;
 use function json_decode;
@@ -90,7 +91,7 @@ class Preprocessor implements Task {
         REGEXP;
 
     /**
-     * @var array<string, array{class-string<Instruction<mixed, ?object>>,?Instruction<mixed, ?object>}>
+     * @var array<string, ResolvedInstruction<covariant mixed, covariant object|null>>
      */
     private array $instructions = [];
 
@@ -112,7 +113,7 @@ class Preprocessor implements Task {
      * @return list<class-string<Instruction<mixed, ?object>>>
      */
     public function getInstructions(): array {
-        return array_column($this->instructions, 0);
+        return array_values(array_map(static fn ($i) => $i->getClass(), $this->instructions));
     }
 
     /**
@@ -122,28 +123,9 @@ class Preprocessor implements Task {
      */
     public function addInstruction(Instruction|string $instruction): static {
         // @phpstan-ignore-next-line Assigment is fine...
-        $this->instructions[$instruction::getName()] = $instruction instanceof Instruction
-            ? [$instruction::class, $instruction]
-            : [$instruction, null];
+        $this->instructions[$instruction::getName()] = new ResolvedInstruction($this->container, $instruction);
 
         return $this;
-    }
-
-    /**
-     * @return Instruction<mixed, ?object>|null
-     */
-    protected function getInstruction(string $name): ?Instruction {
-        if (!isset($this->instructions[$name])) {
-            return null;
-        }
-
-        if (!isset($this->instructions[$name][1])) {
-            $this->instructions[$name][1] = $this->container->getInstance()->make(
-                $this->instructions[$name][0],
-            );
-        }
-
-        return $this->instructions[$name][1];
     }
 
     /**
@@ -234,20 +216,17 @@ class Preprocessor implements Task {
         }
 
         // Parse each of them
-        $container = $this->container->getInstance();
-        $resolvers = [];
-
         foreach ($matches as $match) {
             // Instruction?
             $name        = (string) $match['instruction'];
-            $instruction = $this->getInstruction($name);
+            $instruction = $this->instructions[$name] ?? null;
 
             if (!$instruction) {
                 continue;
             }
 
             // Hash
-            $parameters = $instruction::getParameters();
+            $parameters = $instruction->getClass()::getParameters();
             $target     = (string) $match['target'];
             $target     = str_starts_with($target, '<') && str_ends_with($target, '>')
                 ? mb_substr($target, 1, -1)
@@ -265,18 +244,15 @@ class Preprocessor implements Task {
             }
 
             // Parse
-            $context                   = new Context($root, $directory, $file, $target, $match['parameters']);
-            $parameters                = $parameters
+            $context    = new Context($root, $directory, $file, $target, $match['parameters']);
+            $parameters = $parameters
                 ? $this->serializer->deserialize($parameters, $params, 'json')
                 : null;
-            $resolverClass             = $instruction::getResolver();
-            $resolverInstance          = $resolvers[$resolverClass] ?? $container->make($resolverClass);
-            $resolvers[$resolverClass] = $resolverInstance;
 
             $tokens[$hash] = new Token(
-                $instruction,
+                $instruction->getInstance(),
+                $instruction->getResolver(),
                 $context,
-                $resolverInstance,
                 $parameters,
                 [
                     $match[0] => (string) $match['expression'],
