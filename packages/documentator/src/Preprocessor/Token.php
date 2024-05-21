@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 
 /**
  * @internal
@@ -18,9 +19,9 @@ class Token {
         public readonly Instruction $instruction,
         public readonly Context $context,
         /**
-         * @var TTarget
+         * @var Resolver<TParameters, TTarget>
          */
-        public readonly mixed $target,
+        public readonly Resolver $resolver,
         /**
          * @var TParameters
          */

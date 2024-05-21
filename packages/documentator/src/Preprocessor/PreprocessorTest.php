@@ -89,7 +89,7 @@ final class PreprocessorTest extends TestCase {
                 '88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62' => new Token(
                     $a,
                     new Context($root, $directory, $file, './path/to/file', null),
-                    './path/to/file',
+                    new PreprocessorTest__TargetResolverAsIs(),
                     null,
                     [
                         '[test:empty]: ./path/to/file' => '[test:empty]: ./path/to/file',
@@ -98,7 +98,7 @@ final class PreprocessorTest extends TestCase {
                 '4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095' => new Token(
                     $b,
                     new Context($root, $directory, $file, './path/to/file', null),
-                    new PreprocessorTest__Value('./path/to/file/a'),
+                    new PreprocessorTest__TargetResolverAsValue(),
                     new PreprocessorTest__Parameters(),
                     [
                         // phpcs:disable Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned
@@ -129,7 +129,7 @@ final class PreprocessorTest extends TestCase {
                         './path/to/file/parametrized',
                         '{"a": "aa", "b": {"a": "a", "b": "b"}}',
                     ),
-                    new PreprocessorTest__Value('./path/to/file/parametrized/aa'),
+                    new PreprocessorTest__TargetResolverAsValue(),
                     new PreprocessorTest__Parameters(
                         'aa',
                         [

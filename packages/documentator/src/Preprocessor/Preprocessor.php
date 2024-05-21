@@ -178,7 +178,8 @@ class Preprocessor implements Task {
 
         foreach ($parsed->tokens as $hash => $token) {
             try {
-                $content = $token->instruction->process($token->context, $token->target, $token->parameters);
+                $target  = $token->resolver->resolve($token->context, $token->parameters);
+                $content = $token->instruction->process($token->context, $target, $token->parameters);
                 $content = trim($content);
             } catch (PreprocessorError $exception) {
                 throw $exception;
@@ -233,6 +234,9 @@ class Preprocessor implements Task {
         }
 
         // Parse each of them
+        $container = $this->container->getInstance();
+        $resolvers = [];
+
         foreach ($matches as $match) {
             // Instruction?
             $name        = (string) $match['instruction'];
@@ -261,17 +265,18 @@ class Preprocessor implements Task {
             }
 
             // Parse
-            $context    = new Context($root, $directory, $file, $target, $match['parameters']);
-            $parameters = $parameters
+            $context                   = new Context($root, $directory, $file, $target, $match['parameters']);
+            $parameters                = $parameters
                 ? $this->serializer->deserialize($parameters, $params, 'json')
                 : null;
-            $resolver   = $this->container->getInstance()->make($instruction::getResolver());
-            $resolved   = $resolver->resolve($context, $parameters);
+            $resolverClass             = $instruction::getResolver();
+            $resolverInstance          = $resolvers[$resolverClass] ?? $container->make($resolverClass);
+            $resolvers[$resolverClass] = $resolverInstance;
 
             $tokens[$hash] = new Token(
                 $instruction,
                 $context,
-                $resolved,
+                $resolverInstance,
                 $parameters,
                 [
                     $match[0] => (string) $match['expression'],
