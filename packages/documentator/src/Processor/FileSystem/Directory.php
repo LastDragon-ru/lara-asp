@@ -7,19 +7,18 @@ use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use Override;
+use SplFileInfo;
 use Stringable;
 use Symfony\Component\Finder\Finder;
 
+use function basename;
+use function dirname;
 use function is_dir;
 use function is_file;
 use function is_object;
 use function is_writable;
-use function pathinfo;
 use function sprintf;
 use function str_starts_with;
-
-use const PATHINFO_BASENAME;
-use const PATHINFO_DIRNAME;
 
 class Directory implements Stringable {
     public function __construct(
@@ -59,14 +58,23 @@ class Directory implements Stringable {
     }
 
     public function getName(): string {
-        return pathinfo($this->path, PATHINFO_BASENAME);
+        return basename($this->path);
     }
 
     public function isWritable(): bool {
         return $this->writable && is_writable($this->path);
     }
 
-    public function getFile(string $path): ?File {
+    public function getFile(SplFileInfo|File|string $path): ?File {
+        // Object?
+        if ($path instanceof SplFileInfo) {
+            $path = $path->getPathname();
+        } elseif ($path instanceof File) {
+            $path = $path->getPath();
+        } else {
+            // empty
+        }
+
         // File?
         $path = Path::getPath($this->path, $path);
 
@@ -81,14 +89,20 @@ class Directory implements Stringable {
         return $file;
     }
 
-    public function getDirectory(File|string $path): ?self {
-        // File?
-        if ($path instanceof File) {
-            $path = pathinfo($path->getPath(), PATHINFO_DIRNAME);
+    public function getDirectory(SplFileInfo|self|File|string $path): ?self {
+        // Object?
+        if ($path instanceof SplFileInfo) {
+            $path = $path->getPathname();
+        } elseif ($path instanceof File) {
+            $path = dirname($path->getPath());
+        } elseif ($path instanceof self) {
+            $path = $path->getPath();
+        } else {
+            // empty
         }
 
         // Self?
-        if ($path === '.') {
+        if ($path === '.' || $path === '') {
             return $this;
         }
 
@@ -108,12 +122,14 @@ class Directory implements Stringable {
         return $dir;
     }
 
-    public function isInside(File|self|string $path): bool {
+    public function isInside(SplFileInfo|File|self|string $path): bool {
         $path = match (true) {
-            is_object($path) => $path->getPath(),
-            default          => Path::getPath($this->path, $path),
+            $path instanceof SplFileInfo => Path::getPath($this->path, $path->getPathname()),
+            is_object($path)             => $path->getPath(),
+            default                      => Path::getPath($this->path, $path),
         };
-        $inside = str_starts_with($path, $this->path);
+        $inside = $path !== $this->path
+            && str_starts_with($path, $this->path);
 
         return $inside;
     }
@@ -147,7 +163,7 @@ class Directory implements Stringable {
     /**
      * @template T of object
      *
-     * @param Closure(string): ?T                          $factory
+     * @param Closure(SplFileInfo): ?T                     $factory
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      *
@@ -174,9 +190,9 @@ class Directory implements Stringable {
         }
 
         foreach ($finder as $info) {
-            $item = $factory($info->getPathname());
+            $item = $factory($info);
 
-            if ($item) {
+            if ($item !== null) {
                 yield $item;
             }
         }
