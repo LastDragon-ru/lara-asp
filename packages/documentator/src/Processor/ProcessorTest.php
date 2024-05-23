@@ -69,7 +69,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
+             * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -198,7 +198,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
+             * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -247,7 +247,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
+             * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
