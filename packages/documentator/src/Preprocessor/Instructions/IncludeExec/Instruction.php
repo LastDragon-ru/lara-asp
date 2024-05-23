@@ -39,7 +39,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         try {
             return trim(
                 $this->factory->newPendingProcess()

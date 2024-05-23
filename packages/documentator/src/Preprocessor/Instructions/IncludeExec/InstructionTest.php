@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = null;
@@ -34,7 +34,7 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, $instance->process($context, $command, $params));
+        self::assertEquals($expected, ($instance)($context, $command, $params));
 
         $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
             return $process->path === $root->getPath()

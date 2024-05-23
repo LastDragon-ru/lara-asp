@@ -41,7 +41,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         // Dependencies?
         if (!$this->printer) {
             throw new DependencyIsMissing($context, Printer::class);

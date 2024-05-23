@@ -25,7 +25,7 @@ final class InstructionTest extends TestCase {
      * @param Closure(self, Context): Exception|string $expected
      */
     #[DataProvider('dataProviderProcess')]
-    public function testProcess(Closure|string $expected, string $file, Parameters $params): void {
+    public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
         $path     = self::getTestData()->path($file);
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -39,7 +39,7 @@ final class InstructionTest extends TestCase {
             $expected = self::getTestData()->content($expected);
         }
 
-        self::assertEquals($expected, $instance->process($context, $target, $params));
+        self::assertEquals($expected, ($instance)($context, $target, $params));
     }
     //</editor-fold>
 

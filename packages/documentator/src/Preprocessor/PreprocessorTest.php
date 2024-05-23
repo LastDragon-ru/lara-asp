@@ -284,7 +284,7 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         return '';
     }
 }
@@ -312,7 +312,7 @@ class PreprocessorTest__TestInstruction implements Instruction {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         return sprintf('result(%s, %s)', $target->value, json_encode($parameters, JSON_THROW_ON_ERROR));
     }
 }

@@ -46,7 +46,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
         $path      = $context->file->getName();

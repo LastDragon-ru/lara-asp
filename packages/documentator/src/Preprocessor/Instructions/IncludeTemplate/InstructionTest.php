@@ -19,7 +19,7 @@ use function dirname;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters([
@@ -38,11 +38,11 @@ final class InstructionTest extends TestCase {
 
             FILE
             ,
-            $instance->process($context, $content, $params),
+            ($instance)($context, $content, $params),
         );
     }
 
-    public function testProcessNoData(): void {
+    public function testInvokeNoData(): void {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters([]);
@@ -54,10 +54,10 @@ final class InstructionTest extends TestCase {
             new TemplateDataMissed($context),
         );
 
-        $instance->process($context, $content, $params);
+        ($instance)($context, $content, $params);
     }
 
-    public function testProcessVariablesUnused(): void {
+    public function testInvokeVariablesUnused(): void {
         $path     = self::getTestData()->path('.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -75,10 +75,10 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesUnused($context, ['c', 'd']),
         );
 
-        $instance->process($context, $content, $params);
+        ($instance)($context, $content, $params);
     }
 
-    public function testProcessVariablesMissed(): void {
+    public function testInvokeVariablesMissed(): void {
         $path     = self::getTestData()->path('.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -93,6 +93,6 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesMissed($context, ['b']),
         );
 
-        $instance->process($context, $content, $params);
+        ($instance)($context, $content, $params);
     }
 }

@@ -23,7 +23,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $directive = <<<'GRAPHQL'
             directive @test
             on
@@ -48,7 +48,7 @@ final class InstructionTest extends TestCase {
         $file     = Mockery::mock(File::class);
         $context  = new Context($root, $root, $file, '@test', null);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $context->target, null);
+        $actual   = ($instance)($context, $context->target, null);
 
         self::assertEquals(
             <<<MARKDOWN
@@ -60,7 +60,7 @@ final class InstructionTest extends TestCase {
         );
     }
 
-    public function testProcessNoPrinter(): void {
+    public function testInvokeNoPrinter(): void {
         unset($this->app()[PrinterContract::class]);
 
         $root     = new Directory(Path::normalize(__DIR__), false);
@@ -73,10 +73,10 @@ final class InstructionTest extends TestCase {
             new DependencyIsMissing($context, PrinterContract::class),
         );
 
-        $instance->process($context, $context->target, null);
+        ($instance)($context, $context->target, null);
     }
 
-    public function testProcessNoDirective(): void {
+    public function testInvokeNoDirective(): void {
         $this->override(PrinterContract::class, static function (): PrinterContract {
             $resolver = Mockery::mock(DirectiveResolver::class);
             $resolver
@@ -100,10 +100,10 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context),
         );
 
-        $instance->process($context, $context->target, null);
+        ($instance)($context, $context->target, null);
     }
 
-    public function testProcessNoDirectiveResolver(): void {
+    public function testInvokeNoDirectiveResolver(): void {
         $this->override(PrinterContract::class, static function (): PrinterContract {
             return (new Printer())->setDirectiveResolver(null);
         });
@@ -118,6 +118,6 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context),
         );
 
-        $instance->process($context, $context->target, null);
+        ($instance)($context, $context->target, null);
     }
 }

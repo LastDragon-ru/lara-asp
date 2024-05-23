@@ -20,7 +20,7 @@ use function trim;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcessNoRun(): void {
+    public function testInvokeNoRun(): void {
         $path     = self::getTestData()->path('~example.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -34,7 +34,7 @@ final class InstructionTest extends TestCase {
                 ->fake();
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ($instance)($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -48,7 +48,7 @@ final class InstructionTest extends TestCase {
         $factory->assertNothingRan();
     }
 
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -68,7 +68,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ($instance)($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -91,7 +91,7 @@ final class InstructionTest extends TestCase {
         });
     }
 
-    public function testProcessLongOutput(): void {
+    public function testInvokeLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -111,7 +111,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ($instance)($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -136,7 +136,7 @@ final class InstructionTest extends TestCase {
         });
     }
 
-    public function testProcessMarkdown(): void {
+    public function testInvokeMarkdown(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -156,7 +156,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ($instance)($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -175,7 +175,7 @@ final class InstructionTest extends TestCase {
         });
     }
 
-    public function testProcessMarkdownLongOutput(): void {
+    public function testInvokeMarkdownLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -195,7 +195,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ($instance)($context, $content, $params);
 
         self::assertEquals(
             <<<EXPECTED

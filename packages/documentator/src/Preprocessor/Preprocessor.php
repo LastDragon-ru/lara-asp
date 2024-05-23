@@ -161,7 +161,14 @@ class Preprocessor implements Task {
                 }
 
                 // Run
-                $content = $token->instruction->process($token->context, $target, $token->parameters);
+                $content = ($token->instruction)($token->context, $target, $token->parameters);
+
+                if ($content instanceof Generator) {
+                    yield from $content;
+
+                    $content = $content->getReturn();
+                }
+
                 $content = trim($content);
             } catch (PreprocessorError $exception) {
                 throw $exception;

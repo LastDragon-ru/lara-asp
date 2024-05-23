@@ -24,7 +24,7 @@ final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderProcess')]
-    public function testProcess(string $expected, string $template): void {
+    public function testInvoke(string $expected, string $template): void {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File(Path::normalize(__FILE__), false);
@@ -33,7 +33,7 @@ final class InstructionTest extends TestCase {
         $context  = new Context($root, $root, $file, $target, '');
         $resolved = Path::join($root->getPath(), $context->target);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $resolved, $params);
+        $actual   = ($instance)($context, $resolved, $params);
 
         self::assertEquals(
             self::getTestData()->content($expected),
@@ -45,7 +45,7 @@ final class InstructionTest extends TestCase {
         );
     }
 
-    public function testProcessNotAPackage(): void {
+    public function testInvokeNotAPackage(): void {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File(Path::normalize(__FILE__), false);
@@ -59,10 +59,10 @@ final class InstructionTest extends TestCase {
             new PackageComposerJsonIsMissing($context, 'invalid/package'),
         );
 
-        $instance->process($context, $resolved, $params);
+        ($instance)($context, $resolved, $params);
     }
 
-    public function testProcessNoReadme(): void {
+    public function testInvokeNoReadme(): void {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File(Path::normalize(__FILE__), false);
@@ -76,10 +76,10 @@ final class InstructionTest extends TestCase {
             new PackageReadmeIsMissing($context, 'no readme/package'),
         );
 
-        $instance->process($context, $resolved, $params);
+        ($instance)($context, $resolved, $params);
     }
 
-    public function testProcessNoTitle(): void {
+    public function testInvokeNoTitle(): void {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File(Path::normalize(__FILE__), false);
@@ -93,7 +93,7 @@ final class InstructionTest extends TestCase {
             new DocumentTitleIsMissing($context, 'no title/package/README.md'),
         );
 
-        $instance->process($context, $resolved, $params);
+        ($instance)($context, $resolved, $params);
     }
     //</editor-fold>
 

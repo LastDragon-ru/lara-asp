@@ -15,7 +15,7 @@ use function dirname;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $path     = self::getTestData()->path('.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -24,6 +24,6 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content('.md');
 
-        self::assertEquals($expected, $instance->process($context, $expected, $params));
+        self::assertEquals($expected, ($instance)($context, $expected, $params));
     }
 }

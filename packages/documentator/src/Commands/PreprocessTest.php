@@ -196,7 +196,7 @@ class PreprocessTest__Instruction implements Instruction {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         return $target;
     }
 }
@@ -224,7 +224,7 @@ class PreprocessTest__InstructionNoParameters implements Instruction {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         return $target;
     }
 }
@@ -252,7 +252,7 @@ class PreprocessTest__InstructionNotSerializable implements Instruction {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         return $target;
     }
 }
