@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts;
 
+use Generator;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use SplFileInfo;
 
 /**
  * @template TParameters
@@ -11,19 +13,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
  */
 interface Resolver {
     /**
-     * Should return all files on which resolver/instruction depends.
-     *
-     * @return array<array-key, string>
-     */
-    public function getDependencies(Context $context, mixed $parameters): array;
-
-    /**
      * Resolves target into the expected type/value.
      *
-     * @param TParameters             $parameters
-     * @param array<array-key, ?File> $dependencies
+     * Generator should be used to resolve any file which the Resolver depends on.
      *
-     * @return TValue
+     * @param TParameters $parameters
+     *
+     * @return Generator<mixed, SplFileInfo|File|string, ?File, TValue>|TValue
      */
-    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed;
+    public function __invoke(Context $context, mixed $parameters): mixed;
 }

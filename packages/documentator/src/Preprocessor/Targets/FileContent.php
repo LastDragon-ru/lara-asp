@@ -7,18 +7,16 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotFile;
 use Override;
 
 use function file_get_contents;
+use function is_string;
 
 /**
  * File path.
  */
 class FileContent extends FilePath {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function resolve(Context $context, mixed $parameters, array $dependencies): string {
-        $path    = parent::resolve($context, $parameters, $dependencies);
-        $content = file_get_contents($path);
+    public function __invoke(Context $context, mixed $parameters): mixed {
+        $path    = parent::__invoke($context, $parameters);
+        $content = is_string($path) ? file_get_contents($path) : false;
 
         if ($content === false) {
             throw new TargetIsNotFile($context);

@@ -6,6 +6,11 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
+			message: "#^Generator expects value type LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\FileSystem\\\\File\\|SplFileInfo\\|string, mixed given\\.$#"
+			count: 1
+			path: packages/documentator/src/Preprocessor/Preprocessor.php
+
+		-
 			message: "#^Parameter \\#1 \\$offset of method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\IteratorImpl\\<TItem of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:setOffset\\(\\) expects int\\|string\\|null, mixed given\\.$#"
 			count: 1
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php

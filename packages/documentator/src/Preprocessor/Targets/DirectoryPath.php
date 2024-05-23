@@ -17,19 +17,8 @@ class DirectoryPath implements Resolver {
         // empty
     }
 
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function getDependencies(Context $context, mixed $parameters): array {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function resolve(Context $context, mixed $parameters, array $dependencies): string {
+    public function __invoke(Context $context, mixed $parameters): mixed {
         $directory = $context->directory->getDirectory($context->target);
 
         if (!$directory) {

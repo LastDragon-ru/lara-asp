@@ -17,53 +17,52 @@ use function sprintf;
  */
 #[CoversClass(FilePath::class)]
 final class FilePathTest extends TestCase {
-    public function testResolveRelative(): void {
+    public function testInvokeRelative(): void {
         $dir      = new Directory(Path::join(__DIR__), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $deps     = [];
         $params   = null;
         $context  = new Context($root, $dir, $file, $file->getName(), null);
         $resolver = new FilePath();
 
         self::assertSame(
             $file->getPath(),
-            $resolver->resolve($context, $params, $deps),
+            ($resolver)($context, $params),
         );
     }
 
-    public function testResolveAbsolute(): void {
+    public function testInvokeAbsolute(): void {
         $dir      = new Directory(Path::join(__DIR__), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $deps     = [];
         $params   = null;
         $context  = new Context($root, $dir, $file, $file->getPath(), null);
         $resolver = new FilePath();
 
         self::assertSame(
             $file->getPath(),
-            $resolver->resolve($context, $params, $deps),
+            ($resolver)($context, $params),
         );
     }
 
-    public function testResolveNotAFile(): void {
+    public function testInvokeNotAFile(): void {
         $dir      = new Directory(Path::join(__DIR__), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $deps     = [];
         $target   = 'not/a/file';
         $params   = null;
         $context  = new Context($root, $dir, $file, $target, null);
         $resolver = new FilePath();
 
         self::expectException(TargetIsNotFile::class);
-        self::expectExceptionMessage(sprintf(
-            'The `%s` is not a file (in `%s`).',
-            $target,
-            $context->file->getRelativePath($context->root),
-        ));
+        self::expectExceptionMessage(
+            sprintf(
+                'The `%s` is not a file (in `%s`).',
+                $target,
+                $context->file->getRelativePath($context->root),
+            ),
+        );
 
-        $resolver->resolve($context, $params, $deps);
+        ($resolver)($context, $params);
     }
 }

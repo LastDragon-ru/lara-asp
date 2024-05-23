@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -32,7 +31,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/packages'));
         $params   = new Parameters(template: $template);
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null, []);
+        $resolved = Path::join($root->getPath(), $context->target);
         $instance = $this->app()->make(Instruction::class);
         $actual   = $instance->process($context, $resolved, $params);
 
@@ -53,7 +52,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/invalid'));
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null, []);
+        $resolved = Path::join($root->getPath(), $context->target);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -70,7 +69,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/no readme'));
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null, []);
+        $resolved = Path::join($root->getPath(), $context->target);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -87,7 +86,7 @@ final class InstructionTest extends TestCase {
         $target   = basename(self::getTestData()->path('/no title'));
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, $target, '');
-        $resolved = (new DirectoryPath())->resolve($context, null, []);
+        $resolved = Path::join($root->getPath(), $context->target);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

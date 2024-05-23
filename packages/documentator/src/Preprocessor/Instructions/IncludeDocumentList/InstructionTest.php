@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -25,8 +25,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null, []);
-        $actual   = $instance->process($context, $target, $params);
+        $actual   = $instance->process($context, $root->getPath(), $params);
 
         self::assertEquals(
             self::getTestData()->content('~SameDirectory.md'),
@@ -45,7 +44,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, basename(self::getTestData()->path('/')), '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null, []);
+        $target   = Path::join($root->getPath(), $context->target);
         $actual   = $instance->process($context, $target, $params);
 
         self::assertEquals(
@@ -65,8 +64,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters(null);
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null, []);
-        $actual   = $instance->process($context, $target, $params);
+        $actual   = $instance->process($context, $root->getPath(), $params);
 
         self::assertEquals(
             self::getTestData()->content('~NestedDirectories.md'),
@@ -85,12 +83,11 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $target   = (new DirectoryPath())->resolve($context, null, []);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing($context, 'WithoutTitle.md'),
         );
 
-        $instance->process($context, $target, $params);
+        $instance->process($context, $root->getPath(), $params);
     }
 }

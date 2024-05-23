@@ -5,7 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
 use Exception;
+use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
@@ -23,10 +25,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
+use SplFileInfo;
 
 use function array_map;
 use function array_values;
-use function explode;
 use function hash;
 use function is_array;
 use function json_decode;
@@ -138,59 +140,27 @@ class Preprocessor implements Task {
     }
 
     /**
-     * @inheritDoc
+     * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
      */
     #[Override]
-    public function getDependencies(Directory $root, Directory $directory, File $file): array {
-        // Parse
-        $parsed = $this->parse($root, $directory, $file);
-
-        $file->setContext($this, $parsed);
-
-        // Extract dependencies
-        $dependencies = [];
-
-        foreach ($parsed->tokens as $hash => $token) {
-            $raw = $token->resolver->getDependencies($token->context, $token->parameters);
-
-            foreach ($raw as $key => $value) {
-                $dependencies["{$hash}@{$key}"] = $value;
-            }
-        }
-
-        return $dependencies;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
-        // Parse
-        $parsed = $file->getContext($this) ?? $this->parse($root, $directory, $file);
-
-        if (!($parsed instanceof TokenList)) {
-            return false;
-        }
-
-        // Prepare
-        $deps = [];
-
-        foreach ($dependencies as $key => $value) {
-            [$hash, $key] = explode('@', (string) $key, 2) + [null, null];
-
-            if ($hash !== null && $key !== null) {
-                $deps[$hash][$key] = $value;
-            }
-        }
-
+    public function __invoke(Directory $root, File $file): Generator {
         // Process
+        $parsed  = $this->parse($root, $file);
         $replace = [];
         $warning = static::Warning;
 
         foreach ($parsed->tokens as $hash => $token) {
             try {
-                $target  = $token->resolver->resolve($token->context, $token->parameters, $deps[$hash] ?? []);
+                // Resolve target
+                $target = ($token->resolver)($token->context, $token->parameters);
+
+                if ($target instanceof Generator) {
+                    yield from $target;
+
+                    $target = $target->getReturn();
+                }
+
+                // Run
                 $content = $token->instruction->process($token->context, $target, $token->parameters);
                 $content = trim($content);
             } catch (PreprocessorError $exception) {
@@ -236,7 +206,7 @@ class Preprocessor implements Task {
         return true;
     }
 
-    protected function parse(Directory $root, Directory $directory, File $file): TokenList {
+    protected function parse(Directory $root, File $file): TokenList {
         // Extract all possible instructions
         $tokens  = [];
         $matches = [];
@@ -246,6 +216,8 @@ class Preprocessor implements Task {
         }
 
         // Parse each of them
+        $directory = Cast::to(Directory::class, $root->getDirectory($file));
+
         foreach ($matches as $match) {
             // Instruction?
             $name        = (string) $match['instruction'];

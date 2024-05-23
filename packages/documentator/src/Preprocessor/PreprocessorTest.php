@@ -14,7 +14,6 @@ use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 
 use function json_encode;
 use function sprintf;
@@ -59,7 +58,6 @@ final class PreprocessorTest extends TestCase {
     public function testParse(): void {
         $a            = new PreprocessorTest__EmptyInstruction();
         $b            = new PreprocessorTest__TestInstruction();
-        $root         = Mockery::mock(Directory::class);
         $directory    = Mockery::mock(Directory::class);
         $preprocessor = Mockery::mock(Preprocessor::class, MockProperties::class);
         $preprocessor->shouldAllowMockingProtectedMethods();
@@ -84,7 +82,14 @@ final class PreprocessorTest extends TestCase {
             ->once()
             ->andReturn(self::MARKDOWN);
 
-        $tokens = $preprocessor->parse($root, $directory, $file);
+        $root = Mockery::mock(Directory::class);
+        $root
+            ->shouldReceive('getDirectory')
+            ->with($file)
+            ->once()
+            ->andReturn($directory);
+
+        $tokens = $preprocessor->parse($root, $file);
 
         self::assertEquals(
             new TokenList([
@@ -151,18 +156,12 @@ final class PreprocessorTest extends TestCase {
         );
     }
 
-    public function testRun(): void {
+    public function testInvoke(): void {
         $preprocessor = $this->app()->make(Preprocessor::class)
             ->addInstruction(new PreprocessorTest__EmptyInstruction())
             ->addInstruction(new PreprocessorTest__TestInstruction());
         $actual       = null;
-        $root         = Mockery::mock(Directory::class);
         $file         = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getContext')
-            ->once()
-            ->with($preprocessor)
-            ->andReturn(null);
         $file
             ->shouldReceive('getContent')
             ->atLeast()
@@ -179,7 +178,21 @@ final class PreprocessorTest extends TestCase {
                 },
             );
 
-        self::assertTrue($preprocessor->run($root, $root, $file, []));
+        $directory = Mockery::mock(Directory::class);
+        $root      = Mockery::mock(Directory::class);
+        $root
+            ->shouldReceive('getDirectory')
+            ->with($file)
+            ->once()
+            ->andReturn($directory);
+
+        $generator = ($preprocessor)($root, $file);
+
+        while ($generator->valid()) {
+            $generator->send($root->getDirectory($file)?->getFile($generator->current()));
+        }
+
+        self::assertTrue($generator->getReturn());
         self::assertEquals(
             <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
@@ -242,84 +255,6 @@ final class PreprocessorTest extends TestCase {
             MARKDOWN,
             $actual,
         );
-    }
-
-    public function testRunCached(): void {
-        $a          = Mockery::mock(File::class);
-        $b          = Mockery::mock(File::class);
-        $c          = Mockery::mock(File::class);
-        $d          = Mockery::mock(File::class);
-        $e          = Mockery::mock(File::class);
-        $context    = Mockery::mock(Context::class);
-        $parameters = new stdClass();
-
-        $preprocessor = Mockery::mock(Preprocessor::class);
-        $preprocessor->shouldAllowMockingProtectedMethods();
-        $preprocessor->makePartial();
-        $preprocessor
-            ->shouldReceive('parse')
-            ->never();
-
-        $instruction = Mockery::mock(Instruction::class);
-        $instruction
-            ->shouldReceive('process')
-            ->with($context, 'a', $parameters)
-            ->once()
-            ->andReturn('a');
-        $instruction
-            ->shouldReceive('process')
-            ->with($context, 'b', $parameters)
-            ->once()
-            ->andReturn('b');
-
-        $resolver = Mockery::mock(Resolver::class);
-        $resolver
-            ->shouldReceive('resolve')
-            ->with($context, $parameters, [
-                'a' => $a,
-                'c' => $c,
-            ])
-            ->once()
-            ->andReturn('a');
-        $resolver
-            ->shouldReceive('resolve')
-            ->with($context, $parameters, [
-                'b' => $b,
-                'd' => $d,
-            ])
-            ->once()
-            ->andReturn('b');
-
-        $tokens = new TokenList([
-            'a' => new Token($instruction, $resolver, $context, $parameters, []),
-            'b' => new Token($instruction, $resolver, $context, $parameters, []),
-        ]);
-
-        $root = Mockery::mock(Directory::class);
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getContext')
-            ->once()
-            ->with($preprocessor)
-            ->andReturn($tokens);
-        $file
-            ->shouldReceive('getContent')
-            ->atLeast()
-            ->once()
-            ->andReturn('file content');
-        $file
-            ->shouldReceive('setContent')
-            ->with('file content')
-            ->once()
-            ->andReturnSelf();
-
-        self::assertTrue($preprocessor->run($root, $root, $file, [
-            'a@a' => $a,
-            'b@b' => $b,
-            'a@c' => $c,
-            'b@d' => $d,
-            'c@e' => $e,
-        ]));
     }
 }
 
@@ -401,19 +336,8 @@ class PreprocessorTest__Value {
  * @implements Resolver<null, string>
  */
 class PreprocessorTest__TargetResolverAsIs implements Resolver {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function getDependencies(Context $context, mixed $parameters): array {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed {
+    public function __invoke(Context $context, mixed $parameters): mixed {
         return $context->target;
     }
 }
@@ -425,19 +349,8 @@ class PreprocessorTest__TargetResolverAsIs implements Resolver {
  * @implements Resolver<PreprocessorTest__Parameters, PreprocessorTest__Value>
  */
 class PreprocessorTest__TargetResolverAsValue implements Resolver {
-    /**
-     * @inheritDoc
-     */
     #[Override]
-    public function getDependencies(Context $context, mixed $parameters): array {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function resolve(Context $context, mixed $parameters, array $dependencies): mixed {
+    public function __invoke(Context $context, mixed $parameters): mixed {
         return new PreprocessorTest__Value("{$context->target}/{$parameters->a}");
     }
 }

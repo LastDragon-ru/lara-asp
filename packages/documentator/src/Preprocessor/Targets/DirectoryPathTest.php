@@ -18,41 +18,38 @@ use function sprintf;
  */
 #[CoversClass(DirectoryPath::class)]
 final class DirectoryPathTest extends TestCase {
-    public function testResolveRelative(): void {
+    public function testInvokeRelative(): void {
         $dir      = new Directory(Path::join(__DIR__, '..'), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $deps     = [];
         $params   = null;
         $context  = new Context($root, $dir, $file, basename(__DIR__), null);
         $resolver = new DirectoryPath();
 
         self::assertSame(
             $dir->getDirectory(__DIR__)?->getPath(),
-            $resolver->resolve($context, $params, $deps),
+            ($resolver)($context, $params),
         );
     }
 
-    public function testResolveAbsolute(): void {
+    public function testInvokeAbsolute(): void {
         $dir      = new Directory(Path::join(__DIR__, '..'), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $deps     = [];
         $params   = null;
         $context  = new Context($root, $dir, $file, $dir->getPath(), null);
         $resolver = new DirectoryPath();
 
         self::assertSame(
             $dir->getPath(),
-            $resolver->resolve($context, $params, $deps),
+            ($resolver)($context, $params),
         );
     }
 
-    public function testResolveNotADirectory(): void {
+    public function testInvokeNotADirectory(): void {
         $dir      = new Directory(Path::join(__DIR__, '..'), false);
         $root     = new Directory(Path::join(__DIR__, '../..'), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $deps     = [];
         $target   = 'not/a/directory';
         $params   = null;
         $context  = new Context($root, $dir, $file, $target, null);
@@ -67,6 +64,6 @@ final class DirectoryPathTest extends TestCase {
             ),
         );
 
-        $resolver->resolve($context, $params, $deps);
+        ($resolver)($context, $params);
     }
 }
