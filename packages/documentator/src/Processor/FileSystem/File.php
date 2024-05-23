@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use Override;
 use Stringable;
-use WeakMap;
 
 use function file_get_contents;
 use function file_put_contents;
@@ -19,11 +18,7 @@ use const PATHINFO_BASENAME;
 use const PATHINFO_EXTENSION;
 
 class File implements Stringable {
-    /**
-     * @var ?WeakMap<object, mixed>
-     */
-    private ?WeakMap $context = null;
-    private ?string  $content = null;
+    private ?string $content = null;
 
     public function __construct(
         private readonly string $path,
@@ -82,10 +77,7 @@ class File implements Stringable {
     }
 
     public function setContent(string $content): static {
-        if ($this->content !== $content) {
-            $this->content = $content;
-            $this->context = null;
-        }
+        $this->content = $content;
 
         return $this;
     }
@@ -99,18 +91,6 @@ class File implements Stringable {
         // Save
         return $this->isWritable()
             && file_put_contents($this->path, $this->content) !== false;
-    }
-
-    public function getContext(object $object): mixed {
-        return $this->context[$object] ?? null;
-    }
-
-    public function setContext(object $object, mixed $value): static {
-        $map           = $this->context ?? new WeakMap();
-        $map[$object]  = $value;
-        $this->context = $map;
-
-        return $this;
     }
 
     public function getRelativePath(Directory $root): string {

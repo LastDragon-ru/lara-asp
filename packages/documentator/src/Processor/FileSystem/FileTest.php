@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 
 use function basename;
 use function file_get_contents;
@@ -94,29 +93,6 @@ final class FileTest extends TestCase {
         self::assertFalse($file->save());
 
         self::assertEquals(__FILE__, file_get_contents($temp));
-    }
-
-    public function testContext(): void {
-        // Prepare
-        $context = new stdClass();
-        $path    = Path::normalize(__FILE__);
-
-        // Base
-        $file = new File($path, false);
-        $file = $file->setContext($this, $context);
-
-        self::assertNull($file->getContext(new stdClass()));
-        self::assertSame($context, $file->getContext($this));
-
-        // Should not reset because the same
-        $file->setContent($file->getContent());
-
-        self::assertSame($context, $file->getContext($this));
-
-        // Should reset after writing
-        $file->setContent(__METHOD__);
-
-        self::assertNull($file->getContext($this));
     }
 
     public function testGetRelativePath(): void {
