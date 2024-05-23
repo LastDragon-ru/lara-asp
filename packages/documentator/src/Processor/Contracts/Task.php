@@ -22,7 +22,7 @@ interface Task {
      * be resolved relative to the directory where the `$file` located,
      * processed, and then send back into the generator.
      *
-     * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
+     * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>|bool
      */
-    public function __invoke(Directory $root, File $file): Generator;
+    public function __invoke(Directory $root, File $file): Generator|bool;
 }

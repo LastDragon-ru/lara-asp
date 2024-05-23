@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
+use Generator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
@@ -100,38 +101,45 @@ class Processor {
         try {
             foreach ($tasks as $task) {
                 try {
+                    $result    = false;
                     $generator = $task($root, $file);
 
-                    while ($generator->valid()) {
-                        // Resolve
-                        $dependency    = $generator->current();
-                        $dependency    = $directory?->getFile($dependency);
-                        $dependencyKey = $dependency?->getPath();
+                    if ($generator instanceof Generator) {
+                        while ($generator->valid()) {
+                            // Resolve
+                            $dependency    = $generator->current();
+                            $dependency    = $directory?->getFile($dependency);
+                            $dependencyKey = $dependency?->getPath();
 
-                        if (!$dependency) {
-                            $generator->send(null);
-                            continue;
+                            if (!$dependency) {
+                                $generator->send(null);
+                                continue;
+                            }
+
+                            // Circular?
+                            if (isset($stack[$dependencyKey])) {
+                                throw new CircularDependency($root, $dependency, array_values($stack));
+                            }
+
+                            // Resolved?
+                            $dependency               = $resolved[$dependencyKey] ?? $dependency;
+                            $resolved[$dependencyKey] = $dependency;
+
+                            // Processable?
+                            if (!isset($processed[$dependencyKey]) && $root->isInside($dependency)) {
+                                $this->runFile($root, $dependency, $listener, $processed, $resolved, $stack);
+                            }
+
+                            // Continue
+                            $generator->send($dependency);
                         }
 
-                        // Circular?
-                        if (isset($stack[$dependencyKey])) {
-                            throw new CircularDependency($root, $dependency, array_values($stack));
-                        }
-
-                        // Resolved?
-                        $dependency               = $resolved[$dependencyKey] ?? $dependency;
-                        $resolved[$dependencyKey] = $dependency;
-
-                        // Processable?
-                        if (!isset($processed[$dependencyKey]) && $root->isInside($dependency)) {
-                            $this->runFile($root, $dependency, $listener, $processed, $resolved, $stack);
-                        }
-
-                        // Continue
-                        $generator->send($dependency);
+                        $result = $generator->getReturn();
+                    } else {
+                        $result = $generator;
                     }
 
-                    if ($generator->getReturn() !== true) {
+                    if ($result !== true) {
                         throw new FileTaskFailed($root, $file, $task);
                     }
                 } catch (ProcessorError $exception) {

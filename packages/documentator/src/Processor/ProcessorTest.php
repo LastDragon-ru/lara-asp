@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use SplFileInfo;
 
 use function array_map;
 use function array_unique;
@@ -29,7 +30,31 @@ final class ProcessorTest extends TestCase {
             ->once()
             ->andReturns(['php']);
 
-        $task = new class() implements Task {
+        $taskA = new class() implements Task {
+            /**
+             * @var array<array-key, string>
+             */
+            public array $processed = [];
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['htm'];
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function __invoke(Directory $root, File $file): bool {
+                $this->processed[] = $file->getRelativePath($root);
+
+                return true;
+            }
+        };
+        $taskB = new class() implements Task {
             /**
              * @var array<array-key, array{string, array<string, ?string>}>
              */
@@ -44,7 +69,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @inheritDoc
+             * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -61,7 +86,7 @@ final class ProcessorTest extends TestCase {
                         '../../c.txt',
                         '../../../../../README.md',
                     ],
-                    default            => [
+                    default  => [
                         // empty
                     ],
                 };
@@ -89,7 +114,8 @@ final class ProcessorTest extends TestCase {
 
         (new Processor())
             ->task($mock)
-            ->task($task)
+            ->task($taskA)
+            ->task($taskB)
             ->run($root, static function (string $path) use (&$events): void {
                 $events[] = $path;
             });
@@ -103,12 +129,19 @@ final class ProcessorTest extends TestCase {
                 'a/a/aa.txt',
                 'a/b/ab.txt',
                 'b/b.txt',
+                'c.htm',
             ],
             $events,
         );
         self::assertCount(
             count(array_unique($events)),
             $events,
+        );
+        self::assertEquals(
+            [
+                'c.htm',
+            ],
+            $taskA->processed,
         );
         self::assertEquals(
             [
@@ -150,7 +183,7 @@ final class ProcessorTest extends TestCase {
                     [],
                 ],
             ],
-            $task->processed,
+            $taskB->processed,
         );
     }
 
@@ -165,7 +198,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @inheritDoc
+             * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -214,7 +247,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @inheritDoc
+             * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
