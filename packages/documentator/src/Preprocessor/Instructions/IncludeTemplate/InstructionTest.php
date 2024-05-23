@@ -21,12 +21,11 @@ use function dirname;
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
         $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $file     = new File(Path::normalize(self::getTestData()->path('.md')), false);
         $params   = new Parameters([
             'a' => 'Relative',
             'b' => 'Inner reference ${a}',
         ]);
-        $content  = self::getTestData()->content('.md');
         $context  = new Context($root, $root, $file, '/path/to/file.md', '');
         $instance = $this->app()->make(Instruction::class);
 
@@ -38,7 +37,7 @@ final class InstructionTest extends TestCase {
 
             FILE
             ,
-            ($instance)($context, $content, $params),
+            ($instance)($context, $file, $params),
         );
     }
 
@@ -46,7 +45,6 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters([]);
-        $content  = 'content';
         $context  = new Context($root, $root, $file, $file->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
 
@@ -54,7 +52,7 @@ final class InstructionTest extends TestCase {
             new TemplateDataMissed($context),
         );
 
-        ($instance)($context, $content, $params);
+        ($instance)($context, $file, $params);
     }
 
     public function testInvokeVariablesUnused(): void {
@@ -67,7 +65,6 @@ final class InstructionTest extends TestCase {
             'c' => 'C',
             'd' => 'D',
         ]);
-        $content  = $file->getContent();
         $context  = new Context($root, $root, $file, $file->getName(), '');
         $instance = $this->app()->make(Instruction::class);
 
@@ -75,7 +72,7 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesUnused($context, ['c', 'd']),
         );
 
-        ($instance)($context, $content, $params);
+        ($instance)($context, $file, $params);
     }
 
     public function testInvokeVariablesMissed(): void {
@@ -85,7 +82,6 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters([
             'a' => 'A',
         ]);
-        $content  = $file->getContent();
         $context  = new Context($root, $root, $file, $file->getName(), '');
         $instance = $this->app()->make(Instruction::class);
 
@@ -93,6 +89,6 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesMissed($context, ['b']),
         );
 
-        ($instance)($context, $content, $params);
+        ($instance)($context, $file, $params);
     }
 }
