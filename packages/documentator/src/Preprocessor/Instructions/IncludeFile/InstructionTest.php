@@ -3,12 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function dirname;
 
 /**
  * @internal
@@ -17,13 +15,12 @@ use function dirname;
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
         $path     = self::getTestData()->path('.md');
-        $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($root, $root, $file, $file->getPath(), $params);
+        $context  = Mockery::mock(Context::class);
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content('.md');
 
-        self::assertEquals($expected, ($instance)($context, $expected, $params));
+        self::assertEquals($expected, ($instance)($context, $file, $params));
     }
 }
