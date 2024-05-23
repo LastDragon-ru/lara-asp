@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
+use Generator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use SplFileInfo;
 
 interface Task {
     /**
@@ -14,16 +16,13 @@ interface Task {
     public function getExtensions(): array;
 
     /**
-     * Should return all files on which `$file` depends.
-     *
-     * @return array<array-key, string>
-     */
-    public function getDependencies(Directory $root, Directory $directory, File $file): array;
-
-    /**
      * Performs action on the `$file`.
      *
-     * @param array<array-key, ?File> $dependencies
+     * Each returned value will be treated as a dependency of the task. It will
+     * be resolved relative to the directory where the `$file` located,
+     * processed, and then send back into the generator.
+     *
+     * @return Generator<array-key, SplFileInfo|File|string, ?File, bool>
      */
-    public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool;
+    public function __invoke(Directory $root, File $file): Generator;
 }

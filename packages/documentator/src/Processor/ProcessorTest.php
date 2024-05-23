@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
+use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
@@ -30,7 +31,7 @@ final class ProcessorTest extends TestCase {
 
         $task = new class() implements Task {
             /**
-             * @var array<array-key, array{string, string, array<string, ?string>}>
+             * @var array<array-key, array{string, array<string, ?string>}>
              */
             public array $processed = [];
 
@@ -46,17 +47,16 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getDependencies(Directory $root, Directory $directory, File $file): array {
-                $path = $file->getRelativePath($directory);
-
-                return match (true) {
-                    $path === 'a.txt'  => [
-                        '../b/b/bb.txt' => '../b/b/bb.txt',
-                        '../c.txt'  => '../c.txt',
-                        '../c.html' => '../c.html',
-                        '404.html'  => '404.html',
+            public function __invoke(Directory $root, File $file): Generator {
+                $resolved     = [];
+                $dependencies = match ($file->getName()) {
+                    'a.txt'  => [
+                        '../b/b/bb.txt',
+                        '../c.txt',
+                        '../c.html',
+                        '404.html',
                     ],
-                    $path === 'bb.txt' => [
+                    'bb.txt' => [
                         '../../b/a/ba.txt',
                         '../../c.txt',
                         '../../../../../README.md',
@@ -65,21 +65,18 @@ final class ProcessorTest extends TestCase {
                         // empty
                     ],
                 };
-            }
 
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
+                foreach ($dependencies as $dependency) {
+                    $resolved[$dependency] = yield $dependency;
+                }
+
                 $this->processed[] = [
-                    $directory->getRelativePath($root),
-                    $file->getRelativePath($directory),
+                    $file->getRelativePath($root),
                     array_map(
                         static function (?File $file) use ($root): ?string {
                             return $file?->getRelativePath($root);
                         },
-                        $dependencies,
+                        $resolved,
                     ),
                 ];
 
@@ -116,27 +113,23 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'b/a',
-                    'ba.txt',
+                    'b/a/ba.txt',
                     [],
                 ],
                 [
-                    '',
                     'c.txt',
                     [],
                 ],
                 [
-                    'b/b',
-                    'bb.txt',
+                    'b/b/bb.txt',
                     [
-                        0 => 'b/a/ba.txt',
-                        1 => 'c.txt',
-                        2 => '../../../README.md',
+                        '../../b/a/ba.txt'         => 'b/a/ba.txt',
+                        '../../c.txt'              => 'c.txt',
+                        '../../../../../README.md' => '../../../README.md',
                     ],
                 ],
                 [
-                    'a',
-                    'a.txt',
+                    'a/a.txt',
                     [
                         '../b/b/bb.txt' => 'b/b/bb.txt',
                         '../c.txt'      => 'c.txt',
@@ -145,18 +138,15 @@ final class ProcessorTest extends TestCase {
                     ],
                 ],
                 [
-                    'a/a',
-                    'aa.txt',
+                    'a/a/aa.txt',
                     [],
                 ],
                 [
-                    'a/b',
-                    'ab.txt',
+                    'a/b/ab.txt',
                     [],
                 ],
                 [
-                    'b',
-                    'b.txt',
+                    'b/b.txt',
                     [],
                 ],
             ],
@@ -178,33 +168,15 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getDependencies(Directory $root, Directory $directory, File $file): array {
-                $path = $file->getRelativePath($directory);
-
-                return match (true) {
-                    $path === 'a.txt'  => [
-                        '../b/b.txt',
-                    ],
-                    $path === 'b.txt'  => [
-                        '../b/a/ba.txt',
-                    ],
-                    $path === 'ba.txt' => [
-                        '../../c.txt',
-                    ],
-                    $path === 'c.txt'  => [
-                        'a/a.txt',
-                    ],
-                    default            => [
-                        // empty
-                    ],
+            public function __invoke(Directory $root, File $file): Generator {
+                match ($file->getName()) {
+                    'a.txt'  => yield '../b/b.txt',
+                    'b.txt'  => yield '../b/a/ba.txt',
+                    'ba.txt' => yield '../../c.txt',
+                    'c.txt'  => yield 'a/a.txt',
+                    default  => null,
                 };
-            }
 
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
                 return true;
             }
         };
@@ -245,24 +217,12 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getDependencies(Directory $root, Directory $directory, File $file): array {
-                $path = $file->getRelativePath($directory);
-
-                return match (true) {
-                    $path === 'c.txt' => [
-                        'c.txt',
-                    ],
-                    default           => [
-                        // empty
-                    ],
+            public function __invoke(Directory $root, File $file): Generator {
+                match ($file->getName()) {
+                    'c.txt' => yield 'c.txt',
+                    default => null,
                 };
-            }
 
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function run(Directory $root, Directory $directory, File $file, array $dependencies): bool {
                 return true;
             }
         };
