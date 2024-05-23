@@ -4,22 +4,21 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 
 use Exception;
 use Illuminate\Process\Factory;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
 use function dirname;
-use function is_file;
 use function pathinfo;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace_callback;
 use function trim;
 
-use const PATHINFO_EXTENSION;
+use const PATHINFO_FILENAME;
 use const PREG_UNMATCHED_AS_NULL;
 
 /**
@@ -31,7 +30,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * block. You can wrap the output into `<markdown>text</markdown>` tags to
  * insert it as is.
  *
- * @implements InstructionContract<string, null>
+ * @implements InstructionContract<File, null>
  */
 class Instruction implements InstructionContract {
     public const    Limit          = 50;
@@ -50,7 +49,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public static function getResolver(): string {
-        return FileContent::class;
+        return FileResolver::class;
     }
 
     #[Override]
@@ -60,25 +59,23 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): string {
-        // Prepare
-        $content = $target;
-        $target  = $context->target;
-        $path    = $context->file->getPath();
-
-        // Process
-        $language = $this->getLanguage($path, $target);
-        $content  = trim($content);
+        // Content
+        $language = $this->getLanguage($context, $target, $parameters);
+        $content  = trim($target->getContent());
         $content  = <<<CODE
             ```{$language}
             $content
             ```
             CODE;
-        $command  = $this->getCommand($path, $target);
+
+        // Command?
+        $command = $this->getCommand($context, $target, $parameters);
 
         if ($command) {
             // Call
             try {
-                $output = $this->factory->newPendingProcess()->path(dirname($path))->run($command)->throw()->output();
+                $dir    = dirname($target->getPath());
+                $output = $this->factory->newPendingProcess()->path($dir)->run($command)->throw()->output();
                 $output = trim($output);
             } catch (Exception $exception) {
                 throw new TargetExecFailed($context, $exception);
@@ -140,17 +137,13 @@ class Instruction implements InstructionContract {
         return $content;
     }
 
-    protected function getLanguage(string $path, string $target): string {
-        return pathinfo($target, PATHINFO_EXTENSION);
+    protected function getLanguage(Context $context, File $target, mixed $parameters): string {
+        return $target->getExtension();
     }
 
-    protected function getCommand(string $path, string $target): ?string {
-        $info    = pathinfo($target);
-        $file    = isset($info['dirname'])
-            ? Path::join($info['dirname'], "{$info['filename']}.run")
-            : "{$info['filename']}.run";
-        $command = Path::getPath(dirname($path), $file);
-        $command = is_file($command) ? $command : null;
+    protected function getCommand(Context $context, File $target, mixed $parameters): ?string {
+        $command = pathinfo($target->getName(), PATHINFO_FILENAME).'.run';
+        $command = $context->root->getDirectory($target)?->getFile($command)?->getPath();
 
         return $command;
     }

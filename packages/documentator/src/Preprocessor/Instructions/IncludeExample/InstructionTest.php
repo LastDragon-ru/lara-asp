@@ -34,7 +34,7 @@ final class InstructionTest extends TestCase {
                 ->fake();
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $content, $params);
+        $actual   = ($instance)($context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -68,7 +68,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $content, $params);
+        $actual   = ($instance)($context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -111,7 +111,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $content, $params);
+        $actual   = ($instance)($context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -156,7 +156,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $content, $params);
+        $actual   = ($instance)($context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -195,7 +195,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $content, $params);
+        $actual   = ($instance)($context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
