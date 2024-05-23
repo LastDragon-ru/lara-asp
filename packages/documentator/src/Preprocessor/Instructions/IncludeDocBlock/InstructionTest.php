@@ -29,7 +29,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path($file);
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = $file->getContent();
+        $target   = $file;
         $context  = new Context($root, $root, $file, $file->getName(), null);
         $instance = $this->app()->make(Instruction::class);
 
