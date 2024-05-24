@@ -14,7 +14,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function basename;
 use function dirname;
 
 /**
@@ -26,15 +25,14 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(string $expected, string $template): void {
-        $path     = self::getTestData()->path('Document.md');
+        $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
-        $file     = new File(Path::normalize(__FILE__), false);
-        $target   = basename(self::getTestData()->path('/packages'));
+        $file     = new File($path, false);
+        $target   = new Directory(Path::join($root->getPath(), 'packages'), false);
         $params   = new Parameters(template: $template);
-        $context  = new Context($root, $root, $file, $target, '');
-        $resolved = Path::join($root->getPath(), $context->target);
+        $context  = new Context($root, $root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content($expected),
@@ -47,54 +45,55 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNotAPackage(): void {
-        $path     = self::getTestData()->path('Document.md');
+        $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
-        $file     = new File(Path::normalize(__FILE__), false);
-        $target   = basename(self::getTestData()->path('/invalid'));
+        $file     = new File($path, false);
+        $target   = new Directory(Path::join($root->getPath(), 'invalid'), false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, $target, '');
-        $resolved = Path::join($root->getPath(), $context->target);
+        $context  = new Context($root, $root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
+        $package  = $target->getDirectory('package');
 
+        self::assertNotNull($package);
         self::expectExceptionObject(
-            new PackageComposerJsonIsMissing($context, 'invalid/package'),
+            new PackageComposerJsonIsMissing($context, $package),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
+        ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
 
     public function testInvokeNoReadme(): void {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
-        $file     = new File(Path::normalize(__FILE__), false);
-        $target   = basename(self::getTestData()->path('/no readme'));
+        $file     = new File($path, false);
+        $target   = new Directory(Path::join($root->getPath(), '/no readme'), false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, $target, '');
-        $resolved = Path::join($root->getPath(), $context->target);
+        $context  = new Context($root, $root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
+        $package  = $target->getDirectory('package');
 
+        self::assertNotNull($package);
         self::expectExceptionObject(
-            new PackageReadmeIsMissing($context, 'no readme/package'),
+            new PackageReadmeIsMissing($context, $package),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
+        ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
 
     public function testInvokeNoTitle(): void {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
-        $file     = new File(Path::normalize(__FILE__), false);
-        $target   = basename(self::getTestData()->path('/no title'));
+        $file     = new File($path, false);
+        $target   = new Directory(Path::join($root->getPath(), '/no title'), false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, $target, '');
-        $resolved = Path::join($root->getPath(), $context->target);
+        $context  = new Context($root, $root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DocumentTitleIsMissing($context, 'no title/package/README.md'),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
+        ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
     //</editor-fold>
 
