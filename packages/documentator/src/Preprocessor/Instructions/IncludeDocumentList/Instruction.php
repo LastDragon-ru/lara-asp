@@ -70,19 +70,19 @@ class Instruction implements InstructionContract {
                 continue;
             }
 
-            // Extract
+            // Title?
             $docTitle = Markdown::getTitle($content);
-            $docPath  = $file->getRelativePath($context->file);
 
-            if ($docTitle) {
-                $documents[] = [
-                    'path'    => $docPath,
-                    'title'   => $docTitle,
-                    'summary' => Markdown::getSummary($content),
-                ];
-            } else {
-                throw new DocumentTitleIsMissing($context, $docPath);
+            if (!$docTitle) {
+                throw new DocumentTitleIsMissing($context, $file);
             }
+
+            // Add
+            $documents[] = [
+                'path'    => $file->getRelativePath($context->file),
+                'title'   => $docTitle,
+                'summary' => Markdown::getSummary($content),
+            ];
         }
 
         // Empty?

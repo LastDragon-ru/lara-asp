@@ -86,9 +86,11 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
+        $expected = $root->getFile('WithoutTitle.md');
 
+        self::assertNotNull($expected);
         self::expectExceptionObject(
-            new DocumentTitleIsMissing($context, 'WithoutTitle.md'),
+            new DocumentTitleIsMissing($context, $expected),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $root, $params);

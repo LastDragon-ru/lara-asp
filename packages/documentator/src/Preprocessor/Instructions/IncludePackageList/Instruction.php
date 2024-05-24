@@ -80,20 +80,21 @@ class Instruction implements InstructionContract {
                 throw new PackageReadmeIsMissing($context, $package);
             }
 
-            // Extract
+            // Title?
             $packageTitle = Markdown::getTitle($content);
 
-            if ($packageTitle) {
-                $upgrade    = yield $package->getPath('UPGRADE.md');
-                $packages[] = [
-                    'path'    => $readme->getRelativePath($context->file),
-                    'title'   => $packageTitle,
-                    'summary' => Markdown::getSummary($content),
-                    'upgrade' => $upgrade?->getRelativePath($context->file),
-                ];
-            } else {
-                throw new DocumentTitleIsMissing($context, $readme->getRelativePath($context->file));
+            if (!$packageTitle) {
+                throw new DocumentTitleIsMissing($context, $readme);
             }
+
+            // Add
+            $upgrade    = yield $package->getPath('UPGRADE.md');
+            $packages[] = [
+                'path'    => $readme->getRelativePath($context->file),
+                'title'   => $packageTitle,
+                'summary' => Markdown::getSummary($content),
+                'upgrade' => $upgrade?->getRelativePath($context->file),
+            ];
         }
 
         // Packages?
