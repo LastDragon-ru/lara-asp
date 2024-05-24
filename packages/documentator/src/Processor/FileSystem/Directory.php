@@ -53,8 +53,8 @@ class Directory implements Stringable {
         }
     }
 
-    public function getPath(): string {
-        return $this->path;
+    public function getPath(?string $path = null): string {
+        return $path !== null ? Path::getPath($this->path, $path) : $this->path;
     }
 
     public function getName(): string {
@@ -76,7 +76,7 @@ class Directory implements Stringable {
         }
 
         // File?
-        $path = Path::getPath($this->path, $path);
+        $path = $this->getPath($path);
 
         if (!is_file($path)) {
             return null;
@@ -107,7 +107,7 @@ class Directory implements Stringable {
         }
 
         // Directory?
-        $path = Path::getPath($this->path, $path);
+        $path = $this->getPath($path);
 
         if (!is_dir($path)) {
             return null;
@@ -124,9 +124,9 @@ class Directory implements Stringable {
 
     public function isInside(SplFileInfo|File|self|string $path): bool {
         $path = match (true) {
-            $path instanceof SplFileInfo => Path::getPath($this->path, $path->getPathname()),
+            $path instanceof SplFileInfo => $this->getPath($path->getPathname()),
             is_object($path)             => $path->getPath(),
-            default                      => Path::getPath($this->path, $path),
+            default                      => $this->getPath($path),
         };
         $inside = $path !== $this->path
             && str_starts_with($path, $this->path);

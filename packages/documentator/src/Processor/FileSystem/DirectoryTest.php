@@ -263,4 +263,14 @@ final class DirectoryTest extends TestCase {
         self::assertEquals('DirectoryTest/a', $internal->getRelativePath($directory));
         self::assertEquals('DirectoryTest/a', $internal->getRelativePath($file));
     }
+
+    public function testGetPath(): void {
+        $file      = Path::normalize(__FILE__);
+        $path      = Path::normalize(__DIR__);
+        $directory = new Directory($path, true);
+
+        self::assertEquals($path, $directory->getPath());
+        self::assertEquals($file, $directory->getPath($file));
+        self::assertEquals($file, $directory->getPath(basename($file)));
+    }
 }
