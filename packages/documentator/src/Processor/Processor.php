@@ -49,7 +49,7 @@ class Processor {
     }
 
     /**
-     * @param Closure(string $path, bool $result, float $duration): void|null $listener
+     * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
      */
     public function run(string $path, ?Closure $listener = null): void {
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
@@ -68,10 +68,10 @@ class Processor {
     }
 
     /**
-     * @param Closure(string $path, bool $result, float $duration): void|null $listener
-     * @param array<string, true>                                             $processed
-     * @param array<string, File>                                             $resolved
-     * @param array<string, File>                                             $stack
+     * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
+     * @param array<string, true>                                              $processed
+     * @param array<string, File>                                              $resolved
+     * @param array<string, File>                                              $stack
      */
     private function runFile(
         Directory $root,
