@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFi
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -21,6 +22,6 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content('.md');
 
-        self::assertEquals($expected, ($instance)($context, $file, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $file, $params));
     }
 }

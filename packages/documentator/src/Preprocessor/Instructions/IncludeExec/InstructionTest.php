@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -34,7 +35,7 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, ($instance)($context, $command, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
 
         $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
             return $process->path === $root->getPath()

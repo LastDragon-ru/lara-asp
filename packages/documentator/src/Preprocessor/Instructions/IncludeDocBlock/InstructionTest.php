@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -39,7 +40,7 @@ final class InstructionTest extends TestCase {
             $expected = self::getTestData()->content($expected);
         }
 
-        self::assertEquals($expected, ($instance)($context, $target, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $target, $params));
     }
     //</editor-fold>
 

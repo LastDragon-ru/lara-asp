@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -25,7 +26,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $root->getPath(), $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $root->getPath(), $params);
 
         self::assertEquals(
             self::getTestData()->content('~SameDirectory.md'),
@@ -45,7 +46,7 @@ final class InstructionTest extends TestCase {
         $context  = new Context($root, $root, $file, basename(self::getTestData()->path('/')), '');
         $instance = $this->app()->make(Instruction::class);
         $target   = Path::join($root->getPath(), $context->target);
-        $actual   = ($instance)($context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('~AnotherDirectory.md'),
@@ -64,7 +65,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters(null);
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $root->getPath(), $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $root->getPath(), $params);
 
         self::assertEquals(
             self::getTestData()->content('~NestedDirectories.md'),
@@ -88,6 +89,6 @@ final class InstructionTest extends TestCase {
             new DocumentTitleIsMissing($context, 'WithoutTitle.md'),
         );
 
-        ($instance)($context, $root->getPath(), $params);
+        ProcessorHelper::runInstruction($instance, $context, $root->getPath(), $params);
     }
 }

@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariables
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -37,7 +38,7 @@ final class InstructionTest extends TestCase {
 
             FILE
             ,
-            ($instance)($context, $file, $params),
+            ProcessorHelper::runInstruction($instance, $context, $file, $params),
         );
     }
 
@@ -52,7 +53,7 @@ final class InstructionTest extends TestCase {
             new TemplateDataMissed($context),
         );
 
-        ($instance)($context, $file, $params);
+        ProcessorHelper::runInstruction($instance, $context, $file, $params);
     }
 
     public function testInvokeVariablesUnused(): void {
@@ -72,7 +73,7 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesUnused($context, ['c', 'd']),
         );
 
-        ($instance)($context, $file, $params);
+        ProcessorHelper::runInstruction($instance, $context, $file, $params);
     }
 
     public function testInvokeVariablesMissed(): void {
@@ -89,6 +90,6 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesMissed($context, ['b']),
         );
 
-        ($instance)($context, $file, $params);
+        ProcessorHelper::runInstruction($instance, $context, $file, $params);
     }
 }

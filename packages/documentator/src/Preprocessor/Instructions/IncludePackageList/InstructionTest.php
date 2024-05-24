@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJs
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -33,7 +34,7 @@ final class InstructionTest extends TestCase {
         $context  = new Context($root, $root, $file, $target, '');
         $resolved = Path::join($root->getPath(), $context->target);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $resolved, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
 
         self::assertEquals(
             self::getTestData()->content($expected),
@@ -59,7 +60,7 @@ final class InstructionTest extends TestCase {
             new PackageComposerJsonIsMissing($context, 'invalid/package'),
         );
 
-        ($instance)($context, $resolved, $params);
+        ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
     }
 
     public function testInvokeNoReadme(): void {
@@ -76,7 +77,7 @@ final class InstructionTest extends TestCase {
             new PackageReadmeIsMissing($context, 'no readme/package'),
         );
 
-        ($instance)($context, $resolved, $params);
+        ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
     }
 
     public function testInvokeNoTitle(): void {
@@ -93,7 +94,7 @@ final class InstructionTest extends TestCase {
             new DocumentTitleIsMissing($context, 'no title/package/README.md'),
         );
 
-        ($instance)($context, $resolved, $params);
+        ProcessorHelper::runInstruction($instance, $context, $resolved, $params);
     }
     //</editor-fold>
 

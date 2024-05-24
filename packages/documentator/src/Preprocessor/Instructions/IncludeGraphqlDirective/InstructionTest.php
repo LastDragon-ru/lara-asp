@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissi
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
@@ -48,7 +49,7 @@ final class InstructionTest extends TestCase {
         $file     = Mockery::mock(File::class);
         $context  = new Context($root, $root, $file, '@test', null);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $context->target, null);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $context->target, null);
 
         self::assertEquals(
             <<<MARKDOWN
@@ -73,7 +74,7 @@ final class InstructionTest extends TestCase {
             new DependencyIsMissing($context, PrinterContract::class),
         );
 
-        ($instance)($context, $context->target, null);
+        ProcessorHelper::runInstruction($instance, $context, $context->target, null);
     }
 
     public function testInvokeNoDirective(): void {
@@ -100,7 +101,7 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context),
         );
 
-        ($instance)($context, $context->target, null);
+        ProcessorHelper::runInstruction($instance, $context, $context->target, null);
     }
 
     public function testInvokeNoDirectiveResolver(): void {
@@ -118,6 +119,6 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context),
         );
 
-        ($instance)($context, $context->target, null);
+        ProcessorHelper::runInstruction($instance, $context, $context->target, null);
     }
 }

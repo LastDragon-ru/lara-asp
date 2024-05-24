@@ -7,6 +7,7 @@ use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -34,7 +35,7 @@ final class InstructionTest extends TestCase {
                 ->fake();
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -68,7 +69,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -111,7 +112,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -156,7 +157,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -195,7 +196,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ($instance)($context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED

@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -183,16 +184,12 @@ final class PreprocessorTest extends TestCase {
         $root
             ->shouldReceive('getDirectory')
             ->with($file)
-            ->once()
+            ->twice()
             ->andReturn($directory);
 
-        $generator = ($preprocessor)($root, $file);
+        $result = ProcessorHelper::runTask($preprocessor, $root, $file);
 
-        while ($generator->valid()) {
-            $generator->send($root->getDirectory($file)?->getFile($generator->current()));
-        }
-
-        self::assertTrue($generator->getReturn());
+        self::assertTrue($result);
         self::assertEquals(
             <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
