@@ -10,6 +10,7 @@ use SplFileInfo;
 
 use function array_map;
 use function basename;
+use function dirname;
 use function iterator_to_array;
 use function sprintf;
 
@@ -254,9 +255,12 @@ final class DirectoryTest extends TestCase {
     }
 
     public function testGetRelativePath(): void {
-        $internal  = new Directory(Path::normalize(__DIR__), false);
-        $directory = new Directory(Path::join(__DIR__, '..'), true);
+        $path      = Path::normalize(self::getTestData()->path('a/a.txt'));
+        $file      = new File(Path::normalize(__FILE__), false);
+        $internal  = new Directory(dirname($path), false);
+        $directory = new Directory(Path::normalize(__DIR__), true);
 
-        self::assertEquals(basename(__DIR__), $internal->getRelativePath($directory));
+        self::assertEquals('DirectoryTest/a', $internal->getRelativePath($directory));
+        self::assertEquals('DirectoryTest/a', $internal->getRelativePath($file));
     }
 }

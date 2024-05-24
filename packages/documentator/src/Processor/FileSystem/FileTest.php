@@ -100,5 +100,6 @@ final class FileTest extends TestCase {
         $directory = new Directory(Path::normalize(__DIR__), true);
 
         self::assertEquals(basename(__FILE__), $internal->getRelativePath($directory));
+        self::assertEquals(basename(__FILE__), $internal->getRelativePath($internal));
     }
 }

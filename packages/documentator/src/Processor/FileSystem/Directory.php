@@ -200,8 +200,11 @@ class Directory implements Stringable {
         yield from [];
     }
 
-    public function getRelativePath(self $root): string {
-        return Path::getRelativePath($root->getPath(), $this->path);
+    public function getRelativePath(self|File $root): string {
+        $root = $root instanceof File ? dirname($root->getPath()) : $root->getPath();
+        $path = Path::getRelativePath($root, $this->path);
+
+        return $path;
     }
 
     #[Override]

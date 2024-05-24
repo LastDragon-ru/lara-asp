@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use Override;
 use Stringable;
 
+use function dirname;
 use function file_get_contents;
 use function file_put_contents;
 use function is_file;
@@ -93,8 +94,11 @@ class File implements Stringable {
             && file_put_contents($this->path, $this->content) !== false;
     }
 
-    public function getRelativePath(Directory $root): string {
-        return Path::getRelativePath($root->getPath(), $this->path);
+    public function getRelativePath(Directory|self $root): string {
+        $root = $root instanceof self ? dirname($root->getPath()) : $root->getPath();
+        $path = Path::getRelativePath($root, $this->path);
+
+        return $path;
     }
 
     #[Override]
