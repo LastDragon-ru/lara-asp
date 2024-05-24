@@ -30,7 +30,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = new Directory(Path::join($root->getPath(), 'packages'), false);
         $params   = new Parameters(template: $template);
-        $context  = new Context($root, $root, $file, $target->getPath(), '');
+        $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -50,7 +50,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = new Directory(Path::join($root->getPath(), 'invalid'), false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, $target->getPath(), '');
+        $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
         $package  = $target->getDirectory('package');
 
@@ -68,7 +68,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = new Directory(Path::join($root->getPath(), '/no readme'), false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, $target->getPath(), '');
+        $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
         $package  = $target->getDirectory('package');
 
@@ -86,7 +86,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = new Directory(Path::join($root->getPath(), '/no title'), false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, $target->getPath(), '');
+        $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

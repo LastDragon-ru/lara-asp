@@ -27,7 +27,7 @@ final class InstructionTest extends TestCase {
             'a' => 'Relative',
             'b' => 'Inner reference ${a}',
         ]);
-        $context  = new Context($root, $root, $file, '/path/to/file.md', '');
+        $context  = new Context($root, $file, '/path/to/file.md', '');
         $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
@@ -46,7 +46,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters([]);
-        $context  = new Context($root, $root, $file, $file->getPath(), '');
+        $context  = new Context($root, $file, $file->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -66,7 +66,7 @@ final class InstructionTest extends TestCase {
             'c' => 'C',
             'd' => 'D',
         ]);
-        $context  = new Context($root, $root, $file, $file->getName(), '');
+        $context  = new Context($root, $file, $file->getName(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -83,7 +83,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters([
             'a' => 'A',
         ]);
-        $context  = new Context($root, $root, $file, $file->getName(), '');
+        $context  = new Context($root, $file, $file->getName(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

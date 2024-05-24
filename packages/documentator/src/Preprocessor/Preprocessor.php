@@ -7,7 +7,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
@@ -223,8 +222,6 @@ class Preprocessor implements Task {
         }
 
         // Parse each of them
-        $directory = Cast::to(Directory::class, $root->getDirectory($file));
-
         foreach ($matches as $match) {
             // Instruction?
             $name        = (string) $match['instruction'];
@@ -253,7 +250,7 @@ class Preprocessor implements Task {
             }
 
             // Parse
-            $context    = new Context($root, $directory, $file, $target, $match['parameters']);
+            $context    = new Context($root, $file, $target, $match['parameters']);
             $parameters = $parameters
                 ? $this->serializer->deserialize($parameters, $params, 'json')
                 : null;

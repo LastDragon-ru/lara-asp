@@ -23,7 +23,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, './', '');
+        $context  = new Context($root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $root, $params);
 
@@ -42,7 +42,7 @@ final class InstructionTest extends TestCase {
         $root    = new Directory(dirname($path), false);
         $file    = new File($path, false);
         $params  = new Parameters();
-        $context = new Context($root, $root, $file, basename(self::getTestData()->path('/')), '');
+        $context = new Context($root, $file, basename(self::getTestData()->path('/')), '');
         $target  = $root->getDirectory($context->target);
 
         self::assertNotNull($target);
@@ -65,7 +65,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = new Parameters(null);
-        $context  = new Context($root, $root, $file, './', '');
+        $context  = new Context($root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $root, $params);
 
@@ -84,7 +84,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = new Parameters();
-        $context  = new Context($root, $root, $file, './', '');
+        $context  = new Context($root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

@@ -23,7 +23,7 @@ final class InstructionTest extends TestCase {
         $params   = null;
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $root, $file, $command, $params);
+        $context  = new Context($root, $file, $command, $params);
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();

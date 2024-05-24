@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as Ins
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
 use Override;
 
+use function dirname;
 use function trim;
 
 /**
@@ -43,7 +44,7 @@ class Instruction implements InstructionContract {
         try {
             return trim(
                 $this->factory->newPendingProcess()
-                    ->path($context->directory->getPath())
+                    ->path(dirname($context->file->getPath()))
                     ->run($target)
                     ->throw()
                     ->output(),

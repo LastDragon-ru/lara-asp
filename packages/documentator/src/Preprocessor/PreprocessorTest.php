@@ -59,7 +59,6 @@ final class PreprocessorTest extends TestCase {
     public function testParse(): void {
         $a            = new PreprocessorTest__EmptyInstruction();
         $b            = new PreprocessorTest__TestInstruction();
-        $directory    = Mockery::mock(Directory::class);
         $preprocessor = Mockery::mock(Preprocessor::class, MockProperties::class);
         $preprocessor->shouldAllowMockingProtectedMethods();
         $preprocessor->makePartial();
@@ -83,13 +82,7 @@ final class PreprocessorTest extends TestCase {
             ->once()
             ->andReturn(self::MARKDOWN);
 
-        $root = Mockery::mock(Directory::class);
-        $root
-            ->shouldReceive('getDirectory')
-            ->with($file)
-            ->once()
-            ->andReturn($directory);
-
+        $root   = Mockery::mock(Directory::class);
         $tokens = $preprocessor->parse($root, $file);
 
         self::assertEquals(
@@ -97,7 +90,7 @@ final class PreprocessorTest extends TestCase {
                 '88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62' => new Token(
                     $a,
                     new PreprocessorTest__TargetResolverAsIs(),
-                    new Context($root, $directory, $file, './path/to/file', null),
+                    new Context($root, $file, './path/to/file', null),
                     null,
                     [
                         '[test:empty]: ./path/to/file' => '[test:empty]: ./path/to/file',
@@ -106,7 +99,7 @@ final class PreprocessorTest extends TestCase {
                 '4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095' => new Token(
                     $b,
                     new PreprocessorTest__TargetResolverAsValue(),
-                    new Context($root, $directory, $file, './path/to/file', null),
+                    new Context($root, $file, './path/to/file', null),
                     new PreprocessorTest__Parameters(),
                     [
                         // phpcs:disable Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned
@@ -133,7 +126,6 @@ final class PreprocessorTest extends TestCase {
                     new PreprocessorTest__TargetResolverAsValue(),
                     new Context(
                         $root,
-                        $directory,
                         $file,
                         './path/to/file/parametrized',
                         '{"a": "aa", "b": {"a": "a", "b": "b"}}',
@@ -184,7 +176,7 @@ final class PreprocessorTest extends TestCase {
         $root
             ->shouldReceive('getDirectory')
             ->with($file)
-            ->twice()
+            ->once()
             ->andReturn($directory);
 
         $result = ProcessorHelper::runTask($preprocessor, $root, $file);

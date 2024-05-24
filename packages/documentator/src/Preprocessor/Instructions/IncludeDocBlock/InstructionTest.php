@@ -31,7 +31,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $target   = $file;
-        $context  = new Context($root, $root, $file, $file->getName(), null);
+        $context  = new Context($root, $file, $file->getName(), null);
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {

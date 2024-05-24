@@ -26,7 +26,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($root, $root, $file, $file->getName(), $params);
+        $context  = new Context($root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~example.md');
         $expected = trim($content);
         $factory  = $this->override(Factory::class, function (): Factory {
@@ -54,7 +54,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($root, $root, $file, $file->getName(), $params);
+        $context  = new Context($root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -97,7 +97,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($root, $root, $file, $file->getPath(), $params);
+        $context  = new Context($root, $file, $file->getPath(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -142,7 +142,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($root, $root, $file, $file->getName(), $params);
+        $context  = new Context($root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -181,7 +181,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($root, $root, $file, $file->getPath(), $params);
+        $context  = new Context($root, $file, $file->getPath(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);

@@ -47,7 +47,7 @@ final class InstructionTest extends TestCase {
 
         $root     = Mockery::mock(Directory::class);
         $file     = Mockery::mock(File::class);
-        $context  = new Context($root, $root, $file, '@test', null);
+        $context  = new Context($root, $file, '@test', null);
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $context->target, null);
 
@@ -67,7 +67,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($root, $root, $file, $target, null);
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -94,7 +94,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($root, $root, $file, $target, null);
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -112,7 +112,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($root, $root, $file, $target, null);
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
