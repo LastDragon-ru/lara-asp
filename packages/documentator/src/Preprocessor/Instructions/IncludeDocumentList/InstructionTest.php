@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -26,7 +25,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $root->getPath(), $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $root, $params);
 
         self::assertEquals(
             self::getTestData()->content('~SameDirectory.md'),
@@ -39,13 +38,16 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeAnotherDirectory(): void {
-        $path     = self::getTestData()->path('~AnotherDirectory.md');
-        $root     = new Directory(dirname($path), false);
-        $file     = new File($path, false);
-        $params   = new Parameters();
-        $context  = new Context($root, $root, $file, basename(self::getTestData()->path('/')), '');
+        $path    = self::getTestData()->path('~AnotherDirectory.md');
+        $root    = new Directory(dirname($path), false);
+        $file    = new File($path, false);
+        $params  = new Parameters();
+        $context = new Context($root, $root, $file, basename(self::getTestData()->path('/')), '');
+        $target  = $root->getDirectory($context->target);
+
+        self::assertNotNull($target);
+
         $instance = $this->app()->make(Instruction::class);
-        $target   = Path::join($root->getPath(), $context->target);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals(
@@ -65,7 +67,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters(null);
         $context  = new Context($root, $root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $root->getPath(), $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $root, $params);
 
         self::assertEquals(
             self::getTestData()->content('~NestedDirectories.md'),
@@ -89,6 +91,6 @@ final class InstructionTest extends TestCase {
             new DocumentTitleIsMissing($context, 'WithoutTitle.md'),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $root->getPath(), $params);
+        ProcessorHelper::runInstruction($instance, $context, $root, $params);
     }
 }
