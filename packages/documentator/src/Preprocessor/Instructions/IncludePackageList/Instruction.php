@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePa
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
@@ -63,11 +62,10 @@ class Instruction implements InstructionContract {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
         $directories = $target->getDirectoriesIterator(null, 0);
-        $dir         = Cast::to(Directory::class, $context->root->getDirectory($context->file));
 
         foreach ($directories as $package) {
             // Package?
-            $packageFile = yield Path::join($package->getPath(), 'composer.json');
+            $packageFile = yield $package->getPath('composer.json');
             $packageInfo = $this->getPackageInfo($packageFile);
 
             if (!$packageFile || !$packageInfo) {
@@ -75,7 +73,7 @@ class Instruction implements InstructionContract {
             }
 
             // Readme
-            $readme  = yield Path::join($package->getPath(), Cast::toString($packageInfo['readme'] ?: 'README.md'));
+            $readme  = yield $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
             $content = $readme?->getContent();
 
             if (!$readme || !$content) {
@@ -86,15 +84,15 @@ class Instruction implements InstructionContract {
             $packageTitle = Markdown::getTitle($content);
 
             if ($packageTitle) {
-                $upgrade    = yield Path::join($package->getPath(), 'UPGRADE.md');
+                $upgrade    = yield $package->getPath('UPGRADE.md');
                 $packages[] = [
-                    'path'    => $readme->getRelativePath($dir),
+                    'path'    => $readme->getRelativePath($context->file),
                     'title'   => $packageTitle,
                     'summary' => Markdown::getSummary($content),
-                    'upgrade' => $upgrade?->getRelativePath($dir),
+                    'upgrade' => $upgrade?->getRelativePath($context->file),
                 ];
             } else {
-                throw new DocumentTitleIsMissing($context, $readme->getRelativePath($dir));
+                throw new DocumentTitleIsMissing($context, $readme->getRelativePath($context->file));
             }
         }
 

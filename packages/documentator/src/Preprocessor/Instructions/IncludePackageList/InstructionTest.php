@@ -28,7 +28,7 @@ final class InstructionTest extends TestCase {
         $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory(Path::join($root->getPath(), 'packages'), false);
+        $target   = new Directory($root->getPath('packages'), false);
         $params   = new Parameters(template: $template);
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
@@ -48,7 +48,7 @@ final class InstructionTest extends TestCase {
         $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory(Path::join($root->getPath(), 'invalid'), false);
+        $target   = new Directory($root->getPath('invalid'), false);
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
@@ -66,7 +66,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory(Path::join($root->getPath(), '/no readme'), false);
+        $target   = new Directory($root->getPath('no readme'), false);
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
@@ -84,7 +84,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory(Path::join($root->getPath(), '/no title'), false);
+        $target   = new Directory($root->getPath('no title'), false);
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);

@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
 use Generator;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
@@ -56,7 +55,6 @@ class Instruction implements InstructionContract {
         $documents = [];
         $files     = $target->getFilesIterator('*.md', $parameters->depth);
         $self      = $context->file->getPath();
-        $dir       = Cast::to(Directory::class, $context->root->getDirectory($context->file));
 
         foreach ($files as $file) {
             // Same?
@@ -74,7 +72,7 @@ class Instruction implements InstructionContract {
 
             // Extract
             $docTitle = Markdown::getTitle($content);
-            $docPath  = $file->getRelativePath($dir);
+            $docPath  = $file->getRelativePath($context->file);
 
             if ($docTitle) {
                 $documents[] = [
