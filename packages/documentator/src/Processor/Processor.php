@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
@@ -13,11 +14,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use SplFileInfo;
 
 use function array_keys;
 use function array_map;
 use function array_unique;
 use function array_values;
+use function dirname;
 use function in_array;
 use function microtime;
 
@@ -95,7 +98,7 @@ class Processor {
 
         // Process
         $start           = microtime(true);
-        $directory       = $root->getDirectory($file);
+        $directory       = dirname($file->getPath());
         $stack[$fileKey] = $file;
 
         try {
@@ -107,8 +110,13 @@ class Processor {
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
                             // Resolve
-                            $dependency    = $generator->current();
-                            $dependency    = $directory?->getFile($dependency);
+                            $dependency = $generator->current();
+                            $dependency = match (true) {
+                                $dependency instanceof SplFileInfo => $dependency->getPathname(),
+                                $dependency instanceof File        => $dependency->getPath(),
+                                default                            => $dependency,
+                            };
+                            $dependency    = $root->getFile(Path::getPath($directory, $dependency));
                             $dependencyKey = $dependency?->getPath();
 
                             if (!$dependency) {
