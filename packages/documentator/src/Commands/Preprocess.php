@@ -79,14 +79,19 @@ class Preprocess extends Command {
 
         (new Processor())
             ->task($this->preprocessor)
-            ->run($path, function (string $path, bool $success, float $duration) use ($formatter, $width): void {
+            ->run($path, function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
+                [$resultMessage, $resultColor] = match (true) {
+                    $success === false => ['FAIL', 'red'],
+                    $success === true  => ['DONE', 'green'],
+                    default            => ['SKIP', 'gray'],
+                };
+
                 $duration = $formatter->duration($duration);
-                $result   = $success ? 'DONE' : 'FAIL';
-                $length   = $width - (mb_strlen($path) + mb_strlen($duration) + mb_strlen($result) + 5);
+                $length   = $width - (mb_strlen($path) + mb_strlen($duration) + mb_strlen($resultMessage) + 5);
                 $line     = $path
                     .' '.($length > 0 ? '<fg=gray>'.str_repeat('.', $length).'</>' : '')
                     .' '."<fg=gray>{$duration}</>"
-                    .' '.($success ? "<fg=green;options=bold>{$result}</>" : "<fg=red;options=bold>{$result}</>");
+                    .' '."<fg={$resultColor};options=bold>{$resultMessage}</>";
 
                 $this->output->writeln($line);
             });
