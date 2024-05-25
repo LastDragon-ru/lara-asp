@@ -6,6 +6,7 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -69,7 +70,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
+             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -79,7 +80,6 @@ final class ProcessorTest extends TestCase {
                         '../b/b/bb.txt',
                         '../c.txt',
                         '../c.html',
-                        '404.html',
                     ],
                     'bb.txt' => [
                         '../../b/a/ba.txt',
@@ -167,7 +167,6 @@ final class ProcessorTest extends TestCase {
                         '../b/b/bb.txt' => 'b/b/bb.txt',
                         '../c.txt'      => 'c.txt',
                         '../c.html'     => 'c.html',
-                        '404.html'      => null,
                     ],
                 ],
                 [
@@ -187,6 +186,37 @@ final class ProcessorTest extends TestCase {
         );
     }
 
+    public function testRunFileNotFound(): void {
+        $task = new class() implements Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['txt'];
+            }
+
+            /**
+             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
+             */
+            #[Override]
+            public function __invoke(Directory $root, File $file): Generator {
+                yield '404.html';
+
+                return true;
+            }
+        };
+
+        $root = Path::normalize(self::getTestData()->path(''));
+
+        self::expectException(FileDependencyNotFound::class);
+        self::expectExceptionMessage("Dependency `404.html` of `a/a.txt` not found (root: `{$root}`).");
+
+        (new Processor())
+            ->task($task)
+            ->run($root);
+    }
+
     public function testRunCircularDependency(): void {
         $task = new class() implements Task {
             /**
@@ -198,7 +228,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
+             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -247,7 +277,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
+             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {

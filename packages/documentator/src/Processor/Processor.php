@@ -8,6 +8,7 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileTaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
@@ -110,18 +111,17 @@ class Processor {
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
                             // Resolve
-                            $dependency = $generator->current();
-                            $dependency = match (true) {
-                                $dependency instanceof SplFileInfo => $dependency->getPathname(),
-                                $dependency instanceof File        => $dependency->getPath(),
-                                default                            => $dependency,
+                            $path = $generator->current();
+                            $path = match (true) {
+                                $path instanceof SplFileInfo => $path->getPathname(),
+                                $path instanceof File        => $path->getPath(),
+                                default                      => $path,
                             };
-                            $dependency    = $root->getFile(Path::getPath($directory, $dependency));
+                            $dependency    = $root->getFile(Path::getPath($directory, $path));
                             $dependencyKey = $dependency?->getPath();
 
                             if (!$dependency) {
-                                $generator->send(null);
-                                continue;
+                                throw new FileDependencyNotFound($root, $file, $path);
                             }
 
                             // Circular?
