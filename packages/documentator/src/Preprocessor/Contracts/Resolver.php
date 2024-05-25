@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use SplFileInfo;
 
 /**
- * @template TParameters
+ * @template TParameters of object|null
  * @template TValue
  */
 interface Resolver {
@@ -19,7 +19,7 @@ interface Resolver {
      *
      * @param TParameters $parameters
      *
-     * @return Generator<mixed, SplFileInfo|File|string, ?File, TValue>|TValue
+     * @return Generator<mixed, SplFileInfo|File|string, File, TValue>|TValue
      */
     public function __invoke(Context $context, mixed $parameters): mixed;
 }

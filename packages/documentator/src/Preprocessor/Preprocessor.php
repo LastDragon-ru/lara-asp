@@ -139,7 +139,7 @@ class Preprocessor implements Task {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, ?File, bool>
+     * @return Generator<mixed, SplFileInfo|File|string, File, bool>
      */
     #[Override]
     public function __invoke(Directory $root, File $file): Generator {

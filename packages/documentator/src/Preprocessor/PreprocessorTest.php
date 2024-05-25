@@ -171,14 +171,7 @@ final class PreprocessorTest extends TestCase {
                 },
             );
 
-        $directory = Mockery::mock(Directory::class);
-        $root      = Mockery::mock(Directory::class);
-        $root
-            ->shouldReceive('getDirectory')
-            ->with($file)
-            ->once()
-            ->andReturn($directory);
-
+        $root   = Mockery::mock(Directory::class);
         $result = ProcessorHelper::runTask($preprocessor, $root, $file);
 
         self::assertTrue($result);

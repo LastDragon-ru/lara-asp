@@ -5,12 +5,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePa
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -20,6 +21,7 @@ use SplFileInfo;
 
 use function assert;
 use function is_array;
+use function is_file;
 use function json_decode;
 use function strcmp;
 use function usort;
@@ -55,7 +57,7 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, ?File, string>
+     * @return Generator<mixed, SplFileInfo|File|string, File, string>
      */
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
@@ -68,16 +70,16 @@ class Instruction implements InstructionContract {
             $packageFile = yield $package->getPath('composer.json');
             $packageInfo = $this->getPackageInfo($packageFile);
 
-            if (!$packageFile || !$packageInfo) {
+            if (!$packageInfo) {
                 throw new PackageComposerJsonIsMissing($context, $package);
             }
 
             // Readme
             $readme  = yield $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
-            $content = $readme?->getContent();
+            $content = $readme->getContent();
 
-            if (!$readme || !$content) {
-                throw new PackageReadmeIsMissing($context, $package);
+            if (!$content) {
+                throw new PackageReadmeIsEmpty($context, $package);
             }
 
             // Title?
@@ -88,12 +90,15 @@ class Instruction implements InstructionContract {
             }
 
             // Add
-            $upgrade    = yield $package->getPath('UPGRADE.md');
+            $upgrade    = $package->getPath('UPGRADE.md');
+            $upgrade    = is_file($upgrade)
+                ? Path::getRelativePath($context->file->getPath(), $upgrade)
+                : null;
             $packages[] = [
                 'path'    => $readme->getRelativePath($context->file),
                 'title'   => $packageTitle,
                 'summary' => Markdown::getSummary($content),
-                'upgrade' => $upgrade?->getRelativePath($context->file),
+                'upgrade' => $upgrade,
             ];
         }
 
@@ -120,9 +125,9 @@ class Instruction implements InstructionContract {
     /**
      * @return array<array-key, mixed>|null
      */
-    protected function getPackageInfo(?File $file): ?array {
+    protected function getPackageInfo(File $file): ?array {
         try {
-            $package = $file?->getContent();
+            $package = $file->getContent();
             $package = $package
                 ? json_decode($package, true, flags: JSON_THROW_ON_ERROR)
                 : null;

@@ -8,7 +8,7 @@ use Throwable;
 
 use function sprintf;
 
-class PackageReadmeIsMissing extends InstructionFailed {
+class PackageReadmeIsEmpty extends InstructionFailed {
     public function __construct(
         Context $context,
         private readonly Directory $package,
@@ -17,7 +17,7 @@ class PackageReadmeIsMissing extends InstructionFailed {
         parent::__construct(
             $context,
             sprintf(
-                "The package `%s` doesn't contain readme (in `%s`).",
+                'The package `%s` readme is empty or not readable (in `%s`).',
                 $this->package->getRelativePath($context->root),
                 $context->file->getRelativePath($context->root),
             ),

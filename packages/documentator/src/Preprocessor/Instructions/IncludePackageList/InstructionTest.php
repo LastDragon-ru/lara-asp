@@ -6,7 +6,8 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsEmpty;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
@@ -74,7 +75,25 @@ final class InstructionTest extends TestCase {
 
         self::assertNotNull($package);
         self::expectExceptionObject(
-            new PackageReadmeIsMissing($context, $package),
+            new FileDependencyNotFound($context->root, $context->file, 'no readme/package/README.md'),
+        );
+
+        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+    }
+
+    public function testInvokeEmptyReadme(): void {
+        $path     = self::getTestData()->path('Document.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
+        $target   = new Directory($root->getPath('empty readme'), false);
+        $params   = new Parameters();
+        $context  = new Context($root, $file, $target->getPath(), '');
+        $instance = $this->app()->make(Instruction::class);
+        $package  = $target->getDirectory('package');
+
+        self::assertNotNull($package);
+        self::expectExceptionObject(
+            new PackageReadmeIsEmpty($context, $package),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);

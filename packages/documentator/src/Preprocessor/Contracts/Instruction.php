@@ -34,7 +34,7 @@ interface Instruction {
      * @param TTarget     $target
      * @param TParameters $parameters
      *
-     * @return Generator<mixed, SplFileInfo|File|string, ?File, string>|string
+     * @return Generator<mixed, SplFileInfo|File|string, File, string>|string
      */
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator|string;
 }

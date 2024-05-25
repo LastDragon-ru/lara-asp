@@ -47,7 +47,7 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, ?File, string>
+     * @return Generator<mixed, SplFileInfo|File|string, File, string>
      */
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
@@ -64,9 +64,9 @@ class Instruction implements InstructionContract {
 
             // Content?
             $file    = yield $file;
-            $content = $file?->getContent();
+            $content = $file->getContent();
 
-            if (!$file || !$content) {
+            if (!$content) {
                 continue;
             }
 
