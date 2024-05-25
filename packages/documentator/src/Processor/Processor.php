@@ -126,7 +126,7 @@ class Processor {
 
                             // Circular?
                             if (isset($stack[$dependencyKey])) {
-                                throw new CircularDependency($root, $dependency, array_values($stack));
+                                throw new CircularDependency($root, $file, $dependency, array_values($stack));
                             }
 
                             // Resolved?

@@ -17,6 +17,7 @@ class CircularDependency extends ProcessorError {
     public function __construct(
         protected Directory $root,
         protected readonly File $target,
+        protected readonly File $dependency,
         protected readonly array $stack,
         Throwable $previous = null,
     ) {
@@ -30,7 +31,7 @@ class CircularDependency extends ProcessorError {
 
                 (root: `%3$s`)
                 MESSAGE,
-                $this->target->getRelativePath($this->root),
+                $this->dependency->getRelativePath($this->root),
                 '* '.implode("\n* ", array_map(fn ($f) => $f->getRelativePath($this->root), $this->stack)),
                 $this->root->getPath(),
             ),
@@ -44,6 +45,10 @@ class CircularDependency extends ProcessorError {
 
     public function getTarget(): File {
         return $this->target;
+    }
+
+    public function getDependency(): File {
+        return $this->dependency;
     }
 
     /**
