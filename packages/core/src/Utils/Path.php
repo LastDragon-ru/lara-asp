@@ -18,9 +18,8 @@ class Path {
     }
 
     public static function getRelativePath(string $root, string $path): string {
-        $path = static::isRelative($path)
-            ? static::join(static::getDirname($root), $path)
-            : $path;
+        $root = static::getDirname($root);
+        $path = static::isRelative($path) ? static::join($root, $path) : $path;
         $path = SymfonyPath::makeRelative($path, $root);
         $path = static::normalize($path);
 
