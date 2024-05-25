@@ -79,7 +79,7 @@ class Preprocess extends Command {
 
         (new Processor())
             ->task($this->preprocessor)
-            ->run($path, function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
+            ->run($path, null, function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
                 [$resultMessage, $resultColor] = match (true) {
                     $success === false => ['FAIL', 'red'],
                     $success === true  => ['DONE', 'green'],
