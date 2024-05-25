@@ -137,27 +137,31 @@ class Directory implements Stringable {
     /**
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
+     * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
      *
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
+        array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($this->getFile(...), $patterns, $depth);
+        yield from $this->getIterator($this->getFile(...), $patterns, $depth, $exclude);
     }
 
     /**
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
+     * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
      *
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
+        array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($this->getDirectory(...), $patterns, $depth);
+        yield from $this->getIterator($this->getDirectory(...), $patterns, $depth, $exclude);
     }
 
     /**
@@ -166,6 +170,7 @@ class Directory implements Stringable {
      * @param Closure(SplFileInfo): ?T                     $factory
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
+     * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
      *
      * @return Iterator<array-key, T>
      */
@@ -173,6 +178,7 @@ class Directory implements Stringable {
         Closure $factory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
+        array|string|null $exclude = null,
     ): Iterator {
         $finder = Finder::create()
             ->ignoreVCSIgnored(true)
@@ -187,6 +193,10 @@ class Directory implements Stringable {
 
         if ($depth !== null) {
             $finder = $finder->depth($depth);
+        }
+
+        if ($exclude !== null) {
+            $finder = $finder->notPath($exclude);
         }
 
         foreach ($finder as $info) {

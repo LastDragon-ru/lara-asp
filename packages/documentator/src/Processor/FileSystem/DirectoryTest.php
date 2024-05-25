@@ -224,6 +224,15 @@ final class DirectoryTest extends TestCase {
             ],
             array_map($map, iterator_to_array($directory->getFilesIterator('*.html', 0))),
         );
+
+        self::assertEquals(
+            [
+                'a/a.html',
+                'b/b.html',
+                'c.html',
+            ],
+            array_map($map, iterator_to_array($directory->getFilesIterator(exclude: ['#.*?\.txt$#']))),
+        );
     }
 
     public function testGetDirectoriesIterator(): void {
@@ -251,6 +260,26 @@ final class DirectoryTest extends TestCase {
                 'b',
             ],
             array_map($map, iterator_to_array($directory->getDirectoriesIterator(depth: 0))),
+        );
+
+        self::assertEquals(
+            [
+                'a',
+                'b',
+                'b/a',
+                'b/b',
+            ],
+            array_map($map, iterator_to_array($directory->getDirectoriesIterator(exclude: '#^a/[^/]*?$#'))),
+        );
+
+        self::assertEquals(
+            [
+                'a',
+                'a/b',
+                'b',
+                'b/b',
+            ],
+            array_map($map, iterator_to_array($directory->getDirectoriesIterator(exclude: '#^[^/]*?/a$#'))),
         );
     }
 

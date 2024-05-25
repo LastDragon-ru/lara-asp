@@ -78,6 +78,7 @@ final class ProcessorTest extends TestCase {
                         '../b/b/bb.txt',
                         '../c.txt',
                         '../c.html',
+                        'excluded.txt',
                     ],
                     'bb.txt' => [
                         '../../b/a/ba.txt',
@@ -115,22 +116,27 @@ final class ProcessorTest extends TestCase {
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
-            ->run($root, static function (string $path, ?bool $result) use (&$count, &$events): void {
-                $events[$path] = $result;
-                $count++;
-            });
+            ->run(
+                $root,
+                ['excluded.txt', '**/**/excluded.txt'],
+                static function (string $path, ?bool $result) use (&$count, &$events): void {
+                    $events[$path] = $result;
+                    $count++;
+                },
+            );
 
         self::assertEquals(
             [
-                'b/a/ba.txt' => true,
-                'c.txt'      => true,
-                'b/b/bb.txt' => true,
-                'a/a.txt'    => true,
-                'a/a/aa.txt' => true,
-                'a/b/ab.txt' => true,
-                'b/b.txt'    => true,
-                'c.htm'      => true,
-                'c.html'     => null,
+                'b/a/ba.txt'     => true,
+                'c.txt'          => true,
+                'b/b/bb.txt'     => true,
+                'a/a.txt'        => true,
+                'a/a/aa.txt'     => true,
+                'a/b/ab.txt'     => true,
+                'b/b.txt'        => true,
+                'c.htm'          => true,
+                'c.html'         => null,
+                'a/excluded.txt' => null,
             ],
             $events,
         );
@@ -165,6 +171,7 @@ final class ProcessorTest extends TestCase {
                         '../b/b/bb.txt' => 'b/b/bb.txt',
                         '../c.txt'      => 'c.txt',
                         '../c.html'     => 'c.html',
+                        'excluded.txt'  => 'a/excluded.txt',
                     ],
                 ],
                 [

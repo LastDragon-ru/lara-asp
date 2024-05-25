@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use SplFileInfo;
+use Symfony\Component\Finder\Glob;
 
 use function array_keys;
 use function array_map;
@@ -24,6 +25,7 @@ use function array_values;
 use function dirname;
 use function in_array;
 use function microtime;
+use function preg_match;
 
 class Processor {
     /**
@@ -50,16 +52,18 @@ class Processor {
     }
 
     /**
+     * @param array<array-key, string>|string|null                             $exclude glob(s) to exclude.
      * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
      */
-    public function run(string $path, ?Closure $listener = null): void {
+    public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): void {
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
         $processed  = [];
+        $exclude    = array_map(Glob::toRegex(...), (array) $exclude);
         $root       = new Directory($path, true);
 
         try {
-            foreach ($root->getFilesIterator($extensions) as $file) {
-                $this->runFile($root, $file, $listener, $processed, [], []);
+            foreach ($root->getFilesIterator(patterns: $extensions, exclude: $exclude) as $file) {
+                $this->runFile($root, $file, $exclude, $listener, $processed, [], []);
             }
         } catch (ProcessorError $exception) {
             throw $exception;
@@ -69,6 +73,7 @@ class Processor {
     }
 
     /**
+     * @param array<array-key, string>                                         $exclude
      * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
      * @param array<string, true>                                              $processed
      * @param array<string, File>                                              $resolved
@@ -77,12 +82,14 @@ class Processor {
     private function runFile(
         Directory $root,
         File $file,
+        array $exclude,
         ?Closure $listener,
         array &$processed,
         array $resolved,
         array $stack,
     ): ?float {
         // Prepare
+        $start   = microtime(true);
         $fileKey = $file->getPath();
 
         if (isset($processed[$fileKey])) {
@@ -91,18 +98,38 @@ class Processor {
 
         // Tasks?
         $tasks               = $this->tasks[$file->getExtension()] ?? [];
+        $filePath            = $file->getRelativePath($root);
         $processed[$fileKey] = true;
 
         if (!$tasks) {
             if ($listener) {
-                $listener($file->getRelativePath($root), null, 0);
+                $listener($filePath, null, microtime(true) - $start);
             }
 
             return null;
         }
 
+        // Excluded?
+        if ($exclude) {
+            $excluded = false;
+
+            foreach ($exclude as $regexp) {
+                if (preg_match($regexp, $filePath)) {
+                    $excluded = true;
+                    break;
+                }
+            }
+
+            if ($excluded) {
+                if ($listener) {
+                    $listener($filePath, null, microtime(true) - $start);
+                }
+
+                return null;
+            }
+        }
+
         // Process
-        $start           = microtime(true);
         $paused          = 0;
         $directory       = dirname($file->getPath());
         $stack[$fileKey] = $file;
@@ -143,6 +170,7 @@ class Processor {
                                 $paused += (float) $this->runFile(
                                     $root,
                                     $dependency,
+                                    $exclude,
                                     $listener,
                                     $processed,
                                     $resolved,
@@ -178,7 +206,7 @@ class Processor {
             $duration = microtime(true) - $start - $paused;
 
             if ($listener) {
-                $listener($file->getRelativePath($root), !isset($exception), $duration);
+                $listener($filePath, !isset($exception), $duration);
             }
         }
 
