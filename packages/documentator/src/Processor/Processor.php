@@ -81,12 +81,12 @@ class Processor {
         array &$processed,
         array $resolved,
         array $stack,
-    ): void {
+    ): ?float {
         // Prepare
         $fileKey = $file->getPath();
 
         if (isset($processed[$fileKey])) {
-            return;
+            return null;
         }
 
         // Tasks?
@@ -94,11 +94,16 @@ class Processor {
         $processed[$fileKey] = true;
 
         if (!$tasks) {
-            return;
+            if ($listener) {
+                $listener($file->getRelativePath($root), null, 0);
+            }
+
+            return null;
         }
 
         // Process
         $start           = microtime(true);
+        $paused          = 0;
         $directory       = dirname($file->getPath());
         $stack[$fileKey] = $file;
 
@@ -135,7 +140,14 @@ class Processor {
 
                             // Processable?
                             if (!isset($processed[$dependencyKey]) && $root->isInside($dependency)) {
-                                $this->runFile($root, $dependency, $listener, $processed, $resolved, $stack);
+                                $paused += (float) $this->runFile(
+                                    $root,
+                                    $dependency,
+                                    $listener,
+                                    $processed,
+                                    $resolved,
+                                    $stack,
+                                );
                             }
 
                             // Continue
@@ -160,19 +172,20 @@ class Processor {
             if (!$file->save()) {
                 throw new FileSaveFailed($root, $file);
             }
-
-            if ($listener) {
-                $listener($file->getRelativePath($root), true, microtime(true) - $start);
-            }
         } catch (Exception $exception) {
-            if ($listener) {
-                $listener($file->getRelativePath($root), false, microtime(true) - $start);
-            }
-
             throw $exception;
+        } finally {
+            $duration = microtime(true) - $start - $paused;
+
+            if ($listener) {
+                $listener($file->getRelativePath($root), !isset($exception), $duration);
+            }
         }
 
         // Reset
         unset($stack[$fileKey]);
+
+        // Return
+        return $duration;
     }
 }

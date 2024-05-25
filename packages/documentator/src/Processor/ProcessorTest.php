@@ -16,8 +16,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 
 use function array_map;
-use function array_unique;
-use function count;
 
 /**
  * @internal
@@ -110,33 +108,33 @@ final class ProcessorTest extends TestCase {
         };
 
         $root   = Path::normalize(self::getTestData()->path(''));
+        $count  = 0;
         $events = [];
 
         (new Processor())
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
-            ->run($root, static function (string $path) use (&$events): void {
-                $events[] = $path;
+            ->run($root, static function (string $path, ?bool $result) use (&$count, &$events): void {
+                $events[$path] = $result;
+                $count++;
             });
 
         self::assertEquals(
             [
-                'b/a/ba.txt',
-                'c.txt',
-                'b/b/bb.txt',
-                'a/a.txt',
-                'a/a/aa.txt',
-                'a/b/ab.txt',
-                'b/b.txt',
-                'c.htm',
+                'b/a/ba.txt' => true,
+                'c.txt'      => true,
+                'b/b/bb.txt' => true,
+                'a/a.txt'    => true,
+                'a/a/aa.txt' => true,
+                'a/b/ab.txt' => true,
+                'b/b.txt'    => true,
+                'c.htm'      => true,
+                'c.html'     => null,
             ],
             $events,
         );
-        self::assertCount(
-            count(array_unique($events)),
-            $events,
-        );
+        self::assertCount($count, $events);
         self::assertEquals(
             [
                 'c.htm',
