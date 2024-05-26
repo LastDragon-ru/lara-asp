@@ -1,8 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\InstructionFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Throwable;
 

@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 use Override;

@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTe
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;

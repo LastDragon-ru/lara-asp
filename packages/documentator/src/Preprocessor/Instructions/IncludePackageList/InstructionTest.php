@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsEmpty;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -90,10 +92,12 @@ final class InstructionTest extends TestCase {
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
         $package  = $target->getDirectory('package');
+        $expected = $root->getFile('empty readme/package/README.md');
 
         self::assertNotNull($package);
+        self::assertNotNull($expected);
         self::expectExceptionObject(
-            new PackageReadmeIsEmpty($context, $package),
+            new PackageReadmeIsEmpty($context, $package, $expected),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);
@@ -107,11 +111,13 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
+        $package  = $target->getDirectory('package');
         $expected = $root->getFile('no title/package/README.md');
 
+        self::assertNotNull($package);
         self::assertNotNull($expected);
         self::expectExceptionObject(
-            new DocumentTitleIsMissing($context, $expected),
+            new PackageReadmeTitleIsMissing($context, $package, $expected),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);

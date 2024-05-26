@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;

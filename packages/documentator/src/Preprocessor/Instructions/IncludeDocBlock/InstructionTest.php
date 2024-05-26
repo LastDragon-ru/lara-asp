@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDo
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;

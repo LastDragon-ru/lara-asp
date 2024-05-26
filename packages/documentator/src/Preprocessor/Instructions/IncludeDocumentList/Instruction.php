@@ -6,7 +6,7 @@ use Generator;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;

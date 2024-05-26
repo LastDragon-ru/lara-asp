@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
@@ -9,9 +11,9 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsEmpty;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -79,14 +81,14 @@ class Instruction implements InstructionContract {
             $content = $readme->getContent();
 
             if (!$content) {
-                throw new PackageReadmeIsEmpty($context, $package);
+                throw new PackageReadmeIsEmpty($context, $package, $readme);
             }
 
             // Title?
             $packageTitle = Markdown::getTitle($content);
 
             if (!$packageTitle) {
-                throw new DocumentTitleIsMissing($context, $readme);
+                throw new PackageReadmeTitleIsMissing($context, $package, $readme);
             }
 
             // Add

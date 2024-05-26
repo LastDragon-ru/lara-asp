@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTe
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
