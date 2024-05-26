@@ -6,7 +6,7 @@ Preprocess Markdown files.
 
 ## Usages
 
-* `artisan lara-asp-documentator:preprocess [<path>]`
+* `artisan lara-asp-documentator:preprocess [--exclude [EXCLUDE]] [--] [<path>]`
 
 ## Description
 
@@ -112,3 +112,9 @@ Includes the `<target>` as a template.
 ### `path?`
 
 Directory to process.
+
+## Options
+
+### `--exclude=*`
+
+Glob(s) to exclude.

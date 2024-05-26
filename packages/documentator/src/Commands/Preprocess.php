@@ -19,6 +19,7 @@ use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Terminal;
 
+use function array_map;
 use function getcwd;
 use function gettype;
 use function implode;
@@ -31,6 +32,7 @@ use function min;
 use function rtrim;
 use function str_repeat;
 use function strtr;
+use function strval;
 use function trim;
 use function var_export;
 
@@ -49,7 +51,8 @@ class Preprocess extends Command {
      * @var string
      */
     public $signature = self::Name.<<<'SIGNATURE'
-        {path? : Directory to process.}
+        {path?       : Directory to process.}
+        {--exclude=* : Glob(s) to exclude.}
     SIGNATURE;
 
     /**
@@ -71,33 +74,35 @@ class Preprocess extends Command {
     }
 
     public function __invoke(Formatter $formatter): void {
-        $cwd   = getcwd();
-        $path  = Cast::toString($this->argument('path') ?? $cwd);
-        $path  = Path::normalize($path);
-        $width = min((new Terminal())->getWidth(), 150);
-        $start = microtime(true);
+        $cwd      = getcwd();
+        $path     = Cast::toString($this->argument('path') ?? $cwd);
+        $path     = Path::normalize($path);
+        $width    = min((new Terminal())->getWidth(), 150);
+        $start    = microtime(true);
+        $exclude  = array_map(strval(...), (array) $this->option('exclude'));
+        $listener = function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
+            [$resultMessage, $resultColor] = match (true) {
+                $success === false => ['FAIL', 'red'],
+                $success === true  => ['DONE', 'green'],
+                default            => ['SKIP', 'gray'],
+            };
+
+            $duration = $formatter->duration($duration);
+            $length   = $width - (mb_strlen($path) + mb_strlen($duration) + mb_strlen($resultMessage) + 5);
+            $line     = $path
+                .' '.($length > 0 ? '<fg=gray>'.str_repeat('.', $length).'</>' : '')
+                .' '."<fg=gray>{$duration}</>"
+                .' '."<fg={$resultColor};options=bold>{$resultMessage}</>";
+
+            $this->output->writeln($line);
+        };
 
         (new Processor())
             ->task($this->preprocessor)
-            ->run($path, null, function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
-                [$resultMessage, $resultColor] = match (true) {
-                    $success === false => ['FAIL', 'red'],
-                    $success === true  => ['DONE', 'green'],
-                    default            => ['SKIP', 'gray'],
-                };
-
-                $duration = $formatter->duration($duration);
-                $length   = $width - (mb_strlen($path) + mb_strlen($duration) + mb_strlen($resultMessage) + 5);
-                $line     = $path
-                    .' '.($length > 0 ? '<fg=gray>'.str_repeat('.', $length).'</>' : '')
-                    .' '."<fg=gray>{$duration}</>"
-                    .' '."<fg={$resultColor};options=bold>{$resultMessage}</>";
-
-                $this->output->writeln($line);
-            });
+            ->run($path, $exclude, $listener);
 
         $this->output->newLine();
-        $this->output->writeln("<fg=green;options=bold>OK ({$formatter->duration(microtime(true) - $start)})</>");
+        $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration(microtime(true) - $start)})</>");
     }
 
     #[Override]
