@@ -2,25 +2,32 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+
+use function dirname;
 
 /**
  * @internal
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcess(): void {
+    public function testInvoke(): void {
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(self::getTestData()->path('.md')), false);
         $params   = new Parameters([
             'a' => 'Relative',
             'b' => 'Inner reference ${a}',
         ]);
-        $content  = self::getTestData()->content('.md');
-        $context  = new Context('/path/to/file.md', '/path/to/file.md', '');
+        $context  = new Context($root, $file, '/path/to/file.md', '');
         $instance = $this->app()->make(Instruction::class);
 
         self::assertEquals(
@@ -31,56 +38,58 @@ final class InstructionTest extends TestCase {
 
             FILE
             ,
-            $instance->process($context, $content, $params),
+            ProcessorHelper::runInstruction($instance, $context, $file, $params),
         );
     }
 
-    public function testProcessNoData(): void {
-        $file     = 'path/to/file.md';
+    public function testInvokeNoData(): void {
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters([]);
-        $content  = 'content';
-        $context  = new Context($file, $file, '');
+        $context  = new Context($root, $file, $file->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateDataMissed($context),
         );
 
-        $instance->process($context, $content, $params);
+        ProcessorHelper::runInstruction($instance, $context, $file, $params);
     }
 
-    public function testProcessVariablesUnused(): void {
-        $file     = self::getTestData()->file('.md');
+    public function testInvokeVariablesUnused(): void {
+        $path     = self::getTestData()->path('.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = new Parameters([
             'a' => 'A',
             'b' => 'B',
             'c' => 'C',
             'd' => 'D',
         ]);
-        $content  = self::getTestData()->content('.md');
-        $context  = new Context($file->getPathname(), $file->getFilename(), '');
+        $context  = new Context($root, $file, $file->getName(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesUnused($context, ['c', 'd']),
         );
 
-        $instance->process($context, $content, $params);
+        ProcessorHelper::runInstruction($instance, $context, $file, $params);
     }
 
-    public function testProcessVariablesMissed(): void {
-        $file     = self::getTestData()->file('.md');
+    public function testInvokeVariablesMissed(): void {
+        $path     = self::getTestData()->path('.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = new Parameters([
             'a' => 'A',
         ]);
-        $content  = self::getTestData()->content('.md');
-        $context  = new Context($file->getPathname(), $file->getFilename(), '');
+        $context  = new Context($root, $file, $file->getName(), '');
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesMissed($context, ['b']),
         );
 
-        $instance->process($context, $content, $params);
+        ProcessorHelper::runInstruction($instance, $context, $file, $params);
     }
 }

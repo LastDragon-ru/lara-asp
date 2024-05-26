@@ -40,10 +40,14 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         try {
             return trim(
-                $this->factory->newPendingProcess()->path(dirname($context->path))->run($target)->throw()->output(),
+                $this->factory->newPendingProcess()
+                    ->path(dirname($context->file->getPath()))
+                    ->run($target)
+                    ->throw()
+                    ->output(),
             );
         } catch (Exception $exception) {
             throw new TargetExecFailed($context, $exception);

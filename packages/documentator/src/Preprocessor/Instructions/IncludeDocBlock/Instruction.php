@@ -5,8 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDo
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use Override;
 use PhpParser\NameContext;
@@ -28,7 +29,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * from `<target>` file. Inline tags include as is except `@see`/`@link`
  * which will be replaced to FQCN (if possible). Other tags are ignored.
  *
- * @implements InstructionContract<string, Parameters>
+ * @implements InstructionContract<File, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {
@@ -42,7 +43,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public static function getResolver(): string {
-        return FileContent::class;
+        return FileResolver::class;
     }
 
     #[Override]
@@ -51,9 +52,9 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         // Class?
-        [$class, $context] = ((array) $this->getClass($context, $target) + [null, null]);
+        [$class, $context] = ((array) $this->getClass($context, $target->getContent()) + [null, null]);
 
         if (!$class || !$context) {
             return '';

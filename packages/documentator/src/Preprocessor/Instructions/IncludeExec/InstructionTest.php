@@ -4,23 +4,26 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function dirname;
 
 /**
  * @internal
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcess(): void {
-        $path     = 'current/working/directory/file.md';
+    public function testInvoke(): void {
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $params   = null;
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($path, $command, $params);
+        $context  = new Context($root, $file, $command, $params);
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
@@ -32,10 +35,10 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, $instance->process($context, $command, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
 
-        $factory->assertRan(static function (PendingProcess $process) use ($path, $command): bool {
-            return $process->path === dirname($path)
+        $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
+            return $process->path === $root->getPath()
                 && $process->command === $command;
         });
     }

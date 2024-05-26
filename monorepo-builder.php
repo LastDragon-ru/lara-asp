@@ -4,5 +4,5 @@ use Symplify\MonorepoBuilder\Config\MBConfig;
 
 return static function (MBConfig $config): void {
     $config->packageDirectories([__DIR__.'/packages']);
-    $config->packageDirectoriesExcludes(['dev']);
+    $config->packageDirectoriesExcludes(['dev', 'src']);
 };

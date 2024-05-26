@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFi
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
 use function rtrim;
@@ -12,7 +13,7 @@ use function rtrim;
 /**
  * Includes the `<target>` file.
  *
- * @implements InstructionContract<string, null>
+ * @implements InstructionContract<File, null>
  */
 class Instruction implements InstructionContract {
     public function __construct() {
@@ -26,7 +27,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public static function getResolver(): string {
-        return FileContent::class;
+        return FileResolver::class;
     }
 
     #[Override]
@@ -35,7 +36,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
-        return rtrim($target)."\n";
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+        return rtrim($target->getContent())."\n";
     }
 }

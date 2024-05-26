@@ -2,19 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use Generator;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
-use Symfony\Component\Finder\Finder;
+use SplFileInfo;
 
-use function basename;
-use function dirname;
-use function file_get_contents;
 use function strcmp;
 use function usort;
 
@@ -23,7 +22,7 @@ use function usort;
  * must have `# Header` as the first construction. The first paragraph
  * after the Header will be used as a summary.
  *
- * @implements InstructionContract<string, Parameters>
+ * @implements InstructionContract<Directory, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -39,7 +38,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public static function getResolver(): string {
-        return DirectoryPath::class;
+        return DirectoryResolver::class;
     }
 
     #[Override]
@@ -47,46 +46,43 @@ class Instruction implements InstructionContract {
         return Parameters::class;
     }
 
+    /**
+     * @return Generator<mixed, SplFileInfo|File|string, File, string>
+     */
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
-        $path      = basename($context->path);
-        $base      = dirname($context->path);
-        $root      = $target;
-        $target    = Path::normalize($context->target);
-        $finder    = Finder::create()->in($root)->name('*.md');
+        $files     = $target->getFilesIterator('*.md', $parameters->depth);
+        $self      = $context->file->getPath();
 
-        if ($parameters->depth !== null) {
-            $finder->depth($parameters->depth);
-        }
-
-        foreach ($finder->files() as $file) {
+        foreach ($files as $file) {
             // Same?
-            if ($target === '' && $file->getFilename() === $path) {
+            if ($self === $file->getPath()) {
                 continue;
             }
 
             // Content?
-            $content = file_get_contents($file->getPathname());
+            $file    = yield $file;
+            $content = $file->getContent();
 
             if (!$content) {
                 continue;
             }
 
-            // Extract
+            // Title?
             $docTitle = Markdown::getTitle($content);
-            $docPath  = Path::getRelativePath($base, $file->getPathname());
 
-            if ($docTitle) {
-                $documents[] = [
-                    'path'    => $docPath,
-                    'title'   => $docTitle,
-                    'summary' => Markdown::getSummary($content),
-                ];
-            } else {
-                throw new DocumentTitleIsMissing($context, $docPath);
+            if (!$docTitle) {
+                throw new DocumentTitleIsMissing($context, $file);
             }
+
+            // Add
+            $documents[] = [
+                'path'    => $file->getRelativePath($context->file),
+                'title'   => $docTitle,
+                'summary' => Markdown::getSummary($content),
+            ];
         }
 
         // Empty?

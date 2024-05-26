@@ -9,7 +9,7 @@ use Override;
 /**
  * Directive name (started with `@` sign)
  *
- * @implements ResolverContract<null, string>
+ * @implements ResolverContract<string, null>
  */
 class Resolver implements ResolverContract {
     public function __construct() {
@@ -17,7 +17,7 @@ class Resolver implements ResolverContract {
     }
 
     #[Override]
-    public function resolve(Context $context, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $parameters): mixed {
         return $context->target;
     }
 }

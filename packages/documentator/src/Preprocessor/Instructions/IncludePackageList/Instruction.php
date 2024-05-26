@@ -2,25 +2,28 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 use Exception;
+use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageComposerJsonIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PackageReadmeIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\DirectoryPath;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
-use Symfony\Component\Finder\Finder;
+use SplFileInfo;
 
 use function assert;
-use function basename;
-use function file_get_contents;
 use function is_array;
 use function is_file;
-use function is_string;
 use function json_decode;
 use function strcmp;
 use function usort;
@@ -31,7 +34,7 @@ use const JSON_THROW_ON_ERROR;
  * Generates package list from `<target>` directory. The readme file will be
  * used to determine package name and summary.
  *
- * @implements InstructionContract<string, Parameters>
+ * @implements InstructionContract<Directory, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -47,7 +50,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public static function getResolver(): string {
-        return DirectoryPath::class;
+        return DirectoryResolver::class;
     }
 
     #[Override]
@@ -55,63 +58,50 @@ class Instruction implements InstructionContract {
         return Parameters::class;
     }
 
+    /**
+     * @return Generator<mixed, SplFileInfo|File|string, File, string>
+     */
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
-        $basePath    = basename($target);
-        $directories = Finder::create()
-            ->ignoreVCSIgnored(true)
-            ->in($target)
-            ->depth(0)
-            ->exclude('vendor')
-            ->exclude('node_modules')
-            ->directories();
+        $directories = $target->getDirectoriesIterator(null, 0);
 
         foreach ($directories as $package) {
             // Package?
-            $packagePath = $package->getPathname();
-            $packageInfo = $this->getPackageInfo($packagePath);
+            $packageFile = yield $package->getPath('composer.json');
+            $packageInfo = $this->getPackageInfo($packageFile);
 
             if (!$packageInfo) {
-                throw new PackageComposerJsonIsMissing(
-                    $context,
-                    Path::join($basePath, $package->getFilename()),
-                );
+                throw new PackageComposerJsonIsMissing($context, $package);
             }
 
             // Readme
-            $readme  = $this->getPackageReadme($packagePath, $packageInfo);
-            $content = $readme
-                ? file_get_contents(Path::join($packagePath, $readme))
-                : false;
+            $readme  = yield $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
+            $content = $readme->getContent();
 
-            if (!$readme || $content === false) {
-                throw new PackageReadmeIsMissing(
-                    $context,
-                    Path::join($basePath, $package->getFilename()),
-                );
+            if (!$content) {
+                throw new PackageReadmeIsEmpty($context, $package, $readme);
             }
 
-            // Extract
+            // Title?
             $packageTitle = Markdown::getTitle($content);
-            $readmePath   = Path::join($basePath, $package->getFilename(), $readme);
 
-            if ($packageTitle) {
-                $upgrade     = $this->getPackageUpgrade($packagePath, $packageInfo);
-                $upgradePath = $upgrade
-                    ? Path::join($basePath, $package->getFilename(), $upgrade)
-                    : null;
-
-                $packages[] = [
-                    'path'    => $readmePath,
-                    'title'   => $packageTitle,
-                    'summary' => Markdown::getSummary($content),
-                    'upgrade' => $upgradePath,
-                ];
-            } else {
-                throw new DocumentTitleIsMissing($context, $readmePath);
+            if (!$packageTitle) {
+                throw new PackageReadmeTitleIsMissing($context, $package, $readme);
             }
+
+            // Add
+            $upgrade    = $package->getPath('UPGRADE.md');
+            $upgrade    = is_file($upgrade)
+                ? Path::getRelativePath($context->file->getPath(), $upgrade)
+                : null;
+            $packages[] = [
+                'path'    => $readme->getRelativePath($context->file),
+                'title'   => $packageTitle,
+                'summary' => Markdown::getSummary($content),
+                'upgrade' => $upgrade,
+            ];
         }
 
         // Packages?
@@ -137,11 +127,10 @@ class Instruction implements InstructionContract {
     /**
      * @return array<array-key, mixed>|null
      */
-    protected function getPackageInfo(string $path): ?array {
+    protected function getPackageInfo(File $file): ?array {
         try {
-            $file    = Path::join($path, 'composer.json');
-            $package = is_file($file) ? file_get_contents($file) : false;
-            $package = $package !== false
+            $package = $file->getContent();
+            $package = $package
                 ? json_decode($package, true, flags: JSON_THROW_ON_ERROR)
                 : null;
 
@@ -151,40 +140,5 @@ class Instruction implements InstructionContract {
         }
 
         return $package;
-    }
-
-    /**
-     * @param array<array-key, mixed> $package
-     */
-    protected function getPackageReadme(string $path, array $package): ?string {
-        return $this->getPackageFile($path, [
-            $package['readme'] ?? null,
-            'README.md',
-        ]);
-    }
-
-    /**
-     * @param array<array-key, mixed> $package
-     */
-    protected function getPackageUpgrade(string $path, array $package): ?string {
-        return $this->getPackageFile($path, [
-            'UPGRADE.md',
-        ]);
-    }
-
-    /**
-     * @param array<array-key, mixed> $variants
-     */
-    private function getPackageFile(string $path, array $variants): ?string {
-        $file = null;
-
-        foreach ($variants as $variant) {
-            if ($variant && is_string($variant) && is_file(Path::getPath($path, $variant))) {
-                $file = $variant;
-                break;
-            }
-        }
-
-        return $file;
     }
 }

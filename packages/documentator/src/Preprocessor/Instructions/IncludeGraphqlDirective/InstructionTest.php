@@ -2,10 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective;
 
+// @phpcs:disable Generic.Files.LineLength.TooLong
+
 use GraphQL\Language\Parser;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\DependencyIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotDirective;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
@@ -20,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $directive = <<<'GRAPHQL'
             directive @test
             on
@@ -41,9 +47,11 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
+        $root     = Mockery::mock(Directory::class);
+        $file     = Mockery::mock(File::class);
+        $context  = new Context($root, $file, '@test', null);
         $instance = $this->app()->make(Instruction::class);
-        $context  = new Context('path/to/file.md', '@test', null);
-        $actual   = $instance->process($context, $context->target, null);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $context->target, null);
 
         self::assertEquals(
             <<<MARKDOWN
@@ -55,22 +63,23 @@ final class InstructionTest extends TestCase {
         );
     }
 
-    public function testProcessNoPrinter(): void {
+    public function testInvokeNoPrinter(): void {
         unset($this->app()[PrinterContract::class]);
 
-        $path     = 'path/to/file.md';
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($path, $target, null);
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DependencyIsMissing($context, PrinterContract::class),
         );
 
-        $instance->process($context, $context->target, null);
+        ProcessorHelper::runInstruction($instance, $context, $context->target, null);
     }
 
-    public function testProcessNoDirective(): void {
+    public function testInvokeNoDirective(): void {
         $this->override(PrinterContract::class, static function (): PrinterContract {
             $resolver = Mockery::mock(DirectiveResolver::class);
             $resolver
@@ -84,32 +93,34 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $path     = 'path/to/file.md';
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($path, $target, null);
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TargetIsNotDirective($context),
         );
 
-        $instance->process($context, $context->target, null);
+        ProcessorHelper::runInstruction($instance, $context, $context->target, null);
     }
 
-    public function testProcessNoDirectiveResolver(): void {
+    public function testInvokeNoDirectiveResolver(): void {
         $this->override(PrinterContract::class, static function (): PrinterContract {
             return (new Printer())->setDirectiveResolver(null);
         });
 
-        $path     = 'path/to/file.md';
+        $root     = new Directory(Path::normalize(__DIR__), false);
+        $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';
-        $context  = new Context($path, $target, null);
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TargetIsNotDirective($context),
         );
 
-        $instance->process($context, $context->target, null);
+        ProcessorHelper::runInstruction($instance, $context, $context->target, null);
     }
 }

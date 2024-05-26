@@ -5,10 +5,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeEx
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function basename;
 use function dirname;
 use function implode;
 use function range;
@@ -19,11 +21,12 @@ use function trim;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testProcessNoRun(): void {
+    public function testInvokeNoRun(): void {
         $path     = self::getTestData()->path('~example.md');
-        $file     = basename(self::getTestData()->path('~example.md'));
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~example.md');
         $expected = trim($content);
         $factory  = $this->override(Factory::class, function (): Factory {
@@ -32,7 +35,7 @@ final class InstructionTest extends TestCase {
                 ->fake();
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -46,11 +49,12 @@ final class InstructionTest extends TestCase {
         $factory->assertNothingRan();
     }
 
-    public function testProcess(): void {
+    public function testInvoke(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = basename(self::getTestData()->path('~runnable.md'));
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -65,7 +69,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -88,11 +92,12 @@ final class InstructionTest extends TestCase {
         });
     }
 
-    public function testProcessLongOutput(): void {
+    public function testInvokeLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = self::getTestData()->path('~runnable.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $file, $file->getPath(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -107,7 +112,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -132,11 +137,12 @@ final class InstructionTest extends TestCase {
         });
     }
 
-    public function testProcessMarkdown(): void {
+    public function testInvokeMarkdown(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = basename(self::getTestData()->path('~runnable.md'));
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $file, $file->getName(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -151,7 +157,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED
@@ -170,11 +176,12 @@ final class InstructionTest extends TestCase {
         });
     }
 
-    public function testProcessMarkdownLongOutput(): void {
+    public function testInvokeMarkdownLongOutput(): void {
         $path     = self::getTestData()->path('~runnable.md');
-        $file     = self::getTestData()->path('~runnable.md');
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
         $params   = null;
-        $context  = new Context($path, $file, $params);
+        $context  = new Context($root, $file, $file->getPath(), $params);
         $content  = self::getTestData()->content('~runnable.md');
         $command  = self::getTestData()->path('~runnable.run');
         $expected = trim($content);
@@ -189,7 +196,7 @@ final class InstructionTest extends TestCase {
             return $factory;
         });
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $instance->process($context, $content, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
 
         self::assertEquals(
             <<<EXPECTED

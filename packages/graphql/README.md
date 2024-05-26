@@ -3,7 +3,7 @@
 This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
+[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -29,7 +29,7 @@ This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directiv
 |  | `^5.6.1` |  `0.12.0`  ,  `0.11.0`   |
 |  | `^5.4` |   `0.10.0 ⋯ 0.5.0`   |
 
-[//]: # (end: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
+[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql"}})
 [//]: # (start: 3672f37b7c4365391f12ad7a15e2e629126d25f774c584c29e7930695f44040a)
@@ -54,7 +54,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider 
 # Directives
 
 [include:document-list]: ./docs/Directives
-[//]: # (start: 73f7f4a1d86b7731354837c827f1b9f9aa729879639aeab4fe63985913469f48)
+[//]: # (start: 5c1942eeb33ecb83f532572514cc32d67c83ab539a597f895822259278fcb8c2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `@searchBy`
@@ -81,7 +81,7 @@ Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, 
 
 [Read more](<docs/Directives/@type.md>).
 
-[//]: # (end: 73f7f4a1d86b7731354837c827f1b9f9aa729879639aeab4fe63985913469f48)
+[//]: # (end: 5c1942eeb33ecb83f532572514cc32d67c83ab539a597f895822259278fcb8c2)
 
 # Scalars
 
@@ -97,7 +97,7 @@ Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, 
 > ```
 
 [include:document-list]: ./docs/Scalars
-[//]: # (start: 12e162fc2ab7e9e247529882b53731fb8f8aacc4c5532610d40d36e90977b8f2)
+[//]: # (start: d7fa880330d41b72ca3aff09300ebc180dd416ac96df6dcc3e5846e780656ad3)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `JsonString`
@@ -106,7 +106,7 @@ Represents [JSON](https://json.org) string.
 
 [Read more](<docs/Scalars/JsonString.md>).
 
-[//]: # (end: 12e162fc2ab7e9e247529882b53731fb8f8aacc4c5532610d40d36e90977b8f2)
+[//]: # (end: d7fa880330d41b72ca3aff09300ebc180dd416ac96df6dcc3e5846e780656ad3)
 
 # Scout
 
@@ -182,7 +182,7 @@ class Comment extends Model {
 If you implement custom directives which internally enhance the Builder (like standard directives do), you may get `BuilderUnknown` error because the proper/expected builder type was not detected. In this case, your directive should implement [`BuilderInfoProvider`](./src/Builder/Contracts/BuilderInfoProvider.php) interface and to specify the builder type explicitly.
 
 [include:example]: docs/Examples/BuilderInfoProvider.php
-[//]: # (start: b68f7337a010486bff0e1669240841cc48572f37ac74466da4fc0364db6a1067)
+[//]: # (start: 5a03ff4c8b599bd4b2a0373e04f1cbd343a5f9113c5776dd43935731c251b552)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -214,14 +214,14 @@ class CustomDirective implements Directive, BuilderInfoProvider {
 }
 ```
 
-[//]: # (end: b68f7337a010486bff0e1669240841cc48572f37ac74466da4fc0364db6a1067)
+[//]: # (end: 5a03ff4c8b599bd4b2a0373e04f1cbd343a5f9113c5776dd43935731c251b552)
 
 # Printer
 
 The package provides bindings for [`Printer`][pkg:graphql-printer] so you can simply use:
 
 [include:example]: ./docs/Examples/Printer.php
-[//]: # (start: 7a581dc1c9875e776a31524d2dd484da37a2b4dd60025986e9ef348c06d29a3d)
+[//]: # (start: fdd23dac1ad08b05f6acbf1e76428ec36838c96e07f84f5bb303a8b2d6981582)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -552,12 +552,12 @@ type User {
 
 </details>
 
-[//]: # (end: 7a581dc1c9875e776a31524d2dd484da37a2b4dd60025986e9ef348c06d29a3d)
+[//]: # (end: fdd23dac1ad08b05f6acbf1e76428ec36838c96e07f84f5bb303a8b2d6981582)
 
 # Testing Assertions
 
 [include:document-list]: ./docs/Assertions
-[//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (start: faab128ff134f31373650be0e1d23f4adffa84372a29292f956b844fb6baae6d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `assertGraphQLIntrospectionEquals`
@@ -590,30 +590,30 @@ Validates default internal schema (with all directives). Faster than `lighthouse
 
 [Read more](<docs/Assertions/AssertGraphQLSchemaValid.md>).
 
-[//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (end: faab128ff134f31373650be0e1d23f4adffa84372a29292f956b844fb6baae6d)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
+[//]: # (start: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
+[//]: # (end: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (start: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (end: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
 
 [include:file]: ../../docs/Shared/Links.md
-[//]: # (start: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
+[//]: # (start: e3121fcf0782621da11db7a735b38993c2b6560b7b7014aa164a809a3e515040)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
@@ -622,4 +622,4 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
 
-[//]: # (end: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
+[//]: # (end: e3121fcf0782621da11db7a735b38993c2b6560b7b7014aa164a809a3e515040)

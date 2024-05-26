@@ -4,10 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTe
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateDataMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesMissed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TemplateVariablesUnused;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Targets\FileContent;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
 use function array_diff;
@@ -22,7 +23,7 @@ use const PREG_UNMATCHED_AS_NULL;
 /**
  * Includes the `<target>` as a template.
  *
- * @implements InstructionContract<string, Parameters>
+ * @implements InstructionContract<File, Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {
@@ -36,7 +37,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public static function getResolver(): string {
-        return FileContent::class;
+        return FileResolver::class;
     }
 
     #[Override]
@@ -45,7 +46,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function process(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
         // Data?
         if (!$parameters->data) {
             throw new TemplateDataMissed($context);
@@ -56,7 +57,7 @@ class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $content = $target;
+        $content = $target->getContent();
 
         do {
             $content = (string) preg_replace_callback(

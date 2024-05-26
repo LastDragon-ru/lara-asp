@@ -2,15 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
+use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function file_get_contents;
-use function str_replace;
+use function dirname;
 
 /**
  * @internal
@@ -19,27 +22,32 @@ use function str_replace;
 final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
+    /**
+     * @param Closure(self, Context): Exception|string $expected
+     */
     #[DataProvider('dataProviderProcess')]
-    public function testProcess(Exception|string $expected, string $file, Parameters $params): void {
-        if ($expected instanceof Exception) {
-            self::expectExceptionObject($expected);
+    public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
+        $path     = self::getTestData()->path($file);
+        $root     = new Directory(dirname($path), false);
+        $file     = new File($path, false);
+        $target   = $file;
+        $context  = new Context($root, $file, $file->getName(), null);
+        $instance = $this->app()->make(Instruction::class);
+
+        if ($expected instanceof Closure) {
+            self::expectExceptionObject($expected($this, $context));
         } else {
             $expected = self::getTestData()->content($expected);
         }
 
-        $file     = self::getTestData()->file($file);
-        $target   = (string) file_get_contents($file->getPathname());
-        $context  = new Context($file->getPathname(), $file->getFilename(), null);
-        $instance = $this->app()->make(Instruction::class);
-
-        self::assertEquals($expected, $instance->process($context, $target, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $target, $params));
     }
     //</editor-fold>
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Exception|string, string, Parameters}>
+     * @return array<string, array{Closure(self, Context): Exception|string, string, Parameters}>
      */
     public static function dataProviderProcess(): array {
         return [
@@ -64,13 +72,9 @@ final class InstructionTest extends TestCase {
                 new Parameters(),
             ],
             'invalid'      => [
-                new TargetIsNotValidPhpFile(
-                    new Context(
-                        str_replace('\\', '/', __DIR__.'/InstructionTest/Invalid.txt'),
-                        'Invalid.txt',
-                        null,
-                    ),
-                ),
+                static function (self $test, Context $context): Exception {
+                    return new TargetIsNotValidPhpFile($context);
+                },
                 'Invalid.txt',
                 new Parameters(),
             ],

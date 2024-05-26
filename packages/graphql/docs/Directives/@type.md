@@ -3,7 +3,7 @@
 Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, but uses Laravel Container to resolve instance and also supports PHP enums.
 
 [include:graphql-directive]: @type
-[//]: # (start: 185f96f580a0c2ae26608f2c53ad97a03a28301e4c189b5abe2c3163adecc2f9)
+[//]: # (start: 9cc8aa297d4585260951ac6341e80b5161cd70bef8eefb1ad877eded0553f6d5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -32,4 +32,4 @@ on
     | SCALAR
 ```
 
-[//]: # (end: 185f96f580a0c2ae26608f2c53ad97a03a28301e4c189b5abe2c3163adecc2f9)
+[//]: # (end: 9cc8aa297d4585260951ac6341e80b5161cd70bef8eefb1ad877eded0553f6d5)

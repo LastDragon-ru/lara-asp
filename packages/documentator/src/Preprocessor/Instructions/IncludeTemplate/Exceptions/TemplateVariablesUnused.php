@@ -1,8 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions;
+namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\InstructionFailed;
 use Throwable;
 
 use function implode;
@@ -22,7 +23,7 @@ class TemplateVariablesUnused extends InstructionFailed {
             sprintf(
                 'Variables `%s` are not used in `%s`.',
                 '`'.implode('`, `', $this->variables).'`',
-                $context->path,
+                $context->file->getRelativePath($context->root),
             ),
             $previous,
         );

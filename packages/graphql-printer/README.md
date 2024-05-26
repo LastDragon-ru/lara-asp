@@ -3,7 +3,7 @@
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
 
 [include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
+[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -18,7 +18,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 |  | `^15.2.4` |   `4.2.0 ⋯ 4.0.0`   |
 |  | `^14.11.9` |  `3.0.0`   |
 
-[//]: # (end: 196f435a1c8bc8d5966e42b9fd090d5ccc17c75206e617d7f8369cd9328846ea)
+[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql-printer"}})
 [//]: # (start: dcf3043aff3a50970117872a9bba432cb3ef84a034a0fc88bcdc6d9dcae2ec06)
@@ -37,7 +37,7 @@ composer require lastdragon-ru/lara-asp-graphql-printer
 There are two primary methods: `Printer::print()` and `Printer::export()`. The `print()` will print the current type only, meanwhile `export()` will print the current type and all used types/directives:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: c709a4b715d1bde109a5d27982a2a5d6f481b5c72338e162e394ccbb6fc9208a)
+[//]: # (start: adef85def212f87b8f157b40eaa0695da87e1a6f63e1e1ebc9fff474ecad3fee)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -113,7 +113,7 @@ type B
 }
 ```
 
-[//]: # (end: c709a4b715d1bde109a5d27982a2a5d6f481b5c72338e162e394ccbb6fc9208a)
+[//]: # (end: adef85def212f87b8f157b40eaa0695da87e1a6f63e1e1ebc9fff474ecad3fee)
 
 # Customization
 
@@ -132,7 +132,7 @@ Please see:
 The Printer allows filter out types and directives. This may be useful to exclude them from the schema completely. Filtering also works for queries. Please note that types filtering will work only if the schema is known (the schema is required to determine the type of argument nodes). For some AST node types, their type may also be required.
 
 [include:example]: ./docs/Examples/Filtering.php
-[//]: # (start: 963f066509a17e2999eaa0fa940bd0f608ad2fc212eb6511f11b69eae9f7478e)
+[//]: # (start: f2eda67ec1e0063562eb72a70bc2fe190de9eb9d4e0fefd01dbf3ca1bbfc48ab)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -215,7 +215,7 @@ query {
 }
 ```
 
-[//]: # (end: 963f066509a17e2999eaa0fa940bd0f608ad2fc212eb6511f11b69eae9f7478e)
+[//]: # (end: f2eda67ec1e0063562eb72a70bc2fe190de9eb9d4e0fefd01dbf3ca1bbfc48ab)
 
 # Laravel/Lighthouse
 
@@ -224,7 +224,7 @@ It is highly recommended to use [`lara-asp-graphql`][pkg:graphql#Printer] packag
 # Testing Assertions
 
 [include:document-list]: ./docs/Assertions
-[//]: # (start: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (start: faab128ff134f31373650be0e1d23f4adffa84372a29292f956b844fb6baae6d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `assertGraphQLExportableEquals`
@@ -239,32 +239,32 @@ Prints and compares two GraphQL schemas/types/nodes/etc.
 
 [Read more](<docs/Assertions/AssertGraphQLPrintableEquals.md>).
 
-[//]: # (end: 86d73ad55f2c494dfe35350837400088c82dfa7457eafd0d30392ba96bbbdc9a)
+[//]: # (end: faab128ff134f31373650be0e1d23f4adffa84372a29292f956b844fb6baae6d)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
+[//]: # (start: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: 3c3826915e1d570b3982fdc6acf484950f0add7bb09d71c8c99b4a0e0fc5b43a)
+[//]: # (end: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (start: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 6b81b030ae74b2d149ec76cbec1b053da8da4e0ac4fd865f560548f3ead955e8)
+[//]: # (end: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
 
 [include:file]: ../../docs/Shared/Links.md
-[//]: # (start: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
+[//]: # (start: e3121fcf0782621da11db7a735b38993c2b6560b7b7014aa164a809a3e515040)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 [pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
 
-[//]: # (end: 9ac5c57eb03fcabb221c8db950c2dc20215f17f6e4ab17fd3a5def405da61f91)
+[//]: # (end: e3121fcf0782621da11db7a735b38993c2b6560b7b7014aa164a809a3e515040)
