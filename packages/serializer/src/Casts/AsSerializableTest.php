@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @deprecated %{VERSION}
+ * @deprecated 6.4.0
  * @internal
  */
 #[CoversClass(AsSerializable::class)]

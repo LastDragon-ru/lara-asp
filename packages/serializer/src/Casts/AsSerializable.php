@@ -15,10 +15,10 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', Serialized::class);
+trigger_deprecation(Package::Name, '6.4.0', 'Please use `%s` instead.', Serialized::class);
 
 /**
- * @deprecated %{VERSION} Please use {@see Serialized} instead.
+ * @deprecated 6.4.0 Please use {@see Serialized} instead.
  *
  * @template TGet of object
  * @template TSet of object
