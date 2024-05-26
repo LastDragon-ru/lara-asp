@@ -18,7 +18,7 @@ class Token {
          */
         public readonly Instruction $instruction,
         /**
-         * @var Resolver<TParameters, TTarget>|Resolver<null, TTarget>
+         * @var Resolver<TTarget, TParameters>|Resolver<TTarget, null>
          */
         public readonly Resolver $resolver,
         public readonly Context $context,

@@ -11,7 +11,7 @@ use Override;
 /**
  * Directory path.
  *
- * @implements Resolver<null, Directory>
+ * @implements Resolver<Directory, null>
  */
 class DirectoryResolver implements Resolver {
     #[Override]

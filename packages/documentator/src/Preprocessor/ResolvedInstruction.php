@@ -20,7 +20,7 @@ class ResolvedInstruction {
      */
     private readonly string $class;
     /**
-     * @var Resolver<TParameters, TTarget>|Resolver<null, TTarget>|null
+     * @var Resolver<TTarget, TParameters>|Resolver<TTarget, null>|null
      */
     private ?Resolver $resolver = null;
     /**
@@ -53,7 +53,7 @@ class ResolvedInstruction {
     }
 
     /**
-     * @return Resolver<TParameters, TTarget>|Resolver<null, TTarget>
+     * @return Resolver<TTarget, TParameters>|Resolver<TTarget, null>
      */
     public function getResolver(): Resolver {
         $this->resolver ??= $this->container->getInstance()->make($this->class::getResolver());

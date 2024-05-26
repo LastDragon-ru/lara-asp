@@ -9,7 +9,7 @@ use Override;
 /**
  * Directive name (started with `@` sign)
  *
- * @implements ResolverContract<null, string>
+ * @implements ResolverContract<string, null>
  */
 class Resolver implements ResolverContract {
     public function __construct() {

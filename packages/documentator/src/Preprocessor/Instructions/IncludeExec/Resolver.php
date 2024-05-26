@@ -9,7 +9,7 @@ use Override;
 /**
  * Path to the executable.
  *
- * @implements ResolverContract<null, string>
+ * @implements ResolverContract<string, null>
  */
 class Resolver implements ResolverContract {
     public function __construct() {

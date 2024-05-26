@@ -12,7 +12,7 @@ use SplFileInfo;
 /**
  * File path.
  *
- * @implements Resolver<null, File>
+ * @implements Resolver<File, null>
  */
 class FileResolver implements Resolver {
     /**

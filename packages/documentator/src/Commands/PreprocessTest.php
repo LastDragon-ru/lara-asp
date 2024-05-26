@@ -266,7 +266,7 @@ class PreprocessTest__InstructionNotSerializable implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Resolver<null, string>
+ * @implements Resolver<string, null>
  */
 class PreprocessTest__Target implements Resolver {
     #[Override]

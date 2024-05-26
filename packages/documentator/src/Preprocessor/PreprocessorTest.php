@@ -315,7 +315,7 @@ class PreprocessorTest__Value {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Resolver<null, string>
+ * @implements Resolver<string, null>
  */
 class PreprocessorTest__TargetResolverAsIs implements Resolver {
     #[Override]
@@ -328,7 +328,7 @@ class PreprocessorTest__TargetResolverAsIs implements Resolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Resolver<PreprocessorTest__Parameters, PreprocessorTest__Value>
+ * @implements Resolver<PreprocessorTest__Value, PreprocessorTest__Parameters>
  */
 class PreprocessorTest__TargetResolverAsValue implements Resolver {
     #[Override]

@@ -15,7 +15,7 @@ interface Instruction {
     public static function getName(): string;
 
     /**
-     * @return class-string<Resolver<TParameters, TTarget>|Resolver<null, TTarget>>
+     * @return class-string<Resolver<TTarget, TParameters>|Resolver<TTarget, null>>
      */
     public static function getResolver(): string;
 
