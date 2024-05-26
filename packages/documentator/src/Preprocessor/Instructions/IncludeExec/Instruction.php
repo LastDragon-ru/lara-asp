@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Process\Factory;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\TargetExecFailed;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExec\Exceptions\TargetExecFailed;
 use Override;
 
 use function dirname;
