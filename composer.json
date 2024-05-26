@@ -240,7 +240,7 @@
     "rebuild:docs": [
       "@php dev/artisan lara-asp-documentator:commands lara-asp-documentator packages/documentator/docs/Commands",
       "@php dev/artisan lara-asp-documentator:commands lara-asp-migrator packages/migrator/docs/Commands",
-      "@php dev/artisan lara-asp-documentator:preprocess",
+      "@php dev/artisan lara-asp-documentator:preprocess --exclude='**/**/*Test/**' --exclude='**/**/*Test.md' --exclude='**/**/*Test~*.md'",
       "npm run markdownlint -- --fix || npm run markdownlint -- --fix"
     ]
   },
