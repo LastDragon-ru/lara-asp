@@ -81,7 +81,7 @@ class Preprocessor implements Task {
     protected const Regexp  = <<<'REGEXP'
         /^
         (?P<expression>
-          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s(?P<target>(?:[^ ]+?)|(?:<[^>]+?>))
+          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s+(?P<target>(?:[^<][^ ]+?)|(?:<[^>]+?>))
           (?P<pBlock>\s(?:\(|(?P<pStart>['"]))(?P<parameters>.+?)(?:\)|(?P=pStart)))?
         )
         (?P<content>\R
@@ -233,7 +233,7 @@ class Preprocessor implements Task {
 
             // Hash
             $parameters = $instruction->getClass()::getParameters();
-            $target     = (string) $match['target'];
+            $target     = trim((string) $match['target']);
             $target     = str_starts_with($target, '<') && str_ends_with($target, '>')
                 ? mb_substr($target, 1, -1)
                 : rawurldecode($target);

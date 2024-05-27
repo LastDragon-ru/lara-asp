@@ -31,7 +31,7 @@ final class PreprocessorTest extends TestCase {
 
         [unknown]: ./path/to/file (should not be parsed)
 
-        [test:empty]: ./path/to/file
+        [test:empty]: <./path/to/file "value">
 
         [test:instruction]: ./path/to/file
 
@@ -87,13 +87,13 @@ final class PreprocessorTest extends TestCase {
 
         self::assertEquals(
             new TokenList([
-                '88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62' => new Token(
+                '387a0a5e0251df30f428fd5a7533e6ace887d625be5a9d0d7d37f9b1202d1589' => new Token(
                     $a,
                     new PreprocessorTest__TargetResolverAsIs(),
-                    new Context($root, $file, './path/to/file', null),
+                    new Context($root, $file, './path/to/file "value"', null),
                     null,
                     [
-                        '[test:empty]: ./path/to/file' => '[test:empty]: ./path/to/file',
+                        '[test:empty]: <./path/to/file "value">' => '[test:empty]: <./path/to/file "value">',
                     ],
                 ),
                 '4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095' => new Token(
@@ -181,11 +181,11 @@ final class PreprocessorTest extends TestCase {
 
             [unknown]: ./path/to/file (should not be parsed)
 
-            [test:empty]: ./path/to/file
-            [//]: # (start: 88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62)
+            [test:empty]: <./path/to/file "value">
+            [//]: # (start: 387a0a5e0251df30f428fd5a7533e6ace887d625be5a9d0d7d37f9b1202d1589)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: 88d510d98112f651df2ae08444a402cd8b6516cf4c27ad6115dbb2c03fe9ec62)
+            [//]: # (end: 387a0a5e0251df30f428fd5a7533e6ace887d625be5a9d0d7d37f9b1202d1589)
 
             [test:instruction]: ./path/to/file
             [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
