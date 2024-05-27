@@ -22,11 +22,9 @@ use function trim;
  *
  * Please note that the working directory will not be changed to the file
  * directory (like `include:exec` do). This behavior is close to how Artisan
- * normally works[^1]. You can use one of the special variables inside command
- * args instead.
- *
- * [^1]: I'm also not sure that it is possible to change the current working
- *       directory in any robust way when you call Artisan command from code.
+ * normally works (I'm also not sure that it is possible to change the current
+ * working directory in any robust way when you call Artisan command from code).
+ * You can use one of the special variables inside command args instead.
  *
  * @implements InstructionContract<string, null>
  */

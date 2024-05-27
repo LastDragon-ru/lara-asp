@@ -13,7 +13,7 @@ use function strtr;
  * Artisan command. The following special variables supported:
  *
  * * `"{$directory}"` - path of the directory where the file is located.
- * * `"{$file}" - path of the file.
+ * * `"{$file}"` - path of the file.
  *
  * @implements ResolverContract<string, null>
  */

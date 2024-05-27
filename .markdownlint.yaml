@@ -254,7 +254,7 @@ MD053:
     "//",
     "include:document-list",
     "include:example",
-    "include:exec",
+    "include:artisan",
     "include:file",
     "include:package-list",
     "include:template",

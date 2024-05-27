@@ -2,8 +2,8 @@
 
 Various internal tools and helpers to develop the package itself.
 
-[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -15,7 +15,7 @@ Various internal tools and helpers to develop the package itself.
 |  | `^8.1` |   `HEAD ⋯ 6.2.0`   |
 |  PHPStan  | `^1.10` |   `HEAD ⋯ 6.2.0`   |
 
-[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 
 [include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "dev"}})
 [//]: # (start: e7fd13bb6d43bcc48d9fe51411b607bee0e47ccbcb1b788889f59b733865e0f1)

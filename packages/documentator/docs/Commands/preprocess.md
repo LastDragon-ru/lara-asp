@@ -37,6 +37,21 @@ Where:
 
 ## Instructions
 
+### `[include:artisan]: <target>`
+
+* `<target>` - Artisan command. The following special variables supported:
+
+  * `"{$directory}"` - path of the directory where the file is located.
+  * `"{$file}"` - path of the file.
+
+Executes the `<target>` as Artisan command and returns result.
+
+Please note that the working directory will not be changed to the file
+directory (like `include:exec` do). This behavior is close to how Artisan
+normally works (I'm also not sure that it is possible to change the current
+working directory in any robust way when you call Artisan command from code).
+You can use one of the special variables inside command args instead.
+
 ### `[include:docblock]: <target> <parameters>`
 
 * `<target>` - File path.
@@ -77,6 +92,9 @@ insert it as is.
 * `<target>` - Path to the executable.
 
 Executes the `<target>` and returns result.
+
+The working directory is equal to the file directory. If you want to run
+Artisan command, please check `include:artisan` instruction.
 
 ### `[include:file]: <target>`
 

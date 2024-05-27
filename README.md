@@ -2,8 +2,8 @@
 
 The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
-[include:exec]: <./dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: cf085248b2284f354e6966f146d7c1c32821f3031a0316e73df3a80e038e704f)
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -25,7 +25,7 @@ The set provides best practices to make development more fun and classes/service
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: cf085248b2284f354e6966f146d7c1c32821f3031a0316e73df3a80e038e704f)
+[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 
 # Installation
 
