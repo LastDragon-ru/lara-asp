@@ -2,8 +2,8 @@
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and better solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
-[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -27,7 +27,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |  PHPUnit  | `^11.0.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.1.0` |   `HEAD ⋯ 6.0.0`   |
 
-[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 
 [include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "testing"}})
 [//]: # (start: 9c57d43303e5ef82308c0c83e328e2a47be808a50cd12d6fc5bcfd9229e2fa7c)

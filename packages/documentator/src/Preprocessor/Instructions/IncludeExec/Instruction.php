@@ -15,6 +15,9 @@ use function trim;
 /**
  * Executes the `<target>` and returns result.
  *
+ * The working directory is equal to the file directory. If you want to run
+ * Artisan command, please check `include:artisan` instruction.
+ *
  * @implements InstructionContract<string, null>
  */
 class Instruction implements InstructionContract {

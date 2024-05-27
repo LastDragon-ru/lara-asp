@@ -2,8 +2,8 @@
 
 This package provides various utilities for documentation generation such as Markdown Preprocessor, Requirements Dumper and more.
 
-[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -18,7 +18,7 @@ This package provides various utilities for documentation generation such as Mar
 |  | `^10.0.0` |   `6.1.0 ⋯ 5.0.0-beta.1`   |
 |  | `^9.21.0` |   `5.6.0 ⋯ 5.0.0-beta.1`   |
 
-[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "documentator"}})
 [//]: # (start: d830b5dad8950e88a29e14aa443ca509cfa19889b5c3792b00691760fb8618bb)

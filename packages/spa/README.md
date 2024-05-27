@@ -1,7 +1,7 @@
 # (Laravel) SPA Helpers
 
-[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -21,7 +21,7 @@
 |  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.4.0`   |
 
-[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "spa"}})
 [//]: # (start: 457a42c9e8cb9eef36f7f83a3cdfc837870f5d9814b59bd304b8383789bc83fb)

@@ -2,8 +2,8 @@
 
 This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
 
-[include:exec]: <../../dev/artisan lara-asp-documentator:requirements>
-[//]: # (start: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -29,7 +29,7 @@ This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directiv
 |  | `^5.6.1` |  `0.12.0`  ,  `0.11.0`   |
 |  | `^5.4` |   `0.10.0 ⋯ 0.5.0`   |
 
-[//]: # (end: 0c754acbee0a8071717d81a4c18765bb2d605f138e08492b868c0e3f27e481ed)
+[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql"}})
 [//]: # (start: 3672f37b7c4365391f12ad7a15e2e629126d25f774c584c29e7930695f44040a)
