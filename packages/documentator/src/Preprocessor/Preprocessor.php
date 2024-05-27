@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessorError;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeArtisan\Instruction as IncludeArtisan;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Instruction as IncludeDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Instruction as IncludeExample;
@@ -104,6 +105,7 @@ class Preprocessor implements Task {
         $this->addInstruction(IncludeFile::class);
         $this->addInstruction(IncludeExec::class);
         $this->addInstruction(IncludeExample::class);
+        $this->addInstruction(IncludeArtisan::class);
         $this->addInstruction(IncludeTemplate::class);
         $this->addInstruction(IncludeDocBlock::class);
         $this->addInstruction(IncludePackageList::class);
