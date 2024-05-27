@@ -41,6 +41,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   * `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction`
   * `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver`.
 
+* [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Contracts\Runner` should be used/provided instead.
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
