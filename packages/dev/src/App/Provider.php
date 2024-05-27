@@ -3,11 +3,14 @@
 namespace LastDragon_ru\LaraASP\Dev\App;
 
 use Illuminate\Support\ServiceProvider;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Contracts\Runner;
+use Override;
 
 class Provider extends ServiceProvider {
-    public function boot(): void {
-        $this->commands(
-            Example::class,
-        );
+    #[Override]
+    public function register(): void {
+        parent::register();
+
+        $this->app->bind(Runner::class, Example::class);
     }
 }

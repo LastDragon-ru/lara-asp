@@ -65,10 +65,10 @@ after the Header will be used as a summary.
 * `<target>` - File path.
 
 Includes contents of the `<target>` file as an example wrapped into
-` ```code block``` `. It also searches for `<target>.run` file, execute
-it if found, and include its result right after the code block.
+` ```code block``` `. If {@see Runner} bound, it will be called to execute
+the example. Its return value will be added right after the code block.
 
-By default, output of `<target>.run` will be included as ` ```plain text``` `
+By default, the `Runner` return value will be included as ` ```plain text``` `
 block. You can wrap the output into `<markdown>text</markdown>` tags to
 insert it as is.
 
