@@ -27,7 +27,7 @@ final class ResolverTest extends TestCase {
 
         self::assertEquals(
             sprintf(
-                'artisan:command $directory {$directory} "%s" $file {$file} "%s"',
+                'artisan:command $directory %1$s "%1$s" $file %2$s "%2$s"',
                 dirname($file->getPath()),
                 $file->getPath(),
             ),

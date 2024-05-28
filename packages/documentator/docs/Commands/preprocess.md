@@ -41,8 +41,8 @@ Where:
 
 * `<target>` - Artisan command. The following special variables supported:
 
-  * `"{$directory}"` - path of the directory where the file is located.
-  * `"{$file}"` - path of the file.
+  * `{$directory}` - path of the directory where the file is located.
+  * `{$file}` - path of the file.
 
 Executes the `<target>` as Artisan command and returns result.
 

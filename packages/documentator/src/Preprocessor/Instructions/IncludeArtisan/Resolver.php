@@ -12,8 +12,8 @@ use function strtr;
 /**
  * Artisan command. The following special variables supported:
  *
- * * `"{$directory}"` - path of the directory where the file is located.
- * * `"{$file}"` - path of the file.
+ * * `{$directory}` - path of the directory where the file is located.
+ * * `{$file}` - path of the file.
  *
  * @implements ResolverContract<string, null>
  */
@@ -27,8 +27,8 @@ class Resolver implements ResolverContract {
         $file      = $context->file->getPath();
         $directory = dirname($file);
         $target    = strtr($context->target, [
-            '"{$directory}"' => "\"{$directory}\"",
-            '"{$file}"'      => "\"{$file}\"",
+            '{$directory}' => $directory,
+            '{$file}'      => $file,
         ]);
 
         return $target;
