@@ -15,6 +15,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
+use function getenv;
+use function putenv;
 use function trim;
 
 /**
@@ -25,6 +27,9 @@ use function trim;
  * normally works (I'm also not sure that it is possible to change the current
  * working directory in any robust way when you call Artisan command from code).
  * You can use one of the special variables inside command args instead.
+ *
+ * Also, the command will not inherit the current verbosity level, it will be
+ * run with default/normal level if it is not specified in its arguments.
  *
  * @implements InstructionContract<string, null>
  */
@@ -52,6 +57,8 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+        $verbosity = $this->setVerbosity(null);
+
         try {
             $app    = $this->application->getInstance();
             $kernel = $app->make(Kernel::class);
@@ -68,6 +75,36 @@ class Instruction implements InstructionContract {
             throw $exception;
         } catch (Exception $exception) {
             throw new ArtisanCommandError($context, $exception);
+        } finally {
+            $this->setVerbosity($verbosity);
         }
+    }
+
+    protected function setVerbosity(?int $verbosity): ?int {
+        // Symfony sets `SHELL_VERBOSITY` via `putenv`. We need to overwrite it,
+        // otherwise instruction output will be empty when `--quiet` passed to
+        // the `preprocess` command.
+
+        // phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable
+
+        $env      = 'SHELL_VERBOSITY';
+        $previous = getenv($env);
+        $previous = $previous !== false ? (int) $previous : null;
+
+        if ($verbosity !== null) {
+            putenv("{$env}={$verbosity}");
+
+            $_ENV[$env]    = $verbosity;
+            $_SERVER[$env] = $verbosity;
+        } else {
+            putenv($env);
+
+            unset($_ENV[$env]);
+            unset($_SERVER[$env]);
+        }
+
+        // phpcs:enable
+
+        return $previous;
     }
 }

@@ -52,6 +52,9 @@ normally works (I'm also not sure that it is possible to change the current
 working directory in any robust way when you call Artisan command from code).
 You can use one of the special variables inside command args instead.
 
+Also, the command will not inherit the current verbosity level, it will be
+run with default/normal level if it is not specified in its arguments.
+
 ### `[include:docblock]: <target> <parameters>`
 
 * `<target>` - File path.
