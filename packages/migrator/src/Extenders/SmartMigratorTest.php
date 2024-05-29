@@ -27,7 +27,13 @@ use function trim;
 #[CoversClass(Provider::class)]
 final class SmartMigratorTest extends TestCase {
     public function testProvider(): void {
-        self::assertInstanceOf(SmartMigrator::class, $this->app()->make('migrator'));
+        $defaultMigrator = $this->app()->make('migrator');
+        $smartMigrator   = $this->app()->make(SmartMigrator::class);
+
+        self::assertInstanceOf(SmartMigrator::class, $defaultMigrator);
+        self::assertSame($defaultMigrator, $smartMigrator);
+        self::assertSame($smartMigrator, $this->app()->make(SmartMigrator::class));
+        self::assertSame($defaultMigrator, $this->app()->make('migrator'));
     }
 
     public function testMigrate(): void {

@@ -44,6 +44,7 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerMigrator(): void {
+        $this->app->alias('migrator', SmartMigrator::class);
         $this->app->extend('migrator', static function (Migrator $migrator): Migrator {
             return SmartMigrator::create($migrator);
         });
