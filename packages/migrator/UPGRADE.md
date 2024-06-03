@@ -46,7 +46,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
   return app()->call(
       new class extends SqlMigration {
-          // empty
+          // Please see the associated SQL files
       },
   );
   ```

@@ -12,10 +12,10 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use function str_replace;
 
 #[AsCommand(
-    name: RawMigration::Name,
+    name: SqlMigration::Name,
 )]
-class RawMigration extends MigrateMakeCommand {
-    protected const Name = Package::Name.':raw-migration';
+class SqlMigration extends MigrateMakeCommand {
+    protected const Name = Package::Name.':sql-migration';
 
     public function __construct(SqlMigrationCreator $creator, Composer $composer) {
         $this->signature = str_replace('make:migration', self::Name, $this->signature);

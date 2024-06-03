@@ -1,12 +1,12 @@
 <!-- Generated automatically. Do not edit. -->
 
-# `lara-asp-migrator:raw-migration`
+# `lara-asp-migrator:sql-migration`
 
 Create a new migration file
 
 ## Usages
 
-* `artisan lara-asp-migrator:raw-migration [--create [CREATE]] [--table [TABLE]] [--path [PATH]] [--realpath] [--fullpath] [--] <name>`
+* `artisan lara-asp-migrator:sql-migration [--create [CREATE]] [--table [TABLE]] [--path [PATH]] [--realpath] [--fullpath] [--] <name>`
 
 ## Arguments
 

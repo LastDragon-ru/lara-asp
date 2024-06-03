@@ -18,8 +18,8 @@ use function implode;
 /**
  * @internal
  */
-#[CoversClass(RawMigration::class)]
-final class RawMigrationTest extends TestCase {
+#[CoversClass(SqlMigration::class)]
+final class SqlMigrationTest extends TestCase {
     public function testHandle(): void {
         // make:migration may also call dump-autoload we are no need this.
         $composer = Mockery::mock(Composer::class);
@@ -47,17 +47,17 @@ final class RawMigrationTest extends TestCase {
         self::assertCount(0, $finder->files());
 
         // Call
-        $this->artisan("{$pkg}:raw-migration", [
-            'name'       => 'RawMigration',
+        $this->artisan("{$pkg}:sql-migration", [
+            'name'       => 'SqlMigration',
             '--path'     => $path,
             '--realpath' => true,
         ]);
 
         // Test
         $expected = [
-            'raw_migration.php',
-            'raw_migration~down.sql',
-            'raw_migration~up.sql',
+            'sql_migration.php',
+            'sql_migration~down.sql',
+            'sql_migration~up.sql',
         ];
         $actual   = [];
 

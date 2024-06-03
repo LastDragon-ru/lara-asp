@@ -45,10 +45,10 @@ composer require lastdragon-ru/lara-asp-migrator
 
 # Migrations
 
-To create migration just use the following [command](docs/Commands/raw-migration.md):
+To create migration just use the following [command](docs/Commands/sql-migration.md):
 
 ```shell
-php artisan lara-asp-migrator:raw-migration MyMigration
+php artisan lara-asp-migrator:sql-migration MyMigration
 ```
 
 It will create the following files in `database/migrations`:
