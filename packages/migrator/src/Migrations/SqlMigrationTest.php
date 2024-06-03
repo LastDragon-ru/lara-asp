@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Connection;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;

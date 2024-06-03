@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Support\Composer;
-use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
+use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -17,7 +17,7 @@ use function str_replace;
 class RawMigration extends MigrateMakeCommand {
     protected const Name = Package::Name.':raw-migration';
 
-    public function __construct(RawMigrationCreator $creator, Composer $composer) {
+    public function __construct(SqlMigrationCreator $creator, Composer $composer) {
         $this->signature = str_replace('make:migration', self::Name, $this->signature);
 
         parent::__construct($creator, $composer);

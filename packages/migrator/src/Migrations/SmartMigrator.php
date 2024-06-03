@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Migrator\Extenders;
+namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Migrations\Migrator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;

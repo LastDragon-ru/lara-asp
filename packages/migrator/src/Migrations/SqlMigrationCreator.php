@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Migrator\Extenders;
+namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 use Override;
@@ -8,7 +8,7 @@ use Override;
 use function basename;
 use function dirname;
 
-class RawMigrationCreator extends MigrationCreator {
+class SqlMigrationCreator extends MigrationCreator {
     // <editor-fold desc="Illuminate\Database\Migrations\MigrationCreator">
     // =========================================================================
     /**

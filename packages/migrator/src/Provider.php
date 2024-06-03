@@ -9,8 +9,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawMigration;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
-use LastDragon_ru\LaraASP\Migrator\Extenders\RawMigrationCreator;
-use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
+use LastDragon_ru\LaraASP\Migrator\Migrations\SmartMigrator;
+use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 use Override;
 
@@ -51,8 +51,8 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerMigrationCreator(): void {
-        $this->app->bindIf(RawMigrationCreator::class, static function (Application $app): MigrationCreator {
-            return new RawMigrationCreator($app->make(Filesystem::class), $app->basePath('stubs'));
+        $this->app->bindIf(SqlMigrationCreator::class, static function (Application $app): MigrationCreator {
+            return new SqlMigrationCreator($app->make(Filesystem::class), $app->basePath('stubs'));
         });
     }
     // </editor-fold>

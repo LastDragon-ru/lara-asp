@@ -7,7 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Traits\Conditionable;
 use LastDragon_ru\LaraASP\Migrator\Exceptions\ConnectionIsUnknown;
-use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
 use ReflectionClass;
 
