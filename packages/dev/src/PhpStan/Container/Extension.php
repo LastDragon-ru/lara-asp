@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\Type;
 
@@ -36,7 +37,7 @@ final class Extension implements DynamicMethodReturnTypeExtension {
 
     #[Override]
     public function isMethodSupported(MethodReflection $methodReflection): bool {
-        return in_array($methodReflection->getName(), ['make', 'makeWith', 'resolve'], true);
+        return in_array($methodReflection->getName(), ['make', 'makeWith', 'resolve', 'call'], true);
     }
 
     #[Override]
@@ -56,8 +57,18 @@ final class Extension implements DynamicMethodReturnTypeExtension {
 
         // Return
         return match (true) {
-            $argType->isClassStringType()->yes() => $argType->getClassStringObjectType(),
-            default                              => null,
+            $methodReflection->getName() === 'call' => match (true) {
+                $argType->isCallable()->yes() => ParametersAcceptorSelector
+                    ::selectSingle(
+                        $argType->getCallableParametersAcceptors($scope),
+                    )
+                    ->getReturnType(),
+                default                       => null,
+            },
+            default                                 => match (true) {
+                $argType->isClassStringType()->yes() => $argType->getClassStringObjectType(),
+                default                              => null,
+            },
         };
     }
 }
