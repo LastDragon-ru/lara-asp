@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Support\Traits\Conditionable;
 use LastDragon_ru\LaraASP\Migrator\Exceptions\ConnectionIsUnknown;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
@@ -12,6 +13,7 @@ use ReflectionClass;
 
 abstract class SqlMigration extends Migration {
     use SqlHelper;
+    use Conditionable;
 
     protected ?Migrator $migrator       = null;
     protected ?string   $up             = null;
@@ -57,7 +59,7 @@ abstract class SqlMigration extends Migration {
 
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
-    protected function getConnectionInstance(): Connection {
+    public function getConnectionInstance(): Connection {
         $connection = $this->migrator?->resolveConnection((string) $this->getConnection());
 
         if ($connection === null) {

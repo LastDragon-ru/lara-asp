@@ -46,6 +46,7 @@
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "illuminate/collections": "^10.34.0|^11.0.0",
+    "illuminate/conditionable": "^10.34.0|^11.0.0",
     "illuminate/console": "^10.34.0|^11.0.0",
     "illuminate/container": "^10.34.0|^11.0.0",
     "illuminate/contracts": "^10.34.0|^11.0.0",
