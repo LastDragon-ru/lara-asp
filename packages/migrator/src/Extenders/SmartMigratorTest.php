@@ -40,13 +40,71 @@ final class SmartMigratorTest extends TestCase {
         // Prepare
         $path         = self::getTestData()->path('/migrations');
         $migrations   = [
+            ['migration' => '2024_05_29_055655_sql_migration_a'],
+            ['migration' => '2024_05_29_055655_sql_migration_b'],
+            ['migration' => '2024_05_29_055655_sql_migration_up_only'],
+            ['migration' => '2024_05_29_055755_sql_migration_down_only'],
+        ];
+        $expectedUp   = 'migrations.up.txt';
+        $expectedDown = 'migrations.down.txt';
+
+        // Mocks
+        $repository = Mockery::mock(MigrationRepositoryInterface::class);
+        $repository
+            ->shouldReceive('getRan')
+            ->once()
+            ->andReturn([]);
+        $repository
+            ->shouldReceive('getNextBatchNumber')
+            ->once()
+            ->andReturn(1);
+        $repository
+            ->shouldReceive('getLast')
+            ->once()
+            ->andReturn(json_decode((string) json_encode($migrations)));
+
+        // Vars
+        $migrator = new SmartMigrator(
+            $repository,
+            $this->app()->make(ConnectionResolverInterface::class),
+            $this->app()->make(Filesystem::class),
+        );
+        $output   = new BufferedOutput();
+
+        $migrator->setOutput($output);
+
+        // Up
+        $migrator->run($path, [
+            'pretend' => true,
+        ]);
+
+        self::assertEquals(
+            $this->prepare(self::getTestData()->content($expectedUp)),
+            $this->prepare($output->fetch()),
+        );
+
+        // Down
+        $migrator->rollback($path, [
+            'pretend' => true,
+        ]);
+
+        self::assertEquals(
+            $this->prepare(self::getTestData()->content($expectedDown)),
+            $this->prepare($output->fetch()),
+        );
+    }
+
+    public function testMigrateRaw(): void {
+        // Prepare
+        $path         = self::getTestData()->path('/raw');
+        $migrations   = [
             ['migration' => '2021_05_09_055650_raw_migration_a'],
             ['migration' => '2021_05_09_055655_raw_data_migration_a'],
             ['migration' => '2021_05_09_055655_raw_migration_b'],
             ['migration' => '2021_05_09_055650_anonymous'],
         ];
-        $expectedUp   = 'up.txt';
-        $expectedDown = 'down.txt';
+        $expectedUp   = 'raw.up.txt';
+        $expectedDown = 'raw.down.txt';
 
         // Mocks
         $repository = Mockery::mock(MigrationRepositoryInterface::class);
