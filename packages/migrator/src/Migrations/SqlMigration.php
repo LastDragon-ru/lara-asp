@@ -5,10 +5,10 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Migrations\Migrator;
+use LastDragon_ru\LaraASP\Migrator\Exceptions\ConnectionIsUnknown;
 use LastDragon_ru\LaraASP\Migrator\Extenders\SmartMigrator;
 use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
 use ReflectionClass;
-use RuntimeException;
 
 abstract class SqlMigration extends Migration {
     use SqlHelper;
@@ -58,11 +58,13 @@ abstract class SqlMigration extends Migration {
     // <editor-fold desc="Getters/Setters">
     // =========================================================================
     protected function getConnectionInstance(): Connection {
-        if ($this->migrator === null) {
-            throw new RuntimeException('Unknown connection.');
+        $connection = $this->migrator?->resolveConnection((string) $this->getConnection());
+
+        if ($connection === null) {
+            throw new ConnectionIsUnknown();
         }
 
-        return $this->migrator->resolveConnection((string) $this->getConnection());
+        return $connection;
     }
 
     /**

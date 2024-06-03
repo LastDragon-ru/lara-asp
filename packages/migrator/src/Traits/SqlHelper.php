@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Migrator\Traits;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\SchemaState;
-use RuntimeException;
+use LastDragon_ru\LaraASP\Migrator\Exceptions\FileNotFound;
+use LastDragon_ru\LaraASP\Migrator\Exceptions\SchemaStateUnsupported;
 
 use function array_filter;
 use function dirname;
@@ -13,7 +14,6 @@ use function implode;
 use function is_file;
 use function method_exists;
 use function pathinfo;
-use function sprintf;
 
 use const PATHINFO_EXTENSION;
 use const PATHINFO_FILENAME;
@@ -32,7 +32,7 @@ trait SqlHelper {
 
             $connection->logQuery((string) file_get_contents($path), [], 0);
         } else {
-            throw new RuntimeException("The SQL file `{$path}` does not exist.");
+            throw new FileNotFound($path);
         }
     }
 
@@ -54,13 +54,7 @@ trait SqlHelper {
 
     private function getSchemaState(Connection $connection): SchemaState {
         if (!method_exists($connection, 'getSchemaState')) {
-            throw new RuntimeException(
-                sprintf(
-                    'The database driver `%1$s` does not support SchemaState (connection `%2$s`).',
-                    $connection->getDriverName(),
-                    $connection->getName(),
-                ),
-            );
+            throw new SchemaStateUnsupported($connection);
         }
 
         return $connection->getSchemaState();
