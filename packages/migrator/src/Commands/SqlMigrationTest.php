@@ -2,12 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
-use Illuminate\Support\Composer;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
-use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Finder\Finder;
 
@@ -21,24 +17,6 @@ use function implode;
 #[CoversClass(SqlMigration::class)]
 final class SqlMigrationTest extends TestCase {
     public function testHandle(): void {
-        // make:migration may also call dump-autoload we are no need this.
-        $composer = Mockery::mock(Composer::class);
-
-        if (InstalledVersions::satisfies(new VersionParser(), 'laravel/framework', '>=10.1.5')) {
-            $composer
-                ->shouldReceive('dumpAutoloads')
-                ->never();
-        } else {
-            $composer
-                ->shouldReceive('dumpAutoloads')
-                ->once()
-                ->andReturns();
-        }
-
-        $this->override(Composer::class, static function () use ($composer) {
-            return $composer;
-        });
-
         // Pre test
         $pkg    = Package::Name;
         $path   = self::getTempDirectory();
@@ -48,9 +26,8 @@ final class SqlMigrationTest extends TestCase {
 
         // Call
         $this->artisan("{$pkg}:sql-migration", [
-            'name'       => 'SqlMigration',
-            '--path'     => $path,
-            '--realpath' => true,
+            'name'   => 'SqlMigration',
+            '--path' => $path,
         ]);
 
         // Test

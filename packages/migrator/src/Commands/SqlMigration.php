@@ -2,29 +2,41 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
-use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
-use Illuminate\Support\Composer;
+use Illuminate\Database\Console\Migrations\BaseCommand;
+use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
-use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-use function str_replace;
+use function sprintf;
+use function trim;
 
 #[AsCommand(
-    name: SqlMigration::Name,
+    name       : SqlMigration::Name,
+    description: 'Create a new SQL Migration file.',
 )]
-class SqlMigration extends MigrateMakeCommand {
+class SqlMigration extends BaseCommand {
     protected const Name = Package::Name.':sql-migration';
 
-    public function __construct(SqlMigrationCreator $creator, Composer $composer) {
-        $this->signature = str_replace('make:migration', self::Name, $this->signature);
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string
+     */
+    public $signature = self::Name.' '.<<<'SIGNATURE'
+        {name    : The name of the migration}
+        {--path= : The path where the file should be created}
+        SIGNATURE;
 
-        parent::__construct($creator, $composer);
-    }
+    public function __invoke(SqlMigrationCreator $creator): int {
+        $name = Str::snake(trim(Cast::toString($this->input->getArgument('name'))));
+        $path = Cast::toStringNullable($this->input->getOption('path')) ?? $this->getMigrationPath();
+        $path = Path::getPath($this->laravel->basePath(), $path);
+        $file = $creator->create($name, $path);
 
-    #[Override]
-    public static function getDefaultName(): ?string {
-        return self::Name;
+        $this->components->info(sprintf('SQL Migration `[%s]` created successfully.', $file));
+
+        return static::SUCCESS;
     }
 }

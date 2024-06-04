@@ -2,11 +2,11 @@
 
 # `lara-asp-migrator:sql-migration`
 
-Create a new migration file
+Create a new SQL Migration file.
 
 ## Usages
 
-* `artisan lara-asp-migrator:sql-migration [--create [CREATE]] [--table [TABLE]] [--path [PATH]] [--realpath] [--fullpath] [--] <name>`
+* `artisan lara-asp-migrator:sql-migration [--path [PATH]] [--] <name>`
 
 ## Arguments
 
@@ -16,22 +16,6 @@ The name of the migration
 
 ## Options
 
-### `--create=`
-
-The table to be created
-
-### `--table=`
-
-The table to migrate
-
 ### `--path=`
 
-The location where the migration file should be created
-
-### `--realpath`
-
-Indicate any provided migration file paths are pre-resolved absolute paths
-
-### `--fullpath`
-
-Output the full path of the migration (Deprecated)
+The path where the file should be created
