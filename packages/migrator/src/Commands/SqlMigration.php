@@ -8,26 +8,30 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 use function sprintf;
 use function trim;
 
 #[AsCommand(
-    name       : SqlMigration::Name,
+    name       : Package::Name.':sql-migration',
     description: 'Create a new SQL Migration file.',
+    aliases    : [
+        'make:sql-migration',
+    ],
 )]
 class SqlMigration extends BaseCommand {
-    protected const Name = Package::Name.':sql-migration';
+    #[Override]
+    protected function configure(): void {
+        parent::configure();
 
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string
-     */
-    public $signature = self::Name.' '.<<<'SIGNATURE'
-        {name    : The name of the migration}
-        {--path= : The path where the file should be created}
-        SIGNATURE;
+        $this
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the migration.')
+            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'The path where the file should be created.');
+    }
 
     public function __invoke(SqlMigrationCreator $creator): int {
         $name = Str::snake(trim(Cast::toString($this->input->getArgument('name'))));
