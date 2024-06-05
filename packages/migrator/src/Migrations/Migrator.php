@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
-use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Database\Migrations\Migrator as IlluminateMigrator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use Override;
@@ -18,8 +18,8 @@ use function is_string;
  *
  * - Nested directories support
  */
-class SmartMigrator extends Migrator {
-    public static function create(Migrator $migrator): self {
+class Migrator extends IlluminateMigrator {
+    public static function create(IlluminateMigrator $migrator): self {
         return new self($migrator->repository, $migrator->resolver, $migrator->files, $migrator->events);
     }
 

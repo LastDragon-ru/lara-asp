@@ -25,16 +25,16 @@ use function trim;
 /**
  * @internal
  */
-#[CoversClass(SmartMigrator::class)]
+#[CoversClass(Migrator::class)]
 #[CoversClass(Provider::class)]
-final class SmartMigratorTest extends TestCase {
+final class MigratorTest extends TestCase {
     public function testProvider(): void {
         $defaultMigrator = $this->app()->make('migrator');
-        $smartMigrator   = $this->app()->make(SmartMigrator::class);
+        $smartMigrator   = $this->app()->make(Migrator::class);
 
-        self::assertInstanceOf(SmartMigrator::class, $defaultMigrator);
+        self::assertInstanceOf(Migrator::class, $defaultMigrator);
         self::assertSame($defaultMigrator, $smartMigrator);
-        self::assertSame($smartMigrator, $this->app()->make(SmartMigrator::class));
+        self::assertSame($smartMigrator, $this->app()->make(Migrator::class));
         self::assertSame($defaultMigrator, $this->app()->make('migrator'));
     }
 
@@ -66,7 +66,7 @@ final class SmartMigratorTest extends TestCase {
             ->andReturn(json_decode((string) json_encode($migrations)));
 
         // Vars
-        $migrator = new SmartMigrator(
+        $migrator = new Migrator(
             $repository,
             $this->app()->make(ConnectionResolverInterface::class),
             $this->app()->make(Filesystem::class),
@@ -131,7 +131,7 @@ final class SmartMigratorTest extends TestCase {
         });
 
         // Vars
-        $migrator = new SmartMigrator(
+        $migrator = new Migrator(
             $repository,
             $this->app()->make(ConnectionResolverInterface::class),
             $this->app()->make(Filesystem::class),

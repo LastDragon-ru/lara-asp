@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\Migrator;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Migrations\MigrationCreator;
-use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Database\Migrations\Migrator as IlluminateMigrator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Commands\SqlMigration;
-use LastDragon_ru\LaraASP\Migrator\Migrations\SmartMigrator;
+use LastDragon_ru\LaraASP\Migrator\Migrations\Migrator;
 use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 use Override;
@@ -44,9 +44,9 @@ class Provider extends ServiceProvider {
     }
 
     protected function registerMigrator(): void {
-        $this->app->alias('migrator', SmartMigrator::class);
-        $this->app->extend('migrator', static function (Migrator $migrator): Migrator {
-            return SmartMigrator::create($migrator);
+        $this->app->alias('migrator', Migrator::class);
+        $this->app->extend('migrator', static function (IlluminateMigrator $migrator): IlluminateMigrator {
+            return Migrator::create($migrator);
         });
     }
 

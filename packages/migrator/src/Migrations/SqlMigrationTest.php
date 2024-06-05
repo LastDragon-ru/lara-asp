@@ -27,7 +27,7 @@ final class SqlMigrationTest extends TestCase {
             ->once()
             ->andReturn('a');
         $bConnection = Mockery::mock(Connection::class);
-        $migrator    = Mockery::mock(SmartMigrator::class);
+        $migrator    = Mockery::mock(Migrator::class);
         $migrator
             ->shouldReceive('resolveConnection')
             ->with('')
@@ -136,7 +136,7 @@ final class SqlMigrationTest extends TestCase {
             ->once()
             ->andReturn('a');
         $bConnection = Mockery::mock(Connection::class);
-        $migrator    = Mockery::mock(SmartMigrator::class);
+        $migrator    = Mockery::mock(Migrator::class);
         $migrator
             ->shouldReceive('resolveConnection')
             ->with('')

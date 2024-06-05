@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Database\Migrations\Migrator as IlluminateMigrator;
 use Illuminate\Support\Traits\Conditionable;
 use LastDragon_ru\LaraASP\Migrator\Exceptions\ConnectionIsUnknown;
 use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
@@ -14,10 +14,10 @@ abstract class SqlMigration extends Migration {
     use SqlHelper;
     use Conditionable;
 
-    protected ?Migrator $migrator       = null;
-    protected ?string   $up             = null;
-    protected ?string   $down           = null;
-    protected bool      $withDriverName = false;
+    protected ?IlluminateMigrator $migrator       = null;
+    protected ?string             $up             = null;
+    protected ?string             $down           = null;
+    protected bool                $withDriverName = false;
 
     public function __construct() {
         // empty
@@ -89,7 +89,7 @@ abstract class SqlMigration extends Migration {
     /**
      * @internal
      */
-    public function __invoke(SmartMigrator $migrator): static {
+    public function __invoke(Migrator $migrator): static {
         // Dependencies
         $this->migrator = $migrator;
 
