@@ -37,7 +37,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: b0b74ef74f156294a37f3ec42299e221e5e693f3b42297f5cfa79cab99b1df7e)
 
-* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration` class
+* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration` class 🤝
 
   ```php
   <?php declare(strict_types = 1);
@@ -50,6 +50,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
       },
   );
   ```
+
+* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder` and `\LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder` classes 🤝
 
 # Upgrade from v5
 

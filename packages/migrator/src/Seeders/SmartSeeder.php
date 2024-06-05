@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Seeder as IlluminateSeeder;
 
 use function is_string;
 use function is_subclass_of;
@@ -13,8 +13,10 @@ use function is_subclass_of;
 /**
  * Smart Seeder. Unlike standard seeder checks, and stops seeding if the
  * database already seeded.
+ *
+ * @deprecated %{VERSION} Please use {@see Seeder} instead.
  */
-abstract class SmartSeeder extends Seeder {
+abstract class SmartSeeder extends IlluminateSeeder {
     public function __construct(
         protected readonly DatabaseManager $manager,
         protected readonly SeederService $service,

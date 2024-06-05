@@ -7,6 +7,8 @@ use Override;
 
 /**
  * Sql Seeder. Allows use SQL as seed data.
+ *
+ * @deprecated %{VERSION} Please use {@see SqlSeeder} instead.
  */
 abstract class RawSeeder extends SmartSeeder {
     use RawSqlHelper;
