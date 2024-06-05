@@ -6,8 +6,10 @@ use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\Migrator\Provider;
+use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -120,6 +122,13 @@ final class SmartMigratorTest extends TestCase {
             ->shouldReceive('getLast')
             ->once()
             ->andReturn(json_decode((string) json_encode($migrations)));
+
+        $this->override(SeederService::class, static function (MockInterface $mock): void {
+            $mock
+                ->shouldReceive('isSeeded')
+                ->twice()
+                ->andReturn(true);
+        });
 
         // Vars
         $migrator = new SmartMigrator(

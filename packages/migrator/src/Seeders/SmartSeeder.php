@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +16,7 @@ use function is_subclass_of;
  */
 abstract class SmartSeeder extends Seeder {
     public function __construct(
+        protected readonly DatabaseManager $manager,
         protected readonly SeederService $service,
     ) {
         // empty
@@ -37,9 +40,9 @@ abstract class SmartSeeder extends Seeder {
         $seeded = false;
 
         if (is_string($target) && is_subclass_of($target, Model::class, true)) {
-            $seeded = $this->service->isModelSeeded($target);
+            $seeded = $target::query()->count() > 0;
         } elseif ($target) {
-            $seeded = $this->service->isTableSeeded($target);
+            $seeded = $this->getConnectionInstance()->table($target)->count() > 0;
         } else {
             $seeded = $this->service->isSeeded();
         }
@@ -79,6 +82,10 @@ abstract class SmartSeeder extends Seeder {
             $this->command->getOutput()
                 ->writeln('<comment>         skipped</comment>'.($reason ? " ({$reason})" : ''));
         }
+    }
+
+    protected function getConnectionInstance(): Connection {
+        return $this->manager->connection();
     }
     // </editor-fold>
 }
