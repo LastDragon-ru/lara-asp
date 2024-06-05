@@ -36,10 +36,7 @@ class SeederService {
         // Detect
         $seeded  = false;
         $tables  = array_column($connection->getSchemaBuilder()->getTables(), 'name');
-        $default = 'migrations';
-        $skipped = $this->config->getInstance()->get('database.migrations', $default);
-        $skipped = is_array($skipped) ? ($skipped['table'] ?: $default) : $skipped;
-        $skipped = mb_strtolower(Cast::toString($skipped));
+        $skipped = $this->getMigrationsTable();
 
         foreach ($tables as $table) {
             if ($skipped === mb_strtolower($table)) {
@@ -55,16 +52,29 @@ class SeederService {
         // Cache
         // Seeder is about of to fill the database, not to remove records. So we
         // are assuming that if the database is seeded, then this is permanent.
-        $this->connections[$connection] = true;
+        if ($seeded) {
+            $this->connections[$connection] = true;
+        }
 
         // Return
         return $seeded;
     }
 
-    protected function getConnection(Connection|string|null $connection = null): Connection {
+    public function getConnection(Connection|string|null $connection = null): Connection {
         return match (true) {
             $connection instanceof Connection => $connection,
             default                           => $this->manager->connection($connection),
         };
+    }
+
+    protected function getMigrationsTable(): string {
+        // todo(migrator): The string is used only in Laravel v10
+        //      https://github.com/LastDragon-ru/lara-asp/issues/143
+        $default = 'migrations';
+        $table   = $this->config->getInstance()->get('database.migrations', $default);
+        $table   = is_array($table) ? ($table['table'] ?: $default) : $table;
+        $table   = mb_strtolower(Cast::toString($table));
+
+        return $table;
     }
 }
