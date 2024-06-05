@@ -19,11 +19,12 @@ class SqlMigrationCreator extends MigrationCreator {
      */
     #[Override]
     public function create($name, $path, $table = null, $create = false) {
-        $path  = parent::create($name, $path, $table, $create);
-        $files = $this->getSqlFiles($path);
+        $path    = parent::create($name, $path, $table, $create);
+        $files   = $this->getSqlFiles($path);
+        $message = '-- TODO: Replace to SQL query(s).';
 
         foreach ($files as $file) {
-            $this->files->put($file, '');
+            $this->files->put($file, $message);
         }
 
         return $path;
