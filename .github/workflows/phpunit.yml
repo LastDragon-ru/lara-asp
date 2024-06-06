@@ -131,6 +131,9 @@ jobs:
             composer config "repositories.${PKG}" path "../${PKG}"
           done <<< "${PACKAGES}"
 
+          composer config minimum-stability dev
+          composer config prefer-stable true
+
       # On Windows, the caret ^ is the escape character, so the version string
       # that contains ^ will be handled incorrectly
       - name: Install Laravel

@@ -104,6 +104,11 @@ jobs:
           do
             composer config "repositories.${PKG}" path "../${PKG}"
           done <<< "${PACKAGES}"
+
+          # Minimum Stability
+          # (otherwise it will fail for nested dependencies/packages)
+          composer config minimum-stability dev
+          composer config prefer-stable true
       - name: Install dependencies
         uses: ramsey/composer-install@v3
         with:
