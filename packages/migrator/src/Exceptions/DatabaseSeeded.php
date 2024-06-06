@@ -8,7 +8,7 @@ use Throwable;
 
 use function sprintf;
 
-class DatabaseIsSeeded extends PackageException {
+class DatabaseSeeded extends PackageException {
     /**
      * @param class-string<Seeder> $seeder
      */

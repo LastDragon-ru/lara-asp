@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Seeder as IlluminateSeeder;
-use LastDragon_ru\LaraASP\Migrator\Exceptions\DatabaseIsSeeded;
+use LastDragon_ru\LaraASP\Migrator\Exceptions\DatabaseSeeded;
 use Override;
 
 /**
@@ -24,7 +24,7 @@ abstract class Seeder extends IlluminateSeeder {
     #[Override]
     public function __invoke(array $parameters = []): mixed {
         if ($this->isSeeded()) {
-            throw new DatabaseIsSeeded($this::class);
+            throw new DatabaseSeeded($this::class);
         }
 
         return parent::__invoke($parameters);

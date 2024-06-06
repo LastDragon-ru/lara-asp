@@ -6,7 +6,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Migrations\Migrator as IlluminateMigrator;
 use Illuminate\Support\Traits\Conditionable;
-use LastDragon_ru\LaraASP\Migrator\Exceptions\ConnectionIsUnknown;
+use LastDragon_ru\LaraASP\Migrator\Exceptions\ConnectionUnknown;
 use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
 use ReflectionClass;
 
@@ -62,7 +62,7 @@ abstract class SqlMigration extends Migration {
         $connection = $this->migrator?->resolveConnection((string) $this->getConnection());
 
         if ($connection === null) {
-            throw new ConnectionIsUnknown();
+            throw new ConnectionUnknown();
         }
 
         return $connection;
