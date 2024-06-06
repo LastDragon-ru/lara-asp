@@ -50,13 +50,5 @@
   "config": {
     "sort-packages": true,
     "optimize-autoloader": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "repositories": {
-    "core": {
-      "type": "path",
-      "url": "../core"
-    }
   }
 }

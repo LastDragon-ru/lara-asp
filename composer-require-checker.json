@@ -12,6 +12,7 @@
     "PHPStan\\Node\\InClassNode",
     "PHPStan\\Reflection\\ClassReflection",
     "PHPStan\\Reflection\\MethodReflection",
+    "PHPStan\\Reflection\\ParametersAcceptorSelector",
     "PHPStan\\Rules\\Rule",
     "PHPStan\\Rules\\RuleErrorBuilder",
     "PHPStan\\Type\\DynamicMethodReturnTypeExtension",
