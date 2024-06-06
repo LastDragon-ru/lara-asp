@@ -74,7 +74,12 @@ final class SqlMigrationTest extends TestCase {
             );
         $migration
             ->shouldReceive('runSqlFile')
-            ->with($aConnection, Path::join($directory, "{$file}~up.sql"))
+            ->withArgs(
+                static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
+                    return $aConnection === $connection
+                        && Path::normalize($path) === Path::join($directory, "{$file}~up.sql");
+                },
+            )
             ->once()
             ->andReturns();
 
@@ -95,7 +100,12 @@ final class SqlMigrationTest extends TestCase {
             );
         $migration
             ->shouldReceive('runSqlFile')
-            ->with($aConnection, Path::join($directory, "{$file}~a.up.sql"))
+            ->withArgs(
+                static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
+                    return $aConnection === $connection
+                        && Path::normalize($path) === Path::join($directory, "{$file}~a.up.sql");
+                },
+            )
             ->once()
             ->andReturns();
 
@@ -117,7 +127,12 @@ final class SqlMigrationTest extends TestCase {
             );
         $migration
             ->shouldReceive('runSqlFile')
-            ->with($bConnection, Path::join($directory, "{$file}~up.sql"))
+            ->withArgs(
+                static function (Connection $connection, string $path) use ($bConnection, $directory, $file): bool {
+                    return $bConnection === $connection
+                        && Path::normalize($path) === Path::join($directory, "{$file}~up.sql");
+                },
+            )
             ->once()
             ->andReturns();
 
@@ -183,7 +198,12 @@ final class SqlMigrationTest extends TestCase {
             );
         $migration
             ->shouldReceive('runSqlFile')
-            ->with($aConnection, Path::join($directory, "{$file}~down.sql"))
+            ->withArgs(
+                static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
+                    return $aConnection === $connection
+                        && Path::normalize($path) === Path::join($directory, "{$file}~down.sql");
+                },
+            )
             ->once()
             ->andReturns();
 
@@ -204,7 +224,12 @@ final class SqlMigrationTest extends TestCase {
             );
         $migration
             ->shouldReceive('runSqlFile')
-            ->with($aConnection, Path::join($directory, "{$file}~a.down.sql"))
+            ->withArgs(
+                static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
+                    return $aConnection === $connection
+                        && Path::normalize($path) === Path::join($directory, "{$file}~a.down.sql");
+                },
+            )
             ->once()
             ->andReturns();
 
@@ -226,7 +251,12 @@ final class SqlMigrationTest extends TestCase {
             );
         $migration
             ->shouldReceive('runSqlFile')
-            ->with($bConnection, Path::join($directory, "{$file}~down.sql"))
+            ->withArgs(
+                static function (Connection $connection, string $path) use ($bConnection, $directory, $file): bool {
+                    return $bConnection === $connection
+                        && Path::normalize($path) === Path::join($directory, "{$file}~down.sql");
+                },
+            )
             ->once()
             ->andReturns();
 
