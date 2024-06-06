@@ -1,14 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Migrator\Extenders;
+namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Migrations\MigrationCreator;
 use Override;
 
-use function basename;
 use function dirname;
+use function pathinfo;
 
-class RawMigrationCreator extends MigrationCreator {
+use const PATHINFO_FILENAME;
+
+class SqlMigrationCreator extends MigrationCreator {
     // <editor-fold desc="Illuminate\Database\Migrations\MigrationCreator">
     // =========================================================================
     /**
@@ -17,11 +19,12 @@ class RawMigrationCreator extends MigrationCreator {
      */
     #[Override]
     public function create($name, $path, $table = null, $create = false) {
-        $path = parent::create($name, $path, $table, $create);
-        $raws = $this->getRawFiles($path);
+        $path    = parent::create($name, $path, $table, $create);
+        $files   = $this->getSqlFiles($path);
+        $message = '-- TODO: Replace to SQL query(s).';
 
-        foreach ($raws as $raw) {
-            $this->files->put($raw, '');
+        foreach ($files as $file) {
+            $this->files->put($file, $message);
         }
 
         return $path;
@@ -33,10 +36,10 @@ class RawMigrationCreator extends MigrationCreator {
      */
     #[Override]
     protected function getStub($table, $create) {
-        $path = $this->customStubPath.'/migration.stub';
+        $path = $this->customStubPath.'/migration.sql.stub';
 
         if (!$this->files->exists($path)) {
-            $path = __DIR__.'/../../stubs/migration.stub';
+            $path = __DIR__.'/../../stubs/migration.sql.stub';
         }
 
         return $this->files->get($path);
@@ -49,9 +52,9 @@ class RawMigrationCreator extends MigrationCreator {
     /**
      * @return list<string>
      */
-    protected function getRawFiles(string $path): array {
+    protected function getSqlFiles(string $path): array {
         $dir  = dirname($path);
-        $name = basename($path, '.php');
+        $name = pathinfo($path, PATHINFO_FILENAME);
 
         return [
             "{$dir}/{$name}~up.sql",

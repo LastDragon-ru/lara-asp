@@ -4,67 +4,77 @@ namespace LastDragon_ru\LaraASP\Migrator\Seeders;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use WeakMap;
 
 use function array_column;
 use function is_array;
-use function is_string;
 use function mb_strtolower;
 
 class SeederService {
+    /**
+     * @var WeakMap<Connection, true>
+     */
+    private WeakMap $connections;
+
     public function __construct(
         protected readonly ConfigResolver $config,
         protected readonly DatabaseManager $manager,
     ) {
-        // empty
+        $this->connections = new WeakMap();
     }
 
-    // <editor-fold desc="API">
-    // =========================================================================
-    public function isSeeded(): bool {
+    public function isSeeded(Connection|string|null $connection = null): bool {
+        // Connection?
+        $connection = $this->getConnection($connection);
+
+        if (isset($this->connections[$connection])) {
+            return true;
+        }
+
+        // Detect
         $seeded  = false;
-        $tables  = array_column($this->getConnection()->getSchemaBuilder()->getTables(), 'name');
-        $default = 'migrations';
-        $skipped = $this->config->getInstance()->get('database.migrations', $default);
-        $skipped = is_array($skipped) ? ($skipped['table'] ?: $default) : $skipped;
-        $skipped = mb_strtolower(Cast::toString($skipped));
+        $tables  = array_column($connection->getSchemaBuilder()->getTables(), 'name');
+        $skipped = $this->getMigrationsTable();
 
         foreach ($tables as $table) {
             if ($skipped === mb_strtolower($table)) {
                 continue;
             }
 
-            if ($this->isTableSeeded($table)) {
+            if ($connection->table($table)->count() > 0) {
                 $seeded = true;
                 break;
             }
         }
 
+        // Cache
+        // Seeder is about of to fill the database, not to remove records. So we
+        // are assuming that if the database is seeded, then this is permanent.
+        if ($seeded) {
+            $this->connections[$connection] = true;
+        }
+
+        // Return
         return $seeded;
     }
 
-    /**
-     * @param class-string<Model>|Model $model
-     */
-    public function isModelSeeded(string|Model $model): bool {
-        if (is_string($model)) {
-            $model = new $model();
-        }
-
-        return $this->isTableSeeded($model->getTable());
+    public function getConnection(Connection|string|null $connection = null): Connection {
+        return match (true) {
+            $connection instanceof Connection => $connection,
+            default                           => $this->manager->connection($connection),
+        };
     }
 
-    public function isTableSeeded(string $table): bool {
-        return $this->getConnection()->table($table)->count() > 0;
-    }
-    // </editor-fold>
+    protected function getMigrationsTable(): string {
+        // todo(migrator): The string is used only in Laravel v10
+        //      https://github.com/LastDragon-ru/lara-asp/issues/143
+        $default = 'migrations';
+        $table   = $this->config->getInstance()->get('database.migrations', $default);
+        $table   = is_array($table) ? ($table['table'] ?: $default) : $table;
+        $table   = mb_strtolower(Cast::toString($table));
 
-    // <editor-fold desc="Functions">
-    // =========================================================================
-    public function getConnection(): Connection {
-        return $this->manager->connection();
+        return $table;
     }
-    // </editor-fold>
 }

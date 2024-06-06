@@ -12,6 +12,8 @@ use Override;
  * This migration is useful to insert data into the existing working application
  * and unlike {@link RawMigration} it will be applied only if the database
  * already seeded.
+ *
+ * @deprecated %{VERSION} Please use {@see SqlMigration} instead.
  */
 abstract class RawDataMigration extends RawMigration {
     // <editor-fold desc="Migration">

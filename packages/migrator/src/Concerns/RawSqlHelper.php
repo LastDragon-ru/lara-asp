@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Concerns;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\SchemaState;
+use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
 use ReflectionClass;
 use RuntimeException;
 
@@ -14,6 +15,8 @@ use function is_file;
 use function method_exists;
 
 /**
+ * @see SqlHelper
+ * @deprecated %{VERSION} Please use {@see SqlHelper} instead.
  * @internal
  */
 trait RawSqlHelper {

@@ -1,12 +1,12 @@
 <!-- Generated automatically. Do not edit. -->
 
-# `lara-asp-migrator:raw-seeder`
+# `lara-asp-migrator:sql-seeder`
 
-Create a new seeder class
+Create a new SQL Seeder class
 
 ## Usages
 
-* `artisan lara-asp-migrator:raw-seeder <name>`
+* `artisan lara-asp-migrator:sql-seeder <name>`
 
 ## Arguments
 

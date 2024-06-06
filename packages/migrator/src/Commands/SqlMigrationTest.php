@@ -7,11 +7,15 @@ use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Finder\Finder;
 
+use function array_slice;
+use function explode;
+use function implode;
+
 /**
  * @internal
  */
-#[CoversClass(RawSeeder::class)]
-final class RawSeederTest extends TestCase {
+#[CoversClass(SqlMigration::class)]
+final class SqlMigrationTest extends TestCase {
     public function testHandle(): void {
         // Pre test
         $pkg    = Package::Name;
@@ -20,25 +24,22 @@ final class RawSeederTest extends TestCase {
 
         self::assertCount(0, $finder->files());
 
-        // Redefine path where files will be generated.
-        self::assertNotNull($this->app);
-
-        $this->app->useDatabasePath($path);
-
         // Call
-        $this->artisan("{$pkg}:raw-seeder", [
-            'name' => 'RawSeeder',
+        $this->artisan("{$pkg}:sql-migration", [
+            'name'   => 'SqlMigration',
+            '--path' => $path,
         ]);
 
         // Test
         $expected = [
-            'RawSeeder.php',
-            'RawSeeder.sql',
+            'sql_migration.php',
+            'sql_migration~down.sql',
+            'sql_migration~up.sql',
         ];
         $actual   = [];
 
         foreach ($finder->files()->sortByName() as $file) {
-            $actual[] = $file->getFilename();
+            $actual[] = implode('_', array_slice(explode('_', $file->getFilename()), 4));
         }
 
         self::assertEquals($expected, $actual);

@@ -37,6 +37,26 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: b0b74ef74f156294a37f3ec42299e221e5e693f3b42297f5cfa79cab99b1df7e)
 
+* [ ] Use new commands
+  * `lara-asp-migrator:sql-migration` instead of `lara-asp-migrator:raw-migration`
+  * `lara-asp-migrator:sql-seeder` instead of `lara-asp-migrator:raw-migration`
+
+* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration` class 🤝
+
+  ```php
+  <?php declare(strict_types = 1);
+
+  use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration;
+
+  return app()->call(
+      new class extends SqlMigration {
+          // Please see the associated SQL files
+      },
+  );
+  ```
+
+* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder` and `\LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder` classes 🤝
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md

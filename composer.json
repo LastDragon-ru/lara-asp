@@ -46,6 +46,7 @@
     "guzzlehttp/psr7": "^1.9.1|^2.4.5",
     "http-interop/http-factory-guzzle": "^1.0.0",
     "illuminate/collections": "^10.34.0|^11.0.0",
+    "illuminate/conditionable": "^10.34.0|^11.0.0",
     "illuminate/console": "^10.34.0|^11.0.0",
     "illuminate/container": "^10.34.0|^11.0.0",
     "illuminate/contracts": "^10.34.0|^11.0.0",
@@ -91,6 +92,7 @@
     "composer/class-map-generator": "^1.0",
     "fakerphp/faker": "^1.21.0",
     "illuminate/cache": "^10.34.0|^11.0.0",
+    "illuminate/config": "^10.34.0|^11.0.0",
     "laravel/scout": "^9.8.0|^10.0.0",
     "orchestra/testbench": "^8.0.0|^9.0.0"
   },

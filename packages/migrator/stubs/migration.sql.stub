@@ -1,0 +1,9 @@
+<?php declare(strict_types = 1);
+
+use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration;
+
+return app()->call(
+    new class extends SqlMigration {
+        // Please see the associated SQL files
+    },
+);
