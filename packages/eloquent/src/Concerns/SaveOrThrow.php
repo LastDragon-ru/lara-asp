@@ -25,12 +25,14 @@ trait SaveOrThrow {
         return $result;
     }
 
-    /* @phpstan-ignore-next-line `Model::delete()` and `Pivot::::delete()` return different types. */
+    /**
+     * @phpstan-ignore-next-line method.childReturnType (`Model::delete()`&`Pivot::::delete()` return different types)
+     */
     #[Override]
     public function delete(): bool|int|null {
         $result = parent::delete();
 
-        if ($result === false) { // @phpstan-ignore-line
+        if ($result === false) { // @phpstan-ignore-line method.childReturnType, identical.alwaysFalse
             throw new Exception('An unknown error occurred while deleting the model.');
         }
 

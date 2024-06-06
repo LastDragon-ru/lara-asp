@@ -126,7 +126,7 @@ class Preprocessor implements Task {
      * @param I|class-string<I> $instruction
      */
     public function addInstruction(Instruction|string $instruction): static {
-        // @phpstan-ignore-next-line Assigment is fine...
+        // @phpstan-ignore-next-line argument.type (Assigment is fine...)
         $this->instructions[$instruction::getName()] = new ResolvedInstruction($this->container, $instruction);
 
         return $this;

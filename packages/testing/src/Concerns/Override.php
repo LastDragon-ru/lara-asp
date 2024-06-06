@@ -91,7 +91,6 @@ trait Override {
             : $factory;
 
         if (is_callable($factory)) {
-            /** @phpstan-ignore-next-line it may return `void` so it is fine here */
             $mock = $factory($mock, $this) ?: $mock;
         } elseif (is_string($factory)) {
             $mock = $this->app()->make($factory);
@@ -112,6 +111,6 @@ trait Override {
         );
 
         // Return
-        return $mock; // @phpstan-ignore-line `ContainerExtension` is not so smart yet.
+        return $mock; // @phpstan-ignore-line return.type (`ContainerExtension` is not so smart yet).
     }
 }

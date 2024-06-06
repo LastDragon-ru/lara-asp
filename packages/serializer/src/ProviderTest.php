@@ -128,7 +128,7 @@ final class ProviderTest extends TestCase {
         $backedEnum   = ProviderTest__BackedEnum::A;
         $serializable = new ProviderTest__Simple($datetime, $unitEnum, $backedEnum);
         $curcular     = new class() implements Serializable {
-            public Serializable $a; // @phpstan-ignore-line required for tests
+            public Serializable $a; // @phpstan-ignore-line property.uninitialized (required for tests)
         };
         $curcular->a  = $curcular;
 
@@ -374,7 +374,7 @@ final class ProviderTest extends TestCase {
  */
 class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable {
     public int                       $a = 123;
-    public bool                      $b; // @phpstan-ignore-line required for tests
+    public bool                      $b; // @phpstan-ignore-line property.uninitialized (required for tests)
     protected string                 $c = 'should be ignored';
     private string                   $d = 'should be ignored';
     public ?DateTimeInterface        $e = null;
@@ -411,7 +411,7 @@ class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable
  */
 class ProviderTest__Complex implements Serializable {
     public int  $a = 123;
-    public bool $b; // @phpstan-ignore-line required for tests
+    public bool $b; // @phpstan-ignore-line property.uninitialized (required for tests)
 
     /**
      * @var array<int, int>
