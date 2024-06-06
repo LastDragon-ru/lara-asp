@@ -14,9 +14,6 @@ use function trim;
 #[AsCommand(
     name       : Package::Name.':sql-seeder',
     description: 'Create a new SQL Seeder class',
-    aliases    : [
-        'make:sql-seeder',
-    ],
 )]
 class SqlSeeder extends GeneratorCommand {
     /**

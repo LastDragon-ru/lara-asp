@@ -7,7 +7,6 @@ Create a new SQL Seeder class
 ## Usages
 
 * `artisan lara-asp-migrator:sql-seeder <name>`
-* `artisan make:sql-seeder`
 
 ## Arguments
 
