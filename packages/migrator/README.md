@@ -45,7 +45,7 @@ composer require lastdragon-ru/lara-asp-migrator
 
 # Migrations
 
-To create migration just use the following [command](docs/Commands/sql-migration.md):
+To create migration, just use the following [command](docs/Commands/sql-migration.md):
 
 ```shell
 php artisan lara-asp-migrator:sql-migration MyMigration
@@ -59,47 +59,25 @@ It will create the following files in `database/migrations`:
 2020_11_05_170802_my_migration~up.sql
 ```
 
-Usually, you just need to put your SQL into `~up.sql` and `~down.sql` 😇 Note that you still can use standard Laravel migrations, but you should create it manually. Also, migrations can be placed into subdirectories.
-
-Another useful class is [`RawDataMigration`](./src/Migrations/RawDataMigration.php) that specially designed for cases when you want to insert data without altering the table(s). Unlike `RawMigration` it will apply migration only if the database is not empty (to fill empty database while fresh installation please use Seeders).
+Usually, you just need to put your SQL into `*~up.sql` and `*~down.sql` 😇 Note that you still can use standard Laravel migrations. Also, migrations can be placed into subdirectories.
 
 # Seeders
 
-The Migrator uses a bit different approach compared to standard and provides a few different types of seeders:
+The package uses a bit different approach compared with standard and provides a few different types of seeders:
 
-* [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
-* [`SqlSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
+* [`Seeder`](./src/Seeders/Seeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
+* [`SqlSeeder`](./src/Seeders/SqlSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 
-To create raw seeder just use the following [command](docs/Commands/sql-seeder.md):
+To create SQL Seeder you should use the [command](docs/Commands/sql-seeder.md):
 
 ```shell
 php artisan lara-asp-migrator:sql-seeder MySeeder
 ```
 
-It will create the following files in `database/seeders` (or `database/seeds/`):
+The command will create two files:
 
-```text
-MySeeder.php
-MySeeder.sql
-```
-
-You should place your SQL into `*.sql` and then update the model class in the `.php` file:
-
-```php
-<?php declare(strict_types = 1);
-
-namespace Database\Seeders;
-
-use LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder;
-
-class MySeeder extends SqlSeeder {
-    protected function getTarget(): ?string {
-        // Base class will check that the table has any records and stop seeding
-        // if it is not empty.
-        return Model::class;
-    }
-}
-```
+* `MySeeder.php` - The class can be used to customize `isSeeded()` method, e.g. you can check if a model exists in the database.
+* `MySeeder.sql` - the file where the SQL seed stored.
 
 [include:file]: ../../docs/Shared/Upgrading.md
 [//]: # (start: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)

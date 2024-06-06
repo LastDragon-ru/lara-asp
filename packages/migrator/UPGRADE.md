@@ -37,6 +37,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: b0b74ef74f156294a37f3ec42299e221e5e693f3b42297f5cfa79cab99b1df7e)
 
+* [ ] Use new commands
+  * `lara-asp-migrator:sql-migration` instead of `lara-asp-migrator:raw-migration`
+  * `lara-asp-migrator:sql-seeder` instead of `lara-asp-migrator:raw-migration`
+
 * [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration` class 🤝
 
   ```php
