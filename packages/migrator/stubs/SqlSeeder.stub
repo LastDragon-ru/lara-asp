@@ -1,0 +1,9 @@
+<?php declare(strict_types = 1);
+
+namespace {{ namespace }};
+
+use LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder;
+
+class {{ class }} extends SqlSeeder {
+    // Please see the associated SQL file
+}

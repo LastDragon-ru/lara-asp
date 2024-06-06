@@ -10,8 +10,8 @@ use Symfony\Component\Finder\Finder;
 /**
  * @internal
  */
-#[CoversClass(RawSeeder::class)]
-final class RawSeederTest extends TestCase {
+#[CoversClass(SqlSeeder::class)]
+final class SqlSeederTest extends TestCase {
     public function testHandle(): void {
         // Pre test
         $pkg    = Package::Name;
@@ -26,14 +26,14 @@ final class RawSeederTest extends TestCase {
         $this->app->useDatabasePath($path);
 
         // Call
-        $this->artisan("{$pkg}:raw-seeder", [
-            'name' => 'RawSeeder',
+        $this->artisan("{$pkg}:sql-seeder", [
+            'name' => 'SqlSeeder',
         ]);
 
         // Test
         $expected = [
-            'RawSeeder.php',
-            'RawSeeder.sql',
+            'SqlSeeder.php',
+            'SqlSeeder.sql',
         ];
         $actual   = [];
 

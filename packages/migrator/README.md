@@ -68,12 +68,12 @@ Another useful class is [`RawDataMigration`](./src/Migrations/RawDataMigration.p
 The Migrator uses a bit different approach compared to standard and provides a few different types of seeders:
 
 * [`SmartSeeder`](./src/Seeders/SmartSeeder.php) - unlike standard `Seeder` it is safer and will not run seeder if it is already applied (so it is safe for production 🤩);
-* [`RawSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
+* [`SqlSeeder`](./src/Seeders/RawSeeder.php) - extends `SmartSeeder` and allow you to use SQL.
 
-To create raw seeder just use the following [command](docs/Commands/raw-seeder.md):
+To create raw seeder just use the following [command](docs/Commands/sql-seeder.md):
 
 ```shell
-php artisan lara-asp-migrator:raw-seeder MySeeder
+php artisan lara-asp-migrator:sql-seeder MySeeder
 ```
 
 It will create the following files in `database/seeders` (or `database/seeds/`):
@@ -90,9 +90,9 @@ You should place your SQL into `*.sql` and then update the model class in the `.
 
 namespace Database\Seeders;
 
-use LastDragon_ru\LaraASP\Migrator\Seeders\RawSeeder;
+use LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder;
 
-class MySeeder extends RawSeeder {
+class MySeeder extends SqlSeeder {
     protected function getTarget(): ?string {
         // Base class will check that the table has any records and stop seeding
         // if it is not empty.

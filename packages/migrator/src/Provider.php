@@ -7,8 +7,8 @@ use Illuminate\Database\Migrations\MigrationCreator;
 use Illuminate\Database\Migrations\Migrator as IlluminateMigrator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Migrator\Commands\RawSeeder;
 use LastDragon_ru\LaraASP\Migrator\Commands\SqlMigration;
+use LastDragon_ru\LaraASP\Migrator\Commands\SqlSeeder;
 use LastDragon_ru\LaraASP\Migrator\Migrations\Migrator;
 use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
@@ -32,7 +32,7 @@ class Provider extends ServiceProvider {
     public function boot(): void {
         $this->commands(
             SqlMigration::class,
-            RawSeeder::class,
+            SqlSeeder::class,
         );
     }
     // </editor-fold>
