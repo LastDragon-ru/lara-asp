@@ -36,10 +36,10 @@ class SqlMigrationCreator extends MigrationCreator {
      */
     #[Override]
     protected function getStub($table, $create) {
-        $path = $this->customStubPath.'/SqlMigration.stub';
+        $path = $this->customStubPath.'/migration.sql.stub';
 
         if (!$this->files->exists($path)) {
-            $path = __DIR__.'/../../stubs/SqlMigration.stub';
+            $path = __DIR__.'/../../stubs/migration.sql.stub';
         }
 
         return $this->files->get($path);

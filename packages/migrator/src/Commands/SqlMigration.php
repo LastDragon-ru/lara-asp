@@ -39,7 +39,7 @@ class SqlMigration extends BaseCommand {
         $path = Path::getPath($this->laravel->basePath(), $path);
         $file = $creator->create($name, $path);
 
-        $this->components->info(sprintf('SQL Migration `[%s]` created successfully.', $file));
+        $this->components->info(sprintf('SQL Migration [%s] created successfully.', $file));
 
         return static::SUCCESS;
     }

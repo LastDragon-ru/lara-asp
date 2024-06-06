@@ -29,7 +29,7 @@ class SqlSeeder extends GeneratorCommand {
 
     #[Override]
     protected function getStub(): string {
-        return $this->resolveStubPath('stubs/SqlSeeder.stub');
+        return $this->resolveStubPath('stubs/seeder.sql.stub');
     }
 
     protected function resolveStubPath(string $stub): string {
