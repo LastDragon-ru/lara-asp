@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Mockery;
 
 use BadMethodCallException;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use LogicException;
 use Mockery;
 use Mockery\Mock;

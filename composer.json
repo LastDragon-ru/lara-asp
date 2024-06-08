@@ -118,7 +118,7 @@
       "packages/spa/src/**Test.php",
       "packages/spa/src/Testing/**.php",
       "packages/testing/src/**Test.php",
-      "packages/testing/src/Package/**.php"
+      "packages/testing/src/Testing/**.php"
     ],
     "files": [
       "packages/eloquent/src/mixins.php",

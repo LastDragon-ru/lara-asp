@@ -6,7 +6,7 @@ use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Http\Request;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory as ResponseFactory;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

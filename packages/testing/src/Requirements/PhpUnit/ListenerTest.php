@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Mockery;
 use PHPUnit\Event\Event;
 use PHPUnit\Framework\Attributes\CoversClass;
