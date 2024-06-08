@@ -19,10 +19,18 @@ final class MetadataFactoryTest extends TestCase {
     public function testHasMetadataFor(): void {
         $factory = new MetadataFactory();
 
-        self::assertTrue($factory->hasMetadataFor(MetadataFactoryTest_A::class));   // @phpstan-ignore-line
-        self::assertTrue($factory->hasMetadataFor(new MetadataFactoryTest_A()));    // @phpstan-ignore-line
-        self::assertFalse($factory->hasMetadataFor(JsonSerializable::class));       // @phpstan-ignore-line
-        self::assertFalse($factory->hasMetadataFor('UnknownClass'));                // @phpstan-ignore-line
+        self::assertTrue(
+            $factory->hasMetadataFor(MetadataFactoryTest_A::class), // @phpstan-ignore-line method.alreadyNarrowedType
+        );
+        self::assertTrue(
+            $factory->hasMetadataFor(new MetadataFactoryTest_A()),  // @phpstan-ignore-line method.alreadyNarrowedType
+        );
+        self::assertFalse(
+            $factory->hasMetadataFor(JsonSerializable::class),      // @phpstan-ignore-line method.alreadyNarrowedType
+        );
+        self::assertFalse(
+            $factory->hasMetadataFor('UnknownClass'),               // @phpstan-ignore-line method.impossibleType
+        );
     }
 
     public function testGetMetadataFor(): void {
@@ -144,7 +152,7 @@ final class MetadataFactoryTest extends TestCase {
 #[DiscriminatorMap('version', ['b' => MetadataFactoryTest_B::class, 'a' => MetadataFactoryTest_A::class])]
 class MetadataFactoryTest_A implements JsonSerializable {
     public int           $a = 123;
-    public bool          $b; // @phpstan-ignore-line required for tests
+    public bool          $b; // @phpstan-ignore-line property.uninitialized (required for tests)
     protected string     $c = 'should be ignored';
     private string       $d = 'should be ignored';
     public static string $e = 'should be ignored';
@@ -162,7 +170,7 @@ class MetadataFactoryTest_A implements JsonSerializable {
 class MetadataFactoryTest_B extends MetadataFactoryTest_A {
     /**
      * @var array<array-key, MetadataFactoryTest_A>
-     * @phpstan-ignore-next-line required for tests
+     * @phpstan-ignore-next-line property.uninitialized (required for tests)
      */
     public array $array;
 

@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Dev\PhpStan\ClassMustBeInternal;
 
+use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Dev\Package;
 use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
@@ -74,7 +76,9 @@ class Rule implements RuleContract {
             return [
                 RuleErrorBuilder::message(
                     sprintf('Class `%s` must be marked by `@internal`.', $reflection->getName()),
-                )->build(),
+                )
+                    ->identifier(Str::camel(Package::Name).'.classMustBeInternal')
+                    ->build(),
             ];
         }
 

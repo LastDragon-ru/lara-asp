@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGr
 
 // @phpcs:disable Generic.Files.LineLength.TooLong
 
+use ArrayAccess;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
@@ -64,8 +65,12 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoPrinter(): void {
-        unset($this->app()[PrinterContract::class]);
+        // Reset
+        if ($this->app() instanceof ArrayAccess) {
+            unset($this->app()[PrinterContract::class]);
+        }
 
+        // Test
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
         $target   = '@test';

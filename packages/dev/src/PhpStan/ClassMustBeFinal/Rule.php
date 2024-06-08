@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Dev\PhpStan\ClassMustBeFinal;
 
+use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Dev\Package;
 use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
@@ -60,7 +62,9 @@ class Rule implements RuleContract {
             return [
                 RuleErrorBuilder::message(
                     sprintf('Class `%s` must be `final`.', $reflection->getName()),
-                )->build(),
+                )
+                    ->identifier(Str::camel(Package::Name).'.classMustBeFinal')
+                    ->build(),
             ];
         }
 

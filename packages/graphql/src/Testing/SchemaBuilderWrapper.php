@@ -25,7 +25,7 @@ class SchemaBuilderWrapper extends SchemaBuilder {
 
     /**
      * @noinspection             PhpMissingParentConstructorInspection
-     * @phpstan-ignore-next-line no need to call parent `__construct`
+     * @phpstan-ignore-next-line constructor.missingParentCall (no need to call parent `__construct`)
      */
     public function __construct(
         protected SchemaBuilder $builder,

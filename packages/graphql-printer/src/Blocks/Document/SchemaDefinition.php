@@ -78,8 +78,7 @@ class SchemaDefinition extends DefinitionBlock {
                 $name   = $type instanceof NamedTypeNode
                     ? $type->name->value
                     : $type->name;
-                $custom = !isset($default[$operation])
-                    || $default[$operation] !== $name;
+                $custom = $default[$operation] !== $name;
 
                 return $custom;
             },
