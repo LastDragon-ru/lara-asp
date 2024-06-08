@@ -65,7 +65,7 @@
     },
     "exclude-from-classmap": [
       "src/**Test.php",
-      "src/Package/**.php"
+      "src/Testing/**.php"
     ]
   },
   "autoload-dev": {

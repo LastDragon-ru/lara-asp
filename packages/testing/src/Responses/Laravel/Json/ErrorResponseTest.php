@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

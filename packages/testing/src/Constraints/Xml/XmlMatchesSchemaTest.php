@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Xml;
 
 use DOMDocument;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
