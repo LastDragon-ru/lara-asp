@@ -31,11 +31,7 @@
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "src/"
-    },
-    "exclude-from-classmap": [
-      "src/**Test.php",
-      "src/Testing/**.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {
