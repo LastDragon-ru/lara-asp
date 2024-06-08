@@ -4,38 +4,106 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e2204491a6b7d5bd80c4b4c41f20dc20",
-    "packages": [],
-    "packages-dev": [
+    "content-hash": "4185cd0d5c1d21cc147e85f27b6004a9",
+    "packages": [
         {
-            "name": "shipmonk/composer-dependency-analyser",
-            "version": "dev-master",
+            "name": "symfony/finder",
+            "version": "v7.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/shipmonk-rnd/composer-dependency-analyser.git",
-                "reference": "ddf83da43a3d7a0db546842682f4cca3f6d76807"
+                "url": "https://github.com/symfony/finder.git",
+                "reference": "fbb0ba67688b780efbc886c1a0a0948dcf7205d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shipmonk-rnd/composer-dependency-analyser/zipball/ddf83da43a3d7a0db546842682f4cca3f6d76807",
-                "reference": "ddf83da43a3d7a0db546842682f4cca3f6d76807",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/fbb0ba67688b780efbc886c1a0a0948dcf7205d6",
+                "reference": "fbb0ba67688b780efbc886c1a0a0948dcf7205d6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "symfony/filesystem": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Finder\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Finds files and directories via an intuitive fluent interface",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/finder/tree/v7.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-05-31T14:57:53+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "shipmonk/composer-dependency-analyser",
+            "version": "dev-exclude-from-classmap",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LastDragon-ru/composer-dependency-analyser.git",
+                "reference": "26d01b38c5636d54badfed2a2d8ffa8648743120"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LastDragon-ru/composer-dependency-analyser/zipball/26d01b38c5636d54badfed2a2d8ffa8648743120",
+                "reference": "26d01b38c5636d54badfed2a2d8ffa8648743120",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
+                "ext-tokenizer": "*",
                 "php": "^7.2 || ^8.0"
             },
             "require-dev": {
                 "editorconfig-checker/editorconfig-checker": "^10.3.0",
                 "ergebnis/composer-normalize": "^2.19",
-                "phpstan/phpstan": "^1.10.30",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "phpcompatibility/php-compatibility": "^9.3",
+                "phpstan/phpstan": "^1.10.63",
                 "phpstan/phpstan-phpunit": "^1.1.1",
                 "phpstan/phpstan-strict-rules": "^1.2.3",
                 "phpunit/phpunit": "^8.5.28 || ^9.5.20",
                 "shipmonk/name-collision-detector": "^2.0.0",
                 "slevomat/coding-standard": "^8.0.1"
             },
-            "default-branch": true,
             "bin": [
                 "bin/composer-dependency-analyser"
             ],
@@ -45,7 +113,49 @@
                     "ShipMonk\\ComposerDependencyAnalyser\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ShipMonk\\ComposerDependencyAnalyser\\": "tests/"
+                },
+                "classmap": [
+                    "tests/data/autoloaded/"
+                ]
+            },
+            "scripts": {
+                "check": [
+                    "@check:composer",
+                    "@check:ec",
+                    "@check:cs",
+                    "@check:types",
+                    "@check:tests",
+                    "@check:self",
+                    "@check:collisions"
+                ],
+                "check:collisions": [
+                    "detect-collisions src tests"
+                ],
+                "check:composer": [
+                    "composer normalize --dry-run --no-check-lock --no-update-lock"
+                ],
+                "check:cs": [
+                    "phpcs"
+                ],
+                "check:ec": [
+                    "ec src tests"
+                ],
+                "check:self": [
+                    "bin/composer-dependency-analyser"
+                ],
+                "check:tests": [
+                    "phpunit -vvv tests"
+                ],
+                "check:types": [
+                    "phpstan analyse -vvv --ansi"
+                ],
+                "fix:cs": [
+                    "phpcbf"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -65,10 +175,9 @@
                 "unused dependency"
             ],
             "support": {
-                "issues": "https://github.com/shipmonk-rnd/composer-dependency-analyser/issues",
-                "source": "https://github.com/shipmonk-rnd/composer-dependency-analyser/tree/master"
+                "source": "https://github.com/LastDragon-ru/composer-dependency-analyser/tree/exclude-from-classmap"
             },
-            "time": "2024-03-15T15:20:59+00:00"
+            "time": "2024-06-08T05:17:17+00:00"
         }
     ],
     "aliases": [],

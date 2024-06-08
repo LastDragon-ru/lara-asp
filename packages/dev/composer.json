@@ -35,10 +35,7 @@
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Dev\\": "src/"
-    },
-    "exclude-from-classmap": [
-      "src/**Test.php"
-    ]
+    }
   },
   "extra": {
     "laravel": {
