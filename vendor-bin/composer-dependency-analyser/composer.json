@@ -1,13 +1,7 @@
 {
   "require-dev": {
-    "shipmonk/composer-dependency-analyser": "dev-exclude-from-classmap"
+    "shipmonk/composer-dependency-analyser": "^1.7.0"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/LastDragon-ru/composer-dependency-analyser"
-    }
-  ],
   "require": {
     "symfony/finder": "^7.1"
   }

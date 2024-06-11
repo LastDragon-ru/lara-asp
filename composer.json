@@ -210,7 +210,7 @@
       "./vendor-bin/composer-require-checker/vendor/bin/composer-require-checker check"
     ],
     "composer-dependency-analyser": [
-      "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose"
+      "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose --show-all-usages"
     ],
     "monorepo-builder": [
       "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder validate"
