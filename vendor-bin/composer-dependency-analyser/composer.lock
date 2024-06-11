@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4185cd0d5c1d21cc147e85f27b6004a9",
+    "content-hash": "b7849eee354ec4baf5e2dae00926b7eb",
     "packages": [
         {
             "name": "symfony/finder",
@@ -74,16 +74,16 @@
     "packages-dev": [
         {
             "name": "shipmonk/composer-dependency-analyser",
-            "version": "dev-exclude-from-classmap",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/LastDragon-ru/composer-dependency-analyser.git",
-                "reference": "26d01b38c5636d54badfed2a2d8ffa8648743120"
+                "url": "https://github.com/shipmonk-rnd/composer-dependency-analyser.git",
+                "reference": "af14c65d299118af90be34711095eeadd9369414"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LastDragon-ru/composer-dependency-analyser/zipball/26d01b38c5636d54badfed2a2d8ffa8648743120",
-                "reference": "26d01b38c5636d54badfed2a2d8ffa8648743120",
+                "url": "https://api.github.com/repos/shipmonk-rnd/composer-dependency-analyser/zipball/af14c65d299118af90be34711095eeadd9369414",
+                "reference": "af14c65d299118af90be34711095eeadd9369414",
                 "shasum": ""
             },
             "require": {
@@ -104,6 +104,7 @@
                 "shipmonk/name-collision-detector": "^2.0.0",
                 "slevomat/coding-standard": "^8.0.1"
             },
+            "default-branch": true,
             "bin": [
                 "bin/composer-dependency-analyser"
             ],
@@ -113,49 +114,7 @@
                     "ShipMonk\\ComposerDependencyAnalyser\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ShipMonk\\ComposerDependencyAnalyser\\": "tests/"
-                },
-                "classmap": [
-                    "tests/data/autoloaded/"
-                ]
-            },
-            "scripts": {
-                "check": [
-                    "@check:composer",
-                    "@check:ec",
-                    "@check:cs",
-                    "@check:types",
-                    "@check:tests",
-                    "@check:self",
-                    "@check:collisions"
-                ],
-                "check:collisions": [
-                    "detect-collisions src tests"
-                ],
-                "check:composer": [
-                    "composer normalize --dry-run --no-check-lock --no-update-lock"
-                ],
-                "check:cs": [
-                    "phpcs"
-                ],
-                "check:ec": [
-                    "ec src tests"
-                ],
-                "check:self": [
-                    "bin/composer-dependency-analyser"
-                ],
-                "check:tests": [
-                    "phpunit -vvv tests"
-                ],
-                "check:types": [
-                    "phpstan analyse -vvv --ansi"
-                ],
-                "fix:cs": [
-                    "phpcbf"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -175,9 +134,10 @@
                 "unused dependency"
             ],
             "support": {
-                "source": "https://github.com/LastDragon-ru/composer-dependency-analyser/tree/exclude-from-classmap"
+                "issues": "https://github.com/shipmonk-rnd/composer-dependency-analyser/issues",
+                "source": "https://github.com/shipmonk-rnd/composer-dependency-analyser/tree/master"
             },
-            "time": "2024-06-08T05:17:17+00:00"
+            "time": "2024-06-26T11:41:44+00:00"
         }
     ],
     "aliases": [],
