@@ -67,7 +67,7 @@ final class OffsetTest extends TestCase {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @param array<int, string|int> $path
+     * @param list<string|int> $path
      */
     private static function getResolveInfo(array $path): ResolveInfo {
         $info       = Mockery::mock(ResolveInfo::class);
