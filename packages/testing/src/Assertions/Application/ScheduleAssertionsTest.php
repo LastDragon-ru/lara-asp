@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Attribute\AsCommand;

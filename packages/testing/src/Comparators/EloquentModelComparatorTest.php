@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use Illuminate\Database\Eloquent\Model;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SebastianBergmann\Comparator\ComparisonFailure;

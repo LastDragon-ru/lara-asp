@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Exception;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
