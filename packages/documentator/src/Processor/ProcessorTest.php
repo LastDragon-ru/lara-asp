@@ -191,6 +191,104 @@ final class ProcessorTest extends TestCase {
         );
     }
 
+    public function testRunPostpone(): void {
+        $task = new class() implements Task {
+            /**
+             * @var array<array-key, string>
+             */
+            public array $processed = [];
+            /**
+             * @var array<string, bool>
+             */
+            public array $postponed = [];
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['txt', 'htm', 'html'];
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function __invoke(Directory $root, File $file): ?bool {
+                // Postponed?
+                $path = $file->getRelativePath($root);
+
+                if ($file->getExtension() === 'html' && !isset($this->postponed[$path])) {
+                    $this->postponed[$path] = true;
+
+                    return null;
+                }
+
+                // Process
+                $this->processed[] = $path;
+
+                return true;
+            }
+        };
+
+        $root   = Path::normalize(self::getTestData()->path(''));
+        $count  = 0;
+        $events = [];
+
+        (new Processor())
+            ->task($task)
+            ->run(
+                $root,
+                ['excluded.txt', '**/**/excluded.txt'],
+                static function (string $path, ?bool $result) use (&$count, &$events): void {
+                    $events[$path] = $result;
+                    $count++;
+                },
+            );
+
+        self::assertEquals(
+            [
+                'b/a/ba.txt' => true,
+                'c.txt'      => true,
+                'b/b/bb.txt' => true,
+                'a/a.txt'    => true,
+                'a/a/aa.txt' => true,
+                'a/b/ab.txt' => true,
+                'b/b.txt'    => true,
+                'c.htm'      => true,
+                'c.html'     => true,
+                'b/b.html'   => true,
+                'a/a.html'   => true,
+            ],
+            $events,
+        );
+        self::assertCount($count, $events);
+        self::assertEquals(
+            [
+                'a/a.txt',
+                'a/a/aa.txt',
+                'a/b/ab.txt',
+                'b/a/ba.txt',
+                'b/b.txt',
+                'b/b/bb.txt',
+                'c.htm',
+                'c.txt',
+                'c.html',
+                'b/b.html',
+                'a/a.html',
+            ],
+            $task->processed,
+        );
+        self::assertEquals(
+            [
+                'c.html'   => true,
+                'b/b.html' => true,
+                'a/a.html' => true,
+            ],
+            $task->postponed,
+        );
+    }
+
     public function testRunFileNotFound(): void {
         $task = new class() implements Task {
             /**
