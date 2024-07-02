@@ -27,7 +27,6 @@ use function is_a;
 use function is_scalar;
 use function ksort;
 use function mb_strlen;
-use function microtime;
 use function min;
 use function rtrim;
 use function str_repeat;
@@ -78,7 +77,6 @@ class Preprocess extends Command {
         $path     = Cast::toString($this->argument('path') ?? $cwd);
         $path     = Path::normalize($path);
         $width    = min((new Terminal())->getWidth(), 150);
-        $start    = microtime(true);
         $exclude  = array_map(strval(...), (array) $this->option('exclude'));
         $listener = function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
             [$resultMessage, $resultColor] = match (true) {
@@ -97,12 +95,12 @@ class Preprocess extends Command {
             $this->output->writeln($line);
         };
 
-        (new Processor())
+        $duration = (new Processor())
             ->task($this->preprocessor)
             ->run($path, $exclude, $listener);
 
         $this->output->newLine();
-        $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration(microtime(true) - $start)})</>");
+        $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration($duration)})</>");
     }
 
     #[Override]

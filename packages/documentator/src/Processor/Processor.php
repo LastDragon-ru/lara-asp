@@ -56,21 +56,29 @@ class Processor {
      * @param array<array-key, string>|string|null                             $exclude glob(s) to exclude.
      * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
      */
-    public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): void {
+    public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
+        $start      = microtime(true);
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
         $processed  = [];
         $exclude    = array_map(Glob::toRegex(...), (array) $exclude);
         $root       = new Directory($path, true);
 
         try {
-            $iterator = $root->getFilesIterator(patterns: $extensions, exclude: $exclude);
-
-            $this->runIterator($iterator, $root, $exclude, $listener, $processed, []);
+            $this->runIterator(
+                $root->getFilesIterator(patterns: $extensions, exclude: $exclude),
+                $root,
+                $exclude,
+                $listener,
+                $processed,
+                [],
+            );
         } catch (ProcessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
             throw new ProcessingFailed($root, $exception);
         }
+
+        return microtime(true) - $start;
     }
 
     /**
