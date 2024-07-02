@@ -111,7 +111,6 @@ class Processor {
                 $listener,
                 $processed,
                 $stack,
-                [],
             );
         }
 
@@ -124,7 +123,6 @@ class Processor {
      * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
      * @param array<string, true>                                              $processed
      * @param array<string, File>                                              $stack
-     * @param array<string, File>                                              $resolved
      */
     private function runFile(
         Iterator $iterator,
@@ -134,7 +132,6 @@ class Processor {
         ?Closure $listener,
         array &$processed,
         array $stack,
-        array $resolved,
     ): ?float {
         // Prepare
         $start   = microtime(true);
@@ -218,10 +215,6 @@ class Processor {
                                 throw new CircularDependency($root, $file, $dependency, array_values($stack));
                             }
 
-                            // Resolved?
-                            $dependency               = $resolved[$dependencyKey] ?? $dependency;
-                            $resolved[$dependencyKey] = $dependency;
-
                             // Processable?
                             if (!isset($processed[$dependencyKey]) && $root->isInside($dependency)) {
                                 $paused += (float) $this->runFile(
@@ -232,7 +225,6 @@ class Processor {
                                     $listener,
                                     $processed,
                                     $stack,
-                                    $resolved,
                                 );
                             }
 
