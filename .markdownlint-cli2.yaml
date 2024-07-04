@@ -17,6 +17,12 @@ ignores:
   - node_modules
   - .vagrant
 
+# Custom
+customRules:
+  # Relative links check
+  # - https://github.com/DavidAnson/markdownlint/issues/121
+  - markdownlint-rule-relative-links
+
 # Config
 config:
   # Default state for all rules
