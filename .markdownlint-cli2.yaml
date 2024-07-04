@@ -7,15 +7,16 @@ globs:
 
 # Ignored files
 # - https://github.com/DavidAnson/markdownlint-cli2/issues/365
+# - https://github.com/sindresorhus/globby/issues/50
 # gitignore: true
 ignores:
-  - dev
-  - tmp
-  - docs/Shared
-  - vendor
-  - vendor-bin
-  - node_modules
-  - .vagrant
+  - dev/**
+  - tmp/**
+  - docs/Shared/**
+  - vendor/**
+  - vendor-bin/**
+  - node_modules/**
+  - .vagrant/**
 
 # Custom
 customRules:
