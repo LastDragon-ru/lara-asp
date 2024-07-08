@@ -68,7 +68,7 @@ class Processor {
                 $root->getFilesIterator(patterns: $extensions, exclude: $exclude),
                 $root,
                 $exclude,
-                $listener,
+                $listener ?? static fn () => null,
                 $processed,
                 [],
             );
@@ -82,17 +82,17 @@ class Processor {
     }
 
     /**
-     * @param Iterator<array-key, File>                                        $iterator
-     * @param array<array-key, string>                                         $exclude
-     * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
-     * @param array<string, true>                                              $processed
-     * @param array<string, File>                                              $stack
+     * @param Iterator<array-key, File>                                   $iterator
+     * @param array<array-key, string>                                    $exclude
+     * @param Closure(string $path, ?bool $result, float $duration): void $listener
+     * @param array<string, true>                                         $processed
+     * @param array<string, File>                                         $stack
      */
     private function runIterator(
         Iterator $iterator,
         Directory $root,
         array $exclude,
-        ?Closure $listener,
+        Closure $listener,
         array &$processed,
         array $stack,
     ): float {
@@ -118,18 +118,18 @@ class Processor {
     }
 
     /**
-     * @param Iterator<array-key, File>                                        $iterator
-     * @param array<array-key, string>                                         $exclude
-     * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
-     * @param array<string, true>                                              $processed
-     * @param array<string, File>                                              $stack
+     * @param Iterator<array-key, File>                                   $iterator
+     * @param array<array-key, string>                                    $exclude
+     * @param Closure(string $path, ?bool $result, float $duration): void $listener
+     * @param array<string, true>                                         $processed
+     * @param array<string, File>                                         $stack
      */
     private function runFile(
         Iterator $iterator,
         Directory $root,
         File $file,
         array $exclude,
-        ?Closure $listener,
+        Closure $listener,
         array &$processed,
         array $stack,
     ): ?float {
@@ -147,9 +147,7 @@ class Processor {
         $processed[$fileKey] = true;
 
         if (!$tasks) {
-            if ($listener) {
-                $listener($filePath, null, microtime(true) - $start);
-            }
+            $listener($filePath, null, microtime(true) - $start);
 
             return null;
         }
@@ -166,9 +164,7 @@ class Processor {
             }
 
             if ($excluded) {
-                if ($listener) {
-                    $listener($filePath, null, microtime(true) - $start);
-                }
+                $listener($filePath, null, microtime(true) - $start);
 
                 return null;
             }
@@ -255,9 +251,7 @@ class Processor {
         } finally {
             $duration = microtime(true) - $start - $paused;
 
-            if ($listener) {
-                $listener($filePath, !isset($exception), $duration);
-            }
+            $listener($filePath, !isset($exception), $duration);
         }
 
         // Reset
