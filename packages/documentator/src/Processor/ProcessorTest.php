@@ -119,7 +119,7 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, ?bool $result) use (&$count, &$events): void {
+                static function (string $path, Result $result) use (&$count, &$events): void {
                     $events[$path] = $result;
                     $count++;
                 },
@@ -127,16 +127,16 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'b/a/ba.txt'     => true,
-                'c.txt'          => true,
-                'b/b/bb.txt'     => true,
-                'a/a.txt'        => true,
-                'a/a/aa.txt'     => true,
-                'a/b/ab.txt'     => true,
-                'b/b.txt'        => true,
-                'c.htm'          => true,
-                'c.html'         => null,
-                'a/excluded.txt' => null,
+                'b/a/ba.txt'     => Result::Success,
+                'c.txt'          => Result::Success,
+                'b/b/bb.txt'     => Result::Success,
+                'a/a.txt'        => Result::Success,
+                'a/a/aa.txt'     => Result::Success,
+                'a/b/ab.txt'     => Result::Success,
+                'b/b.txt'        => Result::Success,
+                'c.htm'          => Result::Success,
+                'c.html'         => Result::Skipped,
+                'a/excluded.txt' => Result::Skipped,
             ],
             $events,
         );
@@ -240,7 +240,7 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, ?bool $result) use (&$count, &$events): void {
+                static function (string $path, Result $result) use (&$count, &$events): void {
                     $events[$path] = $result;
                     $count++;
                 },
@@ -248,17 +248,17 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'b/a/ba.txt' => true,
-                'c.txt'      => true,
-                'b/b/bb.txt' => true,
-                'a/a.txt'    => true,
-                'a/a/aa.txt' => true,
-                'a/b/ab.txt' => true,
-                'b/b.txt'    => true,
-                'c.htm'      => true,
-                'c.html'     => true,
-                'b/b.html'   => true,
-                'a/a.html'   => true,
+                'b/a/ba.txt' => Result::Success,
+                'c.txt'      => Result::Success,
+                'b/b/bb.txt' => Result::Success,
+                'a/a.txt'    => Result::Success,
+                'a/a/aa.txt' => Result::Success,
+                'a/b/ab.txt' => Result::Success,
+                'b/b.txt'    => Result::Success,
+                'c.htm'      => Result::Success,
+                'c.html'     => Result::Success,
+                'b/b.html'   => Result::Success,
+                'a/a.html'   => Result::Success,
             ],
             $events,
         );

@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -78,11 +79,11 @@ class Preprocess extends Command {
         $path     = Path::normalize($path);
         $width    = min((new Terminal())->getWidth(), 150);
         $exclude  = array_map(strval(...), (array) $this->option('exclude'));
-        $listener = function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
-            [$resultMessage, $resultColor] = match (true) {
-                $success === false => ['FAIL', 'red'],
-                $success === true  => ['DONE', 'green'],
-                default            => ['SKIP', 'gray'],
+        $listener = function (string $path, Result $result, float $duration) use ($formatter, $width): void {
+            [$resultMessage, $resultColor] = match ($result) {
+                Result::Failed  => ['FAIL', 'red'],
+                Result::Success => ['DONE', 'green'],
+                Result::Skipped => ['SKIP', 'gray'],
             };
 
             $duration = $formatter->duration($duration);

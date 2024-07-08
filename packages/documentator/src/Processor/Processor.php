@@ -53,8 +53,8 @@ class Processor {
     }
 
     /**
-     * @param array<array-key, string>|string|null                             $exclude glob(s) to exclude.
-     * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
+     * @param array<array-key, string>|string|null                              $exclude glob(s) to exclude.
+     * @param Closure(string $path, Result $result, float $duration): void|null $listener
      */
     public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
         $start      = microtime(true);
@@ -82,11 +82,11 @@ class Processor {
     }
 
     /**
-     * @param Iterator<array-key, File>                                   $iterator
-     * @param array<array-key, string>                                    $exclude
-     * @param Closure(string $path, ?bool $result, float $duration): void $listener
-     * @param array<string, true>                                         $processed
-     * @param array<string, File>                                         $stack
+     * @param Iterator<array-key, File>            $iterator
+     * @param array<array-key, string>             $exclude
+     * @param Closure(string, Result, float): void $listener
+     * @param array<string, true>                  $processed
+     * @param array<string, File>                  $stack
      */
     private function runIterator(
         Iterator $iterator,
@@ -118,11 +118,11 @@ class Processor {
     }
 
     /**
-     * @param Iterator<array-key, File>                                   $iterator
-     * @param array<array-key, string>                                    $exclude
-     * @param Closure(string $path, ?bool $result, float $duration): void $listener
-     * @param array<string, true>                                         $processed
-     * @param array<string, File>                                         $stack
+     * @param Iterator<array-key, File>            $iterator
+     * @param array<array-key, string>             $exclude
+     * @param Closure(string, Result, float): void $listener
+     * @param array<string, true>                  $processed
+     * @param array<string, File>                  $stack
      */
     private function runFile(
         Iterator $iterator,
@@ -147,7 +147,7 @@ class Processor {
         $processed[$fileKey] = true;
 
         if (!$tasks) {
-            $listener($filePath, null, microtime(true) - $start);
+            $listener($filePath, Result::Skipped, microtime(true) - $start);
 
             return null;
         }
@@ -164,7 +164,7 @@ class Processor {
             }
 
             if ($excluded) {
-                $listener($filePath, null, microtime(true) - $start);
+                $listener($filePath, Result::Skipped, microtime(true) - $start);
 
                 return null;
             }
@@ -250,8 +250,9 @@ class Processor {
             throw $exception;
         } finally {
             $duration = microtime(true) - $start - $paused;
+            $result   = !isset($exception) ? Result::Success : Result::Failed;
 
-            $listener($filePath, !isset($exception), $duration);
+            $listener($filePath, $result, $duration);
         }
 
         // Reset
