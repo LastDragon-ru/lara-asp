@@ -18,6 +18,7 @@ use Override;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 
 use function array_map;
@@ -80,10 +81,10 @@ class Preprocess extends Command {
         $width    = min((new Terminal())->getWidth(), 150);
         $exclude  = array_map(strval(...), (array) $this->option('exclude'));
         $listener = function (string $path, Result $result, float $duration) use ($formatter, $width): void {
-            [$resultMessage, $resultColor] = match ($result) {
-                Result::Failed  => ['FAIL', 'red'],
-                Result::Success => ['DONE', 'green'],
-                Result::Skipped => ['SKIP', 'gray'],
+            [$resultMessage, $resultColor, $resultVerbosity] = match ($result) {
+                Result::Failed  => ['FAIL', 'red', OutputInterface::VERBOSITY_NORMAL],
+                Result::Success => ['DONE', 'green', OutputInterface::VERBOSITY_NORMAL],
+                Result::Skipped => ['SKIP', 'gray', OutputInterface::VERBOSITY_VERBOSE],
             };
 
             $duration = $formatter->duration($duration);
@@ -93,7 +94,7 @@ class Preprocess extends Command {
                 .' '."<fg=gray>{$duration}</>"
                 .' '."<fg={$resultColor};options=bold>{$resultMessage}</>";
 
-            $this->output->writeln($line);
+            $this->output->writeln($line, OutputInterface::OUTPUT_NORMAL | $resultVerbosity);
         };
 
         $duration = (new Processor())
