@@ -23,7 +23,7 @@ final class PreprocessorTest extends TestCase {
 
             [unknown]: ./path/to/file
 
-            [empty]: ./path/to/file
+            [empty]: <./path/to/file "value">
 
             [processable]: ./path/to/file
 
@@ -101,11 +101,11 @@ final class PreprocessorTest extends TestCase {
 
             [unknown]: ./path/to/file
 
-            [empty]: ./path/to/file
-            [//]: # (start: 8619b6a617a04e2b1ed8916cd29b8e9947a9157ffdef8d2e8a51fe60fbc13948)
+            [empty]: <./path/to/file "value">
+            [//]: # (start: 99c91ec6684e9a6f1353966bb4f72dd70ab4241618b106ef24da7cbaeb5dbfab)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: 8619b6a617a04e2b1ed8916cd29b8e9947a9157ffdef8d2e8a51fe60fbc13948)
+            [//]: # (end: 99c91ec6684e9a6f1353966bb4f72dd70ab4241618b106ef24da7cbaeb5dbfab)
 
             [processable]: ./path/to/file
             [//]: # (start: 378a07bc67ecbe88f5d2f642e70681461f61d3f2f5e83379015b879110c83947)

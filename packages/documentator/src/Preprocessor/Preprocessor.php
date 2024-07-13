@@ -69,7 +69,7 @@ class Preprocessor {
     protected const Regexp  = <<<'REGEXP'
         /^
         (?P<expression>
-          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s(?P<target>(?:[^ ]+?)|(?:<[^>]+?>))
+          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s+(?P<target>(?:[^<][^ ]+?)|(?:<[^>]+?>))
           (?P<pBlock>\s(?:\(|(?P<pStart>['"]))(?P<parameters>.+?)(?:\)|(?P=pStart)))?
         )
         (?P<content>\R
@@ -141,7 +141,7 @@ class Preprocessor {
                 callback: function (array $matches) use (&$cache, $path): string {
                     // Hash
                     $instruction = $this->getInstruction($matches['instruction']);
-                    $target      = $matches['target'];
+                    $target      = trim($matches['target']);
                     $target      = str_starts_with($target, '<') && str_ends_with($target, '>')
                         ? mb_substr($target, 1, -1)
                         : rawurldecode($target);
