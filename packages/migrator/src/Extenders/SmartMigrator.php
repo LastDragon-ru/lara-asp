@@ -27,10 +27,8 @@ class SmartMigrator extends Migrator {
     // =========================================================================
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
-     *
+     * @inheritDoc
      * @param array<array-key, mixed>|string $paths
-     *
-     * @return array<array-key, string>
      */
     #[Override]
     public function getMigrationFiles($paths): array {
