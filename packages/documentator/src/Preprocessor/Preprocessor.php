@@ -20,12 +20,12 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile\Ins
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
-use SplFileInfo;
 
 use function array_map;
 use function array_values;
@@ -141,7 +141,7 @@ class Preprocessor implements Task {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, File, bool>
+     * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>
      */
     #[Override]
     public function __invoke(Directory $root, File $file): Generator {

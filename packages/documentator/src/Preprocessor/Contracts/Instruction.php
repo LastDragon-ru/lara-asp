@@ -4,8 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts;
 
 use Generator;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use SplFileInfo;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 
 /**
  * @template TTarget
@@ -34,7 +33,9 @@ interface Instruction {
      * @param TTarget     $target
      * @param TParameters $parameters
      *
-     * @return Generator<mixed, SplFileInfo|File|string, File, string>|string
+     * @return Generator<mixed, Dependency<covariant mixed>, mixed, string>|string
+     *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, string>|string`
+     *           but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator|string;
 }

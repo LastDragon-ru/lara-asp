@@ -6,7 +6,7 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			message: "#^Generator expects value type LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\FileSystem\\\\File\\|SplFileInfo\\|string, mixed given\\.$#"
+			message: "#^Generator expects value type LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Dependency\\<covariant mixed\\>, mixed given\\.$#"
 			count: 1
 			path: packages/documentator/src/Preprocessor/Preprocessor.php
 

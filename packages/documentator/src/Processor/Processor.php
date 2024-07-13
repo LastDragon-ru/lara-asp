@@ -6,24 +6,20 @@ use Closure;
 use Exception;
 use Generator;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileTaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use SplFileInfo;
 use Symfony\Component\Finder\Glob;
 
 use function array_keys;
 use function array_map;
 use function array_unique;
 use function array_values;
-use function dirname;
 use function in_array;
 use function microtime;
 use function preg_match;
@@ -57,6 +53,8 @@ class Processor {
      * @param Closure(string $path, Result $result, float $duration): void|null $listener
      */
     public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
+        // todo(documentator): Would be nice to exclude `$listener` time.
+
         $start      = microtime(true);
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
         $processed  = [];
@@ -133,18 +131,30 @@ class Processor {
         array &$processed,
         array $stack,
     ): ?float {
-        // Prepare
-        $start   = microtime(true);
+        // Processed?
         $fileKey = $file->getPath();
 
         if (isset($processed[$fileKey])) {
             return null;
         }
 
+        // Circular?
+        if (isset($stack[$fileKey])) {
+            throw new CircularDependency($root, $file, $file, array_values($stack));
+        }
+
+        // Outside?
+        $start    = microtime(true);
+        $filePath = $file->getRelativePath($root);
+
+        if (!$root->isInside($file)) {
+            $listener($filePath, Result::Skipped, microtime(true) - $start);
+
+            return null;
+        }
+
         // Tasks?
-        $tasks               = $this->tasks[$file->getExtension()] ?? [];
-        $filePath            = $file->getRelativePath($root);
-        $processed[$fileKey] = true;
+        $tasks = $this->tasks[$file->getExtension()] ?? [];
 
         if (!$tasks) {
             $listener($filePath, Result::Skipped, microtime(true) - $start);
@@ -172,7 +182,6 @@ class Processor {
 
         // Process
         $paused          = 0;
-        $directory       = dirname($file->getPath());
         $stack[$fileKey] = $file;
 
         try {
@@ -192,27 +201,9 @@ class Processor {
 
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
-                            // Resolve
-                            $path = $generator->current();
-                            $path = match (true) {
-                                $path instanceof SplFileInfo => $path->getPathname(),
-                                $path instanceof File        => $path->getPath(),
-                                default                      => $path,
-                            };
-                            $dependency    = $root->getFile(Path::getPath($directory, $path));
-                            $dependencyKey = $dependency?->getPath();
+                            $dependency = ($generator->current())($root, $file);
 
-                            if (!$dependency) {
-                                throw new FileDependencyNotFound($root, $file, $path);
-                            }
-
-                            // Circular?
-                            if (isset($stack[$dependencyKey])) {
-                                throw new CircularDependency($root, $file, $dependency, array_values($stack));
-                            }
-
-                            // Processable?
-                            if (!isset($processed[$dependencyKey]) && $root->isInside($dependency)) {
+                            if ($dependency instanceof File) {
                                 $paused += (float) $this->runFile(
                                     $iterator,
                                     $root,
@@ -224,7 +215,6 @@ class Processor {
                                 );
                             }
 
-                            // Continue
                             $generator->send($dependency);
                         }
 
@@ -249,8 +239,9 @@ class Processor {
         } catch (Exception $exception) {
             throw $exception;
         } finally {
-            $duration = microtime(true) - $start - $paused;
-            $result   = !isset($exception) ? Result::Success : Result::Failed;
+            $processed[$fileKey] = true;
+            $duration            = microtime(true) - $start - $paused;
+            $result              = !isset($exception) ? Result::Success : Result::Failed;
 
             $listener($filePath, $result, $duration);
         }

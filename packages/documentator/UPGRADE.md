@@ -43,6 +43,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Contracts\Runner` should be used/provided instead.
 
+* [ ] `LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()` should yield a `LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency` instead of file.
+
+* [ ] `LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by `LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound`.
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md

@@ -3,16 +3,18 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
 use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
-use SplFileInfo;
 
 use function strcmp;
 use function usort;
@@ -47,7 +49,7 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, File, string>
+     * @return Generator<mixed, Dependency<covariant mixed>, mixed, string>
      */
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
@@ -63,7 +65,7 @@ class Instruction implements InstructionContract {
             }
 
             // Content?
-            $file    = yield $file;
+            $file    = Cast::to(File::class, yield new FileReference($file));
             $content = $file->getContent();
 
             if (!$content) {

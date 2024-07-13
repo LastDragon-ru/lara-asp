@@ -9,7 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
@@ -77,7 +78,7 @@ final class InstructionTest extends TestCase {
 
         self::assertNotNull($package);
         self::expectExceptionObject(
-            new FileDependencyNotFound($context->root, $context->file, 'no readme/package/README.md'),
+            new DependencyNotFound($context->root, $context->file, new FileReference('no readme/package/README.md')),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);
