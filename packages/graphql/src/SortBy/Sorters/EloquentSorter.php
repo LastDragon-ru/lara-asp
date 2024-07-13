@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\JoinClause;
@@ -19,6 +20,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use Override;
 
 use function array_shift;
+use function class_exists;
 
 /**
  * @extends DatabaseSorter<EloquentBuilder<Model>>
@@ -157,7 +159,12 @@ class EloquentSorter extends DatabaseSorter {
                     ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                     : $relation->getQualifiedParentKeyName(),
             );
-        } elseif ($relation instanceof HasManyThrough) {
+        } elseif (
+            $relation instanceof HasManyThrough
+            || ( // Since Laravel v11.15.0
+                class_exists(HasOneOrManyThrough::class) && $relation instanceof HasOneOrManyThrough
+            )
+        ) {
             $builder->joinSub(
                 $relation->getQuery()->select([
                     "{$relation->getParent()->getQualifiedKeyName()} as {$currentAlias}_key",
