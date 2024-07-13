@@ -640,7 +640,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
     }
 
     /**
-     * @return Closure(mixed, array<string, mixed>, GraphQLContext, ResolveInfo): EloquentBuilder<EloquentModel>
+     * @return Closure(mixed,array<string,mixed>,GraphQLContext,ResolveInfo):EloquentBuilder<covariant EloquentModel>
      */
     protected function getResolverModel(string $model): Closure {
         $class    = $this->namespaceModelClass($model);

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
@@ -11,6 +10,9 @@ use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
  * @internal
  */
 class TestObject extends Model {
+    /**
+     * @use HasFactory<TestObjectFactory>
+     */
     use HasFactory;
     use WithoutTimestamps;
 
@@ -20,10 +22,7 @@ class TestObject extends Model {
      */
     protected $table = 'test_objects';
 
-    /**
-     * @return Factory<self>
-     */
-    protected static function newFactory(): Factory {
+    protected static function newFactory(): TestObjectFactory {
         return TestObjectFactory::new();
     }
 }

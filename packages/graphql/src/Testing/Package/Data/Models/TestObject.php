@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
@@ -14,6 +13,9 @@ use LastDragon_ru\LaraASP\Eloquent\Concerns\WithoutTimestamps;
  * @property string $value
  */
 class TestObject extends Model {
+    /**
+     * @use HasFactory<TestObjectFactory>
+     */
     use HasFactory;
     use WithoutTimestamps;
 
@@ -35,10 +37,7 @@ class TestObject extends Model {
      */
     public $incrementing = false;
 
-    /**
-     * @return Factory<self>
-     */
-    protected static function newFactory(): Factory {
+    protected static function newFactory(): TestObjectFactory {
         return TestObjectFactory::new();
     }
 }
