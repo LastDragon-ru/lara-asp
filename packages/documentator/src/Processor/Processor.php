@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Symfony\Component\Finder\Glob;
+use Throwable;
 
 use function array_keys;
 use function array_map;
@@ -259,7 +260,7 @@ class Processor {
             if (!$file->save()) {
                 throw new FileSaveFailed($root, $file);
             }
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             throw $exception;
         } finally {
             $result              = !isset($exception) ? Result::Success : Result::Failed;
