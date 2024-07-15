@@ -48,7 +48,7 @@ class FilesIterator extends Base implements Dependency {
         }
 
         // Resolve
-        yield from $fs->getFilesIterator($directory, $this->patterns, $this->depth, $this->exclude);
+        return $fs->getFilesIterator($directory, $this->patterns, $this->depth, $this->exclude);
     }
 
     #[Override]

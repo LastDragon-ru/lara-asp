@@ -48,7 +48,7 @@ class DirectoriesIterator extends Base implements Dependency {
         }
 
         // Resolve
-        yield from $fs->getDirectoriesIterator($directory, $this->patterns, $this->depth, $this->exclude);
+        return $fs->getDirectoriesIterator($directory, $this->patterns, $this->depth, $this->exclude);
     }
 
     #[Override]
