@@ -55,8 +55,6 @@ class Processor {
      * @param Closure(string $path, Result $result, float $duration): void|null $listener
      */
     public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
-        // todo(documentator): Would be nice to exclude `$listener` time.
-
         $start      = microtime(true);
         $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
         $processed  = [];
@@ -70,7 +68,15 @@ class Processor {
                 $fs,
                 $root,
                 $exclude,
-                $listener ?? static fn () => null,
+                static function (string $path, Result $result, float $duration) use ($listener): float {
+                    $start = microtime(true);
+
+                    if ($listener) {
+                        $listener($path, $result, $duration);
+                    }
+
+                    return microtime(true) - $start;
+                },
                 $processed,
                 [],
             );
@@ -84,11 +90,11 @@ class Processor {
     }
 
     /**
-     * @param Iterator<array-key, File>            $iterator
-     * @param array<array-key, string>             $exclude
-     * @param Closure(string, Result, float): void $listener
-     * @param array<string, true>                  $processed
-     * @param array<string, File>                  $stack
+     * @param Iterator<array-key, File>             $iterator
+     * @param array<array-key, string>              $exclude
+     * @param Closure(string, Result, float): float $listener
+     * @param array<string, true>                   $processed
+     * @param array<string, File>                   $stack
      */
     private function runIterator(
         Iterator $iterator,
@@ -122,11 +128,11 @@ class Processor {
     }
 
     /**
-     * @param Iterator<array-key, File>            $iterator
-     * @param array<array-key, string>             $exclude
-     * @param Closure(string, Result, float): void $listener
-     * @param array<string, true>                  $processed
-     * @param array<string, File>                  $stack
+     * @param Iterator<array-key, File>             $iterator
+     * @param array<array-key, string>              $exclude
+     * @param Closure(string, Result, float): float $listener
+     * @param array<string, true>                   $processed
+     * @param array<string, File>                   $stack
      */
     private function runFile(
         Iterator $iterator,
@@ -155,18 +161,14 @@ class Processor {
         $filePath = $file->getRelativePath($root);
 
         if (!$root->isInside($file)) {
-            $listener($filePath, Result::Skipped, microtime(true) - $start);
-
-            return null;
+            return $listener($filePath, Result::Skipped, microtime(true) - $start);
         }
 
         // Tasks?
         $tasks = $this->tasks[$file->getExtension()] ?? [];
 
         if (!$tasks) {
-            $listener($filePath, Result::Skipped, microtime(true) - $start);
-
-            return null;
+            return $listener($filePath, Result::Skipped, microtime(true) - $start);
         }
 
         // Excluded?
@@ -181,9 +183,7 @@ class Processor {
             }
 
             if ($excluded) {
-                $listener($filePath, Result::Skipped, microtime(true) - $start);
-
-                return null;
+                return $listener($filePath, Result::Skipped, microtime(true) - $start);
             }
         }
 
@@ -199,7 +199,15 @@ class Processor {
 
                     // Postponed?
                     if ($generator === null) {
-                        $paused   += $this->runIterator($iterator, $fs, $root, $exclude, $listener, $processed, $stack);
+                        $paused   += $this->runIterator(
+                            $iterator,
+                            $fs,
+                            $root,
+                            $exclude,
+                            $listener,
+                            $processed,
+                            $stack,
+                        );
                         $generator = $task($root, $file) ?? false;
                     }
 
@@ -254,11 +262,10 @@ class Processor {
         } catch (Exception $exception) {
             throw $exception;
         } finally {
-            $processed[$fileKey] = true;
-            $duration            = microtime(true) - $start - $paused;
             $result              = !isset($exception) ? Result::Success : Result::Failed;
-
-            $listener($filePath, $result, $duration);
+            $duration            = microtime(true) - $start - $paused;
+            $duration           -= $listener($filePath, $result, $duration);
+            $processed[$fileKey] = true;
         }
 
         // Reset
