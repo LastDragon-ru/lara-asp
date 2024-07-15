@@ -85,6 +85,7 @@ class Preprocess extends Command {
                 Result::Failed  => ['FAIL', 'red', OutputInterface::VERBOSITY_NORMAL],
                 Result::Success => ['DONE', 'green', OutputInterface::VERBOSITY_NORMAL],
                 Result::Skipped => ['SKIP', 'gray', OutputInterface::VERBOSITY_VERBOSE],
+                Result::Missed  => ['MISS', 'gray', OutputInterface::VERBOSITY_VERBOSE],
             };
 
             $duration = $formatter->duration($duration);

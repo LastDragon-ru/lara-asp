@@ -223,6 +223,10 @@ class Processor {
                                         $processed,
                                         $stack,
                                     );
+                                } elseif ($dependency === null) {
+                                    $listener($filePath, Result::Missed, 0);
+                                } else {
+                                    // empty
                                 }
 
                                 $generator->send($dependency);
