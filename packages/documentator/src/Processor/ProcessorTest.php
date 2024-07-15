@@ -69,7 +69,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -305,7 +305,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -336,7 +336,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -385,7 +385,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {

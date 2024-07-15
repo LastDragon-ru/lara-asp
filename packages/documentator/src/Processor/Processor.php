@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Symfony\Component\Finder\Glob;
 
 use function array_keys;
@@ -21,6 +22,7 @@ use function array_map;
 use function array_unique;
 use function array_values;
 use function in_array;
+use function is_iterable;
 use function microtime;
 use function preg_match;
 
@@ -60,10 +62,12 @@ class Processor {
         $processed  = [];
         $exclude    = array_map(Glob::toRegex(...), (array) $exclude);
         $root       = new Directory($path, true);
+        $fs         = new FileSystem();
 
         try {
             $this->runIterator(
-                $root->getFilesIterator(patterns: $extensions, exclude: $exclude),
+                $fs->getFilesIterator($root, patterns: $extensions, exclude: $exclude),
+                $fs,
                 $root,
                 $exclude,
                 $listener ?? static fn () => null,
@@ -88,6 +92,7 @@ class Processor {
      */
     private function runIterator(
         Iterator $iterator,
+        FileSystem $fs,
         Directory $root,
         array $exclude,
         Closure $listener,
@@ -103,6 +108,7 @@ class Processor {
 
             $time += (float) $this->runFile(
                 $iterator,
+                $fs,
                 $root,
                 $file,
                 $exclude,
@@ -124,6 +130,7 @@ class Processor {
      */
     private function runFile(
         Iterator $iterator,
+        FileSystem $fs,
         Directory $root,
         File $file,
         array $exclude,
@@ -192,7 +199,7 @@ class Processor {
 
                     // Postponed?
                     if ($generator === null) {
-                        $paused   += $this->runIterator($iterator, $root, $exclude, $listener, $processed, $stack);
+                        $paused   += $this->runIterator($iterator, $fs, $root, $exclude, $listener, $processed, $stack);
                         $generator = $task($root, $file) ?? false;
                     }
 
@@ -201,21 +208,25 @@ class Processor {
 
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
-                            $dependency = ($generator->current())($root, $file);
+                            $dependencies = ($generator->current())($fs, $root, $file);
+                            $dependencies = is_iterable($dependencies) ? $dependencies : [$dependencies];
 
-                            if ($dependency instanceof File) {
-                                $paused += (float) $this->runFile(
-                                    $iterator,
-                                    $root,
-                                    $dependency,
-                                    $exclude,
-                                    $listener,
-                                    $processed,
-                                    $stack,
-                                );
+                            foreach ($dependencies as $dependency) {
+                                if ($dependency instanceof File) {
+                                    $paused += (float) $this->runFile(
+                                        $iterator,
+                                        $fs,
+                                        $root,
+                                        $dependency,
+                                        $exclude,
+                                        $listener,
+                                        $processed,
+                                        $stack,
+                                    );
+                                }
+
+                                $generator->send($dependency);
                             }
-
-                            $generator->send($dependency);
                         }
 
                         $result = $generator->getReturn();

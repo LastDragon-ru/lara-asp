@@ -10,32 +10,31 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function basename;
 use function sprintf;
 
 /**
  * @internal
  */
-#[CoversClass(FileReference::class)]
-final class FileReferenceTest extends TestCase {
+#[CoversClass(DirectoryReference::class)]
+final class DirectoryReferenceTest extends TestCase {
     public function testToString(): void {
-        $file = new File(Path::normalize(__FILE__), false);
+        $directory = new Directory(Path::normalize(__DIR__), false);
 
-        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file')));
-        self::assertEquals($file->getPath(), (string) (new FileReference($file)));
+        self::assertEquals('path/to/directory', (string) (new DirectoryReference('path/to/directory')));
+        self::assertEquals($directory->getPath(), (string) (new DirectoryReference($directory)));
     }
 
     public function testInvoke(): void {
         $fs        = new FileSystem();
         $root      = new Directory(Path::normalize(__DIR__), false);
         $file      = new File(Path::normalize(__FILE__), false);
-        $another   = new File(Path::normalize(__FILE__), false);
-        $absolute  = new FileReference(__FILE__);
-        $relative  = new FileReference(basename(__FILE__));
-        $reference = new FileReference($another);
+        $another   = new Directory(Path::normalize(__DIR__), false);
+        $absolute  = new DirectoryReference(__DIR__);
+        $relative  = new DirectoryReference('.');
+        $reference = new DirectoryReference($another);
 
-        self::assertEquals($file, $absolute($fs, $root, $file));
-        self::assertEquals($file, $relative($fs, $root, $file));
+        self::assertEquals($root, $absolute($fs, $root, $file));
+        self::assertEquals($root, $relative($fs, $root, $file));
         self::assertSame($another, $reference($fs, $root, $file));
     }
 
@@ -43,7 +42,7 @@ final class FileReferenceTest extends TestCase {
         $fs   = new FileSystem();
         $root = new Directory(__DIR__, false);
         $file = new File(__FILE__, false);
-        $path = 'path/to/file';
+        $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage(
@@ -55,6 +54,6 @@ final class FileReferenceTest extends TestCase {
             ),
         );
 
-        (new FileReference($path))($fs, $root, $file);
+        (new DirectoryReference($path))($fs, $root, $file);
     }
 }

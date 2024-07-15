@@ -33,7 +33,7 @@ interface Instruction {
      * @param TTarget     $target
      * @param TParameters $parameters
      *
-     * @return Generator<mixed, Dependency<covariant mixed>, mixed, string>|string
+     * @return Generator<mixed, Dependency<*>, mixed, string>|string
      *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, string>|string`
      *           but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */

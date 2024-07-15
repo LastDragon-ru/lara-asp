@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 
 /**
  * @internal
@@ -47,11 +48,13 @@ class ProcessorHelper {
     }
 
     /**
-     * @param Generator<mixed, Dependency<covariant mixed>, mixed, mixed> $generator
+     * @param Generator<mixed, Dependency<*>, mixed, mixed> $generator
      */
     protected static function getResult(Directory $root, File $file, Generator $generator): mixed {
+        $fs = new FileSystem();
+
         while ($generator->valid()) {
-            $generator->send(($generator->current())($root, $file));
+            $generator->send(($generator->current())($fs, $root, $file));
         }
 
         return $generator->getReturn();

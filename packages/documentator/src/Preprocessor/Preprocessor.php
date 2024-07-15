@@ -141,7 +141,7 @@ class Preprocessor implements Task {
     }
 
     /**
-     * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>
+     * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
     public function __invoke(Directory $root, File $file): Generator {

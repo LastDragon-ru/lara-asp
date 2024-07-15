@@ -31,7 +31,7 @@ interface Task {
      * other files. Please note, the `null` can be returned only once, the
      * second time will automatically mark the task as failed.
      *
-     * @return Generator<mixed, Dependency<covariant mixed>, mixed, bool>|bool|null
+     * @return Generator<mixed, Dependency<*>, mixed, bool>|bool|null
      *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, bool>|bool|null`
      *          but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */

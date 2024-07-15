@@ -10,11 +10,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 
 /**
- * @implements Dependency<File>
+ * @implements Dependency<Directory>
  */
-class FileReference extends Base implements Dependency {
+class DirectoryReference extends Base implements Dependency {
     public function __construct(
-        protected readonly File|string $reference,
+        protected readonly Directory|string $reference,
     ) {
         parent::__construct();
     }
@@ -22,12 +22,12 @@ class FileReference extends Base implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
         // Already?
-        if ($this->reference instanceof File) {
+        if ($this->reference instanceof Directory) {
             return $this->reference;
         }
 
         // Create
-        $resolved = $fs->getFile($root, $this->getPath($file));
+        $resolved = $fs->getDirectory($root, $this->getPath($file));
 
         if ($resolved === null) {
             throw new DependencyNotFound($root, $file, $this);
@@ -39,8 +39,8 @@ class FileReference extends Base implements Dependency {
     #[Override]
     public function __toString(): string {
         return match (true) {
-            $this->reference instanceof File => $this->reference->getPath(),
-            default                          => $this->reference,
+            $this->reference instanceof Directory => $this->reference->getPath(),
+            default                               => $this->reference,
         };
     }
 }
