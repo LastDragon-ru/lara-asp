@@ -22,6 +22,7 @@ use function array_map;
  * @internal
  */
 #[CoversClass(Processor::class)]
+#[CoversClass(Executor::class)]
 final class ProcessorTest extends TestCase {
     public function testRun(): void {
         $mock = Mockery::mock(Task::class);

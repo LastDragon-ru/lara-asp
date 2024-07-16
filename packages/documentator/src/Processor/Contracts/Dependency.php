@@ -12,7 +12,7 @@ use Stringable;
 /**
  * Task dependency (= another file).
  *
- * @template TValue of Iterator<mixed, Directory>|Iterator<mixed, File>|Directory|File|null
+ * @template TValue of Iterator<mixed, Directory|File>|Directory|File|null
  */
 interface Dependency extends Stringable {
     /**
