@@ -54,8 +54,8 @@ final class DirectoriesIteratorTest extends TestCase {
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory(__DIR__, false);
-        $file = new File(__FILE__, false);
+        $root = new Directory(Path::normalize(__DIR__), false);
+        $file = new File(Path::normalize(__FILE__), false);
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);
