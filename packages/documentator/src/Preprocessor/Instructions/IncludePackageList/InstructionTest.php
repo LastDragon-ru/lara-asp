@@ -9,9 +9,11 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -48,6 +50,7 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNotAPackage(): void {
+        $fs       = new FileSystem();
         $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -55,7 +58,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $target->getDirectory('package');
+        $package  = $fs->getDirectory($target, 'package');
 
         self::assertNotNull($package);
         self::expectExceptionObject(
@@ -66,6 +69,7 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoReadme(): void {
+        $fs       = new FileSystem();
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -73,17 +77,18 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $target->getDirectory('package');
+        $package  = $fs->getDirectory($target, 'package');
 
         self::assertNotNull($package);
         self::expectExceptionObject(
-            new FileDependencyNotFound($context->root, $context->file, 'no readme/package/README.md'),
+            new DependencyNotFound($context->root, $context->file, new FileReference('no readme/package/README.md')),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
 
     public function testInvokeEmptyReadme(): void {
+        $fs       = new FileSystem();
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -91,8 +96,8 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $target->getDirectory('package');
-        $expected = $root->getFile('empty readme/package/README.md');
+        $package  = $fs->getDirectory($target, 'package');
+        $expected = $fs->getFile($root, 'empty readme/package/README.md');
 
         self::assertNotNull($package);
         self::assertNotNull($expected);
@@ -104,6 +109,7 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoTitle(): void {
+        $fs       = new FileSystem();
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
@@ -111,8 +117,8 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters();
         $context  = new Context($root, $file, $target->getPath(), '');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $target->getDirectory('package');
-        $expected = $root->getFile('no title/package/README.md');
+        $package  = $fs->getDirectory($target, 'package');
+        $expected = $fs->getFile($root, 'no title/package/README.md');
 
         self::assertNotNull($package);
         self::assertNotNull($expected);

@@ -4,16 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use SplFileInfo;
-
-use function dirname;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 
 /**
  * @internal
@@ -51,33 +48,15 @@ class ProcessorHelper {
     }
 
     /**
-     * @param Generator<mixed, SplFileInfo|File|string, File, mixed> $generator
+     * @param Generator<mixed, Dependency<*>, mixed, mixed> $generator
      */
     protected static function getResult(Directory $root, File $file, Generator $generator): mixed {
+        $fs = new FileSystem();
+
         while ($generator->valid()) {
-            $generator->send(self::getFile($root, $file, $generator));
+            $generator->send(($generator->current())($fs, $root, $file));
         }
 
         return $generator->getReturn();
-    }
-
-    /**
-     * @param Generator<mixed, SplFileInfo|File|string, File, mixed> $generator
-     */
-    protected static function getFile(Directory $root, File $file, Generator $generator): File {
-        $path = $generator->current();
-        $path = match (true) {
-            $path instanceof SplFileInfo => $path->getPathname(),
-            $path instanceof File        => $path->getPath(),
-            default                      => $path,
-        };
-        $directory  = dirname($file->getPath());
-        $dependency = $root->getFile(Path::getPath($directory, $path));
-
-        if (!$dependency) {
-            throw new FileDependencyNotFound($root, $file, $path);
-        }
-
-        return $dependency;
     }
 }

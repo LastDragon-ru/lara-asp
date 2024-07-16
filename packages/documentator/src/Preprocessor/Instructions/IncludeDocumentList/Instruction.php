@@ -3,16 +3,19 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
 use Generator;
+use Iterator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FilesIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
-use SplFileInfo;
 
 use function strcmp;
 use function usort;
@@ -47,23 +50,25 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, File, string>
+     * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
-        $files     = $target->getFilesIterator('*.md', $parameters->depth);
+        $iterator  = Cast::to(Iterator::class, yield new FilesIterator($target, '*.md', $parameters->depth));
         $self      = $context->file->getPath();
 
-        foreach ($files as $file) {
+        foreach ($iterator as $file) {
+            // Prepare
+            $file = Cast::to(File::class, $file);
+
             // Same?
             if ($self === $file->getPath()) {
                 continue;
             }
 
             // Content?
-            $file    = yield $file;
             $content = $file->getContent();
 
             if (!$content) {

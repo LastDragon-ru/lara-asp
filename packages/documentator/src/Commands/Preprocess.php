@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -17,6 +18,7 @@ use Override;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 
 use function array_map;
@@ -27,7 +29,6 @@ use function is_a;
 use function is_scalar;
 use function ksort;
 use function mb_strlen;
-use function microtime;
 use function min;
 use function rtrim;
 use function str_repeat;
@@ -78,13 +79,13 @@ class Preprocess extends Command {
         $path     = Cast::toString($this->argument('path') ?? $cwd);
         $path     = Path::normalize($path);
         $width    = min((new Terminal())->getWidth(), 150);
-        $start    = microtime(true);
         $exclude  = array_map(strval(...), (array) $this->option('exclude'));
-        $listener = function (string $path, ?bool $success, float $duration) use ($formatter, $width): void {
-            [$resultMessage, $resultColor] = match (true) {
-                $success === false => ['FAIL', 'red'],
-                $success === true  => ['DONE', 'green'],
-                default            => ['SKIP', 'gray'],
+        $listener = function (string $path, Result $result, float $duration) use ($formatter, $width): void {
+            [$resultMessage, $resultColor, $resultVerbosity] = match ($result) {
+                Result::Failed  => ['FAIL', 'red', OutputInterface::VERBOSITY_NORMAL],
+                Result::Success => ['DONE', 'green', OutputInterface::VERBOSITY_NORMAL],
+                Result::Skipped => ['SKIP', 'gray', OutputInterface::VERBOSITY_VERBOSE],
+                Result::Missed  => ['MISS', 'gray', OutputInterface::VERBOSITY_VERBOSE],
             };
 
             $duration = $formatter->duration($duration);
@@ -94,15 +95,15 @@ class Preprocess extends Command {
                 .' '."<fg=gray>{$duration}</>"
                 .' '."<fg={$resultColor};options=bold>{$resultMessage}</>";
 
-            $this->output->writeln($line);
+            $this->output->writeln($line, OutputInterface::OUTPUT_NORMAL | $resultVerbosity);
         };
 
-        (new Processor())
+        $duration = (new Processor())
             ->task($this->preprocessor)
             ->run($path, $exclude, $listener);
 
         $this->output->newLine();
-        $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration(microtime(true) - $start)})</>");
+        $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration($duration)})</>");
     }
 
     #[Override]

@@ -4,16 +4,17 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use SplFileInfo;
 
 use function array_map;
 
@@ -21,6 +22,7 @@ use function array_map;
  * @internal
  */
 #[CoversClass(Processor::class)]
+#[CoversClass(Executor::class)]
 final class ProcessorTest extends TestCase {
     public function testRun(): void {
         $mock = Mockery::mock(Task::class);
@@ -55,7 +57,7 @@ final class ProcessorTest extends TestCase {
         };
         $taskB = new class() implements Task {
             /**
-             * @var array<array-key, array{string, array<string, ?string>}>
+             * @var array<array-key, array{string, array<string, mixed>}>
              */
             public array $processed = [];
 
@@ -68,7 +70,7 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
@@ -91,14 +93,17 @@ final class ProcessorTest extends TestCase {
                 };
 
                 foreach ($dependencies as $dependency) {
-                    $resolved[$dependency] = yield $dependency;
+                    $resolved[$dependency] = yield new FileReference($dependency);
                 }
 
                 $this->processed[] = [
                     $file->getRelativePath($root),
                     array_map(
-                        static function (?File $file) use ($root): ?string {
-                            return $file?->getRelativePath($root);
+                        static function (mixed $file) use ($root): mixed {
+                            return match (true) {
+                                $file instanceof File => $file->getRelativePath($root),
+                                default               => $file,
+                            };
                         },
                         $resolved,
                     ),
@@ -119,7 +124,7 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, ?bool $result) use (&$count, &$events): void {
+                static function (string $path, Result $result) use (&$count, &$events): void {
                     $events[$path] = $result;
                     $count++;
                 },
@@ -127,16 +132,17 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'b/a/ba.txt'     => true,
-                'c.txt'          => true,
-                'b/b/bb.txt'     => true,
-                'a/a.txt'        => true,
-                'a/a/aa.txt'     => true,
-                'a/b/ab.txt'     => true,
-                'b/b.txt'        => true,
-                'c.htm'          => true,
-                'c.html'         => null,
-                'a/excluded.txt' => null,
+                'b/a/ba.txt'         => Result::Success,
+                'c.txt'              => Result::Success,
+                'b/b/bb.txt'         => Result::Success,
+                'a/a.txt'            => Result::Success,
+                'a/a/aa.txt'         => Result::Success,
+                'a/b/ab.txt'         => Result::Success,
+                'b/b.txt'            => Result::Success,
+                'c.htm'              => Result::Success,
+                'c.html'             => Result::Skipped,
+                'a/excluded.txt'     => Result::Skipped,
+                '../../../README.md' => Result::Skipped,
             ],
             $events,
         );
@@ -240,7 +246,7 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, ?bool $result) use (&$count, &$events): void {
+                static function (string $path, Result $result) use (&$count, &$events): void {
                     $events[$path] = $result;
                     $count++;
                 },
@@ -248,17 +254,17 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'b/a/ba.txt' => true,
-                'c.txt'      => true,
-                'b/b/bb.txt' => true,
-                'a/a.txt'    => true,
-                'a/a/aa.txt' => true,
-                'a/b/ab.txt' => true,
-                'b/b.txt'    => true,
-                'c.htm'      => true,
-                'c.html'     => true,
-                'b/b.html'   => true,
-                'a/a.html'   => true,
+                'b/a/ba.txt' => Result::Success,
+                'c.txt'      => Result::Success,
+                'b/b/bb.txt' => Result::Success,
+                'a/a.txt'    => Result::Success,
+                'a/a/aa.txt' => Result::Success,
+                'a/b/ab.txt' => Result::Success,
+                'b/b.txt'    => Result::Success,
+                'c.htm'      => Result::Success,
+                'c.html'     => Result::Success,
+                'b/b.html'   => Result::Success,
+                'a/a.html'   => Result::Success,
             ],
             $events,
         );
@@ -300,11 +306,11 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
-                yield '404.html';
+                yield new FileReference('404.html');
 
                 return true;
             }
@@ -312,7 +318,7 @@ final class ProcessorTest extends TestCase {
 
         $root = Path::normalize(self::getTestData()->path(''));
 
-        self::expectException(FileDependencyNotFound::class);
+        self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage("Dependency `404.html` of `a/a.txt` not found (root: `{$root}`).");
 
         (new Processor())
@@ -331,15 +337,15 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
                 match ($file->getName()) {
-                    'a.txt'  => yield '../b/b.txt',
-                    'b.txt'  => yield '../b/a/ba.txt',
-                    'ba.txt' => yield '../../c.txt',
-                    'c.txt'  => yield 'a/a.txt',
+                    'a.txt'  => yield new FileReference('../b/b.txt'),
+                    'b.txt'  => yield new FileReference('../b/a/ba.txt'),
+                    'ba.txt' => yield new FileReference('../../c.txt'),
+                    'c.txt'  => yield new FileReference('a/a.txt'),
                     default  => null,
                 };
 
@@ -380,12 +386,12 @@ final class ProcessorTest extends TestCase {
             }
 
             /**
-             * @return Generator<mixed, SplFileInfo|File|string, File, bool>
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
              */
             #[Override]
             public function __invoke(Directory $root, File $file): Generator {
                 match ($file->getName()) {
-                    'c.txt' => yield 'c.txt',
+                    'c.txt' => yield new FileReference('c.txt'),
                     default => null,
                 };
 

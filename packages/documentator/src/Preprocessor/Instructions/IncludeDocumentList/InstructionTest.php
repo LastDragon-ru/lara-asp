@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -38,12 +39,13 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeAnotherDirectory(): void {
+        $fs      = new FileSystem();
         $path    = self::getTestData()->path('~AnotherDirectory.md');
         $root    = new Directory(dirname($path), false);
         $file    = new File($path, false);
         $params  = new Parameters();
         $context = new Context($root, $file, basename(self::getTestData()->path('/')), '');
-        $target  = $root->getDirectory($context->target);
+        $target  = $fs->getDirectory($root, $context->target);
 
         self::assertNotNull($target);
 
@@ -80,13 +82,14 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeWithoutTitle(): void {
+        $fs       = new FileSystem();
         $path     = self::getTestData()->path('invalid/Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = new Parameters();
         $context  = new Context($root, $file, './', '');
         $instance = $this->app()->make(Instruction::class);
-        $expected = $root->getFile('WithoutTitle.md');
+        $expected = $fs->getFile($root, 'WithoutTitle.md');
 
         self::assertNotNull($expected);
         self::expectExceptionObject(

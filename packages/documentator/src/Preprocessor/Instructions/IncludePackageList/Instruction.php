@@ -6,6 +6,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePa
 
 use Exception;
 use Generator;
+use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
@@ -15,11 +16,13 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageL
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoriesIterator;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
-use SplFileInfo;
 
 use function assert;
 use function is_array;
@@ -59,17 +62,20 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, SplFileInfo|File|string, File, string>
+     * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
     public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
-        $directories = $target->getDirectoriesIterator(null, 0);
+        $directories = Cast::to(Iterator::class, yield new DirectoriesIterator($target, null, 0));
 
         foreach ($directories as $package) {
+            // Prepare
+            $package = Cast::to(Directory::class, $package);
+
             // Package?
-            $packageFile = yield $package->getPath('composer.json');
+            $packageFile = Cast::to(File::class, yield new FileReference($package->getPath('composer.json')));
             $packageInfo = $this->getPackageInfo($packageFile);
 
             if (!$packageInfo) {
@@ -77,7 +83,8 @@ class Instruction implements InstructionContract {
             }
 
             // Readme
-            $readme  = yield $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
+            $readme  = $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
+            $readme  = Cast::to(File::class, yield new FileReference($readme));
             $content = $readme->getContent();
 
             if (!$content) {
