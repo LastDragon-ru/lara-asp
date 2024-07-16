@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use Generator;
+use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
@@ -62,9 +63,9 @@ class Processor {
         $root       = new Directory($path, true);
 
         try {
-            foreach ($root->getFilesIterator(patterns: $extensions, exclude: $exclude) as $file) {
-                $this->runFile($root, $file, $exclude, $listener, $processed, [], []);
-            }
+            $iterator = $root->getFilesIterator(patterns: $extensions, exclude: $exclude);
+
+            $this->runIterator($iterator, $root, $exclude, $listener, $processed, []);
         } catch (ProcessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
@@ -73,20 +74,59 @@ class Processor {
     }
 
     /**
+     * @param Iterator<array-key, File>                                        $iterator
      * @param array<array-key, string>                                         $exclude
      * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
      * @param array<string, true>                                              $processed
-     * @param array<string, File>                                              $resolved
      * @param array<string, File>                                              $stack
      */
+    private function runIterator(
+        Iterator $iterator,
+        Directory $root,
+        array $exclude,
+        ?Closure $listener,
+        array &$processed,
+        array $stack,
+    ): float {
+        $time = 0;
+
+        while ($iterator->valid()) {
+            $file = $iterator->current();
+
+            $iterator->next();
+
+            $time += (float) $this->runFile(
+                $iterator,
+                $root,
+                $file,
+                $exclude,
+                $listener,
+                $processed,
+                $stack,
+                [],
+            );
+        }
+
+        return $time;
+    }
+
+    /**
+     * @param Iterator<array-key, File>                                        $iterator
+     * @param array<array-key, string>                                         $exclude
+     * @param Closure(string $path, ?bool $result, float $duration): void|null $listener
+     * @param array<string, true>                                              $processed
+     * @param array<string, File>                                              $stack
+     * @param array<string, File>                                              $resolved
+     */
     private function runFile(
+        Iterator $iterator,
         Directory $root,
         File $file,
         array $exclude,
         ?Closure $listener,
         array &$processed,
-        array $resolved,
         array $stack,
+        array $resolved,
     ): ?float {
         // Prepare
         $start   = microtime(true);
@@ -137,8 +177,17 @@ class Processor {
         try {
             foreach ($tasks as $task) {
                 try {
-                    $result    = false;
+                    // Run
                     $generator = $task($root, $file);
+
+                    // Postponed?
+                    if ($generator === null) {
+                        $paused   += $this->runIterator($iterator, $root, $exclude, $listener, $processed, $stack);
+                        $generator = $task($root, $file) ?? false;
+                    }
+
+                    // Dependencies?
+                    $result = false;
 
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
@@ -168,13 +217,14 @@ class Processor {
                             // Processable?
                             if (!isset($processed[$dependencyKey]) && $root->isInside($dependency)) {
                                 $paused += (float) $this->runFile(
+                                    $iterator,
                                     $root,
                                     $dependency,
                                     $exclude,
                                     $listener,
                                     $processed,
-                                    $resolved,
                                     $stack,
+                                    $resolved,
                                 );
                             }
 
