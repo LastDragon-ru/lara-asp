@@ -27,7 +27,7 @@ class ProcessorHelper {
     }
 
     /**
-     * @template P of Parameters|null
+     * @template P of Parameters
      *
      * @param Instruction<P> $instruction
      * @param P              $parameters

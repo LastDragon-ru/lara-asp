@@ -162,19 +162,11 @@ class Preprocess extends Command {
     }
 
     /**
-     * @param class-string<Instruction<covariant ?Parameters>> $instruction
-     * @param int<0, max>                                      $padding
+     * @param class-string<Instruction<covariant Parameters>> $instruction
+     * @param int<0, max>                                     $padding
      */
     protected function getProcessedHelpInstructionTarget(string $instruction, string $target, int $padding): ?string {
-        // Has?
-        $class = $instruction::getParameters();
-
-        if ($class === null) {
-            return null;
-        }
-
-        // Extract
-        $class = new ReflectionProperty($class, $target);
+        $class = new ReflectionProperty($instruction::getParameters(), $target);
         $help  = $this->getDocBlock($class, $padding);
         $help  = rtrim($help);
 
@@ -182,23 +174,19 @@ class Preprocess extends Command {
     }
 
     /**
-     * @param class-string<Instruction<covariant ?Parameters>> $instruction
-     * @param int<0, max>                                      $padding
+     * @param class-string<Instruction<covariant Parameters>> $instruction
+     * @param int<0, max>                                     $padding
      */
     protected function getProcessedHelpInstructionParameters(
         string $instruction,
         string $target,
         int $padding,
     ): ?string {
-        // Has?
+        // Serializable?
         $class = $instruction::getParameters();
 
-        if ($class === null) {
-            return null;
-        } elseif (!is_a($class, Serializable::class, true)) {
+        if (!is_a($class, Serializable::class, true)) {
             return ''; // not yet supported...
-        } else {
-            // empty
         }
 
         // Extract

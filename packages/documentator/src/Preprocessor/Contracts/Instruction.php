@@ -7,17 +7,15 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 
 /**
- * @template TParameters of Parameters|null
+ * @template TParameters of Parameters
  */
 interface Instruction {
     public static function getName(): string;
 
     /**
-     * @return class-string<Parameters>|null
-     *      fixme(documentator): The correct type is `(TParameters is Parameters ? class-string<TParameters> : null)`
-     *          but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/10553)
+     * @return class-string<Parameters>
      */
-    public static function getParameters(): ?string;
+    public static function getParameters(): string;
 
     /**
      * Process target with parameters and return result.

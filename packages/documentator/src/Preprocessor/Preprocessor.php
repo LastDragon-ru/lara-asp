@@ -95,7 +95,7 @@ class Preprocessor implements Task {
         REGEXP;
 
     /**
-     * @var array<string, ResolvedInstruction<covariant ?Parameters>>
+     * @var array<string, ResolvedInstruction<covariant Parameters>>
      */
     private array $instructions = [];
 
@@ -115,14 +115,14 @@ class Preprocessor implements Task {
     }
 
     /**
-     * @return list<class-string<Instruction<?Parameters>>>
+     * @return list<class-string<Instruction<Parameters>>>
      */
     public function getInstructions(): array {
         return array_values(array_map(static fn ($i) => $i->getClass(), $this->instructions));
     }
 
     /**
-     * @template I of Instruction<covariant ?Parameters>
+     * @template I of Instruction<covariant Parameters>
      *
      * @param I|class-string<I> $instruction
      */
@@ -226,13 +226,12 @@ class Preprocessor implements Task {
             }
 
             // Hash
-            $parameters = $instruction->getClass()::getParameters();
-            $target     = trim((string) $match['target']);
-            $target     = str_starts_with($target, '<') && str_ends_with($target, '>')
+            $target = trim((string) $match['target']);
+            $target = str_starts_with($target, '<') && str_ends_with($target, '>')
                 ? mb_substr($target, 1, -1)
                 : rawurldecode($target);
-            $params     = $this->getParametersJson($target, $parameters ? $match['parameters'] : null);
-            $hash       = $this->getHash("{$name}({$params})");
+            $params = $this->getParametersJson($target, $match['parameters']);
+            $hash   = $this->getHash("{$name}({$params})");
 
             // Parsed?
             if (isset($tokens[$hash])) {
@@ -243,9 +242,8 @@ class Preprocessor implements Task {
 
             // Parse
             $context    = new Context($root, $file, $target, $match['parameters']);
-            $parameters = $parameters
-                ? $this->serializer->deserialize($parameters, $params, 'json')
-                : null;
+            $parameters = $instruction->getClass()::getParameters();
+            $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
             $tokens[$hash] = new Token(
                 $instruction->getInstance(),

@@ -205,7 +205,7 @@ class PreprocessTest__Instruction implements Instruction {
     }
 
     #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return PreprocessTest__Parameters::class;
     }
 
@@ -228,7 +228,7 @@ class PreprocessTest__InstructionNoParameters implements Instruction {
     }
 
     #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return PreprocessTest__ParametersEmpty::class;
     }
 
@@ -251,7 +251,7 @@ class PreprocessTest__InstructionNotSerializable implements Instruction {
     }
 
     #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return PreprocessTest__ParametersNotSerializable::class;
     }
 

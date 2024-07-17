@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 /**
  * @internal
  *
- * @template TParameters of Parameters|null
+ * @template TParameters of Parameters
  */
 class Token {
     public function __construct(

@@ -90,7 +90,7 @@ final class PreprocessorTest extends TestCase {
                     $a,
                     new Context($root, $file, './path/to/file "value"', null),
                     './path/to/file "value"',
-                    null,
+                    new PreprocessorTest__ParametersEmpty('./path/to/file "value"'),
                     [
                         '[test:empty]: <./path/to/file "value">' => '[test:empty]: <./path/to/file "value">',
                     ],
@@ -247,7 +247,7 @@ final class PreprocessorTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<null>
+ * @implements Instruction<PreprocessorTest__ParametersEmpty>
  */
 class PreprocessorTest__EmptyInstruction implements Instruction {
     #[Override]
@@ -256,8 +256,8 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
-    public static function getParameters(): ?string {
-        return null;
+    public static function getParameters(): string {
+        return PreprocessorTest__ParametersEmpty::class;
     }
 
     #[Override]
@@ -279,7 +279,7 @@ class PreprocessorTest__TestInstruction implements Instruction {
     }
 
     #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return PreprocessorTest__Parameters::class;
     }
 
@@ -301,6 +301,18 @@ class PreprocessorTest__Parameters implements Parameters, Serializable {
         public readonly string $target,
         public readonly string $a = 'a',
         public readonly array $b = [],
+    ) {
+        // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class PreprocessorTest__ParametersEmpty implements Parameters, Serializable {
+    public function __construct(
+        public readonly string $target,
     ) {
         // empty
     }

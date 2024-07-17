@@ -11,7 +11,7 @@ use function is_object;
 /**
  * @internal
  *
- * @template TParameters of Parameters|null
+ * @template TParameters of Parameters
  */
 class ResolvedInstruction {
     /**

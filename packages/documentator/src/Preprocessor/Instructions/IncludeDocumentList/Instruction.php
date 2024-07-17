@@ -38,7 +38,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return Parameters::class;
     }
 
