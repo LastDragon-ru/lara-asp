@@ -3,7 +3,7 @@
 Asserts that JSON matches [schema](https://json-schema.org/). Validation based on the [Opis JSON Schema](https://github.com/opis/json-schema) package.
 
 [include:example]: ./AssertJsonMatchesSchemaTest.php
-[//]: # (start: 14b834083ec3dd5506e9e3f58f85f8497006137d303059f7d38fc3728bccbd4f)
+[//]: # (start: f43f0d8bb340353c4e8be7746c7112e8aad99e368660f53b4cd36a26491b433f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -61,4 +61,4 @@ final class AssertJsonMatchesSchemaTest extends TestCase {
 }
 ```
 
-[//]: # (end: 14b834083ec3dd5506e9e3f58f85f8497006137d303059f7d38fc3728bccbd4f)
+[//]: # (end: f43f0d8bb340353c4e8be7746c7112e8aad99e368660f53b4cd36a26491b433f)

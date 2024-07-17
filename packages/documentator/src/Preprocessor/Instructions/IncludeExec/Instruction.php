@@ -18,7 +18,7 @@ use function trim;
  * The working directory is equal to the file directory. If you want to run
  * Artisan command, please check `include:artisan` instruction.
  *
- * @implements InstructionContract<string, null>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -33,17 +33,12 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return Resolver::class;
+    public static function getParameters(): string {
+        return Parameters::class;
     }
 
     #[Override]
-    public static function getParameters(): ?string {
-        return null;
-    }
-
-    #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         try {
             return trim(
                 $this->factory->newPendingProcess()

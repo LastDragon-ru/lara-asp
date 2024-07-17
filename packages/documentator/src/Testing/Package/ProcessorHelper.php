@@ -6,6 +6,7 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -26,17 +27,15 @@ class ProcessorHelper {
     }
 
     /**
-     * @template P of object|null
-     * @template T
+     * @template P of Parameters
      *
-     * @param Instruction<T, P> $instruction
-     * @param T                 $target
-     * @param P                 $parameters
+     * @param Instruction<P> $instruction
+     * @param P              $parameters
      */
     public static function runInstruction(
         Instruction $instruction,
         Context $context,
-        mixed $target,
+        string $target,
         mixed $parameters,
     ): string {
         $result = ($instruction)($context, $target, $parameters);

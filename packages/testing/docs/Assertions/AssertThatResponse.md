@@ -7,7 +7,7 @@ Asserts that PSR Response satisfies given constraint (we have a lot of built-in 
 > Assertion is deprecated, please use [`assertPsrResponse()`](./AssertPsrResponse.md) instead.
 
 [include:example]: ./AssertThatResponseTest.php
-[//]: # (start: f476a946090593d6411394fdbee0737d373265353cb0a009e073aeb1c6af9750)
+[//]: # (start: 9cd844a98ef71c3212e9430a278a7be03d8886d6de1e46165472c9f6c4b88f72)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -101,4 +101,4 @@ final class AssertThatResponseTest extends TestCase {
 }
 ```
 
-[//]: # (end: f476a946090593d6411394fdbee0737d373265353cb0a009e073aeb1c6af9750)
+[//]: # (end: 9cd844a98ef71c3212e9430a278a7be03d8886d6de1e46165472c9f6c4b88f72)

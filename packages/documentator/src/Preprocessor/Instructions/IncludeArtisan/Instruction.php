@@ -15,8 +15,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
+use function dirname;
 use function getenv;
 use function putenv;
+use function strtr;
 use function trim;
 
 /**
@@ -31,7 +33,7 @@ use function trim;
  * Also, the command will not inherit the current verbosity level, it will be
  * run with default/normal level if it is not specified in its arguments.
  *
- * @implements InstructionContract<string, null>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -46,23 +48,18 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return Resolver::class;
+    public static function getParameters(): string {
+        return Parameters::class;
     }
 
     #[Override]
-    public static function getParameters(): ?string {
-        return null;
-    }
-
-    #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         $verbosity = $this->setVerbosity(null);
 
         try {
             $app    = $this->application->getInstance();
             $kernel = $app->make(Kernel::class);
-            $input  = new StringInput($target);
+            $input  = new StringInput($this->getCommand($context, $target, $parameters));
             $output = new BufferedOutput();
             $result = $kernel->handle($input, $output);
 
@@ -78,6 +75,17 @@ class Instruction implements InstructionContract {
         } finally {
             $this->setVerbosity($verbosity);
         }
+    }
+
+    protected function getCommand(Context $context, string $target, Parameters $parameters): string {
+        $file      = $context->file->getPath();
+        $directory = dirname($file);
+        $target    = strtr($target, [
+            '{$directory}' => $directory,
+            '{$file}'      => $file,
+        ]);
+
+        return $target;
     }
 
     protected function setVerbosity(?int $verbosity): ?int {

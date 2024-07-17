@@ -1,7 +1,7 @@
 # (Laravel) SPA Helpers
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -21,10 +21,10 @@
 |  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.4.0`   |
 
-[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "spa"}})
-[//]: # (start: 457a42c9e8cb9eef36f7f83a3cdfc837870f5d9814b59bd304b8383789bc83fb)
+[//]: # (start: 57c72e5f6bbee376d782514159230363a6ba1d165ff46bf9d7077b22ac27c9a8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -33,24 +33,24 @@
 composer require lastdragon-ru/lara-asp-spa
 ```
 
-[//]: # (end: 457a42c9e8cb9eef36f7f83a3cdfc837870f5d9814b59bd304b8383789bc83fb)
+[//]: # (end: 57c72e5f6bbee376d782514159230363a6ba1d165ff46bf9d7077b22ac27c9a8)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
+[//]: # (start: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
+[//]: # (end: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)

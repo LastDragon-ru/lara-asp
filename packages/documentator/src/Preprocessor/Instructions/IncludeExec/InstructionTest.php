@@ -20,10 +20,10 @@ final class InstructionTest extends TestCase {
     public function testInvoke(): void {
         $root     = new Directory(Path::normalize(__DIR__), false);
         $file     = new File(Path::normalize(__FILE__), false);
-        $params   = null;
+        $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, $command, $params);
+        $context  = new Context($root, $file, $command, '{...}');
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();

@@ -3,7 +3,7 @@
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and better solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -27,10 +27,10 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |  PHPUnit  | `^11.0.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.1.0` |   `HEAD ⋯ 6.0.0`   |
 
-[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 
 [include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "testing"}})
-[//]: # (start: 9c57d43303e5ef82308c0c83e328e2a47be808a50cd12d6fc5bcfd9229e2fa7c)
+[//]: # (start: 109a976458dcf93b01cf1ee7e5a436c3ee7ef3fc5a1bed8ba11bcbac18c1c5e0)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -43,7 +43,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 composer require --dev lastdragon-ru/lara-asp-testing
 ```
 
-[//]: # (end: 9c57d43303e5ef82308c0c83e328e2a47be808a50cd12d6fc5bcfd9229e2fa7c)
+[//]: # (end: 109a976458dcf93b01cf1ee7e5a436c3ee7ef3fc5a1bed8ba11bcbac18c1c5e0)
 
 # Usage
 
@@ -54,7 +54,7 @@ composer require --dev lastdragon-ru/lara-asp-testing
 In the general case, you just need to update `tests/TestCase.php` to include most important things, but you also can include only desired features, please see related traits and extensions below.
 
 [include:example]: ./docs/Examples/TestCase.php
-[//]: # (start: 12b81ed79328f93948eb5166a1b17448848d73e368c86214bbd70643f3d984d1)
+[//]: # (start: ddb2467c6f9cbe650ebdd8e6d7f1a55f3a3c030f9c45f6a015021c8a83f55824)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -80,7 +80,7 @@ abstract class TestCase extends BaseTestCase {
 }
 ```
 
-[//]: # (end: 12b81ed79328f93948eb5166a1b17448848d73e368c86214bbd70643f3d984d1)
+[//]: # (end: ddb2467c6f9cbe650ebdd8e6d7f1a55f3a3c030f9c45f6a015021c8a83f55824)
 
 # Comparators
 
@@ -91,7 +91,7 @@ abstract class TestCase extends BaseTestCase {
 ## [`DatabaseQueryComparator`](./src/Comparators/DatabaseQueryComparator.php)
 
 [include:docblock]: ./src/Comparators/DatabaseQueryComparator.php
-[//]: # (start: f9663658d43ee8d678c25ea8356d1ad3a864f18ce04cffe33cb298d512d09a54)
+[//]: # (start: 7f0b9a0ac46e9bdd70ee29dc20759aae207f3a45b39e71e1ebb0df97a7a20a14)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Compares two `LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query`.
@@ -101,12 +101,12 @@ We are performing following normalization before comparison to be more precise:
 * Renumber `laravel_reserved_*` (it will always start from `0` and will not contain gaps)
 * Format the query by [`doctrine/sql-formatter`](https://github.com/doctrine/sql-formatter) package
 
-[//]: # (end: f9663658d43ee8d678c25ea8356d1ad3a864f18ce04cffe33cb298d512d09a54)
+[//]: # (end: 7f0b9a0ac46e9bdd70ee29dc20759aae207f3a45b39e71e1ebb0df97a7a20a14)
 
 ## [`EloquentModelComparator`](./src/Comparators/EloquentModelComparator.php)
 
 [include:docblock]: ./src/Comparators/EloquentModelComparator.php
-[//]: # (start: 21a1517908b0ebbdac7d871b4238da730999c4a6e2ae510e80340c75fd71829b)
+[//]: # (start: 85f8d66a8d62a462723e0d9d2234ef3252fb233cbebde78c9f443ffb924cd372)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Compares two Eloquent Models.
@@ -117,17 +117,17 @@ the database may have different types for the same properties. For example,
 `string` and (strict) comparison will fail. This comparator normalizes
 properties types before comparison.
 
-[//]: # (end: 21a1517908b0ebbdac7d871b4238da730999c4a6e2ae510e80340c75fd71829b)
+[//]: # (end: 85f8d66a8d62a462723e0d9d2234ef3252fb233cbebde78c9f443ffb924cd372)
 
 ## [`ScalarStrictComparator`](./src/Comparators/ScalarStrictComparator.php)
 
 [include:docblock]: ./src/Comparators/ScalarStrictComparator.php
-[//]: # (start: 99205ddfc4ddcb011425e6a66609a1b037355394e6ecb7fcf0574ee7fac62fb5)
+[//]: # (start: 08a5a6fad3f2dc547ebdbf3d468eaec83982fd7988e9164ace9d5f07bedc3a37)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Makes comparison of scalars strict.
 
-[//]: # (end: 99205ddfc4ddcb011425e6a66609a1b037355394e6ecb7fcf0574ee7fac62fb5)
+[//]: # (end: 08a5a6fad3f2dc547ebdbf3d468eaec83982fd7988e9164ace9d5f07bedc3a37)
 
 # Extensions
 
@@ -136,14 +136,14 @@ Makes comparison of scalars strict.
 ### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php) 💀
 
 [include:docblock]: ./src/Database/RefreshDatabaseIfEmpty.php
-[//]: # (start: 409cdf673b12522f3685ee8d9af264a248731e871295df0fae40aebe9fa43c86)
+[//]: # (start: 1450ed832859accffb89a19fc641776a8ae1770983362aa0bab741ae196f5c75)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 The trait is very similar to standard `Illuminate\Foundation\Testing\RefreshDatabase` but there is one
 difference: it will refresh the database only if it is empty. This is very
 useful for local testing and allow significantly reduce bootstrap time.
 
-[//]: # (end: 409cdf673b12522f3685ee8d9af264a248731e871295df0fae40aebe9fa43c86)
+[//]: # (end: 1450ed832859accffb89a19fc641776a8ae1770983362aa0bab741ae196f5c75)
 
 ```php
 <?php declare(strict_types = 1);
@@ -166,81 +166,81 @@ abstract class TestCase extends BaseTestCase {
 ### [`WithTempDirectory`](./src/Utils/WithTempDirectory.php)
 
 [include:docblock]: ./src/Utils/WithTempDirectory.php
-[//]: # (start: 84758fc356fd846f164c92b6f4b8b3c44ee934b9fbb270b4302007efad4f91e7)
+[//]: # (start: fb55c24a68303d8f1918e4e84c17b3782ccfbc360c228e15702236cc26b169dd)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Allows to create a temporary directory. The directory will be removed
 automatically after script shutdown.
 
-[//]: # (end: 84758fc356fd846f164c92b6f4b8b3c44ee934b9fbb270b4302007efad4f91e7)
+[//]: # (end: fb55c24a68303d8f1918e4e84c17b3782ccfbc360c228e15702236cc26b169dd)
 
 ### [`WithTempFile`](./src/Utils/WithTempFile.php)
 
 [include:docblock]: ./src/Utils/WithTempFile.php
-[//]: # (start: d2be53d3552beb828c17090d04c2f459c46d5fe17d8f91856429c80d26d7ea83)
+[//]: # (start: 94a429d50ffed8fcadeb4cfcec2d2e8daeec344777df80230b532ad09fd16285)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Allows to create a temporary file. The file will be removed automatically
 after script shutdown.
 
-[//]: # (end: d2be53d3552beb828c17090d04c2f459c46d5fe17d8f91856429c80d26d7ea83)
+[//]: # (end: 94a429d50ffed8fcadeb4cfcec2d2e8daeec344777df80230b532ad09fd16285)
 
 ### [`WithTestData`](./src/Utils/WithTestData.php)
 
 [include:docblock]: ./src/Utils/WithTestData.php
-[//]: # (start: 9e18e688f419627eeda4c3463abacc2e12eb42c40e82bdfe81e1f34ecea88ec6)
+[//]: # (start: 29a333d13d606bfa1459f7c40fdcd2aaee733a3c36ed07f8c5532fcc79c585c9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Allows to get instance of `LastDragon_ru\LaraASP\Testing\Utils\TestData` (a small helper to load data
 associated with test)
 
-[//]: # (end: 9e18e688f419627eeda4c3463abacc2e12eb42c40e82bdfe81e1f34ecea88ec6)
+[//]: # (end: 29a333d13d606bfa1459f7c40fdcd2aaee733a3c36ed07f8c5532fcc79c585c9)
 
 ## Laravel `TestCase`
 
 ### [`WithTranslations`](./src/Utils/WithTranslations.php)
 
 [include:docblock]: ./src/Utils/WithTranslations.php
-[//]: # (start: 1cbfe21dc92a8015962cf1e92ddcc26fec87cb870ed9b7b3940ff881d3e3f2ce)
+[//]: # (start: aa3bdadaac3b5e77133b112e134b03127c6bea37a0edf7f83eb466b9cd3a0a76)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Allows replacing translation strings for Laravel.
 
-[//]: # (end: 1cbfe21dc92a8015962cf1e92ddcc26fec87cb870ed9b7b3940ff881d3e3f2ce)
+[//]: # (end: aa3bdadaac3b5e77133b112e134b03127c6bea37a0edf7f83eb466b9cd3a0a76)
 
 ### [`Override`](./src/Concerns/Override.php)
 
 [include:docblock]: ./src/Concerns/Override.php
-[//]: # (start: 9127e25c2ba9bf33a9721078021cc85f8438a56d1547bbc66fd59a550177f5d0)
+[//]: # (start: 8b10f736400f87cdeed471a3ea1ec56084e4e55dd17b20ef51ed89c10b81aa76)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Similar to `Illuminate\Foundation\Testing\Concerns\InteractsWithContainer` but will mark test as failed if
 override was not used while test (that helps to find unused code).
 
-[//]: # (end: 9127e25c2ba9bf33a9721078021cc85f8438a56d1547bbc66fd59a550177f5d0)
+[//]: # (end: 8b10f736400f87cdeed471a3ea1ec56084e4e55dd17b20ef51ed89c10b81aa76)
 
 ## Eloquent Model Factory
 
 ### [`FixRecentlyCreated`](./src/Database/Eloquent/Factories/FixRecentlyCreated.php)
 
 [include:docblock]: ./src/Database/Eloquent/Factories/FixRecentlyCreated.php
-[//]: # (start: 7be40a1c320aaa7355ee7d35cef411571829510e16863a2f65bb88f53a16f6da)
+[//]: # (start: dea6d40c643e1dee23af9eaae9da67145891174565fc81d26095d590df03fdd1)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 After creating the model will have `wasRecentlyCreated = true`, in most
 cases this is unwanted behavior, this trait fixes it.
 
-[//]: # (end: 7be40a1c320aaa7355ee7d35cef411571829510e16863a2f65bb88f53a16f6da)
+[//]: # (end: dea6d40c643e1dee23af9eaae9da67145891174565fc81d26095d590df03fdd1)
 
 ### [`WithoutModelEvents`](./src/Database/Eloquent/Factories/WithoutModelEvents.php)
 
 [include:docblock]: ./src/Database/Eloquent/Factories/WithoutModelEvents.php
-[//]: # (start: eba5f574eb292fb75d9a4124f507f3ff9daafcdedc402cf8207c7771a5acfff8)
+[//]: # (start: cef020462bd9dccfe48d84f32a8c5366de0d57dde6337bc44586cecb2f08cd51)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Disable models events during make/create.
 
-[//]: # (end: eba5f574eb292fb75d9a4124f507f3ff9daafcdedc402cf8207c7771a5acfff8)
+[//]: # (end: cef020462bd9dccfe48d84f32a8c5366de0d57dde6337bc44586cecb2f08cd51)
 
 # Mixins
 
@@ -257,7 +257,7 @@ Disable models events during make/create.
 # Assertions
 
 [include:document-list]: ./docs/Assertions
-[//]: # (start: faab128ff134f31373650be0e1d23f4adffa84372a29292f956b844fb6baae6d)
+[//]: # (start: c9953bb428d837e4a82f61878dcfa1a88fc32adcfc3e683dcc228578acec584b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `assertDatabaseQueryEquals`
@@ -308,7 +308,7 @@ Asserts that XML matches schema [XSD](https://en.wikipedia.org/wiki/XML_Schema_(
 
 [Read more](<docs/Assertions/AssertXmlMatchesSchema.md>).
 
-[//]: # (end: faab128ff134f31373650be0e1d23f4adffa84372a29292f956b844fb6baae6d)
+[//]: # (end: c9953bb428d837e4a82f61878dcfa1a88fc32adcfc3e683dcc228578acec584b)
 
 # Laravel Response Testing
 
@@ -820,7 +820,7 @@ Enjoy 😸
 > Working prototype for [How to mock protected properties? (#1142)](https://github.com/mockery/mockery/issues/1142). Please note that implementation relies on Reflection and internal Mockery methods/properties.
 
 [include:docblock]: ./src/Mockery/MockProperties.php ({"summary": false})
-[//]: # (start: 998fe7ccccc11e3c54b93f9d6ea507c288be425a1dc4eca1cf5abe09d77c572e)
+[//]: # (start: 35a297e5ff9df723f3e5a28a44daed191de5e7d1ba61643f0a977c7712191421)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 Limitations/Notes:
@@ -832,10 +832,10 @@ Limitations/Notes:
 * Property can be mocked only once.
 * Objects without methods will be marked as unused.
 
-[//]: # (end: 998fe7ccccc11e3c54b93f9d6ea507c288be425a1dc4eca1cf5abe09d77c572e)
+[//]: # (end: 35a297e5ff9df723f3e5a28a44daed191de5e7d1ba61643f0a977c7712191421)
 
 [include:example]: ./docs/Examples/MockProperties.php
-[//]: # (start: 58e6cbe9ad230f1706e6853e1aefd9a6ead8ed091478b1070fa3c8be9e43dd78)
+[//]: # (start: 4879652e49a1387b10b4488fbd0944969a7b49a3fe9de6e7f19f46b1437a458f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -877,7 +877,7 @@ $mock
 $mock->a();
 ```
 
-[//]: # (end: 58e6cbe9ad230f1706e6853e1aefd9a6ead8ed091478b1070fa3c8be9e43dd78)
+[//]: # (end: 4879652e49a1387b10b4488fbd0944969a7b49a3fe9de6e7f19f46b1437a458f)
 
 # Custom Test Requirements
 
@@ -913,21 +913,21 @@ class SomePackageTest extends TestCase {
 ```
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
+[//]: # (start: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
+[//]: # (end: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)

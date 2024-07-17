@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
@@ -17,7 +17,6 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function json_encode;
-use function sprintf;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -73,7 +72,7 @@ final class PreprocessorTest extends TestCase {
                 $this->app()->make(Serializer::class),
             );
 
-        $preprocessor->addInstruction($a);
+        $preprocessor->addInstruction($a::class);
         $preprocessor->addInstruction($b);
 
         $file = Mockery::mock(File::class);
@@ -87,20 +86,20 @@ final class PreprocessorTest extends TestCase {
 
         self::assertEquals(
             new TokenList([
-                '387a0a5e0251df30f428fd5a7533e6ace887d625be5a9d0d7d37f9b1202d1589' => new Token(
+                '036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4' => new Token(
                     $a,
-                    new PreprocessorTest__TargetResolverAsIs(),
                     new Context($root, $file, './path/to/file "value"', null),
-                    null,
+                    './path/to/file "value"',
+                    new PreprocessorTest__ParametersEmpty('./path/to/file "value"'),
                     [
                         '[test:empty]: <./path/to/file "value">' => '[test:empty]: <./path/to/file "value">',
                     ],
                 ),
-                '4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095' => new Token(
+                '482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2' => new Token(
                     $b,
-                    new PreprocessorTest__TargetResolverAsValue(),
                     new Context($root, $file, './path/to/file', null),
-                    new PreprocessorTest__Parameters(),
+                    './path/to/file',
+                    new PreprocessorTest__Parameters('./path/to/file'),
                     [
                         // phpcs:disable Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned
                         '[test:instruction]: ./path/to/file' => '[test:instruction]: ./path/to/file',
@@ -121,16 +120,17 @@ final class PreprocessorTest extends TestCase {
                         // phpcs:enable
                     ],
                 ),
-                'ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3' => new Token(
+                '5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d' => new Token(
                     $b,
-                    new PreprocessorTest__TargetResolverAsValue(),
                     new Context(
                         $root,
                         $file,
                         './path/to/file/parametrized',
                         '{"a": "aa", "b": {"a": "a", "b": "b"}}',
                     ),
+                    './path/to/file/parametrized',
                     new PreprocessorTest__Parameters(
+                        './path/to/file/parametrized',
                         'aa',
                         [
                             'a' => 'a',
@@ -182,58 +182,58 @@ final class PreprocessorTest extends TestCase {
             [unknown]: ./path/to/file (should not be parsed)
 
             [test:empty]: <./path/to/file "value">
-            [//]: # (start: 387a0a5e0251df30f428fd5a7533e6ace887d625be5a9d0d7d37f9b1202d1589)
+            [//]: # (start: 036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: 387a0a5e0251df30f428fd5a7533e6ace887d625be5a9d0d7d37f9b1202d1589)
+            [//]: # (end: 036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            result(./path/to/file/a, {"a":"a","b":[]})
+            result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: <./path/to/file>
-            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            result(./path/to/file/a, {"a":"a","b":[]})
+            result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            result(./path/to/file/a, {"a":"a","b":[]})
+            result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            result(./path/to/file/a, {"a":"a","b":[]})
+            result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 4a9c0bb168ac831e7b45d8d7a78694c12ee0a3273de7562cdbc47cdb7f64e095)
+            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
-            [//]: # (start: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            [//]: # (start: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            result(./path/to/file/parametrized/aa, {"a":"aa","b":{"a":"a","b":"b"}})
+            result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
 
             [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
-            [//]: # (start: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            [//]: # (start: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
             [//]: # (warning: Generated automatically. Do not edit.)
 
-            result(./path/to/file/parametrized/aa, {"a":"aa","b":{"a":"a","b":"b"}})
+            result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: ebe11a5c6bf74b7f70eec0c6b14ad768e159a9699273d7f07824ef116b37dfd3)
+            [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
             MARKDOWN,
             $actual,
         );
@@ -247,7 +247,7 @@ final class PreprocessorTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<string, null>
+ * @implements Instruction<PreprocessorTest__ParametersEmpty>
  */
 class PreprocessorTest__EmptyInstruction implements Instruction {
     #[Override]
@@ -256,17 +256,12 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return PreprocessorTest__TargetResolverAsIs::class;
+    public static function getParameters(): string {
+        return PreprocessorTest__ParametersEmpty::class;
     }
 
     #[Override]
-    public static function getParameters(): ?string {
-        return null;
-    }
-
-    #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         return '';
     }
 }
@@ -275,7 +270,7 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<PreprocessorTest__Value, PreprocessorTest__Parameters>
+ * @implements Instruction<PreprocessorTest__Parameters>
  */
 class PreprocessorTest__TestInstruction implements Instruction {
     #[Override]
@@ -284,18 +279,13 @@ class PreprocessorTest__TestInstruction implements Instruction {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return PreprocessorTest__TargetResolverAsValue::class;
-    }
-
-    #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return PreprocessorTest__Parameters::class;
     }
 
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
-        return sprintf('result(%s, %s)', $target->value, json_encode($parameters, JSON_THROW_ON_ERROR));
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
+        return 'result('.json_encode($parameters, JSON_THROW_ON_ERROR).')';
     }
 }
 
@@ -303,9 +293,14 @@ class PreprocessorTest__TestInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class PreprocessorTest__Value {
+class PreprocessorTest__Parameters implements Parameters, Serializable {
+    /**
+     * @param array<string, string> $b
+     */
     public function __construct(
-        public string $value,
+        public readonly string $target,
+        public readonly string $a = 'a',
+        public readonly array $b = [],
     ) {
         // empty
     }
@@ -314,40 +309,10 @@ class PreprocessorTest__Value {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
- *
- * @implements Resolver<string, null>
  */
-class PreprocessorTest__TargetResolverAsIs implements Resolver {
-    #[Override]
-    public function __invoke(Context $context, mixed $parameters): mixed {
-        return $context->target;
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- *
- * @implements Resolver<PreprocessorTest__Value, PreprocessorTest__Parameters>
- */
-class PreprocessorTest__TargetResolverAsValue implements Resolver {
-    #[Override]
-    public function __invoke(Context $context, mixed $parameters): mixed {
-        return new PreprocessorTest__Value("{$context->target}/{$parameters->a}");
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class PreprocessorTest__Parameters implements Serializable {
-    /**
-     * @param array<string, string> $b
-     */
+class PreprocessorTest__ParametersEmpty implements Parameters, Serializable {
     public function __construct(
-        public string $a = 'a',
-        public array $b = [],
+        public readonly string $target,
     ) {
         // empty
     }

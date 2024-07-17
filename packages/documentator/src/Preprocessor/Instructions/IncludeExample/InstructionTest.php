@@ -30,19 +30,22 @@ final class InstructionTest extends TestCase {
         $path    = Path::normalize(self::getTestData()->path('.md'));
         $root    = new Directory(dirname($path), false);
         $file    = new File($path, false);
-        $params  = null;
-        $context = new Context($root, $file, $file->getName(), $params);
+        $params  = new Parameters('...');
+        $target  = $file->getName();
+        $context = new Context($root, $file, $target, '{...}');
 
         $this->override(Runner::class, static function (MockInterface $mock) use ($file, $output): void {
             $mock
                 ->shouldReceive('__invoke')
-                ->with($file)
+                ->withArgs(static function (File $arg) use ($file): bool {
+                    return $arg->getPath() === $file->getPath();
+                })
                 ->once()
                 ->andReturn($output);
         });
 
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals($expected, $actual);
     }
@@ -53,11 +56,12 @@ final class InstructionTest extends TestCase {
         $path     = Path::normalize(self::getTestData()->path('.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $params   = null;
-        $context  = new Context($root, $file, $file->getName(), $params);
+        $params   = new Parameters('...');
+        $target   = $file->getName();
+        $context  = new Context($root, $file, $target, '{...}');
         $expected = trim($file->getContent());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $file, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals(
             <<<EXPECTED

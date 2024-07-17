@@ -3,7 +3,7 @@
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -25,10 +25,10 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "formatter"}})
-[//]: # (start: ca18ec42d5b2c99e52f3a550acc6e29f65958871ab3405d38e82ef8eab2ad415)
+[//]: # (start: 11ba1c825efed3a63b07b88dc2c67eeb36978ce2260e949130a44e9b684cf464)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -37,14 +37,14 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 composer require lastdragon-ru/lara-asp-formatter
 ```
 
-[//]: # (end: ca18ec42d5b2c99e52f3a550acc6e29f65958871ab3405d38e82ef8eab2ad415)
+[//]: # (end: 11ba1c825efed3a63b07b88dc2c67eeb36978ce2260e949130a44e9b684cf464)
 
 # Usage
 
 Formatter is very simple to use:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: adef85def212f87b8f157b40eaa0695da87e1a6f63e1e1ebc9fff474ecad3fee)
+[//]: # (start: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -79,7 +79,7 @@ The `$locale->decimal(123.454321)` is:
 "123,45"
 ```
 
-[//]: # (end: adef85def212f87b8f157b40eaa0695da87e1a6f63e1e1ebc9fff474ecad3fee)
+[//]: # (end: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
 
 Please check [source code](./src/Formatter.php) to see available methods and [config example](defaults/config.php) to available settings 🤗
 
@@ -92,7 +92,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\Provide
 ```
 
 [include:example]: ./docs/Examples/Config.php
-[//]: # (start: 79abdc1016ae295c77f37d2c430cec8b2de87be7096c32913e441a5d5057ec31)
+[//]: # (start: 182fc313b034f8d922dc3864cb962009a858d52f4c4cadc162dfda8d3fc05ee1)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -156,14 +156,14 @@ The `$locale->date($datetime, 'custom')` is:
 "30.12.2023"
 ```
 
-[//]: # (end: 79abdc1016ae295c77f37d2c430cec8b2de87be7096c32913e441a5d5057ec31)
+[//]: # (end: 182fc313b034f8d922dc3864cb962009a858d52f4c4cadc162dfda8d3fc05ee1)
 
 # Duration
 
 To format duration you can use built-in Intl formatter, but it doesn't support fraction seconds and have different format between locales (for example, `12345` seconds is `3:25:45` in `en_US` locale, and `12 345` in `ru_RU`). These reasons make difficult to use it in real applications. To make `duration()` more useful, the alternative syntax was added.
 
 [include:docblock]: ./src/Utils/DurationFormatter.php ({"summary": false})
-[//]: # (start: 363cfceaffb54119c82e514732db74b5265a5fc6724699580b2d3c677c1258f7)
+[//]: # (start: 075a8468f739f15c383b787dc7e69c78edd0a4ecfec4765d1855f39da7b286d3)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
@@ -181,10 +181,10 @@ The syntax is the same as [ICU Date/Time format syntax](https://unicode-org.gith
 | `'`    | escape for text               |
 | `''`   | two single quotes produce one |
 
-[//]: # (end: 363cfceaffb54119c82e514732db74b5265a5fc6724699580b2d3c677c1258f7)
+[//]: # (end: 075a8468f739f15c383b787dc7e69c78edd0a4ecfec4765d1855f39da7b286d3)
 
 [include:example]: ./docs/Examples/Duration.php
-[//]: # (start: 4601baed9dde5929ecc10d49ca83c24f5f9b1394fefd9f200fbc3085d5469cf1)
+[//]: # (start: 4ca274792eeebdd02bcf3001c78de97d4b12ec2b252361baaa0d814b7f592a32)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -219,24 +219,24 @@ The `$locale->duration(1234543)` is:
 "342:55:43.000"
 ```
 
-[//]: # (end: 4601baed9dde5929ecc10d49ca83c24f5f9b1394fefd9f200fbc3085d5469cf1)
+[//]: # (end: 4ca274792eeebdd02bcf3001c78de97d4b12ec2b252361baaa0d814b7f592a32)
 
 [include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
+[//]: # (start: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
-[//]: # (end: 5f4a27dda34e5e151a62fe3459daf4bb3b85705d38810060e71fcadc25669c0f)
+[//]: # (end: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)

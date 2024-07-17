@@ -4,32 +4,27 @@ namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 
 use function is_object;
 
 /**
  * @internal
  *
- * @template TTarget
- * @template TParameters of object|null
+ * @template TParameters of Parameters
  */
 class ResolvedInstruction {
     /**
-     * @var class-string<Instruction<TTarget, TParameters>>
+     * @var class-string<Instruction<TParameters>>
      */
     private readonly string $class;
     /**
-     * @var Resolver<TTarget, TParameters>|Resolver<TTarget, null>|null
-     */
-    private ?Resolver $resolver = null;
-    /**
-     * @var Instruction<TTarget, TParameters>|null
+     * @var Instruction<TParameters>|null
      */
     private ?Instruction $instance = null;
 
     /**
-     * @param Instruction<TTarget, TParameters>|class-string<Instruction<TTarget, TParameters>> $instruction
+     * @param Instruction<TParameters>|class-string<Instruction<TParameters>> $instruction
      */
     public function __construct(
         protected readonly ContainerResolver $container,
@@ -44,7 +39,7 @@ class ResolvedInstruction {
     }
 
     /**
-     * @return Instruction<TTarget, TParameters>
+     * @return Instruction<TParameters>
      */
     public function getInstance(): Instruction {
         $this->instance ??= $this->container->getInstance()->make($this->class);
@@ -53,16 +48,7 @@ class ResolvedInstruction {
     }
 
     /**
-     * @return Resolver<TTarget, TParameters>|Resolver<TTarget, null>
-     */
-    public function getResolver(): Resolver {
-        $this->resolver ??= $this->container->getInstance()->make($this->class::getResolver());
-
-        return $this->resolver;
-    }
-
-    /**
-     * @return class-string<Instruction<TTarget, TParameters>>
+     * @return class-string<Instruction<TParameters>>
      */
     public function getClass(): string {
         return $this->class;

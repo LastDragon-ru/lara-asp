@@ -23,10 +23,11 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $params   = new Parameters();
-        $context  = new Context($root, $file, './', '');
+        $params   = new Parameters('...');
+        $target   = './';
+        $context  = new Context($root, $file, $target, '{...}');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $root, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('~SameDirectory.md'),
@@ -39,15 +40,12 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeAnotherDirectory(): void {
-        $fs      = new FileSystem();
         $path    = self::getTestData()->path('~AnotherDirectory.md');
         $root    = new Directory(dirname($path), false);
         $file    = new File($path, false);
-        $params  = new Parameters();
-        $context = new Context($root, $file, basename(self::getTestData()->path('/')), '');
-        $target  = $fs->getDirectory($root, $context->target);
-
-        self::assertNotNull($target);
+        $params  = new Parameters('...');
+        $target  = basename(self::getTestData()->path('/'));
+        $context = new Context($root, $file, $target, '');
 
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
@@ -66,10 +64,11 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('nested/Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $params   = new Parameters(null);
-        $context  = new Context($root, $file, './', '');
+        $params   = new Parameters('...', null);
+        $target   = './';
+        $context  = new Context($root, $file, $target, '');
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $root, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
         self::assertEquals(
             self::getTestData()->content('~NestedDirectories.md'),
@@ -86,8 +85,9 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('invalid/Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $params   = new Parameters();
-        $context  = new Context($root, $file, './', '');
+        $params   = new Parameters('...');
+        $target   = './';
+        $context  = new Context($root, $file, $target, '');
         $instance = $this->app()->make(Instruction::class);
         $expected = $fs->getFile($root, 'WithoutTitle.md');
 
@@ -96,6 +96,6 @@ final class InstructionTest extends TestCase {
             new DocumentTitleIsMissing($context, $expected),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $root, $params);
+        ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
 }

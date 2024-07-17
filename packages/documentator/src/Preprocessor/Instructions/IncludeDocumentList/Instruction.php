@@ -9,10 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FilesIterator;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use Override;
@@ -25,7 +23,7 @@ use function usort;
  * must have `# Header` as the first construction. The first paragraph
  * after the Header will be used as a summary.
  *
- * @implements InstructionContract<Directory, Parameters>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -40,12 +38,7 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return DirectoryResolver::class;
-    }
-
-    #[Override]
-    public static function getParameters(): ?string {
+    public static function getParameters(): string {
         return Parameters::class;
     }
 
@@ -53,7 +46,7 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
         $iterator  = Cast::to(Iterator::class, yield new FilesIterator($target, '*.md', $parameters->depth));
