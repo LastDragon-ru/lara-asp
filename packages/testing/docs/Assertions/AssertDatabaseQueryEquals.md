@@ -3,7 +3,7 @@
 Asserts that SQL Query equals SQL Query.
 
 [include:example]: ./AssertDatabaseQueryEqualsTest.php
-[//]: # (start: 1b82cb78e263737ccb1a4a8b04b9ba995b0e5b3158260a64ca8bd3616416220b)
+[//]: # (start: b157eba261b77934f6b3c95e757c1d26824f1fd151a62a154b2f50f112ec3552)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -57,4 +57,4 @@ final class AssertDatabaseQueryEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: 1b82cb78e263737ccb1a4a8b04b9ba995b0e5b3158260a64ca8bd3616416220b)
+[//]: # (end: b157eba261b77934f6b3c95e757c1d26824f1fd151a62a154b2f50f112ec3552)

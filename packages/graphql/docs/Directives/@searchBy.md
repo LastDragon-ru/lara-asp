@@ -3,7 +3,7 @@
 Probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
 
 [include:graphql-directive]: @searchBy
-[//]: # (start: 3d8928e2d49d225b63f3b0f44358262d285ebbba9319e92cad8629a897b6f2f3)
+[//]: # (start: 85309d4e62b63312d6e2739f2a16337f47c0e205a5e1d13b29076a477399e47a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -15,7 +15,7 @@ on
     | ARGUMENT_DEFINITION
 ```
 
-[//]: # (end: 3d8928e2d49d225b63f3b0f44358262d285ebbba9319e92cad8629a897b6f2f3)
+[//]: # (end: 85309d4e62b63312d6e2739f2a16337f47c0e205a5e1d13b29076a477399e47a)
 
 ## Basic usage
 
@@ -33,7 +33,7 @@ Out of the box directives provides following features:
 Let's start:
 
 [include:example]: ../../src/SearchBy/Directives/DirectiveTest/Example.schema.graphql
-[//]: # (start: 029b65fdc24245537949ce83045a9468e0eb80cc433c62fc97287c84a523c5d4)
+[//]: # (start: 914334301f2b684d0edb040da952a4644dc22d257017dee5f6a7c6d25b5152f8)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -67,7 +67,7 @@ type Comment {
 }
 ```
 
-[//]: # (end: 029b65fdc24245537949ce83045a9468e0eb80cc433c62fc97287c84a523c5d4)
+[//]: # (end: 914334301f2b684d0edb040da952a4644dc22d257017dee5f6a7c6d25b5152f8)
 
 That's all, just search 😃 (or look at [generated GraphQL schema](../../src/SearchBy/Directives/DirectiveTest/Example.expected.graphql))
 
@@ -158,7 +158,7 @@ As you can see in the example above you can use the special placeholder `_` inst
 The `@searchByIgnored` can be used as Ignored marker.
 
 [include:graphql-directive]: @searchByIgnored
-[//]: # (start: 19241090248b7789ee3b6de5b3922352e534a08c330be9c8ec139eaedffefabb)
+[//]: # (start: c251c247319e5a29be9ffb844a716af7655bb79fa111d717df05b0ebfa95c18d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -175,7 +175,7 @@ on
     | SCALAR
 ```
 
-[//]: # (end: 19241090248b7789ee3b6de5b3922352e534a08c330be9c8ec139eaedffefabb)
+[//]: # (end: c251c247319e5a29be9ffb844a716af7655bb79fa111d717df05b0ebfa95c18d)
 
 ## Operators
 
@@ -234,7 +234,7 @@ scalar MyScalar
 Keep in mind, when you define/extend the scalar/enum, it will override all existing operators, so if you just want to add new operators, the `@searchByExtendOperators` directive should be used.
 
 [include:graphql-directive]: @searchByExtendOperators
-[//]: # (start: 2eba3af220a941ff3782355618d583640e7f1983e3c37d062c7e2bafb805a3d2)
+[//]: # (start: f4d3d47fb7eec54137e67fe22370ca9f5476f077c191ccfb39502a693d603e4d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```graphql
@@ -250,7 +250,7 @@ on
     | SCALAR
 ```
 
-[//]: # (end: 2eba3af220a941ff3782355618d583640e7f1983e3c37d062c7e2bafb805a3d2)
+[//]: # (end: f4d3d47fb7eec54137e67fe22370ca9f5476f077c191ccfb39502a693d603e4d)
 
 ### Schema
 

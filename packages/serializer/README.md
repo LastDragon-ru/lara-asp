@@ -3,7 +3,7 @@
 This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html) to use it inside Laravel application.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -19,10 +19,10 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 |  | `^9.21.0` |   `5.6.0 ⋯ 5.0.0-beta.1`   |
 |  | `^9.0.0` |  `5.0.0-beta.0`   |
 
-[//]: # (end: 3556073e7992c5bd81cdd63a92c38d136657c7e720caec135fff44e925557f7b)
+[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "serializer"}})
-[//]: # (start: d8b5372aebffede51da53eb1cdc31143e965ae14f00992219dae456a565cda4a)
+[//]: # (start: b7815d4caee08ab4b0c4055251eb8414f400d1eddba3fbb235b33737137e4dda)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -31,12 +31,12 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 composer require lastdragon-ru/lara-asp-serializer
 ```
 
-[//]: # (end: d8b5372aebffede51da53eb1cdc31143e965ae14f00992219dae456a565cda4a)
+[//]: # (end: b7815d4caee08ab4b0c4055251eb8414f400d1eddba3fbb235b33737137e4dda)
 
 # Usage
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: adef85def212f87b8f157b40eaa0695da87e1a6f63e1e1ebc9fff474ecad3fee)
+[//]: # (start: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -92,7 +92,7 @@ LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage\User {
 }
 ```
 
-[//]: # (end: adef85def212f87b8f157b40eaa0695da87e1a6f63e1e1ebc9fff474ecad3fee)
+[//]: # (end: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
 
 # Extending
 
@@ -115,7 +115,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provid
 You can use the [`LastDragon_ru\LaraASP\Serializer\Casts\Serialized`](./src/Casts/Serialized.php) attribute to populate a model attribute to/from an object:
 
 [include:example]: ./docs/Examples/Attribute.php
-[//]: # (start: f35a6e7b23df02996a9581e4c34db9192ceb148e1fa7ed361c57fc6a017bd8e9)
+[//]: # (start: fb77e44bdaa1948ff6630b23a8b2e3333de750be45e8f5fda1f7b784fe036a27)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -174,7 +174,7 @@ The `$user->getAttributes()` is:
 ]
 ```
 
-[//]: # (end: f35a6e7b23df02996a9581e4c34db9192ceb148e1fa7ed361c57fc6a017bd8e9)
+[//]: # (end: fb77e44bdaa1948ff6630b23a8b2e3333de750be45e8f5fda1f7b784fe036a27)
 
 # Upgrading
 
@@ -183,13 +183,13 @@ Please follow [Upgrade Guide](UPGRADE.md).
 [//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: 3f7cfa48046722fb9d277c71e074ff8406787772f90d17405b7554a4464cbfee)
+[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
 
 [^1]: <https://laravel.com/docs/eloquent-mutators>

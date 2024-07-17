@@ -1,7 +1,7 @@
 # Upgrade Guide
 
 [include:file]: ./docs/Shared/Upgrade.md
-[//]: # (start: c437867d96b216fb0f421c0c5b19b29eea42439b286bc4bc8f0f551f1fe2d9c2)
+[//]: # (start: 4318f49cdbcc8c10dc5745f395acd00ccef31aebde5f9c3f864623ec953d41d2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Instructions
@@ -25,12 +25,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
 |:--:|:--------------------------------------------------------------------------------------------------------------------|
 
-[//]: # (end: c437867d96b216fb0f421c0c5b19b29eea42439b286bc4bc8f0f551f1fe2d9c2)
+[//]: # (end: 4318f49cdbcc8c10dc5745f395acd00ccef31aebde5f9c3f864623ec953d41d2)
 
 # Packages
 
 [include:package-list]: ./packages ({"template": "upgradable"})
-[//]: # (start: 39292ac87c6fc1ec1884b9449c69f39245874999bd085380a87c7473ffae043b)
+[//]: # (start: bc74143a7e2bd1ef91a36faf8777246c3cf2a2ea5a08443bc2e3e4364ae9bf07)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [(Laravel) Core](<packages/core/UPGRADE.md>)
@@ -45,7 +45,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [Dev 🐝](<packages/dev/UPGRADE.md>)
 * [GraphQL Printer](<packages/graphql-printer/UPGRADE.md>)
 
-[//]: # (end: 39292ac87c6fc1ec1884b9449c69f39245874999bd085380a87c7473ffae043b)
+[//]: # (end: bc74143a7e2bd1ef91a36faf8777246c3cf2a2ea5a08443bc2e3e4364ae9bf07)
 
 # Upgrade from v5
 

@@ -1,7 +1,7 @@
 # Upgrade Guide
 
 [include:file]: ../../docs/Shared/Upgrade.md
-[//]: # (start: 3fcf292b870e49aabe885c416dfaf6c6c66d4571e87d3d3975d9cfe34ea6c9fe)
+[//]: # (start: 8e89e65b3785cb5b41f28a4f3c5b7e0db0110d8047852d71cd99b2cdffd8f57c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Instructions
@@ -25,24 +25,24 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
 |:--:|:--------------------------------------------------------------------------------------------------------------------|
 
-[//]: # (end: 3fcf292b870e49aabe885c416dfaf6c6c66d4571e87d3d3975d9cfe34ea6c9fe)
+[//]: # (end: 8e89e65b3785cb5b41f28a4f3c5b7e0db0110d8047852d71cd99b2cdffd8f57c)
 
 # Upgrade from v6
 
 [include:file]: ../../docs/Shared/Upgrade/FromV6.md
-[//]: # (start: b0b74ef74f156294a37f3ec42299e221e5e693f3b42297f5cfa79cab99b1df7e)
+[//]: # (start: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
 
-[//]: # (end: b0b74ef74f156294a37f3ec42299e221e5e693f3b42297f5cfa79cab99b1df7e)
+[//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
 
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
-[//]: # (start: 6367638a165291d78965aaeae9ab03b304b0a420eb3f5ad9af0424296cc609ea)
+[//]: # (start: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
-[//]: # (end: 6367638a165291d78965aaeae9ab03b304b0a420eb3f5ad9af0424296cc609ea)
+[//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
