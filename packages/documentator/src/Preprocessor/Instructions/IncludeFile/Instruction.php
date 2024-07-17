@@ -2,9 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeFile;
 
+use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
@@ -13,7 +16,7 @@ use function rtrim;
 /**
  * Includes the `<target>` file.
  *
- * @implements InstructionContract<File, null>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {
@@ -26,17 +29,15 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return FileResolver::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
-        return null;
+        return Parameters::class;
     }
 
+    /**
+     * @return Generator<mixed, Dependency<*>, mixed, string>
+     */
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
-        return rtrim($target->getContent())."\n";
+    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+        return rtrim(Cast::to(File::class, yield new FileReference($target))->getContent())."\n";
     }
 }

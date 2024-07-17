@@ -18,7 +18,7 @@ use function trim;
 /**
  * Includes the definition of the directive as a Markdown code block.
  *
- * @implements InstructionContract<string, null>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -33,17 +33,12 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return Resolver::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
-        return null;
+        return Parameters::class;
     }
 
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         // Dependencies?
         if (!$this->printer) {
             throw new DependencyIsMissing($context, Printer::class);

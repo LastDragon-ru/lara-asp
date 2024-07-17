@@ -30,8 +30,8 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path($file);
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = $file;
-        $context  = new Context($root, $file, $file->getName(), null);
+        $target   = $file->getName();
+        $context  = new Context($root, $file, $target, null);
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
@@ -54,29 +54,29 @@ final class InstructionTest extends TestCase {
             'default'      => [
                 'ValidExpected.txt',
                 'Valid.txt',
-                new Parameters(),
+                new Parameters('...'),
             ],
             'with summary' => [
                 'ValidWithSummaryExpected.txt',
                 'Valid.txt',
-                new Parameters(summary: true),
+                new Parameters('...', summary: true),
             ],
             'only summary' => [
                 'ValidOnlySummaryExpected.txt',
                 'Valid.txt',
-                new Parameters(summary: true, description: false),
+                new Parameters('...', summary: true, description: false),
             ],
             'no docblock'  => [
                 'NoDocBlockExpected.txt',
                 'NoDocBlock.txt',
-                new Parameters(),
+                new Parameters('...'),
             ],
             'invalid'      => [
                 static function (self $test, Context $context): Exception {
                     return new TargetIsNotValidPhpFile($context);
                 },
                 'Invalid.txt',
-                new Parameters(),
+                new Parameters('...'),
             ],
         ];
     }

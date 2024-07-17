@@ -6,11 +6,6 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			message: "#^Generator expects value type LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Dependency\\<\\*\\>, mixed given\\.$#"
-			count: 1
-			path: packages/documentator/src/Preprocessor/Preprocessor.php
-
-		-
 			message: "#^Parameter \\#1 \\$dependency of class LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\ExecutorIterator constructor expects LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Dependency\\<Iterator\\<mixed, LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\FileSystem\\\\Directory\\|LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\FileSystem\\\\File\\>\\>, LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Dependency\\<\\*\\> given\\.$#"
 			count: 1
 			path: packages/documentator/src/Processor/Executor.php

@@ -4,14 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 
 /**
  * @internal
@@ -79,12 +78,16 @@ final class PreprocessTest extends TestCase {
         );
     }
 
-    public function testGetProcessedHelpInstructionResolver(): void {
+    public function testGetProcessedHelpInstructionTarget(): void {
         $preprocessor = Mockery::mock(Preprocessor::class);
         $command      = new class($preprocessor) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionResolver(string $instruction, int $padding): string {
-                return parent::getProcessedHelpInstructionResolver($instruction, $padding);
+            public function getProcessedHelpInstructionTarget(
+                string $instruction,
+                string $target,
+                int $padding,
+            ): ?string {
+                return parent::getProcessedHelpInstructionTarget($instruction, $target, $padding);
             }
         };
 
@@ -95,8 +98,9 @@ final class PreprocessTest extends TestCase {
                 Target target target target target target target target target
                 target target target target target target target target target.
             MARKDOWN,
-            $command->getProcessedHelpInstructionResolver(
+            $command->getProcessedHelpInstructionTarget(
                 PreprocessTest__Instruction::class,
+                'target',
                 4,
             ),
         );
@@ -106,8 +110,12 @@ final class PreprocessTest extends TestCase {
         $preprocessor = Mockery::mock(Preprocessor::class);
         $command      = new class($preprocessor) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionParameters(string $instruction, int $padding): ?string {
-                return parent::getProcessedHelpInstructionParameters($instruction, $padding);
+            public function getProcessedHelpInstructionParameters(
+                string $instruction,
+                string $target,
+                int $padding,
+            ): ?string {
+                return parent::getProcessedHelpInstructionParameters($instruction, $target, $padding);
             }
         };
 
@@ -123,6 +131,7 @@ final class PreprocessTest extends TestCase {
             MARKDOWN,
             $command->getProcessedHelpInstructionParameters(
                 PreprocessTest__Instruction::class,
+                'target',
                 4,
             ),
         );
@@ -132,14 +141,19 @@ final class PreprocessTest extends TestCase {
         $preprocessor = Mockery::mock(Preprocessor::class);
         $command      = new class($preprocessor) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionParameters(string $instruction, int $padding): ?string {
-                return parent::getProcessedHelpInstructionParameters($instruction, $padding);
+            public function getProcessedHelpInstructionParameters(
+                string $instruction,
+                string $target,
+                int $padding,
+            ): ?string {
+                return parent::getProcessedHelpInstructionParameters($instruction, $target, $padding);
             }
         };
 
         self::assertNull(
             $command->getProcessedHelpInstructionParameters(
                 PreprocessTest__InstructionNoParameters::class,
+                'target',
                 4,
             ),
         );
@@ -149,8 +163,12 @@ final class PreprocessTest extends TestCase {
         $preprocessor = Mockery::mock(Preprocessor::class);
         $command      = new class($preprocessor) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionParameters(string $instruction, int $padding): ?string {
-                return parent::getProcessedHelpInstructionParameters($instruction, $padding);
+            public function getProcessedHelpInstructionParameters(
+                string $instruction,
+                string $target,
+                int $padding,
+            ): ?string {
+                return parent::getProcessedHelpInstructionParameters($instruction, $target, $padding);
             }
         };
 
@@ -158,6 +176,7 @@ final class PreprocessTest extends TestCase {
             '',
             $command->getProcessedHelpInstructionParameters(
                 PreprocessTest__InstructionNotSerializable::class,
+                'target',
                 4,
             ),
         );
@@ -177,7 +196,7 @@ final class PreprocessTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<string, PreprocessTest__Parameters>
+ * @implements Instruction<PreprocessTest__Parameters>
  */
 class PreprocessTest__Instruction implements Instruction {
     #[Override]
@@ -186,17 +205,12 @@ class PreprocessTest__Instruction implements Instruction {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return PreprocessTest__Target::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
         return PreprocessTest__Parameters::class;
     }
 
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         return $target;
     }
 }
@@ -205,7 +219,7 @@ class PreprocessTest__Instruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<string, null>
+ * @implements Instruction<PreprocessTest__ParametersEmpty>
  */
 class PreprocessTest__InstructionNoParameters implements Instruction {
     #[Override]
@@ -214,17 +228,12 @@ class PreprocessTest__InstructionNoParameters implements Instruction {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return PreprocessTest__Target::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
-        return null;
+        return PreprocessTest__ParametersEmpty::class;
     }
 
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         return $target;
     }
 }
@@ -233,7 +242,7 @@ class PreprocessTest__InstructionNoParameters implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<string, stdClass>
+ * @implements Instruction<PreprocessTest__ParametersNotSerializable>
  */
 class PreprocessTest__InstructionNotSerializable implements Instruction {
     #[Override]
@@ -242,53 +251,37 @@ class PreprocessTest__InstructionNotSerializable implements Instruction {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return PreprocessTest__Target::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
-        return stdClass::class;
+        return PreprocessTest__ParametersNotSerializable::class;
     }
 
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): string {
         return $target;
     }
 }
 
 /**
- * Target target target target target.
- *
- * Target target target target target target target target target
- * target target target target target target target target target.
- *
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- *
- * @implements Resolver<string, null>
- */
-class PreprocessTest__Target implements Resolver {
-    #[Override]
-    public function __invoke(Context $context, mixed $parameters): mixed {
-        return $context->target;
-    }
-}
-
-/**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class PreprocessTest__Parameters implements Serializable {
+class PreprocessTest__Parameters implements Parameters, Serializable {
     public static bool $publicStaticProperty = true;
 
     /**
      * Description.
      */
-    public int   $publicPropertyWithoutDefaultValue;
+    public int $publicPropertyWithoutDefaultValue;
     public float $publicPropertyWithDefaultValue = 123;
 
     public function __construct(
+        /**
+         * Target target target target target.
+         *
+         * Target target target target target target target target target
+         * target target target target target target target target target.
+         */
+        public readonly string $target,
         /**
          * Description.
          */
@@ -304,5 +297,41 @@ class PreprocessTest__Parameters implements Serializable {
         protected bool $privateProperty = true,
     ) {
         $this->publicPropertyWithoutDefaultValue = 0;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class PreprocessTest__ParametersEmpty implements Parameters, Serializable {
+    public function __construct(
+        /**
+         * Target target target target target.
+         *
+         * Target target target target target target target target target
+         * target target target target target target target target target.
+         */
+        public readonly string $target,
+    ) {
+        // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class PreprocessTest__ParametersNotSerializable implements Parameters {
+    public function __construct(
+        /**
+         * Target target target target target.
+         *
+         * Target target target target target target target target target
+         * target target target target target target target target target.
+         */
+        public readonly string $target,
+    ) {
+        // empty
     }
 }

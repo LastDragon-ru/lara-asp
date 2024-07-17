@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Result;
@@ -123,21 +124,21 @@ class Preprocess extends Command {
         $help         = [];
 
         foreach ($instructions as $instruction) {
-            $class      = new ReflectionClass($instruction);
-            $name       = $instruction::getName();
-            $desc       = $this->getDocBlock($class);
-            $resolver   = $this->getProcessedHelpInstructionResolver($instruction, 2);
-            $resolver   = trim($resolver ?: '_No description provided_.');
-            $parameters = $this->getProcessedHelpInstructionParameters($instruction, 2);
+            $class  = new ReflectionClass($instruction);
+            $name   = $instruction::getName();
+            $desc   = $this->getDocBlock($class);
+            $target = $this->getProcessedHelpInstructionTarget($instruction, 'target', 2);
+            $target = trim($target ?: '_No description provided_.');
+            $params = $this->getProcessedHelpInstructionParameters($instruction, 'target', 2);
 
-            if ($parameters !== null) {
+            if ($params !== null) {
                 $help[$name] = rtrim(
                     <<<HELP
                     ### `[{$name}]: <target> <parameters>`
 
-                    * `<target>` - {$resolver}
+                    * `<target>` - {$target}
                     * `<parameters>` - additional parameters
-                    {$parameters}
+                    {$params}
 
                     {$desc}
                     HELP,
@@ -147,7 +148,7 @@ class Preprocess extends Command {
                     <<<HELP
                     ### `[{$name}]: <target>`
 
-                    * `<target>` - {$resolver}
+                    * `<target>` - {$target}
 
                     {$desc}
                     HELP,
@@ -161,11 +162,19 @@ class Preprocess extends Command {
     }
 
     /**
-     * @param class-string<Instruction<covariant mixed, covariant ?object>> $instruction
-     * @param int<0, max>                                                   $padding
+     * @param class-string<Instruction<covariant ?Parameters>> $instruction
+     * @param int<0, max>                                      $padding
      */
-    protected function getProcessedHelpInstructionResolver(string $instruction, int $padding): string {
-        $class = new ReflectionClass($instruction::getResolver());
+    protected function getProcessedHelpInstructionTarget(string $instruction, string $target, int $padding): ?string {
+        // Has?
+        $class = $instruction::getParameters();
+
+        if ($class === null) {
+            return null;
+        }
+
+        // Extract
+        $class = new ReflectionProperty($class, $target);
         $help  = $this->getDocBlock($class, $padding);
         $help  = rtrim($help);
 
@@ -173,10 +182,14 @@ class Preprocess extends Command {
     }
 
     /**
-     * @param class-string<Instruction<covariant mixed, covariant ?object>> $instruction
-     * @param int<0, max>                                                   $padding
+     * @param class-string<Instruction<covariant ?Parameters>> $instruction
+     * @param int<0, max>                                      $padding
      */
-    protected function getProcessedHelpInstructionParameters(string $instruction, int $padding): ?string {
+    protected function getProcessedHelpInstructionParameters(
+        string $instruction,
+        string $target,
+        int $padding,
+    ): ?string {
         // Has?
         $class = $instruction::getParameters();
 
@@ -195,7 +208,7 @@ class Preprocess extends Command {
 
         foreach ($properties as $property) {
             // Ignored?
-            if (!$property->isPublic() || $property->isStatic()) {
+            if (!$property->isPublic() || $property->isStatic() || $property->getName() === $target) {
                 continue;
             }
 
@@ -235,6 +248,11 @@ class Preprocess extends Command {
             $parameters[trim($definition)] = trim(
                 $this->getDocBlock($property, $padding) ?: '_No description provided_.',
             );
+        }
+
+        // Empty?
+        if (!$parameters) {
+            return null;
         }
 
         // Serialize

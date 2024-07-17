@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as Ins
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\DirectoryResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoriesIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
@@ -37,7 +36,7 @@ use const JSON_THROW_ON_ERROR;
  * Generates package list from `<target>` directory. The readme file will be
  * used to determine package name and summary.
  *
- * @implements InstructionContract<Directory, Parameters>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct(
@@ -52,11 +51,6 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return DirectoryResolver::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
         return Parameters::class;
     }
@@ -65,7 +59,7 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
         $directories = Cast::to(Iterator::class, yield new DirectoriesIterator($target, null, 0));

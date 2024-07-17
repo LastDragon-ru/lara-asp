@@ -3,10 +3,13 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock;
 
 use Exception;
+use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use Override;
@@ -29,7 +32,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * from `<target>` file. Inline tags include as is except `@see`/`@link`
  * which will be replaced to FQCN (if possible). Other tags are ignored.
  *
- * @implements InstructionContract<File, Parameters>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {
@@ -42,18 +45,17 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return FileResolver::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
         return Parameters::class;
     }
 
+    /**
+     * @return Generator<mixed, Dependency<*>, mixed, string>
+     */
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         // Class?
+        $target            = Cast::to(File::class, yield new FileReference($target));
         [$class, $context] = ((array) $this->getClass($context, $target->getContent()) + [null, null]);
 
         if (!$class || !$context) {

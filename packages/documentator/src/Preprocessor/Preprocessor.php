@@ -9,6 +9,7 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Exceptions\PreprocessorError;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeArtisan\Instruction as IncludeArtisan;
@@ -94,7 +95,7 @@ class Preprocessor implements Task {
         REGEXP;
 
     /**
-     * @var array<string, ResolvedInstruction<covariant mixed, covariant object|null>>
+     * @var array<string, ResolvedInstruction<covariant ?Parameters>>
      */
     private array $instructions = [];
 
@@ -114,14 +115,14 @@ class Preprocessor implements Task {
     }
 
     /**
-     * @return list<class-string<Instruction<mixed, ?object>>>
+     * @return list<class-string<Instruction<?Parameters>>>
      */
     public function getInstructions(): array {
         return array_values(array_map(static fn ($i) => $i->getClass(), $this->instructions));
     }
 
     /**
-     * @template I of Instruction<covariant mixed, covariant ?object>
+     * @template I of Instruction<covariant ?Parameters>
      *
      * @param I|class-string<I> $instruction
      */
@@ -152,17 +153,8 @@ class Preprocessor implements Task {
 
         foreach ($parsed->tokens as $hash => $token) {
             try {
-                // Resolve target
-                $target = ($token->resolver)($token->context, $token->parameters);
-
-                if ($target instanceof Generator) {
-                    yield from $target;
-
-                    $target = $target->getReturn();
-                }
-
                 // Run
-                $content = ($token->instruction)($token->context, $target, $token->parameters);
+                $content = ($token->instruction)($token->context, $token->target, $token->parameters);
 
                 if ($content instanceof Generator) {
                     yield from $content;
@@ -239,10 +231,8 @@ class Preprocessor implements Task {
             $target     = str_starts_with($target, '<') && str_ends_with($target, '>')
                 ? mb_substr($target, 1, -1)
                 : rawurldecode($target);
-            $params     = $parameters && $match['parameters']
-                ? $this->getParametersJson($match['parameters'])
-                : '{}';
-            $hash       = $this->getHash("{$name}({$target}, {$params})");
+            $params     = $this->getParametersJson($target, $parameters ? $match['parameters'] : null);
+            $hash       = $this->getHash("{$name}({$params})");
 
             // Parsed?
             if (isset($tokens[$hash])) {
@@ -259,8 +249,8 @@ class Preprocessor implements Task {
 
             $tokens[$hash] = new Token(
                 $instruction->getInstance(),
-                $instruction->getResolver(),
                 $context,
+                $target,
                 $parameters,
                 [
                     $match[0] => (string) $match['expression'],
@@ -276,11 +266,13 @@ class Preprocessor implements Task {
         return hash('sha256', $identifier);
     }
 
-    private function getParametersJson(string $json): string {
-        return json_encode(
-            $this->getParametersJsonNormalize(json_decode($json, true, flags: JSON_THROW_ON_ERROR)),
-            JSON_THROW_ON_ERROR,
-        );
+    private function getParametersJson(string $target, ?string $json): string {
+        $parameters           = (array) ($json ? json_decode($json, true, flags: JSON_THROW_ON_ERROR) : []);
+        $parameters['target'] = $target;
+        $parameters           = $this->getParametersJsonNormalize($parameters);
+        $parameters           = json_encode($parameters, JSON_THROW_ON_ERROR);
+
+        return $parameters;
     }
 
     private function getParametersJsonNormalize(mixed $value): mixed {

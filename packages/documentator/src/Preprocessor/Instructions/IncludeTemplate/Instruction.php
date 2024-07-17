@@ -2,12 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate;
 
+use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
@@ -23,7 +26,7 @@ use const PREG_UNMATCHED_AS_NULL;
 /**
  * Includes the `<target>` as a template.
  *
- * @implements InstructionContract<File, Parameters>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public function __construct() {
@@ -36,17 +39,15 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return FileResolver::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
         return Parameters::class;
     }
 
+    /**
+     * @return Generator<mixed, Dependency<*>, mixed, string>
+     */
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         // Data?
         if (!$parameters->data) {
             throw new TemplateDataMissed($context);
@@ -57,7 +58,7 @@ class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $content = $target->getContent();
+        $content = (Cast::to(File::class, yield new FileReference($target)))->getContent();
 
         do {
             $content = (string) preg_replace_callback(

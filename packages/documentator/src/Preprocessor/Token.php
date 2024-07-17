@@ -3,25 +3,21 @@
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor;
 
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Resolver;
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
 
 /**
  * @internal
  *
- * @template TTarget
- * @template TParameters of object|null
+ * @template TParameters of Parameters|null
  */
 class Token {
     public function __construct(
         /**
-         * @var Instruction<TTarget, TParameters>
+         * @var Instruction<TParameters>
          */
         public readonly Instruction $instruction,
-        /**
-         * @var Resolver<TTarget, TParameters>|Resolver<TTarget, null>
-         */
-        public readonly Resolver $resolver,
         public readonly Context $context,
+        public readonly string $target,
         /**
          * @var TParameters
          */

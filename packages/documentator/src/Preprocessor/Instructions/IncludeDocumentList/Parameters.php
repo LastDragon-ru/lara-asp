@@ -2,11 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeDocumentList;
 
+use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters as ParametersContract;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Symfony\Component\Finder\Finder;
 
-class Parameters implements Serializable {
+class Parameters implements ParametersContract, Serializable {
     public function __construct(
+        /**
+         * Directory path.
+         */
+        public readonly string $target,
         /**
          * [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
          * (eg the `0` means no nested directories, the `null` removes limits).

@@ -33,9 +33,9 @@ final class InstructionTest extends TestCase {
         $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory($root->getPath('packages'), false);
-        $params   = new Parameters(template: $template);
-        $context  = new Context($root, $file, $target->getPath(), '');
+        $target   = $root->getPath('packages');
+        $params   = new Parameters('...', template: $template);
+        $context  = new Context($root, $file, $target, '{...}');
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -54,11 +54,11 @@ final class InstructionTest extends TestCase {
         $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory($root->getPath('invalid'), false);
-        $params   = new Parameters();
-        $context  = new Context($root, $file, $target->getPath(), '');
+        $target   = $root->getPath('invalid');
+        $params   = new Parameters('...');
+        $context  = new Context($root, $file, $target, '');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory($target, 'package');
+        $package  = $fs->getDirectory(new Directory($target, false), 'package');
 
         self::assertNotNull($package);
         self::expectExceptionObject(
@@ -73,11 +73,11 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory($root->getPath('no readme'), false);
-        $params   = new Parameters();
-        $context  = new Context($root, $file, $target->getPath(), '');
+        $target   = $root->getPath('no readme');
+        $params   = new Parameters('...');
+        $context  = new Context($root, $file, $target, '{...}');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory($target, 'package');
+        $package  = $fs->getDirectory(new Directory($target, false), 'package');
 
         self::assertNotNull($package);
         self::expectExceptionObject(
@@ -92,11 +92,11 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory($root->getPath('empty readme'), false);
-        $params   = new Parameters();
-        $context  = new Context($root, $file, $target->getPath(), '');
+        $target   = $root->getPath('empty readme');
+        $params   = new Parameters('...');
+        $context  = new Context($root, $file, $target, '{...}');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory($target, 'package');
+        $package  = $fs->getDirectory(new Directory($target, false), 'package');
         $expected = $fs->getFile($root, 'empty readme/package/README.md');
 
         self::assertNotNull($package);
@@ -113,11 +113,11 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $target   = new Directory($root->getPath('no title'), false);
-        $params   = new Parameters();
-        $context  = new Context($root, $file, $target->getPath(), '');
+        $target   = $root->getPath('no title');
+        $params   = new Parameters('...');
+        $context  = new Context($root, $file, $target, '{...}');
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory($target, 'package');
+        $package  = $fs->getDirectory(new Directory($target, false), 'package');
         $expected = $fs->getFile($root, 'no title/package/README.md');
 
         self::assertNotNull($package);

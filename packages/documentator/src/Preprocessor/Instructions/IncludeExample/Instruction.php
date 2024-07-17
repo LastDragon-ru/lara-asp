@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample;
 
+use Generator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Exceptions\ExampleFailed;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Resolvers\FileResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 use Throwable;
@@ -27,7 +30,7 @@ use const PREG_UNMATCHED_AS_NULL;
  * block. You can wrap the output into `<markdown>text</markdown>` tags to
  * insert it as is.
  *
- * @implements InstructionContract<File, null>
+ * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
     public const    Limit          = 50;
@@ -45,18 +48,17 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public static function getResolver(): string {
-        return FileResolver::class;
-    }
-
-    #[Override]
     public static function getParameters(): ?string {
-        return null;
+        return Parameters::class;
     }
 
+    /**
+     * @return Generator<mixed, Dependency<*>, mixed, string>
+     */
     #[Override]
-    public function __invoke(Context $context, mixed $target, mixed $parameters): string {
+    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         // Content
+        $target   = Cast::to(File::class, yield new FileReference($target));
         $language = $this->getLanguage($context, $target, $parameters);
         $content  = trim($target->getContent());
         $content  = <<<CODE
@@ -132,7 +134,7 @@ class Instruction implements InstructionContract {
         return trim($content);
     }
 
-    protected function getLanguage(Context $context, File $target, mixed $parameters): string {
+    protected function getLanguage(Context $context, File $target, Parameters $parameters): string {
         return $target->getExtension();
     }
 }
