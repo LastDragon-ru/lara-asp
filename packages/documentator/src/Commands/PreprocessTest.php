@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Context;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Preprocessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Preprocessor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Mockery;

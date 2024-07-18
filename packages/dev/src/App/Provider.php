@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Dev\App;
 
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Contracts\Runner;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use Override;
 
 class Provider extends ServiceProvider {
