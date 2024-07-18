@@ -241,7 +241,7 @@ class Preprocessor implements Task {
             }
 
             // Parse
-            $context    = new Context($root, $file, $target, $match['parameters']);
+            $context    = new Context($root, $file, (string) $match['target'], $match['parameters']);
             $parameters = $instruction->getClass()::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 

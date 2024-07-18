@@ -88,7 +88,7 @@ final class PreprocessorTest extends TestCase {
             new TokenList([
                 '036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4' => new Token(
                     $a,
-                    new Context($root, $file, './path/to/file "value"', null),
+                    new Context($root, $file, '<./path/to/file "value">', null),
                     './path/to/file "value"',
                     new PreprocessorTest__ParametersEmpty('./path/to/file "value"'),
                     [
