@@ -38,10 +38,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
 
 * [ ] Migrate to the new contract:
-  * `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Instruction`
-  * `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\Parameters`.
+  * `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction`
+  * `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters`.
 
-* [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The `\LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\IncludeExample\Contracts\Runner` should be used/provided instead.
+* [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner` should be used/provided instead.
 
 * [ ] `LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()` should yield a `LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency` instead of file.
 

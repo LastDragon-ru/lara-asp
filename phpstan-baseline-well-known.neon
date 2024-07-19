@@ -34,7 +34,7 @@ parameters:
         -
             message: "#Calling putenv\\(\\) is forbidden, might overwrite existing variables\\.#"
             paths:
-                - packages/documentator/src/Preprocessor/Instructions/IncludeArtisan/Instruction.php
+                - packages/documentator/src/Processor/Tasks/Preprocess/Instructions/IncludeArtisan/Instruction.php
 
         # False positive
         # https://github.com/phpstan/phpstan/issues/5551

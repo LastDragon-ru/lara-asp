@@ -18,8 +18,6 @@ use function str_pad;
 
 use const STR_PAD_LEFT;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * Format the duration according to the pattern.
  *

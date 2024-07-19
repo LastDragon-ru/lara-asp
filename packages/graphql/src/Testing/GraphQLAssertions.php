@@ -38,8 +38,6 @@ use function implode;
 use function ksort;
 use function trim;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @phpstan-import-type Change from BreakingChangesFinder
  *

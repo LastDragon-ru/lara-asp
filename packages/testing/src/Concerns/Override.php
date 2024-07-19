@@ -18,8 +18,6 @@ use function is_callable;
 use function is_string;
 use function sprintf;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * Similar to {@see InteractsWithContainer} but will mark test as failed if
  * override was not used while test (that helps to find unused code).

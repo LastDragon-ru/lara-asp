@@ -73,8 +73,6 @@ use function trim;
 
 use const JSON_THROW_ON_ERROR;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 class AstManipulator {
     public const Placeholder = '_';
 

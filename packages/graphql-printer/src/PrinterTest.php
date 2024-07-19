@@ -29,8 +29,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function str_ends_with;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  */
