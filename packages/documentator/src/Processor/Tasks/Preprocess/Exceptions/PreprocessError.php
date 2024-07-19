@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\PackageException;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 
-abstract class PreprocessorError extends PackageException {
+abstract class PreprocessError extends ProcessorError {
     // empty
 }

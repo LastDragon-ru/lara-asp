@@ -2,10 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\PackageException;
 use Throwable;
 
-class PreprocessingFailed extends PackageException {
+class PreprocessFailed extends PreprocessError {
     public function __construct(
         Throwable $previous = null,
     ) {

@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptio
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use Throwable;
 
-abstract class InstructionFailed extends PreprocessorError {
+abstract class InstructionFailed extends PreprocessError {
     public function __construct(
         private readonly Context $context,
         string $message,

@@ -7,12 +7,12 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessingFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessorError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Instruction as IncludeArtisan;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction as IncludeDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
@@ -158,10 +158,10 @@ class Task implements TaskContract {
                 }
 
                 $content = trim($content);
-            } catch (PreprocessorError $exception) {
+            } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
-                throw new PreprocessingFailed($exception);
+                throw new PreprocessFailed($exception);
             }
 
             foreach ($token->matches as $match => $expression) {
