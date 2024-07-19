@@ -23,8 +23,8 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  */
-#[CoversClass(Preprocessor::class)]
-final class PreprocessorTest extends TestCase {
+#[CoversClass(Task::class)]
+final class TaskTest extends TestCase {
     private const MARKDOWN = <<<'MARKDOWN'
         Bla bla bla [processable]: ./path/to/file should be ignored.
 
@@ -56,9 +56,9 @@ final class PreprocessorTest extends TestCase {
         MARKDOWN;
 
     public function testParse(): void {
-        $a            = new PreprocessorTest__EmptyInstruction();
-        $b            = new PreprocessorTest__TestInstruction();
-        $preprocessor = Mockery::mock(Preprocessor::class, MockProperties::class);
+        $a            = new TaskTest__EmptyInstruction();
+        $b            = new TaskTest__TestInstruction();
+        $preprocessor = Mockery::mock(Task::class, MockProperties::class);
         $preprocessor->shouldAllowMockingProtectedMethods();
         $preprocessor->makePartial();
         $preprocessor
@@ -90,7 +90,7 @@ final class PreprocessorTest extends TestCase {
                     $a,
                     new Context($root, $file, '<./path/to/file "value">', null),
                     './path/to/file "value"',
-                    new PreprocessorTest__ParametersEmpty('./path/to/file "value"'),
+                    new TaskTest__ParametersEmpty('./path/to/file "value"'),
                     [
                         '[test:empty]: <./path/to/file "value">' => '[test:empty]: <./path/to/file "value">',
                     ],
@@ -99,7 +99,7 @@ final class PreprocessorTest extends TestCase {
                     $b,
                     new Context($root, $file, './path/to/file', null),
                     './path/to/file',
-                    new PreprocessorTest__Parameters('./path/to/file'),
+                    new TaskTest__Parameters('./path/to/file'),
                     [
                         // phpcs:disable Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned
                         '[test:instruction]: ./path/to/file' => '[test:instruction]: ./path/to/file',
@@ -129,7 +129,7 @@ final class PreprocessorTest extends TestCase {
                         '{"a": "aa", "b": {"a": "a", "b": "b"}}',
                     ),
                     './path/to/file/parametrized',
-                    new PreprocessorTest__Parameters(
+                    new TaskTest__Parameters(
                         './path/to/file/parametrized',
                         'aa',
                         [
@@ -150,9 +150,9 @@ final class PreprocessorTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $preprocessor = $this->app()->make(Preprocessor::class)
-            ->addInstruction(new PreprocessorTest__EmptyInstruction())
-            ->addInstruction(new PreprocessorTest__TestInstruction());
+        $preprocessor = $this->app()->make(Task::class)
+            ->addInstruction(new TaskTest__EmptyInstruction())
+            ->addInstruction(new TaskTest__TestInstruction());
         $actual       = null;
         $file         = Mockery::mock(File::class);
         $file
@@ -247,9 +247,9 @@ final class PreprocessorTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<PreprocessorTest__ParametersEmpty>
+ * @implements Instruction<TaskTest__ParametersEmpty>
  */
-class PreprocessorTest__EmptyInstruction implements Instruction {
+class TaskTest__EmptyInstruction implements Instruction {
     #[Override]
     public static function getName(): string {
         return 'test:empty';
@@ -257,7 +257,7 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
 
     #[Override]
     public static function getParameters(): string {
-        return PreprocessorTest__ParametersEmpty::class;
+        return TaskTest__ParametersEmpty::class;
     }
 
     #[Override]
@@ -270,9 +270,9 @@ class PreprocessorTest__EmptyInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements Instruction<PreprocessorTest__Parameters>
+ * @implements Instruction<TaskTest__Parameters>
  */
-class PreprocessorTest__TestInstruction implements Instruction {
+class TaskTest__TestInstruction implements Instruction {
     #[Override]
     public static function getName(): string {
         return 'test:instruction';
@@ -280,7 +280,7 @@ class PreprocessorTest__TestInstruction implements Instruction {
 
     #[Override]
     public static function getParameters(): string {
-        return PreprocessorTest__Parameters::class;
+        return TaskTest__Parameters::class;
     }
 
     #[Override]
@@ -293,7 +293,7 @@ class PreprocessorTest__TestInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class PreprocessorTest__Parameters implements Parameters, Serializable {
+class TaskTest__Parameters implements Parameters, Serializable {
     /**
      * @param array<string, string> $b
      */
@@ -310,7 +310,7 @@ class PreprocessorTest__Parameters implements Parameters, Serializable {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class PreprocessorTest__ParametersEmpty implements Parameters, Serializable {
+class TaskTest__ParametersEmpty implements Parameters, Serializable {
     public function __construct(
         public readonly string $target,
     ) {

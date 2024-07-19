@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Preprocessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task;
 use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -39,7 +39,7 @@ use function trim;
 use function var_export;
 
 /**
- * @see Preprocessor
+ * @see Task
  */
 #[AsCommand(
     name       : Preprocess::Name,
@@ -70,7 +70,7 @@ class Preprocess extends Command {
         HELP;
 
     public function __construct(
-        protected readonly Preprocessor $preprocessor,
+        protected readonly Task $preprocessor,
     ) {
         parent::__construct();
     }
@@ -116,7 +116,7 @@ class Preprocess extends Command {
     }
 
     protected function getProcessedHelpDescription(): string {
-        return $this->getDocBlock(new ReflectionClass(Preprocessor::class));
+        return $this->getDocBlock(new ReflectionClass(Task::class));
     }
 
     protected function getProcessedHelpInstructions(): string {

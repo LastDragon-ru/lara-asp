@@ -7,9 +7,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -75,10 +74,8 @@ use const PREG_UNMATCHED_AS_NULL;
  * * Nested `<instruction>` doesn't support.
  *
  * @todo Use https://github.com/thephpleague/commonmark?
- *
- * @see  Preprocess
  */
-class Preprocessor implements Task {
+class Task implements TaskContract {
     protected const Warning = 'Generated automatically. Do not edit.';
     protected const Regexp  = <<<'REGEXP'
         /^
