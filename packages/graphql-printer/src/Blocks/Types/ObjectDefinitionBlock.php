@@ -14,8 +14,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\ImplementsInterfaces;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Override;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  *

@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Assert;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @mixin Assert
  */

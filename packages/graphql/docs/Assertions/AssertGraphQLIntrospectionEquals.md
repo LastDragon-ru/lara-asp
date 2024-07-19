@@ -27,8 +27,6 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 
 use function array_merge;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  */

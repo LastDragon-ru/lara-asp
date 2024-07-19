@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 use ArrayAccess;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Core\Utils\Path;

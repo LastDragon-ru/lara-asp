@@ -16,8 +16,6 @@ use Symfony\Component\Finder\Finder;
 
 use function is_dir;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 #[AsCommand(
     name       : Commands::Name,
     description: 'Saves help for each command in the `namespace` into a separate file in the `target` directory.',

@@ -26,8 +26,11 @@
         <exclude name="PSR12.Files.FileHeader.IncorrectOrder"/>
         <exclude name="PSR12.Classes.AnonClassDeclaration.SpaceAfterKeyword"/>
 
-        <!-- False positive: https://github.com/squizlabs/PHP_CodeSniffer/issues/2937 -->
+        <!-- False positive: https://github.com/PHPCSStandards/PHP_CodeSniffer/issues/559 -->
         <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNoNewline"/>
+
+        <!-- Too annoying disable it in many files, see https://github.com/squizlabs/PHP_CodeSniffer/issues/3606 -->
+        <exclude name="Generic.Files.LineLength.TooLong"/>
     </rule>
     <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
     <rule ref="Generic.Classes.OpeningBraceSameLine"/>

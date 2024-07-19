@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;

@@ -24,8 +24,6 @@ use SplFileInfo;
 use function array_combine;
 use function is_string;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @mixin TestCase
  */

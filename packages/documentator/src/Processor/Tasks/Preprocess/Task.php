@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;

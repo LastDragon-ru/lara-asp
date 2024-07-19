@@ -38,8 +38,6 @@ use SplFileInfo;
 use function in_array;
 use function str_starts_with;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  */

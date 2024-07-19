@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 use Exception;
 use Generator;
 use Iterator;

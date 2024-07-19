@@ -47,8 +47,6 @@ use function array_merge;
 use function assert;
 use function is_string;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 /**
  * @internal
  */

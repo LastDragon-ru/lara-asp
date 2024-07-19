@@ -13,8 +13,6 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
-// @phpcs:disable Generic.Files.LineLength.TooLong
-
 class GraphQLExpected {
     /**
      * @param list<string>|null $usedTypes
