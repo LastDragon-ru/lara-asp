@@ -206,6 +206,10 @@ class Task implements TaskContract {
         $tokens  = [];
         $matches = [];
 
+        if (!$this->instructions) {
+            return new TokenList($tokens);
+        }
+
         if (!preg_match_all(static::Regexp, $file->getContent(), $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL)) {
             return new TokenList($tokens);
         }
