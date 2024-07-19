@@ -70,7 +70,7 @@ class Preprocess extends Command {
         HELP;
 
     public function __construct(
-        protected readonly Task $preprocessor,
+        protected readonly Task $preprocess,
     ) {
         parent::__construct();
     }
@@ -100,7 +100,7 @@ class Preprocess extends Command {
         };
 
         $duration = (new Processor())
-            ->task($this->preprocessor)
+            ->task($this->preprocess)
             ->run($path, $exclude, $listener);
 
         $this->output->newLine();
@@ -120,7 +120,7 @@ class Preprocess extends Command {
     }
 
     protected function getProcessedHelpInstructions(): string {
-        $instructions = $this->preprocessor->getInstructions();
+        $instructions = $this->preprocess->getInstructions();
         $help         = [];
 
         foreach ($instructions as $instruction) {

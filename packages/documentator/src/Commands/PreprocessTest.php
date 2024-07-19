@@ -18,9 +18,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Preprocess::class)]
 final class PreprocessTest extends TestCase {
     public function testGetProcessedHelpInstructions(): void {
-        $preprocessor = Mockery::mock(Task::class);
-        $preprocessor->shouldAllowMockingProtectedMethods();
-        $preprocessor
+        $preprocess = Mockery::mock(Task::class);
+        $preprocess->shouldAllowMockingProtectedMethods();
+        $preprocess
             ->shouldReceive('getInstructions')
             ->once()
             ->andReturn([
@@ -29,7 +29,7 @@ final class PreprocessTest extends TestCase {
                 PreprocessTest__InstructionNotSerializable::class,
             ]);
 
-        $command = new class($preprocessor) extends Preprocess {
+        $command = new class($preprocess) extends Preprocess {
             #[Override]
             public function getProcessedHelpInstructions(): string {
                 return parent::getProcessedHelpInstructions();
@@ -79,8 +79,8 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpInstructionTarget(): void {
-        $preprocessor = Mockery::mock(Task::class);
-        $command      = new class($preprocessor) extends Preprocess {
+        $preprocess = Mockery::mock(Task::class);
+        $command    = new class($preprocess) extends Preprocess {
             #[Override]
             public function getProcessedHelpInstructionTarget(
                 string $instruction,
@@ -107,8 +107,8 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpInstructionParameters(): void {
-        $preprocessor = Mockery::mock(Task::class);
-        $command      = new class($preprocessor) extends Preprocess {
+        $preprocess = Mockery::mock(Task::class);
+        $command    = new class($preprocess) extends Preprocess {
             #[Override]
             public function getProcessedHelpInstructionParameters(
                 string $instruction,
@@ -138,8 +138,8 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpInstructionParametersNoParameters(): void {
-        $preprocessor = Mockery::mock(Task::class);
-        $command      = new class($preprocessor) extends Preprocess {
+        $preprocess = Mockery::mock(Task::class);
+        $command    = new class($preprocess) extends Preprocess {
             #[Override]
             public function getProcessedHelpInstructionParameters(
                 string $instruction,
@@ -160,8 +160,8 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpInstructionParametersNotSerializable(): void {
-        $preprocessor = Mockery::mock(Task::class);
-        $command      = new class($preprocessor) extends Preprocess {
+        $preprocess = Mockery::mock(Task::class);
+        $command    = new class($preprocess) extends Preprocess {
             #[Override]
             public function getProcessedHelpInstructionParameters(
                 string $instruction,

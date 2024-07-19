@@ -56,24 +56,24 @@ final class TaskTest extends TestCase {
         MARKDOWN;
 
     public function testParse(): void {
-        $a            = new TaskTest__EmptyInstruction();
-        $b            = new TaskTest__TestInstruction();
-        $preprocessor = Mockery::mock(Task::class, MockProperties::class);
-        $preprocessor->shouldAllowMockingProtectedMethods();
-        $preprocessor->makePartial();
-        $preprocessor
+        $a    = new TaskTest__EmptyInstruction();
+        $b    = new TaskTest__TestInstruction();
+        $task = Mockery::mock(Task::class, MockProperties::class);
+        $task->shouldAllowMockingProtectedMethods();
+        $task->makePartial();
+        $task
             ->shouldUseProperty('container')
             ->value(
                 $this->app()->make(ContainerResolver::class),
             );
-        $preprocessor
+        $task
             ->shouldUseProperty('serializer')
             ->value(
                 $this->app()->make(Serializer::class),
             );
 
-        $preprocessor->addInstruction($a::class);
-        $preprocessor->addInstruction($b);
+        $task->addInstruction($a::class);
+        $task->addInstruction($b);
 
         $file = Mockery::mock(File::class);
         $file
@@ -82,7 +82,7 @@ final class TaskTest extends TestCase {
             ->andReturn(self::MARKDOWN);
 
         $root   = Mockery::mock(Directory::class);
-        $tokens = $preprocessor->parse($root, $file);
+        $tokens = $task->parse($root, $file);
 
         self::assertEquals(
             new TokenList([
@@ -150,11 +150,11 @@ final class TaskTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $preprocessor = $this->app()->make(Task::class)
+        $task   = $this->app()->make(Task::class)
             ->addInstruction(new TaskTest__EmptyInstruction())
             ->addInstruction(new TaskTest__TestInstruction());
-        $actual       = null;
-        $file         = Mockery::mock(File::class);
+        $actual = null;
+        $file   = Mockery::mock(File::class);
         $file
             ->shouldReceive('getContent')
             ->atLeast()
@@ -172,7 +172,7 @@ final class TaskTest extends TestCase {
             );
 
         $root   = Mockery::mock(Directory::class);
-        $result = ProcessorHelper::runTask($preprocessor, $root, $file);
+        $result = ProcessorHelper::runTask($task, $root, $file);
 
         self::assertTrue($result);
         self::assertEquals(
