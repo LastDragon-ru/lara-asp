@@ -97,7 +97,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
     }
 
     #[Override]
-    public function getTypeSource(TypeDefinitionNode|TypeNode|Type $type): TypeSource {
+    public function getTypeSource((TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type): TypeSource {
         $source = null;
 
         if ($type instanceof InputObjectTypeDefinitionNode || $type instanceof InputObjectType) {
@@ -119,17 +119,16 @@ class Manipulator extends AstManipulator implements TypeProvider {
     /**
      * @template T of Operator
      *
-     * @param Node|(TypeDefinitionNode&Node)|Type|InputObjectField|FieldDefinition|Argument $node
-     * @param class-string<T>                                                               $operator
+     * @param class-string<T> $operator
      *
      * @return (T&Directive)|null
      */
     public function getOperatorDirective(
-        Node|TypeDefinitionNode|Type|InputObjectField|FieldDefinition|Argument $node,
+        Node|Type|InputObjectField|FieldDefinition|Argument $node,
         string $operator,
         TypeSource $source,
         Context $context,
-    ): ?Operator {
+    ): (Operator&Directive)|null {
         // Operators?
         $provider = $context->get(HandlerContextOperators::class)?->value;
 

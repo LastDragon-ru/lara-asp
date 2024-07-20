@@ -65,7 +65,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
      * @param array<array-key, mixed> $context
      */
     #[Override]
-    public function normalize(mixed $object, string $format = null, array $context = []): string {
+    public function normalize(mixed $object, ?string $format = null, array $context = []): string {
         if (!($object instanceof DateTimeInterface)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -85,7 +85,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
      * @param array<array-key, mixed> $context
      */
     #[Override]
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool {
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool {
         return $data instanceof DateTimeInterface;
     }
 
@@ -93,7 +93,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
      * @param array<array-key, mixed> $context
      */
     #[Override]
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed {
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed {
         // Just for the case
         if (!is_string($data)) {
             throw new InvalidArgumentException(
@@ -158,7 +158,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     public function supportsDenormalization(
         mixed $data,
         string $type,
-        string $format = null,
+        ?string $format = null,
         array $context = [],
     ): bool {
         return is_a($type, DateTimeInterface::class, true);

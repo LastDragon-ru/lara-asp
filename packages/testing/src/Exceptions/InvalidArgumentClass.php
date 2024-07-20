@@ -10,7 +10,7 @@ class InvalidArgumentClass extends InvalidArgument {
     public function __construct(
         protected string $argument,
         protected string $class,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Argument `%1$s` must be a class with known path, `%2$s` given.',

@@ -11,7 +11,7 @@ use function sprintf;
 class NotImplemented extends PackageException {
     public function __construct(
         protected Stringable|string $feature,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

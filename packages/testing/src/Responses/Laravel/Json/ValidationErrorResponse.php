@@ -26,7 +26,7 @@ class ValidationErrorResponse extends Response {
     /**
      * @param array<string,array<array-key, string>|string|null>|null $errors
      */
-    public function __construct(array $errors = null) {
+    public function __construct(?array $errors = null) {
         parent::__construct(
             new UnprocessableEntity(),
             new JsonContentType(),

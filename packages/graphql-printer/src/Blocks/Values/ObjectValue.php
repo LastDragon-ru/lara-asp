@@ -17,13 +17,10 @@ use Override;
  * @extends ListBlock<ObjectField, array-key, ObjectFieldNode>
  */
 class ObjectValue extends ListBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         ObjectValueNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context, $definition->fields);
     }

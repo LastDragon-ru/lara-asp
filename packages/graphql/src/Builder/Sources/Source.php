@@ -21,7 +21,7 @@ class Source implements TypeSource {
      */
     public function __construct(
         private AstManipulator $manipulator,
-        private TypeDefinitionNode|TypeNode|Type $type,
+        private (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type,
         private TypeSource|null $parent = null,
     ) {
         // empty
@@ -47,7 +47,7 @@ class Source implements TypeSource {
      * @return TType
      */
     #[Override]
-    public function getType(): TypeDefinitionNode|TypeNode|Type {
+    public function getType(): (TypeDefinitionNode&Node)|(TypeNode&Node)|Type {
         return $this->type;
     }
 
@@ -56,11 +56,8 @@ class Source implements TypeSource {
         return $this->getManipulator()->getTypeName($this->getType());
     }
 
-    /**
-     * @return (TypeDefinitionNode&Node)|Type
-     */
     #[Override]
-    public function getTypeDefinition(): TypeDefinitionNode|Type {
+    public function getTypeDefinition(): (TypeDefinitionNode&Node)|Type {
         return $this->getManipulator()->getTypeDefinition($this->getType());
     }
 

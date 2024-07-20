@@ -10,7 +10,7 @@ use function sprintf;
 class DirectiveDefinitionNotFound extends PackageException {
     public function __construct(
         protected string $name,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

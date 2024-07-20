@@ -291,7 +291,7 @@ final class SortTest extends TestCase {
                         object $builder,
                         Field $field,
                         Direction $direction,
-                        Nulls $nulls = null,
+                        ?Nulls $nulls = null,
                     ): object {
                         throw new Exception('Should not be called.');
                     }

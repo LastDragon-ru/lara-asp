@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Migrator\PackageException;
 use Throwable;
 
 class ConnectionUnknown extends PackageException {
-    public function __construct(Throwable $previous = null) {
+    public function __construct(?Throwable $previous = null) {
         parent::__construct('Unknown connection.', $previous);
     }
 }

@@ -213,7 +213,7 @@ trait GraphQLAssertions {
         return $this->getGraphQLSchemaBuilder()->schema();
     }
 
-    protected function getGraphQLPrinter(Settings $settings = null): Printer {
+    protected function getGraphQLPrinter(?Settings $settings = null): Printer {
         return $this->app()->make(Printer::class)->setSettings($settings ?? new TestSettings());
     }
 

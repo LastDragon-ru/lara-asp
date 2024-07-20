@@ -65,11 +65,8 @@ class Type extends BaseDirective implements TypeResolver {
         GRAPHQL;
     }
 
-    /**
-     * @return GraphQLType&NamedType
-     */
     #[Override]
-    public function resolveNode(TypeValue $value): GraphQLType {
+    public function resolveNode(TypeValue $value): GraphQLType&NamedType {
         // Type?
         $class = Cast::toString($this->directiveArgValue(self::ArgClass));
         $node  = Cast::to(ScalarTypeDefinitionNode::class, $value->getTypeDefinition());

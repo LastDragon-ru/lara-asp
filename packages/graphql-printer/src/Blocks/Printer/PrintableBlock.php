@@ -27,13 +27,12 @@ class PrintableBlock extends Block implements NamedBlock {
     private Block $block;
 
     /**
-     * @param TDefinition                      $definition
-     * @param (TypeNode&Node)|GraphQLType|null $type
+     * @param TDefinition $definition
      */
     public function __construct(
         Context $context,
         private object $definition,
-        private TypeNode|GraphQLType|null $type = null,
+        private (TypeNode&Node)|GraphQLType|null $type = null,
     ) {
         parent::__construct($context);
 
@@ -59,10 +58,7 @@ class PrintableBlock extends Block implements NamedBlock {
         return $this->definition;
     }
 
-    /**
-     * @return (TypeNode&Node)|GraphQLType|null
-     */
-    public function getType(): TypeNode|GraphQLType|null {
+    public function getType(): (TypeNode&Node)|GraphQLType|null {
         return $this->type;
     }
 

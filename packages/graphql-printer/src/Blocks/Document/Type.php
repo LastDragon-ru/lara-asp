@@ -33,11 +33,11 @@ use Override;
 #[GraphQLDefinition(NonNull::class)]
 class Type extends Block implements NamedBlock {
     /**
-     * @param (TypeNode&Node)|(GraphQLType&(OutputType|InputType)) $definition
+     * @param (TypeNode&Node)|(GraphQLType&InputType)|(GraphQLType&OutputType) $definition fixme(phpcs): https://github.com/slevomat/coding-standard/issues/1690
      */
     public function __construct(
         Context $context,
-        private TypeNode|GraphQLType $definition,
+        private (TypeNode&Node)|(GraphQLType&OutputType)|(GraphQLType&InputType) $definition,
     ) {
         parent::__construct($context);
     }
@@ -47,10 +47,7 @@ class Type extends Block implements NamedBlock {
         return $this->getTypeName($this->getDefinition());
     }
 
-    /**
-     * @return (TypeNode&Node)|(GraphQLType&(OutputType|InputType))
-     */
-    protected function getDefinition(): TypeNode|GraphQLType {
+    protected function getDefinition(): (TypeNode&Node)|(GraphQLType&OutputType)|(GraphQLType&InputType) {
         return $this->definition;
     }
 
@@ -69,10 +66,7 @@ class Type extends Block implements NamedBlock {
         return $type;
     }
 
-    /**
-     * @param (TypeNode&Node)|GraphQLType $definition
-     */
-    private function name(Node|GraphQLType $definition): string {
+    private function name((TypeNode&Node)|GraphQLType $definition): string {
         return match (true) {
             $definition instanceof NameNode        => $definition->value,
             $definition instanceof NamedTypeNode   => $this->name($definition->name),

@@ -14,12 +14,9 @@ use GraphQL\Type\Definition\Type;
  * @extends Source<ObjectTypeDefinitionNode|ObjectType, null>
  */
 class ObjectSource extends Source {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function getField(
         FieldDefinitionNode|FieldDefinition $field,
-        TypeNode|Type $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): ObjectFieldSource {
         return new ObjectFieldSource($this->getManipulator(), $this, $field, $type);
     }

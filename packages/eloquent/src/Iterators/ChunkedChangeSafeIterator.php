@@ -37,7 +37,7 @@ use function trim;
 class ChunkedChangeSafeIterator extends IteratorImpl {
     private string $column;
 
-    public function __construct(Builder $builder, string $column = null) {
+    public function __construct(Builder $builder, ?string $column = null) {
         parent::__construct($builder);
 
         $this->column = $column ?? $this->getDefaultColumn($builder);

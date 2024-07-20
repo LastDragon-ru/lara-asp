@@ -10,7 +10,7 @@ use function sprintf;
 class TypeNotFound extends PackageException {
     public function __construct(
         protected string $type,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

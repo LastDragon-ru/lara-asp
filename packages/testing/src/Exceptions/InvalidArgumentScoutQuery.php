@@ -10,7 +10,7 @@ class InvalidArgumentScoutQuery extends InvalidArgument {
     public function __construct(
         protected string $argument,
         protected mixed $value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

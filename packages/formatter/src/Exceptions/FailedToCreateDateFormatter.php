@@ -12,7 +12,7 @@ class FailedToCreateDateFormatter extends PackageException {
     public function __construct(
         protected string $type,
         protected string|int|null $format,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Failed to create instance of `%s` for type `%s` with format `%s`.',

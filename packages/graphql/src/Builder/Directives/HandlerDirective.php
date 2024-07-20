@@ -90,8 +90,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     protected function handleAnyBuilder(
         object $builder,
         mixed $value,
-        Field $field = null,
-        ContextContract $context = null,
+        ?Field $field = null,
+        ?ContextContract $context = null,
     ): object {
         if ($value !== null && $this->definitionNode instanceof InputValueDefinitionNode) {
             $argument = !($value instanceof Argument)
@@ -107,8 +107,8 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
     public function enhance(
         object $builder,
         ArgumentSet|Argument $value,
-        Field $field = null,
-        ContextContract $context = null,
+        ?Field $field = null,
+        ?ContextContract $context = null,
     ): object {
         $field    ??= new Field();
         $context  ??= new Context();

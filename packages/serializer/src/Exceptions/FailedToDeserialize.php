@@ -17,7 +17,7 @@ class FailedToDeserialize extends PackageException {
         private string $data,
         private string $format,
         private array $context,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

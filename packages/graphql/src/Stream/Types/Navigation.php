@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Types;
 
+use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -27,7 +28,7 @@ class Navigation implements TypeDefinition {
         TypeSource $source,
         Context $context,
         string $name,
-    ): TypeDefinitionNode|string|null {
+    ): (TypeDefinitionNode&Node)|string|null {
         $offset = $manipulator->getType(Offset::class, $source, $context);
 
         return Parser::objectTypeDefinition(

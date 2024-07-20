@@ -27,7 +27,7 @@ class ScoutSorter implements Sorter {
     }
 
     #[Override]
-    public function sort(object $builder, Field $field, Direction $direction, Nulls $nulls = null): object {
+    public function sort(object $builder, Field $field, Direction $direction, ?Nulls $nulls = null): object {
         if ($nulls) {
             throw new NotImplemented('NULLs ordering');
         }

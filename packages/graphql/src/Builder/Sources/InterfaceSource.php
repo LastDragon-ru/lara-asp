@@ -14,12 +14,9 @@ use GraphQL\Type\Definition\Type;
  * @extends Source<InterfaceTypeDefinitionNode|InterfaceType, null>
  */
 class InterfaceSource extends Source {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function getField(
         FieldDefinitionNode|FieldDefinition $field,
-        TypeNode|Type $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): InterfaceFieldSource {
         return new InterfaceFieldSource($this->getManipulator(), $this, $field, $type);
     }

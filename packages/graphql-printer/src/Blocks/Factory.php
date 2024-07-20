@@ -81,10 +81,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
  * @internal
  */
 class Factory {
-    /**
-     * @param (TypeNode&Node)|GraphQLType|null $type
-     */
-    public static function create(Context $context, object $definition, TypeNode|GraphQLType|null $type): Block {
+    public static function create(Context $context, object $definition, (TypeNode&Node)|GraphQLType|null $type): Block {
         return match (true) {
             $definition instanceof ObjectTypeDefinitionNode,
             $definition instanceof ObjectType

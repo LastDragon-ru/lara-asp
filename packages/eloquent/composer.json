@@ -17,7 +17,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.1|^8.2|^8.3",
+    "php": "^8.2|^8.3",
     "illuminate/collections": "^10.34.0|^11.0.0",
     "illuminate/database": "^10.34.0|^11.0.0",
     "illuminate/support": "^10.34.0|^11.0.0",
@@ -26,8 +26,9 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
+    "illuminate/contracts": "^10.34.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "mockery/mockery": "^1.6.2",
+    "mockery/mockery": "^1.6.5",
     "orchestra/testbench": "^8.0.0|^9.0.0",
     "phpunit/phpunit": "^10.1.0|^11.0.0"
   },

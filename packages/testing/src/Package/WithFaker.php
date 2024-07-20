@@ -24,7 +24,7 @@ trait WithFaker {
         $this->withFaker = [];
     }
 
-    protected function getFaker(string $locale = null): Generator {
+    protected function getFaker(?string $locale = null): Generator {
         $locale                   ??= Factory::DEFAULT_LOCALE;
         $this->withFaker[$locale] ??= Factory::create($locale);
 

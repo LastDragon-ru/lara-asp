@@ -42,7 +42,7 @@ abstract class Resolver {
      *
      * @return array<array-key, mixed>
      */
-    protected function resolveParameters(Request $request = null, Route $route = null): array {
+    protected function resolveParameters(?Request $request = null, ?Route $route = null): array {
         return [];
     }
     // </editor-fold>
@@ -54,7 +54,7 @@ abstract class Resolver {
      *
      * @throws UnresolvedValueException
      */
-    public function get(mixed $value, Request $request = null, Route $route = null): mixed {
+    public function get(mixed $value, ?Request $request = null, ?Route $route = null): mixed {
         $route      = $route ?: $this->router->getCurrentRoute();
         $request    = $request ?: $this->router->getCurrentRequest();
         $parameters = $this->resolveParameters($request, $route);

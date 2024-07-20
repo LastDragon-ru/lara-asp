@@ -79,10 +79,7 @@ class InputValueDefinition extends DefinitionBlock {
         return $value;
     }
 
-    /**
-     * @return (TypeNode&Node)|(GraphQLType&(OutputType|InputType))
-     */
-    private function getType(): TypeNode|GraphQLType {
+    private function getType(): (TypeNode&Node)|(GraphQLType&OutputType)|(GraphQLType&InputType) {
         $definition = $this->getDefinition();
         $type       = $definition instanceof InputValueDefinitionNode
             ? $definition->type

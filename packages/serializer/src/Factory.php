@@ -53,7 +53,7 @@ class Factory {
         array $encoders = [],
         array $normalizers = [],
         array $context = [],
-        string $format = null,
+        ?string $format = null,
         ?string $config = Package::Name,
     ): SerializerContract {
         $format      = $format ?? $this->getConfigFormat($config) ?? JsonEncoder::FORMAT;

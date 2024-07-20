@@ -11,7 +11,7 @@ class InvalidArgumentXml extends InvalidArgument {
     public function __construct(
         protected string $argument,
         protected mixed $value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Argument `%1$s` must be instance of `%2$s` or a valid XML string.',

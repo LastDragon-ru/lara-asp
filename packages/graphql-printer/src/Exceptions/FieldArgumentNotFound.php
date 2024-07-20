@@ -12,7 +12,7 @@ class FieldArgumentNotFound extends PackageException {
         protected string $type,
         protected string $field,
         protected string $argument,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

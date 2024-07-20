@@ -10,7 +10,7 @@ use function sprintf;
 class FileNotFound extends PackageException {
     public function __construct(
         private readonly string $path,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf('The SQL file `%s` does not exist.', $this->path),

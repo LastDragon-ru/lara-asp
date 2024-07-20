@@ -15,7 +15,7 @@ class PackageReadmeTitleIsMissing extends InstructionFailed {
         Context $context,
         private readonly Directory $package,
         private readonly File $readme,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,

@@ -13,7 +13,6 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Language\AST\TypeNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\CustomScalarType;
@@ -468,7 +467,6 @@ final class AstManipulatorTest extends TestCase {
     /**
      * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                      $definitionFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition) $fieldFactory
-     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType)                                                                                   $type
      */
     #[DataProvider('dataProviderSetFieldType')]
     public function testSetFieldType(
@@ -476,7 +474,7 @@ final class AstManipulatorTest extends TestCase {
         string $schema,
         Closure $definitionFactory,
         Closure $fieldFactory,
-        TypeNode|Type $type,
+        (Type&InputType)|NamedTypeNode|ListTypeNode|NonNullTypeNode $type,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -498,7 +496,6 @@ final class AstManipulatorTest extends TestCase {
      * @param Closure(AstManipulator): (ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType)                                                                         $definitionFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType): (FieldDefinitionNode|FieldDefinition)                                    $fieldFactory
      * @param Closure(AstManipulator, ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode|ObjectType|InterfaceType, FieldDefinitionNode|FieldDefinition): (InputValueDefinitionNode|Argument) $argumentFactory
-     * @param NamedTypeNode|ListTypeNode|NonNullTypeNode|(Type&InputType)                                                                                                                      $type
      */
     #[DataProvider('dataProviderSetArgumentType')]
     public function testSetArgumentType(
@@ -507,7 +504,7 @@ final class AstManipulatorTest extends TestCase {
         Closure $definitionFactory,
         Closure $fieldFactory,
         Closure $argumentFactory,
-        TypeNode|Type $type,
+        (Type&InputType)|NamedTypeNode|ListTypeNode|NonNullTypeNode $type,
     ): void {
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
@@ -602,7 +599,7 @@ final class AstManipulatorTest extends TestCase {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getManipulator(string $schema = null): AstManipulator {
+    protected function getManipulator(?string $schema = null): AstManipulator {
         $document    = $schema
             ? DocumentAST::fromSource($schema)
             : $this->app()->make(ASTBuilder::class)->documentAST();

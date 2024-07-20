@@ -30,7 +30,7 @@ final class DirectivesTest extends TestCase {
         int $level,
         int $used,
         array $directives,
-        string $reason = null,
+        ?string $reason = null,
     ): void {
         $collector = new Collector();
         $context   = new Context($settings, null, null);

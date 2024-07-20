@@ -13,7 +13,7 @@ class OperatorInvalidArgumentValue extends SearchByException {
         protected Operator $operator,
         protected string $expected,
         protected mixed $actual,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

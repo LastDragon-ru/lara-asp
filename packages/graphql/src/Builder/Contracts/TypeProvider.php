@@ -13,8 +13,5 @@ interface TypeProvider {
      */
     public function getType(string $definition, TypeSource $source, Context $context): string;
 
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
-     */
-    public function getTypeSource(TypeDefinitionNode|TypeNode|Type $type): TypeSource;
+    public function getTypeSource((TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type): TypeSource;
 }

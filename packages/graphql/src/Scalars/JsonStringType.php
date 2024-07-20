@@ -42,7 +42,7 @@ class JsonStringType extends StringType {
      * @inheritDoc
      */
     #[Override]
-    public function parseLiteral(Node $valueNode, array $variables = null): string {
+    public function parseLiteral(Node $valueNode, ?array $variables = null): string {
         if (!($valueNode instanceof StringValueNode)) {
             throw new Error(
                 sprintf(

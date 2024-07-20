@@ -94,10 +94,7 @@ class DirectiveResolver implements DirectiveResolverContract {
         }
     }
 
-    /**
-     * @param TypeDefinitionNode&Node $definition
-     */
-    private function registerDirectiveType(TypeDefinitionNode $definition): void {
+    private function registerDirectiveType(TypeDefinitionNode&Node $definition): void {
         $name = $definition->getName()->value;
         $type = null;
 

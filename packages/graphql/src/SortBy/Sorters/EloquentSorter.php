@@ -29,7 +29,7 @@ class EloquentSorter extends DatabaseSorter {
     // <editor-fold desc="API">
     // =========================================================================
     #[Override]
-    public function sort(object $builder, Field $field, Direction $direction, Nulls $nulls = null): object {
+    public function sort(object $builder, Field $field, Direction $direction, ?Nulls $nulls = null): object {
         // Column
         $relation = $field->getParent()->getPath();
 

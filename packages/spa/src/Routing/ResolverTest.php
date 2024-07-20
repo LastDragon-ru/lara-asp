@@ -33,7 +33,7 @@ final class ResolverTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            protected function resolveParameters(Request $request = null, Route $route = null): array {
+            protected function resolveParameters(?Request $request = null, ?Route $route = null): array {
                 return [
                     'property' => 'value',
                 ];

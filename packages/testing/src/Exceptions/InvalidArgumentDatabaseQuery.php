@@ -10,7 +10,7 @@ class InvalidArgumentDatabaseQuery extends InvalidArgument {
     public function __construct(
         protected string $argument,
         protected mixed $value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Argument `%1$s` must be Database query, `%2$s` given.',

@@ -91,11 +91,11 @@ final class Example implements Runner {
         return $result;
     }
 
-    public static function dump(mixed $value, string $expression = null): void {
+    public static function dump(mixed $value, ?string $expression = null): void {
         self::getDumper()->dump($value, $expression ?? self::getExpression(__FUNCTION__));
     }
 
-    public static function raw(Stringable|string $value, string $type, string $expression = null): void {
+    public static function raw(Stringable|string $value, string $type, ?string $expression = null): void {
         self::getDumper()->raw($value, $expression ?? self::getExpression(__FUNCTION__), $type);
     }
 

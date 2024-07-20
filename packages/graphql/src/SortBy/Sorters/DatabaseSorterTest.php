@@ -63,7 +63,7 @@ final class DatabaseSorterTest extends TestCase {
                 object $builder,
                 Field $field,
                 Direction $direction,
-                Nulls $nulls = null,
+                ?Nulls $nulls = null,
             ): object {
                 throw new Exception('Should not be called.');
             }
@@ -83,7 +83,7 @@ final class DatabaseSorterTest extends TestCase {
                 EloquentBuilder|QueryBuilder $builder,
                 EloquentBuilder|string|QueryBuilder $column,
                 Direction $direction,
-                Nulls $nulls = null,
+                ?Nulls $nulls = null,
             ): EloquentBuilder|QueryBuilder {
                 return parent::sortByColumn($builder, $column, $direction, $nulls);
             }
@@ -101,7 +101,7 @@ final class DatabaseSorterTest extends TestCase {
                 object $builder,
                 Field $field,
                 Direction $direction,
-                Nulls $nulls = null,
+                ?Nulls $nulls = null,
             ): object {
                 throw new Exception('Should not be called.');
             }

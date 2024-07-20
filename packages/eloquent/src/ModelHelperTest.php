@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Eloquent;
 
 use Closure;
 use Exception;
+use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -73,7 +74,6 @@ final class ModelHelperTest extends TestCase {
      * @return array<array-key, mixed>
      */
     public static function dataProviderGetRelation(): array {
-        // todo(eloquent): Add tests for Intersection Types (PHP 8.1)
         return (new CompositeDataProvider(
             new ArrayDataProvider([
                 'model'   => [
@@ -105,6 +105,10 @@ final class ModelHelperTest extends TestCase {
                 'unionNotRelation' => [
                     new PropertyIsNotRelation(new ModelHelperTest__Model(), 'unionNotRelation'),
                     'unionNotRelation',
+                ],
+                'intersection'     => [
+                    BelongsTo::class,
+                    'intersection',
                 ],
                 'ok'               => [
                     BelongsTo::class,
@@ -192,6 +196,13 @@ class ModelHelperTest__Model extends Model {
      * @return BelongsTo<self,self>|stdClass
      */
     public function unionNotRelation(): BelongsTo|stdClass {
+        return $this->belongsTo(self::class);
+    }
+
+    /**
+     * @return BelongsTo<self,self>&BuilderContract
+     */
+    public function intersection(): BelongsTo&BuilderContract {
         return $this->belongsTo(self::class);
     }
 

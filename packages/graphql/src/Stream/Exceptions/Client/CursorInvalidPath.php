@@ -10,7 +10,7 @@ class CursorInvalidPath extends ClientException {
     public function __construct(
         protected string $expected,
         protected string $actual,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

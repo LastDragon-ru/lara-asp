@@ -99,10 +99,7 @@ class Context {
         ];
     }
 
-    /**
-     * @return (Type&NamedType)|null
-     */
-    public function getOperationType(string $operation): ?Type {
+    public function getOperationType(string $operation): (Type&NamedType)|null {
         $type = $this->getSchema()?->getOperationType($operation);
 
         if (!$type && $this->getSchema()) {
@@ -122,10 +119,7 @@ class Context {
         return (array) $this->getSchema()?->getTypeMap();
     }
 
-    /**
-     * @return (Type&NamedType)|null
-     */
-    public function getType(string $name): ?Type {
+    public function getType(string $name): (Type&NamedType)|null {
         $type = $this->getSchema()?->getType($name);
 
         if (!$type && $this->getSchema()) {
@@ -190,10 +184,7 @@ class Context {
         return array_key_exists($type, Type::builtInTypes());
     }
 
-    /**
-     * @param (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type
-     */
-    public function getTypeName(TypeDefinitionNode|TypeNode|Type $type): string {
+    public function getTypeName((TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type): string {
         $name = null;
 
         if ($type instanceof WrappingType) {
@@ -335,10 +326,7 @@ class Context {
 
     // <editor-fold desc="Fields">
     // =========================================================================
-    /**
-     * @param (TypeNode&Node)|Type $object
-     */
-    public function getField(TypeNode|Type $object, string $name): InputObjectField|FieldDefinition|null {
+    public function getField((TypeNode&Node)|Type $object, string $name): InputObjectField|FieldDefinition|null {
         $field      = null;
         $type       = $this->getTypeName($object);
         $definition = $this->getType($type);
@@ -354,10 +342,7 @@ class Context {
         return $field;
     }
 
-    /**
-     * @param (TypeNode&Node)|Type $object
-     */
-    public function getFieldArgument(TypeNode|Type $object, string $field, string $name): ?Argument {
+    public function getFieldArgument((TypeNode&Node)|Type $object, string $field, string $name): ?Argument {
         $argument   = null;
         $definition = $this->getField($object, $field);
 

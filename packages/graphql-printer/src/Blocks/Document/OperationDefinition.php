@@ -21,13 +21,10 @@ use Override;
  */
 #[GraphQLAstNode(OperationDefinitionNode::class)]
 class OperationDefinition extends DefinitionBlock implements ExecutableDefinitionBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         OperationDefinitionNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context, $definition);
     }
@@ -75,10 +72,7 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
         );
     }
 
-    /**
-     * @return (TypeNode&Node)|Type|null
-     */
-    private function getType(): TypeNode|Type|null {
+    private function getType(): (TypeNode&Node)|Type|null {
         $definition = $this->getDefinition();
         $type       = $this->type
             ?? $this->getContext()->getOperationType($definition->operation);

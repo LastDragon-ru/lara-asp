@@ -25,9 +25,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class FragmentSpreadTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
         string $expected,
@@ -35,7 +32,7 @@ final class FragmentSpreadTest extends TestCase {
         int $level,
         int $used,
         FragmentSpreadNode $definition,
-        TypeNode|Type|null $type,
+        (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
         $collector = new Collector();
@@ -51,13 +48,12 @@ final class FragmentSpreadTest extends TestCase {
 
     /**
      * @param array{types: array<string, string>, directives: array<string, string>} $expected
-     * @param (TypeNode&Node)|Type|null                                              $type
      */
     #[DataProvider('dataProviderStatistics')]
     public function testStatistics(
         array $expected,
         FragmentSpreadNode $definition,
-        TypeNode|Type|null $type,
+        (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
         $collector = new Collector();

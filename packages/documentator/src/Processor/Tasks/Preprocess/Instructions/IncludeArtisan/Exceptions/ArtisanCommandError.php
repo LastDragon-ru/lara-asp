@@ -11,7 +11,7 @@ use function sprintf;
 class ArtisanCommandError extends InstructionFailed {
     public function __construct(
         Context $context,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,

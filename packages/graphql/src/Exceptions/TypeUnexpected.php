@@ -11,7 +11,7 @@ class TypeUnexpected extends AstException {
     public function __construct(
         protected Stringable|string $source,
         protected Stringable|string $expected,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

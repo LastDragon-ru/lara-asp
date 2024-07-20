@@ -20,5 +20,5 @@ interface Sorter {
      *
      * @return TBuilder
      */
-    public function sort(object $builder, Field $field, Direction $direction, Nulls $nulls = null): object;
+    public function sort(object $builder, Field $field, Direction $direction, ?Nulls $nulls = null): object;
 }

@@ -15,7 +15,7 @@ class ArgumentsMutuallyExclusive extends ClientException {
     public function __construct(
         protected Stringable|string $source,
         protected array $arguments,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

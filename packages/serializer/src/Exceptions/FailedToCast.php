@@ -16,7 +16,7 @@ class FailedToCast extends PackageException {
     public function __construct(
         private string $target,
         private mixed $value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

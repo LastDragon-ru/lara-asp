@@ -308,7 +308,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         string $directive,
         string $name,
         string $type,
-        string $value = null,
+        ?string $value = null,
         array $arguments = [],
     ): void {
         // Arguments with directive already exists?

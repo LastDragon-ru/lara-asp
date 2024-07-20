@@ -14,7 +14,7 @@ class ConditionTooManyOperators extends ClientException {
      */
     public function __construct(
         protected array $operators,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

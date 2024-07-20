@@ -16,7 +16,7 @@ class TranslatorUnsupported extends Exception implements PackageException {
      */
     public function __construct(
         private string $implementation,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Only `%s` supported, `%s` given.',

@@ -46,14 +46,10 @@ use const JSON_THROW_ON_ERROR;
 #[GraphQLAstNode(BooleanValueNode::class)]
 #[GraphQLAstNode(EnumValueNode::class)]
 class Value extends Block {
-    /**
-     * @param ValueNode&Node            $node
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
-        private ValueNode $node,
-        private TypeNode|Type|null $type,
+        private ValueNode&Node $node,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context);
     }

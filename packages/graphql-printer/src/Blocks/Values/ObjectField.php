@@ -19,13 +19,10 @@ use Override;
  * @internal
  */
 class ObjectField extends Block implements NamedBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         private ObjectFieldNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context);
     }

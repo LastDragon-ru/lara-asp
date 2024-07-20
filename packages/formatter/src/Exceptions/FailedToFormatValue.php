@@ -12,7 +12,7 @@ class FailedToFormatValue extends PackageException {
         protected string $type,
         protected int $errorCode,
         protected string $errorMessage,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Formatting for type `%s` failed: `%s` (`%s`).',

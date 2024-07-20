@@ -20,7 +20,7 @@ use function method_exists;
  * @internal
  */
 trait RawSqlHelper {
-    protected function runRaw(string $type = null): void {
+    protected function runRaw(?string $type = null): void {
         $connection = $this->getConnectionInstance();
         $state      = $this->getSchemaState($connection);
         $path       = $this->getRawPath($type);
@@ -34,7 +34,7 @@ trait RawSqlHelper {
         }
     }
 
-    protected function getRawPath(string $type = null): string {
+    protected function getRawPath(?string $type = null): string {
         $path = (string) (new ReflectionClass($this))->getFileName();
         $file = basename($path, '.php');
         $dir  = dirname($path);

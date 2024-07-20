@@ -20,11 +20,8 @@ class IntrospectionContext extends Context {
         return Introspection::getTypes();
     }
 
-    /**
-     * @return (Type&NamedType)|null
-     */
     #[Override]
-    public function getType(string $name): ?Type {
+    public function getType(string $name): (Type&NamedType)|null {
         return $this->getTypes()[$name] ?? null;
     }
 

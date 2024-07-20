@@ -14,7 +14,7 @@ use function sys_get_temp_dir;
  * after script shutdown.
  */
 trait WithTempFile {
-    public static function getTempFile(string $content = null, string $suffix = ''): SplFileInfo {
+    public static function getTempFile(?string $content = null, string $suffix = ''): SplFileInfo {
         $fs   = new Filesystem();
         $pkg  = Package::Name;
         $path = $fs->tempnam(sys_get_temp_dir(), $pkg, $suffix);

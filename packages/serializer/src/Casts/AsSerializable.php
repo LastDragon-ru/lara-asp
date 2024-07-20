@@ -43,7 +43,7 @@ class AsSerializable implements CastsAttributes {
     /**
      * @param class-string $class
      */
-    public static function using(string $class, string $format = null): string {
+    public static function using(string $class, ?string $format = null): string {
         return static::class.':'.$class.($format ? ",{$format}" : '');
     }
 

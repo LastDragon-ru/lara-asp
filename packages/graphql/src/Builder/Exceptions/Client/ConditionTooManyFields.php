@@ -14,7 +14,7 @@ class ConditionTooManyFields extends ClientException {
      */
     public function __construct(
         protected readonly array $fields,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

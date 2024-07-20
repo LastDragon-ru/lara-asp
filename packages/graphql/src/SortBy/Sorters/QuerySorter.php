@@ -13,7 +13,7 @@ use Override;
  */
 class QuerySorter extends DatabaseSorter {
     #[Override]
-    public function sort(object $builder, Field $field, Direction $direction, Nulls $nulls = null): object {
+    public function sort(object $builder, Field $field, Direction $direction, ?Nulls $nulls = null): object {
         $column  = $this->resolver->getField($builder, $field);
         $builder = $this->sortByColumn($builder, $column, $direction, $nulls);
 

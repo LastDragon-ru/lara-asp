@@ -10,7 +10,7 @@ use function sprintf;
 class ProcessingFailed extends ProcessorError {
     public function __construct(
         protected Directory $root,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

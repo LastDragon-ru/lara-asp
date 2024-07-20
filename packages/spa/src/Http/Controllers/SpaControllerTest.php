@@ -33,7 +33,7 @@ final class SpaControllerTest extends TestCase {
     public function testSettings(
         Response $expected,
         bool $routes = true,
-        string $prefix = null,
+        ?string $prefix = null,
         array $headers = [],
         array $settings = [],
     ): void {

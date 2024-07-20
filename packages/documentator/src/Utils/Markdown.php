@@ -112,7 +112,7 @@ class Markdown {
      *
      * @return ?T
      */
-    protected static function getFirstNode(?Node $node, string $class, callable $filter = null): ?Node {
+    protected static function getFirstNode(?Node $node, string $class, ?callable $filter = null): ?Node {
         // Null?
         if ($node === null) {
             return null;

@@ -21,14 +21,12 @@ interface Printer {
      * - for some AST node types, their type may also be required
      *
      * @see self::setSchema()
-     *
-     * @param (TypeNode&Node)|Type|null $type
      */
     public function print(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
         int $used = 0,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): Result;
 
     /**
@@ -42,14 +40,12 @@ interface Printer {
      * - for some AST node types, their type may also be required
      *
      * @see self::setSchema()
-     *
-     * @param (TypeNode&Node)|Type|null $type
      */
     public function export(
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema $printable,
         int $level = 0,
         int $used = 0,
-        TypeNode|Type|null $type = null,
+        (TypeNode&Node)|Type|null $type = null,
     ): Result;
 
     public function getSettings(): Settings;

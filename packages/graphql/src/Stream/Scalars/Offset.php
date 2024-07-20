@@ -91,7 +91,7 @@ class Offset extends ScalarType {
      * @return StreamOffset|int<0, max>
      */
     #[Override]
-    public function parseLiteral(Node $valueNode, array $variables = null): StreamOffset|int {
+    public function parseLiteral(Node $valueNode, ?array $variables = null): StreamOffset|int {
         $value = null;
 
         if ($valueNode instanceof StringValueNode) {

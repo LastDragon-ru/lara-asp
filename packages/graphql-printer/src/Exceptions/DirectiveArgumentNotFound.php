@@ -11,7 +11,7 @@ class DirectiveArgumentNotFound extends PackageException {
     public function __construct(
         protected string $directive,
         protected string $argument,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

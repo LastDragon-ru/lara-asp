@@ -21,13 +21,10 @@ use Override;
  */
 #[GraphQLAstNode(InlineFragmentNode::class)]
 class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBlock {
-    /**
-     * @param (TypeNode&Node)|Type|null $type
-     */
     public function __construct(
         Context $context,
         InlineFragmentNode $definition,
-        private TypeNode|Type|null $type,
+        private (TypeNode&Node)|Type|null $type,
     ) {
         parent::__construct($context, $definition);
 

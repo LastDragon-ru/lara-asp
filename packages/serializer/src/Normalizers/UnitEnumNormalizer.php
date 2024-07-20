@@ -51,7 +51,7 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
      * @param array<array-key, mixed> $context
      */
     #[Override]
-    public function normalize(mixed $object, string $format = null, array $context = []): string {
+    public function normalize(mixed $object, ?string $format = null, array $context = []): string {
         if (!$this->supportsNormalization($object, $format)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -71,7 +71,7 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
      * @phpstan-assert-if-true UnitEnum $data
      */
     #[Override]
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool {
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool {
         return $data instanceof UnitEnum && !($data instanceof BackedEnum);
     }
 
@@ -79,7 +79,7 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
      * @param array<array-key, mixed> $context
      */
     #[Override]
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed {
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed {
         // Just for the case
         if (!is_string($data)) {
             throw new InvalidArgumentException(
@@ -132,7 +132,7 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
     public function supportsDenormalization(
         mixed $data,
         string $type,
-        string $format = null,
+        ?string $format = null,
         array $context = [],
     ): bool {
         return is_a($type, UnitEnum::class, true) && !is_a($type, BackedEnum::class, true);

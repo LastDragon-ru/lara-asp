@@ -10,7 +10,7 @@ use function sprintf;
 class BuilderUnknown extends BuilderException {
     public function __construct(
         protected Stringable|string|null $source,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

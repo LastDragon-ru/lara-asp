@@ -29,7 +29,7 @@ final class TypeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param (TypeNode&Node)|(GraphQLType&(OutputType|InputType)) $type
+     * @param (TypeNode&Node)|(GraphQLType&InputType)|(GraphQLType&OutputType) $type fixme(phpcs): https://github.com/slevomat/coding-standard/issues/1690
      */
     #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
@@ -37,7 +37,7 @@ final class TypeTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        TypeNode|GraphQLType $type,
+        (TypeNode&Node)|(GraphQLType&OutputType)|(GraphQLType&InputType) $type,
         ?Schema $schema,
     ): void {
         $collector = new Collector();
