@@ -677,7 +677,7 @@ class AstManipulator {
         string $name,
         string $type,
         mixed $default = null,
-        string $description = null,
+        ?string $description = null,
     ): InputValueDefinitionNode|Argument {
         // Added?
         if ($this->getArgument($field, $name)) {

@@ -9,7 +9,7 @@ use Throwable;
 use function sprintf;
 
 class TargetIsNotDirective extends InstructionFailed {
-    public function __construct(Context $context, Throwable $previous = null) {
+    public function __construct(Context $context, ?Throwable $previous = null) {
         parent::__construct(
             $context,
             sprintf(

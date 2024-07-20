@@ -14,7 +14,7 @@ class OperatorImpossibleToCreateField extends BuilderException {
         protected Operator $operator,
         protected Stringable|string $source,
         protected Context $context,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

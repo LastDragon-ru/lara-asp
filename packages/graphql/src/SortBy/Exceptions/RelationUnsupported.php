@@ -14,7 +14,7 @@ class RelationUnsupported extends SortByException {
      */
     public function __construct(
         protected string $class,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

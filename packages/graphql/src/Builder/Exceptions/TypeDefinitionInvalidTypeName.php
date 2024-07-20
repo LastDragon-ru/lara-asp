@@ -17,7 +17,7 @@ class TypeDefinitionInvalidTypeName extends BuilderException {
         protected string $expected,
         protected string $actual,
         protected Context $context,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

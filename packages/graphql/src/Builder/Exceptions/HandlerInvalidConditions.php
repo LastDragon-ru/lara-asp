@@ -10,7 +10,7 @@ use function sprintf;
 class HandlerInvalidConditions extends BuilderException {
     public function __construct(
         protected Handler $handler,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

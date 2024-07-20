@@ -9,7 +9,7 @@ abstract class InstructionFailed extends PreprocessError {
     public function __construct(
         private readonly Context $context,
         string $message,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, $previous);
     }

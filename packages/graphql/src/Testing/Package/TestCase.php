@@ -55,7 +55,7 @@ abstract class TestCase extends PackageTestCase {
         ]);
     }
 
-    protected function getGraphQLPrinter(Settings $settings = null): Printer {
+    protected function getGraphQLPrinter(?Settings $settings = null): Printer {
         $settings ??= (new TestSettings())
             ->setDirectiveDefinitionFilter($this->app()->make(LighthouseDirectiveFilter::class));
         $printer    = $this->getDefaultGraphQLPrinter($settings);
@@ -66,7 +66,7 @@ abstract class TestCase extends PackageTestCase {
     protected function getGraphQLArgument(
         string $type,
         mixed $value,
-        Schema|SplFileInfo|string $schema = null,
+        Schema|SplFileInfo|string|null $schema = null,
     ): Argument {
         try {
             if ($schema) {

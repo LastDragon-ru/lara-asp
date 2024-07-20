@@ -11,7 +11,7 @@ class FieldNotFound extends PackageException {
     public function __construct(
         protected string $type,
         protected string $field,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

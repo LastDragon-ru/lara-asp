@@ -16,7 +16,7 @@ class TemplateVariablesMissed extends InstructionFailed {
     public function __construct(
         Context $context,
         private readonly array $variables,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,

@@ -14,7 +14,7 @@ class DatabaseSeeded extends PackageException {
      */
     public function __construct(
         protected readonly string $seeder,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

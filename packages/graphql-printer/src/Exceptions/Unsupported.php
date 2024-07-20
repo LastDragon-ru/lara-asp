@@ -10,7 +10,7 @@ use function sprintf;
 class Unsupported extends PackageException {
     public function __construct(
         protected object $definition,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

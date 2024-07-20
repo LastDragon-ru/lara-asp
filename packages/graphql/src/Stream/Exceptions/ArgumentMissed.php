@@ -16,7 +16,7 @@ class ArgumentMissed extends StreamException {
     public function __construct(
         protected Stringable|string $source,
         protected string $directive,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

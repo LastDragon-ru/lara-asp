@@ -79,7 +79,7 @@ final class InTest extends TestCase {
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
-        Closure $fieldResolver = null,
+        ?Closure $fieldResolver = null,
     ): void {
         if ($fieldResolver) {
             $this->override(FieldResolver::class, $fieldResolver);

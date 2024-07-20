@@ -60,7 +60,7 @@ final class PrinterTest extends TestCase {
         int $used,
         Closure $schemaFactory,
         Closure $printableFactory,
-        Closure $typeFactory = null,
+        ?Closure $typeFactory = null,
     ): void {
         $schema    = $schemaFactory($this);
         $schema    = $this->useGraphQLSchema($schema)->getGraphQLSchema();
@@ -87,7 +87,7 @@ final class PrinterTest extends TestCase {
         int $used,
         Closure $schemaFactory,
         Closure $exportableFactory,
-        Closure $typeFactory = null,
+        ?Closure $typeFactory = null,
     ): void {
         $schema     = $schemaFactory($this);
         $schema     = $this->useGraphQLSchema($schema)->getGraphQLSchema();

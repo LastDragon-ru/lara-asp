@@ -17,7 +17,7 @@ interface Enhancer {
     public function enhance(
         object $builder,
         ArgumentSet|Argument $value,
-        Field $field = null,
-        Context $context = null,
+        ?Field $field = null,
+        ?Context $context = null,
     ): object;
 }

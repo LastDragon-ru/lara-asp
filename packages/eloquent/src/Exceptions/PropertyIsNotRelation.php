@@ -12,7 +12,7 @@ class PropertyIsNotRelation extends PackageException {
     public function __construct(
         protected Model $model,
         protected string $property,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Property `%s::%s()` is not a relation.',

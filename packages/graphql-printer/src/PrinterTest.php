@@ -50,7 +50,7 @@ final class PrinterTest extends TestCase {
         int $used,
         Closure $schemaFactory,
         Closure $printableFactory,
-        Closure $typeFactory = null,
+        ?Closure $typeFactory = null,
     ): void {
         $schema    = $schemaFactory($this);
         $printer   = new Printer($settings, null, $schema);
@@ -79,7 +79,7 @@ final class PrinterTest extends TestCase {
         int $used,
         Closure $schemaFactory,
         Closure $exportableFactory,
-        Closure $typeFactory = null,
+        ?Closure $typeFactory = null,
     ): void {
         $schema     = $schemaFactory($this);
         $printer    = new Printer($settings, null, $schema);

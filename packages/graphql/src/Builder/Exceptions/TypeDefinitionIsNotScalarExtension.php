@@ -10,7 +10,7 @@ class TypeDefinitionIsNotScalarExtension extends BuilderException {
     public function __construct(
         protected string $name,
         protected string $extension,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

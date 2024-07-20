@@ -29,7 +29,7 @@ abstract class Translator {
      * @param list<string>|string  $key
      * @param array<string, mixed> $replace
      */
-    public function get(array|string $key, array $replace = [], string $locale = null): string {
+    public function get(array|string $key, array $replace = [], ?string $locale = null): string {
         return $this->translate($key, function (string $key) use ($replace, $locale): string {
             return Cast::toString($this->translator->get($this->key($key), $replace, $locale));
         });
@@ -44,7 +44,7 @@ abstract class Translator {
         array|string $key,
         Countable|array|int $number,
         array $replace = [],
-        string $locale = null,
+        ?string $locale = null,
     ): string {
         return $this->translate($key, function (string $key) use ($number, $replace, $locale): string {
             return $this->translator->choice($this->key($key), $number, $replace, $locale);

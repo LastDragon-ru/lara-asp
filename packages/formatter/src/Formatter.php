@@ -280,13 +280,13 @@ class Formatter {
         return $this->formatValue(static::Integer, $value);
     }
 
-    public function decimal(float|int|null $value, int $decimals = null): string {
+    public function decimal(float|int|null $value, ?int $decimals = null): string {
         return $this->formatValue(static::Decimal, $value, $decimals, function () use ($decimals): int {
             return $decimals ?: Cast::toInt($this->getOptions(static::Decimal, 2));
         });
     }
 
-    public function currency(?float $value, string $currency = null): string {
+    public function currency(?float $value, ?string $currency = null): string {
         $type      = static::Currency;
         $value     = (float) $value;
         $currency  = $currency ?: Cast::toString($this->getOptions($type, 'USD'));
@@ -303,7 +303,7 @@ class Formatter {
     /**
      * @param float|null $value must be between 0-100
      */
-    public function percent(?float $value, int $decimals = null): string {
+    public function percent(?float $value, ?int $decimals = null): string {
         return $this->formatValue(static::Percent, (float) $value / 100, $decimals, function () use ($decimals): int {
             return $decimals ?: Cast::toInt($this->getOptions(static::Percent, 0));
         });
@@ -321,7 +321,7 @@ class Formatter {
         return $this->formatValue(static::Ordinal, $value);
     }
 
-    public function duration(DateInterval|float|int|null $value, string $format = null): string {
+    public function duration(DateInterval|float|int|null $value, ?string $format = null): string {
         $type     = static::Duration;
         $format   = $format ?: $this->getOptions($type);
         $format   = is_string($format)
@@ -341,24 +341,24 @@ class Formatter {
 
     public function time(
         ?DateTimeInterface $value,
-        string $format = null,
-        IntlTimeZone|DateTimeZone|string $timezone = null,
+        ?string $format = null,
+        IntlTimeZone|DateTimeZone|string|null $timezone = null,
     ): string {
         return $this->formatDateTime(self::Time, $value, $format, $timezone);
     }
 
     public function date(
         ?DateTimeInterface $value,
-        string $format = null,
-        IntlTimeZone|DateTimeZone|string $timezone = null,
+        ?string $format = null,
+        IntlTimeZone|DateTimeZone|string|null $timezone = null,
     ): string {
         return $this->formatDateTime(self::Date, $value, $format, $timezone);
     }
 
     public function datetime(
         ?DateTimeInterface $value,
-        string $format = null,
-        IntlTimeZone|DateTimeZone|string $timezone = null,
+        ?string $format = null,
+        IntlTimeZone|DateTimeZone|string|null $timezone = null,
     ): string {
         return $this->formatDateTime(self::DateTime, $value, $format, $timezone);
     }
@@ -368,7 +368,7 @@ class Formatter {
      *
      * @param numeric-string|float|int<0, max>|null $bytes
      */
-    public function filesize(string|float|int|null $bytes, int $decimals = null): string {
+    public function filesize(string|float|int|null $bytes, ?int $decimals = null): string {
         return $this->formatFilesize(
             $bytes,
             $decimals ?: Cast::toInt($this->getOptions(static::Filesize, 2)),
@@ -394,7 +394,7 @@ class Formatter {
      *
      * @param numeric-string|float|int<0, max>|null $bytes
      */
-    public function disksize(string|float|int|null $bytes, int $decimals = null): string {
+    public function disksize(string|float|int|null $bytes, ?int $decimals = null): string {
         return $this->formatFilesize(
             $bytes,
             $decimals ?: Cast::toInt($this->getOptions(static::Disksize, 2)),
@@ -415,7 +415,7 @@ class Formatter {
         );
     }
 
-    public function secret(?string $value, int $show = null): string {
+    public function secret(?string $value, ?int $show = null): string {
         if (is_null($value)) {
             return '';
         }
@@ -487,8 +487,8 @@ class Formatter {
     protected function formatValue(
         string $type,
         float|int|null $value,
-        int $decimals = null,
-        Closure $closure = null,
+        ?int $decimals = null,
+        ?Closure $closure = null,
     ): string {
         $value     = (float) $value;
         $formatter = $this->getIntlNumberFormatter($type, $decimals, $closure);
@@ -504,8 +504,8 @@ class Formatter {
     protected function formatDateTime(
         string $type,
         ?DateTimeInterface $value,
-        string $format = null,
-        IntlTimeZone|DateTimeZone|string $timezone = null,
+        ?string $format = null,
+        IntlTimeZone|DateTimeZone|string|null $timezone = null,
     ): string {
         if (is_null($value)) {
             return '';
@@ -551,7 +551,7 @@ class Formatter {
 
     // <editor-fold desc="Internal">
     // =========================================================================
-    private function getIntlDateFormatter(string $type, string $format = null): IntlDateFormatter {
+    private function getIntlDateFormatter(string $type, ?string $format = null): IntlDateFormatter {
         $key       = json_encode([$type, $format], JSON_THROW_ON_ERROR);
         $formatter = $this->dateFormatters[$key] ?? $this->createIntlDateFormatter($type, $format);
 
@@ -564,7 +564,7 @@ class Formatter {
         return $formatter;
     }
 
-    private function createIntlDateFormatter(string $type, string $format = null): ?IntlDateFormatter {
+    private function createIntlDateFormatter(string $type, ?string $format = null): ?IntlDateFormatter {
         $formatter = null;
         $pattern   = '';
         $default   = IntlDateFormatter::SHORT;
@@ -624,8 +624,8 @@ class Formatter {
      */
     private function getIntlNumberFormatter(
         string $type,
-        int $decimals = null,
-        Closure $closure = null,
+        ?int $decimals = null,
+        ?Closure $closure = null,
     ): NumberFormatter {
         $key       = json_encode([$type, $decimals], JSON_THROW_ON_ERROR);
         $formatter = $this->numbersFormatters[$key] ?? $this->createIntlNumberFormatter($type, $decimals, $closure);
@@ -644,8 +644,8 @@ class Formatter {
      */
     private function createIntlNumberFormatter(
         string $type,
-        int $decimals = null,
-        Closure $closure = null,
+        ?int $decimals = null,
+        ?Closure $closure = null,
     ): ?NumberFormatter {
         $formatter  = null;
         $attributes = [];

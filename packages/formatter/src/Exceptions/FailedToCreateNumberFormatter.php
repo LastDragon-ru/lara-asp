@@ -11,7 +11,7 @@ use function sprintf;
 class FailedToCreateNumberFormatter extends PackageException {
     public function __construct(
         protected string $type,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Failed to create instance of `%s` for type `%s`.',

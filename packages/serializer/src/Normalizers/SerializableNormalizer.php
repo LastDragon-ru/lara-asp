@@ -77,7 +77,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
      * @param array<array-key, mixed> $context
      */
     #[Override]
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed {
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed {
         /**
          * I'm not sure if it is bug or not, but out the box symfony call
          * {@see AbstractObjectNormalizer::getMappedClass()} after the
@@ -141,7 +141,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
      * @return array<array-key, string>
      */
     #[Override]
-    protected function extractAttributes(object $object, string $format = null, array $context = []): array {
+    protected function extractAttributes(object $object, ?string $format = null, array $context = []): array {
         return [
             /**
              * The method is never called because the {@see static::$classMetadataFactory} is always defined.
@@ -156,7 +156,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     protected function getAttributeValue(
         object $object,
         string $attribute,
-        string $format = null,
+        ?string $format = null,
         array $context = [],
     ): mixed {
         return $this->isDiscriminator($object::class, $attribute)
@@ -172,7 +172,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
         object $object,
         string $attribute,
         mixed $value,
-        string $format = null,
+        ?string $format = null,
         array $context = [],
     ): void {
         if ($this->isAttribute($object::class, $attribute)) {

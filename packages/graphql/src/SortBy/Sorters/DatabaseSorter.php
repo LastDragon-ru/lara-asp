@@ -50,7 +50,7 @@ abstract class DatabaseSorter implements Sorter {
         EloquentBuilder|QueryBuilder $builder,
         EloquentBuilder|QueryBuilder|string $column,
         Direction $direction,
-        Nulls $nulls = null,
+        ?Nulls $nulls = null,
     ): EloquentBuilder|QueryBuilder {
         // Nulls?
         if ($nulls !== null && $nulls !== $this->getNullsDefault($builder, $direction)) {

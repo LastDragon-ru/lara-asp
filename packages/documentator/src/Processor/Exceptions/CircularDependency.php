@@ -19,7 +19,7 @@ class CircularDependency extends ProcessorError {
         protected readonly File $target,
         protected readonly File $dependency,
         protected readonly array $stack,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

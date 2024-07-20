@@ -21,7 +21,7 @@ class Git {
      *
      * @return list<string>
      */
-    public function getTags(callable $filter = null, string $root = null): array {
+    public function getTags(?callable $filter = null, ?string $root = null): array {
         $tags = $this->run(['git', 'tag', '--list'], $root);
         $tags = explode("\n", $tags);
         $tags = $filter ? array_filter($tags, $filter) : $tags;
@@ -30,22 +30,22 @@ class Git {
         return $tags;
     }
 
-    public function getFile(string $path, string $revision = 'HEAD', string $root = null): string {
+    public function getFile(string $path, string $revision = 'HEAD', ?string $root = null): string {
         return $this->run(['git', 'show', "{$revision}:{$path}"], $root);
     }
 
-    public function getBranch(string $root = null): string {
+    public function getBranch(?string $root = null): string {
         return $this->run(['git', 'rev-parse', '--abbrev-ref=HEAD'], $root);
     }
 
-    public function getRoot(string $root = null): string {
+    public function getRoot(?string $root = null): string {
         return $this->run(['git', 'rev-parse', '--show-toplevel'], $root);
     }
 
     /**
      * @param array<array-key, string>|string $command
      */
-    private function run(array|string $command, string $root = null): string {
+    private function run(array|string $command, ?string $root = null): string {
         $process = $this->factory->newPendingProcess();
         $process = $root !== null ? $process->path($root) : $process->command('');
         $output  = $process->run($command)->throw()->output();

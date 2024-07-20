@@ -9,7 +9,7 @@ use function sprintf;
 class TypeDefinitionAlreadyDefined extends AstException {
     public function __construct(
         protected string $name,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Type Definition `%s` already defined.',

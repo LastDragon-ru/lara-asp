@@ -36,7 +36,7 @@ class EloquentBuilderMixin {
      * @return Closure(int=): ChunkedIterator<Model>
      */
     public function getChunkedIterator(): Closure {
-        return function (int $chunk = null): ChunkedIterator {
+        return function (?int $chunk = null): ChunkedIterator {
             /** @var Builder<Model> $this */
             $iterator = new ChunkedIterator($this);
 
@@ -52,7 +52,7 @@ class EloquentBuilderMixin {
      * @return Closure(int=,string=): ChunkedChangeSafeIterator<Model>
      */
     public function getChangeSafeIterator(): Closure {
-        return function (int $chunk = null, string $column = null): ChunkedChangeSafeIterator {
+        return function (?int $chunk = null, ?string $column = null): ChunkedChangeSafeIterator {
             /** @var Builder<Model> $this */
             $iterator = new ChunkedChangeSafeIterator($this, $column);
 

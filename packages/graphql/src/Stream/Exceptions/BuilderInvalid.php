@@ -11,7 +11,7 @@ class BuilderInvalid extends StreamException {
     public function __construct(
         protected Stringable|string $source,
         protected string $type,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

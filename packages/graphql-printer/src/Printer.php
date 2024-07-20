@@ -38,7 +38,7 @@ class Printer implements PrinterContract {
     private ?Schema            $schema = null;
 
     public function __construct(
-        Settings $settings = null,
+        ?Settings $settings = null,
         ?DirectiveResolver $directiveResolver = null,
         ?Schema $schema = null,
     ) {

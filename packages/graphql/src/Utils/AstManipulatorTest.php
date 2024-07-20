@@ -599,7 +599,7 @@ final class AstManipulatorTest extends TestCase {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    protected function getManipulator(string $schema = null): AstManipulator {
+    protected function getManipulator(?string $schema = null): AstManipulator {
         $document    = $schema
             ? DocumentAST::fromSource($schema)
             : $this->app()->make(ASTBuilder::class)->documentAST();

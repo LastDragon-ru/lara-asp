@@ -11,7 +11,7 @@ use function sprintf;
 class SchemaStateUnsupported extends PackageException {
     public function __construct(
         private readonly Connection $connection,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

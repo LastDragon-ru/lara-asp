@@ -6,7 +6,7 @@ interface Serializer {
     /**
      * @param array<string, mixed> $context
      */
-    public function serialize(object $object, string $format = null, array $context = []): string;
+    public function serialize(object $object, ?string $format = null, array $context = []): string;
 
     /**
      * @template T of object
@@ -19,7 +19,7 @@ interface Serializer {
     public function deserialize(
         string $object,
         string $data,
-        string $format = null,
+        ?string $format = null,
         array $context = [],
     ): object;
 }

@@ -158,4 +158,5 @@
     <rule ref="SlevomatCodingStandard.Classes.DisallowStringExpressionPropertyFetch"/>
     <rule ref="SlevomatCodingStandard.Commenting.AnnotationName"/>
     <rule ref="SlevomatCodingStandard.Arrays.ArrayAccess"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
 </ruleset>

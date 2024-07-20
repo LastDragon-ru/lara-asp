@@ -13,7 +13,7 @@ class InvalidArgumentSplFileInfoIsNotReadable extends InvalidArgumentException i
     public function __construct(
         protected string $argument,
         protected SplFileInfo $value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(sprintf(
             'Argument `%1$s` is file but not readable (path: `%2$s`).',

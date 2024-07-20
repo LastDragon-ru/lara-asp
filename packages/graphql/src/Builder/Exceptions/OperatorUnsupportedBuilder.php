@@ -11,7 +11,7 @@ class OperatorUnsupportedBuilder extends BuilderException {
     public function __construct(
         protected Operator $operator,
         protected object $builder,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

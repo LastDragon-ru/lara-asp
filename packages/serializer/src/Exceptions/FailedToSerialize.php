@@ -15,7 +15,7 @@ class FailedToSerialize extends PackageException {
         private object $object,
         private string $format,
         private array $context,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

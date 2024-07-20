@@ -13,7 +13,7 @@ class DocumentTitleIsMissing extends InstructionFailed {
     public function __construct(
         Context $context,
         private readonly File $document,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,

@@ -13,7 +13,7 @@ class PackageComposerJsonIsMissing extends InstructionFailed {
     public function __construct(
         Context $context,
         private readonly Directory $package,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,

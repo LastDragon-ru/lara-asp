@@ -14,7 +14,7 @@ class FileTaskFailed extends ProcessorError {
         protected Directory $root,
         protected readonly File $target,
         protected readonly Task $task,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

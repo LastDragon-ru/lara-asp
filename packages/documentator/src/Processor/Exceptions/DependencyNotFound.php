@@ -18,7 +18,7 @@ class DependencyNotFound extends ProcessorError {
          * @var Dependency<*>
          */
         protected readonly Dependency $dependency,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(

@@ -10,7 +10,7 @@ use function sprintf;
 class ArgumentAlreadyDefined extends AstException {
     public function __construct(
         protected Stringable|string $source,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
