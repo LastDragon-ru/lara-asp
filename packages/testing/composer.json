@@ -34,7 +34,7 @@
     "illuminate/database": "^10.34.0|^11.0.0",
     "illuminate/testing": "^10.34.0|^11.0.0",
     "illuminate/translation": "^10.34.0|^11.0.0",
-    "mockery/mockery": "^1.6.2",
+    "mockery/mockery": "^1.6.5",
     "opis/json-schema": "^2.3.0",
     "phpunit/phpunit": "^10.1.0|^11.0.0",
     "psr/http-message": "^1.0.0|^2.0.0",
