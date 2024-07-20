@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Package;
+namespace LastDragon_ru\LaraASP\Testing\Testing;
 
 use Faker\Factory;
 use Faker\Generator;

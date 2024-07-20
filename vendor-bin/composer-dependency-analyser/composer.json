@@ -1,5 +1,8 @@
 {
-    "require-dev": {
-        "shipmonk/composer-dependency-analyser": "dev-master"
-    }
+  "require-dev": {
+    "shipmonk/composer-dependency-analyser": "dev-master"
+  },
+  "require": {
+    "symfony/finder": "^7.1"
+  }
 }
