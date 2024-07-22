@@ -10,6 +10,8 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileTaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -143,6 +145,13 @@ class Executor {
                     if ($result !== true) {
                         throw new FileTaskFailed($this->root, $file, $task);
                     }
+                } catch (FileMetadataError $exception) {
+                    throw new FileMetadataFailed(
+                        $this->root,
+                        $exception->getTarget(),
+                        $exception->getMetadata(),
+                        $exception->getPrevious(),
+                    );
                 } catch (ProcessorError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {

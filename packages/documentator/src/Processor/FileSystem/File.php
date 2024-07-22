@@ -2,11 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
+use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
 use Override;
 use Stringable;
 
+use function array_key_exists;
 use function dirname;
 use function file_get_contents;
 use function is_file;
@@ -20,6 +24,11 @@ use const PATHINFO_EXTENSION;
 class File implements Stringable {
     private ?string $content = null;
     private bool $modified   = false;
+
+    /**
+     * @var array<class-string<Metadata<mixed>>, mixed>
+     */
+    private array $metadata = [];
 
     public function __construct(
         private readonly string $path,
@@ -85,9 +94,29 @@ class File implements Stringable {
         if ($this->content !== $content) {
             $this->content  = $content;
             $this->modified = true;
+            $this->metadata = [];
         }
 
         return $this;
+    }
+
+    /**
+     * @template T
+     *
+     * @param Metadata<T> $metadata
+     *
+     * @return T
+     */
+    public function getMetadata(Metadata $metadata): mixed {
+        if (!array_key_exists($metadata::class, $this->metadata)) {
+            try {
+                $this->metadata[$metadata::class] = $metadata($this);
+            } catch (Exception $exception) {
+                throw new FileMetadataError($this, $metadata, $exception);
+            }
+        }
+
+        return $this->metadata[$metadata::class];
     }
 
     public function getRelativePath(Directory|self $root): string {
