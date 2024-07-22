@@ -8,7 +8,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 interface Task {
     /**
-     * Returns the file extensions which task is processing.
+     * Returns the file extensions which task is processing. The `*` can be used
+     * to process any file.
      *
      * @return non-empty-list<string>
      */

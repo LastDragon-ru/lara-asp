@@ -295,6 +295,128 @@ final class ProcessorTest extends TestCase {
         );
     }
 
+    public function testRunWildcard(): void {
+        $taskA = new class() implements Task {
+            /**
+             * @var array<array-key, string>
+             */
+            public array $processed = [];
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['html'];
+            }
+
+            /**
+             * @return Generator<mixed, Dependency<*>, mixed, bool>
+             */
+            #[Override]
+            public function __invoke(Directory $root, File $file): Generator {
+                $dependencies = match ($file->getName()) {
+                    'b.html' => [
+                        '../../../../README.md',
+                        '../a/excluded.txt',
+                    ],
+                    default  => [
+                        // empty
+                    ],
+                };
+
+                foreach ($dependencies as $dependency) {
+                    yield new FileReference($dependency);
+                }
+
+                $this->processed[] = $file->getRelativePath($root);
+
+                return true;
+            }
+        };
+        $taskB = new class() implements Task {
+            /**
+             * @var array<array-key, string>
+             */
+            public array $processed = [];
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getExtensions(): array {
+                return ['*'];
+            }
+
+            #[Override]
+            public function __invoke(Directory $root, File $file): bool {
+                $this->processed[] = $file->getRelativePath($root);
+
+                return true;
+            }
+        };
+
+        $root   = Path::normalize(self::getTestData()->path(''));
+        $count  = 0;
+        $events = [];
+
+        (new Processor())
+            ->task($taskA)
+            ->task($taskB)
+            ->run(
+                $root,
+                ['excluded.txt', '**/**/excluded.txt'],
+                static function (string $path, Result $result) use (&$count, &$events): void {
+                    $events[$path] = $result;
+                    $count++;
+                },
+            );
+
+        self::assertEquals(
+            [
+                'b/a/ba.txt'         => Result::Success,
+                'c.txt'              => Result::Success,
+                'b/b/bb.txt'         => Result::Success,
+                'a/a.txt'            => Result::Success,
+                'a/a/aa.txt'         => Result::Success,
+                'a/b/ab.txt'         => Result::Success,
+                'b/b.txt'            => Result::Success,
+                'c.htm'              => Result::Success,
+                'c.html'             => Result::Success,
+                'a/excluded.txt'     => Result::Skipped,
+                '../../../README.md' => Result::Skipped,
+                'a/a.html'           => Result::Success,
+                'b/b.html'           => Result::Success,
+            ],
+            $events,
+        );
+        self::assertCount($count, $events);
+        self::assertEquals(
+            [
+                'a/a.html',
+                'b/b.html',
+                'c.html',
+            ],
+            $taskA->processed,
+        );
+        self::assertEquals(
+            [
+                'a/a.html',
+                'a/a.txt',
+                'a/a/aa.txt',
+                'a/b/ab.txt',
+                'b/a/ba.txt',
+                'b/b.html',
+                'b/b.txt',
+                'b/b/bb.txt',
+                'c.htm',
+                'c.html',
+                'c.txt',
+            ],
+            $taskB->processed,
+        );
+    }
+
     public function testRunFileNotFound(): void {
         $task = new class() implements Task {
             /**

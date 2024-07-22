@@ -47,7 +47,9 @@ class Processor {
      */
     public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
         $start      = microtime(true);
-        $extensions = array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks));
+        $extensions = !isset($this->tasks['*'])
+            ? array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks))
+            : null;
         $exclude    = array_map(Glob::toRegex(...), (array) $exclude);
         $root       = new Directory($path, true);
         $fs         = new FileSystem();
