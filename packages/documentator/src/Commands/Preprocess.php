@@ -11,8 +11,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task;
-use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
@@ -250,7 +250,7 @@ class Preprocess extends Command {
             $list .= "* `{$definition}` - {$description}\n";
         }
 
-        $list = Markdown::setPadding($list, $padding);
+        $list = Text::setPadding($list, $padding);
         $list = rtrim($list);
 
         // Return
@@ -264,7 +264,7 @@ class Preprocess extends Command {
     private function getDocBlock(ReflectionClass|ReflectionProperty $object, int $padding = 0): string {
         $doc  = new PhpDoc($object->getDocComment() ?: null);
         $help = $doc->getText();
-        $help = Markdown::setPadding($help, $padding);
+        $help = Text::setPadding($help, $padding);
         $help = rtrim($help);
 
         return $help;
