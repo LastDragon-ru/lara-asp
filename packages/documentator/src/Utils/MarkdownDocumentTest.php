@@ -150,4 +150,42 @@ final class MarkdownDocumentTest extends TestCase {
                 ->getSummary(),
         );
     }
+
+    public function testIsEmpty(): void {
+        self::assertFalse(
+            (new MarkdownDocument(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ))
+                ->isEmpty(),
+        );
+        self::assertFalse(
+            (new Document(
+                <<<'MARKDOWN'
+                [unused]: ../path/to/file
+                MARKDOWN,
+            ))
+                ->isEmpty(),
+        );
+        self::assertFalse(
+            (new Document(
+                <<<'MARKDOWN'
+                <!-- comment -->
+                MARKDOWN,
+            ))
+                ->isEmpty(),
+        );
+        self::assertTrue(
+            (new MarkdownDocument(
+                <<<'MARKDOWN'
+
+
+
+                MARKDOWN,
+            ))
+                ->isEmpty(),
+        );
+    }
 }

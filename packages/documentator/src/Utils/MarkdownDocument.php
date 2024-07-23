@@ -15,6 +15,7 @@ use Override;
 use Stringable;
 
 use function array_slice;
+use function count;
 use function implode;
 use function ltrim;
 use function preg_split;
@@ -40,6 +41,10 @@ class MarkdownDocument implements Stringable {
         $this->lines = preg_split('/\R/u', $string) ?: [];
     }
 
+    public function isEmpty(): bool {
+        return !$this->node->hasChildren() && count($this->node->getReferenceMap()) === 0;
+    }
+
     /**
      * Returns the first `# Header` if present.
      */
@@ -60,7 +65,9 @@ class MarkdownDocument implements Stringable {
     public function getSummary(): ?string {
         if ($this->summary === null) {
             $title         = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $this->summary = $this->getText($this->getFirstNode($title?->next(), Paragraph::class));
+            $summary       = $this->getText($this->getFirstNode($title?->next(), Paragraph::class));
+            $summary       = trim("{$summary}") ?: null;
+            $this->summary = $summary;
         }
 
         return $this->summary;
