@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Utils;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -8,11 +8,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(MarkdownDocument::class)]
-final class MarkdownDocumentTest extends TestCase {
+#[CoversClass(Document::class)]
+final class DocumentTest extends TestCase {
     public function testGetTitle(): void {
         self::assertNull(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 ## Header A
                 # Header B
@@ -21,7 +21,7 @@ final class MarkdownDocumentTest extends TestCase {
                 ->getTitle(),
         );
         self::assertNull(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 fsdfsdfsdf
 
@@ -31,7 +31,7 @@ final class MarkdownDocumentTest extends TestCase {
                 ->getTitle(),
         );
         self::assertNull(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 #
 
@@ -42,7 +42,7 @@ final class MarkdownDocumentTest extends TestCase {
         );
         self::assertEquals(
             'Header',
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
 
                 # Header
@@ -54,7 +54,7 @@ final class MarkdownDocumentTest extends TestCase {
         );
         self::assertEquals(
             'Header',
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 <!-- Comment -->
 
@@ -69,7 +69,7 @@ final class MarkdownDocumentTest extends TestCase {
 
     public function testGetSummary(): void {
         self::assertNull(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 ## Header A
                 # Header B
@@ -80,7 +80,7 @@ final class MarkdownDocumentTest extends TestCase {
                 ->getSummary(),
         );
         self::assertNull(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 fsdfsdfsdf
 
@@ -92,7 +92,7 @@ final class MarkdownDocumentTest extends TestCase {
                 ->getSummary(),
         );
         self::assertNull(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 # Header
 
@@ -105,7 +105,7 @@ final class MarkdownDocumentTest extends TestCase {
         );
         self::assertEquals(
             'fsdfsdfsdf',
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 #
 
@@ -119,7 +119,7 @@ final class MarkdownDocumentTest extends TestCase {
             fsdfsdfsdf
             fsdfsdfsdf
             TEXT,
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
 
                 # Header
@@ -135,7 +135,7 @@ final class MarkdownDocumentTest extends TestCase {
             fsdfsdfsdf
             fsdfsdfsdf
             TEXT,
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 <!-- Comment -->
 
@@ -153,7 +153,7 @@ final class MarkdownDocumentTest extends TestCase {
 
     public function testIsEmpty(): void {
         self::assertFalse(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 fsdfsdfsdf
@@ -178,7 +178,7 @@ final class MarkdownDocumentTest extends TestCase {
                 ->isEmpty(),
         );
         self::assertTrue(
-            (new MarkdownDocument(
+            (new Document(
                 <<<'MARKDOWN'
 
 

@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Utils;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use Closure;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\MarkdownParser;
@@ -26,12 +26,12 @@ use function trim;
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
 
-class MarkdownDocument implements Stringable {
+class Document implements Stringable {
     /**
      * @var array<int, string>
      */
-    private array    $lines;
-    private Document $node;
+    private array        $lines;
+    private DocumentNode $node;
 
     private ?string $title   = null;
     private ?string $summary = null;
@@ -73,7 +73,7 @@ class MarkdownDocument implements Stringable {
         return $this->summary;
     }
 
-    protected function parse(string $string): Document {
+    protected function parse(string $string): DocumentNode {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment();
         $parser      = new MarkdownParser($environment);
@@ -123,7 +123,7 @@ class MarkdownDocument implements Stringable {
         }
 
         // Document?
-        if ($node instanceof Document) {
+        if ($node instanceof DocumentNode) {
             return $this->getFirstNode($node->firstChild(), $class, $filter);
         }
 
