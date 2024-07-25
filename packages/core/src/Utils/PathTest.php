@@ -44,6 +44,16 @@ final class PathTest extends TestCase {
         self::assertEquals('any/path', Path::normalize('././any/path'));
         self::assertEquals('../any/path', Path::normalize('./../any/path'));
         self::assertEquals('path', Path::normalize('./any/../path'));
+        self::assertEquals('', Path::normalize('./'));
+        self::assertEquals('', Path::normalize('.'));
+        self::assertEquals('..', Path::normalize('../'));
+        self::assertEquals('..', Path::normalize('..'));
+        self::assertEquals('path', Path::normalize('./any/../path/.'));
+        self::assertEquals('/', Path::normalize('/..'));
+        self::assertEquals('../any/path', Path::normalize('.\\..\\any\\path'));
+        self::assertEquals('any/path', Path::normalize('any\\path'));
+        self::assertEquals('/any/path', Path::normalize('/any/path/'));
+        self::assertEquals('any/path', Path::normalize('any/path/'));
     }
 
     public function testIsNormalized(): void {
@@ -52,5 +62,17 @@ final class PathTest extends TestCase {
         self::assertFalse(Path::isNormalized('./any/path'));
         self::assertFalse(Path::isNormalized('././any/path'));
         self::assertFalse(Path::isNormalized('./../any/path'));
+    }
+
+    public function testIsFile(): void {
+        self::assertTrue(Path::isFile(__FILE__));
+        self::assertFalse(Path::isFile(__DIR__));
+        self::assertFalse(Path::isFile('/path/to/file'));
+    }
+
+    public function testIsDirectory(): void {
+        self::assertTrue(Path::isDirectory(__DIR__));
+        self::assertFalse(Path::isDirectory(__FILE__));
+        self::assertFalse(Path::isDirectory('/path/to/file'));
     }
 }

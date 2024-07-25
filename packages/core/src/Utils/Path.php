@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
-use function dirname;
+use function is_dir;
 use function is_file;
 
 class Path {
@@ -27,7 +27,15 @@ class Path {
     }
 
     public static function getDirname(string $path): string {
-        return static::normalize(is_file($path) ? dirname($path) : $path);
+        return static::normalize(static::isFile($path) ? SymfonyPath::getDirectory($path) : $path);
+    }
+
+    public static function isFile(string $path): bool {
+        return is_file(static::normalize($path));
+    }
+
+    public static function isDirectory(string $path): bool {
+        return is_dir(static::normalize($path));
     }
 
     public static function isRelative(string $path): bool {
