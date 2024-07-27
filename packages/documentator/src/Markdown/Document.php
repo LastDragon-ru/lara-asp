@@ -2,26 +2,47 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use ArrayIterator;
 use Closure;
+use Iterator;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
+use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\MarkdownParser;
+use League\CommonMark\Reference\ReferenceParser;
 use Override;
 use Stringable;
 
+use function array_combine;
+use function array_fill_keys;
+use function array_filter;
+use function array_key_last;
 use function array_slice;
+use function array_values;
 use function count;
+use function end;
+use function filter_var;
 use function implode;
 use function ltrim;
-use function preg_split;
+use function max;
+use function preg_match;
+use function range;
+use function str_contains;
 use function str_ends_with;
 use function str_starts_with;
+use function strtr;
 use function trim;
+
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_VALIDATE_URL;
 
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
@@ -33,12 +54,13 @@ class Document implements Stringable {
     private array        $lines;
     private DocumentNode $node;
 
+    private ?string $path    = null;
     private ?string $title   = null;
     private ?string $summary = null;
 
-    public function __construct(string $string) {
-        $this->node  = $this->parse($string);
-        $this->lines = preg_split('/\R/u', $string) ?: [];
+    public function __construct(string $content, ?string $path = null) {
+        $this->setContent($content);
+        $this->setPath($path);
     }
 
     public function isEmpty(): bool {
@@ -71,6 +93,104 @@ class Document implements Stringable {
         }
 
         return $this->summary;
+    }
+
+    public function getPath(): ?string {
+        return $this->path;
+    }
+
+    /**
+     * Changes path and updates all relative links.
+     *
+     * Please note that links may/will be reformatted (because there is no
+     * information about their original form).
+     */
+    public function setPath(?string $path): static {
+        // No path?
+        if ($this->path === null || $path === null) {
+            $this->path = $path ? Path::normalize($path) : null;
+
+            return $this;
+        }
+
+        // Same?
+        $path = Path::getPath($this->path, $path);
+
+        if ($this->path === $path) {
+            return $this;
+        }
+
+        // Update
+        $resources = $this->getRelativeResources();
+        $lines     = $this->lines;
+        $path      = Path::normalize($path);
+        $getUrl    = static function (string $url): string {
+            return preg_match('/\s/u', $url)
+                ? '<'.strtr($url, ['<' => '\\\\<', '>' => '\\\\>']).'>'
+                : $url;
+        };
+        $getText   = static function (string $text): string {
+            return strtr($text, ['[' => '\\\\[', ']' => '\\\\]']);
+        };
+        $getTitle  = static function (string $title): string {
+            if ($title === '') {
+                // no action
+            } elseif (!str_contains($title, '(') && !str_contains($title, ')')) {
+                $title = "({$title})";
+            } elseif (!str_contains($title, '"')) {
+                $title = "\"{$title}\"";
+            } elseif (!str_contains($title, "'")) {
+                $title = "'{$title}'";
+            } else {
+                $title = '('.strtr($title, ['(' => '\\\\(', ')' => '\\\\)']).')';
+            }
+
+            return $title;
+        };
+        $replace   = static function (array &$lines, string $text, ?int $start, ?int $end): void {
+            $end     = Cast::toInt($end);
+            $start   = Cast::toInt($start);
+            $range   = range($start, $end);
+            $filler  = array_fill_keys($range, null);
+            $changes = array_combine($range, Text::getLines($text) + array_values($filler));
+
+            foreach ($changes as $index => $string) {
+                $lines[$index] = $string;
+            }
+        };
+
+        foreach ($resources as $resource) {
+            if ($resource instanceof Reference) {
+                $origin = Path::getPath($this->path, $resource->getDestination());
+                $target = $getUrl(Path::getRelativePath($path, $origin));
+                $label  = $getText($resource->getLabel());
+                $title  = $getTitle($resource->getTitle());
+                $text   = trim("[{$label}]: {$target} {$title}");
+
+                $replace($lines, $text, $resource->getStartLine(), $resource->getEndLine());
+            }
+        }
+
+        // Update
+        if ($resources) {
+            $this->setContent(
+                implode("\n", array_filter($lines, static fn ($line) => $line !== null)),
+            );
+        }
+
+        $this->path = $path;
+
+        // Return
+        return $this;
+    }
+
+    protected function setContent(string $content): static {
+        $this->node    = $this->parse($content);
+        $this->lines   = Text::getLines($content);
+        $this->title   = null;
+        $this->summary = null;
+
+        return $this;
     }
 
     protected function parse(string $string): DocumentNode {
@@ -134,5 +254,138 @@ class Document implements Stringable {
     #[Override]
     public function __toString(): string {
         return implode("\n", $this->lines);
+    }
+
+    /**
+     * @return list<AbstractWebResource|Reference>
+     */
+    private function getRelativeResources(): array {
+        // Collect Links/Images/etc and Lines with Reference
+        $lines      = $this->lines;
+        $resources  = [];
+        $isRelative = static function (string $target): bool {
+            return filter_var($target, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
+                && !str_starts_with($target, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
+                && !str_starts_with($target, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
+                && Path::isRelative($target);
+        };
+
+        foreach ($this->node->iterator() as $node) {
+            // Block?
+            // => removes lines to find References later
+            if ($node instanceof AbstractBlock && !($node instanceof DocumentNode)) {
+                $start = $node->getStartLine();
+                $end   = $node->getEndLine();
+
+                if ($start !== null && $end !== null) {
+                    for ($i = $start; $i <= $end; $i++) {
+                        unset($lines[$i - 1]);
+                    }
+                }
+            }
+
+            // Resource?
+            // => we need only which are relative
+            // => we don't need references
+            if ($node instanceof AbstractWebResource) {
+                if (!$node->data->has('reference') && $isRelative($node->getUrl())) {
+                    $resources[] = $node;
+                }
+            }
+        }
+
+        // Determine start/end line for References
+        //
+        // Seems in league/commonmark:2.4.2 there is no Reference Node. References
+        // just exist in `ReferenceMap` and store in `data.reference` of Link/Image.
+        // So we need to find them by hand...
+        //
+        // See https://github.com/thephpleague/commonmark/discussions/1036
+
+        // Split lines into blocks
+        $block    = 0;
+        $blocks   = [];
+        $previous = null;
+
+        foreach ($lines as $index => $line) {
+            if ($previous !== $index - 1) {
+                $block++;
+            }
+
+            $blocks[$block][$index] = $line;
+            $previous               = $index;
+        }
+
+        unset($block);
+
+        // Process each block to extract references/lines
+        $references    = [];
+        $setEndLine    = static function (array $block, Reference $reference, ?int $end = null): void {
+            $end = Cast::toInt($end ?? array_key_last($block));
+            $end = $block[$end] === ''
+                ? max($reference->getStartLine(), $end - 1)
+                : $end;
+
+            $reference->setEndLine($end);
+        };
+        $getLineNumber = static function (Iterator $iterator, string $search, int $skip = 0): ?int {
+            $number = null;
+
+            while ($iterator->valid()) {
+                if (str_starts_with(Cast::toString($iterator->current()), $search)) {
+                    $number = $iterator->key();
+                    break;
+                }
+
+                $iterator->next();
+            }
+
+            for ($i = 0; $i < $skip; $i++) {
+                $iterator->next();
+            }
+
+            return Cast::toIntNullable($number);
+        };
+
+        foreach ($blocks as $index => $block) {
+            $parser = new ReferenceParser();
+
+            foreach ($block as $line) {
+                $parser->parse($line);
+            }
+
+            $refs     = $parser->getReferences();
+            $iterator = new ArrayIterator($block);
+
+            foreach ($refs as $ref) {
+                $search = "[{$ref->getLabel()}]:";
+                $skip   = count(Text::getLines($ref->getTitle()));
+                $start  = $getLineNumber($iterator, $search, $skip);
+
+                if ($start !== null) {
+                    if (isset($references[$index])) {
+                        $setEndLine($block, end($references[$index]), $start - 1);
+                    }
+
+                    $references[$index][] = new Reference($ref, $start, $start);
+                }
+            }
+
+            if (isset($references[$index])) {
+                $setEndLine($block, end($references[$index]));
+            }
+        }
+
+        // Filter
+        foreach ($references as $block) {
+            foreach ($block as $reference) {
+                if ($isRelative($reference->getDestination())) {
+                    $resources[] = $reference;
+                }
+            }
+        }
+
+        // Return
+        return $resources;
     }
 }
