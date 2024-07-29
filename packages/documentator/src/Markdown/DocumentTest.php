@@ -274,6 +274,12 @@ final class DocumentTest extends TestCase {
                 ### cannot
 
                 [title]: ../file/a (title with \\( \\) and with ' ' and with " ")
+
+                ## Inside Quote
+
+                > [quote]: ../file/a
+                >
+                > [quote]: ../from/file/b (title)
                 MARKDOWN,
                 '/path/from',
                 <<<'MARKDOWN'
@@ -314,6 +320,14 @@ final class DocumentTest extends TestCase {
                 ### cannot
 
                 [title]: ../file/a "title with ( ) and with ' ' and with \" \""
+
+                ## Inside Quote
+
+                > [quote]: ../file/a
+                >
+                > [quote]:
+                > ./file/b
+                > (title)
                 MARKDOWN,
                 '/path/to',
             ],
