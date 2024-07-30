@@ -4,7 +4,7 @@
         <text>Simple</text>
     </heading>
     <html_block>&lt;!-- markdownlint-disable --&gt;</html_block>
-    <lara-asp-documentator-reference
+    <reference
         label="simple:a"
         destination="https://example.com/"
         title=""
@@ -13,7 +13,7 @@
         offset="0"
         location="[{5,0,null},{6,0,null}]"
     />
-    <lara-asp-documentator-reference
+    <reference
         label="simple:b"
         destination="https://example.com/"
         title="example.com"
@@ -22,7 +22,7 @@
         offset="0"
         location="[{7,0,null}]"
     />
-    <lara-asp-documentator-reference
+    <reference
         label="simple:c"
         destination="https://example.com/"
         title=""
@@ -31,7 +31,7 @@
         offset="0"
         location="[{8,0,null}]"
     />
-    <lara-asp-documentator-reference
+    <reference
         label="simple:d"
         destination="file/b"
         title="title"
@@ -40,7 +40,7 @@
         offset="0"
         location="[{9,0,null},{10,0,null}]"
     />
-    <lara-asp-documentator-reference
+    <reference
         label="simple:e"
         destination="file/b"
         title=""
@@ -49,7 +49,7 @@
         offset="0"
         location="[{11,0,null}]"
     />
-    <lara-asp-documentator-reference
+    <reference
         title=""
         label="simple:e"
         destination="file/b"
@@ -61,7 +61,7 @@
     <heading level="1">
         <text>Multiline</text>
     </heading>
-    <lara-asp-documentator-reference
+    <reference
         label="multiline:a"
         destination="https://example.com/"
         title="\n1\n2\n3\n"
@@ -70,7 +70,7 @@
         offset="0"
         location="[{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null},{21,0,null}]"
     />
-    <lara-asp-documentator-reference
+    <reference
         label="multiline:b"
         destination="https://example.com/"
         title="\n        example.com\n    "
@@ -83,7 +83,7 @@
         <text>Inside Quote</text>
     </heading>
     <block_quote>
-        <lara-asp-documentator-reference
+        <reference
             label="quote:a"
             destination="https://example.com/"
             title="example.com"
@@ -92,7 +92,7 @@
             offset="2"
             location="[{30,2,null},{31,2,null}]"
         />
-        <lara-asp-documentator-reference
+        <reference
             label="quote:b"
             destination="https://example.com/"
             title=""
@@ -104,7 +104,7 @@
     </block_quote>
     <block_quote>
         <block_quote>
-            <lara-asp-documentator-reference
+            <reference
                 label="quote:c"
                 destination="https://example.com/"
                 title="example.com"
@@ -113,7 +113,7 @@
                 offset="4"
                 location="[{35,4,null},{36,4,null}]"
             />
-            <lara-asp-documentator-reference
+            <reference
                 label="quote:d"
                 destination="https://example.com/"
                 title="example.com"
