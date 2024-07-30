@@ -6,12 +6,15 @@ use League\CommonMark\Parser\Block\BlockStart;
 use League\CommonMark\Parser\Block\BlockStartParserInterface;
 use League\CommonMark\Parser\Cursor;
 use League\CommonMark\Parser\MarkdownParserStateInterface;
+use League\CommonMark\Reference\ReferenceMapInterface;
 use Override;
 
 /**
  * @internal
  */
 class ParserStart implements BlockStartParserInterface {
+    private ?ReferenceMapInterface $referenceMap = null;
+
     public function __construct() {
         // empty
     }
@@ -24,11 +27,17 @@ class ParserStart implements BlockStartParserInterface {
         }
 
         // Try
-        $parser = new ParserContinue();
+        $parser = new ParserContinue($this->referenceMap);
         $block  = $parser->start($cursor)
             ? BlockStart::of($parser)->at($cursor)
             : BlockStart::none();
 
         return $block;
+    }
+
+    public function setReferenceMap(?ReferenceMapInterface $referenceMap): static {
+        $this->referenceMap = $referenceMap;
+
+        return $this;
     }
 }

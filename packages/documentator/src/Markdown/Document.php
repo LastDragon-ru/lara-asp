@@ -6,7 +6,6 @@ use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locationable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\ParserStart as ReferenceStartParser;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
@@ -47,9 +46,10 @@ class Document implements Stringable {
     private array        $lines;
     private DocumentNode $node;
 
-    private ?string $path    = null;
-    private ?string $title   = null;
-    private ?string $summary = null;
+    private ?MarkdownParser $parser  = null;
+    private ?string         $path    = null;
+    private ?string         $title   = null;
+    private ?string         $summary = null;
 
     public function __construct(string $content, ?string $path = null) {
         $this->setContent($content);
@@ -212,12 +212,13 @@ class Document implements Stringable {
     }
 
     protected function parse(string $string): DocumentNode {
-        $converter   = new GithubFlavoredMarkdownConverter();
-        $environment = $converter->getEnvironment()
-            ->addBlockStartParser(new ReferenceStartParser(), 250);
-        $parser      = new MarkdownParser($environment);
+        if (!isset($this->parser)) {
+            $converter    = new GithubFlavoredMarkdownConverter();
+            $environment  = $converter->getEnvironment()->addExtension(new Extension());
+            $this->parser = new MarkdownParser($environment);
+        }
 
-        return $parser->parse($string);
+        return $this->parser->parse($string);
     }
 
     protected function getText(?AbstractBlock $node): ?string {

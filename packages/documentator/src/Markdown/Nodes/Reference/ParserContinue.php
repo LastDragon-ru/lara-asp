@@ -6,6 +6,7 @@ use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Parser\Block\BlockContinue;
 use League\CommonMark\Parser\Block\BlockContinueParserInterface;
 use League\CommonMark\Parser\Cursor;
+use League\CommonMark\Reference\ReferenceMapInterface;
 use Override;
 
 /**
@@ -16,7 +17,9 @@ class ParserContinue implements BlockContinueParserInterface {
     private Parser $parser;
     private int    $offset;
 
-    public function __construct() {
+    public function __construct(
+        private readonly ?ReferenceMapInterface $referenceMap,
+    ) {
         $this->block  = new Block();
         $this->parser = new Parser();
         $this->offset = 0;
@@ -65,9 +68,15 @@ class ParserContinue implements BlockContinueParserInterface {
 
     #[Override]
     public function closeBlock(): void {
+        $reference = $this->parser->getReference();
+
         $this->block
-            ->setReference($this->parser->getReference())
+            ->setReference($reference)
             ->setOffset($this->offset);
+
+        if ($reference && $this->referenceMap && !$this->referenceMap->contains($reference->getLabel())) {
+            $this->referenceMap->add($reference);
+        }
     }
 
     private function parse(Cursor $cursor): bool {

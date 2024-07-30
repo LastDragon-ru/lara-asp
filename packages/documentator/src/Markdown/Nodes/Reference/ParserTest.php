@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use League\CommonMark\Xml\MarkdownToXmlConverter;
+use League\CommonMark\Parser\MarkdownParser;
+use League\CommonMark\Xml\XmlRenderer;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -18,16 +20,37 @@ final class ParserTest extends TestCase {
     public function testParse(): void {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment()
-            ->addBlockStartParser(new ParserStart(), 250)
+            ->addExtension(new Extension())
             ->addRenderer(Block::class, new Renderer());
 
-        $converter = new MarkdownToXmlConverter($environment);
+        $parser     = new MarkdownParser($environment);
+        $document   = $parser->parse(self::getTestData()->content('~document.md'));
+        $renderer   = new XmlRenderer($environment);
+        $references = [];
 
+        foreach ($document->getReferenceMap() as $label => $reference) {
+            $references[$label] = $reference->getLabel();
+        }
+
+        self::assertEquals(
+            [
+                'simple:a'    => 'simple:a',
+                'simple:b'    => 'simple:b',
+                'simple:c'    => 'simple:c',
+                'simple:d'    => 'simple:d',
+                'simple:e'    => 'simple:e',
+                'multiline:a' => 'multiline:a',
+                'multiline:b' => 'multiline:b',
+                'quote:a'     => 'quote:a',
+                'quote:b'     => 'quote:b',
+                'quote:c'     => 'quote:c',
+                'quote:d'     => 'quote:d',
+            ],
+            $references,
+        );
         self::assertXmlStringEqualsXmlString(
-            self::getTestData()->content('.xml'),
-            (string) $converter->convert(
-                self::getTestData()->content('.md'),
-            ),
+            self::getTestData()->content('~expected.xml'),
+            $renderer->renderDocument($document)->getContent(),
         );
     }
 }
