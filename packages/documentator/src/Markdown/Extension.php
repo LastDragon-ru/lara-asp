@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Line;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\ParserStart as ReferenceParser;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Event\DocumentPreParsedEvent;
@@ -18,7 +18,7 @@ use Override;
  *   (by default, they are not added to the AST)
  *
  * @see https://github.com/thephpleague/commonmark/discussions/1036
- * @see Line
+ * @see Coordinate
  *
  * @internal
  */

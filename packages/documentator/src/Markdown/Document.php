@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locationable;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
@@ -137,7 +137,7 @@ class Document implements Stringable {
 
             return $title;
         };
-        $replace   = static function (array &$lines, Locationable $block, string $text): void {
+        $replace   = static function (array &$lines, Location $location, string $text): void {
             // Replace lines
             $last   = null;
             $line   = null;
@@ -145,13 +145,13 @@ class Document implements Stringable {
             $index  = 0;
             $number = null;
 
-            foreach ($block->getLocation() as $location) {
-                $last   = $location;
-                $number = $location->number;
+            foreach ($location as $coordinate) {
+                $last   = $coordinate;
+                $number = $coordinate->line;
                 $line   = $lines[$number] ?? '';
-                $prefix = mb_substr($line, 0, $location->offset);
-                $suffix = $location->length
-                    ? mb_substr($line, $location->offset + $location->length)
+                $prefix = mb_substr($line, 0, $coordinate->offset);
+                $suffix = $coordinate->length
+                    ? mb_substr($line, $coordinate->offset + $coordinate->length)
                     : '';
 
                 if (isset($text[$index])) {
@@ -176,13 +176,16 @@ class Document implements Stringable {
 
         foreach ($resources as $resource) {
             if ($resource instanceof Reference) {
-                $origin = Path::getPath($this->path, $resource->getDestination());
-                $target = $getUrl(Path::getRelativePath($path, $origin));
-                $label  = $getText($resource->getLabel());
-                $title  = $getTitle($resource->getTitle());
-                $text   = trim("[{$label}]: {$target} {$title}");
+                $location = $resource->getLocation();
+                $origin   = Path::getPath($this->path, $resource->getDestination());
+                $target   = $getUrl(Path::getRelativePath($path, $origin));
+                $label    = $getText($resource->getLabel());
+                $title    = $getTitle($resource->getTitle());
+                $text     = trim("[{$label}]: {$target} {$title}");
 
-                $replace($lines, $resource, $text);
+                if ($location) {
+                    $replace($lines, $location, $text);
+                }
             }
         }
 

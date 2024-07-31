@@ -15,19 +15,19 @@ use Override;
 class ParserContinue implements BlockContinueParserInterface {
     private Block  $block;
     private Parser $parser;
-    private int    $offset;
+    private int    $padding;
 
     public function __construct(
         private readonly ?ReferenceMapInterface $referenceMap,
     ) {
-        $this->block  = new Block();
-        $this->parser = new Parser();
-        $this->offset = 0;
+        $this->block   = new Block();
+        $this->parser  = new Parser();
+        $this->padding = 0;
     }
 
     public function start(Cursor $cursor): bool {
-        $this->offset = $cursor->getPosition();
-        $started      = $this->parse($cursor);
+        $this->padding = $cursor->getPosition();
+        $started       = $this->parse($cursor);
 
         return $started;
     }
@@ -72,7 +72,7 @@ class ParserContinue implements BlockContinueParserInterface {
 
         $this->block
             ->setReference($reference)
-            ->setOffset($this->offset);
+            ->setPadding($this->padding);
 
         if ($reference && $this->referenceMap && !$this->referenceMap->contains($reference->getLabel())) {
             $this->referenceMap->add($reference);

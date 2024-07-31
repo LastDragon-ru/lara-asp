@@ -10,7 +10,7 @@
         title=""
         startLine="5"
         endLine="6"
-        offset="0"
+        padding="0"
         location="[{5,0,null},{6,0,null}]"
     />
     <reference
@@ -19,7 +19,7 @@
         title="example.com"
         startLine="7"
         endLine="7"
-        offset="0"
+        padding="0"
         location="[{7,0,null}]"
     />
     <reference
@@ -28,7 +28,7 @@
         title=""
         startLine="8"
         endLine="8"
-        offset="0"
+        padding="0"
         location="[{8,0,null}]"
     />
     <reference
@@ -37,7 +37,7 @@
         title="title"
         startLine="9"
         endLine="10"
-        offset="0"
+        padding="0"
         location="[{9,0,null},{10,0,null}]"
     />
     <reference
@@ -46,7 +46,7 @@
         title=""
         startLine="11"
         endLine="11"
-        offset="0"
+        padding="0"
         location="[{11,0,null}]"
     />
     <reference
@@ -55,7 +55,7 @@
         destination="file/b"
         startLine="12"
         endLine="13"
-        offset="0"
+        padding="0"
         location="[{12,0,null},{13,0,null}]"
     />
     <heading level="1">
@@ -67,7 +67,7 @@
         title="\n1\n2\n3\n"
         startLine="16"
         endLine="21"
-        offset="0"
+        padding="0"
         location="[{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null},{21,0,null}]"
     />
     <reference
@@ -76,7 +76,7 @@
         title="\n        example.com\n    "
         startLine="22"
         endLine="27"
-        offset="0"
+        padding="0"
         location="[{22,0,null},{23,0,null},{24,0,null},{25,0,null},{26,0,null},{27,0,null}]"
     />
     <heading level="1">
@@ -89,7 +89,7 @@
             title="example.com"
             startLine="30"
             endLine="31"
-            offset="2"
+            padding="2"
             location="[{30,2,null},{31,2,null}]"
         />
         <reference
@@ -98,7 +98,7 @@
             title=""
             startLine="32"
             endLine="34"
-            offset="2"
+            padding="2"
             location="[{32,2,null},{33,2,null},{34,2,null}]"
         />
     </block_quote>
@@ -110,7 +110,7 @@
                 title="example.com"
                 startLine="35"
                 endLine="36"
-                offset="4"
+                padding="4"
                 location="[{35,4,null},{36,4,null}]"
             />
             <reference
@@ -119,7 +119,7 @@
                 title="example.com"
                 startLine="37"
                 endLine="39"
-                offset="4"
+                padding="4"
                 location="[{37,4,null},{38,4,null},{39,4,null}]"
             />
         </block_quote>

@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Line;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locationable;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Reference\ReferenceInterface;
 use Override;
@@ -11,9 +11,9 @@ use Override;
 /**
  * @internal
  */
-class Block extends AbstractBlock implements ReferenceInterface, Locationable {
+class Block extends AbstractBlock implements ReferenceInterface {
     private ?ReferenceInterface $reference = null;
-    private int                 $offset    = 0;
+    private int                 $padding   = 0;
 
     public function setReference(?ReferenceInterface $reference): static {
         $this->reference = $reference;
@@ -21,12 +21,12 @@ class Block extends AbstractBlock implements ReferenceInterface, Locationable {
         return $this;
     }
 
-    public function getOffset(): int {
-        return $this->offset;
+    public function getPadding(): int {
+        return $this->padding;
     }
 
-    public function setOffset(int $offset): static {
-        $this->offset = $offset;
+    public function setPadding(int $padding): static {
+        $this->padding = $padding;
 
         return $this;
     }
@@ -46,24 +46,16 @@ class Block extends AbstractBlock implements ReferenceInterface, Locationable {
         return $this->reference?->getTitle() ?? '';
     }
 
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function getLocation(): iterable {
+    public function getLocation(): ?Location {
         // Unknown?
         $start = $this->getStartLine();
         $end   = $this->getEndLine();
 
         if ($start === null || $end === null) {
-            yield from [];
-
-            return;
+            return null;
         }
 
         // Nope
-        for ($i = $start; $i <= $end; $i++) {
-            yield new Line($i, $this->getOffset(), null);
-        }
+        return new Location(new Locator($start, $end, 0, null, $this->getPadding()));
     }
 }

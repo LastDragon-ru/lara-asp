@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locationable;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
 use League\CommonMark\Renderer\NodeRendererInterface;
@@ -25,15 +25,13 @@ abstract class XmlRenderer implements NodeRendererInterface, XmlNodeRendererInte
         return preg_replace('/\R/u', '\\n', $string) ?? $string;
     }
 
-    protected function location(?Locationable $node): string {
-        $location = [];
+    protected function location(?Location $location): string {
+        $lines = [];
 
-        if ($node instanceof Locationable) {
-            foreach ($node->getLocation() as $line) {
-                $location[] = '{'.implode(',', [$line->number, $line->offset, $line->length ?? 'null']).'}';
-            }
+        foreach ($location ?? [] as $line) {
+            $lines[] = '{'.implode(',', [$line->line, $line->offset, $line->length ?? 'null']).'}';
         }
 
-        return '['.implode(',', $location).']';
+        return '['.implode(',', $lines).']';
     }
 }

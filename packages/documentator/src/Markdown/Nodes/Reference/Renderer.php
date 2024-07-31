@@ -32,8 +32,8 @@ class Renderer extends XmlRenderer {
             'title'       => $this->escape($node->getTitle()),
             'startLine'   => $node->getStartLine() ?? 'null',
             'endLine'     => $node->getEndLine() ?? 'null',
-            'offset'      => $node->getOffset(),
-            'location'    => $this->location($node),
+            'padding'     => $node->getPadding(),
+            'location'    => $this->location($node->getLocation()),
         ];
     }
 }
