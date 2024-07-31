@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locationable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -40,10 +41,6 @@ use const FILTER_VALIDATE_URL;
 //      https://github.com/thephpleague/commonmark/issues/419
 
 class Document implements Stringable {
-    /**
-     * @var array<int, string>
-     */
-    private array        $lines;
     private DocumentNode $node;
 
     private ?MarkdownParser $parser  = null;
@@ -115,7 +112,7 @@ class Document implements Stringable {
 
         // Update
         $resources = $this->getRelativeResources();
-        $lines     = $this->lines;
+        $lines     = $this->getLines();
         $path      = Path::normalize($path);
         $getUrl    = static function (string $url): string {
             return preg_match('/\s/u', $url)
@@ -150,7 +147,7 @@ class Document implements Stringable {
 
             foreach ($block->getLocation() as $location) {
                 $last   = $location;
-                $number = $location->number - 1;
+                $number = $location->number;
                 $line   = $lines[$number] ?? '';
                 $prefix = mb_substr($line, 0, $location->offset);
                 $suffix = $location->length
@@ -204,7 +201,6 @@ class Document implements Stringable {
 
     protected function setContent(string $content): static {
         $this->node    = $this->parse($content);
-        $this->lines   = Text::getLines($content);
         $this->title   = null;
         $this->summary = null;
 
@@ -221,6 +217,16 @@ class Document implements Stringable {
         return $this->parser->parse($string);
     }
 
+    /**
+     * @return array<array-key, string>
+     */
+    protected function getLines(): array {
+        $lines = $this->node->data->get(Lines::class, null);
+        $lines = $lines instanceof Lines ? $lines->get() : [];
+
+        return $lines;
+    }
+
     protected function getText(?AbstractBlock $node): ?string {
         if ($node?->getStartLine() === null || $node->getEndLine() === null) {
             return null;
@@ -228,7 +234,7 @@ class Document implements Stringable {
 
         $start = $node->getStartLine() - 1;
         $end   = $node->getEndLine() - 1;
-        $lines = array_slice($this->lines, $start, $end - $start + 1);
+        $lines = array_slice($this->getLines(), $start, $end - $start + 1);
         $text  = implode("\n", $lines);
 
         return $text;
@@ -273,7 +279,7 @@ class Document implements Stringable {
 
     #[Override]
     public function __toString(): string {
-        return implode("\n", $this->lines);
+        return implode("\n", $this->getLines());
     }
 
     /**
