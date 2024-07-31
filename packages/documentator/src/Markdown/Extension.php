@@ -4,9 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Parser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\ParserStart as ReferenceParser;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Event\DocumentPreParsedEvent;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\ExtensionInterface;
 use Override;
 
@@ -29,6 +31,7 @@ class Extension implements ExtensionInterface {
 
         $environment
             ->addBlockStartParser($referenceParser)
+            ->addInlineParser(new Parser(new CloseBracketParser()), 100)
             ->addEventListener(
                 DocumentPreParsedEvent::class,
                 static function (DocumentPreParsedEvent $event) use ($referenceParser): void {

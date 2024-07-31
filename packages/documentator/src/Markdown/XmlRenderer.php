@@ -21,8 +21,8 @@ abstract class XmlRenderer implements NodeRendererInterface, XmlNodeRendererInte
         return '';
     }
 
-    protected function escape(string $string): string {
-        return preg_replace('/\R/u', '\\n', $string) ?? $string;
+    protected function escape(?string $string): string {
+        return preg_replace('/\R/u', '\\n', $string ?? '') ?? $string ?? '';
     }
 
     protected function location(?Location $location): string {

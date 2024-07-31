@@ -28,7 +28,7 @@ readonly class Locator implements IteratorAggregate {
     #[Override]
     public function getIterator(): Traversable {
         if ($this->startLine === $this->endLine) {
-            yield new Coordinate($this->startLine, $this->offset, $this->length);
+            yield new Coordinate($this->startLine, $this->padding + $this->offset, $this->length);
         } else {
             for ($line = $this->startLine; $line <= $this->endLine; $line++) {
                 yield match (true) {
