@@ -3,9 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Delimiter\DelimiterInterface;
@@ -13,8 +14,7 @@ use League\CommonMark\Delimiter\DelimiterStack;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
-use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
 use League\CommonMark\Parser\Inline\InlineParserMatch;
@@ -23,14 +23,15 @@ use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 use Override;
 use ReflectionProperty;
+use WeakMap;
 
 use function array_slice;
 use function count;
 use function end;
 use function implode;
 use function mb_strlen;
-use function mb_strpos;
 use function mb_substr;
+use function mb_substr_count;
 use function reset;
 
 /**
@@ -43,10 +44,15 @@ use function reset;
  * @see Environment
  */
 class Parser implements InlineParserInterface, EnvironmentAwareInterface, ConfigurationAwareInterface {
+    /**
+     * @var WeakMap<Node, Coordinate>
+     */
+    private WeakMap $incomplete;
+
     public function __construct(
         private readonly InlineParserInterface $parser,
     ) {
-        // empty
+        $this->incomplete = new WeakMap();
     }
 
     #[Override]
@@ -62,48 +68,104 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         $offset = $cursor->getPosition()
             - $this->getDelimiterStackLength($inlineContext->getDelimiterStack()) // delimiters length
             - mb_strlen($cursor->getPreviousText());                              // text after delimiter
+
+        // Parse
         $parsed = $this->parser->parse($inlineContext);
 
-        if ($parsed) {
-            $container = $inlineContext->getContainer();
-            $startLine = $container->getStartLine();
-            $endLine   = $container->getEndLine();
-            $child     = $container->lastChild();
-
-            if ($child !== null && $startLine !== null && $endLine !== null) {
-                $length = $cursor->getPosition() - $offset;
-                $line   = $cursor->getLine();
-                $tail   = $line;
-
-                if ($startLine !== $endLine) {
-                    $before           = mb_substr($line, 0, $offset);
-                    $beforeLines      = Text::getLines($before);
-                    $beforeLinesCount = count($beforeLines) - 1;
-                    $inline           = mb_substr($line, $offset, $length);
-                    $inlineLines      = Text::getLines($inline);
-                    $inlineLinesCount = count($inlineLines) - 1;
-                    $startLine        = $startLine + $beforeLinesCount;
-                    $endLine          = $startLine + $inlineLinesCount;
-                    $tail             = (end($beforeLines) ?: '').(reset($inlineLines) ?: '');
-
-                    if ($beforeLinesCount) {
-                        $offset -= (mb_strlen(implode("\n", array_slice($beforeLines, 0, -1))) + 1);
-                    }
-
-                    if ($startLine !== $endLine) {
-                        $length -= mb_strlen($inline);
-                    }
-                }
-
-                $padding = $this->getBlockPadding($child, $startLine, $tail);
-
-                if ($padding !== null) {
-                    Data::set($child, new Location(new Locator($startLine, $endLine, $offset, $length, $padding)));
-                }
-            }
+        if (!$parsed) {
+            return false;
         }
 
-        return $parsed;
+        // Detect Location
+        $container = $inlineContext->getContainer();
+        $startLine = $container->getStartLine();
+        $endLine   = $container->getEndLine();
+        $length    = $cursor->getPosition() - $offset;
+        $child     = $container->lastChild();
+        $line      = $cursor->getLine();
+
+        if ($child !== null && $startLine !== null && $endLine !== null) {
+            $start = $line;
+
+            if ($startLine !== $endLine) {
+                $before           = mb_substr($line, 0, $offset);
+                $beforeLines      = Text::getLines($before);
+                $beforeLinesCount = count($beforeLines) - 1;
+                $inline           = mb_substr($line, $offset, $length);
+                $inlineLines      = Text::getLines($inline);
+                $inlineLinesCount = count($inlineLines) - 1;
+                $startLine        = $startLine + $beforeLinesCount;
+                $endLine          = $startLine + $inlineLinesCount;
+                $start            = (end($beforeLines) ?: '').(reset($inlineLines) ?: '');
+
+                if ($beforeLinesCount) {
+                    $offset -= (mb_strlen(implode("\n", array_slice($beforeLines, 0, -1))) + 1);
+                }
+
+                if ($startLine !== $endLine) {
+                    $length -= mb_strlen($inline);
+                }
+            }
+
+            $padding = Utils::getPadding($child, $startLine, $start);
+
+            if ($padding !== null) {
+                Data::set($child, new Location(new Locator($startLine, $endLine, $offset, $length, $padding)));
+            }
+        } elseif ($child !== null && $container instanceof TableCell) {
+            // The properties of the `TableCell` is not known yet (v2.4.2), we
+            // should wait until parsing is complete.
+            //
+            // Also, escaped `|` passed down to inline parsing as an unescaped
+            // pipe character. It leads to invalid `$offset`/`$length`.
+            $offset                  += mb_substr_count(mb_substr($line, 0, $offset), '|');
+            $length                  += mb_substr_count(mb_substr($line, $offset, $length), '|');
+            $this->incomplete[$child] = new Coordinate(-1, $offset, $length);
+        } else {
+            // empty
+        }
+
+        // Ok
+        return true;
+    }
+
+    public function finalize(): void {
+        // Complete detection
+        foreach ($this->incomplete as $node => $coordinate) {
+            // Container?
+            $container = Utils::getContainer($node);
+
+            if ($container === null) {
+                continue;
+            }
+
+            // Detected?
+            $startLine = $container->getStartLine();
+            $endLine   = $container->getEndLine();
+            $padding   = Data::get($container, Padding::class);
+            $offset    = Data::get($container, Offset::class);
+
+            if ($startLine === null || $endLine === null || $padding === null || $offset === null) {
+                continue;
+            }
+
+            // Set
+            Data::set(
+                $node,
+                new Location(
+                    new Locator(
+                        $startLine,
+                        $endLine,
+                        $coordinate->offset + $offset,
+                        $coordinate->length,
+                        $padding,
+                    ),
+                ),
+            );
+        }
+
+        // Cleanup
+        $this->incomplete = new WeakMap();
     }
 
     #[Override]
@@ -122,62 +184,10 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
 
     private function getDelimiterStackLength(DelimiterStack $stack): int {
         $delimiter = (new ReflectionProperty($stack, 'top'))->getValue($stack);
-        $length    = 0;
-
-        if ($delimiter instanceof DelimiterInterface) {
-            $length += $delimiter->getLength();
-        }
+        $length    = $delimiter instanceof DelimiterInterface
+            ? $delimiter->getLength()
+            : 0;
 
         return $length;
-    }
-
-    private function getBlockPadding(Node $node, int $line, string $tail): ?int {
-        // Search for Document
-        $document = null;
-        $padding  = null;
-        $parent   = $node;
-        $block    = null;
-
-        do {
-            // Document?
-            if ($parent instanceof Document) {
-                $document = $parent;
-                break;
-            }
-
-            // Cached?
-            if ($parent instanceof AbstractBlock && $block === null) {
-                $block   = $parent;
-                $padding = Data::get($block, Padding::class);
-
-                if ($padding !== null) {
-                    break;
-                }
-            }
-
-            // Deep
-            $parent = $parent->parent();
-        } while ($parent);
-
-        if ($document === null) {
-            return $padding;
-        }
-
-        // Detect block padding
-        // (we are expecting that all lines inside block have the same padding)
-        $lines   = Data::get($document, Lines::class) ?? [];
-        $padding = mb_strpos($lines[$line] ?? '', $tail);
-
-        if ($padding === false) {
-            return null;
-        }
-
-        // Cache
-        if ($block) {
-            Data::set($block, new Padding($padding));
-        }
-
-        // Return
-        return $padding;
     }
 }

@@ -15,7 +15,7 @@ text text _[link](https://example.com/)_ text.
 
 * List list [link](https://example.com/).
   * List list [link](https://example.com/).
-  * List list [link](https://example.com/).
+  * List list [link](https://example.com/ "\\|").
 
 # Quotes
 
@@ -25,3 +25,14 @@ text text _[link](https://example.com/)_ text.
 > quote quote [link](https://example.com/) quote.
 
 > > Quote quote [link](https://example.com/).
+
+# Tables
+
+| Header                  |  Header ([link](https://example.com/))                                    |
+|-------------------------|---------------------------------------------------------------------------|
+| Cell [link][link] cell. | Cell                                                                      |
+| Cell                    | Cell cell [link](https://example.com/) cell [link](https://example.com/). |
+
+> | Header                                           | Header |
+> |--------------------------------------------------|--------|
+> | Cell `\|` \\| [link](https://example.com/ "\\|") | Cell   |
