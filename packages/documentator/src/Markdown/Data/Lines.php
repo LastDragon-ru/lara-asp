@@ -3,13 +3,15 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
 use League\CommonMark\Input\MarkdownInputInterface;
+use Override;
 
 use function iterator_to_array;
 
 /**
+ * @implements Value<array<array-key, string>>
  * @internal
  */
-class Lines {
+class Lines implements Value {
     /**
      * @var array<array-key, string>|null
      */
@@ -22,8 +24,9 @@ class Lines {
     }
 
     /**
-     * @return array<array-key, string>
+     * @inheritDoc
      */
+    #[Override]
     public function get(): array {
         if ($this->lines === null) {
             $this->lines = iterator_to_array($this->input->getLines());

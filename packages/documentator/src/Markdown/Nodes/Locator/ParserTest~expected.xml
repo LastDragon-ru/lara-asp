@@ -46,7 +46,7 @@
         </emph>
         <text><![CDATA[ text.]]></text>
     </paragraph>
-    <reference destination="https://example.com/" endLine="13" label="link" location="[{12,0,null},{13,0,null}]" padding="0" startLine="12" title="reference"/>
+    <reference destination="https://example.com/" label="link" location="[{12,0,null},{13,0,null}]" title="reference"/>
     <heading level="1">
         <text>Lists</text>
     </heading>

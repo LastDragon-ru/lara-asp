@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\XmlRenderer;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Node;
@@ -32,9 +30,7 @@ class Renderer extends XmlRenderer {
         return [
             'url'      => $this->escape($node->getUrl()),
             'title'    => $this->escape($node->getTitle()),
-            'location' => $this->location(
-                Cast::toNullable(Location::class, $node->data->get(Location::class, null)),
-            ),
+            'location' => $this->location($node),
         ];
     }
 }

@@ -2,10 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Renderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -31,18 +30,18 @@ final class ExtensionTest extends TestCase {
         $parser   = new MarkdownParser($environment);
         $markdown = "# Header\nParagraph [link](https://example.com/).";
         $document = $parser->parse($markdown);
-        $lines    = $document->data->get(Lines::class, null);
+        $lines    = Data::get($document, Lines::class);
         $link     = (new Query())->where(Query::type(Link::class))->findOne($document);
 
-        self::assertInstanceOf(Lines::class, $lines);
-        self::assertCount(2, $lines->get());
+        self::assertIsArray($lines);
+        self::assertCount(2, $lines);
         self::assertNotNull($link);
         self::assertEquals(
             [
                 new Coordinate(2, 10, 28),
             ],
             iterator_to_array(
-                Cast::toIterable($link->data->get(Location::class, null) ?? []),
+                Data::get($link, Location::class) ?? [],
             ),
         );
     }

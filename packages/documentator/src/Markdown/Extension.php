@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Parser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\ParserStart as ReferenceParser;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
@@ -35,7 +35,7 @@ class Extension implements ExtensionInterface {
             ->addEventListener(
                 DocumentPreParsedEvent::class,
                 static function (DocumentPreParsedEvent $event) use ($referenceParser): void {
-                    $event->getDocument()->data->set(Lines::class, new Lines($event->getMarkdown()));
+                    Data::set($event->getDocument(), new Lines($event->getMarkdown()));
 
                     $referenceParser->setReferenceMap($event->getDocument()->getReferenceMap());
                 },

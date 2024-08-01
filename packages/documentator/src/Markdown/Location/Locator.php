@@ -1,17 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Location;
 
-use IteratorAggregate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Coordinate;
 use Override;
 use Traversable;
 
 /**
  * @internal
- * @implements IteratorAggregate<array-key, Coordinate>
  */
-readonly class Locator implements IteratorAggregate {
+readonly class Locator implements Location {
     public function __construct(
         private int $startLine,
         private int $endLine,

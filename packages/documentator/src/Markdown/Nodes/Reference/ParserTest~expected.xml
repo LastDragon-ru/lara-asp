@@ -8,54 +8,36 @@
         label="simple:a"
         destination="https://example.com/"
         title=""
-        startLine="5"
-        endLine="6"
-        padding="0"
         location="[{5,0,null},{6,0,null}]"
     />
     <reference
         label="simple:b"
         destination="https://example.com/"
         title="example.com"
-        startLine="7"
-        endLine="7"
-        padding="0"
         location="[{7,0,null}]"
     />
     <reference
         label="simple:c"
         destination="https://example.com/"
         title=""
-        startLine="8"
-        endLine="8"
-        padding="0"
         location="[{8,0,null}]"
     />
     <reference
         label="simple:d"
         destination="file/b"
         title="title"
-        startLine="9"
-        endLine="10"
-        padding="0"
         location="[{9,0,null},{10,0,null}]"
     />
     <reference
         label="simple:e"
         destination="file/b"
         title=""
-        startLine="11"
-        endLine="11"
-        padding="0"
         location="[{11,0,null}]"
     />
     <reference
         title=""
         label="simple:e"
         destination="file/b"
-        startLine="12"
-        endLine="13"
-        padding="0"
         location="[{12,0,null},{13,0,null}]"
     />
     <heading level="1">
@@ -65,18 +47,12 @@
         label="multiline:a"
         destination="https://example.com/"
         title="\n1\n2\n3\n"
-        startLine="16"
-        endLine="21"
-        padding="0"
         location="[{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null},{21,0,null}]"
     />
     <reference
         label="multiline:b"
         destination="https://example.com/"
         title="\n        example.com\n    "
-        startLine="22"
-        endLine="27"
-        padding="0"
         location="[{22,0,null},{23,0,null},{24,0,null},{25,0,null},{26,0,null},{27,0,null}]"
     />
     <heading level="1">
@@ -87,18 +63,12 @@
             label="quote:a"
             destination="https://example.com/"
             title="example.com"
-            startLine="30"
-            endLine="31"
-            padding="2"
             location="[{30,2,null},{31,2,null}]"
         />
         <reference
             label="quote:b"
             destination="https://example.com/"
             title=""
-            startLine="32"
-            endLine="34"
-            padding="2"
             location="[{32,2,null},{33,2,null},{34,2,null}]"
         />
     </block_quote>
@@ -108,18 +78,12 @@
                 label="quote:c"
                 destination="https://example.com/"
                 title="example.com"
-                startLine="35"
-                endLine="36"
-                padding="4"
                 location="[{35,4,null},{36,4,null}]"
             />
             <reference
                 label="quote:d"
                 destination="https://example.com/"
                 title="example.com"
-                startLine="37"
-                endLine="39"
-                padding="4"
                 location="[{37,4,null},{38,4,null},{39,4,null}]"
             />
         </block_quote>

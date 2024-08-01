@@ -2,13 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
+use Override;
+
 /**
  * @internal
+ * @implements Value<int>
  */
-readonly class Padding {
+readonly class Padding implements Value {
     public function __construct(
-        public int $value,
+        private int $value,
     ) {
         // empty
+    }
+
+    #[Override]
+    public function get(): mixed {
+        return $this->value;
     }
 }

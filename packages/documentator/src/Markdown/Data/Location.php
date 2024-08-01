@@ -2,29 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
-use IteratorAggregate;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
 use Override;
-use Traversable;
 
 /**
  * @internal
- * @implements IteratorAggregate<array-key, Coordinate>
+ * @implements Value<LocationContract>
  */
-class Location implements IteratorAggregate {
+class Location implements Value {
     public function __construct(
-        /**
-         * @var iterable<array-key, Coordinate>
-         */
-        private readonly iterable $coordinates,
+        private readonly LocationContract $location,
     ) {
         // empty
     }
 
-    /**
-     * @return Traversable<array-key, Coordinate>
-     */
     #[Override]
-    public function getIterator(): Traversable {
-        yield from $this->coordinates;
+    public function get(): mixed {
+        return $this->location;
     }
 }

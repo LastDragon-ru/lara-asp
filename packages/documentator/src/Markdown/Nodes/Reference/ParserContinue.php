@@ -2,6 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Parser\Block\BlockContinue;
 use League\CommonMark\Parser\Block\BlockContinueParserInterface;
@@ -68,14 +72,23 @@ class ParserContinue implements BlockContinueParserInterface {
 
     #[Override]
     public function closeBlock(): void {
+        // Reference
         $reference = $this->parser->getReference();
 
-        $this->block
-            ->setReference($reference)
-            ->setPadding($this->padding);
+        $this->block->setReference($reference);
 
         if ($reference && $this->referenceMap && !$this->referenceMap->contains($reference->getLabel())) {
             $this->referenceMap->add($reference);
+        }
+
+        // Data
+        Data::set($this->block, new Padding($this->padding));
+
+        $start = $this->block->getStartLine();
+        $end   = $this->block->getEndLine();
+
+        if ($start !== null && $end !== null) {
+            Data::set($this->block, new Location(new Locator($start, $end, 0, null, $this->padding)));
         }
     }
 

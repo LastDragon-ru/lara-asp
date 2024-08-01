@@ -25,10 +25,11 @@ abstract class XmlRenderer implements NodeRendererInterface, XmlNodeRendererInte
         return preg_replace('/\R/u', '\\n', $string ?? '') ?? $string ?? '';
     }
 
-    protected function location(?Location $location): string {
-        $lines = [];
+    protected function location(Node $node): string {
+        $lines    = [];
+        $location = Data::get($node, Location::class) ?? [];
 
-        foreach ($location ?? [] as $line) {
+        foreach ($location as $line) {
             $lines[] = '{'.implode(',', [$line->line, $line->offset, $line->length ?? 'null']).'}';
         }
 

@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Delimiter\DelimiterInterface;
 use League\CommonMark\Delimiter\DelimiterStack;
@@ -98,12 +98,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
                 $padding = $this->getBlockPadding($child, $startLine, $tail);
 
                 if ($padding !== null) {
-                    $child->data->set(
-                        Location::class,
-                        new Location(
-                            new Locator($startLine, $endLine, $offset, $length, $padding),
-                        ),
-                    );
+                    Data::set($child, new Location(new Locator($startLine, $endLine, $offset, $length, $padding)));
                 }
             }
         }
@@ -152,14 +147,11 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
 
             // Cached?
             if ($parent instanceof AbstractBlock && $block === null) {
-                $block = $parent;
+                $block   = $parent;
+                $padding = Data::get($block, Padding::class);
 
-                if ($block->data->has(Padding::class)) {
-                    $padding = Cast::toNullable(Padding::class, $block->data->get(Padding::class, null))?->value;
-
-                    if ($padding !== null) {
-                        break;
-                    }
+                if ($padding !== null) {
+                    break;
                 }
             }
 
@@ -173,8 +165,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
 
         // Detect block padding
         // (we are expecting that all lines inside block have the same padding)
-        $lines   = $document->data->get(Lines::class, null);
-        $lines   = $lines instanceof Lines ? $lines->get() : [];
+        $lines   = Data::get($document, Lines::class) ?? [];
         $padding = mb_strpos($lines[$line] ?? '', $tail);
 
         if ($padding === false) {
@@ -183,7 +174,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
 
         // Cache
         if ($block) {
-            $block->data->set(Padding::class, new Padding($padding));
+            Data::set($block, new Padding($padding));
         }
 
         // Return

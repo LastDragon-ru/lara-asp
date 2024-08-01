@@ -5,7 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
@@ -176,7 +177,7 @@ class Document implements Stringable {
 
         foreach ($resources as $resource) {
             if ($resource instanceof Reference) {
-                $location = $resource->getLocation();
+                $location = Data::get($resource, LocationData::class);
                 $origin   = Path::getPath($this->path, $resource->getDestination());
                 $target   = $getUrl(Path::getRelativePath($path, $origin));
                 $label    = $getText($resource->getLabel());
@@ -224,10 +225,7 @@ class Document implements Stringable {
      * @return array<array-key, string>
      */
     protected function getLines(): array {
-        $lines = $this->node->data->get(Lines::class, null);
-        $lines = $lines instanceof Lines ? $lines->get() : [];
-
-        return $lines;
+        return Data::get($this->node, Lines::class) ?? [];
     }
 
     protected function getText(?AbstractBlock $node): ?string {
