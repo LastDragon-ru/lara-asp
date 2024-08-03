@@ -25,6 +25,10 @@ use function count;
 use function filter_var;
 use function implode;
 use function ltrim;
+use function mb_substr;
+use function preg_match;
+use function preg_quote;
+use function rawurldecode;
 use function str_ends_with;
 use function str_starts_with;
 use function trim;
@@ -121,14 +125,18 @@ class Document implements Stringable {
             }
 
             // Update
-            $text = null;
+            $text   = null;
+            $origin = trim((string) $editor->getText($lines, $location));
 
             if ($resource instanceof Reference) {
-                $target = Path::getPath($this->path, $resource->getDestination());
-                $target = Path::getRelativePath($path, $target);
-                $label  = $resource->getLabel();
-                $title  = $resource->getTitle();
-                $text   = Utils::getReferenceDefinition($label, $target, $title);
+                $titleWrapper = mb_substr($origin, -1, 1);
+                $wrapTarget   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
+                $target       = rawurldecode($resource->getDestination());
+                $target       = Path::getPath($this->path, $target);
+                $target       = Path::getRelativePath($path, $target);
+                $label        = $resource->getLabel();
+                $title        = $resource->getTitle();
+                $text         = Utils::getLink('[%s]: %s %s', $label, $target, $title, $wrapTarget, $titleWrapper);
             } else {
                 // skipped
             }

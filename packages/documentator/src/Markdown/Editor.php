@@ -10,6 +10,7 @@ use function array_key_last;
 use function array_merge;
 use function array_reverse;
 use function count;
+use function implode;
 use function iterator_to_array;
 use function mb_substr;
 use function trim;
@@ -23,6 +24,30 @@ use const PHP_INT_MAX;
 class Editor {
     public function __construct() {
         // empty
+    }
+
+    /**
+     * @param array<int, string> $lines
+     */
+    public function getText(array $lines, Location $location): ?string {
+        // Select
+        $selected = null;
+
+        foreach ($location as $coordinate) {
+            if (isset($lines[$coordinate->line])) {
+                $selected[] = mb_substr($lines[$coordinate->line], $coordinate->offset, $coordinate->length);
+            } else {
+                $selected = null;
+                break;
+            }
+        }
+
+        if ($selected === null) {
+            return null;
+        }
+
+        // Return
+        return implode("\n", $selected);
     }
 
     /**

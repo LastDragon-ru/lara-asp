@@ -8,9 +8,11 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Util\UrlEncoder;
 
 use function mb_strpos;
 use function preg_match;
+use function sprintf;
 use function str_contains;
 use function strtr;
 use function trim;
@@ -89,41 +91,53 @@ class Utils {
         return $line;
     }
 
-    public static function getReferenceDefinition(
+    public static function getLink(
+        string $format,
         string $label,
         string $target,
         string $title,
+        ?bool $wrapTarget,
+        ?string $titleWrapper,
     ): string {
         $label  = self::getLinkLabel($label);
-        $title  = self::getLinkTitle($title);
-        $target = self::getLinkTarget($target);
-        $text   = trim("[{$label}]: {$target} {$title}");
+        $title  = self::getLinkTitle($title, $titleWrapper);
+        $target = self::getLinkTarget($target, $wrapTarget);
+        $link   = trim(sprintf($format, $label, $target, $title));
 
-        return $text;
+        return $link;
     }
 
     private static function getLinkLabel(string $label): string {
         return strtr($label, ['[' => '\\\\[', ']' => '\\\\]']);
     }
 
-    private static function getLinkTarget(string $target): string {
-        return preg_match('/\s/u', $target)
-            ? '<'.strtr($target, ['<' => '\\\\<', '>' => '\\\\>']).'>'
-            : $target;
+    private static function getLinkTarget(string $target, ?bool $wrap): string {
+        return ($wrap ?? preg_match('/\s/u', $target))
+            ? '<'.strtr($target, ['<' => '\\<', '>' => '\\>']).'>'
+            : UrlEncoder::unescapeAndEncode($target);
     }
 
-    private static function getLinkTitle(string $title): string {
-        if ($title === '') {
-            // no action
-        } elseif ((!str_contains($title, '(') && !str_contains($title, ')'))) {
-            $title = "({$title})";
-        } elseif (!str_contains($title, '"')) {
-            $title = "\"{$title}\"";
-        } elseif (!str_contains($title, "'")) {
-            $title = "'{$title}'";
-        } else {
-            $title = '('.strtr($title, ['(' => '\\\\(', ')' => '\\\\)']).')';
+    private static function getLinkTitle(string $title, ?string $wrapper = null): string {
+        if (!$title) {
+            return '';
         }
+
+        $wrappers = [
+            ')' => ['(' => '\\(', ')' => '\\)'],
+            '"' => ['"' => '\\"'],
+            "'" => ["'" => "\\'"],
+        ];
+        $wrapper  = match (true) {
+            isset($wrappers[$wrapper]) => $wrapper,
+            !str_contains($title, '"') => '"',
+            !str_contains($title, "'") => "'",
+            default                    => ')',
+        };
+        $title = match ($wrapper) {
+            '"'     => '"'.strtr($title, $wrappers['"']).'"',
+            "'"     => "'".strtr($title, $wrappers['"'])."'",
+            default => '('.strtr($title, $wrappers[')']).')',
+        };
 
         return $title;
     }

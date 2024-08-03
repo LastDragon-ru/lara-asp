@@ -243,8 +243,8 @@ final class DocumentTest extends TestCase {
 
                 [tel]: tel:+70000000000 "title"
                 [link]: ../from/file/a
-                [link]: ../from/file/b (title)
-                [title]: ../from/file/a (title)
+                [link]: ../from/file/b ' <title> '
+                [title]: <../from/file/a> (title)
                 [unused]: ../path/to/file
                 [mailto]: mailto:mail@example.com
                 [absolute]: /path/to/file 'title'
@@ -253,10 +253,10 @@ final class DocumentTest extends TestCase {
                 [a]: ../from/file/a
                 [a]: ../from/file/b
 
-                [b]: ../from/file/b (
+                [b]: ../from/file/b "
                 abc
                 123
-                )
+                "
 
                 [c]: ../from/file/c (
                         title
@@ -266,19 +266,19 @@ final class DocumentTest extends TestCase {
 
                 ## Target escaping
 
-                [title]: ../from/file/%20/a
-                [title]: ../from/file/%20/a
+                [title]: ../from/%3Cfile%3E/%20/a
+                [title]: <../from/file/ /a>
 
                 ## Title escaping
 
                 ### can be avoided
 
                 [title]: ../file/a "title with ( ) and with ' '"
-                [title]: ../file/a "title with ( ) and with ' '"
+                [title]: ../file/a (title with \( \) and with ' ')
 
                 ### cannot
 
-                [title]: ../file/a (title with \\( \\) and with ' ' and with " ")
+                [title]: ../file/a "title with ( ) and with ' ' and with \" \""
 
                 ## Inside Quote
 
@@ -292,7 +292,7 @@ final class DocumentTest extends TestCase {
 
                 [tel]: tel:+70000000000 "title"
                 [link]: ./file/a
-                [link]: file/b 'title'
+                [link]: file/b ' <title> '
                 [title]: <./file/a> (title)
                 [unused]: ../path/to/file
                 [mailto]: mailto:mail@example.com
@@ -317,7 +317,7 @@ final class DocumentTest extends TestCase {
 
                 ## Target escaping
 
-                [title]: ./file/%20/a
+                [title]: ./%3Cfile%3E/%20/a
                 [title]: <./file/ /a>
 
                 ## Title escaping

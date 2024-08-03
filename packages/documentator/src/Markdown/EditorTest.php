@@ -115,4 +115,29 @@ final class EditorTest extends TestCase {
 
         self::assertEquals($expected, $editor->expand($changes));
     }
+
+    public function testGetText(): void {
+        $editor = new Editor();
+        $lines  = [
+            0 => 'a b c d',
+            1 => 'e f g h',
+            2 => 'i j k l',
+            3 => 'm n o p',
+            4 => '',
+            5 => 'q r s t',
+            6 => 'u v w x',
+        ];
+
+        self::assertNull($editor->getText($lines, new Locator(25, 25, 0)));
+        self::assertEquals('f g', $editor->getText($lines, new Locator(1, 1, 2, 3)));
+        self::assertEquals(
+            <<<'TEXT'
+            k l
+            m n o p
+
+            q r s
+            TEXT,
+            $editor->getText($lines, new Locator(2, 5, 4, 5)),
+        );
+    }
 }
