@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
@@ -24,11 +25,8 @@ use function count;
 use function filter_var;
 use function implode;
 use function ltrim;
-use function preg_match;
-use function str_contains;
 use function str_ends_with;
 use function str_starts_with;
-use function strtr;
 use function trim;
 
 use const FILTER_NULL_ON_FAILURE;
@@ -110,50 +108,39 @@ class Document implements Stringable {
         // Update
         $resources = $this->getRelativeResources();
         $changes   = [];
+        $editor    = new Editor();
         $lines     = $this->getLines();
         $path      = Path::normalize($path);
-        $getUrl    = static function (string $url): string {
-            return preg_match('/\s/u', $url)
-                ? '<'.strtr($url, ['<' => '\\\\<', '>' => '\\\\>']).'>'
-                : $url;
-        };
-        $getText   = static function (string $text): string {
-            return strtr($text, ['[' => '\\\\[', ']' => '\\\\]']);
-        };
-        $getTitle  = static function (string $title): string {
-            if ($title === '') {
-                // no action
-            } elseif (!str_contains($title, '(') && !str_contains($title, ')')) {
-                $title = "({$title})";
-            } elseif (!str_contains($title, '"')) {
-                $title = "\"{$title}\"";
-            } elseif (!str_contains($title, "'")) {
-                $title = "'{$title}'";
-            } else {
-                $title = '('.strtr($title, ['(' => '\\\\(', ')' => '\\\\)']).')';
-            }
-
-            return $title;
-        };
 
         foreach ($resources as $resource) {
-            if ($resource instanceof Reference) {
-                $location = Data::get($resource, LocationData::class);
-                $origin   = Path::getPath($this->path, $resource->getDestination());
-                $target   = $getUrl(Path::getRelativePath($path, $origin));
-                $label    = $getText($resource->getLabel());
-                $title    = $getTitle($resource->getTitle());
-                $text     = trim("[{$label}]: {$target} {$title}");
+            // Location?
+            $location = Data::get($resource, LocationData::class);
 
-                if ($location) {
-                    $changes[] = [$location, $text];
-                }
+            if (!$location) {
+                continue;
+            }
+
+            // Update
+            $text = null;
+
+            if ($resource instanceof Reference) {
+                $target = Path::getPath($this->path, $resource->getDestination());
+                $target = Path::getRelativePath($path, $target);
+                $label  = $resource->getLabel();
+                $title  = $resource->getTitle();
+                $text   = Utils::getReferenceDefinition($label, $target, $title);
+            } else {
+                // skipped
+            }
+
+            if ($text !== null) {
+                $changes[] = [$location, $text];
             }
         }
 
         // Update
         if ($changes) {
-            $lines   = (new Editor())->modify($lines, $changes);
+            $lines   = $editor->modify($lines, $changes);
             $content = implode("\n", $lines);
 
             $this->setContent($content);

@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use League\CommonMark\Node\Block\AbstractBlock;
@@ -10,6 +10,10 @@ use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
 
 use function mb_strpos;
+use function preg_match;
+use function str_contains;
+use function strtr;
+use function trim;
 
 /**
  * @internal
@@ -83,6 +87,45 @@ class Utils {
         $line  = $lines[$line] ?? null;
 
         return $line;
+    }
+
+    public static function getReferenceDefinition(
+        string $label,
+        string $target,
+        string $title,
+    ): string {
+        $label  = self::getLinkLabel($label);
+        $title  = self::getLinkTitle($title);
+        $target = self::getLinkTarget($target);
+        $text   = trim("[{$label}]: {$target} {$title}");
+
+        return $text;
+    }
+
+    private static function getLinkLabel(string $label): string {
+        return strtr($label, ['[' => '\\\\[', ']' => '\\\\]']);
+    }
+
+    private static function getLinkTarget(string $target): string {
+        return preg_match('/\s/u', $target)
+            ? '<'.strtr($target, ['<' => '\\\\<', '>' => '\\\\>']).'>'
+            : $target;
+    }
+
+    private static function getLinkTitle(string $title): string {
+        if ($title === '') {
+            // no action
+        } elseif ((!str_contains($title, '(') && !str_contains($title, ')'))) {
+            $title = "({$title})";
+        } elseif (!str_contains($title, '"')) {
+            $title = "\"{$title}\"";
+        } elseif (!str_contains($title, "'")) {
+            $title = "'{$title}'";
+        } else {
+            $title = '('.strtr($title, ['(' => '\\\\(', ')' => '\\\\)']).')';
+        }
+
+        return $title;
     }
 
     /**

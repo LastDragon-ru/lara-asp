@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Listener;
@@ -20,6 +21,7 @@ use Override;
  * We use it for:
  * * find Reference nodes and their location inside the document
  *   (by default, they are not added to the AST)
+ * * determine location of the Links/Images
  *
  * @see https://github.com/thephpleague/commonmark/discussions/1036
  * @see Coordinate

@@ -264,6 +264,11 @@ final class DocumentTest extends TestCase {
 
                 # Special
 
+                ## Target escaping
+
+                [title]: ../from/file/%20/a
+                [title]: ../from/file/%20/a
+
                 ## Title escaping
 
                 ### can be avoided
@@ -309,6 +314,11 @@ final class DocumentTest extends TestCase {
                     )
 
                 # Special
+
+                ## Target escaping
+
+                [title]: ./file/%20/a
+                [title]: <./file/ /a>
 
                 ## Title escaping
 

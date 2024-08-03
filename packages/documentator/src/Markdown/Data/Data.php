@@ -1,8 +1,7 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Value;
 use League\CommonMark\Node\Node;
 
 use function is_a;
