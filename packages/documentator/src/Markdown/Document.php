@@ -6,9 +6,7 @@ use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
-use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
@@ -21,13 +19,11 @@ use League\CommonMark\Parser\MarkdownParser;
 use Override;
 use Stringable;
 
-use function array_filter;
 use function array_slice;
 use function count;
 use function filter_var;
 use function implode;
 use function ltrim;
-use function mb_substr;
 use function preg_match;
 use function str_contains;
 use function str_ends_with;
@@ -113,6 +109,7 @@ class Document implements Stringable {
 
         // Update
         $resources = $this->getRelativeResources();
+        $changes   = [];
         $lines     = $this->getLines();
         $path      = Path::normalize($path);
         $getUrl    = static function (string $url): string {
@@ -138,42 +135,6 @@ class Document implements Stringable {
 
             return $title;
         };
-        $replace   = static function (array &$lines, Location $location, string $text): void {
-            // Replace lines
-            $last   = null;
-            $line   = null;
-            $text   = Text::getLines($text);
-            $index  = 0;
-            $number = null;
-
-            foreach ($location as $coordinate) {
-                $last   = $coordinate;
-                $number = $coordinate->line;
-                $line   = $lines[$number] ?? '';
-                $prefix = mb_substr($line, 0, $coordinate->offset);
-                $suffix = $coordinate->length
-                    ? mb_substr($line, $coordinate->offset + $coordinate->length)
-                    : '';
-
-                if (isset($text[$index])) {
-                    $lines[$number] = $prefix.$text[$index].$suffix;
-                } else {
-                    $lines[$number] = null;
-                }
-
-                $index++;
-            }
-
-            // Parser uses the empty line right after the block as an End Line.
-            // We should preserve it.
-            if ($last !== null) {
-                $content = mb_substr($line, $last->offset);
-
-                if ($content === '') {
-                    $lines[$number] = mb_substr($line, 0, $last->offset);
-                }
-            }
-        };
 
         foreach ($resources as $resource) {
             if ($resource instanceof Reference) {
@@ -185,16 +146,17 @@ class Document implements Stringable {
                 $text     = trim("[{$label}]: {$target} {$title}");
 
                 if ($location) {
-                    $replace($lines, $location, $text);
+                    $changes[] = [$location, $text];
                 }
             }
         }
 
         // Update
-        if ($resources) {
-            $this->setContent(
-                implode("\n", array_filter($lines, static fn ($line) => $line !== null)),
-            );
+        if ($changes) {
+            $lines   = (new Editor())->modify($lines, $changes);
+            $content = implode("\n", $lines);
+
+            $this->setContent($content);
         }
 
         $this->path = $path;

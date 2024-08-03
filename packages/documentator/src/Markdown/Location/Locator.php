@@ -19,6 +19,11 @@ readonly class Locator implements Location {
         // empty
     }
 
+    #[Override]
+    public function getPadding(): int {
+        return $this->padding;
+    }
+
     /**
      * @return Traversable<array-key, Coordinate>
      */

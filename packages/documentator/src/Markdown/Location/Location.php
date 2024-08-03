@@ -8,5 +8,5 @@ use IteratorAggregate;
  * @extends IteratorAggregate<array-key, Coordinate>
  */
 interface Location extends IteratorAggregate {
-    // empty
+    public function getPadding(): int;
 }

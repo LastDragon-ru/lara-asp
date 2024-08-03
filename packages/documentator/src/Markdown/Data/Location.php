@@ -9,9 +9,9 @@ use Override;
  * @internal
  * @implements Value<LocationContract>
  */
-class Location implements Value {
+readonly class Location implements Value {
     public function __construct(
-        private readonly LocationContract $location,
+        private LocationContract $location,
     ) {
         // empty
     }
