@@ -179,7 +179,7 @@
                     <table_cell type="data">
                         <text><![CDATA[Cell ]]></text>
                         <code>|</code>
-                        <text> | </text>
+                        <text><![CDATA[ | ]]></text>
                         <link location="[{38,18,34}]" title="|" url="https://example.com/">
                             <text>link</text>
                         </link>
@@ -191,4 +191,78 @@
             </table_section>
         </table>
     </block_quote>
+    <heading level="1">
+        <text>Images</text>
+    </heading>
+    <paragraph>
+        <text><![CDATA[Text text ]]></text>
+        <image location="[{42,10,30}]" title="" url="https://example.com/">
+            <text>image</text>
+        </image>
+        <text><![CDATA[ text ]]></text>
+        <image location="[{42,46,38}]" title="title" url="https://example.com/">
+            <text>image</text>
+        </image>
+        <softbreak/>
+        <text><![CDATA[text text ]]></text>
+        <image location="[{43,10,14}]" title="reference" url="https://example.com/">
+            <text>image</text>
+        </image>
+        <text><![CDATA[ text text ]]></text>
+        <image location="[{43,35,30}]" title="" url="https://example.com/">
+            <text>image</text>
+        </image>
+        <text><![CDATA[ text text text]]></text>
+        <softbreak/>
+        <text>text text text text text text text text text text text text text text text text text</text>
+        <softbreak/>
+        <text><![CDATA[text text ]]></text>
+        <emph>
+            <image location="[{45,11,30}]" title="" url="https://example.com/">
+                <text>image</text>
+            </image>
+        </emph>
+        <text><![CDATA[ text.]]></text>
+    </paragraph>
+    <paragraph>
+        <image location="[{47,0,30}]" title="" url="https://example.com/">
+            <text>image</text>
+        </image>
+    </paragraph>
+    <paragraph>
+        <image location="[{49,0,14}]" title="reference" url="https://example.com/">
+            <text>image</text>
+        </image>
+    </paragraph>
+    <block_quote>
+        <paragraph>
+            <image location="[{51,2,30}]" title="" url="https://example.com/">
+                <text>image</text>
+            </image>
+        </paragraph>
+    </block_quote>
+    <table>
+        <table_section type="head">
+            <table_row>
+                <table_cell type="header">
+                    <text>Header</text>
+                </table_cell>
+                <table_cell type="header">
+                    <text>Header</text>
+                </table_cell>
+            </table_row>
+        </table_section>
+        <table_section type="body">
+            <table_row>
+                <table_cell type="data">
+                    <image location="[{55,2,30}]" title="" url="https://example.com/">
+                        <text>image</text>
+                    </image>
+                </table_cell>
+                <table_cell type="data">
+                    <text>Cell</text>
+                </table_cell>
+            </table_row>
+        </table_section>
+    </table>
 </document>

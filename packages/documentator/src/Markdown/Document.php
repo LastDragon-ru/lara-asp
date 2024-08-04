@@ -11,10 +11,14 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Referen
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\MarkdownParser;
 use Override;
@@ -29,7 +33,9 @@ use function mb_substr;
 use function preg_match;
 use function preg_quote;
 use function rawurldecode;
+use function rtrim;
 use function str_ends_with;
+use function str_replace;
 use function str_starts_with;
 use function trim;
 
@@ -128,15 +134,37 @@ class Document implements Stringable {
             $text   = null;
             $origin = trim((string) $editor->getText($lines, $location));
 
-            if ($resource instanceof Reference) {
+            if ($resource instanceof Link || $resource instanceof Image) {
+                $title        = $resource->getTitle();
+                $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
+                $label        = (string) Utils::getChild($resource, Text::class)?->getLiteral();
+                $target       = rawurldecode($resource->getUrl());
+                $target       = Path::getPath($this->path, $target);
+                $target       = Path::getRelativePath($path, $target);
+                $targetWrap   = (bool) preg_match('/^!?\['.preg_quote($label, '/').']\(\s*</u', $origin);
+
+                if (Utils::getContainer($resource) instanceof TableCell) {
+                    $title  = $title ? str_replace('|', '\\|', $title) : $title;
+                    $label  = str_replace('|', '\\|', $label);
+                    $target = str_replace('|', '\\|', $target);
+                }
+
+                $text = $title
+                    ? Utils::getLink('[%s](%s %s)', $label, $target, $title, $targetWrap, $titleWrapper)
+                    : Utils::getLink('[%s](%s)', $label, $target, '', $targetWrap, $titleWrapper);
+
+                if ($resource instanceof Image) {
+                    $text = "!{$text}";
+                }
+            } elseif ($resource instanceof Reference) {
+                $label        = $resource->getLabel();
+                $title        = $resource->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);
-                $wrapTarget   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
                 $target       = rawurldecode($resource->getDestination());
                 $target       = Path::getPath($this->path, $target);
                 $target       = Path::getRelativePath($path, $target);
-                $label        = $resource->getLabel();
-                $title        = $resource->getTitle();
-                $text         = Utils::getLink('[%s]: %s %s', $label, $target, $title, $wrapTarget, $titleWrapper);
+                $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
+                $text         = Utils::getLink('[%s]: %s %s', $label, $target, $title, $targetWrap, $titleWrapper);
             } else {
                 // skipped
             }

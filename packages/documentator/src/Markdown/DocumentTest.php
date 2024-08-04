@@ -236,7 +236,6 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 '/path',
             ],
-            // References
             'references'  => [
                 <<<'MARKDOWN'
                 # General
@@ -271,13 +270,8 @@ final class DocumentTest extends TestCase {
 
                 ## Title escaping
 
-                ### can be avoided
-
                 [title]: ../file/a "title with ( ) and with ' '"
                 [title]: ../file/a (title with \( \) and with ' ')
-
-                ### cannot
-
                 [title]: ../file/a "title with ( ) and with ' ' and with \" \""
 
                 ## Inside Quote
@@ -322,13 +316,8 @@ final class DocumentTest extends TestCase {
 
                 ## Title escaping
 
-                ### can be avoided
-
                 [title]: ../file/a "title with ( ) and with ' '"
                 [title]: ../file/a (title with \( \) and with ' ')
-
-                ### cannot
-
                 [title]: ../file/a "title with ( ) and with ' ' and with \" \""
 
                 ## Inside Quote
@@ -338,6 +327,148 @@ final class DocumentTest extends TestCase {
                 > [quote]:
                 > ./file/b
                 > (title)
+                MARKDOWN,
+                '/path/to',
+            ],
+            'links'       => [
+                <<<'MARKDOWN'
+                # General
+
+                Text text [tel](tel:+70000000000 "title") text [link](../from/file/a)
+                text [link](../from/file/b ' <title> ') text [title](<../from/file/a> (title))
+                [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
+                text [external](https://example.com/).
+
+                # Special
+
+                ## Target escaping
+
+                Text [title](../from/%3Cfile%3E/%20/a) text [title](<../from/file/ /a>).
+
+                ## Title escaping
+
+                Text [title](../file/a "title with ( ) and with ' '") text
+                text [title](../file/a (title with \( \) and with ' ')) text
+                text [title](../file/a "title with ( ) and with ' ' and with \" \"").
+
+                ## Inside Quote
+
+                > Text [quote](../file/a) text [quote](https://example.com/)
+                > text text [quote](../from/file/b (title)).
+
+                ## Inside Table
+
+                | Header                  |  Header ([table](../from/file/b))                                     |
+                |-------------------------|-----------------------------------------------------------------|
+                | Cell [link][link] cell. | Cell `\|` \\| [table](<../from/file\|a> "\|")                           |
+                | Cell                    | Cell cell [table](https://example.com/) cell [table](../from/file/a). |
+                MARKDOWN,
+                '/path/from',
+                <<<'MARKDOWN'
+                # General
+
+                Text text [tel](tel:+70000000000 "title") text [link](./file/a)
+                text [link](file/b ' <title> ') text [title](<./file/a> (title))
+                [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
+                text [external](https://example.com/).
+
+                # Special
+
+                ## Target escaping
+
+                Text [title](./%3Cfile%3E/%20/a) text [title](<./file/ /a>).
+
+                ## Title escaping
+
+                Text [title]( ../file/a "title with ( ) and with ' '" ) text
+                text [title]( ../file/a (title with \( \) and with ' ')) text
+                text [title](../file/a "title with ( ) and with ' ' and with \" \"").
+
+                ## Inside Quote
+
+                > Text [quote](../file/a) text [quote](https://example.com/)
+                > text text [quote](file/b (title)).
+
+                ## Inside Table
+
+                | Header                  |  Header ([table](./file/b))                                     |
+                |-------------------------|-----------------------------------------------------------------|
+                | Cell [link][link] cell. | Cell `\|` \\| [table](<file\|a> "\|")                           |
+                | Cell                    | Cell cell [table](https://example.com/) cell [table](./file/a). |
+                MARKDOWN,
+                '/path/to',
+            ],
+            'images'      => [
+                <<<'MARKDOWN'
+                # General
+
+                ![image](<../from/file/a> (title))
+                ![image](../from/file/b ' <title> ')
+
+                ![external](https://example.com/)
+                ![absolute](/path/to/file 'title')
+
+                Text ![external](https://example.com/) text ![image](<../from/file/a> (title))
+                text ![image](../from/file/b ' <title> ').
+
+                # Special
+
+                ## Target escaping
+
+                ![image](../from/%3Cfile%3E/%20/a)
+
+                ## Title escaping
+
+                Text ![title](../file/a "title with ( ) and with ' '") text
+                text ![title](../file/a (title with \( \) and with ' ')) text
+                text ![title](../file/a "title with ( ) and with ' ' and with \" \"").
+
+                ## Inside Quote
+
+                > ![quote](../from/file/a)
+
+                ## Inside Table
+
+                | Header                  |  Header (![table](../from/file/b))                                      |
+                |-------------------------|-------------------------------------------------------------------|
+                | Cell [link][link] cell. | Cell `\|` \\| ![table](<../from/file\|a> "\|")                            |
+                | Cell                    | Cell cell ![table](https://example.com/) cell ![table](../from/file/a). |
+                MARKDOWN,
+                '/path/from',
+                <<<'MARKDOWN'
+                # General
+
+                ![image](<./file/a> (title))
+                ![image](file/b ' <title> ')
+
+                ![external](https://example.com/)
+                ![absolute](/path/to/file 'title')
+
+                Text ![external](https://example.com/) text ![image](<./file/a> (title))
+                text ![image](file/b ' <title> ').
+
+                # Special
+
+                ## Target escaping
+
+                ![image](./%3Cfile%3E/%20/a)
+
+                ## Title escaping
+
+                Text ![title]( ../file/a "title with ( ) and with ' '" ) text
+                text ![title]( ../file/a (title with \( \) and with ' ')) text
+                text ![title](../file/a "title with ( ) and with ' ' and with \" \"").
+
+                ## Inside Quote
+
+                > ![quote](file/a)
+
+                ## Inside Table
+
+                | Header                  |  Header (![table](./file/b))                                      |
+                |-------------------------|-------------------------------------------------------------------|
+                | Cell [link][link] cell. | Cell `\|` \\| ![table](<file\|a> "\|")                            |
+                | Cell                    | Cell cell ![table](https://example.com/) cell ![table](./file/a). |
                 MARKDOWN,
                 '/path/to',
             ],

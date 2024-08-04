@@ -29,6 +29,26 @@ class Utils {
         return self::getParent($node, AbstractBlock::class);
     }
 
+    /**
+     * @template T of Node
+     *
+     * @param class-string<T> $class
+     *
+     * @return ?T
+     */
+    public static function getChild(Node $node, string $class): ?Node {
+        $object = null;
+
+        foreach ($node->children() as $child) {
+            if ($child instanceof $class) {
+                $object = $child;
+                break;
+            }
+        }
+
+        return $object;
+    }
+
     public static function getPosition(Node $node): int {
         $position = 0;
 

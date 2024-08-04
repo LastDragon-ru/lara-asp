@@ -186,7 +186,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
     private function getDelimiterStackLength(DelimiterStack $stack): int {
         $delimiter = (new ReflectionProperty($stack, 'top'))->getValue($stack);
         $length    = $delimiter instanceof DelimiterInterface
-            ? $delimiter->getLength()
+            ? mb_strlen($delimiter->getInlineNode()->getLiteral())
             : 0;
 
         return $length;

@@ -36,3 +36,20 @@ text text _[link](https://example.com/)_ text.
 > | Header                                           | Header |
 > |--------------------------------------------------|--------|
 > | Cell `\|` \\| [link](https://example.com/ "\\|") | Cell   |
+
+# Images
+
+Text text ![image](https://example.com/) text ![image](https://example.com/ "title")
+text text ![image][link] text text ![image](https://example.com/) text text text
+text text text text text text text text text text text text text text text text text
+text text _![image](https://example.com/)_ text.
+
+![image](https://example.com/)
+
+![image][link]
+
+> ![image](https://example.com/)
+
+| Header                         | Header |
+|--------------------------------|--------|
+| ![image](https://example.com/) | Cell   |

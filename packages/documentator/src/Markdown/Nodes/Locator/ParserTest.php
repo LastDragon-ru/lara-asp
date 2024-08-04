@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Renderer as ReferenceRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;
@@ -23,6 +24,7 @@ final class ParserTest extends TestCase {
         $environment = $converter->getEnvironment()
             ->addExtension(new Extension())
             ->addRenderer(Link::class, new Renderer())
+            ->addRenderer(Image::class, new Renderer())
             ->addRenderer(ReferenceNode::class, new ReferenceRenderer());
 
         $parser   = new MarkdownParser($environment);
