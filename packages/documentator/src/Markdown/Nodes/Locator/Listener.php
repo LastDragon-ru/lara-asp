@@ -88,8 +88,7 @@ class Listener implements EnvironmentAwareInterface {
             $start = Cast::toNullable(Table::class, $section->parent())?->getStartLine();
 
             if ($start !== null) {
-                $start = $start - 1; // Looks like `Table::getStartLine()` is incorrect...
-                $end   = $start + $rows - 1;
+                $end = $start + $rows - 1;
             }
         }
 
