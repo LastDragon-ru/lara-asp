@@ -112,4 +112,17 @@ class Cast {
 
         return $value;
     }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     *
+     * @return ?T
+     */
+    public static function toNullable(string $class, mixed $value): ?object {
+        assert($value === null || $value instanceof $class);
+
+        return $value;
+    }
 }
