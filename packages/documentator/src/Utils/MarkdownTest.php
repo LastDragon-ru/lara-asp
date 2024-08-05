@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
+ * @deprecated %{VERSION}
  */
 #[CoversClass(Markdown::class)]
 final class MarkdownTest extends TestCase {

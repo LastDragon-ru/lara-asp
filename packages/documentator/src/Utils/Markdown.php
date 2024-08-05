@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document as MarkdownDocument;
+use LastDragon_ru\LaraASP\Documentator\Package;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -21,10 +23,18 @@ use function preg_split;
 use function str_ends_with;
 use function str_repeat;
 use function str_starts_with;
+use function trigger_deprecation;
 use function trim;
 
 use const PHP_INT_MAX;
 
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'Please use %s/%s instead.', MarkdownDocument::class, Text::class);
+
+/**
+ * @deprecated %{VERSION} Please use {@see MarkdownDocument}/{@see Text} instead.
+ */
 class Markdown {
     /**
      * Returns the first `# Header` if present.
