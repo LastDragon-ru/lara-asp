@@ -274,6 +274,16 @@ class Document implements Stringable {
     private function getRelativeResources(): array {
         $resources  = [];
         $isRelative = static function (string $target): bool {
+            // Fast
+            if (str_starts_with($target, './') || str_starts_with($target, '../')) {
+                return true;
+            } elseif (str_starts_with($target, '/')) {
+                return false;
+            } else {
+                // empty
+            }
+
+            // Long
             return filter_var($target, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
                 && !str_starts_with($target, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
                 && !str_starts_with($target, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php

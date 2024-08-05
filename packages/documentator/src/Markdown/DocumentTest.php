@@ -206,7 +206,7 @@ final class DocumentTest extends TestCase {
     public static function dataProviderSetPath(): array {
         return [
             // General
-            'from `null`' => [
+            'from `null`'    => [
                 <<<'MARKDOWN'
                 [foo]: relative/path/from "title"
                 MARKDOWN,
@@ -216,7 +216,7 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 'relative/path/to',
             ],
-            'to `null`'   => [
+            'to `null`'      => [
                 <<<'MARKDOWN'
                 [foo]: relative/path/from "title"
                 MARKDOWN,
@@ -226,7 +226,7 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 null,
             ],
-            'same'        => [
+            'same'           => [
                 <<<'MARKDOWN'
                 [foo]: /path "title"
                 MARKDOWN,
@@ -236,7 +236,17 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 '/path',
             ],
-            'references'  => [
+            'query&fragment' => [
+                <<<'MARKDOWN'
+                [foo]: ../from/path?a=123#fragment
+                MARKDOWN,
+                '/path/from',
+                <<<'MARKDOWN'
+                [foo]: path?a=123#fragment
+                MARKDOWN,
+                '/path/to',
+            ],
+            'references'     => [
                 <<<'MARKDOWN'
                 # General
 
@@ -330,7 +340,7 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 '/path/to',
             ],
-            'links'       => [
+            'links'          => [
                 <<<'MARKDOWN'
                 # General
 
@@ -398,7 +408,7 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 '/path/to',
             ],
-            'images'      => [
+            'images'         => [
                 <<<'MARKDOWN'
                 # General
 
