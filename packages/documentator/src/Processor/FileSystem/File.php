@@ -9,7 +9,6 @@ use Stringable;
 
 use function dirname;
 use function file_get_contents;
-use function file_put_contents;
 use function is_file;
 use function is_writable;
 use function pathinfo;
@@ -20,6 +19,7 @@ use const PATHINFO_EXTENSION;
 
 class File implements Stringable {
     private ?string $content = null;
+    private bool $modified   = false;
 
     public function __construct(
         private readonly string $path,
@@ -69,6 +69,10 @@ class File implements Stringable {
         return $this->writable && is_writable($this->path);
     }
 
+    public function isModified(): bool {
+        return $this->modified;
+    }
+
     public function getContent(): string {
         if ($this->content === null) {
             $this->content = (string) file_get_contents($this->path);
@@ -78,20 +82,12 @@ class File implements Stringable {
     }
 
     public function setContent(string $content): static {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    public function save(): bool {
-        // Changed?
-        if ($this->content === null) {
-            return true;
+        if ($this->content !== $content) {
+            $this->content  = $content;
+            $this->modified = true;
         }
 
-        // Save
-        return $this->isWritable()
-            && file_put_contents($this->path, $this->content) !== false;
+        return $this;
     }
 
     public function getRelativePath(Directory|self $root): string {

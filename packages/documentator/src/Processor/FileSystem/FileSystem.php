@@ -8,6 +8,7 @@ use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 use function dirname;
+use function file_put_contents;
 use function is_dir;
 use function is_file;
 
@@ -150,5 +151,10 @@ class FileSystem {
         }
 
         yield from [];
+    }
+
+    public function save(File $file): bool {
+        return !$file->isModified()
+            || ($file->isWritable() && file_put_contents($file->getPath(), $file->getContent()) !== false);
     }
 }

@@ -69,32 +69,6 @@ final class FileTest extends TestCase {
         self::assertEquals(__METHOD__, $file->getContent());
     }
 
-    public function testSave(): void {
-        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
-        $file = new File($temp, true);
-
-        self::assertTrue($file->save()); // because no changes
-
-        self::assertSame($file, $file->setContent(__METHOD__));
-
-        self::assertTrue($file->save());
-
-        self::assertEquals(__METHOD__, file_get_contents($temp));
-    }
-
-    public function testSaveReadonly(): void {
-        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
-        $file = new File($temp, false);
-
-        self::assertTrue($file->save()); // because no changes
-
-        self::assertSame($file, $file->setContent(__METHOD__));
-
-        self::assertFalse($file->save());
-
-        self::assertEquals(__FILE__, file_get_contents($temp));
-    }
-
     public function testGetRelativePath(): void {
         $internal  = new File(Path::normalize(__FILE__), false);
         $directory = new Directory(Path::normalize(__DIR__), true);

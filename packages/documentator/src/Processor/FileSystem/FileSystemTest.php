@@ -9,6 +9,7 @@ use SplFileInfo;
 
 use function array_map;
 use function basename;
+use function file_get_contents;
 use function iterator_to_array;
 
 /**
@@ -235,5 +236,34 @@ final class FileSystemTest extends TestCase {
             ],
             array_map($map, iterator_to_array($fs->getDirectoriesIterator($directory, exclude: '#^[^/]*?/a$#'))),
         );
+    }
+
+
+    public function testSave(): void {
+        $fs   = new FileSystem();
+        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
+        $file = new File($temp, true);
+
+        self::assertTrue($fs->save($file)); // because no changes
+
+        self::assertSame($file, $file->setContent(__METHOD__));
+
+        self::assertTrue($fs->save($file));
+
+        self::assertEquals(__METHOD__, file_get_contents($temp));
+    }
+
+    public function testSaveReadonly(): void {
+        $fs   = new FileSystem();
+        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
+        $file = new File($temp, false);
+
+        self::assertTrue($fs->save($file)); // because no changes
+
+        self::assertSame($file, $file->setContent(__METHOD__));
+
+        self::assertFalse($fs->save($file));
+
+        self::assertEquals(__FILE__, file_get_contents($temp));
     }
 }

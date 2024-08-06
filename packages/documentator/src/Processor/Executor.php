@@ -150,7 +150,7 @@ class Executor {
                 }
             }
 
-            if (!$file->save()) {
+            if (!$this->fs->save($file)) {
                 throw new FileSaveFailed($this->root, $file);
             }
         } catch (Throwable $exception) {
