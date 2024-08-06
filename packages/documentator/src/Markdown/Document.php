@@ -6,7 +6,8 @@ use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
@@ -24,7 +25,6 @@ use League\CommonMark\Parser\MarkdownParser;
 use Override;
 use Stringable;
 
-use function array_slice;
 use function count;
 use function filter_var;
 use function implode;
@@ -49,6 +49,7 @@ class Document implements Stringable {
     private DocumentNode $node;
 
     private ?MarkdownParser $parser  = null;
+    private ?Editor         $editor  = null;
     private ?string         $path    = null;
     private ?string         $title   = null;
     private ?string         $summary = null;
@@ -69,11 +70,11 @@ class Document implements Stringable {
         if ($this->title === null) {
             $title       = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
             $title       = $this->getText($title);
-            $title       = trim(ltrim("{$title}", '#')) ?: null;
+            $title       = trim(ltrim("{$title}", '#'));
             $this->title = $title;
         }
 
-        return $this->title;
+        return $this->title ?: null;
     }
 
     /**
@@ -83,11 +84,11 @@ class Document implements Stringable {
         if ($this->summary === null) {
             $title         = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
             $summary       = $this->getText($this->getFirstNode($title?->next(), Paragraph::class));
-            $summary       = trim("{$summary}") ?: null;
+            $summary       = trim("{$summary}");
             $this->summary = $summary;
         }
 
-        return $this->summary;
+        return $this->summary ?: null;
     }
 
     public function getPath(): ?string {
@@ -118,13 +119,12 @@ class Document implements Stringable {
         // Update
         $resources = $this->getRelativeResources();
         $changes   = [];
-        $editor    = new Editor();
-        $lines     = $this->getLines();
+        $editor    = $this->getEditor();
         $path      = Path::normalize($path);
 
         foreach ($resources as $resource) {
             // Location?
-            $location = Data::get($resource, LocationData::class);
+            $location = Data::get($resource, Location::class);
 
             if (!$location) {
                 continue;
@@ -132,7 +132,7 @@ class Document implements Stringable {
 
             // Update
             $text   = null;
-            $origin = trim((string) $editor->getText($lines, $location));
+            $origin = trim((string) $editor->getText($location));
 
             if ($resource instanceof Link || $resource instanceof Image) {
                 $title        = $resource->getTitle();
@@ -176,10 +176,7 @@ class Document implements Stringable {
 
         // Update
         if ($changes) {
-            $lines   = $editor->modify($lines, $changes);
-            $content = implode("\n", $lines);
-
-            $this->setContent($content);
+            $this->setContent((string) $editor->modify($changes));
         }
 
         $this->path = $path;
@@ -192,6 +189,7 @@ class Document implements Stringable {
         $this->node    = $this->parse($content);
         $this->title   = null;
         $this->summary = null;
+        $this->editor  = null;
 
         return $this;
     }
@@ -213,17 +211,18 @@ class Document implements Stringable {
         return Data::get($this->node, Lines::class) ?? [];
     }
 
-    protected function getText(?AbstractBlock $node): ?string {
-        if ($node?->getStartLine() === null || $node->getEndLine() === null) {
-            return null;
+    protected function getEditor(): Editor {
+        if ($this->editor === null) {
+            $this->editor = new Editor($this->getLines());
         }
 
-        $start = $node->getStartLine() - 1;
-        $end   = $node->getEndLine() - 1;
-        $lines = array_slice($this->getLines(), $start, $end - $start + 1);
-        $text  = implode("\n", $lines);
+        return $this->editor;
+    }
 
-        return $text;
+    protected function getText(?AbstractBlock $node): ?string {
+        return $node?->getStartLine() !== null && $node->getEndLine() !== null
+            ? $this->getEditor()->getText(new Locator($node->getStartLine(), $node->getEndLine()))
+            : null;
     }
 
     /**

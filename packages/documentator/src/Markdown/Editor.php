@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use Override;
+use Stringable;
 
 use function array_key_last;
 use function array_merge;
@@ -21,21 +23,35 @@ use const PHP_INT_MAX;
 /**
  * @internal
  */
-class Editor {
-    public function __construct() {
+class Editor implements Stringable {
+    public function __construct(
+        /**
+         * @var array<int, string>
+         */
+        private array $lines,
+    ) {
         // empty
     }
 
+    #[Override]
+    public function __toString(): string {
+        return implode("\n", $this->lines);
+    }
+
     /**
-     * @param array<int, string> $lines
+     * @return array<int, string>
      */
-    public function getText(array $lines, Location $location): ?string {
+    public function getLines(): array {
+        return $this->lines;
+    }
+
+    public function getText(Location $location): ?string {
         // Select
         $selected = null;
 
         foreach ($location as $coordinate) {
-            if (isset($lines[$coordinate->line])) {
-                $selected[] = mb_substr($lines[$coordinate->line], $coordinate->offset, $coordinate->length);
+            if (isset($this->lines[$coordinate->line])) {
+                $selected[] = mb_substr($this->lines[$coordinate->line], $coordinate->offset, $coordinate->length);
             } else {
                 $selected = null;
                 break;
@@ -51,29 +67,26 @@ class Editor {
     }
 
     /**
-     * @param array<int, string>                         $lines
      * @param array<array-key, array{Location, ?string}> $changes
-     *
-     * @return array<int, string>
      */
-    public function modify(array $lines, array $changes): array {
+    public function modify(array $changes): static {
         // Modify
         $changes  = $this->removeOverlaps($changes);
         $changes  = $this->expand($changes);
         $paddings = [];
 
         foreach ($changes as $change) {
-            [$coordinate, $padding, $text] = $change;
-            $line                          = $lines[$coordinate->line] ?? '';
-            $prefix                        = mb_substr($line, 0, $coordinate->offset);
-            $suffix                        = $coordinate->length
+            [$coordinate, $padding, $text]  = $change;
+            $line                           = $this->lines[$coordinate->line] ?? '';
+            $prefix                         = mb_substr($line, 0, $coordinate->offset);
+            $suffix                         = $coordinate->length
                 ? mb_substr($line, $coordinate->offset + $coordinate->length)
                 : '';
-            $lines[$coordinate->line]      = $prefix.$text.$suffix;
-            $paddings[$coordinate->line]   = $padding;
+            $this->lines[$coordinate->line] = $prefix.$text.$suffix;
+            $paddings[$coordinate->line]    = $padding;
 
             if ($text === null && !$suffix) {
-                $lines[$coordinate->line] = trim($prefix);
+                $this->lines[$coordinate->line] = trim($prefix);
             }
         }
 
@@ -82,15 +95,15 @@ class Editor {
         // multiple empty lines into one.
         $previous = '';
 
-        foreach ($lines as $line => $text) {
+        foreach ($this->lines as $line => $text) {
             $content = mb_substr($text, $paddings[$line] ?? 0);
             $padding = mb_substr($text, 0, $paddings[$line] ?? 0);
 
             if ($content === '') {
                 if ($previous !== '') {
-                    $lines[$line] = $padding;
+                    $this->lines[$line] = $padding;
                 } else {
-                    unset($lines[$line]);
+                    unset($this->lines[$line]);
                 }
             }
 
@@ -98,15 +111,15 @@ class Editor {
         }
 
         // Remove last line if empty
-        $last    = array_key_last($lines);
-        $content = mb_substr($lines[$last] ?? '', $paddings[$last] ?? 0);
+        $last    = array_key_last($this->lines);
+        $content = mb_substr($this->lines[$last] ?? '', $paddings[$last] ?? 0);
 
         if ($content === '') {
-            unset($lines[$last]);
+            unset($this->lines[$last]);
         }
 
         // Return
-        return $lines;
+        return $this;
     }
 
     /**
