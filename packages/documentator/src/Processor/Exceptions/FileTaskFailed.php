@@ -11,7 +11,7 @@ use function sprintf;
 
 class FileTaskFailed extends ProcessorError {
     public function __construct(
-        protected Directory $root,
+        protected readonly Directory $root,
         protected readonly File $target,
         protected readonly Task $task,
         ?Throwable $previous = null,
@@ -19,8 +19,8 @@ class FileTaskFailed extends ProcessorError {
         parent::__construct(
             sprintf(
                 'The `%s` task failed for `%s` file (root: `%s`).',
-                $this->target->getRelativePath($this->root),
                 $this->task::class,
+                $this->target->getRelativePath($this->root),
                 $this->root->getPath(),
             ),
             $previous,
