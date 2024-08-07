@@ -13,8 +13,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Editor::class)]
 final class EditorTest extends TestCase {
-    public function testModify(): void {
-        $editor   = new Editor([
+    public function testMutate(): void {
+        $lines    = [
             1  => 'a b c d',
             2  => 'e f g h',
             3  => 'i j k l',
@@ -30,7 +30,8 @@ final class EditorTest extends TestCase {
             13 => '>',
             14 => '> i j k l',
             15 => '>',
-        ]);
+        ];
+        $editor   = new Editor($lines);
         $changes  = [
             [new Locator(1, 1, 2, 3), '123'],
             [new Locator(2, 4, 4, 4), '123'],
@@ -38,6 +39,7 @@ final class EditorTest extends TestCase {
             [new Locator(11, 12, 4, 3, 2), "123\n345"],
             [new Locator(14, 15, 4, 3, 2), '123'],
         ];
+        $actual   = $editor->mutate($changes);
         $expected = [
             1  => 'a 123 d',
             2  => 'e f 123',
@@ -55,7 +57,9 @@ final class EditorTest extends TestCase {
             14 => '> i j 123',
         ];
 
-        self::assertSame($expected, $editor->modify($changes)->getLines());
+        self::assertNotSame($editor, $actual);
+        self::assertEquals($lines, $editor->getLines());
+        self::assertSame($expected, $actual->getLines());
     }
 
     public function testRemoveOverlaps(): void {

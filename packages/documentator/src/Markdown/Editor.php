@@ -68,25 +68,28 @@ class Editor implements Stringable {
 
     /**
      * @param array<array-key, array{Location, ?string}> $changes
+     *
+     * @return new<static>
      */
-    public function modify(array $changes): static {
+    public function mutate(array $changes): static {
         // Modify
+        $lines    = $this->lines;
         $changes  = $this->removeOverlaps($changes);
         $changes  = $this->expand($changes);
         $paddings = [];
 
         foreach ($changes as $change) {
-            [$coordinate, $padding, $text]  = $change;
-            $line                           = $this->lines[$coordinate->line] ?? '';
-            $prefix                         = mb_substr($line, 0, $coordinate->offset);
-            $suffix                         = $coordinate->length
+            [$coordinate, $padding, $text] = $change;
+            $line                          = $lines[$coordinate->line] ?? '';
+            $prefix                        = mb_substr($line, 0, $coordinate->offset);
+            $suffix                        = $coordinate->length
                 ? mb_substr($line, $coordinate->offset + $coordinate->length)
                 : '';
-            $this->lines[$coordinate->line] = $prefix.$text.$suffix;
-            $paddings[$coordinate->line]    = $padding;
+            $lines[$coordinate->line]      = $prefix.$text.$suffix;
+            $paddings[$coordinate->line]   = $padding;
 
             if ($text === null && !$suffix) {
-                $this->lines[$coordinate->line] = trim($prefix);
+                $lines[$coordinate->line] = trim($prefix);
             }
         }
 
@@ -95,15 +98,15 @@ class Editor implements Stringable {
         // multiple empty lines into one.
         $previous = '';
 
-        foreach ($this->lines as $line => $text) {
+        foreach ($lines as $line => $text) {
             $content = mb_substr($text, $paddings[$line] ?? 0);
             $padding = mb_substr($text, 0, $paddings[$line] ?? 0);
 
             if ($content === '') {
                 if ($previous !== '') {
-                    $this->lines[$line] = $padding;
+                    $lines[$line] = $padding;
                 } else {
-                    unset($this->lines[$line]);
+                    unset($lines[$line]);
                 }
             }
 
@@ -111,15 +114,18 @@ class Editor implements Stringable {
         }
 
         // Remove last line if empty
-        $last    = array_key_last($this->lines);
-        $content = mb_substr($this->lines[$last] ?? '', $paddings[$last] ?? 0);
+        $last    = array_key_last($lines);
+        $content = mb_substr($lines[$last] ?? '', $paddings[$last] ?? 0);
 
         if ($content === '') {
-            unset($this->lines[$last]);
+            unset($lines[$last]);
         }
 
         // Return
-        return $this;
+        $editor        = clone $this;
+        $editor->lines = $lines;
+
+        return $editor;
     }
 
     /**

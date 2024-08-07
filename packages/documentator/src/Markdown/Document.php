@@ -6,41 +6,25 @@ use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Mutation;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
-use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Block\Paragraph;
-use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\MarkdownParser;
 use Override;
 use Stringable;
 
 use function count;
-use function filter_var;
 use function implode;
 use function ltrim;
-use function mb_substr;
-use function preg_match;
-use function preg_quote;
-use function rawurldecode;
-use function rtrim;
 use function str_ends_with;
-use function str_replace;
 use function str_starts_with;
 use function trim;
-
-use const FILTER_NULL_ON_FAILURE;
-use const FILTER_VALIDATE_URL;
 
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
@@ -69,7 +53,9 @@ class Document implements Stringable {
     public function getTitle(): ?string {
         if ($this->title === null) {
             $title       = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $title       = $this->getText($title);
+            $title       = $title?->getStartLine() !== null && $title->getEndLine() !== null
+                ? $this->getText(new Locator($title->getStartLine(), $title->getEndLine()))
+                : null;
             $title       = trim(ltrim("{$title}", '#'));
             $this->title = $title;
         }
@@ -83,7 +69,10 @@ class Document implements Stringable {
     public function getSummary(): ?string {
         if ($this->summary === null) {
             $title         = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $summary       = $this->getText($this->getFirstNode($title?->next(), Paragraph::class));
+            $summary       = $this->getFirstNode($title?->next(), Paragraph::class);
+            $summary       = $summary?->getStartLine() !== null && $summary->getEndLine() !== null
+                ? $this->getText(new Locator($summary->getStartLine(), $summary->getEndLine()))
+                : null;
             $summary       = trim("{$summary}");
             $this->summary = $summary;
         }
@@ -95,94 +84,30 @@ class Document implements Stringable {
         return $this->path;
     }
 
-    /**
-     * Changes path and updates all relative links.
-     *
-     * Please note that links may/will be reformatted (because there is no
-     * information about their original form).
-     */
     public function setPath(?string $path): static {
-        // No path?
-        if ($this->path === null || $path === null) {
-            $this->path = $path ? Path::normalize($path) : null;
+        $this->path = $path ? Path::normalize($path) : null;
 
-            return $this;
-        }
-
-        // Same?
-        $path = Path::getPath($this->path, $path);
-
-        if ($this->path === $path) {
-            return $this;
-        }
-
-        // Update
-        $resources = $this->getRelativeResources();
-        $changes   = [];
-        $editor    = $this->getEditor();
-        $path      = Path::normalize($path);
-
-        foreach ($resources as $resource) {
-            // Location?
-            $location = Data::get($resource, Location::class);
-
-            if (!$location) {
-                continue;
-            }
-
-            // Update
-            $text   = null;
-            $origin = trim((string) $editor->getText($location));
-
-            if ($resource instanceof Link || $resource instanceof Image) {
-                $title        = $resource->getTitle();
-                $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
-                $label        = (string) Utils::getChild($resource, Text::class)?->getLiteral();
-                $target       = rawurldecode($resource->getUrl());
-                $target       = Path::getPath($this->path, $target);
-                $target       = Path::getRelativePath($path, $target);
-                $targetWrap   = (bool) preg_match('/^!?\['.preg_quote($label, '/').']\(\s*</u', $origin);
-
-                if (Utils::getContainer($resource) instanceof TableCell) {
-                    $title  = $title ? str_replace('|', '\\|', $title) : $title;
-                    $label  = str_replace('|', '\\|', $label);
-                    $target = str_replace('|', '\\|', $target);
-                }
-
-                $text = $title
-                    ? Utils::getLink('[%s](%s %s)', $label, $target, $title, $targetWrap, $titleWrapper)
-                    : Utils::getLink('[%s](%s)', $label, $target, '', $targetWrap, $titleWrapper);
-
-                if ($resource instanceof Image) {
-                    $text = "!{$text}";
-                }
-            } elseif ($resource instanceof Reference) {
-                $label        = $resource->getLabel();
-                $title        = $resource->getTitle();
-                $titleWrapper = mb_substr($origin, -1, 1);
-                $target       = rawurldecode($resource->getDestination());
-                $target       = Path::getPath($this->path, $target);
-                $target       = Path::getRelativePath($path, $target);
-                $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
-                $text         = Utils::getLink('[%s]: %s %s', $label, $target, $title, $targetWrap, $titleWrapper);
-            } else {
-                // skipped
-            }
-
-            if ($text !== null) {
-                $changes[] = [$location, $text];
-            }
-        }
-
-        // Update
-        if ($changes) {
-            $this->setContent((string) $editor->modify($changes));
-        }
-
-        $this->path = $path;
-
-        // Return
         return $this;
+    }
+
+    public function getText(Location $location): ?string {
+        return $this->getEditor()->getText($location);
+    }
+
+    /**
+     * @return new<static>
+     */
+    public function mutate(Mutation $mutation): static {
+        $document = clone $this;
+        $changes  = $mutation($document, $this->node);
+
+        if ($changes) {
+            $document->setContent(
+                (string) $this->getEditor()->mutate($changes),
+            );
+        }
+
+        return $document;
     }
 
     protected function setContent(string $content): static {
@@ -217,12 +142,6 @@ class Document implements Stringable {
         }
 
         return $this->editor;
-    }
-
-    protected function getText(?AbstractBlock $node): ?string {
-        return $node?->getStartLine() !== null && $node->getEndLine() !== null
-            ? $this->getEditor()->getText(new Locator($node->getStartLine(), $node->getEndLine()))
-            : null;
     }
 
     /**
@@ -265,47 +184,5 @@ class Document implements Stringable {
     #[Override]
     public function __toString(): string {
         return implode("\n", $this->getLines());
-    }
-
-    /**
-     * @return list<AbstractWebResource|Reference>
-     */
-    private function getRelativeResources(): array {
-        $resources  = [];
-        $isRelative = static function (string $target): bool {
-            // Fast
-            if (str_starts_with($target, './') || str_starts_with($target, '../')) {
-                return true;
-            } elseif (str_starts_with($target, '/')) {
-                return false;
-            } else {
-                // empty
-            }
-
-            // Long
-            return filter_var($target, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
-                && !str_starts_with($target, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
-                && !str_starts_with($target, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
-                && Path::isRelative($target);
-        };
-
-        foreach ($this->node->iterator() as $node) {
-            // Resource?
-            // => we need only which are relative
-            // => we don't need references
-            if ($node instanceof AbstractWebResource) {
-                if (!$node->data->has('reference') && $isRelative($node->getUrl())) {
-                    $resources[] = $node;
-                }
-            }
-
-            // Reference
-            // => we need only which are relative
-            if ($node instanceof Reference && $isRelative($node->getDestination())) {
-                $resources[] = $node;
-            }
-        }
-
-        return $resources;
     }
 }
