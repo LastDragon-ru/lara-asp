@@ -1,3 +1,3 @@
 # Nested B
 
-Summary text.
+Summary [text](../../Document.md).

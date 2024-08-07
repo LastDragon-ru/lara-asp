@@ -5,14 +5,16 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FilesIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
 use function strcmp;
@@ -28,6 +30,7 @@ use function usort;
 class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
+        protected readonly Markdown $markdown,
     ) {
         // empty
     }
@@ -61,25 +64,20 @@ class Instruction implements InstructionContract {
                 continue;
             }
 
-            // Content?
-            $content = $file->getContent();
+            // Empty?
+            $document = $file->getMetadata($this->markdown);
 
-            if (!$content) {
+            if (!$document || $document->isEmpty()) {
                 continue;
             }
 
-            // Title?
-            $docTitle = Markdown::getTitle($content);
-
-            if (!$docTitle) {
-                throw new DocumentTitleIsMissing($context, $file);
-            }
-
             // Add
+            $path        = Path::getPath($self, $file->getName());
+            $document    = $document->mutate(new Move($path))->toSplittable();
             $documents[] = [
                 'path'    => $file->getRelativePath($context->file),
-                'title'   => $docTitle,
-                'summary' => Markdown::getSummary($content),
+                'title'   => $document->getTitle() ?? Text::getPathTitle($path),
+                'summary' => $document->getSummary(),
             ];
         }
 

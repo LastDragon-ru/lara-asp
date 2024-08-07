@@ -1,3 +1,0 @@
-<!-- markdownlint-disable -->
-
-Document text.
