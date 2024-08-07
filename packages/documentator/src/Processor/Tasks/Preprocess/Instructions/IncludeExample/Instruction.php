@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -80,16 +82,17 @@ class Instruction implements InstructionContract {
             $isMarkdown = (bool) preg_match(static::MarkdownRegexp, $output);
 
             if ($isMarkdown) {
-                $output = trim(
-                    (string) preg_replace_callback(
-                        pattern : static::MarkdownRegexp,
-                        callback: static function (array $matches): string {
-                            return $matches['markdown'];
-                        },
-                        subject : $output,
-                        flags   : PREG_UNMATCHED_AS_NULL,
-                    ),
+                $path   = $context->file->getPath();
+                $output = (string) preg_replace_callback(
+                    pattern : static::MarkdownRegexp,
+                    callback: static function (array $matches): string {
+                        return $matches['markdown'];
+                    },
+                    subject : $output,
+                    flags   : PREG_UNMATCHED_AS_NULL,
                 );
+                $output = (new Document($output, $target->getPath()))->mutate(new Move($path))->toInlinable();
+                $output = trim((string) $output);
             }
 
             // Format
