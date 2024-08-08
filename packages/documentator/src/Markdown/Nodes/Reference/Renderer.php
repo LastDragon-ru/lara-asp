@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\XmlRenderer;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\XmlRenderer;
 use League\CommonMark\Node\Node;
 use Override;
 

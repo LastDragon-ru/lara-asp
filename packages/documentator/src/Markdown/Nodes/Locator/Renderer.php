@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\XmlRenderer;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\XmlRenderer;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Node;
