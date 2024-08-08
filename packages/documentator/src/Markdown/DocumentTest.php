@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Mockery;

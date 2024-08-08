@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;

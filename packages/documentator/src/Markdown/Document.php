@@ -4,11 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use Closure;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Mutation;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
