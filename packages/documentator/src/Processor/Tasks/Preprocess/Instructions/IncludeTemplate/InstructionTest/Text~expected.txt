@@ -1,0 +1,7 @@
+# File
+
+Content of the [File](../Instruction.php) with [variable][link] "Variable"[^1].
+
+[link]: ../Instruction.php
+
+[^1]: Footnote Variable.
