@@ -6,11 +6,16 @@ use function implode;
 use function mb_strlen;
 use function mb_substr;
 use function min;
+use function pathinfo;
+use function preg_replace;
 use function preg_split;
 use function rtrim;
 use function str_repeat;
+use function str_replace;
 use function str_starts_with;
+use function trim;
 
+use const PATHINFO_FILENAME;
 use const PHP_INT_MAX;
 
 class Text {
@@ -55,5 +60,15 @@ class Text {
      */
     public static function getLines(string $text): array {
         return preg_split('/\R/u', $text) ?: [];
+    }
+
+    public static function getPathTitle(string $path): string {
+        $title = pathinfo($path, PATHINFO_FILENAME);
+        $title = str_replace(['_', '.'], ' ', $title);
+        $title = (string) preg_replace('/(\p{Ll})(\p{Lu})/u', '$1 $2', $title);
+        $title = (string) preg_replace('/\s+/u', ' ', $title);
+        $title = trim($title);
+
+        return $title;
     }
 }

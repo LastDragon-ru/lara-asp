@@ -52,6 +52,13 @@ final class TextTest extends TestCase {
             Text::getLines("a\n\nb\r\nc\nd\r\re"),
         );
     }
+
+    public function testGetPathTitle(): void {
+        self::assertEquals('file', Text::getPathTitle('path/to/file.txt'));
+        self::assertEquals('file Name', Text::getPathTitle('path/to/fileName.txt'));
+        self::assertEquals('File name second', Text::getPathTitle('path/to/File name.second.txt'));
+        self::assertEquals('File name', Text::getPathTitle('path/to/File     name'));
+    }
     //</editor-fold>
 
     // <editor-fold desc="DataProviders">
