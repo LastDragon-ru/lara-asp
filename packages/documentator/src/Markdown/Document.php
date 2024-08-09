@@ -21,8 +21,10 @@ use League\CommonMark\Parser\MarkdownParser;
 use Override;
 use Stringable;
 
+use function array_key_last;
 use function count;
 use function implode;
+use function is_int;
 use function ltrim;
 use function str_ends_with;
 use function str_starts_with;
@@ -69,14 +71,28 @@ class Document implements Stringable {
      */
     public function getSummary(): ?string {
         if ($this->summary === null) {
-            $skip          = static fn ($node) => $node instanceof Heading && $node->getLevel() === 1;
-            $summary       = $this->getFirstNode(Paragraph::class, skip: $skip);
+            $summary       = $this->getSummaryNode();
             $summary       = $this->getBlockText($summary);
             $summary       = trim("{$summary}");
             $this->summary = $summary;
         }
 
         return $this->summary ?: null;
+    }
+
+    /**
+     * Returns the rest of the document text after the summary.
+     */
+    public function getBody(): ?string {
+        $summary = $this->getSummaryNode();
+        $start   = $summary?->getEndLine();
+        $end     = array_key_last($this->getLines());
+        $body    = $start !== null && is_int($end)
+            ? $this->getText(new Locator($start + 1, $end))
+            : null;
+        $body    = trim((string) $body) ?: null;
+
+        return $body;
     }
 
     public function getPath(): ?string {
@@ -195,6 +211,13 @@ class Document implements Stringable {
             : null;
 
         return $text;
+    }
+
+    private function getSummaryNode(): ?Paragraph {
+        $skip = static fn ($node) => $node instanceof Heading && $node->getLevel() === 1;
+        $node = $this->getFirstNode(Paragraph::class, skip: $skip);
+
+        return $node;
     }
 
     #[Override]

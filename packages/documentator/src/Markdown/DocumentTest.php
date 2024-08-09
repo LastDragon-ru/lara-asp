@@ -165,6 +165,114 @@ final class DocumentTest extends TestCase {
         );
     }
 
+    public function testGetBody(): void {
+        self::assertNull(
+            (new Document(
+                <<<'MARKDOWN'
+                ## Header A
+                # Header B
+
+                sdfsdfsdf
+                MARKDOWN,
+            ))
+                ->getBody(),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            # Header
+
+            sdfsdfsdf
+            MARKDOWN,
+            (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+
+                # Header
+
+                sdfsdfsdf
+                MARKDOWN,
+            ))
+                ->getBody(),
+        );
+        self::assertNull(
+            (new Document(
+                <<<'MARKDOWN'
+                # Header
+
+                > Not a paragraph
+
+                fsdfsdfsdf
+
+                text text text
+                MARKDOWN,
+            ))
+                ->getBody(),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            text text text
+
+            text text text
+            MARKDOWN,
+            (new Document(
+                <<<'MARKDOWN'
+                #
+
+                fsdfsdfsdf
+
+                text text text
+
+                text text text
+                MARKDOWN,
+            ))
+                ->getBody(),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            text text text
+
+            text text text
+            MARKDOWN,
+            (new Document(
+                <<<'MARKDOWN'
+
+                # Header
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                text text text
+
+                text text text
+                MARKDOWN,
+            ))
+                ->getBody(),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            <!-- Comment -->
+
+            text text text
+            MARKDOWN,
+            (new Document(
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                <!-- Comment -->
+
+                text text text
+
+                <!-- Comment -->
+
+                text text text
+                MARKDOWN,
+            ))
+                ->getBody(),
+        );
+    }
+
     public function testIsEmpty(): void {
         self::assertFalse(
             (new Document(
