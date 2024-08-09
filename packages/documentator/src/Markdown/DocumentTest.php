@@ -68,6 +68,16 @@ final class DocumentTest extends TestCase {
             ))
                 ->getTitle(),
         );
+        self::assertEquals(
+            'File Name',
+            (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                MARKDOWN,
+                'path/to/FileName.txt',
+            ))
+                ->getTitle(),
+        );
     }
 
     public function testGetSummary(): void {

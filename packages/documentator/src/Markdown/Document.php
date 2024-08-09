@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -48,14 +49,15 @@ class Document implements Stringable {
     }
 
     /**
-     * Returns the first `# Header` if present.
+     * Returns the first `# Header` if present, the title based on filename
+     * if known, or `null`.
      */
     public function getTitle(): ?string {
         if ($this->title === null) {
             $title       = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
             $title       = $title?->getStartLine() !== null && $title->getEndLine() !== null
                 ? $this->getText(new Locator($title->getStartLine(), $title->getEndLine()))
-                : null;
+                : Text::getPathTitle((string) $this->getPath());
             $title       = trim(ltrim("{$title}", '#'));
             $this->title = $title;
         }
