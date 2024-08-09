@@ -49,27 +49,27 @@ final class MoveTest extends TestCase {
                 <<<'MARKDOWN'
                 [foo]: relative/path/from "title"
                 MARKDOWN,
-                'relative/path/to',
+                'relative/path/to/file.md',
             ],
             'same'           => [
                 <<<'MARKDOWN'
                 [foo]: /path "title"
                 MARKDOWN,
-                '/path',
+                '/path/file.md',
                 <<<'MARKDOWN'
                 [foo]: /path "title"
                 MARKDOWN,
-                '/path',
+                '/path/file.md',
             ],
             'query&fragment' => [
                 <<<'MARKDOWN'
                 [foo]: ../from/path?a=123#fragment
                 MARKDOWN,
-                '/path/from',
+                '/path/from/file.md',
                 <<<'MARKDOWN'
                 [foo]: path?a=123#fragment
                 MARKDOWN,
-                '/path/to',
+                '/path/to/file.md',
             ],
             'references'     => [
                 <<<'MARKDOWN'
@@ -115,7 +115,7 @@ final class MoveTest extends TestCase {
                 >
                 > [quote]: ../from/file/b (title)
                 MARKDOWN,
-                '/path/from',
+                '/path/from/file.md',
                 <<<'MARKDOWN'
                 # General
 
@@ -163,7 +163,7 @@ final class MoveTest extends TestCase {
                 > ./file/b
                 > (title)
                 MARKDOWN,
-                '/path/to',
+                '/path/to/file.md',
             ],
             'links'          => [
                 <<<'MARKDOWN'
@@ -198,7 +198,7 @@ final class MoveTest extends TestCase {
                 | Cell [link][link] cell. | Cell `\|` \\| [table](<../from/file\|a> "\|")                           |
                 | Cell                    | Cell cell [table](https://example.com/) cell [table](../from/file/a). |
                 MARKDOWN,
-                '/path/from',
+                '/path/from/file.md',
                 <<<'MARKDOWN'
                 # General
 
@@ -231,7 +231,7 @@ final class MoveTest extends TestCase {
                 | Cell [link][link] cell. | Cell `\|` \\| [table](<file\|a> "\|")                           |
                 | Cell                    | Cell cell [table](https://example.com/) cell [table](./file/a). |
                 MARKDOWN,
-                '/path/to',
+                '/path/to/file.md',
             ],
             'images'         => [
                 <<<'MARKDOWN'
@@ -269,7 +269,7 @@ final class MoveTest extends TestCase {
                 | Cell [link][link] cell. | Cell `\|` \\| ![table](<../from/file\|a> "\|")                            |
                 | Cell                    | Cell cell ![table](https://example.com/) cell ![table](../from/file/a). |
                 MARKDOWN,
-                '/path/from',
+                '/path/from/file.md',
                 <<<'MARKDOWN'
                 # General
 
@@ -305,7 +305,7 @@ final class MoveTest extends TestCase {
                 | Cell [link][link] cell. | Cell `\|` \\| ![table](<file\|a> "\|")                            |
                 | Cell                    | Cell cell ![table](https://example.com/) cell ![table](./file/a). |
                 MARKDOWN,
-                '/path/to',
+                '/path/to/file.md',
             ],
         ];
     }

@@ -17,6 +17,7 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Inline\Text;
 use Override;
 
+use function dirname;
 use function filter_var;
 use function mb_substr;
 use function preg_match;
@@ -58,15 +59,17 @@ readonly class Move implements Mutation {
         }
 
         // Same?
-        $newPath = Path::getPath($docPath, $this->path);
+        $docDirectory = dirname($docPath);
+        $newPath      = Path::getPath($docDirectory, $this->path);
 
         if ($docPath === $newPath) {
             return [];
         }
 
         // Update
-        $changes   = [];
-        $resources = $this->getRelativeResources($node);
+        $changes      = [];
+        $resources    = $this->getRelativeResources($node);
+        $newDirectory = dirname($newPath);
 
         foreach ($resources as $resource) {
             // Location?
@@ -85,8 +88,8 @@ readonly class Move implements Mutation {
                 $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
                 $label        = (string) Utils::getChild($resource, Text::class)?->getLiteral();
                 $target       = rawurldecode($resource->getUrl());
-                $target       = Path::getPath($docPath, $target);
-                $target       = Path::getRelativePath($newPath, $target);
+                $target       = Path::getPath($docDirectory, $target);
+                $target       = Path::getRelativePath($newDirectory, $target);
                 $targetWrap   = (bool) preg_match('/^!?\['.preg_quote($label, '/').']\(\s*</u', $origin);
 
                 if (Utils::getContainer($resource) instanceof TableCell) {
@@ -107,8 +110,8 @@ readonly class Move implements Mutation {
                 $title        = $resource->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);
                 $target       = rawurldecode($resource->getDestination());
-                $target       = Path::getPath($docPath, $target);
-                $target       = Path::getRelativePath($newPath, $target);
+                $target       = Path::getPath($docDirectory, $target);
+                $target       = Path::getRelativePath($newDirectory, $target);
                 $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
                 $text         = Utils::getLink('[%s]: %s %s', $label, $target, $title, $targetWrap, $titleWrapper);
             } else {
