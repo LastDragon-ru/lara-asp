@@ -92,7 +92,8 @@ final class DocumentTest extends TestCase {
             ))
                 ->getSummary(),
         );
-        self::assertNull(
+        self::assertEquals(
+            'fsdfsdfsdf',
             (new Document(
                 <<<'MARKDOWN'
                 fsdfsdfsdf

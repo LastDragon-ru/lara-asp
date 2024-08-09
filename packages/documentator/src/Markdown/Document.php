@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Node;
@@ -54,10 +55,8 @@ class Document implements Stringable {
      */
     public function getTitle(): ?string {
         if ($this->title === null) {
-            $title       = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $title       = $title?->getStartLine() !== null && $title->getEndLine() !== null
-                ? $this->getText(new Locator($title->getStartLine(), $title->getEndLine()))
-                : Text::getPathTitle((string) $this->getPath());
+            $title       = $this->getFirstNode(Heading::class, static fn ($n) => $n->getLevel() === 1);
+            $title       = $this->getBlockText($title) ?? Text::getPathTitle((string) $this->getPath());
             $title       = trim(ltrim("{$title}", '#'));
             $this->title = $title;
         }
@@ -66,15 +65,13 @@ class Document implements Stringable {
     }
 
     /**
-     * Returns the first paragraph right after `# Header` if present.
+     * Returns the first paragraph if present.
      */
     public function getSummary(): ?string {
         if ($this->summary === null) {
-            $title         = $this->getFirstNode($this->node, Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $summary       = $this->getFirstNode($title?->next(), Paragraph::class);
-            $summary       = $summary?->getStartLine() !== null && $summary->getEndLine() !== null
-                ? $this->getText(new Locator($summary->getStartLine(), $summary->getEndLine()))
-                : null;
+            $skip          = static fn ($node) => $node instanceof Heading && $node->getLevel() === 1;
+            $summary       = $this->getFirstNode(Paragraph::class, skip: $skip);
+            $summary       = $this->getBlockText($summary);
             $summary       = trim("{$summary}");
             $this->summary = $summary;
         }
@@ -149,38 +146,55 @@ class Document implements Stringable {
     /**
      * @template T of Node
      *
-     * @param class-string<T>  $class
-     * @param Closure(T): bool $filter
+     * @param class-string<T>          $class
+     * @param Closure(T): bool|null    $filter
+     * @param Closure(Node): bool|null $skip
      *
      * @return ?T
      */
-    protected function getFirstNode(?Node $node, string $class, ?Closure $filter = null): ?Node {
-        // Null?
-        if ($node === null) {
-            return null;
+    private function getFirstNode(string $class, ?Closure $filter = null, ?Closure $skip = null): ?Node {
+        $node = null;
+
+        foreach ($this->node->children() as $child) {
+            // Comment?
+            if (
+                $child instanceof HtmlBlock
+                && str_starts_with($child->getLiteral(), '<!--')
+                && str_ends_with($child->getLiteral(), '-->')
+            ) {
+                continue;
+            }
+
+            // Skipped?
+            if ($skip !== null && $skip($child)) {
+                continue;
+            }
+
+            // Wanted?
+            if ($child instanceof $class) {
+                if ($filter === null || $filter($child)) {
+                    $node = $child;
+                }
+
+                break;
+            }
+
+            // End
+            break;
         }
 
-        // Wanted?
-        if ($node instanceof $class && ($filter === null || $filter($node))) {
-            return $node;
-        }
+        return $node;
+    }
 
-        // Comment?
-        if (
-            $node instanceof HtmlBlock
-            && str_starts_with($node->getLiteral(), '<!--')
-            && str_ends_with($node->getLiteral(), '-->')
-        ) {
-            return $this->getFirstNode($node->next(), $class, $filter);
-        }
+    private function getBlockText(?AbstractBlock $node): ?string {
+        $location = $node?->getStartLine() !== null && $node->getEndLine() !== null
+            ? new Locator($node->getStartLine(), $node->getEndLine())
+            : null;
+        $text     = $location
+            ? $this->getText($location)
+            : null;
 
-        // Document?
-        if ($node instanceof DocumentNode) {
-            return $this->getFirstNode($node->firstChild(), $class, $filter);
-        }
-
-        // Not found
-        return null;
+        return $text;
     }
 
     #[Override]
