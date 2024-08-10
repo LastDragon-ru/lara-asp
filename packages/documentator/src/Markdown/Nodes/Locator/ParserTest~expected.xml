@@ -20,11 +20,13 @@
         <link location="[{7,10,28}]" title="" destination="https://example.com/">
             <text>link</text>
         </link>
+        <footnote_ref location="[{7,38,4}]" reference="1"/>
         <text><![CDATA[ text ]]></text>
-        <link location="[{7,44,36}]" title="title" destination="https://example.com/">
+        <link location="[{7,48,36}]" title="title" destination="https://example.com/">
             <text>link</text>
         </link>
         <text><![CDATA[ text]]></text>
+        <footnote_ref location="[{7,89,4}]" reference="1__2"/>
         <softbreak/>
         <text><![CDATA[text text text text ]]></text>
         <link location="[{8,20,12}]" title="reference" destination="https://example.com/">
@@ -36,7 +38,9 @@
         </link>
         <text><![CDATA[ text text text text text text]]></text>
         <softbreak/>
-        <text>text text text text text text text text text text text text text text text text text</text>
+        <text>text text text text text text text text text text</text>
+        <text>[^2]</text>
+        <text><![CDATA[ text text text text text text text]]></text>
         <softbreak/>
         <text><![CDATA[text text ]]></text>
         <emph>
@@ -44,6 +48,7 @@
                 <text>link</text>
             </link>
         </emph>
+        <footnote_ref location="[{10,40,7}]" reference="note"/>
         <text><![CDATA[ text.]]></text>
     </paragraph>
     <reference destination="https://example.com/" label="link" location="[{12,0,null}]" title="reference"/>
@@ -265,4 +270,31 @@
             </table_row>
         </table_section>
     </table>
+    <footnote_container>
+        <footnote reference="1">
+            <paragraph>
+                <text>Footnote text text text text</text>
+                <footnote_backref reference="1"/>
+                <footnote_backref reference="1__2"/>
+                <footnote_backref reference="1__3"/>
+            </paragraph>
+        </footnote>
+        <footnote reference="note">
+            <paragraph>
+                <text><![CDATA[Footnote text text text text text ]]></text>
+                <link destination="https://example.com/" location="[{59,43,28}]" title="">
+                    <text>link</text>
+                </link>
+                <footnote_ref location="[{59,71,4}]" reference="1__3"/>
+                <text><![CDATA[ text]]></text>
+                <softbreak/>
+                <text><![CDATA[text text text ]]></text>
+                <link destination="https://example.com/" location="[{60,19,28}]" title="">
+                    <text>link</text>
+                </link>
+                <text><![CDATA[ text text text.]]></text>
+                <footnote_backref reference="note"/>
+            </paragraph>
+        </footnote>
+    </footnote_container>
 </document>

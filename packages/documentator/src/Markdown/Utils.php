@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingContinuous;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingInitial;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
@@ -60,8 +61,8 @@ class Utils {
     }
 
     /**
-     * Detect block padding. We are expecting that all lines inside the block
-     * have the same padding.
+     * Detect block padding. We are expecting that all lines except first inside
+     * the block have the same padding.
      */
     public static function getPadding(Node $node, ?int $line, ?string $start): ?int {
         // Container?
@@ -72,7 +73,10 @@ class Utils {
         }
 
         // Known?
-        $padding = Data::get($container, Padding::class);
+        $type    = $line === null || $line === $container->getStartLine()
+            ? PaddingInitial::class
+            : PaddingContinuous::class;
+        $padding = Data::get($container, $type);
 
         if ($padding !== null) {
             return $padding;
@@ -98,7 +102,7 @@ class Utils {
         }
 
         // Cache
-        Data::set($container, new Padding($padding));
+        Data::set($container, new $type($padding));
 
         // Return
         return $padding;

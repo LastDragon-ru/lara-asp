@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingInitial;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
@@ -15,6 +15,7 @@ use League\CommonMark\Delimiter\DelimiterInterface;
 use League\CommonMark\Delimiter\DelimiterStack;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
@@ -72,9 +73,13 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         // The `$cursor->getPosition()` depends on delimiters length, we need to
         // find it. Not sure that this is the best way...
         $cursor = $inlineContext->getCursor();
-        $offset = $cursor->getPosition()
-            - $this->getDelimiterStackLength($inlineContext->getDelimiterStack()) // delimiters length
-            - mb_strlen($cursor->getPreviousText());                              // text after delimiter
+        $offset = $cursor->getPosition();
+
+        if ($this->parser instanceof CloseBracketParser) {
+            $offset = $offset
+                - $this->getDelimiterStackLength($inlineContext->getDelimiterStack()) // delimiters length
+                - mb_strlen($cursor->getPreviousText());                              // text after delimiter
+        }
 
         // Parse
         $parsed = $this->parser->parse($inlineContext);
@@ -149,7 +154,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             // Detected?
             $startLine = $container->getStartLine();
             $endLine   = $container->getEndLine();
-            $padding   = Data::get($container, Padding::class);
+            $padding   = Data::get($container, PaddingInitial::class);
             $offset    = Data::get($container, Offset::class);
 
             if ($startLine === null || $endLine === null || $padding === null || $offset === null) {

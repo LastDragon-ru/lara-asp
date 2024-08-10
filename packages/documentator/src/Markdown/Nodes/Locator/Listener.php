@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingInitial;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
@@ -147,7 +147,7 @@ class Listener implements EnvironmentAwareInterface {
             $cell->setStartLine($line);
             $cell->setEndLine($line);
 
-            Data::set($cell, new Padding($padding));
+            Data::set($cell, new PaddingInitial($padding));
             Data::set($cell, new Offset($offset - $padding));
 
             $offset += $unused;

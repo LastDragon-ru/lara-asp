@@ -8,7 +8,7 @@ use Override;
  * @internal
  * @implements Value<int>
  */
-readonly class Padding implements Value {
+readonly class PaddingInitial implements Value {
     public function __construct(
         private int $value,
     ) {

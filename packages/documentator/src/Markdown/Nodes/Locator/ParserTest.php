@@ -11,6 +11,8 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\ImageRenderer;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\LinkRenderer;
+use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
+use League\CommonMark\Extension\Footnote\Renderer\FootnoteRefRenderer;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;
 use League\CommonMark\Xml\XmlRenderer;
@@ -27,6 +29,7 @@ final class ParserTest extends TestCase {
             ->addExtension(new Extension())
             ->addRenderer(Link::class, new RendererWrapper(new LinkRenderer()))
             ->addRenderer(Image::class, new RendererWrapper(new ImageRenderer()))
+            ->addRenderer(FootnoteRef::class, new RendererWrapper(new FootnoteRefRenderer()))
             ->addRenderer(ReferenceNode::class, new RendererWrapper(new ReferenceRenderer()));
 
         $parser   = new MarkdownParser($environment);
