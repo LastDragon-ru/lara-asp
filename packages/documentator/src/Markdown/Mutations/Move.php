@@ -4,8 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
@@ -73,7 +71,7 @@ readonly class Move implements Mutation {
 
         foreach ($resources as $resource) {
             // Location?
-            $location = Data::get($resource, Location::class);
+            $location = Utils::getLocation($resource);
 
             if (!$location) {
                 continue;

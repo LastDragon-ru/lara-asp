@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
@@ -82,7 +81,7 @@ readonly class RendererWrapper implements
 
     protected function location(Node $node): ?string {
         $lines    = [];
-        $location = Data::get($node, Location::class) ?? [];
+        $location = Utils::getLocation($node) ?? [];
 
         foreach ($location as $line) {
             $lines[] = '{'.implode(',', [$line->line, $line->offset, $line->length ?? 'null']).'}';

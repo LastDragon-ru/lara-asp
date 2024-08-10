@@ -4,8 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingContinuous;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
@@ -113,6 +116,26 @@ class Utils {
         $line  = $lines[$line] ?? null;
 
         return $line;
+    }
+
+    public static function getLocation(Node $node): ?LocationContract {
+        $location = Data::get($node, Location::class);
+
+        if ($location === null && $node instanceof AbstractBlock) {
+            $start   = $node->getStartLine();
+            $end     = $node->getEndLine();
+            $padding = self::getPadding($node, null, null);
+
+            if ($padding === null && $node->parent() instanceof Document) {
+                $padding = 0;
+            }
+
+            if ($start !== null && $end !== null && $padding !== null) {
+                $location = new Locator($start, $end, padding: $padding);
+            }
+        }
+
+        return $location;
     }
 
     public static function getLink(
