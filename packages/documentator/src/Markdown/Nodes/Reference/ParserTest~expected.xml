@@ -9,36 +9,42 @@
         destination="https://example.com/"
         title=""
         location="[{5,0,null}]"
+        paddingInitial="0"
     />
     <reference
         label="simple:b"
         destination="https://example.com/"
         title="example.com"
         location="[{7,0,null}]"
+        paddingInitial="0"
     />
     <reference
         label="simple:c"
         destination="https://example.com/"
         title=""
         location="[{8,0,null}]"
+        paddingInitial="0"
     />
     <reference
         label="simple:d"
         destination="file/b"
         title="title"
         location="[{9,0,null}]"
+        paddingInitial="0"
     />
     <reference
         label="simple:e"
         destination="file/b"
         title=""
         location="[{11,0,null}]"
+        paddingInitial="0"
     />
     <reference
         title=""
         label="simple:e"
         destination="file/b"
         location="[{12,0,null}]"
+        paddingInitial="0"
     />
     <heading level="1">
         <text>Multiline</text>
@@ -48,12 +54,14 @@
         destination="https://example.com/"
         title="\n1\n2\n3\n"
         location="[{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null}]"
+        paddingInitial="0"
     />
     <reference
         label="multiline:b"
         destination="https://example.com/"
         title="\n        example.com\n    "
         location="[{22,0,null},{23,0,null},{24,0,null},{25,0,null},{26,0,null}]"
+        paddingInitial="0"
     />
     <heading level="1">
         <text>Inside Quote</text>
@@ -64,12 +72,14 @@
             destination="https://example.com/"
             title="example.com"
             location="[{30,2,null}]"
+            paddingInitial="2"
         />
         <reference
             label="quote:b"
             destination="https://example.com/"
             title=""
             location="[{32,2,null},{33,2,null}]"
+            paddingInitial="2"
         />
     </block_quote>
     <block_quote>
@@ -79,12 +89,14 @@
                 destination="https://example.com/"
                 title="example.com"
                 location="[{35,4,null}]"
+                paddingInitial="4"
             />
             <reference
                 label="quote:d"
                 destination="https://example.com/"
                 title="example.com"
                 location="[{37,4,null},{38,4,null},{39,4,null}]"
+                paddingInitial="4"
             />
         </block_quote>
     </block_quote>

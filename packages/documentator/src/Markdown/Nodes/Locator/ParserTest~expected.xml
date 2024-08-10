@@ -51,7 +51,7 @@
         <footnote_ref location="[{10,40,7}]" reference="note"/>
         <text><![CDATA[ text.]]></text>
     </paragraph>
-    <reference destination="https://example.com/" label="link" location="[{12,0,null}]" title="reference"/>
+    <reference destination="https://example.com/" label="link" location="[{12,0,null}]" paddingInitial="0" title="reference"/>
     <heading level="1">
         <text>Lists</text>
     </heading>
@@ -122,12 +122,12 @@
         <text>Tables</text>
     </heading>
     <table>
-        <table_section type="head">
-            <table_row>
-                <table_cell type="header">
+        <table_section type="head" location="[{31,0,null}]" paddingInitial="0">
+            <table_row location="[{31,0,null}]" paddingInitial="0">
+                <table_cell type="header" location="[{31,1,25}]" paddingInitial="0" padding="1">
                     <text>Header</text>
                 </table_cell>
-                <table_cell type="header">
+                <table_cell type="header" location="[{31,27,75}]" paddingInitial="0" padding="2">
                     <text>Header (</text>
                     <link location="[{31,37,28}]" title="" destination="https://example.com/">
                         <text>link</text>
@@ -136,24 +136,24 @@
                 </table_cell>
             </table_row>
         </table_section>
-        <table_section type="body">
-            <table_row>
-                <table_cell type="data">
+        <table_section type="body" location="[{33,0,null},{34,0,null}]" paddingInitial="0">
+            <table_row location="[{33,0,null}]" paddingInitial="0">
+                <table_cell type="data" location="[{33,1,25}]" paddingInitial="0" padding="1">
                     <text><![CDATA[Cell ]]></text>
                     <link location="[{33,7,12}]" title="reference" destination="https://example.com/">
                         <text>link</text>
                     </link>
                     <text><![CDATA[ cell.]]></text>
                 </table_cell>
-                <table_cell type="data">
+                <table_cell type="data" location="[{33,27,75}]" paddingInitial="0" padding="1">
                     <text>Cell</text>
                 </table_cell>
             </table_row>
-            <table_row>
-                <table_cell type="data">
+            <table_row location="[{34,0,null}]" paddingInitial="0">
+                <table_cell type="data" location="[{34,1,25}]" paddingInitial="0" padding="1">
                     <text>Cell</text>
                 </table_cell>
-                <table_cell type="data">
+                <table_cell type="data" location="[{34,27,75}]" paddingInitial="0" padding="1">
                     <text><![CDATA[Cell cell ]]></text>
                     <link location="[{34,38,28}]" title="" destination="https://example.com/">
                         <text>link</text>
@@ -169,19 +169,19 @@
     </table>
     <block_quote>
         <table>
-            <table_section type="head">
-                <table_row>
-                    <table_cell type="header">
+            <table_section type="head" location="[{36,2,null}]" paddingInitial="2">
+                <table_row location="[{36,2,null}]" paddingInitial="2">
+                    <table_cell type="header" location="[{36,3,50}]" paddingInitial="2" padding="1">
                         <text>Header</text>
                     </table_cell>
-                    <table_cell type="header">
+                    <table_cell type="header" location="[{36,54,8}]" paddingInitial="2" padding="1">
                         <text>Header</text>
                     </table_cell>
                 </table_row>
             </table_section>
-            <table_section type="body">
-                <table_row>
-                    <table_cell type="data">
+            <table_section type="body" location="[{38,2,null}]" paddingInitial="2">
+                <table_row location="[{38,2,null}]" paddingInitial="2">
+                    <table_cell type="data" location="[{38,3,50}]" paddingInitial="2" padding="1">
                         <text><![CDATA[Cell ]]></text>
                         <code>|</code>
                         <text><![CDATA[ | ]]></text>
@@ -189,7 +189,7 @@
                             <text>link</text>
                         </link>
                     </table_cell>
-                    <table_cell type="data">
+                    <table_cell type="data" location="[{38,54,8}]" paddingInitial="2" padding="1">
                         <text>Cell</text>
                     </table_cell>
                 </table_row>
@@ -247,24 +247,24 @@
         </paragraph>
     </block_quote>
     <table>
-        <table_section type="head">
-            <table_row>
-                <table_cell type="header">
+        <table_section type="head" location="[{53,0,null}]" paddingInitial="0">
+            <table_row location="[{53,0,null}]" paddingInitial="0">
+                <table_cell type="header" location="[{53,1,32}]" paddingInitial="0" padding="1">
                     <text>Header</text>
                 </table_cell>
-                <table_cell type="header">
+                <table_cell type="header" location="[{53,34,8}]" paddingInitial="0" padding="1">
                     <text>Header</text>
                 </table_cell>
             </table_row>
         </table_section>
-        <table_section type="body">
-            <table_row>
-                <table_cell type="data">
+        <table_section type="body" location="[{55,0,null}]" paddingInitial="0">
+            <table_row location="[{55,0,null}]" paddingInitial="0">
+                <table_cell type="data" location="[{55,1,32}]" paddingInitial="0" padding="1">
                     <image location="[{55,2,30}]" title="" destination="https://example.com/">
                         <text>image</text>
                     </image>
                 </table_cell>
-                <table_cell type="data">
+                <table_cell type="data" location="[{55,34,8}]" paddingInitial="0" padding="1">
                     <text>Cell</text>
                 </table_cell>
             </table_row>

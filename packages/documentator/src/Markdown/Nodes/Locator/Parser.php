@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
@@ -152,12 +153,19 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             }
 
             // Detected?
-            $startLine = $container->getStartLine();
-            $endLine   = $container->getEndLine();
-            $padding   = Data::get($container, PaddingInitial::class);
-            $offset    = Data::get($container, Offset::class);
+            $blockStartLine = $container->getStartLine();
+            $blockEndLine   = $container->getEndLine();
+            $blockPadding   = Data::get($container, BlockPaddingInitial::class);
+            $cellPadding    = Data::get($container, Padding::class);
+            $offset         = Data::get($container, Offset::class);
 
-            if ($startLine === null || $endLine === null || $padding === null || $offset === null) {
+            if (
+                $blockStartLine === null
+                || $blockEndLine === null
+                || $blockPadding === null
+                || $cellPadding === null
+                || $offset === null
+            ) {
                 continue;
             }
 
@@ -166,11 +174,11 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
                 $node,
                 new Location(
                     new Locator(
-                        $startLine,
-                        $endLine,
+                        $blockStartLine,
+                        $blockEndLine,
                         $coordinate->offset + $offset,
                         $coordinate->length,
-                        $padding,
+                        $blockPadding + $cellPadding,
                     ),
                 ),
             );

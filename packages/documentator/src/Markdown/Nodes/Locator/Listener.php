@@ -3,9 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\PaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
@@ -129,7 +131,7 @@ class Listener implements EnvironmentAwareInterface {
         $cells    = preg_split('/(?<!\\\\)[|]/u', mb_substr($text, $padding)) ?: []; // `|` must be always escaped
         $cells    = array_slice($cells, 1, -1); // First and Last characters are `|`, skip them
         $index    = 0;
-        $offset   = $padding;
+        $offset   = 1;
         $children = $this->toArray($row->children());
 
         if (count($children) !== count($cells)) {
@@ -141,16 +143,16 @@ class Listener implements EnvironmentAwareInterface {
             $content = $cells[$index];
             $length  = mb_strlen($content);
             $trimmed = $length - mb_strlen(ltrim($content));
-            $unused  = $length - $trimmed;
-            $offset  = $offset + $trimmed + 1;
 
             $cell->setStartLine($line);
             $cell->setEndLine($line);
 
-            Data::set($cell, new PaddingInitial($padding));
-            Data::set($cell, new Offset($offset - $padding));
+            Data::set($cell, new BlockPaddingInitial($padding));
+            Data::set($cell, new Padding($trimmed));
+            Data::set($cell, new Offset($offset));
+            Data::set($cell, new Length($length));
 
-            $offset += $unused;
+            $offset += $length + 1;
             $index  += 1;
         }
     }

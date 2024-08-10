@@ -2,8 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingContinuous;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
+use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
 use League\CommonMark\Renderer\NodeRendererInterface;
@@ -12,6 +17,8 @@ use League\Config\ConfigurationAwareInterface;
 use Override;
 use Stringable;
 
+use function array_filter;
+use function array_merge;
 use function array_walk_recursive;
 use function implode;
 use function is_string;
@@ -57,22 +64,19 @@ readonly class RendererWrapper implements
      */
     #[Override]
     public function getXmlAttributes(Node $node): array {
-        $attrs    = $this->renderer instanceof XmlNodeRendererInterface
+        $additional = $this->getXmlAdditionalAttributes($node);
+        $attributes = $this->renderer instanceof XmlNodeRendererInterface
             ? $this->renderer->getXmlAttributes($node)
             : [];
-        $location = $this->location($node);
+        $attributes = array_merge($attributes, $additional);
 
-        if ($location !== null) {
-            $attrs['location'] = $location;
-        }
-
-        array_walk_recursive($attrs, function (mixed &$value): void {
+        array_walk_recursive($attributes, function (mixed &$value): void {
             if (is_string($value)) {
                 $value = $this->escape($value);
             }
         });
 
-        return $attrs;
+        return $attributes;
     }
 
     protected function escape(string $string): string {
@@ -88,5 +92,21 @@ readonly class RendererWrapper implements
         }
 
         return $lines ? '['.implode(',', $lines).']' : null;
+    }
+
+    /**
+     * @return array<string, scalar>
+     */
+    private function getXmlAdditionalAttributes(Node $node): array {
+        $attributes             = [];
+        $attributes['location'] = $this->location($node);
+        $attributes['padding']  = Data::get($node, Padding::class);
+
+        if ($node instanceof AbstractBlock) {
+            $attributes['paddingInitial']    = Data::get($node, BlockPaddingInitial::class);
+            $attributes['paddingContinuous'] = Data::get($node, BlockPaddingContinuous::class);
+        }
+
+        return array_filter($attributes, static fn ($v) => $v !== null);
     }
 }
