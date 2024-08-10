@@ -270,6 +270,15 @@
             </table_row>
         </table_section>
     </table>
+    <heading level="1">
+        <text>Footnotes</text>
+    </heading>
+    <block_quote>
+        <paragraph>
+            <text>Text text</text>
+            <footnote_ref location="[{64,11,8}]" reference="quote"/>
+        </paragraph>
+    </block_quote>
     <footnote_container>
         <footnote reference="1">
             <paragraph>
@@ -282,18 +291,33 @@
         <footnote reference="note">
             <paragraph>
                 <text><![CDATA[Footnote text text text text text ]]></text>
-                <link destination="https://example.com/" location="[{59,43,28}]" title="">
+                <link destination="https://example.com/" location="[{61,43,28}]" title="">
                     <text>link</text>
                 </link>
-                <footnote_ref location="[{59,71,4}]" reference="1__3"/>
+                <footnote_ref location="[{61,71,4}]" reference="1__3"/>
                 <text><![CDATA[ text]]></text>
                 <softbreak/>
                 <text><![CDATA[text text text ]]></text>
-                <link destination="https://example.com/" location="[{60,19,28}]" title="">
+                <link destination="https://example.com/" location="[{62,19,28}]" title="">
                     <text>link</text>
                 </link>
                 <text><![CDATA[ text text text.]]></text>
                 <footnote_backref reference="note"/>
+            </paragraph>
+        </footnote>
+        <footnote reference="quote">
+            <paragraph>
+                <text><![CDATA[Footnote text text text text text ]]></text>
+                <link destination="https://example.com/" location="[{66,46,28}]" title="">
+                    <text>link</text>
+                </link>
+                <softbreak/>
+                <text><![CDATA[text text text text text ]]></text>
+                <link destination="https://example.com/" location="[{67,31,28}]" title="">
+                    <text>link</text>
+                </link>
+                <text>.</text>
+                <footnote_backref reference="quote"/>
             </paragraph>
         </footnote>
     </footnote_container>

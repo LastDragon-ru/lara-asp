@@ -54,7 +54,14 @@ text text _![image](https://example.com/)_ text.
 |--------------------------------|--------|
 | ![image](https://example.com/) | Cell   |
 
+# Footnotes
+
 [^1]: Footnote text text text text
 
 [^note]: Footnote text text text text text [link](https://example.com/)[^1] text
     text text text [link](https://example.com/) text text text.
+
+> Text text[^quote]
+>
+> [^quote]: Footnote text text text text text [link](https://example.com/)
+>     text text text text text [link](https://example.com/).

@@ -307,6 +307,48 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/to/file.md',
             ],
+            'footnotes'      => [
+                <<<'MARKDOWN'
+                # General
+
+                Text text[^1] text text[^note] text[^quote].
+
+                # Special
+
+                ## Inside Quote
+
+                > Text text[^1] text text[^note] text[^quote].
+                >
+                > [^quote]: Text text [tel](tel:+70000000000 "title") text [link](../from/file/a)
+                >     text [absolute](/path/to/file 'title') text [link](../from/file/b)
+
+                [^1]: Text text text [link](../from/file/a)
+
+                [^note]: Text text [tel](tel:+70000000000 "title") text [link](../from/file/a)
+                    text [absolute](/path/to/file 'title') text [link](../from/file/b)
+                MARKDOWN,
+                '/path/from/file.md',
+                <<<'MARKDOWN'
+                # General
+
+                Text text[^1] text text[^note] text[^quote].
+
+                # Special
+
+                ## Inside Quote
+
+                > Text text[^1] text text[^note] text[^quote].
+                >
+                > [^quote]: Text text [tel](tel:+70000000000 "title") text [link](./file/a)
+                >     text [absolute](/path/to/file 'title') text [link](file/b)
+
+                [^1]: Text text text [link](./file/a)
+
+                [^note]: Text text [tel](tel:+70000000000 "title") text [link](./file/a)
+                    text [absolute](/path/to/file 'title') text [link](file/b)
+                MARKDOWN,
+                '/path/to/file.md',
+            ],
         ];
     }
     // </editor-fold>
