@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\RendererWrapper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;
@@ -21,7 +22,7 @@ final class ParserTest extends TestCase {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment()
             ->addExtension(new Extension())
-            ->addRenderer(Block::class, new Renderer());
+            ->addRenderer(Block::class, new RendererWrapper(new Renderer()));
 
         $parser     = new MarkdownParser($environment);
         $document   = $parser->parse(self::getTestData()->content('~document.md'));

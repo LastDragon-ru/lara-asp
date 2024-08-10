@@ -6,8 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Renderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -25,8 +23,7 @@ final class ExtensionTest extends TestCase {
     public function testExtension(): void {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment()
-            ->addExtension(new Extension())
-            ->addRenderer(Block::class, new Renderer());
+            ->addExtension(new Extension());
 
         $parser   = new MarkdownParser($environment);
         $markdown = "# Header\nParagraph [link](https://example.com/).";

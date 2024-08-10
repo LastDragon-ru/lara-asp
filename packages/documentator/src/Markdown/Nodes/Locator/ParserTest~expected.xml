@@ -8,7 +8,7 @@
         <text><![CDATA[Text text ]]></text>
         <emph>
             <strong>
-                <link location="[{5,13,28}]" title="" url="https://example.com/">
+                <link location="[{5,13,28}]" title="" destination="https://example.com/">
                     <text>link</text>
                 </link>
             </strong>
@@ -17,21 +17,21 @@
     </paragraph>
     <paragraph>
         <text><![CDATA[Text text ]]></text>
-        <link location="[{7,10,28}]" title="" url="https://example.com/">
+        <link location="[{7,10,28}]" title="" destination="https://example.com/">
             <text>link</text>
         </link>
         <text><![CDATA[ text ]]></text>
-        <link location="[{7,44,36}]" title="title" url="https://example.com/">
+        <link location="[{7,44,36}]" title="title" destination="https://example.com/">
             <text>link</text>
         </link>
         <text><![CDATA[ text]]></text>
         <softbreak/>
         <text><![CDATA[text text text text ]]></text>
-        <link location="[{8,20,12}]" title="reference" url="https://example.com/">
+        <link location="[{8,20,12}]" title="reference" destination="https://example.com/">
             <text>link</text>
         </link>
         <text><![CDATA[ text text ]]></text>
-        <link location="[{8,43,28}]" title="" url="https://example.com/">
+        <link location="[{8,43,28}]" title="" destination="https://example.com/">
             <text>link</text>
         </link>
         <text><![CDATA[ text text text text text text]]></text>
@@ -40,7 +40,7 @@
         <softbreak/>
         <text><![CDATA[text text ]]></text>
         <emph>
-            <link location="[{10,11,28}]" title="" url="https://example.com/">
+            <link location="[{10,11,28}]" title="" destination="https://example.com/">
                 <text>link</text>
             </link>
         </emph>
@@ -54,7 +54,7 @@
         <item>
             <paragraph>
                 <text><![CDATA[List list ]]></text>
-                <link location="[{16,12,28}]" title="" url="https://example.com/">
+                <link location="[{16,12,28}]" title="" destination="https://example.com/">
                     <text>link</text>
                 </link>
                 <text>.</text>
@@ -63,7 +63,7 @@
                 <item>
                     <paragraph>
                         <text><![CDATA[List list ]]></text>
-                        <link location="[{17,14,28}]" title="" url="https://example.com/">
+                        <link location="[{17,14,28}]" title="" destination="https://example.com/">
                             <text>link</text>
                         </link>
                         <text>.</text>
@@ -72,7 +72,7 @@
                 <item>
                     <paragraph>
                         <text><![CDATA[List list ]]></text>
-                        <link location="[{18,14,34}]" title="\|" url="https://example.com/">
+                        <link location="[{18,14,34}]" title="\|" destination="https://example.com/">
                             <text>link</text>
                         </link>
                         <text>.</text>
@@ -87,7 +87,7 @@
     <block_quote>
         <paragraph>
             <text><![CDATA[Quote quote ]]></text>
-            <link location="[{22,14,28}]" title="" url="https://example.com/">
+            <link location="[{22,14,28}]" title="" destination="https://example.com/">
                 <text>link</text>
             </link>
             <text>.</text>
@@ -96,7 +96,7 @@
             <text>Quote quote quote quote quote quote quote quote quote quote quote quote quote quote quote quote quote</text>
             <softbreak/>
             <text><![CDATA[quote quote ]]></text>
-            <link location="[{25,14,28}]" title="" url="https://example.com/">
+            <link location="[{25,14,28}]" title="" destination="https://example.com/">
                 <text>link</text>
             </link>
             <text><![CDATA[ quote.]]></text>
@@ -106,7 +106,7 @@
         <block_quote>
             <paragraph>
                 <text><![CDATA[Quote quote ]]></text>
-                <link location="[{27,16,28}]" title="" url="https://example.com/">
+                <link location="[{27,16,28}]" title="" destination="https://example.com/">
                     <text>link</text>
                 </link>
                 <text>.</text>
@@ -124,7 +124,7 @@
                 </table_cell>
                 <table_cell type="header">
                     <text>Header (</text>
-                    <link location="[{31,37,28}]" title="" url="https://example.com/">
+                    <link location="[{31,37,28}]" title="" destination="https://example.com/">
                         <text>link</text>
                     </link>
                     <text>)</text>
@@ -135,7 +135,7 @@
             <table_row>
                 <table_cell type="data">
                     <text><![CDATA[Cell ]]></text>
-                    <link location="[{33,7,12}]" title="reference" url="https://example.com/">
+                    <link location="[{33,7,12}]" title="reference" destination="https://example.com/">
                         <text>link</text>
                     </link>
                     <text><![CDATA[ cell.]]></text>
@@ -150,11 +150,11 @@
                 </table_cell>
                 <table_cell type="data">
                     <text><![CDATA[Cell cell ]]></text>
-                    <link location="[{34,38,28}]" title="" url="https://example.com/">
+                    <link location="[{34,38,28}]" title="" destination="https://example.com/">
                         <text>link</text>
                     </link>
                     <text><![CDATA[ cell ]]></text>
-                    <link location="[{34,72,28}]" title="" url="https://example.com/">
+                    <link location="[{34,72,28}]" title="" destination="https://example.com/">
                         <text>link</text>
                     </link>
                     <text>.</text>
@@ -180,7 +180,7 @@
                         <text><![CDATA[Cell ]]></text>
                         <code>|</code>
                         <text><![CDATA[ | ]]></text>
-                        <link location="[{38,18,34}]" title="|" url="https://example.com/">
+                        <link location="[{38,18,34}]" title="|" destination="https://example.com/">
                             <text>link</text>
                         </link>
                     </table_cell>
@@ -196,20 +196,20 @@
     </heading>
     <paragraph>
         <text><![CDATA[Text text ]]></text>
-        <image location="[{42,10,30}]" title="" url="https://example.com/">
+        <image location="[{42,10,30}]" title="" destination="https://example.com/">
             <text>image</text>
         </image>
         <text><![CDATA[ text ]]></text>
-        <image location="[{42,46,38}]" title="title" url="https://example.com/">
+        <image location="[{42,46,38}]" title="title" destination="https://example.com/">
             <text>image</text>
         </image>
         <softbreak/>
         <text><![CDATA[text text ]]></text>
-        <image location="[{43,10,14}]" title="reference" url="https://example.com/">
+        <image location="[{43,10,14}]" title="reference" destination="https://example.com/">
             <text>image</text>
         </image>
         <text><![CDATA[ text text ]]></text>
-        <image location="[{43,35,30}]" title="" url="https://example.com/">
+        <image location="[{43,35,30}]" title="" destination="https://example.com/">
             <text>image</text>
         </image>
         <text><![CDATA[ text text text]]></text>
@@ -218,25 +218,25 @@
         <softbreak/>
         <text><![CDATA[text text ]]></text>
         <emph>
-            <image location="[{45,11,30}]" title="" url="https://example.com/">
+            <image location="[{45,11,30}]" title="" destination="https://example.com/">
                 <text>image</text>
             </image>
         </emph>
         <text><![CDATA[ text.]]></text>
     </paragraph>
     <paragraph>
-        <image location="[{47,0,30}]" title="" url="https://example.com/">
+        <image location="[{47,0,30}]" title="" destination="https://example.com/">
             <text>image</text>
         </image>
     </paragraph>
     <paragraph>
-        <image location="[{49,0,14}]" title="reference" url="https://example.com/">
+        <image location="[{49,0,14}]" title="reference" destination="https://example.com/">
             <text>image</text>
         </image>
     </paragraph>
     <block_quote>
         <paragraph>
-            <image location="[{51,2,30}]" title="" url="https://example.com/">
+            <image location="[{51,2,30}]" title="" destination="https://example.com/">
                 <text>image</text>
             </image>
         </paragraph>
@@ -255,7 +255,7 @@
         <table_section type="body">
             <table_row>
                 <table_cell type="data">
-                    <image location="[{55,2,30}]" title="" url="https://example.com/">
+                    <image location="[{55,2,30}]" title="" destination="https://example.com/">
                         <text>image</text>
                     </image>
                 </table_cell>

@@ -2,16 +2,24 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\XmlRenderer;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\CommonMark\Renderer\NodeRendererInterface;
+use League\CommonMark\Xml\XmlNodeRendererInterface;
 use Override;
+use Stringable;
 
 use function assert;
 
 /**
  * @internal
  */
-class Renderer extends XmlRenderer {
+class Renderer implements NodeRendererInterface, XmlNodeRendererInterface {
+    #[Override]
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): Stringable|string|null {
+        return null;
+    }
+
     #[Override]
     public function getXmlTagName(Node $node): string {
         assert($node instanceof Block);
@@ -27,10 +35,9 @@ class Renderer extends XmlRenderer {
         assert($node instanceof Block);
 
         return [
-            'label'       => $this->escape($node->getLabel()),
-            'destination' => $this->escape($node->getDestination()),
-            'title'       => $this->escape($node->getTitle()),
-            'location'    => $this->location($node),
+            'label'       => $node->getLabel(),
+            'destination' => $node->getDestination(),
+            'title'       => $node->getTitle(),
         ];
     }
 }

@@ -8,20 +8,19 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Delimiter\DelimiterInterface;
 use League\CommonMark\Delimiter\DelimiterStack;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
-use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
 use League\CommonMark\Parser\Inline\InlineParserMatch;
 use League\CommonMark\Parser\InlineParserContext;
 use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
 use Override;
 use ReflectionProperty;
 use WeakMap;
@@ -45,6 +44,8 @@ use function reset;
  * @see Environment
  */
 class Parser implements InlineParserInterface, EnvironmentAwareInterface, ConfigurationAwareInterface {
+    use Aware;
+
     /**
      * @var WeakMap<Node, Coordinate>
      */
@@ -54,6 +55,11 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         private readonly InlineParserInterface $parser,
     ) {
         $this->incomplete = new WeakMap();
+    }
+
+    #[Override]
+    protected function getObject(): object {
+        return $this->parser;
     }
 
     #[Override]
@@ -167,20 +173,6 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
 
         // Cleanup
         $this->incomplete = new WeakMap();
-    }
-
-    #[Override]
-    public function setEnvironment(EnvironmentInterface $environment): void {
-        if ($this->parser instanceof EnvironmentAwareInterface) {
-            $this->parser->setEnvironment($environment);
-        }
-    }
-
-    #[Override]
-    public function setConfiguration(ConfigurationInterface $configuration): void {
-        if ($this->parser instanceof ConfigurationAwareInterface) {
-            $this->parser->setConfiguration($configuration);
-        }
     }
 
     private function getDelimiterStackLength(DelimiterStack $stack): int {
