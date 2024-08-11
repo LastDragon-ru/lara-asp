@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
@@ -82,7 +82,7 @@ class ParserContinue implements BlockContinueParserInterface {
         }
 
         // Data
-        Data::set($this->block, new BlockPaddingInitial($this->padding));
+        Data::set($this->block, new BlockPadding($this->padding));
 
         $start = $this->block->getStartLine();
         $end   = $this->block->getEndLine();

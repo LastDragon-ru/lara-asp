@@ -65,3 +65,8 @@ text text _![image](https://example.com/)_ text.
 >
 > [^quote]: Footnote text text text text text [link](https://example.com/)
 >     text text text text text [link](https://example.com/).
+
+[^unused]: Text text text text text text text text text[^unused]
+
+    Text text text text text text text text text text text text
+    text text text text text text text text text text text text.

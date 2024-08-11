@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
@@ -155,7 +155,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             // Detected?
             $blockStartLine = $container->getStartLine();
             $blockEndLine   = $container->getEndLine();
-            $blockPadding   = Data::get($container, BlockPaddingInitial::class);
+            $blockPadding   = Data::get($container, BlockPadding::class);
             $cellPadding    = Data::get($container, Padding::class);
             $offset         = Data::get($container, Offset::class);
 

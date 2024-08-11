@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingContinuous;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use League\CommonMark\Node\Block\AbstractBlock;
@@ -79,8 +79,8 @@ class Utils {
 
         // Known?
         $type    = $line === null || $line === $container->getStartLine()
-            ? BlockPaddingInitial::class
-            : BlockPaddingContinuous::class;
+            ? BlockPadding::class
+            : Padding::class;
         $padding = Data::get($container, $type);
 
         if ($padding !== null) {

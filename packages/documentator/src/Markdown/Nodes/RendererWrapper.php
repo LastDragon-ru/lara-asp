@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingContinuous;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPaddingInitial;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
@@ -103,8 +102,7 @@ readonly class RendererWrapper implements
         $attributes['padding']  = Data::get($node, Padding::class);
 
         if ($node instanceof AbstractBlock) {
-            $attributes['paddingInitial']    = Data::get($node, BlockPaddingInitial::class);
-            $attributes['paddingContinuous'] = Data::get($node, BlockPaddingContinuous::class);
+            $attributes['blockPadding'] = Data::get($node, BlockPadding::class);
         }
 
         return array_filter($attributes, static fn ($v) => $v !== null);
