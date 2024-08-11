@@ -82,7 +82,7 @@ readonly class Move implements Mutation {
             $origin = trim((string) $document->getText($location));
 
             if ($resource instanceof Link || $resource instanceof Image) {
-                $title        = $resource->getTitle();
+                $title        = (string) $resource->getTitle();
                 $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
                 $label        = (string) Utils::getChild($resource, Text::class)?->getLiteral();
                 $target       = rawurldecode($resource->getUrl());
@@ -91,7 +91,7 @@ readonly class Move implements Mutation {
                 $targetWrap   = (bool) preg_match('/^!?\['.preg_quote($label, '/').']\(\s*</u', $origin);
 
                 if (Utils::getContainer($resource) instanceof TableCell) {
-                    $title  = $title ? str_replace('|', '\\|', $title) : $title;
+                    $title  = str_replace('|', '\\|', $title);
                     $label  = str_replace('|', '\\|', $label);
                     $target = str_replace('|', '\\|', $target);
                 }
@@ -155,7 +155,7 @@ readonly class Move implements Mutation {
             // => we need only which are relative
             // => we don't need references
             if ($child instanceof AbstractWebResource) {
-                if (!$child->data->has('reference') && $isRelative($child->getUrl())) {
+                if (!Utils::isReference($child) && $isRelative($child->getUrl())) {
                     $resources[] = $child;
                 }
             }

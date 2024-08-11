@@ -11,9 +11,11 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Util\UrlEncoder;
 
 use function mb_strpos;
@@ -140,6 +142,10 @@ class Utils {
         }
 
         return $location;
+    }
+
+    public static function isReference(AbstractWebResource $node): bool {
+        return $node->data->get('reference', null) instanceof ReferenceInterface;
     }
 
     public static function getLink(
