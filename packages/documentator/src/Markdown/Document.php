@@ -112,14 +112,18 @@ class Document implements Stringable {
     /**
      * @return new<static>
      */
-    public function mutate(Mutation $mutation): static {
+    public function mutate(Mutation ...$mutations): static {
         $document = clone $this;
-        $changes  = $mutation($document, $this->node);
 
-        if ($changes) {
-            $document->setContent(
-                (string) $this->getEditor()->mutate($changes),
-            );
+        foreach ($mutations as $mutation) {
+            $changes = $mutation($document, $document->node);
+
+            if (!$changes) {
+                continue;
+            }
+
+            $content  = (string) $document->getEditor()->mutate($changes);
+            $document = clone $document->setContent($content);
         }
 
         return $document;
