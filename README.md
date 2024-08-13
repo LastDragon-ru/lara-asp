@@ -65,7 +65,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 ## (Laravel) GraphQL Extensions for Lighthouse
 
-This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
+This package provides highly powerful [`@searchBy`](packages/graphql/docs/Directives/@searchBy.md), [`@sortBy`](packages/graphql/docs/Directives/@sortBy.md), [`@stream`](packages/graphql/docs/Directives/@stream.md) directives for [lighthouse-php](https://lighthouse-php.com/). The [`@searchBy`](packages/graphql/docs/Directives/@searchBy.md) directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The [`@sortBy`](packages/graphql/docs/Directives/@sortBy.md) is not only about standard sorting by columns but also allows use relations. 😎
 
 [Read more](<packages/graphql/README.md>).
 
@@ -111,15 +111,9 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 [//]: # (end: fed4ec353a970d6253d640feee67d7662b2a28757689a2bd7276fe1136209b8a)
 
-[include:file]: ./docs/Shared/Upgrading.md
-[//]: # (start: c18391a9383a4b80e3507a660c7927062227f2c3f8d7a34ba11721a5cc9c5294)
-[//]: # (warning: Generated automatically. Do not edit.)
-
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
-
-[//]: # (end: c18391a9383a4b80e3507a660c7927062227f2c3f8d7a34ba11721a5cc9c5294)
 
 # Development
 

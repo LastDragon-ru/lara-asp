@@ -1,6 +1,6 @@
 # `@stream` 🧪
 
-Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform way to perform Offset/Limit and Cursor pagination of Eloquent/Query/Scout builders. Filtering and sorting enabled by default via [`@searchBy`][pkg:graphql#@searchBy] and [`@sortBy`][pkg:graphql#@sortBy] directives.
+Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform way to perform Offset/Limit and Cursor pagination of Eloquent/Query/Scout builders. Filtering and sorting enabled by default via [`@searchBy`](@searchBy.md) and [`@sortBy`](@sortBy.md) directives.
 
 > [!NOTE]
 >
@@ -174,13 +174,3 @@ Keep in mind:
 
 * There is no way to use limit/offset, so the directive converts them into page/size and then slice results
 * Some engines may perform counting (seems actual for `Database` only)
-
-[include:file]: ../../../../docs/Shared/Links.md
-[//]: # (start: 0cb5b7fc2d139f2e4cbb483b37e572eecba024b637e626cce86816ef0246939f)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-[pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
-
-[pkg:graphql#@sortBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
-
-[//]: # (end: 0cb5b7fc2d139f2e4cbb483b37e572eecba024b637e626cce86816ef0246939f)
