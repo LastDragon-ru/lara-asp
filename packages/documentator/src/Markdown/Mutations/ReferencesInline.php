@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
@@ -61,12 +62,14 @@ class ReferencesInline implements Mutation {
                 if ($reference instanceof Image) {
                     $text = "!{$text}";
                 }
+            } elseif ($reference instanceof Reference) {
+                $text = '';
             } else {
                 // skipped
             }
 
             if ($text !== null) {
-                $changes[] = [$location, $text];
+                $changes[] = [$location, $text ?: null];
             }
         }
 
@@ -75,7 +78,7 @@ class ReferencesInline implements Mutation {
     }
 
     /**
-     * @return list<AbstractWebResource>
+     * @return list<AbstractWebResource|Reference>
      */
     protected function getReferences(DocumentNode $node): array {
         $references = [];
@@ -83,6 +86,10 @@ class ReferencesInline implements Mutation {
         foreach ($node->iterator() as $child) {
             if ($child instanceof AbstractWebResource && Utils::isReference($child)) {
                 $references[] = $child;
+            } elseif ($child instanceof Reference) {
+                $references[] = $child;
+            } else {
+                // empty
             }
         }
 

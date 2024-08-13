@@ -60,10 +60,6 @@ final class ReferencesInlineTest extends TestCase {
 
             ![image](https://example.com "image")
 
-            [link]: https://example.com
-            [image]: https://example.com (image)
-            [table]: https://example.com (table | cell)
-
             # Special
 
             ## Inside Quote
