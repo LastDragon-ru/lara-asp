@@ -2,17 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Stringable;
+use Traversable;
 
 /**
  * Task dependency (= another file).
  *
- * @template TValue of Iterator<mixed, Directory|File>|Directory|File|null
+ * @template TValue of Traversable<mixed, Directory|File>|Directory|File|null
  */
 interface Dependency extends Stringable {
     /**

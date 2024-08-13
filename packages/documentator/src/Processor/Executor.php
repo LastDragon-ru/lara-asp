@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
+use Traversable;
 
 use function array_merge;
 use function array_values;
@@ -124,15 +125,15 @@ class Executor {
                             $dependency = $generator->current();
                             $resolved   = $dependency($this->fs, $this->root, $file);
 
-                            if ($resolved instanceof Iterator) {
-                                $resolved = new ExecutorIterator($dependency, $resolved, $this->runDependency(...));
+                            if ($resolved instanceof Traversable) {
+                                $resolved = new ExecutorTraversable($dependency, $resolved, $this->runDependency(...));
                             } else {
                                 $paused += $this->runDependency($dependency, $resolved);
                             }
 
                             $generator->send($resolved);
 
-                            if ($resolved instanceof ExecutorIterator) {
+                            if ($resolved instanceof ExecutorTraversable) {
                                 $paused += $resolved->getDuration();
                             }
                         }
