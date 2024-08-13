@@ -10,6 +10,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
@@ -128,6 +132,27 @@ class Document implements Stringable {
         }
 
         return $document;
+    }
+
+    /**
+     * Renames all references/footnotes/etc to make possible inline the
+     * document into another document without conflicts/ambiguities.
+     *
+     * @return new<static>
+     */
+    public function toInlinable(?string $seed = null): static {
+        return $this->mutate(new FootnotesPrefix($seed), new ReferencesPrefix($seed));
+    }
+
+    /**
+     * Inlines all references, removes footnotes, etc, to make possible
+     * extract any block/paragraph from the document without losing
+     * information.
+     *
+     * @return new<static>
+     */
+    public function toSplittable(): static {
+        return $this->mutate(new FootnotesRemove(), new ReferencesInline());
     }
 
     protected function setContent(string $content): static {
