@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -105,7 +106,7 @@ class Document implements Stringable {
         return $this;
     }
 
-    public function getText(Location $location): ?string {
+    public function getText(Location|Coordinate $location): ?string {
         return $this->getEditor()->getText($location);
     }
 

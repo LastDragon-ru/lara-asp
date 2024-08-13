@@ -141,5 +141,11 @@ final class EditorTest extends TestCase {
             TEXT,
             $editor->getText(new Locator(2, 5, 4, 5)),
         );
+        self::assertEquals(
+            <<<'TEXT'
+            f g
+            TEXT,
+            $editor->getText(new Coordinate(1, 2, 3)),
+        );
     }
 }

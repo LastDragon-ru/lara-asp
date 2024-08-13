@@ -45,7 +45,12 @@ class Editor implements Stringable {
         return $this->lines;
     }
 
-    public function getText(Location $location): ?string {
+    public function getText(Location|Coordinate $location): ?string {
+        // Coordinate?
+        if ($location instanceof Coordinate) {
+            $location = [$location];
+        }
+
         // Select
         $selected = null;
 
