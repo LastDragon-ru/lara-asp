@@ -10,6 +10,8 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileTaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -17,6 +19,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
+use Traversable;
 
 use function array_merge;
 use function array_values;
@@ -122,15 +125,15 @@ class Executor {
                             $dependency = $generator->current();
                             $resolved   = $dependency($this->fs, $this->root, $file);
 
-                            if ($resolved instanceof Iterator) {
-                                $resolved = new ExecutorIterator($dependency, $resolved, $this->runDependency(...));
+                            if ($resolved instanceof Traversable) {
+                                $resolved = new ExecutorTraversable($dependency, $resolved, $this->runDependency(...));
                             } else {
                                 $paused += $this->runDependency($dependency, $resolved);
                             }
 
                             $generator->send($resolved);
 
-                            if ($resolved instanceof ExecutorIterator) {
+                            if ($resolved instanceof ExecutorTraversable) {
                                 $paused += $resolved->getDuration();
                             }
                         }
@@ -143,6 +146,13 @@ class Executor {
                     if ($result !== true) {
                         throw new FileTaskFailed($this->root, $file, $task);
                     }
+                } catch (FileMetadataError $exception) {
+                    throw new FileMetadataFailed(
+                        $this->root,
+                        $exception->getTarget(),
+                        $exception->getMetadata(),
+                        $exception->getPrevious(),
+                    );
                 } catch (ProcessorError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {
@@ -150,7 +160,7 @@ class Executor {
                 }
             }
 
-            if (!$file->save()) {
+            if (!$this->fs->save($file)) {
                 throw new FileSaveFailed($this->root, $file);
             }
         } catch (Throwable $exception) {

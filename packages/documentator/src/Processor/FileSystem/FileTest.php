@@ -4,9 +4,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_shift;
 use function basename;
 use function file_get_contents;
 use function file_put_contents;
@@ -59,40 +62,32 @@ final class FileTest extends TestCase {
     }
 
     public function testSetContent(): void {
-        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
-        $file = new File($temp, false);
+        $temp    = Path::normalize(self::getTempFile(__FILE__)->getPathname());
+        $file    = new File($temp, false);
+        $meta    = new class([1, 2]) implements Metadata {
+            public function __construct(
+                /**
+                 * @var list<int>
+                 */
+                private array $value,
+            ) {
+                // empty
+            }
+
+            #[Override]
+            public function __invoke(File $file): mixed {
+                return array_shift($this->value);
+            }
+        };
+        $current = $file->getMetadata($meta);
 
         self::assertEquals(__FILE__, $file->getContent());
+        self::assertSame($current, $file->getMetadata($meta));
         self::assertNotFalse(file_put_contents($temp, __DIR__));
         self::assertSame($file, $file->setContent(__METHOD__));
         self::assertEquals(__DIR__, file_get_contents($temp));
         self::assertEquals(__METHOD__, $file->getContent());
-    }
-
-    public function testSave(): void {
-        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
-        $file = new File($temp, true);
-
-        self::assertTrue($file->save()); // because no changes
-
-        self::assertSame($file, $file->setContent(__METHOD__));
-
-        self::assertTrue($file->save());
-
-        self::assertEquals(__METHOD__, file_get_contents($temp));
-    }
-
-    public function testSaveReadonly(): void {
-        $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
-        $file = new File($temp, false);
-
-        self::assertTrue($file->save()); // because no changes
-
-        self::assertSame($file, $file->setContent(__METHOD__));
-
-        self::assertFalse($file->save());
-
-        self::assertEquals(__FILE__, file_get_contents($temp));
+        self::assertNotEquals($current, $file->getMetadata($meta));
     }
 
     public function testGetRelativePath(): void {

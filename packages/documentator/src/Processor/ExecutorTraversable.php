@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Generator;
-use Iterator;
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
+use Traversable;
 
 /**
  * @internal
@@ -19,20 +19,20 @@ use Override;
  *
  * @implements IteratorAggregate<TKey, TValue>
  */
-class ExecutorIterator implements IteratorAggregate {
+class ExecutorTraversable implements IteratorAggregate {
     private float $duration = 0;
 
     public function __construct(
         /**
-         * @var Dependency<Iterator<TKey, TValue>>
+         * @var Dependency<Traversable<TKey, TValue>>
          */
         private readonly Dependency $dependency,
         /**
-         * @var Iterator<TKey, TValue>
+         * @var Traversable<TKey, TValue>
          */
-        private readonly Iterator $resolved,
+        private readonly Traversable $resolved,
         /**
-         * @var Closure(Dependency<Iterator<TKey, TValue>>, TValue): float
+         * @var Closure(Dependency<Traversable<TKey, TValue>>, TValue): float
          */
         private readonly Closure $handler,
     ) {
