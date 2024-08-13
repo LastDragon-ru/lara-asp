@@ -13,8 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Editor::class)]
 final class EditorTest extends TestCase {
-    public function testModify(): void {
-        $editor   = new Editor();
+    public function testMutate(): void {
         $lines    = [
             1  => 'a b c d',
             2  => 'e f g h',
@@ -32,6 +31,7 @@ final class EditorTest extends TestCase {
             14 => '> i j k l',
             15 => '>',
         ];
+        $editor   = new Editor($lines);
         $changes  = [
             [new Locator(1, 1, 2, 3), '123'],
             [new Locator(2, 4, 4, 4), '123'],
@@ -39,6 +39,7 @@ final class EditorTest extends TestCase {
             [new Locator(11, 12, 4, 3, 2), "123\n345"],
             [new Locator(14, 15, 4, 3, 2), '123'],
         ];
+        $actual   = $editor->mutate($changes);
         $expected = [
             1  => 'a 123 d',
             2  => 'e f 123',
@@ -56,11 +57,13 @@ final class EditorTest extends TestCase {
             14 => '> i j 123',
         ];
 
-        self::assertSame($expected, $editor->modify($lines, $changes));
+        self::assertNotSame($editor, $actual);
+        self::assertEquals($lines, $editor->getLines());
+        self::assertSame($expected, $actual->getLines());
     }
 
     public function testRemoveOverlaps(): void {
-        $editor   = new class() extends Editor {
+        $editor   = new class([]) extends Editor {
             /**
              * @inheritDoc
              */
@@ -89,7 +92,7 @@ final class EditorTest extends TestCase {
     }
 
     public function testExpand(): void {
-        $editor   = new class() extends Editor {
+        $editor   = new class([]) extends Editor {
             /**
              * @inheritDoc
              */
@@ -117,8 +120,7 @@ final class EditorTest extends TestCase {
     }
 
     public function testGetText(): void {
-        $editor = new Editor();
-        $lines  = [
+        $editor = new Editor([
             0 => 'a b c d',
             1 => 'e f g h',
             2 => 'i j k l',
@@ -126,10 +128,10 @@ final class EditorTest extends TestCase {
             4 => '',
             5 => 'q r s t',
             6 => 'u v w x',
-        ];
+        ]);
 
-        self::assertNull($editor->getText($lines, new Locator(25, 25, 0)));
-        self::assertEquals('f g', $editor->getText($lines, new Locator(1, 1, 2, 3)));
+        self::assertNull($editor->getText(new Locator(25, 25, 0)));
+        self::assertEquals('f g', $editor->getText(new Locator(1, 1, 2, 3)));
         self::assertEquals(
             <<<'TEXT'
             k l
@@ -137,7 +139,13 @@ final class EditorTest extends TestCase {
 
             q r s
             TEXT,
-            $editor->getText($lines, new Locator(2, 5, 4, 5)),
+            $editor->getText(new Locator(2, 5, 4, 5)),
+        );
+        self::assertEquals(
+            <<<'TEXT'
+            f g
+            TEXT,
+            $editor->getText(new Coordinate(1, 2, 3)),
         );
     }
 }

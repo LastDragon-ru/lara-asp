@@ -2,26 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Delimiter\DelimiterInterface;
 use League\CommonMark\Delimiter\DelimiterStack;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
-use League\CommonMark\Environment\EnvironmentInterface;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
 use League\CommonMark\Parser\Inline\InlineParserMatch;
 use League\CommonMark\Parser\InlineParserContext;
 use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
 use Override;
 use ReflectionProperty;
 use WeakMap;
@@ -45,6 +46,8 @@ use function reset;
  * @see Environment
  */
 class Parser implements InlineParserInterface, EnvironmentAwareInterface, ConfigurationAwareInterface {
+    use Aware;
+
     /**
      * @var WeakMap<Node, Coordinate>
      */
@@ -57,6 +60,11 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
     }
 
     #[Override]
+    protected function getObject(): object {
+        return $this->parser;
+    }
+
+    #[Override]
     public function getMatchDefinition(): InlineParserMatch {
         return $this->parser->getMatchDefinition();
     }
@@ -66,9 +74,13 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         // The `$cursor->getPosition()` depends on delimiters length, we need to
         // find it. Not sure that this is the best way...
         $cursor = $inlineContext->getCursor();
-        $offset = $cursor->getPosition()
-            - $this->getDelimiterStackLength($inlineContext->getDelimiterStack()) // delimiters length
-            - mb_strlen($cursor->getPreviousText());                              // text after delimiter
+        $offset = $cursor->getPosition();
+
+        if ($this->parser instanceof CloseBracketParser) {
+            $offset = $offset
+                - $this->getDelimiterStackLength($inlineContext->getDelimiterStack()) // delimiters length
+                - mb_strlen($cursor->getPreviousText());                              // text after delimiter
+        }
 
         // Parse
         $parsed = $this->parser->parse($inlineContext);
@@ -141,12 +153,19 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             }
 
             // Detected?
-            $startLine = $container->getStartLine();
-            $endLine   = $container->getEndLine();
-            $padding   = Data::get($container, Padding::class);
-            $offset    = Data::get($container, Offset::class);
+            $blockStartLine = $container->getStartLine();
+            $blockEndLine   = $container->getEndLine();
+            $blockPadding   = Data::get($container, BlockPadding::class);
+            $cellPadding    = Data::get($container, Padding::class);
+            $offset         = Data::get($container, Offset::class);
 
-            if ($startLine === null || $endLine === null || $padding === null || $offset === null) {
+            if (
+                $blockStartLine === null
+                || $blockEndLine === null
+                || $blockPadding === null
+                || $cellPadding === null
+                || $offset === null
+            ) {
                 continue;
             }
 
@@ -155,11 +174,11 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
                 $node,
                 new Location(
                     new Locator(
-                        $startLine,
-                        $endLine,
+                        $blockStartLine,
+                        $blockEndLine,
                         $coordinate->offset + $offset,
                         $coordinate->length,
-                        $padding,
+                        $blockPadding + $cellPadding,
                     ),
                 ),
             );
@@ -167,20 +186,6 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
 
         // Cleanup
         $this->incomplete = new WeakMap();
-    }
-
-    #[Override]
-    public function setEnvironment(EnvironmentInterface $environment): void {
-        if ($this->parser instanceof EnvironmentAwareInterface) {
-            $this->parser->setEnvironment($environment);
-        }
-    }
-
-    #[Override]
-    public function setConfiguration(ConfigurationInterface $configuration): void {
-        if ($this->parser instanceof ConfigurationAwareInterface) {
-            $this->parser->setConfiguration($configuration);
-        }
     }
 
     private function getDelimiterStackLength(DelimiterStack $stack): int {

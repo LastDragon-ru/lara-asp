@@ -2,12 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Util\UrlEncoder;
 
 use function mb_strpos;
@@ -60,8 +68,8 @@ class Utils {
     }
 
     /**
-     * Detect block padding. We are expecting that all lines inside the block
-     * have the same padding.
+     * Detect block padding. We are expecting that all lines except first inside
+     * the block have the same padding.
      */
     public static function getPadding(Node $node, ?int $line, ?string $start): ?int {
         // Container?
@@ -72,7 +80,10 @@ class Utils {
         }
 
         // Known?
-        $padding = Data::get($container, Padding::class);
+        $type    = $line === null || $line === $container->getStartLine()
+            ? BlockPadding::class
+            : Padding::class;
+        $padding = Data::get($container, $type);
 
         if ($padding !== null) {
             return $padding;
@@ -98,7 +109,7 @@ class Utils {
         }
 
         // Cache
-        Data::set($container, new Padding($padding));
+        Data::set($container, new $type($padding));
 
         // Return
         return $padding;
@@ -109,6 +120,39 @@ class Utils {
         $line  = $lines[$line] ?? null;
 
         return $line;
+    }
+
+    public static function getLocation(Node $node): ?LocationContract {
+        $location = Data::get($node, Location::class);
+
+        if ($location === null && $node instanceof AbstractBlock) {
+            $start   = $node->getStartLine();
+            $end     = $node->getEndLine();
+            $offset  = Data::get($node, Offset::class) ?? 0;
+            $length  = Data::get($node, Length::class);
+            $padding = self::getPadding($node, null, null);
+
+            if ($padding === null && $node->parent() instanceof Document) {
+                $padding = 0;
+            }
+
+            if ($start !== null && $end !== null && $padding !== null) {
+                $location = new Locator($start, $end, $offset, $length, $padding);
+            }
+        }
+
+        return $location;
+    }
+
+    public static function isReference(AbstractWebResource $node): bool {
+        return self::getReference($node) !== null;
+    }
+
+    public static function getReference(AbstractWebResource $node): ?ReferenceInterface {
+        $reference = $node->data->get('reference', null);
+        $reference = $reference instanceof ReferenceInterface ? $reference : null;
+
+        return $reference;
     }
 
     public static function getLink(

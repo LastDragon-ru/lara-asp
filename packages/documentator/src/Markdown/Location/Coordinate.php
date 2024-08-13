@@ -2,9 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Location;
 
-/**
- * @internal
- */
 readonly class Coordinate {
     public function __construct(
         public int $line,

@@ -12,7 +12,7 @@ readonly class Locator implements Location {
     public function __construct(
         private int $startLine,
         private int $endLine,
-        private int $offset,
+        private int $offset = 0,
         private ?int $length = null,
         private int $padding = 0,
     ) {

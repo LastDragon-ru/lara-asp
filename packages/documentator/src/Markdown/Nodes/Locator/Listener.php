@@ -3,13 +3,16 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Event\DocumentParsedEvent;
+use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Table\Table;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Extension\Table\TableRow;
@@ -28,6 +31,12 @@ use function mb_substr;
 use function preg_split;
 
 /**
+ * Fix/Detect location/padding.
+ *
+ * Out the box only start/end line know. But not for all notes, for example,
+ * `Table`'s nodes don't have this information. Another important thing -
+ * padding of the block node.
+ *
  * @internal
  */
 class Listener implements EnvironmentAwareInterface {
@@ -38,8 +47,7 @@ class Listener implements EnvironmentAwareInterface {
     }
 
     public function __invoke(DocumentParsedEvent $event): void {
-        // Fix `Table` nodes (they don't have a start/end line) and detect padding.
-        // (we are expecting that iteration happens in the document order)
+        // Fix/Detect
         $document = $event->getDocument();
 
         foreach ($document->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
@@ -47,6 +55,8 @@ class Listener implements EnvironmentAwareInterface {
                 $this->fixTableSection($document, $node);
             } elseif ($node instanceof TableRow) {
                 $this->fixTableRow($document, $node);
+            } elseif ($node instanceof Footnote) {
+                $this->fixFootnote($document, $node);
             } else {
                 // empty
             }
@@ -127,9 +137,13 @@ class Listener implements EnvironmentAwareInterface {
 
         // Yep
         $cells    = preg_split('/(?<!\\\\)[|]/u', mb_substr($text, $padding)) ?: []; // `|` must be always escaped
-        $cells    = array_slice($cells, 1, -1); // First and Last characters are `|`, skip them
+        $cells    = array_slice(
+            $cells,
+            1,
+            -1,
+        );                                                                           // First and Last characters are `|`, skip them
         $index    = 0;
-        $offset   = $padding;
+        $offset   = 1;
         $children = $this->toArray($row->children());
 
         if (count($children) !== count($cells)) {
@@ -141,18 +155,52 @@ class Listener implements EnvironmentAwareInterface {
             $content = $cells[$index];
             $length  = mb_strlen($content);
             $trimmed = $length - mb_strlen(ltrim($content));
-            $unused  = $length - $trimmed;
-            $offset  = $offset + $trimmed + 1;
 
             $cell->setStartLine($line);
             $cell->setEndLine($line);
 
-            Data::set($cell, new Padding($padding));
-            Data::set($cell, new Offset($offset - $padding));
+            Data::set($cell, new BlockPadding($padding));
+            Data::set($cell, new Padding($trimmed));
+            Data::set($cell, new Offset($offset));
+            Data::set($cell, new Length($length));
 
-            $offset += $unused;
+            $offset += $length + 1;
             $index  += 1;
         }
+    }
+
+    private function fixFootnote(Document $document, Footnote $footnote): void {
+        // Possible?
+        $start = $footnote->getStartLine();
+        $end   = $footnote->getEndLine();
+
+        if ($start === null || $end === null) {
+            return;
+        }
+
+        // Initial
+        $initial = Utils::getPadding($footnote, $start, '[^');
+
+        if ($initial === null) {
+            return;
+        }
+
+        if ($start === $end) {
+            return;
+        }
+
+        // Internal
+        $padding = null;
+        $index   = $start + 1;
+
+        do {
+            $line    = (string) Utils::getLine($document, $index++);
+            $line    = mb_substr($line, $initial);
+            $trimmed = ltrim($line);
+            $padding = mb_strlen($line) - mb_strlen($trimmed);
+        } while ($index < $end && $trimmed === '');
+
+        Data::set($footnote, new Padding($padding));
     }
 
     /**

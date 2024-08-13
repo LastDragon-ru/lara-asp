@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use Override;
+use Stringable;
 
 use function array_key_last;
 use function array_merge;
@@ -21,21 +23,40 @@ use const PHP_INT_MAX;
 /**
  * @internal
  */
-class Editor {
-    public function __construct() {
+class Editor implements Stringable {
+    public function __construct(
+        /**
+         * @var array<int, string>
+         */
+        private array $lines,
+    ) {
         // empty
     }
 
+    #[Override]
+    public function __toString(): string {
+        return implode("\n", $this->lines);
+    }
+
     /**
-     * @param array<int, string> $lines
+     * @return array<int, string>
      */
-    public function getText(array $lines, Location $location): ?string {
+    public function getLines(): array {
+        return $this->lines;
+    }
+
+    public function getText(Location|Coordinate $location): ?string {
+        // Coordinate?
+        if ($location instanceof Coordinate) {
+            $location = [$location];
+        }
+
         // Select
         $selected = null;
 
         foreach ($location as $coordinate) {
-            if (isset($lines[$coordinate->line])) {
-                $selected[] = mb_substr($lines[$coordinate->line], $coordinate->offset, $coordinate->length);
+            if (isset($this->lines[$coordinate->line])) {
+                $selected[] = mb_substr($this->lines[$coordinate->line], $coordinate->offset, $coordinate->length);
             } else {
                 $selected = null;
                 break;
@@ -51,13 +72,13 @@ class Editor {
     }
 
     /**
-     * @param array<int, string>                         $lines
      * @param array<array-key, array{Location, ?string}> $changes
      *
-     * @return array<int, string>
+     * @return new<static>
      */
-    public function modify(array $lines, array $changes): array {
+    public function mutate(array $changes): static {
         // Modify
+        $lines    = $this->lines;
         $changes  = $this->removeOverlaps($changes);
         $changes  = $this->expand($changes);
         $paddings = [];
@@ -106,7 +127,10 @@ class Editor {
         }
 
         // Return
-        return $lines;
+        $editor        = clone $this;
+        $editor->lines = $lines;
+
+        return $editor;
     }
 
     /**
