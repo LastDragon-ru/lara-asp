@@ -145,7 +145,14 @@ class Utils {
     }
 
     public static function isReference(AbstractWebResource $node): bool {
-        return $node->data->get('reference', null) instanceof ReferenceInterface;
+        return self::getReference($node) !== null;
+    }
+
+    public static function getReference(AbstractWebResource $node): ?ReferenceInterface {
+        $reference = $node->data->get('reference', null);
+        $reference = $reference instanceof ReferenceInterface ? $reference : null;
+
+        return $reference;
     }
 
     public static function getLink(
