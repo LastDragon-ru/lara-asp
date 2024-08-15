@@ -84,14 +84,14 @@ class Editor implements Stringable {
         $paddings = [];
 
         foreach ($changes as $change) {
-            [$coordinate, $padding, $text] = $change;
-            $line                          = $lines[$coordinate->line] ?? '';
-            $prefix                        = mb_substr($line, 0, $coordinate->offset);
-            $suffix                        = $coordinate->length
+            [$coordinate, $text]         = $change;
+            $line                        = $lines[$coordinate->line] ?? '';
+            $prefix                      = mb_substr($line, 0, $coordinate->offset);
+            $suffix                      = $coordinate->length
                 ? mb_substr($line, $coordinate->offset + $coordinate->length)
                 : '';
-            $lines[$coordinate->line]      = $prefix.$text.$suffix;
-            $paddings[$coordinate->line]   = $padding;
+            $lines[$coordinate->line]    = $prefix.$text.$suffix;
+            $paddings[$coordinate->line] = $coordinate->padding;
 
             if ($text === null && !$suffix) {
                 $lines[$coordinate->line] = trim($prefix);
@@ -136,7 +136,7 @@ class Editor implements Stringable {
     /**
      * @param array<array-key, array{Location, ?string}> $changes
      *
-     * @return list<array{Coordinate, int, ?string}>
+     * @return list<array{Coordinate, ?string}>
      */
     protected function expand(array $changes): array {
         $expanded = [];
@@ -153,7 +153,7 @@ class Editor implements Stringable {
             usort($coordinates, $sort);
 
             foreach ($coordinates as $coordinate) {
-                $expanded[] = [$coordinate, $location->getPadding(), $text[$line++] ?? null];
+                $expanded[] = [$coordinate, $text[$line++] ?? null];
             }
 
             // If `$text` contains more lines than `$coordinates` that means

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -33,11 +33,11 @@ final class EditorTest extends TestCase {
         ];
         $editor   = new Editor($lines);
         $changes  = [
-            [new Locator(1, 1, 2, 3), '123'],
-            [new Locator(2, 4, 4, 4), '123'],
-            [new Locator(6, 8, 4, 4), "123\n345"],
-            [new Locator(11, 12, 4, 3, 2), "123\n345"],
-            [new Locator(14, 15, 4, 3, 2), '123'],
+            [new Location(1, 1, 2, 3), '123'],
+            [new Location(2, 4, 4, 4), '123'],
+            [new Location(6, 8, 4, 4), "123\n345"],
+            [new Location(11, 12, 4, 3, 2), "123\n345"],
+            [new Location(14, 15, 4, 3, 2), '123'],
         ];
         $actual   = $editor->mutate($changes);
         $expected = [
@@ -73,19 +73,19 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            0 => [new Locator(10, 10, 15, 10), 'a'],
-            1 => [new Locator(10, 10, 10, null), 'b'],
-            2 => [new Locator(12, 15, 5, 10), 'c'],
-            3 => [new Locator(14, 15, 5, 10), 'd'],
-            4 => [new Locator(17, 17, 5, 10), 'e'],
-            5 => [new Locator(17, 17, 11, 10), 'f'],
-            6 => [new Locator(18, 18, 5, 10), 'g'],
+            0 => [new Location(10, 10, 15, 10), 'a'],
+            1 => [new Location(10, 10, 10, null), 'b'],
+            2 => [new Location(12, 15, 5, 10), 'c'],
+            3 => [new Location(14, 15, 5, 10), 'd'],
+            4 => [new Location(17, 17, 5, 10), 'e'],
+            5 => [new Location(17, 17, 11, 10), 'f'],
+            6 => [new Location(18, 18, 5, 10), 'g'],
         ];
         $expected = [
-            1 => [new Locator(10, 10, 10, null), 'b'],
-            3 => [new Locator(14, 15, 5, 10), 'd'],
-            5 => [new Locator(17, 17, 11, 10), 'f'],
-            6 => [new Locator(18, 18, 5, 10), 'g'],
+            1 => [new Location(10, 10, 10, null), 'b'],
+            3 => [new Location(14, 15, 5, 10), 'd'],
+            5 => [new Location(17, 17, 11, 10), 'f'],
+            6 => [new Location(18, 18, 5, 10), 'g'],
         ];
 
         self::assertEquals($expected, $editor->removeOverlaps($changes));
@@ -102,18 +102,18 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            [new Locator(1, 1, 5, 10), 'text'],
-            [new Locator(2, 3, 5, null), 'text'],
-            [new Locator(4, 5, 5, 5, 1), "text a\ntext b"],
-            [new Locator(6, 6, 5, 10, 2), "text a\ntext b"],
+            [new Location(1, 1, 5, 10), 'text'],
+            [new Location(2, 3, 5, null), 'text'],
+            [new Location(4, 5, 5, 5, 1), "text a\ntext b"],
+            [new Location(6, 6, 5, 10, 2), "text a\ntext b"],
         ];
         $expected = [
-            [new Coordinate(6, 7, 10), 2, 'text a'],
-            [new Coordinate(5, 1, 5), 1, 'text b'],
-            [new Coordinate(4, 6, null), 1, 'text a'],
-            [new Coordinate(3, 0, null), 0, null],
-            [new Coordinate(2, 5, null), 0, 'text'],
-            [new Coordinate(1, 5, 10), 0, 'text'],
+            [new Coordinate(6, 7, 10, 2), 'text a'],
+            [new Coordinate(5, 1, 5, 1), 'text b'],
+            [new Coordinate(4, 6, null, 1), 'text a'],
+            [new Coordinate(3, 0, null, 0), null],
+            [new Coordinate(2, 5, null, 0), 'text'],
+            [new Coordinate(1, 5, 10, 0), 'text'],
         ];
 
         self::assertEquals($expected, $editor->expand($changes));
@@ -130,8 +130,8 @@ final class EditorTest extends TestCase {
             6 => 'u v w x',
         ]);
 
-        self::assertNull($editor->getText(new Locator(25, 25, 0)));
-        self::assertEquals('f g', $editor->getText(new Locator(1, 1, 2, 3)));
+        self::assertNull($editor->getText(new Location(25, 25, 0)));
+        self::assertEquals('f g', $editor->getText(new Location(1, 1, 2, 3)));
         self::assertEquals(
             <<<'TEXT'
             k l
@@ -139,7 +139,7 @@ final class EditorTest extends TestCase {
 
             q r s
             TEXT,
-            $editor->getText(new Locator(2, 5, 4, 5)),
+            $editor->getText(new Location(2, 5, 4, 5)),
         );
         self::assertEquals(
             <<<'TEXT'

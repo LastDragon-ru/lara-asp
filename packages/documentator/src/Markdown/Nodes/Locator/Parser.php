@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as DataLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as DataOffset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as DataPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -169,9 +169,9 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             // Detected?
             $blockStartLine = $container->getStartLine();
             $blockEndLine   = $container->getEndLine();
-            $blockPadding   = Data::get($container, BlockPadding::class);
-            $cellPadding    = Data::get($container, Padding::class);
-            $offset         = Data::get($container, Offset::class);
+            $blockPadding   = Data::get($container, DataBlockPadding::class);
+            $cellPadding    = Data::get($container, DataPadding::class);
+            $offset         = Data::get($container, DataOffset::class);
 
             if (
                 $blockStartLine === null
@@ -224,10 +224,10 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         int $padding,
         int $origin,
     ): void {
-        Data::set($child, new Location(new Locator($startLine, $endLine, $offset, $length, $padding)));
+        Data::set($child, new DataLocation(new Location($startLine, $endLine, $offset, $length, $padding)));
 
         if (!($child instanceof FootnoteRef)) {
-            Data::set($child, new Offset($origin));
+            Data::set($child, new DataOffset($origin));
         }
     }
 }

@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
@@ -93,7 +92,7 @@ class Document implements Stringable {
         $start   = $summary?->getEndLine();
         $end     = array_key_last($this->getLines());
         $body    = $start !== null && is_int($end)
-            ? $this->getText(new Locator($start + 1, $end))
+            ? $this->getText(new Location($start + 1, $end))
             : null;
         $body    = trim((string) $body) ?: null;
 
@@ -234,7 +233,7 @@ class Document implements Stringable {
 
     private function getBlockText(?AbstractBlock $node): ?string {
         $location = $node?->getStartLine() !== null && $node->getEndLine() !== null
-            ? new Locator($node->getStartLine(), $node->getEndLine())
+            ? new Location($node->getStartLine(), $node->getEndLine())
             : null;
         $text     = $location
             ? $this->getText($location)

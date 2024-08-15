@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
@@ -93,6 +92,6 @@ readonly class FootnotesPrefix implements Mutation {
         $offset    = $coordinate->offset + 2;
         $length    = mb_strlen($label);
 
-        return new Locator($startLine, $endLine, $offset, $length);
+        return new Location($startLine, $endLine, $offset, $length);
     }
 }

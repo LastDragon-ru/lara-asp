@@ -7,6 +7,7 @@ readonly class Coordinate {
         public int $line,
         public int $offset,
         public ?int $length,
+        public int $padding = 0,
     ) {
         // empty
     }

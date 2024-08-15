@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
@@ -84,7 +84,7 @@ class ReferencesPrefix implements Mutation {
                     $offset    = $coordinate->offset + 1;
                     $length    = mb_strlen($reference->getLabel());
                     $text      = "{$prefix}-{$reference->getLabel()}";
-                    $location  = new Locator($startLine, $endLine, $offset, $length);
+                    $location  = new Location($startLine, $endLine, $offset, $length);
                 }
             } else {
                 // skipped
