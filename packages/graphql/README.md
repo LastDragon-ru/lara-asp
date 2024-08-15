@@ -1,6 +1,6 @@
 # (Laravel) GraphQL Extensions for Lighthouse
 
-This package provides highly powerful `@searchBy`, `@sortBy`, `@stream` directives for [lighthouse-php](https://lighthouse-php.com/). The `@searchBy` directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The `@sortBy` is not only about standard sorting by columns but also allows use relations. 😎
+This package provides highly powerful [`@searchBy`](docs/Directives/@searchBy.md), [`@sortBy`](docs/Directives/@sortBy.md), [`@stream`](docs/Directives/@stream.md) directives for [lighthouse-php](https://lighthouse-php.com/). The [`@searchBy`](docs/Directives/@searchBy.md) directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The [`@sortBy`](docs/Directives/@sortBy.md) is not only about standard sorting by columns but also allows use relations. 😎
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
 [//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
@@ -71,7 +71,7 @@ Probably the most powerful directive to provide sort (`order by` conditions) for
 
 ## `@stream` 🧪
 
-Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform way to perform Offset/Limit and Cursor pagination of Eloquent/Query/Scout builders. Filtering and sorting enabled by default via [`@searchBy`][pkg:graphql#@searchBy] and [`@sortBy`][pkg:graphql#@sortBy] directives.
+Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform way to perform Offset/Limit and Cursor pagination of Eloquent/Query/Scout builders. Filtering and sorting enabled by default via [`@searchBy`](docs/Directives/@searchBy.md) and [`@sortBy`](docs/Directives/@sortBy.md) directives.
 
 [Read more](<docs/Directives/@stream.md>).
 
@@ -218,7 +218,7 @@ class CustomDirective implements Directive, BuilderInfoProvider {
 
 # Printer
 
-The package provides bindings for [`Printer`][pkg:graphql-printer] so you can simply use:
+The package provides bindings for [`Printer`](../graphql-printer/README.md) so you can simply use:
 
 [include:example]: ./docs/Examples/Printer.php
 [//]: # (start: 00ac890253748f10fee1ee6b47fa65917a45100cc9ee42b420e5d8c0219213e5)
@@ -592,15 +592,9 @@ Validates default internal schema (with all directives). Faster than `lighthouse
 
 [//]: # (end: c9953bb428d837e4a82f61878dcfa1a88fc32adcfc3e683dcc228578acec584b)
 
-[include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
-[//]: # (warning: Generated automatically. Do not edit.)
-
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
-
-[//]: # (end: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
@@ -611,15 +605,3 @@ Please follow [Upgrade Guide](UPGRADE.md).
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
-
-[include:file]: ../../docs/Shared/Links.md
-[//]: # (start: bab2235c844a18f05f23166e16c25becd344a2bc82159ddae3b818600a6e1884)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-[pkg:graphql#@searchBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@searchBy.md
-
-[pkg:graphql#@sortBy]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql/docs/Directives/@sortBy.md
-
-[pkg:graphql-printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql-printer
-
-[//]: # (end: bab2235c844a18f05f23166e16c25becd344a2bc82159ddae3b818600a6e1884)

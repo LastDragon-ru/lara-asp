@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function dirname;
 
@@ -20,27 +21,22 @@ use function dirname;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testInvoke(): void {
+    // <editor-fold desc="Tests">
+    // =========================================================================
+    /**
+     * @param array<string, scalar|null> $data
+     */
+    #[DataProvider('dataProviderInvoke')]
+    public function testInvoke(string $expected, string $source, array $data): void {
         $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(self::getTestData()->path('.md')), false);
-        $params   = new Parameters('...', [
-            'a' => 'Relative',
-            'b' => 'Inner reference ${a}',
-        ]);
-        $target   = $file->getRelativePath($root);
+        $file     = new File(Path::normalize(__FILE__), false);
+        $params   = new Parameters('...', $data);
+        $target   = self::getTestData()->path($source);
         $context  = new Context($root, $file, $target, '{...}');
         $instance = $this->app()->make(Instruction::class);
+        $expected = self::getTestData()->content($expected);
 
-        self::assertEquals(
-            <<<'FILE'
-            # Template Relative
-
-            Content of the file Relative with variable "Inner reference Relative"
-
-            FILE
-            ,
-            ProcessorHelper::runInstruction($instance, $context, $target, $params),
-        );
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $target, $params));
     }
 
     public function testInvokeNoData(): void {
@@ -96,4 +92,18 @@ final class InstructionTest extends TestCase {
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{string, string, array<string, scalar|null>}>
+     */
+    public static function dataProviderInvoke(): array {
+        return [
+            'txt' => ['Text~expected.txt', 'Text.txt', ['a' => 'File', 'b' => 'Variable']],
+            'md'  => ['Markdown~expected.md', 'Markdown.md', ['a' => 'File', 'b' => 'Variable']],
+        ];
+    }
+    // </editor-fold>
 }

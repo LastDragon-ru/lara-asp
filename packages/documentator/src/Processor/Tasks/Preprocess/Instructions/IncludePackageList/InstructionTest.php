@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -101,27 +100,6 @@ final class InstructionTest extends TestCase {
         self::assertNotNull($expected);
         self::expectExceptionObject(
             new PackageReadmeIsEmpty($context, $package, $expected),
-        );
-
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
-    }
-
-    public function testInvokeNoTitle(): void {
-        $fs       = new FileSystem();
-        $path     = self::getTestData()->path('Document.md');
-        $root     = new Directory(dirname($path), false);
-        $file     = new File($path, false);
-        $target   = $root->getPath('no title');
-        $params   = new Parameters('...');
-        $context  = new Context($root, $file, $target, '{...}');
-        $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory(new Directory($target, false), 'package');
-        $expected = $fs->getFile($root, 'no title/package/README.md');
-
-        self::assertNotNull($package);
-        self::assertNotNull($expected);
-        self::expectExceptionObject(
-            new PackageReadmeTitleIsMissing($context, $package, $expected),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);

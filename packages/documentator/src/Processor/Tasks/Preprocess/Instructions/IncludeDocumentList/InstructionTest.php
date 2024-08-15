@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Exceptions\DocumentTitleIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -78,24 +76,5 @@ final class InstructionTest extends TestCase {
             {$actual}
             MARKDOWN,
         );
-    }
-
-    public function testInvokeWithoutTitle(): void {
-        $fs       = new FileSystem();
-        $path     = self::getTestData()->path('invalid/Document.md');
-        $root     = new Directory(dirname($path), false);
-        $file     = new File($path, false);
-        $params   = new Parameters('...');
-        $target   = './';
-        $context  = new Context($root, $file, $target, '');
-        $instance = $this->app()->make(Instruction::class);
-        $expected = $fs->getFile($root, 'WithoutTitle.md');
-
-        self::assertNotNull($expected);
-        self::expectExceptionObject(
-            new DocumentTitleIsMissing($context, $expected),
-        );
-
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
 }

@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -12,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Inst
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
 use Override;
 
 use function array_diff;
@@ -58,7 +61,8 @@ class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $content = (Cast::to(File::class, yield new FileReference($target)))->getContent();
+        $file    = Cast::to(File::class, yield new FileReference($target));
+        $content = $file->getContent();
 
         do {
             $content = (string) preg_replace_callback(
@@ -88,11 +92,19 @@ class Instruction implements InstructionContract {
             throw new TemplateVariablesUnused($context, array_values($unused));
         }
 
-        // Missed
+        // Missed?
         $missed = array_diff($known, $used);
 
         if ($missed) {
             throw new TemplateVariablesMissed($context, array_values($missed));
+        }
+
+        // Markdown?
+        if ($file->getExtension() === 'md') {
+            $path    = $context->file->getPath();
+            $content = (new Document($content, $file->getPath()))->mutate(new Move($path));
+            $content = $content->toInlinable(Utils::getSeed($context, $file));
+            $content = (string) $content;
         }
 
         // Return

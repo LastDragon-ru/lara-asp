@@ -219,7 +219,7 @@ query {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lara-asp-graphql`][pkg:graphql#Printer] package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#Printer) package to use the `Printer` within the Laravel/Lighthouse application.
 
 # Testing Assertions
 
@@ -241,15 +241,9 @@ Prints and compares two GraphQL schemas/types/nodes/etc.
 
 [//]: # (end: c9953bb428d837e4a82f61878dcfa1a88fc32adcfc3e683dcc228578acec584b)
 
-[include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
-[//]: # (warning: Generated automatically. Do not edit.)
-
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
-
-[//]: # (end: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
@@ -260,11 +254,3 @@ Please follow [Upgrade Guide](UPGRADE.md).
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
-
-[include:file]: ../../docs/Shared/Links.md
-[//]: # (start: bab2235c844a18f05f23166e16c25becd344a2bc82159ddae3b818600a6e1884)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-[pkg:graphql#Printer]: https://github.com/LastDragon-ru/lara-asp/tree/main/packages/graphql#Printer
-
-[//]: # (end: bab2235c844a18f05f23166e16c25becd344a2bc82159ddae3b818600a6e1884)

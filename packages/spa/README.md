@@ -35,15 +35,9 @@ composer require lastdragon-ru/lara-asp-spa
 
 [//]: # (end: 57c72e5f6bbee376d782514159230363a6ba1d165ff46bf9d7077b22ac27c9a8)
 
-[include:file]: ../../docs/Shared/Upgrading.md
-[//]: # (start: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
-[//]: # (warning: Generated automatically. Do not edit.)
-
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
-
-[//]: # (end: bf9c1ede9e482e5ee353d24490c6493a56ff023fc987625dc02aefe6b298696d)
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)

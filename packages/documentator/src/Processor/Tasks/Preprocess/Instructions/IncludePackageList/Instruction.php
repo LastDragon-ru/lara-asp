@@ -7,23 +7,24 @@ use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoriesIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeTitleIsMissing;
-use LastDragon_ru\LaraASP\Documentator\Utils\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
 use function assert;
 use function is_array;
-use function is_file;
 use function json_decode;
 use function strcmp;
 use function usort;
@@ -39,6 +40,7 @@ use const JSON_THROW_ON_ERROR;
 class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
+        protected readonly Markdown $markdown,
     ) {
         // empty
     }
@@ -77,29 +79,22 @@ class Instruction implements InstructionContract {
             // Readme
             $readme  = $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
-            $content = $readme->getContent();
+            $content = $readme->getMetadata($this->markdown);
 
-            if (!$content) {
+            if (!$content || $content->isEmpty()) {
                 throw new PackageReadmeIsEmpty($context, $package, $readme);
             }
 
-            // Title?
-            $packageTitle = Markdown::getTitle($content);
-
-            if (!$packageTitle) {
-                throw new PackageReadmeTitleIsMissing($context, $package, $readme);
-            }
-
             // Add
+            $path       = Path::getPath($context->file->getPath(), "{$package->getName()}.md");
+            $content    = $content->mutate(new Move($path))->toSplittable();
             $upgrade    = $package->getPath('UPGRADE.md');
-            $upgrade    = is_file($upgrade)
-                ? Path::getRelativePath($context->file->getPath(), $upgrade)
-                : null;
+            $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
             $packages[] = [
                 'path'    => $readme->getRelativePath($context->file),
-                'title'   => $packageTitle,
-                'summary' => Markdown::getSummary($content),
-                'upgrade' => $upgrade,
+                'title'   => $content->getTitle() ?? Text::getPathTitle($path),
+                'summary' => $content->getSummary(),
+                'upgrade' => $upgrade?->getRelativePath($context->file),
             ];
         }
 

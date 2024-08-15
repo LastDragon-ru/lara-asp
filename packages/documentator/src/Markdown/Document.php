@@ -139,7 +139,7 @@ class Document implements Stringable {
      *
      * @return new<static>
      */
-    public function toInlinable(?string $seed = null): static {
+    public function toInlinable(string $seed): static {
         return $this->mutate(new FootnotesPrefix($seed), new ReferencesPrefix($seed));
     }
 

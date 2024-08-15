@@ -15,21 +15,14 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
-use function hash;
 use function mb_strlen;
-use function uniqid;
 
 /**
  * Adds unique prefix for all references.
  */
 class ReferencesPrefix implements Mutation {
     public function __construct(
-        /**
-         * If the prefix is not specified, the hash of the document path will
-         * be used. If the document path is unknown, the random hash will be
-         * used.
-         */
-        protected ?string $prefix = null,
+        protected string $prefix,
     ) {
         // empty
     }
@@ -39,7 +32,6 @@ class ReferencesPrefix implements Mutation {
      */
     #[Override]
     public function __invoke(Document $document, DocumentNode $node): array {
-        $prefix     = $this->prefix ?: hash('xxh3', $document->getPath() ?: uniqid($this::class)); // @phpstan-ignore disallowed.function
         $changes    = [];
         $references = $this->getReferences($node);
 
@@ -60,7 +52,7 @@ class ReferencesPrefix implements Mutation {
 
                 if ($location !== null) {
                     $target = Utils::getReference($reference)?->getLabel();
-                    $target = "{$prefix}-{$target}";
+                    $target = "{$this->prefix}-{$target}";
                     $target = Utils::escapeTextInTableCell($reference, $target);
                     $text   = "[{$target}]";
                 }
@@ -77,7 +69,7 @@ class ReferencesPrefix implements Mutation {
                     $endLine   = $startLine;
                     $offset    = $coordinate->offset + 1;
                     $length    = mb_strlen($reference->getLabel());
-                    $text      = "{$prefix}-{$reference->getLabel()}";
+                    $text      = "{$this->prefix}-{$reference->getLabel()}";
                     $location  = new Location($startLine, $endLine, $offset, $length);
                 }
             } else {

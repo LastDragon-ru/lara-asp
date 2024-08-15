@@ -27,18 +27,18 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $output): void {
-        $path    = Path::normalize(self::getTestData()->path('.md'));
+        $path    = Path::normalize(__FILE__);
         $root    = new Directory(dirname($path), false);
         $file    = new File($path, false);
         $params  = new Parameters('...');
-        $target  = $file->getName();
+        $target  = self::getTestData()->path('Example.md');
         $context = new Context($root, $file, $target, '{...}');
 
-        $this->override(Runner::class, static function (MockInterface $mock) use ($file, $output): void {
+        $this->override(Runner::class, static function (MockInterface $mock) use ($target, $output): void {
             $mock
                 ->shouldReceive('__invoke')
-                ->withArgs(static function (File $arg) use ($file): bool {
-                    return $arg->getPath() === $file->getPath();
+                ->withArgs(static function (File $arg) use ($target): bool {
+                    return $arg->getPath() === $target;
                 })
                 ->once()
                 ->andReturn($output);
@@ -53,7 +53,7 @@ final class InstructionTest extends TestCase {
     public function testInvokeNoRun(): void {
         self::assertFalse($this->app()->bound(Runner::class));
 
-        $path     = Path::normalize(self::getTestData()->path('.md'));
+        $path     = Path::normalize(self::getTestData()->path('Example.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $params   = new Parameters('...');
@@ -149,6 +149,24 @@ final class InstructionTest extends TestCase {
                 </details>
                 EXPECTED,
                 "<markdown>{$long}</markdown>",
+            ],
+            'markdown with links'  => [
+                <<<EXPECTED
+                ```md
+                {$content}
+                ```
+
+                [example](InstructionTest/path/to/file.txt)[^fe8f9df8acedaee3-1]
+
+                [^fe8f9df8acedaee3-1]: Footnote.
+                EXPECTED,
+                <<<'TEXT'
+                <markdown>
+                [example](./path/to/file.txt)[^1]
+
+                [^1]: Footnote.
+                </markdown>
+                TEXT,
             ],
         ];
     }
