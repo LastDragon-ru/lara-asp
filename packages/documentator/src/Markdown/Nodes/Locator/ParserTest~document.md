@@ -2,7 +2,7 @@
 
 <!-- markdownlint-disable -->
 
-Text text _**[link](https://example.com/)**_.
+Text text _**[**_`link`_**](https://example.com/)**_ text [**_`link`](https://example.com/).
 
 Text text [link](https://example.com/)[^1] text [link](https://example.com/ "title") text[^1]
 text text text text [link][link] text text [link](https://example.com/) text text text text text text

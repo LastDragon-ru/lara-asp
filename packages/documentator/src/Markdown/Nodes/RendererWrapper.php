@@ -4,10 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
-use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
 use League\CommonMark\Renderer\NodeRendererInterface;
@@ -97,12 +98,18 @@ readonly class RendererWrapper implements
      * @return array<string, scalar>
      */
     private function getXmlAdditionalAttributes(Node $node): array {
-        $attributes             = [];
-        $attributes['location'] = $this->location($node);
-        $attributes['padding']  = Data::get($node, Padding::class);
+        $attributes = [
+            'location' => $this->location($node),
+        ];
+        $data       = [
+            'offset'       => Offset::class,
+            'length'       => Length::class,
+            'padding'      => Padding::class,
+            'blockPadding' => BlockPadding::class,
+        ];
 
-        if ($node instanceof AbstractBlock) {
-            $attributes['blockPadding'] = Data::get($node, BlockPadding::class);
+        foreach ($data as $key => $class) {
+            $attributes[$key] = Data::get($node, $class);
         }
 
         return array_filter($attributes, static fn ($v) => $v !== null);
