@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
 use Override;
 
 use function trim;
@@ -60,7 +61,9 @@ class Instruction implements InstructionContract {
         // Parse
         $document = $document->mutate(new Move($context->file->getPath()));
         $result   = match (true) {
-            $parameters->summary && $parameters->description => $document->toInlinable(),
+            $parameters->summary && $parameters->description => $document->toInlinable(
+                Utils::getSeed($context, $target),
+            ),
             $parameters->summary                             => $document->toSplittable()->getSummary(),
             $parameters->description                         => $document->toSplittable()->getBody(),
             default                                          => '',

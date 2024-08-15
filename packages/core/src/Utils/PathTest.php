@@ -25,6 +25,7 @@ final class PathTest extends TestCase {
 
     public function testGetRelativePath(): void {
         self::assertEquals('../to/file', Path::getRelativePath('/any/path', '/any/path/../to/file'));
+        self::assertEquals('', Path::getRelativePath('/any/path', '/any/path'));
         self::assertEquals('to/file', Path::getRelativePath('/absolute/path', 'to/./file'));
         self::assertEquals(basename(__FILE__), Path::getRelativePath(__FILE__, __FILE__));
     }

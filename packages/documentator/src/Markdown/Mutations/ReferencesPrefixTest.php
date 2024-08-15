@@ -17,70 +17,34 @@ use ReflectionProperty;
  */
 #[CoversClass(ReferencesPrefix::class)]
 final class ReferencesPrefixTest extends TestCase {
-    private const Markdown = <<<'MARKDOWN'
-        # Header
-
-        Text text [link](https://example.com) text text [`link`][link] text
-        text text ![image][image] text text.
-
-        ![image][image]
-
-        [link]: https://example.com
-        [image]: https://example.com
-
-        # Special
-
-        ## Inside Quote
-
-        > ![image][link]
-
-        ## Inside Table
-
-        | Header                  |  [Header][link]               |
-        |-------------------------|-------------------------------|
-        | Cell [link][link] cell. | Cell `\|` \\| ![table][image] |
-        | Cell                    | Cell cell [table][link].      |
-        MARKDOWN;
-
     public function testInvoke(): void {
-        $document = new Document(self::Markdown, 'path/to/file.md');
-        $node     = Cast::to(DocumentNode::class, (new ReflectionProperty($document, 'node'))->getValue($document));
-        $lines    = Data::get($node, Lines::class) ?? [];
-        $mutation = new ReferencesPrefix();
-        $changes  = $mutation($document, $node);
-        $actual   = (string) (new Editor($lines))->mutate($changes);
-
-        self::assertEquals(
+        $document = new Document(
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [`link`][a282e9c32e7eee65-link] text
-            text text ![image][a282e9c32e7eee65-image] text text.
+            Text text [link](https://example.com) text text [`link`][link] text
+            text text ![image][image] text text.
 
-            ![image][a282e9c32e7eee65-image]
+            ![image][image]
 
-            [a282e9c32e7eee65-link]: https://example.com
-            [a282e9c32e7eee65-image]: https://example.com
+            [link]: https://example.com
+            [image]: https://example.com
 
             # Special
 
             ## Inside Quote
 
-            > ![image][a282e9c32e7eee65-link]
+            > ![image][link]
 
             ## Inside Table
 
-            | Header                  |  [Header][a282e9c32e7eee65-link]               |
+            | Header                  |  [Header][link]               |
             |-------------------------|-------------------------------|
-            | Cell [link][a282e9c32e7eee65-link] cell. | Cell `\|` \\| ![table][a282e9c32e7eee65-image] |
-            | Cell                    | Cell cell [table][a282e9c32e7eee65-link].      |
+            | Cell [link][link] cell. | Cell `\|` \\| ![table][image] |
+            | Cell                    | Cell cell [table][link].      |
             MARKDOWN,
-            $actual,
+            'path/to/file.md',
         );
-    }
-
-    public function testInvokeExplicit(): void {
-        $document = new Document(self::Markdown, 'path/to/file.md');
         $node     = Cast::to(DocumentNode::class, (new ReflectionProperty($document, 'node'))->getValue($document));
         $lines    = Data::get($node, Lines::class) ?? [];
         $mutation = new ReferencesPrefix('prefix');

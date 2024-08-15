@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
 use Override;
 
 use function trim;
@@ -47,7 +48,8 @@ class Instruction implements InstructionContract {
         $markdown = $file->getMetadata($this->markdown);
 
         if ($markdown) {
-            $content = $markdown->mutate(new Move($context->file->getPath()))->toInlinable();
+            $content = $markdown->mutate(new Move($context->file->getPath()));
+            $content = $content->toInlinable(Utils::getSeed($context, $file));
             $content = (string) $content;
         }
 

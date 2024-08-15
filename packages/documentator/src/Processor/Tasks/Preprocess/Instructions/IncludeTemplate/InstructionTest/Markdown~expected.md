@@ -2,8 +2,8 @@
 
 # File
 
-Content of the [File](Instruction.php) with [variable][a37b6479fccea1dd-link] "Variable"[^a37b6479fccea1dd-1].
+Content of the [File](Instruction.php) with [variable][6d22a594ebe2ecea-link] "Variable"[^6d22a594ebe2ecea-1].
 
-[a37b6479fccea1dd-link]: Instruction.php
+[6d22a594ebe2ecea-link]: Instruction.php
 
-[^a37b6479fccea1dd-1]: Footnote Variable.
+[^6d22a594ebe2ecea-1]: Footnote Variable.

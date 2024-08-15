@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Exceptions\ExampleFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
 use Override;
 use Throwable;
 
@@ -91,7 +92,8 @@ class Instruction implements InstructionContract {
                     subject : $output,
                     flags   : PREG_UNMATCHED_AS_NULL,
                 );
-                $output = (new Document($output, $target->getPath()))->mutate(new Move($path))->toInlinable();
+                $output = (new Document($output, $target->getPath()))->mutate(new Move($path));
+                $output = $output->toInlinable(Utils::getSeed($context, $target));
                 $output = trim((string) $output);
             }
 

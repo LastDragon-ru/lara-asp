@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Inst
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
 use Override;
 
 use function array_diff;
@@ -101,7 +102,8 @@ class Instruction implements InstructionContract {
         // Markdown?
         if ($file->getExtension() === 'md') {
             $path    = $context->file->getPath();
-            $content = (new Document($content, $file->getPath()))->mutate(new Move($path))->toInlinable();
+            $content = (new Document($content, $file->getPath()))->mutate(new Move($path));
+            $content = $content->toInlinable(Utils::getSeed($context, $file));
             $content = (string) $content;
         }
 

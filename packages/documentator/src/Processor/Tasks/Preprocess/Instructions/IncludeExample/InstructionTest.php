@@ -156,9 +156,9 @@ final class InstructionTest extends TestCase {
                 {$content}
                 ```
 
-                [example](InstructionTest/path/to/file.txt)[^8ef253b8d2355372-1]
+                [example](InstructionTest/path/to/file.txt)[^fe8f9df8acedaee3-1]
 
-                [^8ef253b8d2355372-1]: Footnote.
+                [^fe8f9df8acedaee3-1]: Footnote.
                 EXPECTED,
                 <<<'TEXT'
                 <markdown>

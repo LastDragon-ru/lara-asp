@@ -11,22 +11,15 @@ use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
-use function hash;
 use function mb_strlen;
 use function mb_substr;
-use function uniqid;
 
 /**
  * Adds unique prefix for all footnotes.
  */
 readonly class FootnotesPrefix implements Mutation {
     public function __construct(
-        /**
-         * If the prefix is not specified, the hash of the document path will
-         * be used. If the document path is unknown, the random hash will be
-         * used.
-         */
-        protected ?string $prefix = null,
+        protected string $prefix,
     ) {
         // empty
     }
@@ -36,7 +29,6 @@ readonly class FootnotesPrefix implements Mutation {
      */
     #[Override]
     public function __invoke(Document $document, DocumentNode $node): array {
-        $prefix  = $this->prefix ?: hash('xxh3', $document->getPath() ?: uniqid($this::class)); // @phpstan-ignore disallowed.function
         $changes = [];
 
         foreach ($node->iterator() as $child) {
@@ -50,7 +42,7 @@ readonly class FootnotesPrefix implements Mutation {
             $location = $label ? $this->getLabelLocation($child, $label) : null;
 
             if ($location) {
-                $changes[] = [$location, "{$prefix}-{$label}"];
+                $changes[] = [$location, "{$this->prefix}-{$label}"];
             }
         }
 

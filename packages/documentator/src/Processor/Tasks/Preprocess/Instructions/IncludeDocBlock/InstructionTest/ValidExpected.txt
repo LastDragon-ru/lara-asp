@@ -1,9 +1,9 @@
-Summary [A][b5c7e4eb170b3071-link][^b5c7e4eb170b3071-1].
+Summary [A][ffe8b433904a50b3-link][^ffe8b433904a50b3-1].
 
 Description description description description description description
 description description description description description description
 description description description description description description
-[description][b5c7e4eb170b3071-link][^b5c7e4eb170b3071-1].
+[description][ffe8b433904a50b3-link][^ffe8b433904a50b3-1].
 
 Description with inline tags:
 
@@ -12,6 +12,6 @@ Description with inline tags:
 - `LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction`
 - `LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction::getName()`
 
-[b5c7e4eb170b3071-link]: https://example.com/
+[ffe8b433904a50b3-link]: https://example.com/
 
-[^b5c7e4eb170b3071-1]: Footnote
+[^ffe8b433904a50b3-1]: Footnote
