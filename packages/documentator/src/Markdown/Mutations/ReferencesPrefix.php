@@ -3,21 +3,20 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\Document as DocumentNode;
-use League\CommonMark\Node\Inline\Text;
 use Override;
 
 use function hash;
 use function mb_strlen;
-use function str_replace;
 use function uniqid;
 
 /**
@@ -56,19 +55,14 @@ class ReferencesPrefix implements Mutation {
             $text = null;
 
             if ($reference instanceof Link || $reference instanceof Image) {
-                $label  = (string) Utils::getChild($reference, Text::class)?->getLiteral();
-                $target = Utils::getReference($reference)?->getLabel();
-                $target = "{$prefix}-{$target}";
+                $offset   = Data::get($reference, Offset::class);
+                $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
 
-                if (Utils::getContainer($reference) instanceof TableCell) {
-                    $label  = str_replace('|', '\\|', $label);
-                    $target = str_replace('|', '\\|', $target);
-                }
-
-                $text = Utils::getLink('[%s][%s]', $label, $target, '', null, null);
-
-                if ($reference instanceof Image) {
-                    $text = "!{$text}";
+                if ($location !== null) {
+                    $target = Utils::getReference($reference)?->getLabel();
+                    $target = "{$prefix}-{$target}";
+                    $target = Utils::escapeTextInTableCell($reference, $target);
+                    $text   = "[{$target}]";
                 }
             } elseif ($reference instanceof Reference) {
                 $coordinate = null;
@@ -84,13 +78,13 @@ class ReferencesPrefix implements Mutation {
                     $offset    = $coordinate->offset + 1;
                     $length    = mb_strlen($reference->getLabel());
                     $text      = "{$prefix}-{$reference->getLabel()}";
-                    $location  = new Locator($startLine, $endLine, $offset, $length);
+                    $location  = new Location($startLine, $endLine, $offset, $length);
                 }
             } else {
                 // skipped
             }
 
-            if ($text !== null) {
+            if ($location !== null && $text !== null) {
                 $changes[] = [$location, $text];
             }
         }

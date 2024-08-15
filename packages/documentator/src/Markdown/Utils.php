@@ -2,16 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Locator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as DataLength;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines as DataLines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as DataLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as DataOffset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as DataPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
+use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
@@ -20,10 +20,9 @@ use League\CommonMark\Util\UrlEncoder;
 
 use function mb_strpos;
 use function preg_match;
-use function sprintf;
 use function str_contains;
+use function str_replace;
 use function strtr;
-use function trim;
 
 /**
  * @internal
@@ -81,8 +80,8 @@ class Utils {
 
         // Known?
         $type    = $line === null || $line === $container->getStartLine()
-            ? BlockPadding::class
-            : Padding::class;
+            ? DataBlockPadding::class
+            : DataPadding::class;
         $padding = Data::get($container, $type);
 
         if ($padding !== null) {
@@ -116,20 +115,20 @@ class Utils {
     }
 
     public static function getLine(Document $document, int $line): ?string {
-        $lines = Data::get($document, Lines::class) ?? [];
+        $lines = Data::get($document, DataLines::class) ?? [];
         $line  = $lines[$line] ?? null;
 
         return $line;
     }
 
-    public static function getLocation(Node $node): ?LocationContract {
-        $location = Data::get($node, Location::class);
+    public static function getLocation(Node $node): ?Location {
+        $location = Data::get($node, DataLocation::class);
 
         if ($location === null && $node instanceof AbstractBlock) {
             $start   = $node->getStartLine();
             $end     = $node->getEndLine();
-            $offset  = Data::get($node, Offset::class) ?? 0;
-            $length  = Data::get($node, Length::class);
+            $offset  = Data::get($node, DataOffset::class) ?? 0;
+            $length  = Data::get($node, DataLength::class);
             $padding = self::getPadding($node, null, null);
 
             if ($padding === null && $node->parent() instanceof Document) {
@@ -137,11 +136,22 @@ class Utils {
             }
 
             if ($start !== null && $end !== null && $padding !== null) {
-                $location = new Locator($start, $end, $offset, $length, $padding);
+                $location = new Location($start, $end, $offset, $length, $padding);
             }
         }
 
         return $location;
+    }
+
+    public static function getOffsetLocation(Location $location, int $offset): Location {
+        return new Location(
+            $location->startLine,
+            $location->endLine,
+            $location->offset + $offset,
+            $location->length !== null ? $location->length - $offset : $location->length,
+            $location->startLinePadding,
+            $location->internalPadding,
+        );
     }
 
     public static function isReference(AbstractWebResource $node): bool {
@@ -155,33 +165,16 @@ class Utils {
         return $reference;
     }
 
-    public static function getLink(
-        string $format,
-        string $label,
-        string $target,
-        string $title,
-        ?bool $wrapTarget,
-        ?string $titleWrapper,
-    ): string {
-        $label  = self::getLinkLabel($label);
-        $title  = self::getLinkTitle($title, $titleWrapper);
-        $target = self::getLinkTarget($target, $wrapTarget);
-        $link   = trim(sprintf($format, $label, $target, $title));
-
-        return $link;
-    }
-
-    private static function getLinkLabel(string $label): string {
-        return strtr($label, ['[' => '\\\\[', ']' => '\\\\]']);
-    }
-
-    private static function getLinkTarget(string $target, ?bool $wrap): string {
-        return ($wrap ?? preg_match('/\s/u', $target))
+    public static function getLinkTarget(Node $container, string $target, ?bool $wrap = null): string {
+        $target = ($wrap ?? preg_match('/\s/u', $target))
             ? '<'.strtr($target, ['<' => '\\<', '>' => '\\>']).'>'
             : UrlEncoder::unescapeAndEncode($target);
+        $target = self::escapeTextInTableCell($container, $target);
+
+        return $target;
     }
 
-    private static function getLinkTitle(string $title, ?string $wrapper = null): string {
+    public static function getLinkTitle(Node $container, string $title, ?string $wrapper = null): string {
         if (!$title) {
             return '';
         }
@@ -202,8 +195,17 @@ class Utils {
             "'"     => "'".strtr($title, $wrappers['"'])."'",
             default => '('.strtr($title, $wrappers[')']).')',
         };
+        $title = self::escapeTextInTableCell($container, $title);
 
         return $title;
+    }
+
+    public static function escapeTextInTableCell(Node $container, string $text): string {
+        if (self::getContainer($container) instanceof TableCell) {
+            $text = str_replace('|', '\\|', $text);
+        }
+
+        return $text;
     }
 
     /**

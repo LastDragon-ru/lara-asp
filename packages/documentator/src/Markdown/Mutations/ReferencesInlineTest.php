@@ -22,7 +22,7 @@ final class ReferencesInlineTest extends TestCase {
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [link][link] text
+            Text text [link](https://example.com) text text [`link`][link] text
             text text ![image][image] text text.
 
             ![image][image]
@@ -55,7 +55,7 @@ final class ReferencesInlineTest extends TestCase {
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [link](https://example.com) text
+            Text text [link](https://example.com) text text [`link`](https://example.com) text
             text text ![image](https://example.com "image") text text.
 
             ![image](https://example.com "image")
