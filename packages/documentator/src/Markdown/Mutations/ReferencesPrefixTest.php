@@ -20,7 +20,7 @@ final class ReferencesPrefixTest extends TestCase {
     private const Markdown = <<<'MARKDOWN'
         # Header
 
-        Text text [link](https://example.com) text text [link][link] text
+        Text text [link](https://example.com) text text [`link`][link] text
         text text ![image][image] text text.
 
         ![image][image]
@@ -54,7 +54,7 @@ final class ReferencesPrefixTest extends TestCase {
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [link][a282e9c32e7eee65-link] text
+            Text text [link](https://example.com) text text [`link`][a282e9c32e7eee65-link] text
             text text ![image][a282e9c32e7eee65-image] text text.
 
             ![image][a282e9c32e7eee65-image]
@@ -91,7 +91,7 @@ final class ReferencesPrefixTest extends TestCase {
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [link][prefix-link] text
+            Text text [link](https://example.com) text text [`link`][prefix-link] text
             text text ![image][prefix-image] text text.
 
             ![image][prefix-image]

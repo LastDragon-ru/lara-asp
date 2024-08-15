@@ -3,19 +3,18 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\Document as DocumentNode;
-use League\CommonMark\Node\Inline\Text;
 use Override;
 
 use function rawurldecode;
-use function str_replace;
 
 /**
  * Inlines all references.
@@ -45,22 +44,13 @@ class ReferencesInline implements Mutation {
             $text = null;
 
             if ($reference instanceof Link || $reference instanceof Image) {
-                $title  = (string) $reference->getTitle();
-                $label  = (string) Utils::getChild($reference, Text::class)?->getLiteral();
-                $target = rawurldecode($reference->getUrl());
+                $offset   = Data::get($reference, Offset::class);
+                $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
 
-                if (Utils::getContainer($reference) instanceof TableCell) {
-                    $title  = str_replace('|', '\\|', $title);
-                    $label  = str_replace('|', '\\|', $label);
-                    $target = str_replace('|', '\\|', $target);
-                }
-
-                $text = $title
-                    ? Utils::getLink('[%s](%s %s)', $label, $target, $title, null, null)
-                    : Utils::getLink('[%s](%s)', $label, $target, '', null, null);
-
-                if ($reference instanceof Image) {
-                    $text = "!{$text}";
+                if ($location !== null) {
+                    $title  = Utils::getLinkTitle($reference, (string) $reference->getTitle());
+                    $target = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
+                    $text   = $title ? "({$target} {$title})" : "({$target})";
                 }
             } elseif ($reference instanceof Reference) {
                 $text = '';
@@ -68,7 +58,7 @@ class ReferencesInline implements Mutation {
                 // skipped
             }
 
-            if ($text !== null) {
+            if ($location !== null && $text !== null) {
                 $changes[] = [$location, $text ?: null];
             }
         }

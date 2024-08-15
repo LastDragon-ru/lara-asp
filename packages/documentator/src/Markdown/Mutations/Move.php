@@ -4,25 +4,25 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\Document as DocumentNode;
-use League\CommonMark\Node\Inline\Text;
 use Override;
 
 use function dirname;
 use function filter_var;
+use function ltrim;
 use function mb_substr;
 use function preg_match;
 use function preg_quote;
 use function rawurldecode;
 use function rtrim;
-use function str_replace;
 use function str_starts_with;
 use function trim;
 
@@ -78,45 +78,41 @@ readonly class Move implements Mutation {
             }
 
             // Changes
-            $text   = null;
-            $origin = trim((string) $document->getText($location));
+            $text = null;
 
             if ($resource instanceof Link || $resource instanceof Image) {
-                $title        = (string) $resource->getTitle();
-                $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
-                $label        = (string) Utils::getChild($resource, Text::class)?->getLiteral();
-                $target       = rawurldecode($resource->getUrl());
-                $target       = Path::getPath($docDirectory, $target);
-                $target       = Path::getRelativePath($newDirectory, $target);
-                $targetWrap   = (bool) preg_match('/^!?\['.preg_quote($label, '/').']\(\s*</u', $origin);
+                $offset   = Data::get($resource, Offset::class);
+                $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
 
-                if (Utils::getContainer($resource) instanceof TableCell) {
-                    $title  = str_replace('|', '\\|', $title);
-                    $label  = str_replace('|', '\\|', $label);
-                    $target = str_replace('|', '\\|', $target);
-                }
-
-                $text = $title
-                    ? Utils::getLink('[%s](%s %s)', $label, $target, $title, $targetWrap, $titleWrapper)
-                    : Utils::getLink('[%s](%s)', $label, $target, '', $targetWrap, $titleWrapper);
-
-                if ($resource instanceof Image) {
-                    $text = "!{$text}";
+                if ($location !== null) {
+                    $origin       = trim((string) $document->getText($location));
+                    $titleValue   = (string) $resource->getTitle();
+                    $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
+                    $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
+                    $targetValue  = rawurldecode($resource->getUrl());
+                    $targetValue  = Path::getPath($docDirectory, $targetValue);
+                    $targetValue  = Path::getRelativePath($newDirectory, $targetValue);
+                    $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
+                    $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
+                    $text         = $title ? "({$target} {$title})" : "({$target})";
                 }
             } elseif ($resource instanceof Reference) {
+                $origin       = trim((string) $document->getText($location));
                 $label        = $resource->getLabel();
-                $title        = $resource->getTitle();
+                $titleValue   = $resource->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);
-                $target       = rawurldecode($resource->getDestination());
-                $target       = Path::getPath($docDirectory, $target);
-                $target       = Path::getRelativePath($newDirectory, $target);
+                $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
+                $targetValue  = rawurldecode($resource->getDestination());
+                $targetValue  = Path::getPath($docDirectory, $targetValue);
+                $targetValue  = Path::getRelativePath($newDirectory, $targetValue);
                 $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
-                $text         = Utils::getLink('[%s]: %s %s', $label, $target, $title, $targetWrap, $titleWrapper);
+                $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
+                $text         = trim("[{$label}]: {$target} {$title}");
             } else {
                 // skipped
             }
 
-            if ($text !== null) {
+            if ($location !== null && $text !== null) {
                 $changes[] = [$location, $text];
             }
         }

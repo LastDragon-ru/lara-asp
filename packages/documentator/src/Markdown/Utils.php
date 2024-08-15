@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as DataOffset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as DataPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
+use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Node;
@@ -19,10 +20,9 @@ use League\CommonMark\Util\UrlEncoder;
 
 use function mb_strpos;
 use function preg_match;
-use function sprintf;
 use function str_contains;
+use function str_replace;
 use function strtr;
-use function trim;
 
 /**
  * @internal
@@ -143,6 +143,17 @@ class Utils {
         return $location;
     }
 
+    public static function getOffsetLocation(Location $location, int $offset): Location {
+        return new Location(
+            $location->startLine,
+            $location->endLine,
+            $location->offset + $offset,
+            $location->length !== null ? $location->length - $offset : $location->length,
+            $location->startLinePadding,
+            $location->internalPadding,
+        );
+    }
+
     public static function isReference(AbstractWebResource $node): bool {
         return self::getReference($node) !== null;
     }
@@ -154,33 +165,16 @@ class Utils {
         return $reference;
     }
 
-    public static function getLink(
-        string $format,
-        string $label,
-        string $target,
-        string $title,
-        ?bool $wrapTarget,
-        ?string $titleWrapper,
-    ): string {
-        $label  = self::getLinkLabel($label);
-        $title  = self::getLinkTitle($title, $titleWrapper);
-        $target = self::getLinkTarget($target, $wrapTarget);
-        $link   = trim(sprintf($format, $label, $target, $title));
-
-        return $link;
-    }
-
-    private static function getLinkLabel(string $label): string {
-        return strtr($label, ['[' => '\\\\[', ']' => '\\\\]']);
-    }
-
-    private static function getLinkTarget(string $target, ?bool $wrap): string {
-        return ($wrap ?? preg_match('/\s/u', $target))
+    public static function getLinkTarget(Node $container, string $target, ?bool $wrap = null): string {
+        $target = ($wrap ?? preg_match('/\s/u', $target))
             ? '<'.strtr($target, ['<' => '\\<', '>' => '\\>']).'>'
             : UrlEncoder::unescapeAndEncode($target);
+        $target = self::escapeTextInTableCell($container, $target);
+
+        return $target;
     }
 
-    private static function getLinkTitle(string $title, ?string $wrapper = null): string {
+    public static function getLinkTitle(Node $container, string $title, ?string $wrapper = null): string {
         if (!$title) {
             return '';
         }
@@ -201,8 +195,17 @@ class Utils {
             "'"     => "'".strtr($title, $wrappers['"'])."'",
             default => '('.strtr($title, $wrappers[')']).')',
         };
+        $title = self::escapeTextInTableCell($container, $title);
 
         return $title;
+    }
+
+    public static function escapeTextInTableCell(Node $container, string $text): string {
+        if (self::getContainer($container) instanceof TableCell) {
+            $text = str_replace('|', '\\|', $text);
+        }
+
+        return $text;
     }
 
     /**

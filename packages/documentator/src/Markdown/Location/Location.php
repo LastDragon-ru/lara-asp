@@ -11,12 +11,12 @@ use Traversable;
  */
 readonly class Location implements IteratorAggregate {
     public function __construct(
-        private int $startLine,
-        private int $endLine,
-        private int $offset = 0,
-        private ?int $length = null,
-        private int $startLinePadding = 0,
-        private ?int $internalPadding = null,
+        public int $startLine,
+        public int $endLine,
+        public int $offset = 0,
+        public ?int $length = null,
+        public int $startLinePadding = 0,
+        public ?int $internalPadding = null,
     ) {
         // empty
     }
