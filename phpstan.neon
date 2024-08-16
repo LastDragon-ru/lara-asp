@@ -5,7 +5,7 @@ parameters:
     excludePaths:
         - dev/bootstrap
         - dev/storage
-        - dev/vendor
+        - dev/vendor (?)
     scanDirectories:
         - vendor-bin/phpstan/vendor/larastan/larastan
 

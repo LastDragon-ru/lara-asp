@@ -217,7 +217,7 @@ class Args {
         ];
 
         if ($query instanceof ScoutBuilder) {
-            $actual = json_decode(json_encode($query, JSON_THROW_ON_ERROR), true, JSON_THROW_ON_ERROR);
+            $actual = (array) json_decode(json_encode($query, JSON_THROW_ON_ERROR), true, JSON_THROW_ON_ERROR);
         } elseif (is_array($query)) {
             $actual = $query;
         } else {

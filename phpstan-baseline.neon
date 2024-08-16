@@ -31,6 +31,11 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Parameter \\#2 \\$factory of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase\\:\\:override\\(\\) contains unresolvable type\\.$#"
+			count: 1
+			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+
+		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Models/Image.php
