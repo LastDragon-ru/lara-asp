@@ -219,7 +219,7 @@ query {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#Printer) package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
 
 # Testing Assertions
 
