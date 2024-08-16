@@ -21,7 +21,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
 use Traversable;
 
-use function array_merge;
 use function array_values;
 use function microtime;
 use function preg_match;
@@ -48,9 +47,9 @@ class Executor {
          */
         private readonly array $exclude,
         /**
-         * @var array<string, list<Task>>
+         * @var InstanceList<Task>
          */
-        private readonly array $tasks,
+        private readonly InstanceList $tasks,
         /**
          * @var Iterator<array-key, File>
          */
@@ -100,7 +99,7 @@ class Executor {
         }
 
         // Process
-        $tasks              = array_merge($this->tasks[$file->getExtension()] ?? [], $this->tasks['*'] ?? []);
+        $tasks              = $this->tasks->get($file->getExtension(), '*');
         $start              = microtime(true);
         $paused             = 0;
         $this->stack[$path] = $file;
@@ -219,12 +218,8 @@ class Executor {
 
     private function isSkipped(File $file): bool {
         // Tasks?
-        if (!isset($this->tasks['*'])) {
-            $tasks = $this->tasks[$file->getExtension()] ?? [];
-
-            if (!$tasks) {
-                return true;
-            }
+        if (!$this->tasks->has($file->getExtension(), '*')) {
+            return true;
         }
 
         // Outside?

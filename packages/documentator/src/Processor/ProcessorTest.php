@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Generator;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -41,7 +42,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['htm'];
             }
 
@@ -65,7 +66,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['txt', 'md'];
             }
 
@@ -117,7 +118,7 @@ final class ProcessorTest extends TestCase {
         $count  = 0;
         $events = [];
 
-        (new Processor())
+        (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
@@ -212,7 +213,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['txt', 'htm', 'html'];
             }
 
@@ -241,7 +242,7 @@ final class ProcessorTest extends TestCase {
         $count  = 0;
         $events = [];
 
-        (new Processor())
+        (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
             ->run(
                 $root,
@@ -306,7 +307,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['html'];
             }
 
@@ -344,7 +345,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['*'];
             }
 
@@ -360,7 +361,7 @@ final class ProcessorTest extends TestCase {
         $count  = 0;
         $events = [];
 
-        (new Processor())
+        (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($taskA)
             ->task($taskB)
             ->run(
@@ -423,7 +424,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['txt'];
             }
 
@@ -443,7 +444,7 @@ final class ProcessorTest extends TestCase {
         self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage("Dependency `404.html` of `a/a.txt` not found (root: `{$root}`).");
 
-        (new Processor())
+        (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
             ->run($root);
     }
@@ -454,7 +455,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['txt'];
             }
 
@@ -492,7 +493,7 @@ final class ProcessorTest extends TestCase {
             MESSAGE,
         );
 
-        (new Processor())
+        (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
             ->run($root);
     }
@@ -503,7 +504,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getExtensions(): array {
+            public static function getExtensions(): array {
                 return ['txt'];
             }
 
@@ -535,7 +536,7 @@ final class ProcessorTest extends TestCase {
             MESSAGE,
         );
 
-        (new Processor())
+        (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
             ->run($root);
     }

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -11,32 +12,33 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Symfony\Component\Finder\Glob;
 
-use function array_keys;
 use function array_map;
-use function array_unique;
-use function in_array;
 use function microtime;
 
 class Processor {
     /**
-     * @var array<string, list<Task>>
+     * @var InstanceList<Task>
      */
-    private array $tasks = [];
+    private InstanceList $tasks;
 
-    public function __construct() {
-        // empty
+    public function __construct(ContainerResolver $container) {
+        $this->tasks = new InstanceList($container, $this->key(...));
     }
 
-    public function task(Task $task): static {
-        foreach (array_unique($task->getExtensions()) as $ext) {
-            if (!isset($this->tasks[$ext])) {
-                $this->tasks[$ext] = [];
-            }
+    /**
+     * @param Task|class-string<Task> $task
+     *
+     * @return list<string>
+     */
+    private function key(Task|string $task): array {
+        return $task::getExtensions();
+    }
 
-            if (!in_array($task, $this->tasks[$ext], true)) {
-                $this->tasks[$ext][] = $task;
-            }
-        }
+    /**
+     * @param Task|class-string<Task> $task
+     */
+    public function task(Task|string $task): static {
+        $this->tasks->add($task);
 
         return $this;
     }
@@ -47,8 +49,8 @@ class Processor {
      */
     public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
         $start      = microtime(true);
-        $extensions = !isset($this->tasks['*'])
-            ? array_map(static fn ($e) => "*.{$e}", array_keys($this->tasks))
+        $extensions = !$this->tasks->has('*')
+            ? array_map(static fn ($e) => "*.{$e}", $this->tasks->keys())
             : null;
         $exclude    = array_map(Glob::toRegex(...), (array) $exclude);
         $root       = new Directory($path, true);

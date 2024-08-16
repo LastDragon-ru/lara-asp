@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Package;
@@ -75,7 +76,7 @@ class Preprocess extends Command {
         parent::__construct();
     }
 
-    public function __invoke(Formatter $formatter): void {
+    public function __invoke(ContainerResolver $container, Formatter $formatter): void {
         $cwd      = getcwd();
         $path     = Cast::toString($this->argument('path') ?? $cwd);
         $path     = Path::normalize($path);
@@ -99,7 +100,7 @@ class Preprocess extends Command {
             $this->output->writeln($line, OutputInterface::OUTPUT_NORMAL | $resultVerbosity);
         };
 
-        $duration = (new Processor())
+        $duration = (new Processor($container))
             ->task($this->preprocess)
             ->run($path, $exclude, $listener);
 

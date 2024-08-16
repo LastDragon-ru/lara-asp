@@ -13,7 +13,7 @@ interface Task {
      *
      * @return non-empty-list<string>
      */
-    public function getExtensions(): array;
+    public static function getExtensions(): array;
 
     /**
      * Performs action on the `$file`.

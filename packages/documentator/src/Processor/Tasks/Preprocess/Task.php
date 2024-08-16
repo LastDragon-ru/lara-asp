@@ -132,7 +132,7 @@ class Task implements TaskContract {
      * @inheritDoc
      */
     #[Override]
-    public function getExtensions(): array {
+    public static function getExtensions(): array {
         return ['md'];
     }
 
