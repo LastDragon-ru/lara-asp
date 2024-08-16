@@ -3,6 +3,7 @@
 /vendor
 /vendor-bin/**/vendor
 /tmp
+/.xdebug
 /.phpunit
 /.vagrant
 /.db
