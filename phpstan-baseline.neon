@@ -6,6 +6,36 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
+			path: packages/documentator/src/Markdown/Mutations/Composite.php
+
+		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
+			path: packages/documentator/src/Markdown/Mutations/FootnotesPrefix.php
+
+		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
+			path: packages/documentator/src/Markdown/Mutations/FootnotesRemove.php
+
+		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
+			path: packages/documentator/src/Markdown/Mutations/Move.php
+
+		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
+			path: packages/documentator/src/Markdown/Mutations/ReferencesInline.php
+
+		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
+			path: packages/documentator/src/Markdown/Mutations/ReferencesPrefix.php
+
+		-
 			message: "#^Parameter \\#1 \\$dependency of class LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\ExecutorTraversable constructor expects LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Dependency\\<Traversable\\<mixed, LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\FileSystem\\\\Directory\\|LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\FileSystem\\\\File\\>\\>, LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Dependency\\<\\*\\> given\\.$#"
 			count: 1
 			path: packages/documentator/src/Processor/Executor.php

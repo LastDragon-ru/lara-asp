@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
@@ -19,12 +20,14 @@ readonly class FootnotesRemove implements Mutation {
     }
 
     /**
-     * @inheritDoc
+     * @return iterable<array-key, array{Location, ?string}>
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): array {
-        $changes = [];
+    public function __invoke(Document $document, DocumentNode $node): iterable {
+        // Just in case
+        yield from [];
 
+        // Process
         foreach ($node->iterator() as $child) {
             $location = match (true) {
                 $child instanceof FootnoteRef, $child instanceof Footnote => Utils::getLocation($child),
@@ -32,10 +35,8 @@ readonly class FootnotesRemove implements Mutation {
             };
 
             if ($location) {
-                $changes[] = [$location, null];
+                yield [$location, null];
             }
         }
-
-        return $changes;
     }
 }

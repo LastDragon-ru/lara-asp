@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
@@ -140,7 +141,10 @@ class Document implements Stringable {
      * @return new<static>
      */
     public function toInlinable(string $seed): static {
-        return $this->mutate(new FootnotesPrefix($seed), new ReferencesPrefix($seed));
+        return $this->mutate(new Composite(
+            new FootnotesPrefix($seed),
+            new ReferencesPrefix($seed),
+        ));
     }
 
     /**
@@ -151,7 +155,10 @@ class Document implements Stringable {
      * @return new<static>
      */
     public function toSplittable(): static {
-        return $this->mutate(new FootnotesRemove(), new ReferencesInline());
+        return $this->mutate(new Composite(
+            new FootnotesRemove(),
+            new ReferencesInline(),
+        ));
     }
 
     protected function setContent(string $content): static {

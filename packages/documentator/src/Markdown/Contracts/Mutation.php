@@ -8,7 +8,7 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 
 interface Mutation {
     /**
-     * @return array<array-key, array{Location, ?string}>
+     * @return iterable<array-key, array{Location, ?string}>
      */
-    public function __invoke(Document $document, DocumentNode $node): array;
+    public function __invoke(Document $document, DocumentNode $node): iterable;
 }

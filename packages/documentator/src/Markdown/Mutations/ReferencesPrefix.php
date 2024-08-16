@@ -31,8 +31,11 @@ class ReferencesPrefix implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): array {
-        $changes    = [];
+    public function __invoke(Document $document, DocumentNode $node): iterable {
+        // Just in case
+        yield from [];
+
+        // Process
         $references = $this->getReferences($node);
 
         foreach ($references as $reference) {
@@ -77,12 +80,9 @@ class ReferencesPrefix implements Mutation {
             }
 
             if ($location !== null && $text !== null) {
-                $changes[] = [$location, $text];
+                yield [$location, $text];
             }
         }
-
-        // Return
-        return $changes;
     }
 
     /**
