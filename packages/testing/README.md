@@ -94,7 +94,7 @@ abstract class TestCase extends BaseTestCase {
 [//]: # (start: 7f0b9a0ac46e9bdd70ee29dc20759aae207f3a45b39e71e1ebb0df97a7a20a14)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-Compares two `LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query`.
+Compares two `\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query`.
 
 We are performing following normalization before comparison to be more precise:
 
@@ -139,7 +139,7 @@ Makes comparison of scalars strict.
 [//]: # (start: 1450ed832859accffb89a19fc641776a8ae1770983362aa0bab741ae196f5c75)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-The trait is very similar to standard `Illuminate\Foundation\Testing\RefreshDatabase` but there is one
+The trait is very similar to standard `\Illuminate\Foundation\Testing\RefreshDatabase` but there is one
 difference: it will refresh the database only if it is empty. This is very
 useful for local testing and allow significantly reduce bootstrap time.
 
@@ -191,7 +191,7 @@ after script shutdown.
 [//]: # (start: 29a333d13d606bfa1459f7c40fdcd2aaee733a3c36ed07f8c5532fcc79c585c9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-Allows to get instance of `LastDragon_ru\LaraASP\Testing\Utils\TestData` (a small helper to load data
+Allows to get instance of `\LastDragon_ru\LaraASP\Testing\Utils\TestData` (a small helper to load data
 associated with test)
 
 [//]: # (end: 29a333d13d606bfa1459f7c40fdcd2aaee733a3c36ed07f8c5532fcc79c585c9)
@@ -214,7 +214,7 @@ Allows replacing translation strings for Laravel.
 [//]: # (start: 8b10f736400f87cdeed471a3ea1ec56084e4e55dd17b20ef51ed89c10b81aa76)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-Similar to `Illuminate\Foundation\Testing\Concerns\InteractsWithContainer` but will mark test as failed if
+Similar to `\Illuminate\Foundation\Testing\Concerns\InteractsWithContainer` but will mark test as failed if
 override was not used while test (that helps to find unused code).
 
 [//]: # (end: 8b10f736400f87cdeed471a3ea1ec56084e4e55dd17b20ef51ed89c10b81aa76)

@@ -10,6 +10,7 @@ use Override;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 
+use function ltrim;
 use function preg_replace_callback;
 use function trim;
 
@@ -56,9 +57,8 @@ class PhpDocBlock implements Metadata {
             callback: static function (array $matches) use ($context): string {
                 $class  = (string) $context->getResolvedClassName(new Name($matches['class']));
                 $method = $matches['method'] ?? null;
-                $result = $method
-                    ? "`{$class}::{$method}`"
-                    : "`{$class}`";
+                $result = $method ? "{$class}::{$method}" : "{$class}";
+                $result = '`\\'.ltrim($result, '\\').'`';
 
                 return $result;
             },

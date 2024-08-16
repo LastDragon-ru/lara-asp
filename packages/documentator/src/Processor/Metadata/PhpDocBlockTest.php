@@ -43,7 +43,7 @@ final class PhpDocBlockTest extends TestCase {
             <<<'MARKDOWN'
             Description.
 
-            Summary `stdClass` and `LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`.
+            Summary `\stdClass` and `\LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`.
             MARKDOWN,
             (string) $metadata,
         );
