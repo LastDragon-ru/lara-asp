@@ -46,14 +46,17 @@ readonly class Move implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): array {
+    public function __invoke(Document $document, DocumentNode $node): iterable {
+        // Just in case
+        yield from [];
+
         // No path?
         $docPath = $document->getPath();
 
         if ($docPath === null) {
             $document->setPath(Path::normalize($this->path));
 
-            return [];
+            return false;
         }
 
         // Same?
@@ -61,11 +64,10 @@ readonly class Move implements Mutation {
         $newPath      = Path::getPath($docDirectory, $this->path);
 
         if ($docPath === $newPath) {
-            return [];
+            return false;
         }
 
         // Update
-        $changes      = [];
         $resources    = $this->getRelativeResources($node);
         $newDirectory = dirname($newPath);
 
@@ -113,7 +115,7 @@ readonly class Move implements Mutation {
             }
 
             if ($location !== null && $text !== null) {
-                $changes[] = [$location, $text];
+                yield [$location, $text];
             }
         }
 
@@ -121,7 +123,7 @@ readonly class Move implements Mutation {
         $document->setPath($newPath);
 
         // Return
-        return $changes;
+        return true;
     }
 
     /**

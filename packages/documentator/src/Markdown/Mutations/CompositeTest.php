@@ -42,8 +42,13 @@ final class CompositeTest extends TestCase {
             ->andReturn($bChanges);
 
         $mutation = new Composite($aMutation, $bMutation);
-        $actual   = $mutation($document, $node);
+        $changes  = $mutation($document, $node);
         $expected = array_merge($aChanges, $bChanges);
+        $actual   = [];
+
+        foreach ($changes as $change) {
+            $actual[] = $change;
+        }
 
         self::assertEquals($expected, $actual);
     }

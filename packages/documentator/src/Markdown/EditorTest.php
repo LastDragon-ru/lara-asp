@@ -8,6 +8,8 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function iterator_to_array;
+
 /**
  * @internal
  */
@@ -62,6 +64,30 @@ final class EditorTest extends TestCase {
         self::assertSame($expected, $actual->getLines());
     }
 
+    public function testPrepare(): void {
+        $editor   = new class([]) extends Editor {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function prepare(iterable $changes): array {
+                return parent::prepare($changes);
+            }
+        };
+        $changes  = [
+            [new Location(10, 10, 15, 10), 'a'],
+            [new Location(10, 10, 10, null), 'b'],
+            [new Location(12, 15, 5, 10), 'c'],
+        ];
+        $expected = [
+            [iterator_to_array(new Location(12, 15, 5, 10)), 'c'],
+            [iterator_to_array(new Location(10, 10, 10, null)), 'b'],
+            [iterator_to_array(new Location(10, 10, 15, 10)), 'a'],
+        ];
+
+        self::assertEquals($expected, $editor->prepare($changes));
+    }
+
     public function testRemoveOverlaps(): void {
         $editor   = new class([]) extends Editor {
             /**
@@ -73,19 +99,19 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            0 => [new Location(10, 10, 15, 10), 'a'],
-            1 => [new Location(10, 10, 10, null), 'b'],
-            2 => [new Location(12, 15, 5, 10), 'c'],
-            3 => [new Location(14, 15, 5, 10), 'd'],
-            4 => [new Location(17, 17, 5, 10), 'e'],
-            5 => [new Location(17, 17, 11, 10), 'f'],
-            6 => [new Location(18, 18, 5, 10), 'g'],
+            0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'g'],
+            1 => [iterator_to_array(new Location(17, 17, 11, 10)), 'f'],
+            2 => [iterator_to_array(new Location(17, 17, 5, 10)), 'e'],
+            3 => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
+            4 => [iterator_to_array(new Location(12, 15, 5, 10)), 'c'],
+            5 => [iterator_to_array(new Location(10, 10, 10, null)), 'b'],
+            6 => [iterator_to_array(new Location(10, 10, 15, 10)), 'a'],
         ];
         $expected = [
-            1 => [new Location(10, 10, 10, null), 'b'],
-            3 => [new Location(14, 15, 5, 10), 'd'],
-            5 => [new Location(17, 17, 11, 10), 'f'],
-            6 => [new Location(18, 18, 5, 10), 'g'],
+            0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'g'],
+            1 => [iterator_to_array(new Location(17, 17, 11, 10)), 'f'],
+            3 => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
+            5 => [iterator_to_array(new Location(10, 10, 10, null)), 'b'],
         ];
 
         self::assertEquals($expected, $editor->removeOverlaps($changes));
@@ -102,10 +128,10 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            [new Location(1, 1, 5, 10), 'text'],
-            [new Location(2, 3, 5, null), 'text'],
-            [new Location(4, 5, 5, 5, 1), "text a\ntext b"],
-            [new Location(6, 6, 5, 10, 2), "text a\ntext b"],
+            [iterator_to_array(new Location(6, 6, 5, 10, 2)), "text a\ntext b"],
+            [iterator_to_array(new Location(4, 5, 5, 5, 1)), "text a\ntext b"],
+            [iterator_to_array(new Location(2, 3, 5, null)), 'text'],
+            [iterator_to_array(new Location(1, 1, 5, 10)), 'text'],
         ];
         $expected = [
             [new Coordinate(6, 7, 10, 2), 'text a'],

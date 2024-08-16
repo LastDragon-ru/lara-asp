@@ -28,8 +28,11 @@ class ReferencesInline implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): array {
-        $changes    = [];
+    public function __invoke(Document $document, DocumentNode $node): iterable {
+        // Just in case
+        yield from [];
+
+        // Process
         $references = $this->getReferences($node);
 
         foreach ($references as $reference) {
@@ -59,12 +62,9 @@ class ReferencesInline implements Mutation {
             }
 
             if ($location !== null && $text !== null) {
-                $changes[] = [$location, $text ?: null];
+                yield [$location, $text ?: null];
             }
         }
-
-        // Return
-        return $changes;
     }
 
     /**

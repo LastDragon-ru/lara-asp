@@ -28,9 +28,11 @@ readonly class FootnotesPrefix implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): array {
-        $changes = [];
+    public function __invoke(Document $document, DocumentNode $node): iterable {
+        // Just in case
+        yield from [];
 
+        // Process
         foreach ($node->iterator() as $child) {
             // Footnote?
             if (!($child instanceof FootnoteRef) && !($child instanceof Footnote)) {
@@ -42,11 +44,9 @@ readonly class FootnotesPrefix implements Mutation {
             $location = $label ? $this->getLabelLocation($child, $label) : null;
 
             if ($location) {
-                $changes[] = [$location, "{$this->prefix}-{$label}"];
+                yield [$location, "{$this->prefix}-{$label}"];
             }
         }
-
-        return $changes;
     }
 
     private function getLabel(Document $document, Footnote|FootnoteRef $footnote): ?string {

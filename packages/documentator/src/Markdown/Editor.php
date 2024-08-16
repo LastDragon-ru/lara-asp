@@ -72,13 +72,14 @@ class Editor implements Stringable {
     }
 
     /**
-     * @param array<array-key, array{Location, ?string}> $changes
+     * @param iterable<array-key, array{Location, ?string}> $changes
      *
      * @return new<static>
      */
-    public function mutate(array $changes): static {
+    public function mutate(iterable $changes): static {
         // Modify
         $lines    = $this->lines;
+        $changes  = $this->prepare($changes);
         $changes  = $this->removeOverlaps($changes);
         $changes  = $this->expand($changes);
         $paddings = [];
@@ -134,7 +135,23 @@ class Editor implements Stringable {
     }
 
     /**
-     * @param array<array-key, array{Location, ?string}> $changes
+     * @param iterable<array-key, array{Location, ?string}> $changes
+     *
+     * @return list<array{array<array-key, Coordinate>, ?string}>
+     */
+    protected function prepare(iterable $changes): array {
+        $prepared = [];
+
+        foreach ($changes as $change) {
+            [$location, $text] = $change;
+            $prepared[]        = [iterator_to_array($location), $text];
+        }
+
+        return array_reverse($prepared);
+    }
+
+    /**
+     * @param array<array-key, array{array<array-key, Coordinate>, ?string}> $changes
      *
      * @return list<array{Coordinate, ?string}>
      */
@@ -144,11 +161,10 @@ class Editor implements Stringable {
             return $a->line <=> $b->line ?: $a->offset <=> $b->offset;
         };
 
-        foreach (array_reverse($changes, true) as $change) {
-            [$location, $text] = $change;
-            $coordinates       = iterator_to_array($location);
-            $text              = $text ? Text::getLines($text) : [];
-            $line              = 0;
+        foreach ($changes as $change) {
+            [$coordinates, $text] = $change;
+            $text                 = $text ? Text::getLines($text) : [];
+            $line                 = 0;
 
             usort($coordinates, $sort);
 
@@ -168,20 +184,20 @@ class Editor implements Stringable {
     }
 
     /**
-     * @param array<array-key, array{Location, ?string}> $changes
+     * @param array<array-key, array{array<array-key, Coordinate>, ?string}> $changes
      *
-     * @return array<array-key, array{Location, ?string}>
+     * @return array<array-key, array{array<array-key, Coordinate>, ?string}>
      */
     protected function removeOverlaps(array $changes): array {
         $used = [];
+        $sort = static function (Coordinate $a, Coordinate $b): int {
+            return $b->line <=> $a->line;
+        };
 
-        foreach (array_reverse($changes, true) as $key => $change) {
-            [$location]  = $change;
-            $coordinates = iterator_to_array($location);
+        foreach ($changes as $key => $change) {
+            [$coordinates] = $change;
 
-            usort($coordinates, static function (Coordinate $a, Coordinate $b): int {
-                return $b->line <=> $a->line;
-            });
+            usort($coordinates, $sort);
 
             foreach ($coordinates as $coordinate) {
                 if ($this->isOverlapped($used, $coordinate)) {

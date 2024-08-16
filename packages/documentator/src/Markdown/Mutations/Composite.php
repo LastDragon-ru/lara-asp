@@ -7,8 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
-use function array_merge;
-
 /**
  * Merges all mutations into one.
  */
@@ -26,13 +24,13 @@ readonly class Composite implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): array {
-        $changes = [];
+    public function __invoke(Document $document, DocumentNode $node): iterable {
+        // Just in case
+        yield from [];
 
+        // Process all
         foreach ($this->mutations as $mutation) {
-            $changes = array_merge($changes, $mutation($document, $node));
+            yield from $mutation($document, $node);
         }
-
-        return $changes;
     }
 }
