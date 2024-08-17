@@ -6,6 +6,8 @@ use Closure;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 
 use function array_keys;
+use function array_merge;
+use function array_unique;
 use function array_values;
 use function is_object;
 use function is_string;
@@ -36,11 +38,28 @@ class InstanceList {
         // empty
     }
 
+    public function isEmpty(): bool {
+        return !$this->map;
+    }
+
     /**
      * @return list<string>
      */
     public function keys(): array {
         return array_keys($this->map);
+    }
+
+    /**
+     * @return list<class-string<TInstance>>
+     */
+    public function classes(): array {
+        $classes = [];
+
+        foreach ($this->map as $list) {
+            $classes = array_merge($classes, $list);
+        }
+
+        return array_values(array_unique($classes));
     }
 
     public function has(string ...$key): bool {

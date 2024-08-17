@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -58,19 +57,15 @@ final class TaskTest extends TestCase {
     public function testParse(): void {
         $a    = new TaskTest__EmptyInstruction();
         $b    = new TaskTest__TestInstruction();
-        $task = Mockery::mock(Task::class, MockProperties::class);
-        $task->shouldAllowMockingProtectedMethods();
-        $task->makePartial();
-        $task
-            ->shouldUseProperty('container')
-            ->value(
-                $this->app()->make(ContainerResolver::class),
-            );
-        $task
-            ->shouldUseProperty('serializer')
-            ->value(
-                $this->app()->make(Serializer::class),
-            );
+        $task = new class(
+            $this->app()->make(ContainerResolver::class),
+            $this->app()->make(Serializer::class),
+        ) extends Task {
+            #[Override]
+            public function parse(Directory $root, File $file): TokenList {
+                return parent::parse($root, $file);
+            }
+        };
 
         $task->addInstruction($a::class);
         $task->addInstruction($b);

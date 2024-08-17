@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
@@ -25,8 +26,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 
-use function array_map;
-use function array_values;
 use function hash;
 use function is_array;
 use function json_decode;
@@ -90,14 +89,16 @@ class Task implements TaskContract {
         REGEXP;
 
     /**
-     * @var array<string, ResolvedInstruction<covariant Parameters>>
+     * @var InstanceList<Instruction<Parameters>>
      */
-    private array $instructions = [];
+    private InstanceList $instructions;
 
     public function __construct(
-        protected readonly ContainerResolver $container,
+        ContainerResolver $container,
         protected readonly Serializer $serializer,
     ) {
+        $this->instructions = new InstanceList($container, $this->key(...));
+
         $this->addInstruction(IncludeFile::class);
         $this->addInstruction(IncludeExec::class);
         $this->addInstruction(IncludeExample::class);
@@ -110,20 +111,26 @@ class Task implements TaskContract {
     }
 
     /**
-     * @return list<class-string<Instruction<Parameters>>>
+     * @param Instruction<Parameters>|class-string<Instruction<Parameters>> $task
      */
-    public function getInstructions(): array {
-        return array_values(array_map(static fn ($i) => $i->getClass(), $this->instructions));
+    private function key(Instruction|string $task): string {
+        return $task::getName();
     }
 
     /**
-     * @template I of Instruction<covariant Parameters>
+     * @return list<class-string<Instruction<Parameters>>>
+     */
+    public function getInstructions(): array {
+        return $this->instructions->classes();
+    }
+
+    /**
+     * @template I of Instruction<*>
      *
      * @param I|class-string<I> $instruction
      */
     public function addInstruction(Instruction|string $instruction): static {
-        // @phpstan-ignore-next-line argument.type (Assigment is fine...)
-        $this->instructions[$instruction::getName()] = new ResolvedInstruction($this->container, $instruction);
+        $this->instructions->add($instruction); // @phpstan-ignore argument.type
 
         return $this;
     }
@@ -206,7 +213,7 @@ class Task implements TaskContract {
         $tokens  = [];
         $matches = [];
 
-        if (!$this->instructions) {
+        if ($this->instructions->isEmpty()) {
             return new TokenList($tokens);
         }
 
@@ -218,7 +225,7 @@ class Task implements TaskContract {
         foreach ($matches as $match) {
             // Instruction?
             $name        = (string) $match['instruction'];
-            $instruction = $this->instructions[$name] ?? null;
+            $instruction = $this->instructions->get($name)[0] ?? null;
 
             if (!$instruction) {
                 continue;
@@ -241,11 +248,11 @@ class Task implements TaskContract {
 
             // Parse
             $context    = new Context($root, $file, (string) $match['target'], $match['parameters']);
-            $parameters = $instruction->getClass()::getParameters();
+            $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
             $tokens[$hash] = new Token(
-                $instruction->getInstance(),
+                $instruction,
                 $context,
                 $target,
                 $parameters,
