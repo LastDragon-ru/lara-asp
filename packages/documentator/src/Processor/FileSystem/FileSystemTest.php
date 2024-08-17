@@ -24,9 +24,9 @@ final class FileSystemTest extends TestCase {
         $relative    = $fs->getFile($directory, basename(__FILE__));
         $notfound    = $fs->getFile($directory, 'not found');
         $writable    = new Directory(Path::normalize(__DIR__), true);
-        $internal    = $fs->getFile($writable, basename(__FILE__));
+        $internal    = $fs->getFile($writable, self::getTestData()->path('c.html'));
         $external    = $fs->getFile($writable, '../Processor.php');
-        $file        = new File(Path::normalize(__FILE__), false);
+        $file        = new File(Path::normalize(self::getTestData()->path('c.txt')), false);
         $fromFile    = $fs->getFile($writable, $file);
         $splFile     = new SplFileInfo($file->getPath());
         $fromSplFile = $fs->getFile($writable, $splFile);
@@ -43,7 +43,10 @@ final class FileSystemTest extends TestCase {
 
         self::assertNotNull($internal);
         self::assertTrue($internal->isWritable());
-        self::assertEquals(Path::normalize(__FILE__), $internal->getPath());
+        self::assertEquals(
+            Path::normalize(self::getTestData()->path('c.html')),
+            $internal->getPath(),
+        );
 
         self::assertNotNull($external);
         self::assertFalse($external->isWritable());
@@ -53,13 +56,19 @@ final class FileSystemTest extends TestCase {
         self::assertFalse($file->isWritable());
         self::assertTrue($fromFile->isWritable());
         self::assertEquals($file->getPath(), $fromFile->getPath());
-        self::assertEquals(Path::normalize(__FILE__), $fromFile->getPath());
+        self::assertEquals(
+            Path::normalize(self::getTestData()->path('c.txt')),
+            $fromFile->getPath(),
+        );
 
         self::assertNotNull($fromSplFile);
         self::assertFalse($file->isWritable());
         self::assertTrue($fromSplFile->isWritable());
         self::assertEquals($file->getPath(), $fromSplFile->getPath());
-        self::assertEquals(Path::normalize(__FILE__), $fromSplFile->getPath());
+        self::assertEquals(
+            Path::normalize(self::getTestData()->path('c.txt')),
+            $fromSplFile->getPath(),
+        );
     }
 
     public function testGetDirectory(): void {
@@ -93,11 +102,12 @@ final class FileSystemTest extends TestCase {
         self::assertNull($notDirectory);
 
         // Internal
-        $internal = $fs->getDirectory($writable, basename(__DIR__));
+        $internalPath = self::getTestData()->path('a');
+        $internal     = $fs->getDirectory($writable, $internalPath);
 
         self::assertNotNull($internal);
         self::assertTrue($internal->isWritable());
-        self::assertEquals(Path::normalize(__DIR__), $internal->getPath());
+        self::assertEquals($internalPath, $internal->getPath());
 
         // External
         $external = $fs->getDirectory($writable, '../Testing');
@@ -107,14 +117,18 @@ final class FileSystemTest extends TestCase {
         self::assertEquals(Path::getPath(__DIR__, '../../Testing'), $external->getPath());
 
         // From file
-        $fromFile = $fs->getDirectory($writable, new File(Path::normalize(__FILE__), true));
+        $fromFilePath = Path::normalize(self::getTestData()->path('c.html'));
+        $fromFile     = $fs->getDirectory($writable, new File($fromFilePath, true));
 
         self::assertNotNull($fromFile);
         self::assertTrue($fromFile->isWritable());
-        self::assertEquals(Path::normalize(__DIR__), $fromFile->getPath());
+        self::assertEquals(
+            Path::normalize(self::getTestData()->path('')),
+            $fromFile->getPath(),
+        );
 
         // From SplFileInfo
-        $spl     = new SplFileInfo(__DIR__);
+        $spl     = new SplFileInfo(self::getTestData()->path('b'));
         $fromSpl = $fs->getDirectory($writable, $spl);
 
         self::assertNotNull($fromSpl);
@@ -122,7 +136,7 @@ final class FileSystemTest extends TestCase {
         self::assertEquals(Path::normalize($spl->getPathname()), $fromSpl->getPath());
 
         // From Directory
-        $directory     = new Directory(Path::normalize(__DIR__), false);
+        $directory     = new Directory(Path::normalize(self::getTestData()->path('a/a')), false);
         $fromDirectory = $fs->getDirectory($writable, $directory);
 
         self::assertNotNull($fromDirectory);
@@ -238,7 +252,6 @@ final class FileSystemTest extends TestCase {
         );
     }
 
-
     public function testSave(): void {
         $fs   = new FileSystem();
         $temp = Path::normalize(self::getTempFile(__FILE__)->getPathname());
@@ -265,5 +278,18 @@ final class FileSystemTest extends TestCase {
         self::assertFalse($fs->save($file));
 
         self::assertEquals(__FILE__, file_get_contents($temp));
+    }
+
+    public function testCache(): void {
+        $fs        = new FileSystem();
+        $dir       = new Directory(Path::normalize(__DIR__), false);
+        $file      = $fs->getFile($dir, __FILE__);
+        $directory = $fs->getDirectory($dir, __DIR__);
+
+        self::assertNotNull($file);
+        self::assertSame($file, $fs->getFile($dir, __FILE__));
+
+        self::assertNotNull($directory);
+        self::assertSame($directory, $fs->getDirectory($dir, __DIR__));
     }
 }

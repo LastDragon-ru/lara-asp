@@ -6,6 +6,7 @@ use Closure;
 use Iterator;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use WeakReference;
 
 use function dirname;
 use function file_put_contents;
@@ -13,6 +14,11 @@ use function is_dir;
 use function is_file;
 
 class FileSystem {
+    /**
+     * @var array<string, WeakReference<Directory|File>>
+     */
+    private array $cache = [];
+
     public function __construct() {
         // empty
     }
@@ -35,8 +41,13 @@ class FileSystem {
         }
 
         // Create
-        $writable = $root->isWritable() && $root->isInside($path);
-        $file     = new File($path, $writable);
+        $file = ($this->cache[$path] ?? null)?->get();
+
+        if (!($file instanceof File)) {
+            $writable           = $root->isWritable() && $root->isInside($path);
+            $file               = new File($path, $writable);
+            $this->cache[$path] = WeakReference::create($file);
+        }
 
         return $file;
     }
@@ -66,12 +77,17 @@ class FileSystem {
         }
 
         // Create
-        $writable = $root->isWritable() && $root->isInside($path);
-        $dir      = $root->getPath() !== $path
-            ? new Directory($path, $writable)
-            : $root;
+        $directory = ($this->cache[$path] ?? null)?->get();
 
-        return $dir;
+        if (!($directory instanceof Directory)) {
+            $writable           = $root->isWritable() && $root->isInside($path);
+            $directory          = $root->getPath() !== $path
+                ? new Directory($path, $writable)
+                : $root;
+            $this->cache[$path] = WeakReference::create($directory);
+        }
+
+        return $directory;
     }
 
     /**
