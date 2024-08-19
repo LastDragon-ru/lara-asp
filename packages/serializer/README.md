@@ -94,6 +94,51 @@ LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage\User {
 
 [//]: # (end: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
 
+# Partial deserialization
+
+Sometimes you don't know (or do not want to support) the full structure of the object. In this case you can mark the class as `\LastDragon_ru\LaraASP\Serializer\Contracts\Partial` to allow unserialize only known (wanted) properties:
+
+[include:example]: ./docs/Examples/Partial.php
+[//]: # (start: 054e60f7fb44bc5391e7906b939df2aaea42d9a33e75d06094f4b5dd62d1049c)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+// phpcs:disable PSR1.Files.SideEffects
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
+namespace LastDragon_ru\LaraASP\Serializer\Docs\Examples\Partial;
+
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Partial;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+
+class User implements Serializable, Partial {
+    public function __construct(
+        public string $name,
+    ) {
+        // empty
+    }
+}
+
+$serializer   = app()->make(Serializer::class);
+$deserialized = $serializer->deserialize(User::class, '{"id":1,"name":"User"}');
+
+Example::dump($deserialized);
+```
+
+The `$deserialized` is:
+
+```plain
+LastDragon_ru\LaraASP\Serializer\Docs\Examples\Partial\User {
+  +name: "User"
+}
+```
+
+[//]: # (end: 054e60f7fb44bc5391e7906b939df2aaea42d9a33e75d06094f4b5dd62d1049c)
+
 # Extending
 
 Out of the box, the package supports only the following objects (see [`Factory`](./src/Factory.php) for more details):
@@ -179,8 +224,6 @@ The `$user->getAttributes()` is:
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
-
-[//]: # (end: e9139abedb89f69284102c9112b548fd7add07cf196259916ea4f1c98977223b)
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)

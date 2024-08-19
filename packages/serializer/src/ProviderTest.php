@@ -6,10 +6,12 @@ use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Carbon;
 use JsonSerializable;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Partial;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToDeserialize;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToSerialize;
+use LastDragon_ru\LaraASP\Serializer\Exceptions\PartialUnserializable;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Override;
@@ -127,6 +129,7 @@ final class ProviderTest extends TestCase {
         $unitEnum     = ProviderTest__UnitEnum::A;
         $backedEnum   = ProviderTest__BackedEnum::A;
         $serializable = new ProviderTest__Simple($datetime, $unitEnum, $backedEnum);
+        $partial      = new ProviderTest__Partial(1, 2);
         $curcular     = new class() implements Serializable {
             public Serializable $a; // @phpstan-ignore-line property.uninitialized (required for tests)
         };
@@ -212,6 +215,10 @@ final class ProviderTest extends TestCase {
                 }
                 JSON,
                 new ProviderTest__C('invalid', 'c'),
+            ],
+            Partial::class                    => [
+                new FailedToSerialize($partial, 'json', [], new PartialUnserializable()),
+                $partial,
             ],
         ];
     }
@@ -357,6 +364,17 @@ final class ProviderTest extends TestCase {
                 <<<'JSON'
                 {
                     "property": "c"
+                }
+                JSON,
+            ],
+            Partial::class                       => [
+                new ProviderTest__Partial(1, 2),
+                ProviderTest__Partial::class,
+                <<<'JSON'
+                {
+                    "a": 1,
+                    "b": 2,
+                    "c": 3
                 }
                 JSON,
             ],
@@ -518,4 +536,17 @@ enum ProviderTest__BackedEnum: int {
     case A = 0;
     case B = 1;
     case C = 2;
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProviderTest__Partial implements Serializable, Partial {
+    public function __construct(
+        public readonly int $a,
+        public readonly int $b,
+    ) {
+        // empty
+    }
 }

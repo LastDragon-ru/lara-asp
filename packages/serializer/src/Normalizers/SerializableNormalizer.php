@@ -2,11 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 
+use ArrayObject;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Partial;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use LastDragon_ru\LaraASP\Serializer\Exceptions\PartialUnserializable;
 use LastDragon_ru\LaraASP\Serializer\Metadata\MetadataFactory;
 use Override;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -14,6 +18,7 @@ use function array_fill_keys;
 use function array_map;
 use function array_unshift;
 use function class_exists;
+use function is_a;
 use function is_array;
 use function is_object;
 use function is_string;
@@ -78,26 +83,31 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
      */
     #[Override]
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed {
-        /**
-         * I'm not sure if it is bug or not, but out the box symfony call
-         * {@see AbstractObjectNormalizer::getMappedClass()} after the
-         * {@see AbstractObjectNormalizer::getAllowedAttributes()}. So it uses
-         * an invalid set of allowed attributes. It may lead to "extra property"
-         * error while deserialization of abstract classes/interfaces. To avoid
-         * it, the {@see ObjectNormalizer} adds all properties from all known
-         * classes into the array of allowed properties. It looks strange...
-         *
-         * This is why we are trying to replace the `$type` into actual class
-         * before deserialization.
-         */
-        $mapping  = $this->classDiscriminatorResolver?->getMappingForClass($type);
-        $property = $mapping?->getTypeProperty();
-        $class    = $property && is_array($data) && isset($data[$property]) && is_string($data[$property])
-            ? $mapping->getClassForType($data[$property])
-            : null;
-        $object   = parent::denormalize($data, $class ?? $type, $format, $context);
+        $class = $this->getTypeClass($type, $data);
 
-        return $object;
+        if (is_a($class, Partial::class, true)) {
+            $context[AbstractNormalizer::ALLOW_EXTRA_ATTRIBUTES] = true;
+        }
+
+        return parent::denormalize($data, $class, $format, $context);
+    }
+
+    /**
+     * @param array<array-key, mixed> $context
+     *
+     * @return array<array-key, mixed>|string|int|float|bool|ArrayObject<array-key, mixed>|null
+     */
+    #[Override]
+    public function normalize(
+        mixed $object,
+        ?string $format = null,
+        array $context = [],
+    ): array|string|int|float|bool|ArrayObject|null {
+        if ($object instanceof Partial || (is_string($object) && is_a($object, Partial::class, true))) {
+            throw new PartialUnserializable();
+        }
+
+        return parent::normalize($object, $format, $context);
     }
 
     /**
@@ -192,5 +202,27 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
      */
     private function isAttribute(string $class, string $attribute): bool {
         return $this->attributes[$class][$attribute] ?? false;
+    }
+
+    /**
+     * I'm not sure if it is bug or not, but out the box symfony call
+     * {@see AbstractObjectNormalizer::getMappedClass()} after the
+     * {@see AbstractObjectNormalizer::getAllowedAttributes()}. So it uses
+     * an invalid set of allowed attributes. It may lead to "extra property"
+     * error while deserialization of abstract classes/interfaces. To avoid
+     * it, the {@see ObjectNormalizer} adds all properties from all known
+     * classes into the array of allowed properties. It looks strange...
+     *
+     * This is why we are trying to replace the `$type` into actual class
+     * before deserialization.
+     */
+    private function getTypeClass(string $type, mixed $data): string {
+        $mapping  = $this->classDiscriminatorResolver?->getMappingForClass($type);
+        $property = $mapping?->getTypeProperty();
+        $class    = $property && is_array($data) && isset($data[$property]) && is_string($data[$property])
+            ? $mapping->getClassForType($data[$property])
+            : null;
+
+        return $class ?? $type;
     }
 }
