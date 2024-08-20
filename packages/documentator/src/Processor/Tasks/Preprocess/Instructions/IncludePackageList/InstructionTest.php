@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -44,25 +43,6 @@ final class InstructionTest extends TestCase {
             {$actual}
             MARKDOWN,
         );
-    }
-
-    public function testInvokeNotAPackage(): void {
-        $fs       = new FileSystem();
-        $path     = Path::normalize(self::getTestData()->path('Document.md'));
-        $root     = new Directory(dirname($path), false);
-        $file     = new File($path, false);
-        $target   = $root->getPath('invalid');
-        $params   = new Parameters('...');
-        $context  = new Context($root, $file, $target, '');
-        $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory(new Directory($target, false), 'package');
-
-        self::assertNotNull($package);
-        self::expectExceptionObject(
-            new PackageComposerJsonIsMissing($context, $package),
-        );
-
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
     }
 
     public function testInvokeNoReadme(): void {

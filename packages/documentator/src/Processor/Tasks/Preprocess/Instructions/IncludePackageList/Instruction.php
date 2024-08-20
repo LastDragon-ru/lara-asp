@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
-use Exception;
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
@@ -15,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
@@ -23,13 +23,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
-use function assert;
-use function is_array;
-use function json_decode;
 use function strcmp;
 use function usort;
-
-use const JSON_THROW_ON_ERROR;
 
 /**
  * Generates package list from `<target>` directory. The readme file will be
@@ -41,6 +36,7 @@ class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
         protected readonly Markdown $markdown,
+        protected readonly Composer $composer,
     ) {
         // empty
     }
@@ -70,14 +66,14 @@ class Instruction implements InstructionContract {
 
             // Package?
             $packageFile = Cast::to(File::class, yield new FileReference($package->getPath('composer.json')));
-            $packageInfo = $this->getPackageInfo($packageFile);
+            $packageInfo = $packageFile->getMetadata($this->composer);
 
             if (!$packageInfo) {
                 throw new PackageComposerJsonIsMissing($context, $package);
             }
 
             // Readme
-            $readme  = $package->getPath(Cast::toString($packageInfo['readme'] ?: 'README.md'));
+            $readme  = $package->getPath(Cast::toString($packageInfo->readme ?: 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
             $content = $readme->getMetadata($this->markdown);
 
@@ -116,23 +112,5 @@ class Instruction implements InstructionContract {
 
         // Return
         return $list;
-    }
-
-    /**
-     * @return array<array-key, mixed>|null
-     */
-    protected function getPackageInfo(File $file): ?array {
-        try {
-            $package = $file->getContent();
-            $package = $package
-                ? json_decode($package, true, flags: JSON_THROW_ON_ERROR)
-                : null;
-
-            assert(is_array($package));
-        } catch (Exception) {
-            $package = null;
-        }
-
-        return $package;
     }
 }

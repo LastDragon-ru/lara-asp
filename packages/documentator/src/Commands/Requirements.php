@@ -6,6 +6,8 @@ use Exception;
 use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
+use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJsonFactory;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Storage;
 use LastDragon_ru\LaraASP\Documentator\Package;
@@ -24,14 +26,11 @@ use function array_merge;
 use function array_search;
 use function array_unique;
 use function array_values;
-use function assert;
 use function count;
 use function end;
 use function explode;
 use function file_get_contents;
 use function getcwd;
-use function is_array;
-use function json_decode;
 use function mb_strlen;
 use function mb_substr;
 use function natsort;
@@ -43,8 +42,6 @@ use function str_starts_with;
 use function strtr;
 use function trim;
 use function uksort;
-
-use const JSON_THROW_ON_ERROR;
 
 #[AsCommand(
     name       : Requirements::Name,
@@ -106,7 +103,12 @@ class Requirements extends Command {
         ```
         HELP;
 
-    public function __invoke(PackageViewer $viewer, Git $git, Serializer $serializer): void {
+    public function __invoke(
+        PackageViewer $viewer,
+        ComposerJsonFactory $factory,
+        Git $git,
+        Serializer $serializer,
+    ): void {
         // Get Versions
         $cwd  = Cast::toString($this->argument('cwd') ?? getcwd());
         $tags = $this->getPackageVersions($git, $cwd, [self::HEAD]);
@@ -133,7 +135,7 @@ class Requirements extends Command {
             }
 
             // Load
-            $package = $this->getPackageInfo($git, $tag, $cwd);
+            $package = $this->getPackageInfo($factory, $git, $tag, $cwd);
 
             if (!$package) {
                 break;
@@ -197,10 +199,7 @@ class Requirements extends Command {
         return $tags;
     }
 
-    /**
-     * @return array<array-key, mixed>|null
-     */
-    protected function getPackageInfo(Git $git, string $tag, string $cwd): ?array {
+    protected function getPackageInfo(ComposerJsonFactory $factory, Git $git, string $tag, string $cwd): ?ComposerJson {
         try {
             $root    = Path::normalize($git->getRoot($cwd));
             $path    = Path::join($cwd, 'composer.json');
@@ -210,9 +209,7 @@ class Requirements extends Command {
             $package = $tag !== self::HEAD
                 ? $git->getFile($gitPath, $tag, $cwd)
                 : (string) file_get_contents($path);
-            $package = json_decode($package, true, flags: JSON_THROW_ON_ERROR);
-
-            assert(is_array($package));
+            $package = $factory->createFromJson($package);
         } catch (Exception) {
             $package = null;
         }
@@ -221,13 +218,12 @@ class Requirements extends Command {
     }
 
     /**
-     * @param array<string, string>   $require
-     * @param array<string, string>   $merge
-     * @param array<array-key, mixed> $package
+     * @param array<string, string> $require
+     * @param array<string, string> $merge
      *
      * @return array<string, list<string>>
      */
-    protected function getPackageRequirements(array $require, array $merge, array $package): array {
+    protected function getPackageRequirements(array $require, array $merge, ComposerJson $package): array {
         // Prepare
         $regexps = [];
 
@@ -244,7 +240,7 @@ class Requirements extends Command {
         // Requirements
         $requirements = [];
 
-        foreach ($package['require'] ?? [] as $requirement => $constraint) {
+        foreach ($package->require as $requirement => $constraint) {
             // Match?
             $match = false;
 

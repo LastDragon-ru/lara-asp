@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
+use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -112,8 +113,8 @@ final class RequirementsTest extends TestCase {
             'laravel/framework' => 'Laravel',
             'php'               => 'PHP',
         ];
-        $package  = [
-            'require' => [
+        $package  = new ComposerJson(
+            require: [
                 'php'                  => '^8.1|^8.2|^8.3',
                 'ext-mbstring'         => '*',
                 'composer/semver'      => '^3.2',
@@ -124,13 +125,13 @@ final class RequirementsTest extends TestCase {
                 'illuminate/contracts' => '^9 || ^10 || ^11',
                 'example/package'      => '~1.0.0',
             ],
-        ];
+        );
         $command  = new class() extends Requirements {
             /**
              * @inheritDoc
              */
             #[Override]
-            public function getPackageRequirements(array $require, array $merge, array $package): array {
+            public function getPackageRequirements(array $require, array $merge, ComposerJson $package): array {
                 return parent::getPackageRequirements(
                     $require,
                     $merge,
