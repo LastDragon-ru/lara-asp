@@ -2,15 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ReflectionProperty;
 
 use function array_merge;
 
@@ -20,8 +19,13 @@ use function array_merge;
 #[CoversClass(Composite::class)]
 final class CompositeTest extends TestCase {
     public function testInvoke(): void {
-        $document  = new Document('');
-        $node      = Cast::to(DocumentNode::class, (new ReflectionProperty($document, 'node'))->getValue($document));
+        $document  = new class('') extends Document {
+            #[Override]
+            public function getNode(): DocumentNode {
+                return parent::getNode();
+            }
+        };
+        $node      = $document->getNode();
         $aChanges  = [
             [new Location(1, 1, 10), 'a'],
         ];

@@ -2,15 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Node\Block\Document as DocumentNode;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ReflectionProperty;
 
 /**
  * @internal
@@ -18,8 +15,7 @@ use ReflectionProperty;
 #[CoversClass(FootnotesRemove::class)]
 final class FootnotesRemoveTest extends TestCase {
     public function testInvoke(): void {
-        $document = new Document(
-            <<<'MARKDOWN'
+        $markdown = <<<'MARKDOWN'
             # Header[^1]
 
             Text text text[^2] text text [^1] text text text [^2] text text text
@@ -40,10 +36,23 @@ final class FootnotesRemoveTest extends TestCase {
                 Text text text text text text text text text text text text text
                 text text text text text text text text text text text text text
                 text.
-            MARKDOWN,
-        );
-        $node     = Cast::to(DocumentNode::class, (new ReflectionProperty($document, 'node'))->getValue($document));
-        $lines    = Data::get($node, Lines::class) ?? [];
+            MARKDOWN;
+        $document = new class($markdown) extends Document {
+            #[Override]
+            public function getNode(): DocumentNode {
+                return parent::getNode();
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getLines(): array {
+                return parent::getLines();
+            }
+        };
+        $node     = $document->getNode();
+        $lines    = $document->getLines();
         $mutation = new FootnotesRemove();
         $changes  = $mutation($document, $node);
         $actual   = (string) (new Editor($lines))->mutate($changes);

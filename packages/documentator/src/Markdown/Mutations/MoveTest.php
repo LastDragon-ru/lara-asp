@@ -2,16 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Node\Block\Document as DocumentNode;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionProperty;
 
 /**
  * @internal
@@ -23,9 +20,22 @@ final class MoveTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, ?string $path, string $content, string $target): void {
         $mutation = new Move($target);
-        $document = new Document($content, $path);
-        $node     = Cast::to(DocumentNode::class, (new ReflectionProperty($document, 'node'))->getValue($document));
-        $lines    = Data::get($node, Lines::class) ?? [];
+        $document = new class($content, $path) extends Document {
+            #[Override]
+            public function getNode(): DocumentNode {
+                return parent::getNode();
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getLines(): array {
+                return parent::getLines();
+            }
+        };
+        $node     = $document->getNode();
+        $lines    = $document->getLines();
         $changes  = $mutation($document, $node);
         $actual   = (string) (new Editor($lines))->mutate($changes);
 

@@ -30,6 +30,7 @@ use function array_key_last;
 use function count;
 use function implode;
 use function is_int;
+use function is_string;
 use function ltrim;
 use function str_ends_with;
 use function str_starts_with;
@@ -39,7 +40,7 @@ use function trim;
 //      https://github.com/thephpleague/commonmark/issues/419
 
 class Document implements Stringable {
-    private DocumentNode $node;
+    private DocumentNode|string $node;
 
     private ?MarkdownParser $parser  = null;
     private ?Editor         $editor  = null;
@@ -53,7 +54,7 @@ class Document implements Stringable {
     }
 
     public function isEmpty(): bool {
-        return !$this->node->hasChildren() && count($this->node->getReferenceMap()) === 0;
+        return !$this->getNode()->hasChildren() && count($this->getNode()->getReferenceMap()) === 0;
     }
 
     /**
@@ -121,7 +122,7 @@ class Document implements Stringable {
         $document = clone $this;
 
         foreach ($mutations as $mutation) {
-            $changes = $mutation($document, $document->node);
+            $changes = $mutation($document, $document->getNode());
 
             if (!$changes) {
                 continue;
@@ -162,7 +163,7 @@ class Document implements Stringable {
     }
 
     protected function setContent(string $content): static {
-        $this->node    = $this->parse($content);
+        $this->node    = $content;
         $this->title   = null;
         $this->summary = null;
         $this->editor  = null;
@@ -184,7 +185,7 @@ class Document implements Stringable {
      * @return array<array-key, string>
      */
     protected function getLines(): array {
-        return Data::get($this->node, Lines::class) ?? [];
+        return Data::get($this->getNode(), Lines::class) ?? [];
     }
 
     protected function getEditor(): Editor {
@@ -193,6 +194,14 @@ class Document implements Stringable {
         }
 
         return $this->editor;
+    }
+
+    protected function getNode(): DocumentNode {
+        if (is_string($this->node)) {
+            $this->node = $this->parse($this->node);
+        }
+
+        return $this->node;
     }
 
     /**
@@ -207,7 +216,7 @@ class Document implements Stringable {
     private function getFirstNode(string $class, ?Closure $filter = null, ?Closure $skip = null): ?Node {
         $node = null;
 
-        foreach ($this->node->children() as $child) {
+        foreach ($this->getNode()->children() as $child) {
             // Comment?
             if (
                 $child instanceof HtmlBlock
@@ -258,6 +267,6 @@ class Document implements Stringable {
 
     #[Override]
     public function __toString(): string {
-        return implode("\n", $this->getLines());
+        return is_string($this->node) ? $this->node : implode("\n", $this->getLines());
     }
 }
