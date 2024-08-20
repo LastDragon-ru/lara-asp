@@ -4,8 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as DataLocation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Parser\Block\BlockContinue;
 use League\CommonMark\Parser\Block\BlockContinueParserInterface;
@@ -83,13 +81,6 @@ class ParserContinue implements BlockContinueParserInterface {
 
         // Data
         Data::set($this->block, new DataBlockPadding($this->padding));
-
-        $start = $this->block->getStartLine();
-        $end   = $this->block->getEndLine();
-
-        if ($start !== null && $end !== null) {
-            Data::set($this->block, new DataLocation(new Location($start, $end, 0, null, $this->padding)));
-        }
     }
 
     private function parse(Cursor $cursor): bool {
