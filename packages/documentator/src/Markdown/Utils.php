@@ -235,7 +235,7 @@ class Utils {
      *
      * @return ?T
      */
-    private static function getParent(Node $node, string $class): ?object {
+    public static function getParent(Node $node, string $class): ?object {
         $parent = null;
 
         do {
