@@ -18,18 +18,21 @@ class ParserContinue implements BlockContinueParserInterface {
     private Block  $block;
     private Parser $parser;
     private int    $padding;
+    private bool   $finished;
 
     public function __construct(
         private readonly ?ReferenceMapInterface $referenceMap,
     ) {
-        $this->block   = new Block();
-        $this->parser  = new Parser();
-        $this->padding = 0;
+        $this->block    = new Block();
+        $this->parser   = new Parser();
+        $this->padding  = 0;
+        $this->finished = false;
     }
 
     public function start(Cursor $cursor): bool {
-        $this->padding = $cursor->getPosition();
-        $started       = $this->parse($cursor);
+        $this->finished = false;
+        $this->padding  = $cursor->getPosition();
+        $started        = $this->parse($cursor);
 
         return $started;
     }
@@ -84,12 +87,18 @@ class ParserContinue implements BlockContinueParserInterface {
     }
 
     private function parse(Cursor $cursor): bool {
-        $parsed = $this->parser->parse($cursor->getRemainder());
+        if ($this->finished) {
+            return false;
+        }
+
+        $line           = $cursor->getRemainder();
+        $parsed         = $this->parser->parse($line);
+        $this->finished = $parsed !== true;
 
         if ($parsed) {
             $cursor->advanceToEnd();
         }
 
-        return $parsed;
+        return $parsed || $line === '';
     }
 }

@@ -73,7 +73,6 @@ final class ReferencesInlineTest extends TestCase {
 
             ![image](https://example.com "image")
 
-
             # Special
 
             ## Inside Quote

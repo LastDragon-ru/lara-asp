@@ -8,7 +8,7 @@
         label="simple:a"
         destination="https://example.com/"
         title=""
-        location="[{5,0,null}]"
+        location="[{5,0,null},{6,0,null}]"
         blockPadding="0"
     />
     <reference
@@ -29,7 +29,7 @@
         label="simple:d"
         destination="file/b"
         title="title"
-        location="[{9,0,null}]"
+        location="[{9,0,null},{10,0,null}]"
         blockPadding="0"
     />
     <reference
@@ -43,7 +43,7 @@
         title=""
         label="simple:e"
         destination="file/b"
-        location="[{12,0,null}]"
+        location="[{12,0,null},{13,0,null}]"
         blockPadding="0"
     />
     <heading level="1">
@@ -53,14 +53,14 @@
         label="multiline:a"
         destination="https://example.com/"
         title="\n1\n2\n3\n"
-        location="[{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null}]"
+        location="[{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null},{21,0,null}]"
         blockPadding="0"
     />
     <reference
         label="multiline:b"
         destination="https://example.com/"
         title="\n        example.com\n    "
-        location="[{22,0,null},{23,0,null},{24,0,null},{25,0,null},{26,0,null}]"
+        location="[{22,0,null},{23,0,null},{24,0,null},{25,0,null},{26,0,null},{27,0,null}]"
         blockPadding="0"
     />
     <heading level="1">
@@ -71,7 +71,7 @@
             label="quote:a"
             destination="https://example.com/"
             title="example.com"
-            location="[{30,2,null}]"
+            location="[{30,2,null},{31,2,null}]"
             blockPadding="2"
         />
         <reference
@@ -88,7 +88,7 @@
                 label="quote:c"
                 destination="https://example.com/"
                 title="example.com"
-                location="[{35,4,null}]"
+                location="[{35,4,null},{36,4,null}]"
                 blockPadding="4"
             />
             <reference

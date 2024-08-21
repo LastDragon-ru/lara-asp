@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
@@ -110,6 +111,20 @@ readonly class Move implements Mutation {
                 $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
                 $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
                 $text         = trim("[{$label}]: {$target} {$title}");
+
+                if ($location->startLine !== $location->endLine) {
+                    $padding = $location->internalPadding ?? $location->startLinePadding;
+                    $last    = $document->getText(new Coordinate(
+                        $location->endLine,
+                        $padding,
+                        $location->length,
+                        $padding,
+                    ));
+
+                    if ($last === '') {
+                        $text .= "\n";
+                    }
+                }
             } else {
                 // skipped
             }

@@ -60,7 +60,7 @@
         <footnote_ref location="[{10,40,7}]" reference="note"/>
         <text><![CDATA[ text.]]></text>
     </paragraph>
-    <reference destination="https://example.com/" label="link" location="[{12,0,null}]" blockPadding="0" title="reference"/>
+    <reference destination="https://example.com/" label="link" location="[{12,0,null},{13,0,null}]" blockPadding="0" title="reference"/>
     <heading level="1">
         <text>Lists</text>
     </heading>
