@@ -10,6 +10,9 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function array_key_first;
+use function array_values;
+
 /**
  * @internal
  */
@@ -36,8 +39,9 @@ final class MoveTest extends TestCase {
         };
         $node     = $document->getNode();
         $lines    = $document->getLines();
+        $offset   = (int) array_key_first($lines);
         $changes  = $mutation($document, $node);
-        $actual   = (string) (new Editor($lines))->mutate($changes);
+        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals($expected, $actual);
     }

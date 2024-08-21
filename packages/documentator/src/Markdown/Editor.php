@@ -8,14 +8,14 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 use Stringable;
 
-use function array_key_last;
 use function array_merge;
 use function array_reverse;
+use function array_slice;
+use function array_splice;
+use function array_values;
 use function count;
 use function implode;
-use function iterator_to_array;
 use function mb_substr;
-use function trim;
 use function usort;
 
 use const PHP_INT_MAX;
@@ -26,9 +26,10 @@ use const PHP_INT_MAX;
 class Editor implements Stringable {
     public function __construct(
         /**
-         * @var array<int, string>
+         * @var list<string>
          */
         private array $lines,
+        private int $offset = 0,
     ) {
         // empty
     }
@@ -39,10 +40,14 @@ class Editor implements Stringable {
     }
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getLines(): array {
         return $this->lines;
+    }
+
+    public function getOffset(): int {
+        return $this->offset;
     }
 
     public function getText(Location|Coordinate $location): ?string {
@@ -55,8 +60,10 @@ class Editor implements Stringable {
         $selected = null;
 
         foreach ($location as $coordinate) {
-            if (isset($this->lines[$coordinate->line])) {
-                $selected[] = mb_substr($this->lines[$coordinate->line], $coordinate->offset, $coordinate->length);
+            $number = $coordinate->line - $this->offset;
+
+            if (isset($this->lines[$number])) {
+                $selected[] = mb_substr($this->lines[$number], $coordinate->offset, $coordinate->length);
             } else {
                 $selected = null;
                 break;
@@ -78,58 +85,46 @@ class Editor implements Stringable {
      */
     public function mutate(iterable $changes): static {
         // Modify
-        $lines    = $this->lines;
-        $changes  = $this->prepare($changes);
-        $changes  = $this->removeOverlaps($changes);
-        $changes  = $this->expand($changes);
-        $paddings = [];
+        $lines   = $this->lines;
+        $changes = $this->prepare($changes);
+        $changes = $this->removeOverlaps($changes);
+        $changes = $this->expand($changes);
 
         foreach ($changes as $change) {
-            [$coordinate, $text]         = $change;
-            $line                        = $lines[$coordinate->line] ?? '';
-            $prefix                      = mb_substr($line, 0, $coordinate->offset);
-            $suffix                      = $coordinate->length
+            [$coordinate, $text] = $change;
+            $number              = $coordinate->line - $this->offset;
+            $line                = $lines[$number] ?? '';
+            $count               = count($text);
+            $prefix              = mb_substr($line, 0, $coordinate->offset);
+            $suffix              = $coordinate->length
                 ? mb_substr($line, $coordinate->offset + $coordinate->length)
                 : '';
-            $lines[$coordinate->line]    = $prefix.$text.$suffix;
-            $paddings[$coordinate->line] = $coordinate->padding;
+            $padding             = mb_substr($line, 0, $coordinate->padding);
 
-            if ($text === null && !$suffix) {
-                $lines[$coordinate->line] = trim($prefix);
-            }
-        }
+            if ($count > 1) {
+                $insert = [];
 
-        // Markdown Parser uses the empty line right after the block as an
-        // End Line. We are attempting to preserve them, and also merge
-        // multiple empty lines into one.
-        $previous = '';
-
-        foreach ($lines as $line => $text) {
-            $content = mb_substr($text, $paddings[$line] ?? 0);
-            $padding = mb_substr($text, 0, $paddings[$line] ?? 0);
-
-            if ($content === '') {
-                if ($previous !== '') {
-                    $lines[$line] = $padding;
-                } else {
-                    unset($lines[$line]);
+                for ($t = 0; $t < $count; $t++) {
+                    $insert[] = match (true) {
+                        $t === 0          => $prefix.$text[$t],
+                        $t === $count - 1 => $padding.$text[$t].$suffix,
+                        default           => $padding.$text[$t],
+                    };
                 }
+
+                array_splice($lines, $number, 1, $insert);
+            } elseif ($count === 1) {
+                $lines[$number] = $prefix.$text[0].$suffix;
+            } elseif (($prefix && $prefix !== $padding) || $suffix) {
+                $lines[$number] = $prefix.$suffix;
+            } else {
+                unset($lines[$number]);
             }
-
-            $previous = $content;
-        }
-
-        // Remove last line if empty
-        $last    = array_key_last($lines);
-        $content = mb_substr($lines[$last] ?? '', $paddings[$last] ?? 0);
-
-        if ($content === '') {
-            unset($lines[$last]);
         }
 
         // Return
         $editor        = clone $this;
-        $editor->lines = $lines;
+        $editor->lines = array_values($lines);
 
         return $editor;
     }
@@ -137,23 +132,31 @@ class Editor implements Stringable {
     /**
      * @param iterable<array-key, array{Location, ?string}> $changes
      *
-     * @return list<array{array<array-key, Coordinate>, ?string}>
+     * @return list<array{list<Coordinate>, ?string}>
      */
     protected function prepare(iterable $changes): array {
         $prepared = [];
 
         foreach ($changes as $change) {
             [$location, $text] = $change;
-            $prepared[]        = [iterator_to_array($location), $text];
+            $coordinates       = [];
+
+            foreach ($location as $c) {
+                $coordinates[] = $c;
+            }
+
+            if ($coordinates) {
+                $prepared[] = [$coordinates, $text];
+            }
         }
 
         return array_reverse($prepared);
     }
 
     /**
-     * @param array<array-key, array{array<array-key, Coordinate>, ?string}> $changes
+     * @param array<int, array{list<Coordinate>, ?string}> $changes
      *
-     * @return list<array{Coordinate, ?string}>
+     * @return list<array{Coordinate, list<string>}>
      */
     protected function expand(array $changes): array {
         $expanded = [];
@@ -163,19 +166,18 @@ class Editor implements Stringable {
 
         foreach ($changes as $change) {
             [$coordinates, $text] = $change;
-            $text                 = $text ? Text::getLines($text) : [];
-            $line                 = 0;
+            $text                 = match (true) {
+                $text === null => [],
+                $text === ''   => [''],
+                default        => Text::getLines($text),
+            };
 
             usort($coordinates, $sort);
 
-            foreach ($coordinates as $coordinate) {
-                $expanded[] = [$coordinate, $text[$line++] ?? null];
+            for ($i = 0, $c = count($coordinates); $i < $c; $i++) {
+                $line       = $i === $c - 1 ? array_slice($text, $i) : (array) ($text[$i] ?? null);
+                $expanded[] = [$coordinates[$i], $line];
             }
-
-            // If `$text` contains more lines than `$coordinates` that means
-            // that these lines should be added after the last `$coordinate`.
-            //
-            // Not supported yet 🤷‍♂️
         }
 
         usort($expanded, static fn ($a, $b) => -$sort($a[0], $b[0]));
@@ -184,9 +186,9 @@ class Editor implements Stringable {
     }
 
     /**
-     * @param array<array-key, array{array<array-key, Coordinate>, ?string}> $changes
+     * @param list<array{list<Coordinate>, ?string}> $changes
      *
-     * @return array<array-key, array{array<array-key, Coordinate>, ?string}>
+     * @return array<int, array{list<Coordinate>, ?string}>
      */
     protected function removeOverlaps(array $changes): array {
         $used = [];

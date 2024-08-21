@@ -9,6 +9,9 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_key_first;
+use function array_values;
+
 /**
  * @internal
  */
@@ -56,9 +59,10 @@ final class ReferencesInlineTest extends TestCase {
         };
         $node     = $document->getNode();
         $lines    = $document->getLines();
+        $offset   = (int) array_key_first($lines);
         $mutation = new ReferencesInline();
         $changes  = $mutation($document, $node);
-        $actual   = (string) (new Editor($lines))->mutate($changes);
+        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals(
             <<<'MARKDOWN'
@@ -68,6 +72,7 @@ final class ReferencesInlineTest extends TestCase {
             text text ![image](https://example.com "image") text text.
 
             ![image](https://example.com "image")
+
 
             # Special
 

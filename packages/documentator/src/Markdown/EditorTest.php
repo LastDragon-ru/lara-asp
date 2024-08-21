@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_values;
 use function iterator_to_array;
 
 /**
@@ -17,46 +18,49 @@ use function iterator_to_array;
 final class EditorTest extends TestCase {
     public function testMutate(): void {
         $lines    = [
-            1  => 'a b c d',
-            2  => 'e f g h',
-            3  => 'i j k l',
-            4  => 'm n o p',
-            5  => '',
-            6  => 'q r s t',
-            7  => 'u v w x',
-            8  => '',
-            9  => 'y z',
-            10 => '',
-            11 => '> a b c d',
-            12 => '> e f g h',
-            13 => '>',
-            14 => '> i j k l',
+            0  => 'a b c d',
+            1  => 'e f g h',
+            2  => 'i j k l',
+            3  => 'm n o p',
+            4  => '',
+            5  => 'q r s t',
+            6  => 'u v w x',
+            7  => '',
+            8  => 'y z',
+            9  => '',
+            10 => '> a b c d',
+            11 => '> e f g h',
+            12 => '>',
+            13 => '> i j k l',
+            14 => '>',
             15 => '>',
         ];
-        $editor   = new Editor($lines);
+        $editor   = new Editor($lines, 1);
         $changes  = [
-            [new Location(1, 1, 2, 3), '123'],
+            [new Location(1, 1, 2, 3), "123\n345\n567"],
             [new Location(2, 4, 4, 4), '123'],
             [new Location(6, 8, 4, 4), "123\n345"],
-            [new Location(11, 12, 4, 3, 2), "123\n345"],
-            [new Location(14, 15, 4, 3, 2), '123'],
+            [new Location(11, 12, 4, 3, 2), "123\n345\n567"],
+            [new Location(12, 12, 5, 2, 2), null],
+            [new Location(14, 16, 4, 3, 2), '123'],
         ];
         $actual   = $editor->mutate($changes);
         $expected = [
-            1  => 'a 123 d',
-            2  => 'e f 123',
-            3  => '',
-            4  => 'o p',
-            5  => '',
-            6  => 'q r 123',
-            7  => '345',
-            8  => '',
-            9  => 'y z',
-            10 => '',
-            11 => '> a b 123',
-            12 => '> 345 g h',
-            13 => '>',
-            14 => '> i j 123',
+            'a 123',
+            '345',
+            '567 d',
+            'e f 123',
+            'o p',
+            '',
+            'q r 123',
+            '345',
+            'y z',
+            '',
+            '> a b 123',
+            '> 345',
+            '> 567 g',
+            '>',
+            '> i j 123',
         ];
 
         self::assertNotSame($editor, $actual);
@@ -99,13 +103,13 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'g'],
-            1 => [iterator_to_array(new Location(17, 17, 11, 10)), 'f'],
-            2 => [iterator_to_array(new Location(17, 17, 5, 10)), 'e'],
-            3 => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
-            4 => [iterator_to_array(new Location(12, 15, 5, 10)), 'c'],
-            5 => [iterator_to_array(new Location(10, 10, 10, null)), 'b'],
-            6 => [iterator_to_array(new Location(10, 10, 15, 10)), 'a'],
+            0 => [array_values(iterator_to_array(new Location(18, 18, 5, 10))), 'g'],
+            1 => [array_values(iterator_to_array(new Location(17, 17, 11, 10))), 'f'],
+            2 => [array_values(iterator_to_array(new Location(17, 17, 5, 10))), 'e'],
+            3 => [array_values(iterator_to_array(new Location(14, 15, 5, 10))), 'd'],
+            4 => [array_values(iterator_to_array(new Location(12, 15, 5, 10))), 'c'],
+            5 => [array_values(iterator_to_array(new Location(10, 10, 10, null))), 'b'],
+            6 => [array_values(iterator_to_array(new Location(10, 10, 15, 10))), 'a'],
         ];
         $expected = [
             0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'g'],
@@ -128,36 +132,39 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            [iterator_to_array(new Location(6, 6, 5, 10, 2)), "text a\ntext b"],
-            [iterator_to_array(new Location(4, 5, 5, 5, 1)), "text a\ntext b"],
-            [iterator_to_array(new Location(2, 3, 5, null)), 'text'],
-            [iterator_to_array(new Location(1, 1, 5, 10)), 'text'],
+            [array_values(iterator_to_array(new Location(6, 6, 5, 10, 2))), "text aa\ntext ab"],
+            [array_values(iterator_to_array(new Location(4, 5, 5, 5, 1))), "text ba\ntext bb"],
+            [array_values(iterator_to_array(new Location(2, 3, 5, null))), 'text c'],
+            [array_values(iterator_to_array(new Location(1, 1, 5, 10))), "text da\ntext db\ntext dc"],
         ];
         $expected = [
-            [new Coordinate(6, 7, 10, 2), 'text a'],
-            [new Coordinate(5, 1, 5, 1), 'text b'],
-            [new Coordinate(4, 6, null, 1), 'text a'],
-            [new Coordinate(3, 0, null, 0), null],
-            [new Coordinate(2, 5, null, 0), 'text'],
-            [new Coordinate(1, 5, 10, 0), 'text'],
+            [new Coordinate(6, 7, 10, 2), ['text aa', 'text ab']],
+            [new Coordinate(5, 1, 5, 1), ['text bb']],
+            [new Coordinate(4, 6, null, 1), ['text ba']],
+            [new Coordinate(3, 0, null, 0), []],
+            [new Coordinate(2, 5, null, 0), ['text c']],
+            [new Coordinate(1, 5, 10, 0), ['text da', 'text db', 'text dc']],
         ];
 
         self::assertEquals($expected, $editor->expand($changes));
     }
 
     public function testGetText(): void {
-        $editor = new Editor([
-            0 => 'a b c d',
-            1 => 'e f g h',
-            2 => 'i j k l',
-            3 => 'm n o p',
-            4 => '',
-            5 => 'q r s t',
-            6 => 'u v w x',
-        ]);
+        $editor = new Editor(
+            [
+                0 => 'a b c d',
+                1 => 'e f g h',
+                2 => 'i j k l',
+                3 => 'm n o p',
+                4 => '',
+                5 => 'q r s t',
+                6 => 'u v w x',
+            ],
+            1,
+        );
 
         self::assertNull($editor->getText(new Location(25, 25, 0)));
-        self::assertEquals('f g', $editor->getText(new Location(1, 1, 2, 3)));
+        self::assertEquals('f g', $editor->getText(new Location(2, 2, 2, 3)));
         self::assertEquals(
             <<<'TEXT'
             k l
@@ -165,13 +172,13 @@ final class EditorTest extends TestCase {
 
             q r s
             TEXT,
-            $editor->getText(new Location(2, 5, 4, 5)),
+            $editor->getText(new Location(3, 6, 4, 5)),
         );
         self::assertEquals(
             <<<'TEXT'
             f g
             TEXT,
-            $editor->getText(new Coordinate(1, 2, 3)),
+            $editor->getText(new Coordinate(2, 2, 3)),
         );
     }
 }
