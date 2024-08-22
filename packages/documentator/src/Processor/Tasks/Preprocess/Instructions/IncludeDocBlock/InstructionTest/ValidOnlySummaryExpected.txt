@@ -1,1 +1,1 @@
-Summary [A](https://example.com/).
+Summary [A](https://example.com/) B C.

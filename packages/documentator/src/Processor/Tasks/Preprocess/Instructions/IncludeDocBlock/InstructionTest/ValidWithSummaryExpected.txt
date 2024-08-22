@@ -1,9 +1,9 @@
-Summary [A][ffe8b433904a50b3-link][^ffe8b433904a50b3-1].
+Summary [A][ffe8b433904a50b3-link][^ffe8b433904a50b3-1] [B](#fragment) [C][ffe8b433904a50b3-fragment].
 
 Description description description description description description
 description description description description description description
 description description description description description description
-[description][ffe8b433904a50b3-link][^ffe8b433904a50b3-1].
+[description][ffe8b433904a50b3-link][^ffe8b433904a50b3-1] [description](#fragment) [description][ffe8b433904a50b3-fragment].
 
 Description with inline tags:
 
@@ -13,5 +13,6 @@ Description with inline tags:
 - `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction::getName()`
 
 [ffe8b433904a50b3-link]: https://example.com/
+[ffe8b433904a50b3-fragment]: #fragment
 
 [^ffe8b433904a50b3-1]: Footnote

@@ -3,12 +3,12 @@
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction;
 
 /**
- * Summary [A][link][^1].
+ * Summary [A][link][^1] [B](#fragment) [C][fragment].
  *
  * Description description description description description description
  * description description description description description description
  * description description description description description description
- * [description][link][^1].
+ * [description][link][^1] [description](#fragment) [description][fragment].
  *
  * Description with inline tags:
  *
@@ -18,6 +18,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
  * - {@see Instruction::getName()}
  *
  * [link]: https://example.com/
+ * [fragment]: #fragment
  *
  * [^1]: Footnote
  *

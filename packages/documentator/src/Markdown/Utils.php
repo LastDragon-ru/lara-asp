@@ -152,6 +152,17 @@ class Utils {
         return $location;
     }
 
+    public static function getLengthLocation(Location $location, ?int $length): Location {
+        return new Location(
+            $location->startLine,
+            $location->endLine,
+            $location->offset,
+            $length,
+            $location->startLinePadding,
+            $location->internalPadding,
+        );
+    }
+
     public static function getOffsetLocation(Location $location, int $offset): Location {
         return new Location(
             $location->startLine,

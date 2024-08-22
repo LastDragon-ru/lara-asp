@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
@@ -161,6 +162,7 @@ class Document implements Stringable {
         return $this->mutate(new Composite(
             new FootnotesRemove(),
             new ReferencesInline(),
+            new SelfLinksRemove(),
         ));
     }
 

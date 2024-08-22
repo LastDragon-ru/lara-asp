@@ -51,27 +51,32 @@ final class InstructionTest extends TestCase {
      */
     public static function dataProviderProcess(): array {
         return [
-            'default'      => [
+            'default'          => [
                 'ValidExpected.txt',
                 'Valid.txt',
                 new Parameters('...'),
             ],
-            'with summary' => [
+            'with summary'     => [
                 'ValidWithSummaryExpected.txt',
                 'Valid.txt',
                 new Parameters('...', summary: true),
             ],
-            'only summary' => [
+            'only summary'     => [
                 'ValidOnlySummaryExpected.txt',
                 'Valid.txt',
                 new Parameters('...', summary: true, description: false),
             ],
-            'no docblock'  => [
+            'only description' => [
+                'ValidOnlyDescriptionExpected.txt',
+                'Valid.txt',
+                new Parameters('...', summary: false, description: true),
+            ],
+            'no docblock'      => [
                 'NoDocBlockExpected.txt',
                 'NoDocBlock.txt',
                 new Parameters('...'),
             ],
-            'invalid'      => [
+            'invalid'          => [
                 static function (self $test, Context $context): Exception {
                     return new TargetIsNotValidPhpFile($context);
                 },
