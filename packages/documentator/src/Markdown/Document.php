@@ -132,7 +132,7 @@ class Document implements Stringable {
             }
 
             $content  = (string) $document->getEditor()->mutate($changes);
-            $document = clone $document->setContent($content);
+            $document = $document->setContent($content);
         }
 
         return $document;
