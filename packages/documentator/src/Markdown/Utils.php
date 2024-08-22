@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as DataLength;
@@ -13,23 +14,31 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Util\UrlEncoder;
 
+use function basename;
+use function filter_var;
 use function mb_strpos;
+use function parse_url;
 use function preg_match;
 use function str_contains;
 use function str_replace;
+use function str_starts_with;
 use function strtr;
+
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_VALIDATE_URL;
+use const PHP_URL_PATH;
 
 /**
  * @internal
  */
 class Utils {
-    public static function getDocument(Node $node): ?Document {
-        return self::getParent($node, Document::class);
+    public static function getDocument(Node $node): ?DocumentNode {
+        return self::getParent($node, DocumentNode::class);
     }
 
     public static function getContainer(Node $node): ?AbstractBlock {
@@ -114,7 +123,7 @@ class Utils {
         return $padding;
     }
 
-    public static function getLine(Document $document, int $line): ?string {
+    public static function getLine(DocumentNode $document, int $line): ?string {
         $lines = Data::get($document, DataLines::class) ?? [];
         $line  = $lines[$line] ?? null;
 
@@ -131,7 +140,7 @@ class Utils {
             $length  = Data::get($node, DataLength::class);
             $padding = self::getPadding($node, null, null);
 
-            if ($padding === null && $node->parent() instanceof Document) {
+            if ($padding === null && $node->parent() instanceof DocumentNode) {
                 $padding = 0;
             }
 
@@ -228,5 +237,30 @@ class Utils {
         } while ($node);
 
         return $parent;
+    }
+
+    public static function isPathRelative(string $path): bool {
+        // Fast
+        if (str_starts_with($path, './') || str_starts_with($path, '../')) {
+            return true;
+        } elseif (str_starts_with($path, '/')) {
+            return false;
+        } else {
+            // empty
+        }
+
+        // Long
+        return filter_var($path, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
+            && !str_starts_with($path, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
+            && !str_starts_with($path, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
+            && Path::isRelative($path);
+    }
+
+    public static function isPathToSelf(string $path, ?Document $document = null): bool {
+        $name = Path::normalize(basename($document?->getPath() ?? ''));
+        $path = Path::normalize(parse_url($path, PHP_URL_PATH) ?: '');
+        $self = $path === '' || ($name && $path === $name);
+
+        return $self;
     }
 }

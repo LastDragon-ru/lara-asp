@@ -90,6 +90,7 @@ final class MoveTest extends TestCase {
                 # General
 
                 [tel]: tel:+70000000000 "title"
+                [self]: #fragment
                 [link]: ../from/file/a
                 [link]: ../from/file/b ' <title> '
                 [title]: <../from/file/a> (title)
@@ -134,6 +135,7 @@ final class MoveTest extends TestCase {
                 # General
 
                 [tel]: tel:+70000000000 "title"
+                [self]: #fragment
                 [link]: ./file/a
                 [link]: file/b ' <title> '
                 [title]: <./file/a> (title)
@@ -186,7 +188,7 @@ final class MoveTest extends TestCase {
                 Text text [tel](tel:+70000000000 "title") text [link](../from/file/a)
                 text [_`link`_](../from/file/b ' <title> ') text [title](<../from/file/a> (title))
                 [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
-                text [external](https://example.com/).
+                text [external](https://example.com/) text [self](#fragment).
 
                 # Special
 
@@ -219,7 +221,7 @@ final class MoveTest extends TestCase {
                 Text text [tel](tel:+70000000000 "title") text [link](./file/a)
                 text [_`link`_](file/b ' <title> ') text [title](<./file/a> (title))
                 [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
-                text [external](https://example.com/).
+                text [external](https://example.com/) text [self](#fragment).
 
                 # Special
 

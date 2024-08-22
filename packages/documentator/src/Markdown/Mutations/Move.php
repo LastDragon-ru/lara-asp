@@ -17,18 +17,13 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 use function dirname;
-use function filter_var;
 use function ltrim;
 use function mb_substr;
 use function preg_match;
 use function preg_quote;
 use function rawurldecode;
 use function rtrim;
-use function str_starts_with;
 use function trim;
-
-use const FILTER_NULL_ON_FAILURE;
-use const FILTER_VALIDATE_URL;
 
 /**
  * Changes path and updates all relative links.
@@ -69,7 +64,7 @@ readonly class Move implements Mutation {
         }
 
         // Update
-        $resources    = $this->getRelativeResources($node);
+        $resources    = $this->getRelativeResources($document, $node);
         $newDirectory = dirname($newPath);
 
         foreach ($resources as $resource) {
@@ -144,42 +139,29 @@ readonly class Move implements Mutation {
     /**
      * @return list<AbstractWebResource|Reference>
      */
-    protected function getRelativeResources(DocumentNode $node): array {
-        $resources  = [];
-        $isRelative = static function (string $target): bool {
-            // Fast
-            if (str_starts_with($target, './') || str_starts_with($target, '../')) {
-                return true;
-            } elseif (str_starts_with($target, '/')) {
-                return false;
+    protected function getRelativeResources(Document $document, DocumentNode $node): array {
+        $resources = [];
+
+        foreach ($node->iterator() as $child) {
+            $url = null;
+
+            if ($child instanceof AbstractWebResource && !Utils::isReference($child)) {
+                $url = rawurldecode($child->getUrl());
+            } elseif ($child instanceof Reference) {
+                $url = rawurldecode($child->getDestination());
             } else {
                 // empty
             }
 
-            // Long
-            return filter_var($target, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
-                && !str_starts_with($target, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
-                && !str_starts_with($target, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
-                && Path::isRelative($target);
-        };
-
-        foreach ($node->iterator() as $child) {
-            // Resource?
-            // => we need only which are relative
-            // => we don't need references
-            if ($child instanceof AbstractWebResource) {
-                if (!Utils::isReference($child) && $isRelative($child->getUrl())) {
-                    $resources[] = $child;
-                }
-            }
-
-            // Reference
-            // => we need only which are relative
-            if ($child instanceof Reference && $isRelative($child->getDestination())) {
+            if ($url !== null && $this->isRelativeResource($document, $url)) {
                 $resources[] = $child;
             }
         }
 
         return $resources;
+    }
+
+    protected function isRelativeResource(Document $document, string $url): bool {
+        return Utils::isPathRelative($url) && !Utils::isPathToSelf($url, $document);
     }
 }
