@@ -103,19 +103,24 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            0 => [array_values(iterator_to_array(new Location(18, 18, 5, 10))), 'g'],
-            1 => [array_values(iterator_to_array(new Location(17, 17, 11, 10))), 'f'],
-            2 => [array_values(iterator_to_array(new Location(17, 17, 5, 10))), 'e'],
+            0 => [array_values(iterator_to_array(new Location(18, 18, 5, 10))), 'a'],
+            1 => [array_values(iterator_to_array(new Location(17, 17, 11, 10))), 'b'],
+            2 => [array_values(iterator_to_array(new Location(17, 17, 5, 10))), 'c'],
             3 => [array_values(iterator_to_array(new Location(14, 15, 5, 10))), 'd'],
-            4 => [array_values(iterator_to_array(new Location(12, 15, 5, 10))), 'c'],
-            5 => [array_values(iterator_to_array(new Location(10, 10, 10, null))), 'b'],
-            6 => [array_values(iterator_to_array(new Location(10, 10, 15, 10))), 'a'],
+            4 => [array_values(iterator_to_array(new Location(12, 15, 5, 10))), 'e'],
+            5 => [array_values(iterator_to_array(new Location(10, 10, 10, null))), 'f'],
+            6 => [array_values(iterator_to_array(new Location(10, 10, 15, 10))), 'g'],
+            7 => [array_values(iterator_to_array(new Location(9, 9, 39, 11))), 'h'],
+            8 => [array_values(iterator_to_array(new Location(9, 9, 50, null))), 'i'],
+            9 => [array_values(iterator_to_array(new Location(9, 9, 40, 10))), 'j'],
         ];
         $expected = [
-            0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'g'],
-            1 => [iterator_to_array(new Location(17, 17, 11, 10)), 'f'],
+            0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'a'],
+            1 => [iterator_to_array(new Location(17, 17, 11, 10)), 'b'],
             3 => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
-            5 => [iterator_to_array(new Location(10, 10, 10, null)), 'b'],
+            5 => [iterator_to_array(new Location(10, 10, 10, null)), 'f'],
+            7 => [iterator_to_array(new Location(9, 9, 39, 11)), 'h'],
+            8 => [iterator_to_array(new Location(9, 9, 50, null)), 'i'],
         ];
 
         self::assertEquals($expected, $editor->removeOverlaps($changes));

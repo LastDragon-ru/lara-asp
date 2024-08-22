@@ -192,24 +192,24 @@ class Editor implements Stringable {
      */
     protected function removeOverlaps(array $changes): array {
         $used = [];
-        $sort = static function (Coordinate $a, Coordinate $b): int {
-            return $b->line <=> $a->line;
-        };
 
         foreach ($changes as $key => $change) {
             [$coordinates] = $change;
-
-            usort($coordinates, $sort);
+            $lines         = [];
 
             foreach ($coordinates as $coordinate) {
+                $lines[$coordinate->line][] = $coordinate;
+
                 if ($this->isOverlapped($used, $coordinate)) {
-                    $coordinates = null;
+                    $lines = null;
                     break;
                 }
             }
 
-            if ($coordinates) {
-                $used = array_merge($used, $coordinates);
+            if ($lines) {
+                foreach ($lines as $line => $coords) {
+                    $used[$line] = array_merge($used[$line] ?? [], $coords);
+                }
             } else {
                 unset($changes[$key]);
             }
@@ -220,21 +220,19 @@ class Editor implements Stringable {
     }
 
     /**
-     * @param array<int, Coordinate> $coordinates
+     * @param array<int, array<int, Coordinate>> $coordinates
      */
     private function isOverlapped(array $coordinates, Coordinate $coordinate): bool {
         $overlapped = false;
 
-        for ($i = count($coordinates) - 1; $i >= 0; $i--) {
-            if ($coordinate->line === $coordinates[$i]->line) {
-                $aStart     = $coordinates[$i]->offset;
-                $aEnd       = $aStart + ($coordinates[$i]->length ?? PHP_INT_MAX);
-                $bStart     = $coordinate->offset;
-                $bEnd       = $bStart + ($coordinate->length ?? PHP_INT_MAX);
-                $overlapped = !($bEnd < $aStart || $bStart > $aEnd);
-            }
+        foreach ($coordinates[$coordinate->line] ?? [] as $c) {
+            $aStart     = $c->offset;
+            $aEnd       = $aStart + ($c->length ?? PHP_INT_MAX) - 1;
+            $bStart     = $coordinate->offset;
+            $bEnd       = $bStart + ($coordinate->length ?? PHP_INT_MAX) - 1;
+            $overlapped = !($bEnd < $aStart || $bStart > $aEnd);
 
-            if ($overlapped || $coordinate->line < $coordinates[$i]->line) {
+            if ($overlapped) {
                 break;
             }
         }
