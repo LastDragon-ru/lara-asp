@@ -10,7 +10,7 @@ class TokenList {
         /**
          * @var array<string, Token<*>>
          */
-        public readonly array $tokens,
+        public readonly array $tokens = [],
     ) {
         // empty
     }

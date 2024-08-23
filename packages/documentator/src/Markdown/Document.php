@@ -205,7 +205,7 @@ class Document implements Stringable {
         return $this->editor;
     }
 
-    protected function getNode(): DocumentNode {
+    public function getNode(): DocumentNode {
         if (is_string($this->node)) {
             $this->node = $this->parse($this->node);
         }
