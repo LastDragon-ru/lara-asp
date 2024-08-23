@@ -2,9 +2,6 @@
 
 Compares default public schema (as the client sees it through introspection).
 
-<!-- markdownlint-capture -->
-<!-- markdownlint-disable MD013 -->
-
 [include:example]: ./AssertGraphQLIntrospectionEqualsTest.php
 [//]: # (start: 2f8da9006ec398266830f6eb66b58b66cbe88ecb68a325cb5df1b8138680c021)
 [//]: # (warning: Generated automatically. Do not edit.)
@@ -435,5 +432,3 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
 ```
 
 [//]: # (end: 2f8da9006ec398266830f6eb66b58b66cbe88ecb68a325cb5df1b8138680c021)
-
-<!-- markdownlint-restore -->
