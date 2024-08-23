@@ -39,5 +39,5 @@ Nested should be ignored.
 [//]: # (end: block)
 
 [//]: # (start: without end)
-
+[//]: # (warning: Generated automatically. Do not edit.)
 Up to the end.

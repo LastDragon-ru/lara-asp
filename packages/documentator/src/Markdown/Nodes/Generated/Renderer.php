@@ -2,24 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\EndMarkerLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\StartMarkerLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\XmlRenderer;
 use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Xml\XmlNodeRendererInterface;
 use Override;
-use Stringable;
 
 use function assert;
 
 /**
  * @internal
  */
-class Renderer implements NodeRendererInterface, XmlNodeRendererInterface {
-    #[Override]
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): Stringable|string|null {
-        return null;
-    }
-
+class Renderer implements XmlRenderer {
     #[Override]
     public function getXmlTagName(Node $node): string {
         assert($node instanceof Block);
@@ -35,7 +30,9 @@ class Renderer implements NodeRendererInterface, XmlNodeRendererInterface {
         assert($node instanceof Block);
 
         return [
-            'id' => $node->id,
+            'id'                  => $node->id,
+            'startMarkerLocation' => Data::get($node, StartMarkerLocation::class),
+            'endMarkerLocation'   => Data::get($node, EndMarkerLocation::class),
         ];
     }
 }
