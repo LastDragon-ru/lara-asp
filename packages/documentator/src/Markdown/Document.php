@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\GeneratedUnwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
@@ -148,6 +149,7 @@ class Document implements Stringable {
         return $this->mutate(new Composite(
             new FootnotesPrefix($seed),
             new ReferencesPrefix($seed),
+            new GeneratedUnwrap(),
         ));
     }
 
@@ -163,6 +165,7 @@ class Document implements Stringable {
             new FootnotesRemove(),
             new ReferencesInline(),
             new SelfLinksRemove(),
+            new GeneratedUnwrap(),
         ));
     }
 
