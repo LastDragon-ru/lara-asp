@@ -61,6 +61,8 @@ final class TaskTest extends TestCase {
         > Quote
         >
         > [test:instruction]: ./path/to/file
+
+        [test:document]: file.md
         MARKDOWN;
 
     public function testParse(): void {
@@ -153,7 +155,8 @@ final class TaskTest extends TestCase {
     public function testInvoke(): void {
         $task   = $this->app()->make(Task::class)
             ->addInstruction(new TaskTest__EmptyInstruction())
-            ->addInstruction(new TaskTest__TestInstruction());
+            ->addInstruction(new TaskTest__TestInstruction())
+            ->addInstruction(new TaskTest__DocumentInstruction());
         $actual = null;
         $file   = Mockery::mock(File::class);
         $file
@@ -175,8 +178,17 @@ final class TaskTest extends TestCase {
                     return new Document(static::MARKDOWN);
                 },
             );
+        $file
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn('path/to/file.md');
 
-        $root   = Mockery::mock(Directory::class);
+        $root = Mockery::mock(Directory::class);
+        $root
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn('/test');
+
         $result = ProcessorHelper::runTask($task, $root, $file);
 
         self::assertTrue($result);
@@ -250,6 +262,20 @@ final class TaskTest extends TestCase {
             >
             > [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             >
+
+            [test:document]: file.md
+            [//]: # (start: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            Summary [text](path/Document.md) summary [link][a282e9c32e7eee65-link] and summary[^a282e9c32e7eee65-1] and [self](#fragment) and [self][a282e9c32e7eee65-self].
+
+            [a282e9c32e7eee65-link]: path/Document.md (title)
+            [a282e9c32e7eee65-self]: #fragment
+
+            [^a282e9c32e7eee65-1]: Footnote
+
+            [//]: # (end: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+
             MARKDOWN,
             $actual,
         );
@@ -302,6 +328,39 @@ class TaskTest__TestInstruction implements Instruction {
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): string {
         return 'result('.json_encode($parameters, JSON_THROW_ON_ERROR).')';
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements Instruction<TaskTest__ParametersEmpty>
+ */
+class TaskTest__DocumentInstruction implements Instruction {
+    #[Override]
+    public static function getName(): string {
+        return 'test:document';
+    }
+
+    #[Override]
+    public static function getParameters(): string {
+        return TaskTest__ParametersEmpty::class;
+    }
+
+    #[Override]
+    public function __invoke(Context $context, string $target, mixed $parameters): Document {
+        return new Document(
+            <<<'MARKDOWN'
+            Summary [text](../Document.md) summary [link][link] and summary[^1] and [self](#fragment) and [self][self].
+
+            [link]: ../Document.md (title)
+            [self]: #fragment
+
+            [^1]: Footnote
+            MARKDOWN,
+            'path/to/file.md',
+        );
     }
 }
 

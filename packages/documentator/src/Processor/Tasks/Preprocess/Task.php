@@ -6,9 +6,10 @@ use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -29,6 +30,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\Changeset;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\NodeIterator;
 use Override;
@@ -138,8 +140,9 @@ class Task implements TaskContract {
         }
 
         // Process
-        $parsed  = $this->parse($root, $file, $document);
-        $changes = [];
+        $parsed   = $this->parse($root, $file, $document);
+        $changes  = [];
+        $mutation = new InstructionsRemove($this->instructions);
 
         foreach ($parsed->tokens as $hash => $token) {
             // Run
@@ -151,6 +154,14 @@ class Task implements TaskContract {
                     yield from $content;
 
                     $content = $content->getReturn();
+                }
+
+                // Markdown?
+                if ($content instanceof Document) {
+                    $seed    = Utils::getSeed($token->context, $content);
+                    $cleanup = new Composite(new Move($file->getPath()), $mutation);
+                    $content = $content->mutate($cleanup)->toInlinable($seed);
+                    $content = (string) $content;
                 }
             } catch (ProcessorError $exception) {
                 throw $exception;
@@ -168,9 +179,9 @@ class Task implements TaskContract {
                 $next     = $node->next();
 
                 if ($next instanceof GeneratedNode) {
-                    $location = Utils::getLocation($next);
+                    $location = MarkdownUtils::getLocation($next);
                 } else {
-                    $location = Utils::getLocation($node);
+                    $location = MarkdownUtils::getLocation($node);
 
                     if ($location) {
                         $instruction = trim((string) $document->getText($location));
@@ -205,21 +216,16 @@ class Task implements TaskContract {
         $tokens = [];
 
         foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
-            // Reference?
-            if (!($node instanceof ReferenceNode)) {
+            // Instruction?
+            if (!Utils::isInstruction($node, $this->instructions)) {
                 continue;
             }
 
-            // Instruction?
+            // Exists?
             $name        = $node->getLabel();
             $instruction = $this->instructions->get($name)[0] ?? null;
 
             if (!$instruction) {
-                continue;
-            }
-
-            // Cannot be nested
-            if (Utils::getParent($node, GeneratedNode::class)) {
                 continue;
             }
 

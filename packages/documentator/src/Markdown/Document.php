@@ -165,7 +165,6 @@ class Document implements Stringable {
             new FootnotesRemove(),
             new ReferencesInline(),
             new SelfLinksRemove(),
-            new GeneratedUnwrap(),
         ));
     }
 

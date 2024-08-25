@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Exceptions\ExampleFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
 use Override;
 use Throwable;
 
