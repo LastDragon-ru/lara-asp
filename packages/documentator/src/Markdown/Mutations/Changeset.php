@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -10,8 +10,6 @@ use Override;
 
 /**
  * Changes container.
- *
- * @internal
  */
 readonly class Changeset implements Mutation {
     public function __construct(
