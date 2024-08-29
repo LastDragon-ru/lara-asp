@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -31,7 +32,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getPath('packages');
         $params   = new Parameters('...', template: $template);
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -52,7 +53,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getPath('no readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
 
@@ -71,7 +72,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getPath('empty readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
         $expected = $fs->getFile($root, 'empty readme/package/README.md');

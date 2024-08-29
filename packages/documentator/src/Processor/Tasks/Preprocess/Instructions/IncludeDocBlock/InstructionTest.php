@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -31,7 +32,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $target   = $file->getName();
-        $context  = new Context($root, $file, $target, null);
+        $context  = new Context($root, $file, $target, null, new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {

@@ -6,8 +6,6 @@ use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
@@ -140,9 +138,8 @@ class Task implements TaskContract {
         }
 
         // Process
-        $parsed   = $this->parse($root, $file, $document);
-        $changes  = [];
-        $mutation = new InstructionsRemove($this->instructions);
+        $parsed  = $this->parse($root, $file, $document);
+        $changes = [];
 
         foreach ($parsed->tokens as $hash => $token) {
             // Run
@@ -158,10 +155,7 @@ class Task implements TaskContract {
 
                 // Markdown?
                 if ($content instanceof Document) {
-                    $seed    = Utils::getSeed($token->context, $content);
-                    $cleanup = new Composite(new Move($file->getPath()), $mutation);
-                    $content = $content->mutate($cleanup)->toInlinable($seed);
-                    $content = (string) $content;
+                    $content = (string) $token->context->toInlinable($content);
                 }
             } catch (ProcessorError $exception) {
                 throw $exception;
@@ -213,7 +207,8 @@ class Task implements TaskContract {
         }
 
         // Extract all possible instructions
-        $tokens = [];
+        $tokens   = [];
+        $mutation = new InstructionsRemove($this->instructions);
 
         foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
@@ -242,7 +237,7 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($root, $file, $target, $node->getTitle() ?: null);
+            $context    = new Context($root, $file, $node->getDestination(), $node->getTitle() ?: null, $mutation);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 

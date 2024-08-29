@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -32,7 +33,7 @@ final class InstructionTest extends TestCase {
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters('...', $data);
         $target   = self::getTestData()->path($source);
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
 
@@ -44,7 +45,7 @@ final class InstructionTest extends TestCase {
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters('...', []);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -65,7 +66,7 @@ final class InstructionTest extends TestCase {
             'd' => 'D',
         ]);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -83,7 +84,7 @@ final class InstructionTest extends TestCase {
             'a' => 'A',
         ]);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

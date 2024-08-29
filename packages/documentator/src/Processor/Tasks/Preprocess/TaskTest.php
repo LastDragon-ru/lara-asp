@@ -3,14 +3,17 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -18,6 +21,7 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use ReflectionProperty;
 
 use function array_map;
 use function json_encode;
@@ -84,6 +88,9 @@ final class TaskTest extends TestCase {
 
         $root     = Mockery::mock(Directory::class);
         $file     = Mockery::mock(File::class);
+        $mutation = new InstructionsRemove(
+            Cast::to(InstanceList::class, (new ReflectionProperty(Task::class, 'instructions'))->getValue($task)),
+        );
         $document = new Document(self::MARKDOWN);
         $tokens   = $task->parse($root, $file, $document);
         $actual   = array_map(
@@ -105,7 +112,7 @@ final class TaskTest extends TestCase {
             [
                 '036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4' => [
                     $a,
-                    new Context($root, $file, './path/to/file "value"', null),
+                    new Context($root, $file, './path/to/file%20%22value%22', null, $mutation),
                     './path/to/file "value"',
                     new TaskTest__ParametersEmpty('./path/to/file "value"'),
                     [
@@ -114,7 +121,7 @@ final class TaskTest extends TestCase {
                 ],
                 '482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2' => [
                     $b,
-                    new Context($root, $file, './path/to/file', null),
+                    new Context($root, $file, './path/to/file', null, $mutation),
                     './path/to/file',
                     new TaskTest__Parameters('./path/to/file'),
                     [
@@ -132,6 +139,7 @@ final class TaskTest extends TestCase {
                         $file,
                         './path/to/file/parametrized',
                         '{"a": "aa", "b": {"a": "a", "b": "b"}}',
+                        $mutation,
                     ),
                     './path/to/file/parametrized',
                     new TaskTest__Parameters(
@@ -357,7 +365,9 @@ class TaskTest__DocumentInstruction implements Instruction {
             [link]: ../Document.md (title)
             [self]: #fragment
 
+            [//]: # (start: block)
             [^1]: Footnote
+            [//]: # (end: block)
             MARKDOWN,
             'path/to/file.md',
         );

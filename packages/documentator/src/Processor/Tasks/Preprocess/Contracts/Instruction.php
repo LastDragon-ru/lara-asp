@@ -21,7 +21,13 @@ interface Instruction {
     /**
      * Process target with parameters and return result.
      *
-     * Generator should be used to resolve any file which the Instruction depends on.
+     * The `string` will be placed as is. The `{@see Document}` will be converted
+     * to inlinable form to make sure that all related links are valid, and
+     * references/footnotes are not conflicting. And, finally, `Generator`
+     * should be used to resolve any file which the Instruction depends on.
+     *
+     * @see Context::toInlinable()
+     * @see Context::toSplittable()
      *
      * @param TParameters $parameters
      *
