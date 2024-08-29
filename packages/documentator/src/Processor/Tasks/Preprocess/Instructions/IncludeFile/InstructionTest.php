@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -10,6 +12,10 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
+use function pathinfo;
+
+use const PATHINFO_EXTENSION;
 
 /**
  * @internal
@@ -24,11 +30,18 @@ final class InstructionTest extends TestCase {
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters('...');
         $target   = self::getTestData()->path($source);
-        $context  = new Context($root, $file, $target, '{...}');
+        $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $target, $params));
+        if (pathinfo($source, PATHINFO_EXTENSION) === 'md') {
+            self::assertInstanceOf(Document::class, $actual);
+        } else {
+            self::assertIsString($actual);
+        }
+
+        self::assertEquals($expected, (string) $actual);
     }
     // </editor-fold>
 

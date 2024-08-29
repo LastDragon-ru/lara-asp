@@ -30,9 +30,6 @@ Where:
 
 ## Limitations
 
-* `<instruction>` will be processed everywhere in the file (eg within
-  the code block) and may give unpredictable results.
-* `<instruction>` cannot be inside text.
 * Nested `<instruction>` doesn't support.
 
 ## Instructions

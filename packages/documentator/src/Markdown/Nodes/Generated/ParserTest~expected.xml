@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<document xmlns="http://commonmark.org/xml/1.0">
+    <heading level="1">
+        <text>Generated</text>
+    </heading>
+    <paragraph>
+        <text>Text text text text text text text text text text text text text</text>
+        <softbreak/>
+        <text>text text text text text text text text text text text text text</text>
+        <softbreak/>
+        <text>text text text text text text text text text text text text.</text>
+    </paragraph>
+    <paragraph>
+        <text>... nope ...</text>
+    </paragraph>
+    <reference blockPadding="0" destination="#" label="//" location="[{11,0,null},{12,0,null}]" title="end: with indent"/>
+    <generated id="block" blockPadding="0" startMarkerLocation="[{13,0,null},{14,0,null}]" endMarkerLocation="[{25,0,null},{26,0,null}]" location="[{13,0,null},{14,0,null},{15,0,null},{16,0,null},{17,0,null},{18,0,null},{19,0,null},{20,0,null},{21,0,null},{22,0,null},{23,0,null},{24,0,null},{25,0,null},{26,0,null}]">
+        <paragraph>
+            <text>Text text text text text text text text text text text text text</text>
+            <softbreak/>
+            <text>text text text text text text text text text text text text text</text>
+            <softbreak/>
+            <text>text text text text text text text text text text text text.</text>
+        </paragraph>
+        <reference blockPadding="0" destination="#" label="//" location="[{19,0,null},{20,0,null}]" title="start: nested"/>
+        <paragraph>
+            <text>Nested should be ignored.</text>
+        </paragraph>
+        <reference blockPadding="0" destination="#" label="//" location="[{23,0,null},{24,0,null}]" title="end: nested"/>
+    </generated>
+    <block_quote>
+        <generated id="quote" blockPadding="2" startMarkerLocation="[{27,2,null}]" endMarkerLocation="[{29,2,null}]" location="[{27,2,null},{28,2,null},{29,2,null}]">
+            <paragraph>
+                <text>should work</text>
+            </paragraph>
+        </generated>
+    </block_quote>
+    <generated id="block" blockPadding="0" startMarkerLocation="[{31,0,null},{32,0,null}]" endMarkerLocation="[{39,0,null},{40,0,null}]" location="[{31,0,null},{32,0,null},{33,0,null},{34,0,null},{35,0,null},{36,0,null},{37,0,null},{38,0,null},{39,0,null},{40,0,null}]">
+        <block_quote>
+            <paragraph>
+                <text>Text text text.</text>
+            </paragraph>
+            <reference blockPadding="2" destination="#" label="//" location="[{35,2,null}]" title="start: nested"/>
+            <paragraph>
+                <text>Nested should be ignored.</text>
+            </paragraph>
+            <reference blockPadding="2" destination="#" label="//" location="[{37,2,null}]" title="end: nested"/>
+        </block_quote>
+    </generated>
+    <generated id="without end" blockPadding="0" startMarkerLocation="[{41,0,null},{42,0,null}]" location="[{41,0,null},{42,0,null},{43,0,null}]">
+        <reference blockPadding="0" destination="#" label="//" location="[{42,0,null}]" title="warning: Generated automatically. Do not edit."/>
+        <paragraph>
+            <text>Up to the end.</text>
+        </paragraph>
+    </generated>
+</document>

@@ -23,6 +23,11 @@ parameters:
 		-
 			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
 			count: 1
+			path: packages/documentator/src/Markdown/Mutations/GeneratedUnwrap.php
+
+		-
+			message: "#^Generator expects value type array\\{LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Markdown\\\\Location\\\\Location, string\\|null\\}, \\*NEVER\\* given\\.$#"
+			count: 1
 			path: packages/documentator/src/Markdown/Mutations/Move.php
 
 		-

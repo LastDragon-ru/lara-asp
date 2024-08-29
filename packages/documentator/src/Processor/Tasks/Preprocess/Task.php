@@ -5,12 +5,17 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
@@ -23,7 +28,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use League\CommonMark\Node\NodeIterator;
 use Override;
 
 use function hash;
@@ -31,19 +38,10 @@ use function is_array;
 use function json_decode;
 use function json_encode;
 use function ksort;
-use function mb_strlen;
-use function mb_substr;
-use function preg_match_all;
 use function rawurldecode;
-use function str_ends_with;
-use function str_starts_with;
-use function strtr;
 use function trim;
-use function uksort;
 
 use const JSON_THROW_ON_ERROR;
-use const PREG_SET_ORDER;
-use const PREG_UNMATCHED_AS_NULL;
 
 /**
  * Replaces special instructions in Markdown. Instruction is the [link
@@ -65,29 +63,9 @@ use const PREG_UNMATCHED_AS_NULL;
  *
  * ## Limitations
  *
- * * `<instruction>` will be processed everywhere in the file (eg within
- *   the code block) and may give unpredictable results.
- * * `<instruction>` cannot be inside text.
  * * Nested `<instruction>` doesn't support.
- *
- * @todo Use https://github.com/thephpleague/commonmark?
  */
 class Task implements TaskContract {
-    protected const Warning = 'Generated automatically. Do not edit.';
-    protected const Regexp  = <<<'REGEXP'
-        /^
-        (?P<expression>
-          \[(?P<instruction>[^\]=]+)(?:=[^]]+)?\]:\s+(?P<target>(?:[^<][^ ]+?)|(?:<[^>]+?>))
-          (?P<pBlock>\s(?:\(|(?P<pStart>['"]))(?P<parameters>.+?)(?:\)|(?P=pStart)))?
-        )
-        (?P<content>\R
-          \[\/\/\]:\s\#\s\(start:\s(?P<hash>[^)]+)\)
-          .*?
-          \[\/\/\]:\s\#\s\(end:\s(?P=hash)\)
-        )?
-        $/imsxu
-        REGEXP;
-
     /**
      * @var InstanceList<Instruction<Parameters>>
      */
@@ -96,6 +74,7 @@ class Task implements TaskContract {
     public function __construct(
         ContainerResolver $container,
         protected readonly Serializer $serializer,
+        protected readonly Markdown $markdown,
     ) {
         $this->instructions = new InstanceList($container, $this->key(...));
 
@@ -148,12 +127,22 @@ class Task implements TaskContract {
      */
     #[Override]
     public function __invoke(Directory $root, File $file): Generator {
+        // Just in case
+        yield from [];
+
+        // Markdown?
+        $document = $file->getMetadata($this->markdown);
+
+        if (!$document) {
+            return false;
+        }
+
         // Process
-        $parsed  = $this->parse($root, $file);
-        $replace = [];
-        $warning = static::Warning;
+        $parsed  = $this->parse($root, $file, $document);
+        $changes = [];
 
         foreach ($parsed->tokens as $hash => $token) {
+            // Run
             try {
                 // Run
                 $content = ($token->instruction)($token->context, $token->target, $token->parameters);
@@ -164,67 +153,71 @@ class Task implements TaskContract {
                     $content = $content->getReturn();
                 }
 
-                $content = trim($content);
+                // Markdown?
+                if ($content instanceof Document) {
+                    $content = (string) $token->context->toInlinable($content);
+                }
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
                 throw new PreprocessFailed($exception);
             }
 
-            foreach ($token->matches as $match => $expression) {
-                $prefix          = <<<RESULT
-                    {$expression}
-                    [//]: # (start: {$hash})
-                    [//]: # (warning: {$warning})
-                    RESULT;
-                $suffix          = <<<RESULT
-                    [//]: # (end: {$hash})
-                    RESULT;
-                $replace[$match] = match (true) {
-                    $content !== '' => <<<RESULT
-                        {$prefix}
+            // Wrap
+            $content = GeneratedNode::get($hash, $content);
 
-                        {$content}
+            // Replace
+            foreach ($token->nodes as $node) {
+                $location = null;
+                $text     = "{$content}\n";
+                $next     = $node->next();
 
-                        {$suffix}
-                        RESULT,
-                    default         => <<<RESULT
-                        {$prefix}
-                        [//]: # (empty)
-                        {$suffix}
-                        RESULT,
-                };
+                if ($next instanceof GeneratedNode) {
+                    $location = MarkdownUtils::getLocation($next);
+                } else {
+                    $location = MarkdownUtils::getLocation($node);
+
+                    if ($location) {
+                        $instruction = trim((string) $document->getText($location));
+                        $text        = "{$instruction}\n{$text}";
+                    }
+                }
+
+                if ($location) {
+                    $changes[] = [$location, $text];
+                }
             }
         }
 
-        // Sort
-        uksort($replace, static function (string $a, string $b): int {
-            return mb_strlen($b) <=> mb_strlen($a);
-        });
+        // Mutate
+        if ($changes) {
+            $file->setContent(
+                (string) $document->mutate(new Changeset($changes)),
+            );
+        }
 
-        // Replace
-        $file->setContent(strtr($file->getContent(), $replace));
-
+        // Return
         return true;
     }
 
-    protected function parse(Directory $root, File $file): TokenList {
-        // Extract all possible instructions
-        $tokens  = [];
-        $matches = [];
-
+    protected function parse(Directory $root, File $file, Document $document): TokenList {
+        // Empty?
         if ($this->instructions->isEmpty()) {
-            return new TokenList($tokens);
+            return new TokenList();
         }
 
-        if (!preg_match_all(static::Regexp, $file->getContent(), $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL)) {
-            return new TokenList($tokens);
-        }
+        // Extract all possible instructions
+        $tokens   = [];
+        $mutation = new InstructionsRemove($this->instructions);
 
-        // Parse each of them
-        foreach ($matches as $match) {
+        foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
-            $name        = (string) $match['instruction'];
+            if (!Utils::isInstruction($node, $this->instructions)) {
+                continue;
+            }
+
+            // Exists?
+            $name        = $node->getLabel();
             $instruction = $this->instructions->get($name)[0] ?? null;
 
             if (!$instruction) {
@@ -232,22 +225,19 @@ class Task implements TaskContract {
             }
 
             // Hash
-            $target = trim((string) $match['target']);
-            $target = str_starts_with($target, '<') && str_ends_with($target, '>')
-                ? mb_substr($target, 1, -1)
-                : rawurldecode($target);
-            $params = $this->getParametersJson($target, $match['parameters']);
+            $target = rawurldecode($node->getDestination());
+            $params = $this->getParametersJson($target, $node->getTitle());
             $hash   = $this->getHash("{$name}({$params})");
 
             // Parsed?
             if (isset($tokens[$hash])) {
-                $tokens[$hash]->matches[$match[0]] = (string) $match['expression'];
+                $tokens[$hash]->nodes[] = $node;
 
                 continue;
             }
 
             // Parse
-            $context    = new Context($root, $file, (string) $match['target'], $match['parameters']);
+            $context    = new Context($root, $file, $node->getDestination(), $node->getTitle() ?: null, $mutation);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
@@ -257,7 +247,7 @@ class Task implements TaskContract {
                 $target,
                 $parameters,
                 [
-                    $match[0] => (string) $match['expression'],
+                    $node,
                 ],
             );
         }

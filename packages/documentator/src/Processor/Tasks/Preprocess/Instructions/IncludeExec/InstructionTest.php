@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -23,7 +24,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, $command, '{...}');
+        $context  = new Context($root, $file, $command, '{...}', new Nop());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();

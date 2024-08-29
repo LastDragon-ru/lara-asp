@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use Generator;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -37,17 +37,21 @@ class ProcessorHelper {
         Context $context,
         string $target,
         mixed $parameters,
-    ): string {
+    ): Document|string {
         $result = ($instruction)($context, $target, $parameters);
         $result = $result instanceof Generator
-            ? Cast::toString(self::getResult($context->root, $context->file, $result))
+            ? self::getResult($context->root, $context->file, $result)
             : $result;
 
         return $result;
     }
 
     /**
-     * @param Generator<mixed, Dependency<*>, mixed, mixed> $generator
+     * @template T
+     *
+     * @param Generator<mixed, Dependency<*>, mixed, T> $generator
+     *
+     * @return T
      */
     protected static function getResult(Directory $root, File $file, Generator $generator): mixed {
         $fs = new FileSystem();

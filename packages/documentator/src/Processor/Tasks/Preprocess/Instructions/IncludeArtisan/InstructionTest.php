@@ -7,6 +7,7 @@ use Composer\Semver\VersionParser;
 use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -35,7 +36,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, $command, '{...}');
+        $context  = new Context($root, $file, $command, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command, $expected): void {
@@ -83,7 +84,7 @@ final class InstructionTest extends TestCase {
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters('...');
         $command  = 'command to execute';
-        $context  = new Context($root, $file, $command, '{...}');
+        $context  = new Context($root, $file, $command, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command): void {
@@ -139,7 +140,7 @@ final class InstructionTest extends TestCase {
         $file     = new File(Path::normalize(__FILE__), false);
         $params   = new Parameters('...');
         $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
-        $context  = new Context($root, $file, $command, '{...}');
+        $context  = new Context($root, $file, $command, '{...}', new Nop());
         $instance = new class (Mockery::mock(ApplicationResolver::class)) extends Instruction {
             #[Override]
             public function getCommand(Context $context, string $target, Parameters $parameters): string {

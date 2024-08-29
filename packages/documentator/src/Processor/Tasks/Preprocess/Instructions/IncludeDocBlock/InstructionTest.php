@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -14,6 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function dirname;
+use function trim;
 
 /**
  * @internal
@@ -31,16 +34,24 @@ final class InstructionTest extends TestCase {
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $target   = $file->getName();
-        $context  = new Context($root, $file, $target, null);
+        $context  = new Context($root, $file, $target, null, new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
             self::expectExceptionObject($expected($this, $context));
         } else {
-            $expected = self::getTestData()->content($expected);
+            $expected = trim(self::getTestData()->content($expected));
         }
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $target, $params));
+        $actual = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+
+        if ($params->summary && $params->description) {
+            self::assertInstanceOf(Document::class, $actual);
+        } else {
+            self::assertIsString($actual);
+        }
+
+        self::assertEquals($expected, (string) $actual);
     }
     //</editor-fold>
 

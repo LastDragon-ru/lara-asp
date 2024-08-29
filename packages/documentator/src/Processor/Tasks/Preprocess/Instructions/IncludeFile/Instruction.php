@@ -4,17 +4,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\Utils;
 use Override;
-
-use function trim;
 
 /**
  * Includes the `<target>` file.
@@ -39,20 +36,13 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, Dependency<*>, mixed, string>
+     * @return Generator<mixed, Dependency<*>, mixed, Document|string>
      */
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
-        $file     = Cast::to(File::class, yield new FileReference($target));
-        $content  = $file->getContent();
-        $markdown = $file->getMetadata($this->markdown);
+        $file    = Cast::to(File::class, yield new FileReference($target));
+        $content = $file->getMetadata($this->markdown) ?? $file->getContent();
 
-        if ($markdown) {
-            $content = $markdown->mutate(new Move($context->file->getPath()));
-            $content = $content->toInlinable(Utils::getSeed($context, $file));
-            $content = (string) $content;
-        }
-
-        return trim($content)."\n";
+        return $content;
     }
 }

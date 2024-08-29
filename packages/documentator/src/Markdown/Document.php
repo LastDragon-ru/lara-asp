@@ -9,13 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
-use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -67,7 +60,7 @@ class Document implements Stringable {
     public function getTitle(): ?string {
         if ($this->title === null) {
             $title       = $this->getFirstNode(Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $title       = $this->getBlockText($title) ?? Text::getPathTitle((string) $this->getPath());
+            $title       = $this->getBlockText($title) ?? '';
             $title       = trim(ltrim("{$title}", '#'));
             $this->title = $title;
         }
@@ -138,34 +131,6 @@ class Document implements Stringable {
         return $document;
     }
 
-    /**
-     * Renames all references/footnotes/etc to make possible inline the
-     * document into another document without conflicts/ambiguities.
-     *
-     * @return new<static>
-     */
-    public function toInlinable(string $seed): static {
-        return $this->mutate(new Composite(
-            new FootnotesPrefix($seed),
-            new ReferencesPrefix($seed),
-        ));
-    }
-
-    /**
-     * Inlines all references, removes footnotes, etc, to make possible
-     * extract any block/paragraph from the document without losing
-     * information.
-     *
-     * @return new<static>
-     */
-    public function toSplittable(): static {
-        return $this->mutate(new Composite(
-            new FootnotesRemove(),
-            new ReferencesInline(),
-            new SelfLinksRemove(),
-        ));
-    }
-
     protected function setContent(string $content): static {
         $this->node    = $content;
         $this->title   = null;
@@ -202,7 +167,7 @@ class Document implements Stringable {
         return $this->editor;
     }
 
-    protected function getNode(): DocumentNode {
+    public function getNode(): DocumentNode {
         if (is_string($this->node)) {
             $this->node = $this->parse($this->node);
         }

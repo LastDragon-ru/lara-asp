@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 
@@ -23,9 +24,9 @@ class Token {
          */
         public readonly mixed $parameters,
         /**
-         * @var array<string, string>
+         * @var non-empty-list<Block>
          */
-        public array $matches,
+        public array $nodes,
     ) {
         // empty
     }

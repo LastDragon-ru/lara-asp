@@ -68,8 +68,7 @@ final class DocumentTest extends TestCase {
             ))
                 ->getTitle(),
         );
-        self::assertEquals(
-            'File Name',
+        self::assertNull(
             (new Document(
                 <<<'MARKDOWN'
                 fsdfsdfsdf

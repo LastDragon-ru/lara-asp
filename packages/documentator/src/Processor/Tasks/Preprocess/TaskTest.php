@@ -3,10 +3,17 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -14,7 +21,9 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use ReflectionProperty;
 
+use function array_map;
 use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
@@ -52,6 +61,12 @@ final class TaskTest extends TestCase {
         [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
 
         [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
+
+        > Quote
+        >
+        > [test:instruction]: ./path/to/file
+
+        [test:document]: file.md
         MARKDOWN;
 
     public function testParse(): void {
@@ -60,68 +75,71 @@ final class TaskTest extends TestCase {
         $task = new class(
             $this->app()->make(ContainerResolver::class),
             $this->app()->make(Serializer::class),
+            $this->app()->make(Markdown::class),
         ) extends Task {
             #[Override]
-            public function parse(Directory $root, File $file): TokenList {
-                return parent::parse($root, $file);
+            public function parse(Directory $root, File $file, Document $document): TokenList {
+                return parent::parse($root, $file, $document);
             }
         };
 
         $task->addInstruction($a::class);
         $task->addInstruction($b);
 
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getContent')
-            ->once()
-            ->andReturn(self::MARKDOWN);
+        $root     = Mockery::mock(Directory::class);
+        $file     = Mockery::mock(File::class);
+        $mutation = new InstructionsRemove(
+            Cast::to(InstanceList::class, (new ReflectionProperty(Task::class, 'instructions'))->getValue($task)),
+        );
+        $document = new Document(self::MARKDOWN);
+        $tokens   = $task->parse($root, $file, $document);
+        $actual   = array_map(
+            static function (Token $token): array {
+                $nodes = array_map(Utils::getLocation(...), $token->nodes);
 
-        $root   = Mockery::mock(Directory::class);
-        $tokens = $task->parse($root, $file);
+                return [
+                    $token->instruction,
+                    $token->context,
+                    $token->target,
+                    $token->parameters,
+                    $nodes,
+                ];
+            },
+            $tokens->tokens,
+        );
 
         self::assertEquals(
-            new TokenList([
-                '036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4' => new Token(
+            [
+                '036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4' => [
                     $a,
-                    new Context($root, $file, '<./path/to/file "value">', null),
+                    new Context($root, $file, './path/to/file%20%22value%22', null, $mutation),
                     './path/to/file "value"',
                     new TaskTest__ParametersEmpty('./path/to/file "value"'),
                     [
-                        '[test:empty]: <./path/to/file "value">' => '[test:empty]: <./path/to/file "value">',
+                        new Location(5, 6, 0, null, 0),
                     ],
-                ),
-                '482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2' => new Token(
+                ],
+                '482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2' => [
                     $b,
-                    new Context($root, $file, './path/to/file', null),
+                    new Context($root, $file, './path/to/file', null, $mutation),
                     './path/to/file',
                     new TaskTest__Parameters('./path/to/file'),
                     [
-                        // phpcs:disable Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned
-                        '[test:instruction]: ./path/to/file' => '[test:instruction]: ./path/to/file',
-                        <<<'TXT'
-                        [test:instruction]: <./path/to/file>
-                        [//]: # (start: hash)
-
-                        [test:instruction]: ./path/to/file
-                        [//]: # (start: nested-hash)
-
-                        outdated
-
-                        [//]: # (end: nested-hash)
-
-                        [//]: # (end: hash)
-                        TXT
-                                                             => '[test:instruction]: <./path/to/file>',
-                        // phpcs:enable
+                        new Location(7, 8, 0, null, 0),
+                        new Location(9, 9, 0, null, 0),
+                        new Location(21, 22, 0, null, 0),
+                        new Location(23, 24, 0, null, 0),
+                        new Location(31, 31, 0, null, 2),
                     ],
-                ),
-                '5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d' => new Token(
+                ],
+                '5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d' => [
                     $b,
                     new Context(
                         $root,
                         $file,
                         './path/to/file/parametrized',
                         '{"a": "aa", "b": {"a": "a", "b": "b"}}',
+                        $mutation,
                     ),
                     './path/to/file/parametrized',
                     new TaskTest__Parameters(
@@ -133,28 +151,22 @@ final class TaskTest extends TestCase {
                         ],
                     ),
                     [
-                        '[test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})' => ''
-                            .'[test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})',
-                        '[test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})'    => ''
-                            .'[test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})',
+                        new Location(25, 26, 0, null, 0),
+                        new Location(27, 28, 0, null, 0),
                     ],
-                ),
-            ]),
-            $tokens,
+                ],
+            ],
+            $actual,
         );
     }
 
     public function testInvoke(): void {
         $task   = $this->app()->make(Task::class)
             ->addInstruction(new TaskTest__EmptyInstruction())
-            ->addInstruction(new TaskTest__TestInstruction());
+            ->addInstruction(new TaskTest__TestInstruction())
+            ->addInstruction(new TaskTest__DocumentInstruction());
         $actual = null;
         $file   = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getContent')
-            ->atLeast()
-            ->once()
-            ->andReturn(static::MARKDOWN);
         $file
             ->shouldReceive('setContent')
             ->once()
@@ -165,8 +177,26 @@ final class TaskTest extends TestCase {
                     return $file;
                 },
             );
+        $file
+            ->shouldReceive('getMetadata')
+            ->with(Mockery::type(Markdown::class))
+            ->once()
+            ->andReturnUsing(
+                static function (): Document {
+                    return new Document(static::MARKDOWN);
+                },
+            );
+        $file
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn('path/to/file.md');
 
-        $root   = Mockery::mock(Directory::class);
+        $root = Mockery::mock(Directory::class);
+        $root
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn('/test');
+
         $result = ProcessorHelper::runTask($task, $root, $file);
 
         self::assertTrue($result);
@@ -229,6 +259,31 @@ final class TaskTest extends TestCase {
             result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
             [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+
+            > Quote
+            >
+            > [test:instruction]: ./path/to/file
+            > [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            > [//]: # (warning: Generated automatically. Do not edit.)
+            >
+            > result({"target":".\/path\/to\/file","a":"a","b":[]})
+            >
+            > [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            >
+
+            [test:document]: file.md
+            [//]: # (start: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+            [//]: # (warning: Generated automatically. Do not edit.)
+
+            Summary [text](path/Document.md) summary [link][a282e9c32e7eee65-link] and summary[^a282e9c32e7eee65-1] and [self](#fragment) and [self][a282e9c32e7eee65-self].
+
+            [a282e9c32e7eee65-link]: path/Document.md (title)
+            [a282e9c32e7eee65-self]: #fragment
+
+            [^a282e9c32e7eee65-1]: Footnote
+
+            [//]: # (end: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+
             MARKDOWN,
             $actual,
         );
@@ -281,6 +336,41 @@ class TaskTest__TestInstruction implements Instruction {
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): string {
         return 'result('.json_encode($parameters, JSON_THROW_ON_ERROR).')';
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements Instruction<TaskTest__ParametersEmpty>
+ */
+class TaskTest__DocumentInstruction implements Instruction {
+    #[Override]
+    public static function getName(): string {
+        return 'test:document';
+    }
+
+    #[Override]
+    public static function getParameters(): string {
+        return TaskTest__ParametersEmpty::class;
+    }
+
+    #[Override]
+    public function __invoke(Context $context, string $target, mixed $parameters): Document {
+        return new Document(
+            <<<'MARKDOWN'
+            Summary [text](../Document.md) summary [link][link] and summary[^1] and [self](#fragment) and [self][self].
+
+            [link]: ../Document.md (title)
+            [self]: #fragment
+
+            [//]: # (start: block)
+            [^1]: Footnote
+            [//]: # (end: block)
+            MARKDOWN,
+            'path/to/file.md',
+        );
     }
 }
 
