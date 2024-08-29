@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -12,10 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpDocBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
 use Override;
-
-use function trim;
 
 /**
  * Includes the docblock of the first PHP class/interface/trait/enum/etc
@@ -42,7 +39,7 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, Dependency<*>, mixed, string>
+     * @return Generator<mixed, Dependency<*>, mixed, Document|string>
      */
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
@@ -54,22 +51,13 @@ class Instruction implements InstructionContract {
             throw new TargetIsNotValidPhpFile($context);
         }
 
-        if ($document->isEmpty()) {
-            return '';
-        }
-
         // Parse
-        $document = $document->mutate(new Move($context->file->getPath()));
-        $result   = match (true) {
-            $parameters->summary && $parameters->description => $document->toInlinable(
-                Utils::getSeed($context, $target),
-            ),
-            $parameters->summary                             => $document->toSplittable()->getSummary(),
-            $parameters->description                         => $document->toSplittable()->getBody(),
+        $result = match (true) {
+            $parameters->summary && $parameters->description => $document,
+            $parameters->summary                             => $context->toSplittable($document)->getSummary() ?? '',
+            $parameters->description                         => $context->toSplittable($document)->getBody() ?? '',
             default                                          => '',
         };
-        $result = trim((string) $result);
-        $result = $result ? "{$result}\n" : '';
 
         // Return
         return $result;

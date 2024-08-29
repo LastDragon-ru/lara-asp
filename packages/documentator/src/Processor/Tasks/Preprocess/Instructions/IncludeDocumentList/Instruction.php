@@ -5,8 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FilesIterator;
@@ -72,11 +70,10 @@ class Instruction implements InstructionContract {
             }
 
             // Add
-            $path        = Path::getPath($self, $file->getName());
-            $document    = $document->mutate(new Move($path))->toSplittable();
+            $document    = $context->toSplittable($document);
             $documents[] = [
                 'path'    => $file->getRelativePath($context->file),
-                'title'   => $document->getTitle() ?? Text::getPathTitle($path),
+                'title'   => $document->getTitle() ?? Text::getPathTitle($file->getName()),
                 'summary' => $document->getSummary(),
             ];
         }

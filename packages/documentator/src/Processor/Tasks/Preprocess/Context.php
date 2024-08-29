@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
+use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
@@ -14,6 +15,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+
+use function basename;
+use function dirname;
 
 class Context {
     public function __construct(
@@ -33,7 +37,8 @@ class Context {
     public function toInlinable(Document $document): Document {
         $seed = Utils::getSeed($this, $document);
 
-        return $this->mutate($document)->mutate(
+        return $document->mutate(
+            $this->getMutation($document),
             new Composite(
                 new FootnotesPrefix($seed),
                 new ReferencesPrefix($seed),
@@ -47,7 +52,8 @@ class Context {
      * information.
      */
     public function toSplittable(Document $document): Document {
-        return $this->mutate($document)->mutate(
+        return $document->mutate(
+            $this->getMutation($document),
             new Composite(
                 new FootnotesRemove(),
                 new ReferencesInline(),
@@ -56,13 +62,16 @@ class Context {
         );
     }
 
-    private function mutate(Document $document): Document {
-        return $document->mutate(
-            new Composite(
-                new Move($this->file->getPath()),
-                new GeneratedUnwrap(),
-                $this->mutation,
-            ),
+    private function getMutation(Document $document): Mutation {
+        $path = $this->file->getPath();
+        $path = $document->getPath()
+            ? Path::getPath(dirname($path), basename($document->getPath()))
+            : $path;
+
+        return new Composite(
+            new Move($path),
+            new GeneratedUnwrap(),
+            $this->mutation,
         );
     }
 }

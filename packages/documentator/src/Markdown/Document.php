@@ -16,7 +16,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\GeneratedUnwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
-use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -68,7 +67,7 @@ class Document implements Stringable {
     public function getTitle(): ?string {
         if ($this->title === null) {
             $title       = $this->getFirstNode(Heading::class, static fn ($n) => $n->getLevel() === 1);
-            $title       = $this->getBlockText($title) ?? Text::getPathTitle((string) $this->getPath());
+            $title       = $this->getBlockText($title) ?? '';
             $title       = trim(ltrim("{$title}", '#'));
             $this->title = $title;
         }

@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -14,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Inst
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
 use Override;
 
 use function array_diff;
@@ -22,7 +20,6 @@ use function array_key_exists;
 use function array_keys;
 use function array_values;
 use function preg_replace_callback;
-use function rtrim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -47,7 +44,7 @@ class Instruction implements InstructionContract {
     }
 
     /**
-     * @return Generator<mixed, Dependency<*>, mixed, string>
+     * @return Generator<mixed, Dependency<*>, mixed, Document|string>
      */
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
@@ -101,13 +98,10 @@ class Instruction implements InstructionContract {
 
         // Markdown?
         if ($file->getExtension() === 'md') {
-            $path    = $context->file->getPath();
-            $content = (new Document($content, $file->getPath()))->mutate(new Move($path));
-            $content = $content->toInlinable(Utils::getSeed($context, $file));
-            $content = (string) $content;
+            $content = new Document($content, $file->getPath());
         }
 
         // Return
-        return rtrim($content)."\n";
+        return $content;
     }
 }

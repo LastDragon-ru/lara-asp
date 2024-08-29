@@ -5,8 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoriesIterator;
@@ -82,13 +80,12 @@ class Instruction implements InstructionContract {
             }
 
             // Add
-            $path       = Path::getPath($context->file->getPath(), "{$package->getName()}.md");
-            $content    = $content->mutate(new Move($path))->toSplittable();
+            $content    = $context->toSplittable($content);
             $upgrade    = $package->getPath('UPGRADE.md');
             $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
             $packages[] = [
                 'path'    => $readme->getRelativePath($context->file),
-                'title'   => $content->getTitle() ?? Text::getPathTitle($path),
+                'title'   => $content->getTitle() ?? Text::getPathTitle("{$package->getName()}.md"),
                 'summary' => $content->getSummary(),
                 'upgrade' => $upgrade?->getRelativePath($context->file),
             ];
