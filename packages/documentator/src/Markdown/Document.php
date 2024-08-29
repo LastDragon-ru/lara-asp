@@ -9,13 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesPrefix;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\FootnotesRemove;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\GeneratedUnwrap;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -136,35 +129,6 @@ class Document implements Stringable {
         }
 
         return $document;
-    }
-
-    /**
-     * Renames all references/footnotes/etc to make possible inline the
-     * document into another document without conflicts/ambiguities.
-     *
-     * @return new<static>
-     */
-    public function toInlinable(string $seed): static {
-        return $this->mutate(new Composite(
-            new FootnotesPrefix($seed),
-            new ReferencesPrefix($seed),
-            new GeneratedUnwrap(),
-        ));
-    }
-
-    /**
-     * Inlines all references, removes footnotes, etc, to make possible
-     * extract any block/paragraph from the document without losing
-     * information.
-     *
-     * @return new<static>
-     */
-    public function toSplittable(): static {
-        return $this->mutate(new Composite(
-            new FootnotesRemove(),
-            new ReferencesInline(),
-            new SelfLinksRemove(),
-        ));
     }
 
     protected function setContent(string $content): static {
