@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use function array_filter;
 use function array_map;
 use function array_unique;
+use function array_values;
 use function explode;
 use function implode;
 use function in_array;
@@ -86,7 +87,7 @@ class Response extends Constraint {
     #[Override]
     public function toString(): string {
         return is_null($this->failed)
-            ? LogicalAnd::fromConstraints(...$this->getConstraints())->toString()
+            ? LogicalAnd::fromConstraints(...array_values($this->getConstraints()))->toString()
             : $this->failed->toString();
     }
 

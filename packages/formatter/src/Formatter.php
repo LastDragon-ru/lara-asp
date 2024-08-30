@@ -531,7 +531,7 @@ class Formatter {
         $scale = 2 * $decimals;
         $bytes = match (true) {
             is_float($bytes) => sprintf('%0.0f', $bytes),
-            default => (string) $bytes,
+            default          => ((string) $bytes) ?: '0',
         };
         $length = static function (string $bytes): int {
             return mb_strlen(Str::before($bytes, '.'));
