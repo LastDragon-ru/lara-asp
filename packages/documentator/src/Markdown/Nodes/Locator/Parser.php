@@ -101,7 +101,8 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         $line      = $cursor->getLine();
 
         if ($startLine !== null && $endLine !== null) {
-            $start = $line;
+            $start     = $line;
+            $delimiter = $origin - $offset;
 
             if ($startLine !== $endLine) {
                 $before           = mb_substr($line, 0, $offset);
@@ -121,14 +122,14 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
                 }
 
                 if ($startLine !== $endLine) {
-                    $length -= mb_strlen($inline);
+                    $length -= mb_strlen($inline) - $delimiter;
                 }
             }
 
             $padding = Utils::getPadding($child, $startLine, $start);
 
             if ($padding !== null) {
-                $this->save($child, $startLine, $endLine, $offset, $length, $padding, $origin - $offset);
+                $this->save($child, $startLine, $endLine, $offset, $length, $padding, $delimiter);
             }
         } elseif ($container instanceof TableCell) {
             // The properties of the `TableCell` is not known yet (v2.4.2), we
