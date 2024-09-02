@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\PropertyInfo\Type;
-use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Serializer\Attribute\DiscriminatorMap;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
 

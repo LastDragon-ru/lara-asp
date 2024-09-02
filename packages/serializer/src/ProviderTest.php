@@ -18,7 +18,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Stringable;
-use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Serializer\Attribute\DiscriminatorMap;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;

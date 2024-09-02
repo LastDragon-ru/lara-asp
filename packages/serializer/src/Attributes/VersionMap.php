@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Serializer\Attributes;
 
 use Attribute;
-use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Serializer\Attribute\DiscriminatorMap;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class VersionMap extends DiscriminatorMap {
