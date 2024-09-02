@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Stringable;
 use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
@@ -146,7 +147,8 @@ final class ProviderTest extends TestCase {
                     "a": 123,
                     "e": "2023-08-11T10:45:00.000+00:00",
                     "f": "A",
-                    "g": 0
+                    "g": 0,
+                    "hRenamed": "renamed"
                 }
                 JSON,
                 $serializable,
@@ -161,7 +163,8 @@ final class ProviderTest extends TestCase {
                         "a": 123,
                         "e": "2023-08-11T10:45:00.000+00:00",
                         "f": "A",
-                        "g": 0
+                        "g": 0,
+                        "hRenamed": "renamed"
                     },
                     "array": ["2023-08-11T10:45:00.000+00:00","2023-08-11T10:45:00.000+00:00"],
                     "nullable": null,
@@ -254,7 +257,8 @@ final class ProviderTest extends TestCase {
                     "a": 123,
                     "e": "2023-08-11T10:45:00.000+00:00",
                     "f": "B",
-                    "g": 1
+                    "g": 1,
+                    "hRenamed": "renamed"
                 }
                 JSON,
             ],
@@ -398,6 +402,9 @@ class ProviderTest__Simple implements Serializable, Stringable, JsonSerializable
     public ?DateTimeInterface        $e = null;
     public ?ProviderTest__UnitEnum   $f = null;
     public ?ProviderTest__BackedEnum $g;
+
+    #[SerializedName('hRenamed')]
+    public string $h = 'renamed';
 
     public function __construct(
         ?DateTimeInterface $e = null,

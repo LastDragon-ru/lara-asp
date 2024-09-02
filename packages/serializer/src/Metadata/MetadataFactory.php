@@ -8,6 +8,7 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionProperty;
 use Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
@@ -15,6 +16,7 @@ use Symfony\Component\PropertyInfo\PropertyInfoExtractorInterface;
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
 use Symfony\Component\Serializer\Mapping\ClassDiscriminatorMapping;
 use Symfony\Component\Serializer\Mapping\ClassMetadata;
@@ -24,6 +26,7 @@ use function class_exists;
 use function get_debug_type;
 use function is_object;
 use function is_string;
+use function reset;
 use function sprintf;
 
 class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtractorInterface {
@@ -60,18 +63,21 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
 
         if (!isset($this->metadata[$name])) {
             $class                 = new ReflectionClass($value);
-            $metadata              = new ClassMetadata($name);
-            $this->metadata[$name] = $metadata;
+            $classMetadata         = new ClassMetadata($name);
+            $this->metadata[$name] = $classMetadata;
 
-            $metadata->setClassDiscriminatorMapping(
+            $classMetadata->setClassDiscriminatorMapping(
                 $this->getDiscriminatorMapping($class),
             );
 
             foreach ($class->getProperties() as $property) {
                 if ($property->isPublic() && !$property->isStatic()) {
-                    $metadata->addAttributeMetadata(
-                        new AttributeMetadata($property->getName()),
+                    $propertyMetadata = new AttributeMetadata($property->getName());
+                    $propertyMetadata->setSerializedName(
+                        $this->getAttribute($property, SerializedName::class)?->getSerializedName(),
                     );
+
+                    $classMetadata->addAttributeMetadata($propertyMetadata);
                 }
             }
         }
@@ -150,5 +156,19 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
         }
 
         return $mapping;
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $attribute
+     *
+     * @return T|null
+     */
+    private function getAttribute(ReflectionProperty $object, string $attribute): ?object {
+        $attributes = $object->getAttributes($attribute, ReflectionAttribute::IS_INSTANCEOF);
+        $instance   = (reset($attributes) ?: null)?->newInstance();
+
+        return $instance;
     }
 }

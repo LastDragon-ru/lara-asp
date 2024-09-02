@@ -9,7 +9,10 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Serializer\Annotation\DiscriminatorMap;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
+
+use function tap;
 
 /**
  * @internal
@@ -43,8 +46,20 @@ final class MetadataFactoryTest extends TestCase {
             [
                 'a'        => new AttributeMetadata('a'),
                 'b'        => new AttributeMetadata('b'),
+                'f'        => tap(
+                    new AttributeMetadata('f'),
+                    static function (AttributeMetadata $metadata): void {
+                        $metadata->setSerializedName('ff');
+                    },
+                ),
                 'array'    => new AttributeMetadata('array'),
                 'promoted' => new AttributeMetadata('promoted'),
+                'renamed'  => tap(
+                    new AttributeMetadata('renamed'),
+                    static function (AttributeMetadata $metadata): void {
+                        $metadata->setSerializedName('promoted-renamed');
+                    },
+                ),
             ],
             $b->getAttributesMetadata(),
         );
@@ -156,6 +171,8 @@ class MetadataFactoryTest_A implements JsonSerializable {
     protected string     $c = 'should be ignored';
     private string       $d = 'should be ignored';
     public static string $e = 'should be ignored';
+    #[SerializedName('ff')]
+    public string        $f = 'string';
 
     #[Override]
     public function jsonSerialize(): mixed {
@@ -179,6 +196,8 @@ class MetadataFactoryTest_B extends MetadataFactoryTest_A {
      */
     public function __construct(
         public array $promoted = [],
+        #[SerializedName('promoted-renamed')]
+        public string $renamed = 'string',
     ) {
         // empty
     }

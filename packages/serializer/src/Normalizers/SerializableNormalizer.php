@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Serializer\Metadata\MetadataFactory;
 use Override;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
+use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -64,6 +65,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
 
         parent::__construct(
             classMetadataFactory : $metadata,
+            nameConverter        : new MetadataAwareNameConverter($metadata),
             propertyTypeExtractor: $metadata,
             defaultContext       : $defaultContext,
         );
