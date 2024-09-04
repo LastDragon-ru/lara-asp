@@ -5,12 +5,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Reference\Reference;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use Override;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 
-use function ltrim;
 use function preg_replace_callback;
 use function trim;
 
@@ -53,12 +53,19 @@ class PhpDocBlock implements Metadata {
 
     private function preprocess(NameContext $context, string $string): string {
         return (string) preg_replace_callback(
-            pattern : '/\{@(?:see|link)\s+(?P<class>[^}\s\/:]+)(?:::(?P<method>[^(]+\(\)))?\s?\}/imu',
+            pattern : '/\{@(?:see|link)\s+(?P<reference>[^}\s]+)\s?}/imu',
             callback: static function (array $matches) use ($context): string {
-                $class  = (string) $context->getResolvedClassName(new Name($matches['class']));
-                $method = $matches['method'] ?? null;
-                $result = $method ? "{$class}::{$method}" : "{$class}";
-                $result = '`\\'.ltrim($result, '\\').'`';
+                $result    = $matches[0];
+                $reference = Reference::parse(
+                    $matches['reference'],
+                    static function (string $class) use ($context): string {
+                        return (string) $context->getResolvedClassName(new Name($class));
+                    },
+                );
+
+                if ($reference) {
+                    $result = "`{$reference}`";
+                }
 
                 return $result;
             },
