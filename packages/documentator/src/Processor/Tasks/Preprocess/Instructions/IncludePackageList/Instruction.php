@@ -7,7 +7,7 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoriesIterator;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoryIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -56,7 +56,7 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
-        $directories = Cast::to(Iterator::class, yield new DirectoriesIterator($target, null, 0));
+        $directories = Cast::to(Iterator::class, yield new DirectoryIterator($target, null, 0));
 
         foreach ($directories as $package) {
             // Prepare

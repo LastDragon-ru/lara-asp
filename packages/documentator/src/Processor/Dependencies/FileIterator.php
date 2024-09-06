@@ -15,7 +15,7 @@ use Symfony\Component\Finder\Finder;
  * @see Finder
  * @implements Dependency<Iterator<mixed, File>>
  */
-class FilesIterator extends Base implements Dependency {
+class FileIterator extends Base implements Dependency {
     public function __construct(
         protected readonly Directory|string $directory,
         /**
