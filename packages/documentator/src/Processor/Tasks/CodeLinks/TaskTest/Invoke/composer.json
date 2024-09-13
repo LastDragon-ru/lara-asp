@@ -1,0 +1,7 @@
+{
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\Invoke\\": "./"
+    }
+  }
+}
