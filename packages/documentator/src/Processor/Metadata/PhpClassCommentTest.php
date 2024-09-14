@@ -9,11 +9,10 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @deprecated %{VERSION}
  * @internal
  */
 #[CoversClass(PhpDocBlock::class)]
-final class PhpDocBlockTest extends TestCase {
+final class PhpClassCommentTest extends TestCase {
     public function testInvoke(): void {
         $content  = <<<'PHP'
         <?php declare(strict_types = 1);
@@ -36,7 +35,7 @@ final class PhpDocBlockTest extends TestCase {
             Path::normalize(self::getTempFile($content)->getPathname()),
             false,
         );
-        $factory  = new PhpDocBlock(new PhpClass());
+        $factory  = new PhpClassComment(new PhpClass());
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -44,24 +43,15 @@ final class PhpDocBlockTest extends TestCase {
             <<<'MARKDOWN'
             Description.
 
-            Summary `\stdClass` and `\LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`, {@see https://example.com/}.
+            Summary {@see stdClass} and {@see PhpClass}, {@see https://example.com/}.
             MARKDOWN,
-            (string) $metadata,
+            $metadata->comment->getText(),
         );
-    }
-
-    public function testInvokeEmpty(): void {
-        $file     = new File(Path::normalize(__FILE__), false);
-        $factory  = new PhpDocBlock(new PhpClass());
-        $metadata = $factory($file);
-
-        self::assertNotNull($metadata);
-        self::assertTrue($metadata->isEmpty());
     }
 
     public function testInvokeNotPhp(): void {
         $file     = new File(Path::normalize(__FILE__), false);
-        $factory  = new PhpDocBlock(
+        $factory  = new PhpClassComment(
             new class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {

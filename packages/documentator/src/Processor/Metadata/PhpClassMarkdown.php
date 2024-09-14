@@ -3,33 +3,24 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Reference\Reference;
-use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use Override;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 
 use function preg_replace_callback;
-use function trigger_deprecation;
 use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
-// phpcs:disable PSR1.Files.SideEffects
-
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', PhpClassComment::class);
-
 /**
- * @deprecated %{VERSION} Please use {@see PhpClassComment} instead.
- *
  * @implements Metadata<?Document>
  */
-class PhpDocBlock implements Metadata {
+class PhpClassMarkdown implements Metadata {
     public function __construct(
-        protected readonly PhpClass $class,
+        protected readonly PhpClassComment $comment,
     ) {
         // empty
     }
@@ -39,24 +30,18 @@ class PhpDocBlock implements Metadata {
      */
     #[Override]
     public function __invoke(File $file): mixed {
-        // Class?
-        $class = $file->getMetadata($this->class);
+        // Comment?
+        $comment = $file->getMetadata($this->comment);
 
-        if (!$class) {
+        if (!$comment) {
             return null;
         }
 
         // Parse
-        $content = (new PhpDoc($class->class->getDocComment()?->getText()))->getText();
-        $content = $this->preprocess($class->context, $content);
-        $content = trim($content);
+        $content  = $this->preprocess($comment->context, $comment->comment->getText());
+        $document = new Document(trim($content), $file->getPath());
 
-        if (!$content) {
-            return new Document('', $file->getPath());
-        }
-
-        // Create
-        return new Document($content, $file->getPath());
+        return $document;
     }
 
     private function preprocess(NameContext $context, string $string): string {
