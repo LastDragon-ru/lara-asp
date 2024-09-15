@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Reference\Reference;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use Override;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
@@ -20,6 +20,7 @@ use const PREG_UNMATCHED_AS_NULL;
  */
 class PhpClassMarkdown implements Metadata {
     public function __construct(
+        protected readonly LinkFactory $factory,
         protected readonly PhpClassComment $comment,
     ) {
         // empty
@@ -47,9 +48,9 @@ class PhpClassMarkdown implements Metadata {
     private function preprocess(NameContext $context, string $string): string {
         return (string) preg_replace_callback(
             pattern : '/\{@(?:see|link)\s+(?P<reference>[^}\s]+)\s?}/imu',
-            callback: static function (array $matches) use ($context): string {
+            callback: function (array $matches) use ($context): string {
                 $result    = $matches[0];
-                $reference = Reference::parse(
+                $reference = $this->factory->create(
                     $matches['reference'],
                     static function (string $class) use ($context): string {
                         return (string) $context->getResolvedClassName(new Name($class));

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -36,7 +37,10 @@ final class PhpDocBlockTest extends TestCase {
             Path::normalize(self::getTempFile($content)->getPathname()),
             false,
         );
-        $factory  = new PhpDocBlock(new PhpClass());
+        $factory  = new PhpDocBlock(
+            $this->app()->make(LinkFactory::class),
+            new PhpClass(),
+        );
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -52,7 +56,7 @@ final class PhpDocBlockTest extends TestCase {
 
     public function testInvokeEmpty(): void {
         $file     = new File(Path::normalize(__FILE__), false);
-        $factory  = new PhpDocBlock(new PhpClass());
+        $factory  = new PhpDocBlock($this->app()->make(LinkFactory::class), new PhpClass());
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -62,6 +66,7 @@ final class PhpDocBlockTest extends TestCase {
     public function testInvokeNotPhp(): void {
         $file     = new File(Path::normalize(__FILE__), false);
         $factory  = new PhpDocBlock(
+            $this->app()->make(LinkFactory::class),
             new class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {

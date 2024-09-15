@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -35,7 +36,10 @@ final class PhpClassMarkdownTest extends TestCase {
             Path::normalize(self::getTempFile($content)->getPathname()),
             false,
         );
-        $factory  = new PhpClassMarkdown(new PhpClassComment(new PhpClass()));
+        $factory  = new PhpClassMarkdown(
+            $this->app()->make(LinkFactory::class),
+            new PhpClassComment(new PhpClass()),
+        );
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -51,7 +55,7 @@ final class PhpClassMarkdownTest extends TestCase {
 
     public function testInvokeEmpty(): void {
         $file     = new File(Path::normalize(__FILE__), false);
-        $factory  = new PhpClassMarkdown(new PhpClassComment(new PhpClass()));
+        $factory  = new PhpClassMarkdown($this->app()->make(LinkFactory::class), new PhpClassComment(new PhpClass()));
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -61,6 +65,7 @@ final class PhpClassMarkdownTest extends TestCase {
     public function testInvokeNotPhp(): void {
         $file     = new File(Path::normalize(__FILE__), false);
         $factory  = new PhpClassMarkdown(
+            $this->app()->make(LinkFactory::class),
             new class(new PhpClass()) extends PhpClassComment {
                 #[Override]
                 public function __invoke(File $file): mixed {
