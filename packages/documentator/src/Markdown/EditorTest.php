@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -10,6 +11,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_values;
 use function iterator_to_array;
+
+use const PHP_INT_MAX;
 
 /**
  * @internal
@@ -43,6 +46,8 @@ final class EditorTest extends TestCase {
             [new Location(11, 12, 4, 3, 2), "123\n345\n567"],
             [new Location(12, 12, 5, 2, 2), null],
             [new Location(14, 16, 4, 3, 2), '123'],
+            [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
+            [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
         ];
         $actual   = $editor->mutate($changes);
         $expected = [
@@ -61,6 +66,10 @@ final class EditorTest extends TestCase {
             '> 567 g',
             '>',
             '> i j 123',
+            'added line a',
+            '',
+            'added line b',
+            '',
         ];
 
         self::assertNotSame($editor, $actual);
@@ -69,7 +78,7 @@ final class EditorTest extends TestCase {
     }
 
     public function testPrepare(): void {
-        $editor   = new class([]) extends Editor {
+        $editor   = new class(['L1', 'L2']) extends Editor {
             /**
              * @inheritDoc
              */
@@ -103,24 +112,28 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
-            0 => [array_values(iterator_to_array(new Location(18, 18, 5, 10))), 'a'],
-            1 => [array_values(iterator_to_array(new Location(17, 17, 11, 10))), 'b'],
-            2 => [array_values(iterator_to_array(new Location(17, 17, 5, 10))), 'c'],
-            3 => [array_values(iterator_to_array(new Location(14, 15, 5, 10))), 'd'],
-            4 => [array_values(iterator_to_array(new Location(12, 15, 5, 10))), 'e'],
-            5 => [array_values(iterator_to_array(new Location(10, 10, 10, null))), 'f'],
-            6 => [array_values(iterator_to_array(new Location(10, 10, 15, 10))), 'g'],
-            7 => [array_values(iterator_to_array(new Location(9, 9, 39, 11))), 'h'],
-            8 => [array_values(iterator_to_array(new Location(9, 9, 50, null))), 'i'],
-            9 => [array_values(iterator_to_array(new Location(9, 9, 40, 10))), 'j'],
+            0  => [array_values(iterator_to_array(new Location(18, 18, 5, 10))), 'a'],
+            1  => [array_values(iterator_to_array(new Location(17, 17, 11, 10))), 'b'],
+            2  => [array_values(iterator_to_array(new Location(17, 17, 5, 10))), 'c'],
+            3  => [array_values(iterator_to_array(new Location(14, 15, 5, 10))), 'd'],
+            4  => [array_values(iterator_to_array(new Location(12, 15, 5, 10))), 'e'],
+            5  => [array_values(iterator_to_array(new Location(10, 10, 10, null))), 'f'],
+            6  => [array_values(iterator_to_array(new Location(10, 10, 15, 10))), 'g'],
+            7  => [array_values(iterator_to_array(new Location(9, 9, 39, 11))), 'h'],
+            8  => [array_values(iterator_to_array(new Location(9, 9, 50, null))), 'i'],
+            9  => [array_values(iterator_to_array(new Location(9, 9, 40, 10))), 'j'],
+            10 => [array_values(iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX))), 'k'],
+            11 => [array_values(iterator_to_array(new Append())), 'l'],
         ];
         $expected = [
-            0 => [iterator_to_array(new Location(18, 18, 5, 10)), 'a'],
-            1 => [iterator_to_array(new Location(17, 17, 11, 10)), 'b'],
-            3 => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
-            5 => [iterator_to_array(new Location(10, 10, 10, null)), 'f'],
-            7 => [iterator_to_array(new Location(9, 9, 39, 11)), 'h'],
-            8 => [iterator_to_array(new Location(9, 9, 50, null)), 'i'],
+            0  => [iterator_to_array(new Location(18, 18, 5, 10)), 'a'],
+            1  => [iterator_to_array(new Location(17, 17, 11, 10)), 'b'],
+            3  => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
+            5  => [iterator_to_array(new Location(10, 10, 10, null)), 'f'],
+            7  => [iterator_to_array(new Location(9, 9, 39, 11)), 'h'],
+            8  => [iterator_to_array(new Location(9, 9, 50, null)), 'i'],
+            10 => [iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX)), 'k'],
+            11 => [iterator_to_array(new Append()), 'l'],
         ];
 
         self::assertEquals($expected, $editor->removeOverlaps($changes));
@@ -137,10 +150,12 @@ final class EditorTest extends TestCase {
             }
         };
         $changes  = [
+            [array_values(iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX))), "new line aa\nnew line ab"],
             [array_values(iterator_to_array(new Location(6, 6, 5, 10, 2))), "text aa\ntext ab"],
             [array_values(iterator_to_array(new Location(4, 5, 5, 5, 1))), "text ba\ntext bb"],
             [array_values(iterator_to_array(new Location(2, 3, 5, null))), 'text c'],
             [array_values(iterator_to_array(new Location(1, 1, 5, 10))), "text da\ntext db\ntext dc"],
+            [array_values(iterator_to_array(new Append())), "new line ba\nnew line bb"],
         ];
         $expected = [
             [new Coordinate(6, 7, 10, 2), ['text aa', 'text ab']],
@@ -149,6 +164,8 @@ final class EditorTest extends TestCase {
             [new Coordinate(3, 0, null, 0), []],
             [new Coordinate(2, 5, null, 0), ['text c']],
             [new Coordinate(1, 5, 10, 0), ['text da', 'text db', 'text dc']],
+            [new Coordinate(PHP_INT_MAX, 0, null, 0), ['new line ba', 'new line bb']],
+            [new Coordinate(PHP_INT_MAX, 0, null, 0), ['new line aa', 'new line ab']],
         ];
 
         self::assertEquals($expected, $editor->expand($changes));

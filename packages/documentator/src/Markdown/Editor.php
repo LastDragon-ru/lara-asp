@@ -9,6 +9,7 @@ use Override;
 use Stringable;
 
 use function array_merge;
+use function array_push;
 use function array_reverse;
 use function array_slice;
 use function array_splice;
@@ -91,16 +92,22 @@ class Editor implements Stringable {
         $changes = $this->removeOverlaps($changes);
         $changes = $this->expand($changes);
 
-        foreach ($changes as $change) {
-            [$coordinate, $text] = $change;
-            $number              = $coordinate->line - $this->offset;
-            $line                = $lines[$number] ?? '';
-            $count               = count($text);
-            $prefix              = mb_substr($line, 0, $coordinate->offset);
-            $suffix              = $coordinate->length
+        foreach ($changes as [$coordinate, $text]) {
+            // Append?
+            if ($coordinate->line === PHP_INT_MAX) {
+                array_push($lines, ...$text);
+                continue;
+            }
+
+            // Change
+            $number  = $coordinate->line - $this->offset;
+            $line    = $lines[$number] ?? '';
+            $count   = count($text);
+            $prefix  = mb_substr($line, 0, $coordinate->offset);
+            $suffix  = $coordinate->length
                 ? mb_substr($line, $coordinate->offset + $coordinate->length)
                 : '';
-            $padding             = mb_substr($line, 0, $coordinate->padding);
+            $padding = mb_substr($line, 0, $coordinate->padding);
 
             if ($count > 1) {
                 $insert = [];
@@ -138,12 +145,11 @@ class Editor implements Stringable {
     protected function prepare(iterable $changes): array {
         $prepared = [];
 
-        foreach ($changes as $change) {
-            [$location, $text] = $change;
-            $coordinates       = [];
+        foreach ($changes as [$location, $text]) {
+            $coordinates = [];
 
-            foreach ($location as $c) {
-                $coordinates[] = $c;
+            foreach ($location as $coordinate) {
+                $coordinates[] = $coordinate;
             }
 
             if ($coordinates) {
@@ -161,13 +167,13 @@ class Editor implements Stringable {
      */
     protected function expand(array $changes): array {
         $expanded = [];
+        $append   = [];
         $sort     = static function (Coordinate $a, Coordinate $b): int {
             return $a->line <=> $b->line ?: $a->offset <=> $b->offset;
         };
 
-        foreach ($changes as $change) {
-            [$coordinates, $text] = $change;
-            $text                 = match (true) {
+        foreach ($changes as [$coordinates, $text]) {
+            $text = match (true) {
                 $text === null => [],
                 $text === ''   => [''],
                 default        => Text::getLines($text),
@@ -176,14 +182,19 @@ class Editor implements Stringable {
             usort($coordinates, $sort);
 
             for ($i = 0, $c = count($coordinates); $i < $c; $i++) {
-                $line       = $i === $c - 1 ? array_slice($text, $i) : (array) ($text[$i] ?? null);
-                $expanded[] = [$coordinates[$i], $line];
+                $line = $i === $c - 1 ? array_slice($text, $i) : (array) ($text[$i] ?? null);
+
+                if ($coordinates[$i]->line === PHP_INT_MAX) {
+                    $append[] = [$coordinates[$i], $line];
+                } else {
+                    $expanded[] = [$coordinates[$i], $line];
+                }
             }
         }
 
         usort($expanded, static fn ($a, $b) => -$sort($a[0], $b[0]));
 
-        return $expanded;
+        return array_merge($expanded, array_reverse($append));
     }
 
     /**
@@ -194,9 +205,8 @@ class Editor implements Stringable {
     protected function removeOverlaps(array $changes): array {
         $used = [];
 
-        foreach ($changes as $key => $change) {
-            [$coordinates] = $change;
-            $lines         = [];
+        foreach ($changes as $key => [$coordinates]) {
+            $lines = [];
 
             foreach ($coordinates as $coordinate) {
                 $lines[$coordinate->line][] = $coordinate;
@@ -224,6 +234,12 @@ class Editor implements Stringable {
      * @param array<int, array<int, Coordinate>> $coordinates
      */
     private function isOverlapped(array $coordinates, Coordinate $coordinate): bool {
+        // Append?
+        if ($coordinate->line === PHP_INT_MAX) {
+            return false;
+        }
+
+        // Check
         $overlapped = false;
 
         foreach ($coordinates[$coordinate->line] ?? [] as $c) {
