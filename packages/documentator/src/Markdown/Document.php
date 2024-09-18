@@ -124,7 +124,7 @@ class Document implements Stringable {
                 continue;
             }
 
-            $content  = (string) $document->getEditor()->mutate($changes);
+            $content  = trim((string) $document->getEditor()->mutate($changes))."\n";
             $document = $document->setContent($content);
         }
 
@@ -238,6 +238,6 @@ class Document implements Stringable {
 
     #[Override]
     public function __toString(): string {
-        return is_string($this->node) ? $this->node : implode("\n", $this->getLines());
+        return is_string($this->node) ? $this->node : implode("\n", $this->getLines())."\n";
     }
 }

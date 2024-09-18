@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Mockery;
@@ -326,5 +328,94 @@ final class DocumentTest extends TestCase {
 
         self::assertNotSame($document, $mutated);
         self::assertEquals($clone, $document);
+    }
+
+    public function testToString(): void {
+        self::assertEquals(
+            <<<'MARKDOWN'
+            fsdfsdfsdf
+            fsdfsdfsdf
+
+            MARKDOWN,
+            (string) (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+            )),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            fsdfsdfsdf
+            fsdfsdfsdf
+            MARKDOWN,
+            (string) (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            )),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            fsdfsdfsdf
+            fsdfsdfsdf
+
+            MARKDOWN,
+            (string) (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+            ))
+                ->mutate(new Changeset([])),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            fsdfsdfsdf
+            fsdfsdfsdf
+
+            MARKDOWN,
+            (string) (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ))
+                ->mutate(new Changeset([])),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            fsdfsdfsdf
+            fsdfsdfsdf
+            fsdfsdfsdf
+
+            MARKDOWN,
+            (string) (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+            ))
+                ->mutate(new Changeset([[new Append(), 'fsdfsdfsdf']])),
+        );
+        self::assertEquals(
+            <<<'MARKDOWN'
+            fsdfsdfsdf
+            fsdfsdfsdf
+            fsdfsdfsdf
+
+            MARKDOWN,
+            (string) (new Document(
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ))
+                ->mutate(new Changeset([[new Append(), 'fsdfsdfsdf']])),
+        );
     }
 }
