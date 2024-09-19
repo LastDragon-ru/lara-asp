@@ -64,7 +64,7 @@ class Instruction implements InstructionContract {
 
             // Package?
             $packageFile = Cast::to(File::class, yield new FileReference($package->getPath('composer.json')));
-            $packageInfo = $packageFile->getMetadata($this->composer);
+            $packageInfo = $packageFile->getMetadata($this->composer)->json ?? null;
 
             if (!$packageInfo) {
                 throw new PackageComposerJsonIsMissing($context, $package);

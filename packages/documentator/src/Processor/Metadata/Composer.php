@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJsonFactory;
+use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
 /**
- * @implements Metadata<?ComposerJson>
+ * @implements Metadata<?Package>
  */
 class Composer implements Metadata {
     public function __construct(
@@ -21,7 +21,7 @@ class Composer implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         return $file->getExtension() === 'json'
-            ? $this->factory->createFromJson($file->getContent())
+            ? new Package($this->factory->createFromJson($file->getContent()))
             : null;
     }
 }
