@@ -4,8 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
+use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
@@ -36,19 +35,14 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassLike;
 
 use function array_map;
-use function array_merge;
-use function array_unique;
 use function array_values;
 use function hash;
 use function implode;
 use function ksort;
 use function ltrim;
-use function mb_strlen;
-use function mb_substr;
 use function sort;
 use function str_starts_with;
 use function trim;
-use function uksort;
 
 /**
  * Searches class/method/property/etc names in `inline code` and wrap it into a
@@ -96,9 +90,9 @@ class Task implements TaskContract {
         // Composer?
         $composer = $root->getPath('composer.json');
         $composer = Cast::toNullable(File::class, yield new Optional(new FileReference($composer)));
-        $composer = $composer?->getMetadata($this->composer)->json ?? null;
+        $composer = $composer?->getMetadata($this->composer);
 
-        if (!($composer instanceof ComposerJson)) {
+        if (!($composer instanceof Package)) {
             return true;
         }
 
@@ -117,7 +111,7 @@ class Task implements TaskContract {
         // Links
         foreach ($parsed['links'] as $token) {
             // External?
-            $paths = $this->getLinkTokenPaths($root, $file, $token, $composer);
+            $paths = $token->link->getSource($root, $file, $composer);
 
             if ($paths === null) {
                 continue;
@@ -126,7 +120,7 @@ class Task implements TaskContract {
             // File?
             $source = null;
 
-            foreach ($paths as $path) {
+            foreach ((array) $paths as $path) {
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
                 if ($source) {
@@ -316,92 +310,6 @@ class Task implements TaskContract {
             'blocks' => $blocks,
             'links'  => array_values($links),
         ];
-    }
-
-    /**
-     * @return list<string>|null
-     */
-    protected function getLinkTokenPaths(
-        Directory $root,
-        File $file,
-        LinkToken $token,
-        ComposerJson $composer,
-    ): ?array {
-        // Class?
-        $link  = $token->link;
-        $class = match (true) {
-            $link instanceof ClassLink         => $link->class,
-            $link instanceof ClassConstantLink => $link->class,
-            $link instanceof ClassMethodLink   => $link->class,
-            $link instanceof ClassPropertyLink => $link->class,
-            default                            => null,
-        };
-
-        if ($class === null) {
-            return [];
-        }
-
-        // Namespace?
-        $namespaces = $this->getLinkTokenPathsNamespaces($composer);
-        $external   = true;
-        $paths      = [];
-
-        foreach ($namespaces as $namespace => $directories) {
-            if (str_starts_with($class, $namespace)) {
-                $paths    = array_merge($paths, $this->getLinkTokenPathsForClass($namespace, $class, $directories));
-                $external = false;
-            }
-        }
-
-        if ($external) {
-            return null;
-        }
-
-        // Return
-        return array_values($paths);
-    }
-
-    /**
-     * @return array<string, list<string>>
-     */
-    private function getLinkTokenPathsNamespaces(ComposerJson $composer): array {
-        $namespaces = [];
-        $sections   = [
-            $composer->autoload?->psr4,
-            $composer->autoloadDev?->psr4,
-        ];
-
-        foreach ($sections as $section) {
-            foreach ((array) $section as $namespace => $paths) {
-                $namespace = $this->normalize($namespace);
-
-                foreach ((array) $paths as $path) {
-                    $namespaces[$namespace][] = $path;
-                }
-            }
-        }
-
-        uksort($namespaces, static function (string $a, string $b): int {
-            return mb_strlen($b) <=> mb_strlen($a);
-        });
-
-        return $namespaces;
-    }
-
-    /**
-     * @param list<string> $paths
-     *
-     * @return array<array-key, string>
-     */
-    private function getLinkTokenPathsForClass(string $namespace, string $class, array $paths): array {
-        $resolved = [];
-        $suffix   = mb_substr($class, mb_strlen($namespace));
-
-        foreach ($paths as $path) {
-            $resolved[] = Path::join($path, "{$suffix}.php");
-        }
-
-        return array_unique($resolved);
     }
 
     protected function getLinkTokenTarget(Directory $root, File $file, LinkToken $token, File $source): ?LinkTarget {

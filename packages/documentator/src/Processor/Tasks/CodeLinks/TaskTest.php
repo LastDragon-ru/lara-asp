@@ -5,8 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Composer\Autoload;
-use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
+use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
@@ -26,7 +25,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassCons
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassMethodLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassPropertyLink;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Traits\ClassTitle;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
@@ -296,102 +294,6 @@ final class TaskTest extends TestCase {
         );
     }
 
-    public function testGetLinkTokenPaths(): void {
-        $composer = new ComposerJson(
-            autoload   : new Autoload([
-                '\\A\\B\\C\\' => ['a/b/c/'],
-                '\\A\\B\\'    => 'a/b/',
-            ]),
-            autoloadDev: new Autoload([
-                '\\C\\' => ['c/a', 'c/b', ''],
-            ]),
-        );
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
-        $node     = Mockery::mock(CodeNode::class);
-        $aToken   = new LinkToken(new ClassLink('\\A\\B\\C\\Class'), false, [$node]);
-        $bToken   = new LinkToken(new ClassConstantLink('\\A\\B\\Class', 'Constant'), false, [$node]);
-        $cToken   = new LinkToken(new ClassPropertyLink('\\C\\Class', 'property'), false, [$node]);
-        $dToken   = new LinkToken(new ClassMethodLink('\\C\\D\\Class', 'method'), false, [$node]);
-        $eToken   = new LinkToken(new ClassLink('\\Class'), false, [$node]);
-        $fToken   = new LinkToken(
-            new class() implements Link {
-                use ClassTitle;
-
-                #[Override]
-                public function __toString(): string {
-                    return 'link';
-                }
-            },
-            false,
-            [$node],
-        );
-        $task     = new class () extends Task {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct() {
-                // empty
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLinkTokenPaths(
-                Directory $root,
-                File $file,
-                LinkToken $token,
-                ComposerJson $composer,
-            ): ?array {
-                return parent::getLinkTokenPaths($root, $file, $token, $composer);
-            }
-        };
-
-        self::assertEquals(
-            [
-                'a/b/c/Class.php',
-                'a/b/C/Class.php',
-            ],
-            $task->getLinkTokenPaths($root, $file, $aToken, $composer),
-        );
-        self::assertEquals(
-            [
-                'a/b/Class.php',
-            ],
-            $task->getLinkTokenPaths($root, $file, $bToken, $composer),
-        );
-        self::assertEquals(
-            [
-                'a/b/Class.php',
-            ],
-            $task->getLinkTokenPaths($root, $file, $bToken, $composer),
-        );
-        self::assertEquals(
-            [
-                'c/a/Class.php',
-                'c/b/Class.php',
-                'Class.php',
-            ],
-            $task->getLinkTokenPaths($root, $file, $cToken, $composer),
-        );
-        self::assertEquals(
-            [
-                'c/a/D/Class.php',
-                'c/b/D/Class.php',
-                'D/Class.php',
-            ],
-            $task->getLinkTokenPaths($root, $file, $dToken, $composer),
-        );
-        self::assertNull(
-            $task->getLinkTokenPaths($root, $file, $eToken, $composer),
-        );
-        self::assertEquals(
-            [
-                // empty
-            ],
-            $task->getLinkTokenPaths($root, $file, $fToken, $composer),
-        );
-    }
-
     /**
      * @param Closure(static): LinkToken $tokenFactory
      * @param Closure(static): File      $sourceFactory
@@ -465,7 +367,22 @@ final class TaskTest extends TestCase {
                 static function (): LinkToken {
                     return new LinkToken(
                         new class() implements Link {
-                            use ClassTitle;
+                            #[Override]
+                            public function getTitle(): ?string {
+                                return null;
+                            }
+
+                            /**
+                             * @inheritDoc
+                             */
+                            #[Override]
+                            public function getSource(
+                                Directory $root,
+                                File $file,
+                                Package $package,
+                            ): array|string|null {
+                                return null;
+                            }
 
                             #[Override]
                             public function __toString(): string {

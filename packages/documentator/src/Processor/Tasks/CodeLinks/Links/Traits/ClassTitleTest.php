@@ -2,6 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Traits;
 
+use LastDragon_ru\LaraASP\Documentator\Composer\Package;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
@@ -24,6 +27,14 @@ final class ClassTitleTest extends TestCase {
                 public readonly string $value,
             ) {
                 // empty
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getSource(Directory $root, File $file, Package $package): array|string|null {
+                return null;
             }
 
             #[Override]
