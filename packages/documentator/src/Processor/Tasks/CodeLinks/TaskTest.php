@@ -26,6 +26,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassCons
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassMethodLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassPropertyLink;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Traits\ClassTitle;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
@@ -315,6 +316,8 @@ final class TaskTest extends TestCase {
         $eToken   = new LinkToken(new ClassLink('\\Class'), false, [$node]);
         $fToken   = new LinkToken(
             new class() implements Link {
+                use ClassTitle;
+
                 #[Override]
                 public function __toString(): string {
                     return 'link';
@@ -423,47 +426,6 @@ final class TaskTest extends TestCase {
 
         self::assertEquals($expected, $actual);
     }
-
-    public function testGetLinkTokenTitle(): void {
-        $task   = new class() extends Task {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct() {
-                // empty
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLinkTokenTitle(Directory $root, File $file, LinkToken $token, File $source): ?string {
-                return parent::getLinkTokenTitle($root, $file, $token, $source);
-            }
-        };
-        $root   = new Directory(Path::normalize(__DIR__), false);
-        $file   = new File(Path::normalize(__FILE__), false);
-        $source = $file;
-        $node   = Mockery::mock(CodeNode::class);
-        $aToken = new LinkToken(new ClassLink('\\A\\B\\C\\Class'), false, [$node]);
-        $bToken = new LinkToken(new ClassConstantLink('\\A\\B\\Class', 'Constant'), false, [$node]);
-        $cToken = new LinkToken(new ClassPropertyLink('\\C\\Class', 'property'), false, [$node]);
-        $dToken = new LinkToken(new ClassMethodLink('\\C\\D\\Class', 'method'), false, [$node]);
-        $eToken = new LinkToken(
-            new class() implements Link {
-                #[Override]
-                public function __toString(): string {
-                    return 'link';
-                }
-            },
-            false,
-            [$node],
-        );
-
-        self::assertEquals('Class', $task->getLinkTokenTitle($root, $file, $aToken, $source));
-        self::assertEquals('Class::Constant', $task->getLinkTokenTitle($root, $file, $bToken, $source));
-        self::assertEquals('Class::$property', $task->getLinkTokenTitle($root, $file, $cToken, $source));
-        self::assertEquals('Class::method()', $task->getLinkTokenTitle($root, $file, $dToken, $source));
-        self::assertNull($task->getLinkTokenTitle($root, $file, $eToken, $source));
-    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -503,6 +465,8 @@ final class TaskTest extends TestCase {
                 static function (): LinkToken {
                     return new LinkToken(
                         new class() implements Link {
+                            use ClassTitle;
+
                             #[Override]
                             public function __toString(): string {
                                 return 'link';
@@ -525,7 +489,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class'                                => [
-                new LinkTarget('TestClass', 'TestClass.php', false, null, null),
+                new LinkTarget('TestClass.php', false, null, null),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassLink(
@@ -565,7 +529,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class deprecated'                     => [
-                new LinkTarget('TestClassDeprecated', 'TestClassDeprecated.php', true, null, null),
+                new LinkTarget('TestClassDeprecated.php', true, null, null),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassLink(
@@ -586,7 +550,6 @@ final class TaskTest extends TestCase {
             ],
             'class deprecated / constant'          => [
                 new LinkTarget(
-                    'TestClassDeprecated::Constant',
                     'TestClassDeprecated.php',
                     true,
                     10,
@@ -613,7 +576,6 @@ final class TaskTest extends TestCase {
             ],
             'class deprecated / property'          => [
                 new LinkTarget(
-                    'TestClassDeprecated::$property',
                     'TestClassDeprecated.php',
                     true,
                     12,
@@ -640,7 +602,6 @@ final class TaskTest extends TestCase {
             ],
             'class deprecated / property promoted' => [
                 new LinkTarget(
-                    'TestClassDeprecated::$promoted',
                     'TestClassDeprecated.php',
                     true,
                     15,
@@ -667,7 +628,6 @@ final class TaskTest extends TestCase {
             ],
             'class deprecated / method'            => [
                 new LinkTarget(
-                    'TestClassDeprecated::method()',
                     'TestClassDeprecated.php',
                     true,
                     20,
@@ -693,7 +653,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / constant'                     => [
-                new LinkTarget('TestClass::Constant', 'TestClass.php', false, 9, 9),
+                new LinkTarget('TestClass.php', false, 9, 9),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassConstantLink(
@@ -735,7 +695,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / constant deprecated'          => [
-                new LinkTarget('TestClass::ConstantDeprecated', 'TestClass.php', true, 10, 13),
+                new LinkTarget('TestClass.php', true, 10, 13),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassConstantLink(
@@ -756,7 +716,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / property'                     => [
-                new LinkTarget('TestClass::$property', 'TestClass.php', false, 15, 15),
+                new LinkTarget('TestClass.php', false, 15, 15),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassPropertyLink(
@@ -777,7 +737,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / property promoted'            => [
-                new LinkTarget('TestClass::$promoted', 'TestClass.php', false, 23, 23),
+                new LinkTarget('TestClass.php', false, 23, 23),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassPropertyLink(
@@ -819,7 +779,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / property deprecated'          => [
-                new LinkTarget('TestClass::$propertyDeprecated', 'TestClass.php', true, 17, 20),
+                new LinkTarget('TestClass.php', true, 17, 20),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassPropertyLink(
@@ -840,7 +800,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / property promoted deprecated' => [
-                new LinkTarget('TestClass::$promotedDeprecated', 'TestClass.php', true, 24, 27),
+                new LinkTarget('TestClass.php', true, 24, 27),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassPropertyLink(
@@ -861,7 +821,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / method'                       => [
-                new LinkTarget('TestClass::method()', 'TestClass.php', false, 32, 34),
+                new LinkTarget('TestClass.php', false, 32, 34),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassMethodLink(
@@ -903,7 +863,7 @@ final class TaskTest extends TestCase {
                 },
             ],
             'class / method deprecated'            => [
-                new LinkTarget('TestClass::methodDeprecated()', 'TestClass.php', true, 36, 41),
+                new LinkTarget('TestClass.php', true, 36, 41),
                 static function (): LinkToken {
                     return new LinkToken(
                         new ClassMethodLink(

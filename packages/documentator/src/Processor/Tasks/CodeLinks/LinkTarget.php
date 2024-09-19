@@ -7,7 +7,6 @@ use Stringable;
 
 readonly class LinkTarget implements Stringable {
     public function __construct(
-        public ?string $title,
         public string $target,
         public bool $deprecated,
         /**

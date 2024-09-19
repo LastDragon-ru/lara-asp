@@ -44,7 +44,6 @@ use function implode;
 use function ksort;
 use function ltrim;
 use function mb_strlen;
-use function mb_strrpos;
 use function mb_substr;
 use function sort;
 use function str_starts_with;
@@ -206,14 +205,16 @@ class Task implements TaskContract {
         $duplicates = [];
 
         foreach ($links as [$token, $target]) {
-            if (!$target || !$target->title) {
+            $title = $token->link->getTitle();
+
+            if (!$target || !$title) {
                 continue;
             }
 
-            if (isset($titles[$target->title])) {
-                $duplicates[$target->title] = true;
+            if (isset($titles[$title])) {
+                $duplicates[$title] = true;
             } else {
-                $titles[$target->title] = true;
+                $titles[$title] = true;
             }
         }
 
@@ -223,8 +224,9 @@ class Task implements TaskContract {
         foreach ($links as [$token, $target]) {
             $link  = (string) $token->link;
             $hash  = static::BlockMarker.'-'.hash('xxh3', $link);
-            $title = $target && $target->title && !isset($duplicates[$target->title])
-                ? $target->title
+            $title = $token->link->getTitle();
+            $title = $target && $title && !isset($duplicates[$title])
+                ? $title
                 : $link;
             $title = !$target || $target->deprecated
                 ? static::DeprecationMarker.$title
@@ -413,7 +415,6 @@ class Task implements TaskContract {
         // Resolve
         $target       = null;
         $path         = $source->getRelativePath($file);
-        $title        = trim($this->getLinkTokenTitle($root, $file, $token, $source) ?? '') ?: null;
         $deprecated   = $comment->comment->isDeprecated();
         $isClassMatch = function (ClassLike $classLike, string $class): bool {
             return $this->normalize((string) $classLike->namespacedName) === $class;
@@ -421,7 +422,7 @@ class Task implements TaskContract {
 
         if ($token->link instanceof ClassLink) {
             if ($isClassMatch($comment->class, $token->link->class)) {
-                $target = new LinkTarget($title, $path, $deprecated, null, null);
+                $target = new LinkTarget($path, $deprecated, null, null);
             }
         } elseif ($token->link instanceof ClassConstantLink) {
             if ($isClassMatch($comment->class, $token->link->class)) {
@@ -429,7 +430,7 @@ class Task implements TaskContract {
                 foreach ($comment->class->getConstants() as $constant) {
                     foreach ($constant->consts as $const) {
                         if ((string) $const->name === $token->link->constant) {
-                            $target = $this->target($title, $path, $constant, $deprecated);
+                            $target = $this->target($path, $constant, $deprecated);
                             break;
                         }
                     }
@@ -438,7 +439,7 @@ class Task implements TaskContract {
         } elseif ($token->link instanceof ClassMethodLink) {
             if ($isClassMatch($comment->class, $token->link->class)) {
                 $node   = $comment->class->getMethod($token->link->method);
-                $target = $this->target($title, $path, $node, $deprecated);
+                $target = $this->target($path, $node, $deprecated);
             }
         } elseif ($token->link instanceof ClassPropertyLink) {
             if ($isClassMatch($comment->class, $token->link->class)) {
@@ -460,7 +461,7 @@ class Task implements TaskContract {
                     }
                 }
 
-                $target = $this->target($title, $path, $node, $deprecated);
+                $target = $this->target($path, $node, $deprecated);
             }
         } else {
             // empty
@@ -470,28 +471,7 @@ class Task implements TaskContract {
         return $target;
     }
 
-    protected function getLinkTokenTitle(Directory $root, File $file, LinkToken $token, File $source): ?string {
-        $title = null;
-        $link  = $token->link;
-
-        if (
-            $link instanceof ClassLink
-            || $link instanceof ClassConstantLink
-            || $link instanceof ClassMethodLink
-            || $link instanceof ClassPropertyLink
-        ) {
-            $title    = (string) $link;
-            $position = mb_strrpos($title, '\\');
-
-            if ($position !== false) {
-                $title = mb_substr($title, $position + 1);
-            }
-        }
-
-        return $title;
-    }
-
-    private function target(?string $title, string $path, ?Node $node, bool $deprecated): ?LinkTarget {
+    private function target(string $path, ?Node $node, bool $deprecated): ?LinkTarget {
         if ($node === null) {
             return null;
         }
@@ -503,6 +483,6 @@ class Task implements TaskContract {
         $startLine  = $startLine >= 0 ? $startLine : null;
         $deprecated = $deprecated || (new PhpDoc($comment?->getText()))->isDeprecated();
 
-        return new LinkTarget($title, $path, $deprecated, $startLine, $endLine);
+        return new LinkTarget($path, $deprecated, $startLine, $endLine);
     }
 }
