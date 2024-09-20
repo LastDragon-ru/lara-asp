@@ -42,6 +42,17 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         return $this->getSchemaBuilder()->schema();
     }
 
+    /**
+     * @update(nuwave/lighthouse): Method was added in {@see https://github.com/nuwave/lighthouse/releases/tag/v6.45.0},
+     *      but the lowest supported version is {@see https://github.com/nuwave/lighthouse/releases/tag/v6.5.0}.
+     *      To avoid the error the {@see Override} is missed.
+     *
+     * @phpstan-ignore method.missingOverride
+     */
+    public function schemaHash(): string {
+        return $this->getSchemaBuilder()->schemaHash();
+    }
+
     public function setSchema(?SchemaSourceProvider $provider): void {
         // Origins
         $container = Container::getInstance();
