@@ -63,12 +63,12 @@ final class InTest extends TestCase {
     }
 
     /**
-     * @param array<string, mixed>                $expected
-     * @param Closure(static): ScoutBuilder       $builderFactory
-     * @param Closure(static): Argument           $argumentFactory
-     * @param Closure(static): Context|null       $contextFactory
-     * @param Closure(object, Field): string|null $resolver
-     * @param Closure():FieldResolver|null        $fieldResolver
+     * @param array<string, mixed>                 $expected
+     * @param Closure(static): ScoutBuilder<Model> $builderFactory
+     * @param Closure(static): Argument            $argumentFactory
+     * @param Closure(static): Context|null        $contextFactory
+     * @param Closure(object, Field): string|null  $resolver
+     * @param Closure():FieldResolver|null         $fieldResolver
      */
     #[DataProvider('dataProviderCallScout')]
     #[RequiresLaravelScout]

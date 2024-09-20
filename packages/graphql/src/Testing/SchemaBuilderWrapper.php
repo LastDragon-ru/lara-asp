@@ -47,7 +47,7 @@ class SchemaBuilderWrapper extends SchemaBuilder {
      *      but the lowest supported version is {@see https://github.com/nuwave/lighthouse/releases/tag/v6.5.0}.
      *      To avoid the error the {@see Override} is missed.
      *
-     * @phpstan-ignore method.missingOverride
+     * @phpstan-ignore-next-line
      */
     public function schemaHash(): string {
         return $this->getSchemaBuilder()->schemaHash();

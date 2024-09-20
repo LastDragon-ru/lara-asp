@@ -26,6 +26,11 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:476\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
+			count: 1
+			path: packages/graphql/src/Stream/Directives/Directive.php
+
+		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\:\\:imageable\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Role\\|LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\User, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\MorphTo\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Models\\\\Image\\>\\.$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Models/Image.php
@@ -51,6 +56,11 @@ parameters:
 			path: packages/spa/src/Http/Resources/Resource.php
 
 		-
+			message: "#^Method class@anonymous/packages/spa/src/Http/WithValueProviderTest\\.php\\:50\\:\\:validate\\(\\) has parameter \\$fail with no signature specified for Closure\\.$#"
+			count: 1
+			path: packages/spa/src/Http/WithValueProviderTest.php
+
+		-
 			message: "#^Cannot access property \\$id on mixed\\.$#"
 			count: 1
 			path: packages/spa/src/Routing/ResolverTest.php
@@ -59,6 +69,11 @@ parameters:
 			message: "#^Parameter \\#1 \\$timezone of method DateTime\\:\\:setTimezone\\(\\) expects DateTimeZone, mixed given\\.$#"
 			count: 1
 			path: packages/spa/src/Validation/Rules/DateTimeRule.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Validation\\\\Rules\\\\Rule\\:\\:validate\\(\\) has parameter \\$fail with no signature specified for Closure\\.$#"
+			count: 1
+			path: packages/spa/src/Validation/Rules/Rule.php
 
 		-
 			message: "#^Parameter \\#1 \\$query of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Comparators\\\\DatabaseQueryComparator\\:\\:normalize\\(\\) expects LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query, mixed given\\.$#"

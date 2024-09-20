@@ -23,7 +23,7 @@ class TestObjectSearchable extends Model {
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string
+     * @var ?string
      */
     protected $table = 'test_objects';
 

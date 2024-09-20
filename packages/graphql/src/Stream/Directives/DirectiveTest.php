@@ -1181,28 +1181,28 @@ final class DirectiveTest extends TestCase {
             }
 
             /**
-             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder<EloquentModel>> $stream
              */
             public function getInternalBuilder(Stream $stream): object {
                 return $stream->builder;
             }
 
             /**
-             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder<EloquentModel>> $stream
              */
             public function getInternalKey(Stream $stream): string {
                 return $stream->key;
             }
 
             /**
-             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder<EloquentModel>> $stream
              */
             public function getInternalOffset(Stream $stream): StreamOffset {
                 return $stream->offset;
             }
 
             /**
-             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder> $stream
+             * @param Stream<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder<EloquentModel>> $stream
              */
             public function getInternalLimit(Stream $stream): int {
                 return $stream->limit;

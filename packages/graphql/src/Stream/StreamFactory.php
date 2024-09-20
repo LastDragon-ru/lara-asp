@@ -16,7 +16,7 @@ use function is_a;
 
 /**
  * @internal
- * @implements StreamFactoryContract<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder>
+ * @implements StreamFactoryContract<EloquentBuilder<EloquentModel>|QueryBuilder|ScoutBuilder<EloquentModel>>
  */
 class StreamFactory implements StreamFactoryContract {
     public function __construct() {
