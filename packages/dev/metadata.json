@@ -1,5 +1,5 @@
 {
-    "version": "6.4.1",
+    "version": "6.4.2",
     "require": {
         "php": "PHP",
         "phpstan/phpstan": "PHPStan"
@@ -7,6 +7,16 @@
     "merge": null,
     "requirements": {
         "HEAD": {
+            "php": [
+                "^8.3",
+                "^8.2",
+                "^8.1"
+            ],
+            "phpstan/phpstan": [
+                "^1.10"
+            ]
+        },
+        "6.4.2": {
             "php": [
                 "^8.3",
                 "^8.2",
