@@ -10,6 +10,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(ClassPropertyLink::class)]
 final class ClassPropertyLinkTest extends TestCase {
+    public function testToString(): void {
+        self::assertEquals('Class::$property', (string) new ClassPropertyLink('Class', 'property'));
+        self::assertEquals('App\\Class::$property', (string) new ClassPropertyLink('App\\Class', 'property'));
+        self::assertEquals('\\App\\Class::$property', (string) new ClassPropertyLink('\\App\\Class', 'property'));
+    }
+
     public function testGetTitle(): void {
         self::assertEquals('Class::$property', (new ClassPropertyLink('Class', 'property'))->getTitle());
         self::assertEquals('Class::$property', (new ClassPropertyLink('App\\Class', 'property'))->getTitle());

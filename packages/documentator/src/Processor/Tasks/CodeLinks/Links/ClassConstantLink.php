@@ -2,29 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
-use LastDragon_ru\LaraASP\Documentator\Composer\Package;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Traits\ClassTitle;
 use Override;
 
-readonly class ClassConstantLink implements Link {
-    use ClassTitle;
-
+class ClassConstantLink extends Base implements Link {
     public function __construct(
-        public string $class,
-        public string $constant,
+        string $class,
+        public readonly string $constant,
     ) {
-        // empty
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function getSource(Directory $root, File $file, Package $package): array|string|null {
-        return $package->resolve($this->class);
+        parent::__construct($class);
     }
 
     #[Override]

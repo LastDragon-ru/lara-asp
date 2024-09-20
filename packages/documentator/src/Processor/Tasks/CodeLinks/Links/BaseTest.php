@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Traits;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,21 +14,13 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * @internal
  */
-#[CoversClass(ClassTitle::class)]
-final class ClassTitleTest extends TestCase {
+#[CoversClass(Base::class)]
+final class BaseTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderGetTitle')]
     public function testGetTitle(?string $expected, string $value): void {
-        $link = new class($value) implements Link {
-            use ClassTitle;
-
-            public function __construct(
-                public readonly string $value,
-            ) {
-                // empty
-            }
-
+        $link = new class($value) extends Base {
             /**
              * @inheritDoc
              */
@@ -39,11 +31,32 @@ final class ClassTitleTest extends TestCase {
 
             #[Override]
             public function __toString(): string {
-                return $this->value;
+                return $this->class;
             }
         };
 
         self::assertEquals($expected, $link->getTitle());
+    }
+
+    public function testGetSource(): void {
+        $class    = $this::class;
+        $resolved = ['a/b/c.php'];
+        $package  = Mockery::mock(Package::class);
+        $package
+            ->shouldReceive('resolve')
+            ->with($class)
+            ->once()
+            ->andReturn($resolved);
+        $root = Mockery::mock(Directory::class);
+        $file = Mockery::mock(File::class);
+        $link = new class ($class) extends Base {
+            #[Override]
+            public function __toString(): string {
+                return $this->class;
+            }
+        };
+
+        self::assertEquals($resolved, $link->getSource($root, $file, $package));
     }
     // </editor-fold>
 
