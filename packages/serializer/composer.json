@@ -28,7 +28,7 @@
     "symfony/deprecation-contracts": "^3.0.0",
     "symfony/property-access": "^6.3.0|^7.0.0",
     "symfony/property-info": "^6.3.9|^7.0.0",
-    "symfony/serializer": "^6.3.3|^7.0.0",
+    "symfony/serializer": "^6.4.0|^7.0.0",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {

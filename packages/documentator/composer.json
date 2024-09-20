@@ -35,7 +35,7 @@
     "symfony/filesystem": "^6.3.0|^7.0.0",
     "symfony/finder": "^6.3.0|^7.0.0",
     "symfony/polyfill-php83": "^1.28",
-    "symfony/serializer": "^6.3.3|^7.0.0",
+    "symfony/serializer": "^6.4.0|^7.0.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
