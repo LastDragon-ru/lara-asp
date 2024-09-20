@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -11,27 +13,28 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Factory::class)]
 final class FactoryTest extends TestCase {
     public function testParse(): void {
-        $factory = new Factory();
+        $comment = Mockery::mock(PhpClassComment::class);
+        $factory = new Factory($comment);
 
         // Class
         self::assertEquals(
-            new ClassLink('\\App\\Class'),
+            new ClassLink($comment, '\\App\\Class'),
             $factory->create('\\App\\Class'),
         );
         self::assertEquals(
-            new ClassLink('\\App\\Class'),
+            new ClassLink($comment, '\\App\\Class'),
             $factory->create('App\\Class'),
         );
         self::assertEquals(
-            new ClassLink('\\Class'),
+            new ClassLink($comment, '\\Class'),
             $factory->create('\\Class'),
         );
         self::assertEquals(
-            new ClassLink('\\Class'),
+            new ClassLink($comment, '\\Class'),
             $factory->create('Class'),
         );
         self::assertEquals(
-            new ClassLink('\\App\\Class'),
+            new ClassLink($comment, '\\App\\Class'),
             $factory->create('Class', static fn($class) => "App\\{$class}"),
         );
         self::assertNull(
@@ -40,31 +43,31 @@ final class FactoryTest extends TestCase {
 
         // Class Method
         self::assertEquals(
-            new ClassMethodLink('\\App\\Class', 'method'),
+            new ClassMethodLink($comment, '\\App\\Class', 'method'),
             $factory->create('\\App\\Class::method()'),
         );
         self::assertEquals(
-            new ClassMethodLink('\\App\\Class', 'method'),
+            new ClassMethodLink($comment, '\\App\\Class', 'method'),
             $factory->create('App\\Class::method()'),
         );
 
         // Class Const
         self::assertEquals(
-            new ClassConstantLink('\\App\\Class', 'constant'),
+            new ClassConstantLink($comment, '\\App\\Class', 'constant'),
             $factory->create('\\App\\Class::constant'),
         );
         self::assertEquals(
-            new ClassConstantLink('\\App\\Class', 'constant'),
+            new ClassConstantLink($comment, '\\App\\Class', 'constant'),
             $factory->create('App\\Class::constant'),
         );
 
         // Class Property
         self::assertEquals(
-            new ClassPropertyLink('\\App\\Class', 'property'),
+            new ClassPropertyLink($comment, '\\App\\Class', 'property'),
             $factory->create('\\App\\Class::$property'),
         );
         self::assertEquals(
-            new ClassPropertyLink('\\App\\Class', 'property'),
+            new ClassPropertyLink($comment, '\\App\\Class', 'property'),
             $factory->create('App\\Class::$property'),
         );
     }

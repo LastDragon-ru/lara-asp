@@ -2,10 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
-use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
@@ -18,7 +16,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassConstantLink;
@@ -35,7 +32,6 @@ use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Xml\XmlRenderer;
-use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -108,11 +104,12 @@ final class TaskTest extends TestCase {
             [//]: # (end: code-links)
             MARKDOWN,
         );
+        $comment  = $this->app()->make(PhpClassComment::class);
         $task     = new class(
             $this->app()->make(LinkFactory::class),
             $this->app()->make(Markdown::class),
             $this->app()->make(Composer::class),
-            $this->app()->make(PhpClassComment::class),
+            $comment,
         ) extends Task {
             /**
              * @inheritDoc
@@ -163,7 +160,7 @@ final class TaskTest extends TestCase {
                 ],
                 'links'  => [
                     [
-                        'link'       => new ClassLink('\\App\\Deprecated'),
+                        'link'       => new ClassLink($comment, '\\App\\Deprecated'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -175,7 +172,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink('\\App\\ClassA'),
+                        'link'       => new ClassLink($comment, '\\App\\ClassA'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -187,7 +184,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink('\\App\\ClassC'),
+                        'link'       => new ClassLink($comment, '\\App\\ClassC'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -201,7 +198,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink('\\App\\ClassD'),
+                        'link'       => new ClassLink($comment, '\\App\\ClassD'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -215,7 +212,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink('\\App\\ClassE'),
+                        'link'       => new ClassLink($comment, '\\App\\ClassE'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -237,7 +234,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassMethodLink('\\App\\Deprecated', 'method'),
+                        'link'       => new ClassMethodLink($comment, '\\App\\Deprecated', 'method'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -249,7 +246,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassPropertyLink('\\App\\ClassA', 'property'),
+                        'link'       => new ClassPropertyLink($comment, '\\App\\ClassA', 'property'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -261,7 +258,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassConstantLink('\\App\\ClassD', 'Constant'),
+                        'link'       => new ClassConstantLink($comment, '\\App\\ClassD', 'Constant'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -275,7 +272,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassMethodLink('\\App\\ClassE', 'method'),
+                        'link'       => new ClassMethodLink($comment, '\\App\\ClassE', 'method'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -292,41 +289,6 @@ final class TaskTest extends TestCase {
             ],
             $actual,
         );
-    }
-
-    /**
-     * @param Closure(static): LinkToken $tokenFactory
-     * @param Closure(static): File      $sourceFactory
-     */
-    #[DataProvider('dataProviderGetLinkTokenTarget')]
-    public function testGetLinkTokenTarget(?LinkTarget $expected, Closure $tokenFactory, Closure $sourceFactory): void {
-        $task   = new class(
-            $this->app()->make(LinkFactory::class),
-            $this->app()->make(Markdown::class),
-            $this->app()->make(Composer::class),
-            $this->app()->make(PhpClassComment::class),
-        ) extends Task {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLinkTokenTarget(
-                Directory $root,
-                File $file,
-                LinkToken $token,
-                File $source,
-            ): ?LinkTarget {
-                return parent::getLinkTokenTarget($root, $file, $token, $source);
-            }
-        };
-        $path   = Path::normalize(self::getTestData()->path('GetLinkTokenTarget/TestClass.php'));
-        $root   = new Directory(dirname($path), false);
-        $file   = new File($path, false);
-        $token  = $tokenFactory($this);
-        $source = $sourceFactory($this);
-        $actual = $task->getLinkTokenTarget($root, $file, $token, $source);
-
-        self::assertEquals($expected, $actual);
     }
     // </editor-fold>
 
@@ -353,452 +315,6 @@ final class TaskTest extends TestCase {
                     '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::method()',
                 ]),
                 'Invoke/InvokeUnknown.md',
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array{?LinkTarget, Closure(static): LinkToken, Closure(static): File}>
-     */
-    public static function dataProviderGetLinkTokenTarget(): array {
-        return [
-            'not php'                              => [
-                null,
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new class() implements Link {
-                            #[Override]
-                            public function getTitle(): ?string {
-                                return null;
-                            }
-
-                            /**
-                             * @inheritDoc
-                             */
-                            #[Override]
-                            public function getSource(
-                                Directory $root,
-                                File $file,
-                                Package $package,
-                            ): array|string|null {
-                                return null;
-                            }
-
-                            #[Override]
-                            public function __toString(): string {
-                                return 'link';
-                            }
-                        },
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (): File {
-                    $file = Mockery::mock(File::class);
-                    $file
-                        ->shouldReceive('getMetadata')
-                        ->once()
-                        ->andReturn(null);
-
-                    return $file;
-                },
-            ],
-            'class'                                => [
-                new LinkTarget('TestClass.php', false, null, null),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class unknown'                        => [
-                null,
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClassUnknown',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class deprecated'                     => [
-                new LinkTarget('TestClassDeprecated.php', true, null, null),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClassDeprecated',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClassDeprecated.php')),
-                        false,
-                    );
-                },
-            ],
-            'class deprecated / constant'          => [
-                new LinkTarget(
-                    'TestClassDeprecated.php',
-                    true,
-                    10,
-                    10,
-                ),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassConstantLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClassDeprecated',
-                            'Constant',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClassDeprecated.php')),
-                        false,
-                    );
-                },
-            ],
-            'class deprecated / property'          => [
-                new LinkTarget(
-                    'TestClassDeprecated.php',
-                    true,
-                    12,
-                    12,
-                ),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClassDeprecated',
-                            'property',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClassDeprecated.php')),
-                        false,
-                    );
-                },
-            ],
-            'class deprecated / property promoted' => [
-                new LinkTarget(
-                    'TestClassDeprecated.php',
-                    true,
-                    15,
-                    15,
-                ),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClassDeprecated',
-                            'promoted',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClassDeprecated.php')),
-                        false,
-                    );
-                },
-            ],
-            'class deprecated / method'            => [
-                new LinkTarget(
-                    'TestClassDeprecated.php',
-                    true,
-                    20,
-                    22,
-                ),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassMethodLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClassDeprecated',
-                            'method',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClassDeprecated.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / constant'                     => [
-                new LinkTarget('TestClass.php', false, 9, 9),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassConstantLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'Constant',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / constant unknown'             => [
-                null,
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassConstantLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'Unknown',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / constant deprecated'          => [
-                new LinkTarget('TestClass.php', true, 10, 13),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassConstantLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'ConstantDeprecated',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / property'                     => [
-                new LinkTarget('TestClass.php', false, 15, 15),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'property',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / property promoted'            => [
-                new LinkTarget('TestClass.php', false, 23, 23),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'promoted',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / property unknown'             => [
-                null,
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'unknown',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / property deprecated'          => [
-                new LinkTarget('TestClass.php', true, 17, 20),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'propertyDeprecated',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / property promoted deprecated' => [
-                new LinkTarget('TestClass.php', true, 24, 27),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassPropertyLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'promotedDeprecated',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / method'                       => [
-                new LinkTarget('TestClass.php', false, 32, 34),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassMethodLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'method',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / method unknown'               => [
-                null,
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassMethodLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'unknown',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
-            ],
-            'class / method deprecated'            => [
-                new LinkTarget('TestClass.php', true, 36, 41),
-                static function (): LinkToken {
-                    return new LinkToken(
-                        new ClassMethodLink(
-                            '\\LastDragon_ru\\LaraASP\\Documentator\\Processor\\Tasks\\CodeLinks\\TaskTest\\GetLinkTokenTarget\\TestClass',
-                            'methodDeprecated',
-                        ),
-                        false,
-                        [
-                            Mockery::mock(CodeNode::class),
-                        ],
-                    );
-                },
-                static function (self $test): File {
-                    return new File(
-                        Path::normalize($test::getTestData()->path('GetLinkTokenTarget/TestClass.php')),
-                        false,
-                    );
-                },
             ],
         ];
     }

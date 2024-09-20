@@ -22,24 +22,15 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassConstantLink;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassLink;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassMethodLink;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassPropertyLink;
-use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use Override;
-use PhpParser\Node;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\ClassLike;
 
 use function array_map;
 use function array_values;
 use function hash;
 use function implode;
 use function ksort;
-use function ltrim;
 use function sort;
 use function str_starts_with;
 use function trim;
@@ -137,7 +128,7 @@ class Task implements TaskContract {
             $target = null;
 
             if ($source) {
-                $target = $this->getLinkTokenTarget($root, $file, $token, $source);
+                $target = $token->link->getTarget($root, $file, $source);
 
                 if (!$target) {
                     $unresolved[] = $token;
@@ -260,10 +251,6 @@ class Task implements TaskContract {
         return $changes;
     }
 
-    private function normalize(string $class): string {
-        return '\\'.ltrim($class, '\\');
-    }
-
     /**
      * @return array{
      *      blocks: list<GeneratedNode>,
@@ -310,87 +297,5 @@ class Task implements TaskContract {
             'blocks' => $blocks,
             'links'  => array_values($links),
         ];
-    }
-
-    protected function getLinkTokenTarget(Directory $root, File $file, LinkToken $token, File $source): ?LinkTarget {
-        // Class?
-        $comment = $source->getMetadata($this->comment);
-
-        if (!$comment) {
-            return null;
-        }
-
-        // Resolve
-        $target       = null;
-        $path         = $source->getRelativePath($file);
-        $deprecated   = $comment->comment->isDeprecated();
-        $isClassMatch = function (ClassLike $classLike, string $class): bool {
-            return $this->normalize((string) $classLike->namespacedName) === $class;
-        };
-
-        if ($token->link instanceof ClassLink) {
-            if ($isClassMatch($comment->class, $token->link->class)) {
-                $target = new LinkTarget($path, $deprecated, null, null);
-            }
-        } elseif ($token->link instanceof ClassConstantLink) {
-            if ($isClassMatch($comment->class, $token->link->class)) {
-                // No method :'(
-                foreach ($comment->class->getConstants() as $constant) {
-                    foreach ($constant->consts as $const) {
-                        if ((string) $const->name === $token->link->constant) {
-                            $target = $this->target($path, $constant, $deprecated);
-                            break;
-                        }
-                    }
-                }
-            }
-        } elseif ($token->link instanceof ClassMethodLink) {
-            if ($isClassMatch($comment->class, $token->link->class)) {
-                $node   = $comment->class->getMethod($token->link->method);
-                $target = $this->target($path, $node, $deprecated);
-            }
-        } elseif ($token->link instanceof ClassPropertyLink) {
-            if ($isClassMatch($comment->class, $token->link->class)) {
-                $node = $comment->class->getProperty($token->link->property);
-
-                if ($node === null) {
-                    $constructor = $comment->class->getMethod('__construct');
-                    $parameters  = $constructor?->getParams() ?? [];
-
-                    foreach ($parameters as $parameter) {
-                        if (!$parameter->isPromoted()) {
-                            continue;
-                        }
-
-                        if ($parameter->var instanceof Variable && $parameter->var->name === $token->link->property) {
-                            $node = $parameter;
-                            break;
-                        }
-                    }
-                }
-
-                $target = $this->target($path, $node, $deprecated);
-            }
-        } else {
-            // empty
-        }
-
-        // Return
-        return $target;
-    }
-
-    private function target(string $path, ?Node $node, bool $deprecated): ?LinkTarget {
-        if ($node === null) {
-            return null;
-        }
-
-        $comment    = $node->getDocComment();
-        $endLine    = $node->getEndLine();
-        $endLine    = $endLine >= 0 ? $endLine : null;
-        $startLine  = $comment?->getStartLine() ?? $node->getStartLine();
-        $startLine  = $startLine >= 0 ? $startLine : null;
-        $deprecated = $deprecated || (new PhpDoc($comment?->getText()))->isDeprecated();
-
-        return new LinkTarget($path, $deprecated, $startLine, $endLine);
     }
 }
