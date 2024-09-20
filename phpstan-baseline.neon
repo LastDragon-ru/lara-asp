@@ -31,6 +31,11 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:480\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
+			count: 1
+			path: packages/graphql/src/Stream/Directives/Directive.php
+
+		-
 			message: "#^Parameter \\#2 \\$factory of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase\\:\\:override\\(\\) contains unresolvable type\\.$#"
 			count: 1
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
@@ -56,6 +61,11 @@ parameters:
 			path: packages/spa/src/Http/Resources/Resource.php
 
 		-
+			message: "#^Method class@anonymous/packages/spa/src/Http/WithValueProviderTest\\.php\\:49\\:\\:validate\\(\\) has parameter \\$fail with no signature specified for Closure\\.$#"
+			count: 1
+			path: packages/spa/src/Http/WithValueProviderTest.php
+
+		-
 			message: "#^Cannot access property \\$id on mixed\\.$#"
 			count: 1
 			path: packages/spa/src/Routing/ResolverTest.php
@@ -64,6 +74,11 @@ parameters:
 			message: "#^Parameter \\#1 \\$timezone of method DateTime\\:\\:setTimezone\\(\\) expects DateTimeZone, mixed given\\.$#"
 			count: 1
 			path: packages/spa/src/Validation/Rules/DateTimeRule.php
+
+		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Validation\\\\Rules\\\\Rule\\:\\:validate\\(\\) has parameter \\$fail with no signature specified for Closure\\.$#"
+			count: 1
+			path: packages/spa/src/Validation/Rules/Rule.php
 
 		-
 			message: "#^Parameter \\#1 \\$query of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Comparators\\\\DatabaseQueryComparator\\:\\:normalize\\(\\) expects LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query, mixed given\\.$#"
@@ -86,11 +101,6 @@ parameters:
 			path: packages/testing/src/Constraints/Json/JsonMatchesSchema.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Constraints\\\\Response\\\\Factory\\:\\:getCache\\(\\) should return WeakMap\\<Illuminate\\\\Testing\\\\TestResponse\\|Symfony\\\\Component\\\\HttpFoundation\\\\Response, Psr\\\\Http\\\\Message\\\\ResponseInterface\\> but returns WeakMap\\<Illuminate\\\\Testing\\\\TestResponse\\|Symfony\\\\Component\\\\HttpFoundation\\\\Response, Psr\\\\Http\\\\Message\\\\ResponseInterface\\>\\|WeakMap\\<object, mixed\\>\\.$#"
-			count: 1
-			path: packages/testing/src/Constraints/Response/Factory.php
-
-		-
 			message: "#^Parameter \\#1 \\$instances \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\:\\:callAfterCreating\\(\\) should be contravariant with parameter \\$instances \\(Illuminate\\\\Support\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:callAfterCreating\\(\\)$#"
 			count: 1
 			path: packages/testing/src/Database/Eloquent/Factories/Factory.php
@@ -101,16 +111,6 @@ parameters:
 			path: packages/testing/src/Mixins/TestResponseMixin.php
 
 		-
-			message: "#^Type alias SettingsCallback contains invalid type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\WithConfig\\.$#"
-			count: 1
-			path: packages/testing/src/Package/WithConfig.php
-
-		-
-			message: "#^Type alias SettingsFactory contains invalid type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\WithConfig\\.$#"
-			count: 1
-			path: packages/testing/src/Package/WithConfig.php
-
-		-
 			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<array\\>, array\\<T\\> given\\.$#"
 			count: 1
 			path: packages/testing/src/Providers/TraversableDataProvider.php
@@ -119,13 +119,3 @@ parameters:
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
 			count: 1
 			path: packages/testing/src/Utils/Args.php
-
-		-
-			message: "#^Type alias TranslationsCallback contains invalid type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\WithTranslations\\.$#"
-			count: 1
-			path: packages/testing/src/Utils/WithTranslations.php
-
-		-
-			message: "#^Type alias TranslationsFactory contains invalid type LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\WithTranslations\\.$#"
-			count: 1
-			path: packages/testing/src/Utils/WithTranslations.php

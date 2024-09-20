@@ -24,12 +24,12 @@ use function hash;
  */
 class ExposeBuilderDirective extends BaseDirective implements FieldResolver, BuilderInfoProvider {
     /**
-     * @var QueryBuilder|EloquentBuilder<Model>|ScoutBuilder
+     * @var QueryBuilder|EloquentBuilder<Model>|ScoutBuilder<Model>
      */
     public static QueryBuilder|EloquentBuilder|ScoutBuilder $builder;
 
     /**
-     * @var QueryBuilder|EloquentBuilder<Model>|ScoutBuilder|Relation<Model>|null
+     * @var QueryBuilder|EloquentBuilder<Model>|ScoutBuilder<Model>|Relation<Model>|null
      */
     public static QueryBuilder|EloquentBuilder|ScoutBuilder|Relation|null $result = null;
 

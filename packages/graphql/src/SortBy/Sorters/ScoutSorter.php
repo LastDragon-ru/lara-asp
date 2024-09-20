@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Sorters;
 
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
@@ -12,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use Override;
 
 /**
- * @implements Sorter<ScoutBuilder>
+ * @implements Sorter<ScoutBuilder<Model>>
  */
 class ScoutSorter implements Sorter {
     public function __construct(

@@ -37,13 +37,6 @@ parameters:
                 - packages/documentator/src/Processor/Tasks/Preprocess/Instructions/IncludeArtisan/Instruction.php
 
         # False positive
-        # https://github.com/phpstan/phpstan/issues/5551
-        -
-            message: "#^Static property LastDragon_ru\\\\LaraASP\\\\Testing\\\\Constraints\\\\Response\\\\Factory::\\$cache .*? does not accept WeakMap#"
-            paths:
-                - packages/testing/src/Constraints/Response/Factory.php
-
-        # False positive
         # https://github.com/nunomaduro/larastan/issues/483
         # https://github.com/nunomaduro/larastan/pull/917
         -

@@ -76,6 +76,11 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         return $this->handleAnyBuilder($builder, $value);
     }
 
+    /**
+     * @param ScoutBuilder<Model> $builder
+     *
+     * @return ScoutBuilder<Model>
+     */
     public function handleScoutBuilder(ScoutBuilder $builder, mixed $value): ScoutBuilder {
         return $this->handleAnyBuilder($builder, $value);
     }

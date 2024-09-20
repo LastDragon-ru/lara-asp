@@ -417,10 +417,10 @@ final class DirectiveTest extends TestCase {
     }
 
     /**
-     * @param array<string, mixed>|Exception      $expected
-     * @param Closure(static): ScoutBuilder       $builderFactory
-     * @param Closure(object, Field): string|null $resolver
-     * @param Closure():FieldResolver|null        $fieldResolver
+     * @param array<string, mixed>|Exception               $expected
+     * @param Closure(static): ScoutBuilder<EloquentModel> $builderFactory
+     * @param Closure(object, Field): string|null          $resolver
+     * @param Closure():FieldResolver|null                 $fieldResolver
      */
     #[DataProvider('dataProviderHandleScoutBuilder')]
     #[RequiresLaravelScout]
@@ -492,10 +492,10 @@ final class DirectiveTest extends TestCase {
     /**
      * @deprecated   5.5.0
      *
-     * @param array<string, mixed>|Exception      $expected
-     * @param Closure(static): ScoutBuilder       $builderFactory
-     * @param Closure(object, Field): string|null $resolver
-     * @param Closure():FieldResolver|null        $fieldResolver
+     * @param array<string, mixed>|Exception               $expected
+     * @param Closure(static): ScoutBuilder<EloquentModel> $builderFactory
+     * @param Closure(object, Field): string|null          $resolver
+     * @param Closure():FieldResolver|null                 $fieldResolver
      */
     #[DataProvider('dataProviderHandleScoutBuilderV5Compat')]
     #[RequiresLaravelScout]

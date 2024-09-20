@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Assert;
@@ -13,8 +14,8 @@ trait ScoutAssertions {
     /**
      * Asserts that Scout Query equals Scout Query.
      *
-     * @param Builder|array<string, mixed>|string $expected
-     * @param Builder|array<string, mixed>|string $actual
+     * @param Builder<covariant Model>|array<string, mixed>|string $expected
+     * @param Builder<covariant Model>|array<string, mixed>|string $actual
      */
     public static function assertScoutQueryEquals(
         Builder|array|string $expected,

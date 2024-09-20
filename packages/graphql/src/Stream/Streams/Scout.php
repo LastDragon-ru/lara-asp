@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
@@ -13,7 +14,7 @@ use function array_slice;
 use function max;
 
 /**
- * @extends Stream<ScoutBuilder>
+ * @extends Stream<ScoutBuilder<covariant Model>>
  */
 class Scout extends Stream {
     /**
