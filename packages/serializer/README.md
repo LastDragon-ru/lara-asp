@@ -12,7 +12,7 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `HEAD ⋯ 5.0.0-beta.0`   |
-|  | `^8.1` |   `6.4.1 ⋯ 5.0.0-beta.0`   |
+|  | `^8.1` |   `6.4.2 ⋯ 5.0.0-beta.0`   |
 |  Laravel  | `^11.0.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.34.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.0.0` |   `6.1.0 ⋯ 5.0.0-beta.0`   |
@@ -96,7 +96,7 @@ LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage\User {
 
 # Partial deserialization
 
-Sometimes you don't know (or do not want to support) the full structure of the object. In this case you can mark the class as `\LastDragon_ru\LaraASP\Serializer\Contracts\Partial` to allow unserialize only known (wanted) properties:
+Sometimes you don't know (or do not want to support) the full structure of the object. In this case you can mark the class as [`Partial`][code-links/52d699d2b40ed389] to allow unserialize only known (wanted) properties:
 
 [include:example]: ./docs/Examples/Partial.php
 [//]: # (start: 054e60f7fb44bc5391e7906b939df2aaea42d9a33e75d06094f4b5dd62d1049c)
@@ -157,7 +157,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provid
 
 # Eloquent Accessor/Mutator[^1]
 
-You can use the [`LastDragon_ru\LaraASP\Serializer\Casts\Serialized`](./src/Casts/Serialized.php) attribute to populate a model attribute to/from an object:
+You can use the [`Serialized`][code-links/65c47cc2803dd25a] attribute to populate a model attribute to/from an object:
 
 [include:example]: ./docs/Examples/Attribute.php
 [//]: # (start: fb77e44bdaa1948ff6630b23a8b2e3333de750be45e8f5fda1f7b784fe036a27)
@@ -236,3 +236,12 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 [//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
 
 [^1]: <https://laravel.com/docs/eloquent-mutators>
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/65c47cc2803dd25a]: src/Casts/Serialized.php "\LastDragon_ru\LaraASP\Serializer\Casts\Serialized"
+
+[code-links/52d699d2b40ed389]: src/Contracts/Partial.php "\LastDragon_ru\LaraASP\Serializer\Contracts\Partial"
+
+[//]: # (end: code-links)

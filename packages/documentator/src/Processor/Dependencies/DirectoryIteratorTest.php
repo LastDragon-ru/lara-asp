@@ -18,13 +18,13 @@ use function sprintf;
 /**
  * @internal
  */
-#[CoversClass(FilesIterator::class)]
-final class FilesIteratorTest extends TestCase {
+#[CoversClass(DirectoryIterator::class)]
+final class DirectoryIteratorTest extends TestCase {
     public function testToString(): void {
         $directory = new Directory(Path::normalize(__DIR__), false);
 
-        self::assertEquals('path/to/directory', (string) (new FilesIterator('path/to/directory')));
-        self::assertEquals($directory->getPath(), (string) (new FilesIterator($directory)));
+        self::assertEquals('path/to/directory', (string) (new DirectoryIterator('path/to/directory')));
+        self::assertEquals($directory->getPath(), (string) (new DirectoryIterator($directory)));
     }
 
     public function testInvoke(): void {
@@ -32,21 +32,19 @@ final class FilesIteratorTest extends TestCase {
         $path      = Path::normalize(self::getTestData()->path(''));
         $root      = new Directory(Path::normalize(__DIR__), false);
         $file      = new File(Path::normalize(__FILE__), false);
-        $pattern   = '*.txt';
-        $absolute  = new FilesIterator($path, $pattern);
-        $relative  = new FilesIterator(basename($path), $pattern);
-        $directory = new FilesIterator(new Directory($path, false), $pattern);
-        $formatter = static function (File $file) use ($path): string {
-            return  Path::getRelativePath($path, $file->getPath());
+        $absolute  = new DirectoryIterator($path);
+        $relative  = new DirectoryIterator(basename($path));
+        $directory = new DirectoryIterator(new Directory($path, false));
+        $formatter = static function (Directory $directory) use ($path): string {
+            return Path::getRelativePath($path, $directory->getPath());
         };
         $expected  = [
-            'a/a.txt',
-            'a/a/aa.txt',
-            'a/b/ab.txt',
-            'b/a/ba.txt',
-            'b/b.txt',
-            'b/b/bb.txt',
-            'c.txt',
+            'a',
+            'a/a',
+            'a/b',
+            'b',
+            'b/a',
+            'b/b',
         ];
 
         self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs, $root, $file))));
@@ -71,7 +69,7 @@ final class FilesIteratorTest extends TestCase {
         );
 
         iterator_to_array(
-            (new FilesIterator($path))($fs, $root, $file),
+            (new DirectoryIterator($path))($fs, $root, $file),
         );
     }
 }

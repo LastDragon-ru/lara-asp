@@ -12,7 +12,7 @@ Various internal tools and helpers to develop the package itself.
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 6.2.0`   |
 |  | `^8.2` |   `HEAD ⋯ 6.2.0`   |
-|  | `^8.1` |   `6.4.1 ⋯ 6.2.0`   |
+|  | `^8.1` |   `6.4.2 ⋯ 6.2.0`   |
 |  PHPStan  | `^1.10` |   `HEAD ⋯ 6.2.0`   |
 
 [//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)

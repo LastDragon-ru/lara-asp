@@ -33,17 +33,20 @@ class FileSystem {
             // empty
         }
 
-        // File?
+        // Cached?
         $path = $root->getPath($path);
+        $file = ($this->cache[$path] ?? null)?->get();
 
-        if (!is_file($path)) {
+        if ($file !== null && !($file instanceof File)) {
             return null;
         }
 
-        // Create
-        $file = ($this->cache[$path] ?? null)?->get();
+        if ($file instanceof File) {
+            return $file;
+        }
 
-        if (!($file instanceof File)) {
+        // Create
+        if (is_file($path)) {
             $writable           = $root->isWritable() && $root->isInside($path);
             $file               = new File($path, $writable);
             $this->cache[$path] = WeakReference::create($file);
@@ -69,17 +72,20 @@ class FileSystem {
             return $root;
         }
 
-        // Directory?
-        $path = $root->getPath($path);
+        // Cached?
+        $path      = $root->getPath($path);
+        $directory = ($this->cache[$path] ?? null)?->get();
 
-        if (!is_dir($path)) {
+        if ($directory !== null && !($directory instanceof Directory)) {
             return null;
         }
 
-        // Create
-        $directory = ($this->cache[$path] ?? null)?->get();
+        if ($directory instanceof Directory) {
+            return $directory;
+        }
 
-        if (!($directory instanceof Directory)) {
+        // Create
+        if (is_dir($path)) {
             $writable           = $root->isWritable() && $root->isInside($path);
             $directory          = $root->getPath() !== $path
                 ? new Directory($path, $writable)

@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\ParserStart as R
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Event\DocumentPreParsedEvent;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\BacktickParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
@@ -24,7 +25,7 @@ use Override;
  * We use it for:
  * * find Reference nodes and their location inside the document
  *   (by default, they are not added to the AST)
- * * determine location of the Links/Images
+ * * determine location of the Links/Images/etc
  *
  * @see https://github.com/thephpleague/commonmark/discussions/1036
  * @see Coordinate
@@ -42,6 +43,7 @@ class Extension implements ExtensionInterface {
             ->addBlockStartParser(new GenerateParser(), 100)
             ->addInlineParser(new Parser(new CloseBracketParser()), 100)
             ->addInlineParser(new Parser(new FootnoteRefParser()), 100)
+            ->addInlineParser(new Parser(new BacktickParser()), 200)
             ->addEventListener(
                 DocumentPreParsedEvent::class,
                 static function (DocumentPreParsedEvent $event) use ($referenceParser): void {

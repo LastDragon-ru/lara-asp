@@ -11,7 +11,7 @@
                 <link location="[{5,13,36}]" offset="14" title="" destination="https://example.com/">
                     <strong>
                         <emph>
-                            <code>link</code>
+                            <code location="[{5,17,6}]" offset="1">link</code>
                         </emph>
                     </strong>
                 </link>
@@ -20,7 +20,7 @@
         <text><![CDATA[ text ]]></text>
         <link destination="https://example.com/" location="[{5,58,33}]" offset="11" title="">
             <text>**_</text>
-            <code>link</code>
+            <code location="[{5,62,6}]" offset="1">link</code>
         </link>
         <text>.</text>
     </paragraph>
@@ -192,7 +192,7 @@
                 <table_row location="[{38,2,null}]" blockPadding="2">
                     <table_cell type="data" location="[{38,3,50}]" offset="1" length="50" blockPadding="2" padding="1">
                         <text><![CDATA[Cell ]]></text>
-                        <code>|</code>
+                        <code location="[{38,9,4}]" offset="1">|</code>
                         <text><![CDATA[ | ]]></text>
                         <link location="[{38,18,34}]" offset="6" title="|" destination="https://example.com/">
                             <text>link</text>
@@ -288,6 +288,76 @@
             <footnote_ref location="[{64,11,8}]" reference="quote"/>
         </paragraph>
     </block_quote>
+    <heading level="1">
+        <text>Inline code</text>
+    </heading>
+    <paragraph>
+        <text>Text </text>
+        <code location="[{76,5,6}]" offset="1">code</code>
+        <text><![CDATA[ text text ]]></text>
+        <strong>
+            <code location="[{76,24,6}]" offset="1">code</code>
+        </strong>
+        <text><![CDATA[ text text text text ]]></text>
+        <code location="[{76,53,6}]" offset="1">code</code>
+        <text><![CDATA[ text]]></text>
+        <softbreak/>
+        <text><![CDATA[text ]]></text>
+        <code location="[{77,5,6}]" offset="1">code</code>
+        <text><![CDATA[ ]]></text>
+        <code location="[{77,12,6}]" offset="1">code</code>
+        <text><![CDATA[ ]]></text>
+        <emph>
+            <code location="[{77,20,6}]" offset="1">code</code>
+        </emph>
+        <text><![CDATA[ ]]></text>
+        <link destination="https://example.com/" location="[{77,28,14}]" offset="8" title="reference">
+            <code location="[{77,29,6}]" offset="1">code</code>
+        </link>
+        <text><![CDATA[ ]]></text>
+        <code location="[{77,43,14}]" offset="1">[code][link]</code>
+        <text><![CDATA[ text.]]></text>
+    </paragraph>
+    <paragraph>
+        <text><![CDATA[Text ]]></text>
+        <code location="[{79,5,null},{80,0,null},{81,0,1}]" offset="1">code</code>
+        <text><![CDATA[ text.]]></text>
+    </paragraph>
+    <block_quote>
+        <paragraph>
+            <text><![CDATA[Text ]]></text>
+            <code location="[{83,7,6}]" offset="1">code</code>
+            <text><![CDATA[ text.]]></text>
+        </paragraph>
+        <block_quote>
+            <paragraph>
+                <code location="[{85,4,6}]" offset="1">code</code>
+            </paragraph>
+        </block_quote>
+    </block_quote>
+    <table>
+        <table_section blockPadding="0" location="[{87,0,null}]" type="head">
+            <table_row blockPadding="0" location="[{87,0,null}]">
+                <table_cell blockPadding="0" length="8" location="[{87,1,8}]" offset="1" padding="1" type="header">
+                    <text>Header</text>
+                </table_cell>
+                <table_cell blockPadding="0" length="13" location="[{87,10,13}]" offset="10" padding="1" type="header">
+                    <code location="[{87,11,8}]" offset="1">Header</code>
+                </table_cell>
+            </table_row>
+        </table_section>
+        <table_section blockPadding="0" location="[{89,0,null}]" type="body">
+            <table_row blockPadding="0" location="[{89,0,null}]">
+                <table_cell blockPadding="0" length="8" location="[{89,1,8}]" offset="1" padding="1" type="data">
+                    <code location="[{89,2,6}]" offset="1">code</code>
+                </table_cell>
+                <table_cell blockPadding="0" length="13" location="[{89,10,13}]" offset="10" padding="1" type="data">
+                    <text><![CDATA[Cell ]]></text>
+                    <code location="[{89,16,6}]" offset="1">code</code>
+                </table_cell>
+            </table_row>
+        </table_section>
+    </table>
     <footnote_container>
         <footnote reference="1" location="[{59,0,null},{60,0,null}]" blockPadding="0" padding="0">
             <paragraph>
@@ -329,7 +399,7 @@
                 <footnote_backref reference="quote"/>
             </paragraph>
         </footnote>
-        <footnote location="[{69,0,null},{70,0,null},{71,0,null},{72,0,null}]" blockPadding="0" padding="4" reference="unused">
+        <footnote location="[{69,0,null},{70,0,null},{71,0,null},{72,0,null},{73,0,null}]" blockPadding="0" padding="4" reference="unused">
             <paragraph>
                 <text>Text text text text text text text text text</text>
                 <footnote_ref location="[{69,55,9}]" reference="unused"/>

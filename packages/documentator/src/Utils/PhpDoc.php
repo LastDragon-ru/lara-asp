@@ -45,6 +45,10 @@ class PhpDoc {
         return $this->join(array_slice($this->text, 1));
     }
 
+    public function isDeprecated(): bool {
+        return $this->node && $this->node->getDeprecatedTagValues() !== [];
+    }
+
     /**
      * @param array<array-key, string> $strings
      */

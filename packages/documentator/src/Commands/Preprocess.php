@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Result;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task;
@@ -102,6 +103,7 @@ class Preprocess extends Command {
 
         $duration = (new Processor($container))
             ->task($this->preprocess)
+            ->task(CodeLinksTask::class)
             ->run($path, $exclude, $listener);
 
         $this->output->newLine();

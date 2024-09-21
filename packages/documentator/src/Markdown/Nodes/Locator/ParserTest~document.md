@@ -70,3 +70,20 @@ text text _![image](https://example.com/)_ text.
 
     Text text text text text text text text text text text text
     text text text text text text text text text text text text.
+
+# Inline code
+
+Text `code` text text **`code`** text text text text `code` text
+text `code` `code` _`code`_ [`code`][link] `[code][link]` text.
+
+Text `
+code
+` text.
+
+> Text `code` text.
+>
+> > `code`
+
+| Header | `Header`    |
+|--------|-------------|
+| `code` | Cell `code` |

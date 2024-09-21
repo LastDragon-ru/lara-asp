@@ -7,7 +7,7 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FilesIterator;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -50,7 +50,7 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
-        $iterator  = Cast::to(Iterator::class, yield new FilesIterator($target, '*.md', $parameters->depth));
+        $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, '*.md', $parameters->depth));
         $self      = $context->file->getPath();
 
         foreach ($iterator as $file) {

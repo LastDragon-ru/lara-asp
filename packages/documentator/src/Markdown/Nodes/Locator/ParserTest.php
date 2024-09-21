@@ -7,8 +7,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Referen
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Renderer as ReferenceRenderer;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\RendererWrapper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\CommonMark\Renderer\Inline\CodeRenderer;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\ImageRenderer;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\LinkRenderer;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
@@ -42,7 +44,8 @@ final class ParserTest extends TestCase {
             ->addRenderer(TableSection::class, new RendererWrapper(new TableSectionRenderer()))
             ->addRenderer(TableRow::class, new RendererWrapper(new TableRowRenderer()))
             ->addRenderer(TableCell::class, new RendererWrapper(new TableCellRenderer()))
-            ->addRenderer(ReferenceNode::class, new RendererWrapper(new ReferenceRenderer()));
+            ->addRenderer(ReferenceNode::class, new RendererWrapper(new ReferenceRenderer()))
+            ->addRenderer(Code::class, new RendererWrapper(new CodeRenderer()));
 
         $parser   = new MarkdownParser($environment);
         $document = $parser->parse(self::getTestData()->content('~document.md'));
