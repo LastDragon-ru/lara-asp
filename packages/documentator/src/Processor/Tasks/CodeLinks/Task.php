@@ -112,6 +112,7 @@ class Task implements TaskContract {
             $source = null;
 
             foreach ((array) $paths as $path) {
+                $path   = $root->getPath($path);
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
                 if ($source) {
@@ -130,7 +131,7 @@ class Task implements TaskContract {
             if ($source) {
                 $target = $token->link->getTarget($root, $file, $source);
 
-                if (!$target) {
+                if (!$target && !$token->deprecated) {
                     $unresolved[] = $token;
                     continue;
                 }
@@ -146,7 +147,7 @@ class Task implements TaskContract {
 
             sort($unresolved);
 
-            throw new CodeLinkUnresolved($unresolved);
+            throw new CodeLinkUnresolved($root, $file, $unresolved);
         }
 
         // Mutate
@@ -208,7 +209,7 @@ class Task implements TaskContract {
 
         foreach ($links as [$token, $target]) {
             $link  = (string) $token->link;
-            $hash  = static::BlockMarker.'-'.hash('xxh3', $link);
+            $hash  = static::BlockMarker.'/'.hash('xxh3', $link);
             $title = $token->link->getTitle();
             $title = $target && $title && !isset($duplicates[$title])
                 ? $title

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
+use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -39,6 +40,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use function array_map;
 use function array_walk_recursive;
 use function dirname;
+use function is_callable;
 use function trim;
 
 /**
@@ -48,17 +50,20 @@ use function trim;
 final class TaskTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
+    /**
+     * @param string|Closure(static, Directory, File): Exception $expected
+     */
     #[DataProvider('dataProviderInvoke')]
-    public function testInvoke(Exception|string $expected, string $document): void {
+    public function testInvoke(Closure|string $expected, string $document): void {
         $path = Path::normalize(self::getTestData()->path($document));
         $file = new File($path, true);
         $root = new Directory(dirname($path), true);
         $task = $this->app()->make(Task::class);
 
-        if (!($expected instanceof Exception)) {
+        if (!is_callable($expected)) {
             $expected = self::getTestData()->content($expected);
         } else {
-            self::expectExceptionObject($expected);
+            self::expectExceptionObject($expected($this, $root, $file));
         }
 
         $actual = ProcessorHelper::runTask($task, $root, $file);
@@ -295,7 +300,7 @@ final class TaskTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Exception|string, string}>
+     * @return array<string, array{Closure(static, Directory, File): Exception|string, string}>
      */
     public static function dataProviderInvoke(): array {
         return [
@@ -308,12 +313,18 @@ final class TaskTest extends TestCase {
                 'Invoke/InvokeNoGenerated.md',
             ],
             'Unknown'           => [
-                new CodeLinkUnresolved([
-                    '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown',
-                    '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::$property',
-                    '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::Constant',
-                    '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::method()',
-                ]),
+                static function (self $test, Directory $root, File $file): Exception {
+                    return new CodeLinkUnresolved(
+                        $root,
+                        $file,
+                        [
+                            '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown',
+                            '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::$property',
+                            '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::Constant',
+                            '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::method()',
+                        ],
+                    );
+                },
                 'Invoke/InvokeUnknown.md',
             ],
         ];
