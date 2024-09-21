@@ -40,11 +40,11 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
 
 * [ ] Following traits required `app()` method to get access to the Container (#151)
-  * `\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions`
-  * `\LastDragon_ru\LaraASP\Testing\Concerns\Override`
-  * `\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog`
-  * `\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty`
-  * `\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations`
+  * [`ScheduleAssertions`][code-links/5bf3a6e818e8ec48]
+  * [`Override`][code-links/a5e57679c3a947a6]
+  * [`WithQueryLog`][code-links/e6637d2e31bd9516]
+  * [`💀RefreshDatabaseIfEmpty`][code-links/1e9b6004b06c7c68]
+  * [`WithTranslations`][code-links/733eb8fbc4b211a5]
 
   ```php
   protected function app(): Application {
@@ -52,7 +52,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
-* [ ] `\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions` methods became non-static (#151).
+* [ ] [`ScheduleAssertions`][code-links/5bf3a6e818e8ec48] methods became non-static (#151).
 
 # Upgrade from v5
 
@@ -65,3 +65,18 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
 
 * [ ] Replace `CronableAssertions::assertCronableRegistered()` to `ScheduleAssertions::assertScheduled()`.
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/5bf3a6e818e8ec48]: src/Assertions/Application/ScheduleAssertions.php "\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions"
+
+[code-links/a5e57679c3a947a6]: src/Concerns/Override.php "\LastDragon_ru\LaraASP\Testing\Concerns\Override"
+
+[code-links/e6637d2e31bd9516]: src/Database/QueryLog/WithQueryLog.php "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog"
+
+[code-links/1e9b6004b06c7c68]: src/Database/RefreshDatabaseIfEmpty.php "\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty"
+
+[code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"
+
+[//]: # (end: code-links)

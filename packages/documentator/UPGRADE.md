@@ -40,14 +40,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
 
 * [ ] Migrate to the new contract:
-  * `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction`
-  * `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters`.
+  * [`Instruction`][code-links/6312f45bb1f04802]
+  * [`Parameters`][code-links/ecd75d864090a13d].
 
-* [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner` should be used/provided instead.
+* [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The [`Runner`][code-links/f9077a28b352f84b] should be used/provided instead.
 
-* [ ] `LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()` should yield a `LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency` instead of file.
+* [ ] [`Task::__invoke()`][code-links/ac42b74d053a366b] should yield a [`Dependency`][code-links/f4718f92376c3c25] instead of file.
 
-* [ ] `LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by `LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound`.
+* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by [`DependencyNotFound`][code-links/b5c6ff41fa24071c].
 
 # Upgrade from v5
 
@@ -59,10 +59,27 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
 
-* [ ] Replace `LastDragon_ru\LaraASP\Documentator\Preprocessor\InstructionContract` by `LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction` or `LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction`.
+* [ ] Replace `💀\LastDragon_ru\LaraASP\Documentator\Preprocessor\InstructionContract` by `💀\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ProcessableInstruction` or `💀\LastDragon_ru\LaraASP\Documentator\Preprocessor\Contracts\ParameterizableInstruction`.
 
-* [ ] Use [`illuminate/process`](https://laravel.com/docs/processes) instead of `LastDragon_ru\LaraASP\Documentator\Utils\Process`.
+* [ ] Use [`illuminate/process`](https://laravel.com/docs/processes) instead of `💀\LastDragon_ru\LaraASP\Documentator\Utils\Process`.
 
 * [ ] If you are extending built-in instructions, their classes were moved to `LastDragon_ru\LaraASP\Documentator\Preprocessor\Instructions\<name>\Instruction` namespace.
 
 * [ ] If you are extending built-in templates, they were renamed from `markdown.blade.php` to `default.blade.php`.
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
+
+[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L18-L39 "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"
+
+[code-links/b5c6ff41fa24071c]: src/Processor/Exceptions/DependencyNotFound.php "\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound"
+
+[code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction"
+
+[code-links/ecd75d864090a13d]: src/Processor/Tasks/Preprocess/Contracts/Parameters.php "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters"
+
+[code-links/f9077a28b352f84b]: src/Processor/Tasks/Preprocess/Instructions/IncludeExample/Contracts/Runner.php "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner"
+
+[//]: # (end: code-links)

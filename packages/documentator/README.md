@@ -12,7 +12,7 @@ This package provides various utilities for documentation generation such as Mar
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `HEAD ⋯ 5.0.0-beta.1`   |
-|  | `^8.1` |   `6.4.1 ⋯ 5.0.0-beta.1`   |
+|  | `^8.1` |   `6.4.2 ⋯ 5.0.0-beta.1`   |
 |  Laravel  | `^11.0.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.34.0` |   `HEAD ⋯ 6.2.0`   |
 |  | `^10.0.0` |   `6.1.0 ⋯ 5.0.0-beta.1`   |

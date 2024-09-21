@@ -39,7 +39,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
 
-* [ ] `\LastDragon_ru\LaraASP\Core\Provider\WithRoutes::bootRoutes()` requires settings.
+* [ ] [`WithRoutes::bootRoutes()`][code-links/141085a29c14a778] requires settings.
 
 # Upgrade from v5
 
@@ -50,3 +50,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/141085a29c14a778]: src/Provider/WithRoutes.php#L16-L41 "\LastDragon_ru\LaraASP\Core\Provider\WithRoutes::bootRoutes()"
+
+[//]: # (end: code-links)

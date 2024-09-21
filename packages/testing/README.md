@@ -12,7 +12,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
-|  | `^8.1` |   `6.4.1 ⋯ 2.0.0`   |
+|  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
 |  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
@@ -94,7 +94,7 @@ abstract class TestCase extends BaseTestCase {
 [//]: # (start: 7f0b9a0ac46e9bdd70ee29dc20759aae207f3a45b39e71e1ebb0df97a7a20a14)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-Compares two `\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query`.
+Compares two [`Query`][code-links/f2055681d6897706].
 
 We are performing following normalization before comparison to be more precise:
 
@@ -191,7 +191,7 @@ after script shutdown.
 [//]: # (start: 29a333d13d606bfa1459f7c40fdcd2aaee733a3c36ed07f8c5532fcc79c585c9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-Allows to get instance of `\LastDragon_ru\LaraASP\Testing\Utils\TestData` (a small helper to load data
+Allows to get instance of [`TestData`][code-links/84706d7f00aadc5e] (a small helper to load data
 associated with test)
 
 [//]: # (end: 29a333d13d606bfa1459f7c40fdcd2aaee733a3c36ed07f8c5532fcc79c585c9)
@@ -925,3 +925,12 @@ Please follow [Upgrade Guide](UPGRADE.md).
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/f2055681d6897706]: src/Database/QueryLog/Query.php "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query"
+
+[code-links/84706d7f00aadc5e]: src/Utils/TestData.php "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
+
+[//]: # (end: code-links)

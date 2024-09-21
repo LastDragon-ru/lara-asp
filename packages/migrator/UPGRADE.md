@@ -43,7 +43,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   * `lara-asp-migrator:sql-migration` instead of `lara-asp-migrator:raw-migration`
   * `lara-asp-migrator:sql-seeder` instead of `lara-asp-migrator:raw-migration`
 
-* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration` class 🤝
+* [ ] Migrate to the new [`SqlMigration`][code-links/6b3f8327188c3054] class 🤝
 
   ```php
   <?php declare(strict_types = 1);
@@ -57,7 +57,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   );
   ```
 
-* [ ] Migrate to the new `\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder` and `\LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder` classes 🤝
+* [ ] Migrate to the new [`Seeder`][code-links/9c7c8e70a7e5978f] and [`SqlSeeder`][code-links/365049c62f4308a2] classes 🤝
 
 # Upgrade from v5
 
@@ -68,3 +68,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/6b3f8327188c3054]: src/Migrations/SqlMigration.php "\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration"
+
+[code-links/9c7c8e70a7e5978f]: src/Seeders/Seeder.php "\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder"
+
+[code-links/365049c62f4308a2]: src/Seeders/SqlSeeder.php "\LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder"
+
+[//]: # (end: code-links)
