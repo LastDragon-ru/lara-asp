@@ -24,7 +24,7 @@
     "larastan/larastan": "^2.8.1",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
-    "nikic/php-parser": "^4.18|^5.0",
+    "nikic/php-parser": "^5.0",
     "nette/neon": "^3.4",
     "phpstan/phpstan": "^1.10",
     "symfony/var-dumper": "^6.3.0|^7.0.0"
