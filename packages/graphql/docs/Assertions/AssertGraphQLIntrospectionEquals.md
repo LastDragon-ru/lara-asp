@@ -3,7 +3,7 @@
 Compares default public schema (as the client sees it through introspection).
 
 [include:example]: ./AssertGraphQLIntrospectionEqualsTest.php
-[//]: # (start: 2f8da9006ec398266830f6eb66b58b66cbe88ecb68a325cb5df1b8138680c021)
+[//]: # (start: preprocess/df6823249246c0ec)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -431,4 +431,4 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
 }
 ```
 
-[//]: # (end: 2f8da9006ec398266830f6eb66b58b66cbe88ecb68a325cb5df1b8138680c021)
+[//]: # (end: preprocess/df6823249246c0ec)

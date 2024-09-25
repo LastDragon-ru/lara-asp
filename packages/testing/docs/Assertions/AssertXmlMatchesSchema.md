@@ -3,7 +3,7 @@
 Asserts that XML matches schema [XSD](https://en.wikipedia.org/wiki/XML_Schema_(W3C)) or [Relax NG](https://en.wikipedia.org/wiki/RELAX_NG). Validation based on the standard methods of [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class.
 
 [include:example]: ./AssertXmlMatchesSchemaTest.php
-[//]: # (start: bb1de4a596e72f0c08f54f8de9f0e4fdcf21b51a414f637a22d8182f6088816b)
+[//]: # (start: preprocess/9e500e2f7ceb3622)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -65,4 +65,4 @@ final class AssertXmlMatchesSchemaTest extends TestCase {
 }
 ```
 
-[//]: # (end: bb1de4a596e72f0c08f54f8de9f0e4fdcf21b51a414f637a22d8182f6088816b)
+[//]: # (end: preprocess/9e500e2f7ceb3622)

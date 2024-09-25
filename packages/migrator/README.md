@@ -7,7 +7,7 @@ This package improves standard Laravel migrations to add support for raw SQL fil
 > The Migrator uses the same mechanism as [Squashing Migrations](https://laravel.com/docs/migrations#squashing-migrations) so not all databases are supported, please see Laravel Documentation for more details.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (start: preprocess/78cfc4c7c7c55577)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -29,10 +29,10 @@ This package improves standard Laravel migrations to add support for raw SQL fil
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (end: preprocess/78cfc4c7c7c55577)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "migrator"}})
-[//]: # (start: e2c49615c9bd1e00d794567ce27ae703251c22645e08d8e27dd759c1839f79be)
+[//]: # (start: preprocess/242f697f8c57434c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -41,7 +41,7 @@ This package improves standard Laravel migrations to add support for raw SQL fil
 composer require lastdragon-ru/lara-asp-migrator
 ```
 
-[//]: # (end: e2c49615c9bd1e00d794567ce27ae703251c22645e08d8e27dd759c1839f79be)
+[//]: # (end: preprocess/242f697f8c57434c)
 
 # Migrations
 
@@ -84,11 +84,11 @@ The command will create two files:
 Please follow [Upgrade Guide](UPGRADE.md).
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+[//]: # (start: preprocess/c4ba75080f5a48b7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+[//]: # (end: preprocess/c4ba75080f5a48b7)

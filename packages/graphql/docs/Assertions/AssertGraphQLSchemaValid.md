@@ -3,7 +3,7 @@
 Validates default internal schema (with all directives). Faster than `lighthouse:validate-schema` command because loads only used directives.
 
 [include:example]: ./AssertGraphQLSchemaValidTest.php
-[//]: # (start: 0f4a6d99f3afe7afabcfb203433abf716ad8647a02f8ddbace33da2543e63a92)
+[//]: # (start: preprocess/991ba34d32d6768f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -74,4 +74,4 @@ final class AssertGraphQLSchemaValidTest extends TestCase {
 }
 ```
 
-[//]: # (end: 0f4a6d99f3afe7afabcfb203433abf716ad8647a02f8ddbace33da2543e63a92)
+[//]: # (end: preprocess/991ba34d32d6768f)

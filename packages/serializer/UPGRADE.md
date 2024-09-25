@@ -1,7 +1,7 @@
 # Upgrade Guide
 
 [include:file]: ../../docs/Shared/Upgrade.md
-[//]: # (start: 8e89e65b3785cb5b41f28a4f3c5b7e0db0110d8047852d71cd99b2cdffd8f57c)
+[//]: # (start: preprocess/aa9fc458898c7c1c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Instructions
@@ -25,26 +25,26 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
 |:--:|:--------------------------------------------------------------------------------------------------------------------|
 
-[//]: # (end: 8e89e65b3785cb5b41f28a4f3c5b7e0db0110d8047852d71cd99b2cdffd8f57c)
+[//]: # (end: preprocess/aa9fc458898c7c1c)
 
 # Upgrade from v6
 
 [include:file]: ../../docs/Shared/Upgrade/FromV6.md
-[//]: # (start: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
+[//]: # (start: preprocess/9679e76379216855)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [ ] PHP 8.1 is not supported anymore. Migrate to the newer version.
 
 * [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
 
-[//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
+[//]: # (end: preprocess/9679e76379216855)
 
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
-[//]: # (start: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
+[//]: # (start: preprocess/2e85dad2b0618274)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
-[//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
+[//]: # (end: preprocess/2e85dad2b0618274)

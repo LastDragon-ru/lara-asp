@@ -1,7 +1,7 @@
 # Upgrade Guide
 
 [include:file]: ./docs/Shared/Upgrade.md
-[//]: # (start: 4318f49cdbcc8c10dc5745f395acd00ccef31aebde5f9c3f864623ec953d41d2)
+[//]: # (start: preprocess/8aaed7c3a55b57f9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Instructions
@@ -25,12 +25,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
 |:--:|:--------------------------------------------------------------------------------------------------------------------|
 
-[//]: # (end: 4318f49cdbcc8c10dc5745f395acd00ccef31aebde5f9c3f864623ec953d41d2)
+[//]: # (end: preprocess/8aaed7c3a55b57f9)
 
 # Packages
 
 [include:package-list]: ./packages ({"template": "upgradable"})
-[//]: # (start: bc74143a7e2bd1ef91a36faf8777246c3cf2a2ea5a08443bc2e3e4364ae9bf07)
+[//]: # (start: preprocess/54260d8bcef12cc3)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [(Laravel) Core](<packages/core/UPGRADE.md>)
@@ -45,7 +45,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [Dev 🐝](<packages/dev/UPGRADE.md>)
 * [GraphQL Printer](<packages/graphql-printer/UPGRADE.md>)
 
-[//]: # (end: bc74143a7e2bd1ef91a36faf8777246c3cf2a2ea5a08443bc2e3e4364ae9bf07)
+[//]: # (end: preprocess/54260d8bcef12cc3)
 
 # Upgrade from v5
 

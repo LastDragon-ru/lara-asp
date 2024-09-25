@@ -3,7 +3,7 @@
 This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html) to use it inside Laravel application.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (start: preprocess/78cfc4c7c7c55577)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -19,10 +19,10 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 |  | `^9.21.0` |   `5.6.0 ⋯ 5.0.0-beta.1`   |
 |  | `^9.0.0` |  `5.0.0-beta.0`   |
 
-[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (end: preprocess/78cfc4c7c7c55577)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "serializer"}})
-[//]: # (start: b7815d4caee08ab4b0c4055251eb8414f400d1eddba3fbb235b33737137e4dda)
+[//]: # (start: preprocess/2a89e018b34da3ed)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -31,12 +31,12 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 composer require lastdragon-ru/lara-asp-serializer
 ```
 
-[//]: # (end: b7815d4caee08ab4b0c4055251eb8414f400d1eddba3fbb235b33737137e4dda)
+[//]: # (end: preprocess/2a89e018b34da3ed)
 
 # Usage
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
+[//]: # (start: preprocess/4c2bcd97f5d25b12)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -92,14 +92,14 @@ LastDragon_ru\LaraASP\Serializer\Docs\Examples\Usage\User {
 }
 ```
 
-[//]: # (end: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
+[//]: # (end: preprocess/4c2bcd97f5d25b12)
 
 # Partial deserialization
 
 Sometimes you don't know (or do not want to support) the full structure of the object. In this case you can mark the class as [`Partial`][code-links/52d699d2b40ed389] to allow unserialize only known (wanted) properties:
 
 [include:example]: ./docs/Examples/Partial.php
-[//]: # (start: 054e60f7fb44bc5391e7906b939df2aaea42d9a33e75d06094f4b5dd62d1049c)
+[//]: # (start: preprocess/ab12332a02e66fe9)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -137,7 +137,7 @@ LastDragon_ru\LaraASP\Serializer\Docs\Examples\Partial\User {
 }
 ```
 
-[//]: # (end: 054e60f7fb44bc5391e7906b939df2aaea42d9a33e75d06094f4b5dd62d1049c)
+[//]: # (end: preprocess/ab12332a02e66fe9)
 
 # Extending
 
@@ -160,7 +160,7 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provid
 You can use the [`Serialized`][code-links/65c47cc2803dd25a] attribute to populate a model attribute to/from an object:
 
 [include:example]: ./docs/Examples/Attribute.php
-[//]: # (start: fb77e44bdaa1948ff6630b23a8b2e3333de750be45e8f5fda1f7b784fe036a27)
+[//]: # (start: preprocess/3d9ea93a5e4289d6)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -219,21 +219,21 @@ The `$user->getAttributes()` is:
 ]
 ```
 
-[//]: # (end: fb77e44bdaa1948ff6630b23a8b2e3333de750be45e8f5fda1f7b784fe036a27)
+[//]: # (end: preprocess/3d9ea93a5e4289d6)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+[//]: # (start: preprocess/c4ba75080f5a48b7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+[//]: # (end: preprocess/c4ba75080f5a48b7)
 
 [^1]: <https://laravel.com/docs/eloquent-mutators>
 
