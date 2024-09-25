@@ -46,7 +46,7 @@ Saves help for each command in the `namespace` into a separate file in the `targ
 
 ## `lara-asp-documentator:preprocess`
 
-Preprocess Markdown files.
+Perform one or more task on the file.
 
 [Read more](<docs/Commands/preprocess.md>).
 

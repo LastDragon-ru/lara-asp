@@ -2,13 +2,17 @@
 
 # `lara-asp-documentator:preprocess`
 
-Preprocess Markdown files.
+Perform one or more task on the file.
 
 ## Usages
 
 * `artisan lara-asp-documentator:preprocess [--exclude [EXCLUDE]] [--] [<path>]`
 
 ## Description
+
+## Tasks
+
+### Preprocess (`md`)
 
 Replaces special instructions in Markdown. Instruction is the [link
 reference definition](https://github.github.com/gfm/#link-reference-definitions),
@@ -28,13 +32,11 @@ Where:
 * `<parameters>` optional JSON string with additional parameters
   (can be wrapped by `(...)`, `"..."`, or `'...'`)
 
-## Limitations
+#### Limitations
 
-* Nested `<instruction>` doesn't support.
+* Nested `<instruction>` not supported.
 
-## Instructions
-
-### `[include:artisan]: <target>`
+#### `[include:artisan]: <target>`
 
 * `<target>` - Artisan command. The following special variables supported:
 
@@ -52,7 +54,7 @@ You can use one of the special variables inside command args instead.
 Also, the command will not inherit the current verbosity level, it will be
 run with default/normal level if it is not specified in its arguments.
 
-### `[include:docblock]: <target> <parameters>`
+#### `[include:docblock]: <target> <parameters>`
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
@@ -63,7 +65,7 @@ Includes the docblock of the first PHP class/interface/trait/enum/etc
 from `<target>` file. Inline tags include as is except `@see`/`@link`
 which will be replaced to FQCN (if possible). Other tags are ignored.
 
-### `[include:document-list]: <target> <parameters>`
+#### `[include:document-list]: <target> <parameters>`
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
@@ -75,7 +77,7 @@ Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
 after the Header will be used as a summary.
 
-### `[include:example]: <target>`
+#### `[include:example]: <target>`
 
 * `<target>` - File path.
 
@@ -87,7 +89,7 @@ By default, the `Runner` return value will be included as ` ```plain text``` `
 block. You can wrap the output into `<markdown>text</markdown>` tags to
 insert it as is.
 
-### `[include:exec]: <target>`
+#### `[include:exec]: <target>`
 
 * `<target>` - Path to the executable.
 
@@ -96,19 +98,19 @@ Executes the `<target>` and returns result.
 The working directory is equal to the file directory. If you want to run
 Artisan command, please check `include:artisan` instruction.
 
-### `[include:file]: <target>`
+#### `[include:file]: <target>`
 
 * `<target>` - File path.
 
 Includes the `<target>` file.
 
-### `[include:graphql-directive]: <target>`
+#### `[include:graphql-directive]: <target>`
 
 * `<target>` - Directive name (started with `@` sign)
 
 Includes the definition of the directive as a Markdown code block.
 
-### `[include:package-list]: <target> <parameters>`
+#### `[include:package-list]: <target> <parameters>`
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
@@ -117,13 +119,32 @@ Includes the definition of the directive as a Markdown code block.
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
 
-### `[include:template]: <target> <parameters>`
+#### `[include:template]: <target> <parameters>`
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
   * `data: array` - Array of variables (`${name}`) to replace.
 
 Includes the `<target>` as a template.
+
+### Code Links (`md`)
+
+Searches class/method/property/etc names in `inline code` and wrap it into a
+link to file.
+
+It expects that the `$root` directory is a composer project and will use
+`psr-4` autoload rules to find class files. Classes which are not from the
+composer will be completely ignored. If the file/class/method/etc doesn't
+exist, the error will be thrown. To avoid the error, you can place `💀` mark
+as the first character in `inline code`. Deprecated objects will be marked
+automatically.
+
+Supported links:
+
+* `\App\Class`
+* `\App\Class::method()`
+* `\App\Class::$property`
+* `\App\Class::Constant`
 
 ## Arguments
 

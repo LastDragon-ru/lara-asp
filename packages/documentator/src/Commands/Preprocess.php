@@ -3,16 +3,19 @@
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\HeadingsLevel;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Factory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -31,6 +34,7 @@ use function implode;
 use function is_a;
 use function is_scalar;
 use function ksort;
+use function max;
 use function mb_strlen;
 use function min;
 use function rtrim;
@@ -41,11 +45,11 @@ use function trim;
 use function var_export;
 
 /**
- * @see Task
+ * @see Processor
  */
 #[AsCommand(
     name       : Preprocess::Name,
-    description: 'Preprocess Markdown files.',
+    description: 'Perform one or more task on the file.',
 )]
 class Preprocess extends Command {
     public const Name = Package::Name.':preprocess';
@@ -64,20 +68,18 @@ class Preprocess extends Command {
      * @var string
      */
     public $help = <<<'HELP'
-        %description%
+        ## Tasks
 
-        ## Instructions
-
-        %instructions%
+        %tasks%
         HELP;
 
     public function __construct(
-        protected readonly Task $preprocess,
+        protected readonly Factory $factory,
     ) {
         parent::__construct();
     }
 
-    public function __invoke(ContainerResolver $container, Formatter $formatter): void {
+    public function __invoke(Formatter $formatter): void {
         $cwd      = getcwd();
         $path     = Cast::toString($this->argument('path') ?? $cwd);
         $path     = Path::normalize($path);
@@ -101,10 +103,7 @@ class Preprocess extends Command {
             $this->output->writeln($line, OutputInterface::OUTPUT_NORMAL | $resultVerbosity);
         };
 
-        $duration = (new Processor($container))
-            ->task($this->preprocess)
-            ->task(CodeLinksTask::class)
-            ->run($path, $exclude, $listener);
+        $duration = ($this->factory)()->run($path, $exclude, $listener);
 
         $this->output->newLine();
         $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration($duration)})</>");
@@ -113,31 +112,67 @@ class Preprocess extends Command {
     #[Override]
     public function getProcessedHelp(): string {
         return strtr(parent::getProcessedHelp(), [
-            '%description%'  => $this->getProcessedHelpDescription(),
-            '%instructions%' => $this->getProcessedHelpInstructions(),
+            '%tasks%' => trim($this->getProcessedHelpTasks(3)),
         ]);
     }
 
-    protected function getProcessedHelpDescription(): string {
-        return $this->getDocBlock(new ReflectionClass(Task::class));
+    protected function getProcessedHelpTasks(int $level): string {
+        $help      = '';
+        $heading   = str_repeat('#', $level);
+        $processor = ($this->factory)();
+
+        foreach ($processor->tasks() as $index => $task) {
+            $description = '_No description provided_.';
+            $description = trim($this->getProcessedHelpTaskDescription($task, $level + 1)) ?: $description;
+            $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';
+            $title       = trim((string) $this->getProcessedHelpTaskTitle($task)) ?: "Task №{$index}";
+            $help       .= <<<MARKDOWN
+                {$heading} {$title} ({$extensions})
+
+                {$description}
+
+
+                MARKDOWN;
+        }
+
+        return $help ?: '_No tasks defined_.';
     }
 
-    protected function getProcessedHelpInstructions(): string {
-        $instructions = $this->preprocess->getInstructions();
+    protected function getProcessedHelpTaskTitle(Task $task): ?string {
+        return match (true) {
+            $task instanceof PreprocessTask => 'Preprocess',
+            $task instanceof CodeLinksTask  => 'Code Links',
+            default                         => null,
+        };
+    }
+
+    protected function getProcessedHelpTaskDescription(Task $task, int $level): string {
+        $help = $this->getDocBlock(new ReflectionClass($task), null, $level);
+
+        if ($task instanceof PreprocessTask) {
+            $help .= "\n\n".$this->getProcessedHelpTaskPreprocessInstructions($task, $level);
+        }
+
+        return $help;
+    }
+
+    protected function getProcessedHelpTaskPreprocessInstructions(PreprocessTask $task, int $level): string {
+        $instructions = $task->getInstructions();
+        $heading      = str_repeat('#', $level);
         $help         = [];
 
         foreach ($instructions as $instruction) {
             $class  = new ReflectionClass($instruction);
             $name   = $instruction::getName();
-            $desc   = $this->getDocBlock($class);
-            $target = $this->getProcessedHelpInstructionTarget($instruction, 'target', 2);
+            $desc   = $this->getDocBlock($class, null, $level + 1);
+            $target = $this->getProcessedHelpTaskPreprocessInstructionTarget($instruction, 'target', 2);
             $target = trim($target ?: '_No description provided_.');
-            $params = $this->getProcessedHelpInstructionParameters($instruction, 'target', 2);
+            $params = $this->getProcessedHelpTaskPreprocessParameters($instruction, 'target', 2);
 
             if ($params !== null) {
                 $help[$name] = rtrim(
                     <<<HELP
-                    ### `[{$name}]: <target> <parameters>`
+                    {$heading} `[{$name}]: <target> <parameters>`
 
                     * `<target>` - {$target}
                     * `<parameters>` - additional parameters
@@ -149,7 +184,7 @@ class Preprocess extends Command {
             } else {
                 $help[$name] = rtrim(
                     <<<HELP
-                    ### `[{$name}]: <target>`
+                    {$heading} `[{$name}]: <target>`
 
                     * `<target>` - {$target}
 
@@ -168,10 +203,13 @@ class Preprocess extends Command {
      * @param class-string<Instruction<covariant Parameters>> $instruction
      * @param int<0, max>                                     $padding
      */
-    protected function getProcessedHelpInstructionTarget(string $instruction, string $target, int $padding): ?string {
+    protected function getProcessedHelpTaskPreprocessInstructionTarget(
+        string $instruction,
+        string $target,
+        int $padding,
+    ): ?string {
         $class = new ReflectionProperty($instruction::getParameters(), $target);
         $help  = $this->getDocBlock($class, $padding);
-        $help  = rtrim($help);
 
         return $help;
     }
@@ -180,7 +218,7 @@ class Preprocess extends Command {
      * @param class-string<Instruction<covariant Parameters>> $instruction
      * @param int<0, max>                                     $padding
      */
-    protected function getProcessedHelpInstructionParameters(
+    protected function getProcessedHelpTaskPreprocessParameters(
         string $instruction,
         string $target,
         int $padding,
@@ -262,14 +300,24 @@ class Preprocess extends Command {
 
     /**
      * @param ReflectionClass<object>|ReflectionProperty $object
-     * @param int<0, max>                                $padding
+     * @param ?int<0, max>                               $padding
      */
-    private function getDocBlock(ReflectionClass|ReflectionProperty $object, int $padding = 0): string {
-        $doc  = new PhpDoc($object->getDocComment() ?: null);
-        $help = $doc->getText();
-        $help = Text::setPadding($help, $padding);
-        $help = rtrim($help);
+    private function getDocBlock(
+        ReflectionClass|ReflectionProperty $object,
+        ?int $padding = null,
+        ?int $level = null,
+    ): string {
+        $help = (new PhpDoc($object->getDocComment() ?: null))->getText();
 
-        return $help;
+        if ($level !== null) {
+            $level = max(1, min(6, $level));
+            $help  = (string) (new Document($help))->mutate(new HeadingsLevel($level));
+        }
+
+        if ($padding !== null) {
+            $help = Text::setPadding($help, $padding);
+        }
+
+        return trim($help);
     }
 }

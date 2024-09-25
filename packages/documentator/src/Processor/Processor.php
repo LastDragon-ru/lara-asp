@@ -15,6 +15,9 @@ use Symfony\Component\Finder\Glob;
 use function array_map;
 use function microtime;
 
+/**
+ * Perform one or more task on the file.
+ */
 class Processor {
     /**
      * @var InstanceList<Task>
@@ -35,10 +38,18 @@ class Processor {
     }
 
     /**
-     * @param Task|class-string<Task> $task
+     * @return list<Task>
      */
-    public function task(Task|string $task): static {
-        $this->tasks->add($task);
+    public function tasks(): array {
+        return $this->tasks->instances();
+    }
+
+    /**
+     * @param Task|class-string<Task>                         $task
+     * @param ($task is object ? null : ?Closure(Task): void) $configurator
+     */
+    public function task(Task|string $task, ?Closure $configurator = null): static {
+        $this->tasks->add($task, $configurator);
 
         return $this;
     }
