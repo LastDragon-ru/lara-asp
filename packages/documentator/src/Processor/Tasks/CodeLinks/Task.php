@@ -221,7 +221,7 @@ class Task implements TaskContract {
             if ($target) {
                 $referenceTitle              = Utils::getLinkTitle($refsParentNode, $link);
                 $referenceTarget             = Utils::getLinkTarget($refsParentNode, (string) $target);
-                $references[$referenceTitle] = "[{$hash}]: {$referenceTarget} {$referenceTitle}";
+                $references[$referenceTitle] = "[{$hash}]: {$referenceTarget}\n    {$referenceTitle}";
             }
 
             foreach ($token->nodes as $node) {
