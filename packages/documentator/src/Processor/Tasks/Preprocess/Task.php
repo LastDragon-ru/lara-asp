@@ -58,6 +58,8 @@ use const JSON_THROW_ON_ERROR;
  * * Nested `<instruction>` not supported.
  */
 class Task implements TaskContract {
+    protected const BlockMarker = 'preprocess';
+
     /**
      * @var InstanceList<Instruction<Parameters>>
      */
@@ -146,7 +148,7 @@ class Task implements TaskContract {
             }
 
             // Wrap
-            $content = GeneratedNode::get($hash, $content);
+            $content = GeneratedNode::get(static::BlockMarker.'/'.$hash, $content);
 
             // Replace
             foreach ($token->nodes as $node) {

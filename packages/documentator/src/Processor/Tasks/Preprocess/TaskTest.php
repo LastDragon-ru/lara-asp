@@ -207,72 +207,72 @@ final class TaskTest extends TestCase {
             [unknown]: ./path/to/file (should not be parsed)
 
             [test:empty]: <./path/to/file "value">
-            [//]: # (start: 036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
+            [//]: # (start: preprocess/036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: 036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
+            [//]: # (end: preprocess/036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: <./path/to/file>
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
 
             [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
-            [//]: # (start: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (start: preprocess/5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (end: preprocess/5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
 
             [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
-            [//]: # (start: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (start: preprocess/5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (end: preprocess/5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
 
             > Quote
             >
             > [test:instruction]: ./path/to/file
-            > [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            > [//]: # (start: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             > [//]: # (warning: Generated automatically. Do not edit.)
             >
             > result({"target":".\/path\/to\/file","a":"a","b":[]})
             >
-            > [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            > [//]: # (end: preprocess/482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
             >
 
             [test:document]: file.md
-            [//]: # (start: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+            [//]: # (start: preprocess/52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             Summary [text](path/Document.md) summary [link][a282e9c32e7eee65-link] and summary[^a282e9c32e7eee65-1] and [self](#fragment) and [self][a282e9c32e7eee65-self].
@@ -282,7 +282,7 @@ final class TaskTest extends TestCase {
 
             [^a282e9c32e7eee65-1]: Footnote
 
-            [//]: # (end: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+            [//]: # (end: preprocess/52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
 
             MARKDOWN,
             $actual,
