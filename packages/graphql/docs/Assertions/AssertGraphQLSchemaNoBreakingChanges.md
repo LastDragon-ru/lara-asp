@@ -3,7 +3,7 @@
 Checks that no breaking changes in the default internal schema (with all directives).
 
 [include:example]: ./AssertGraphQLSchemaNoBreakingChangesTest.php
-[//]: # (start: 63b3ebbc0e5dd8920d099d8affaa5b74b59d56aa8aa351fea0605d3d114a4260)
+[//]: # (start: preprocess/f6f137ef61ef41f2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -80,4 +80,4 @@ final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
 }
 ```
 
-[//]: # (end: 63b3ebbc0e5dd8920d099d8affaa5b74b59d56aa8aa351fea0605d3d114a4260)
+[//]: # (end: preprocess/f6f137ef61ef41f2)

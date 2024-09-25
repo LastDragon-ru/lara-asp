@@ -1,7 +1,7 @@
 # Upgrade Guide
 
 [include:file]: ../../docs/Shared/Upgrade.md
-[//]: # (start: 8e89e65b3785cb5b41f28a4f3c5b7e0db0110d8047852d71cd99b2cdffd8f57c)
+[//]: # (start: preprocess/aa9fc458898c7c1c)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## Instructions
@@ -25,7 +25,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 | 🤝 | Backward-compatible change. Please note that despite you can ignore it now, but it will be mandatory in the future. |
 |:--:|:--------------------------------------------------------------------------------------------------------------------|
 
-[//]: # (end: 8e89e65b3785cb5b41f28a4f3c5b7e0db0110d8047852d71cd99b2cdffd8f57c)
+[//]: # (end: preprocess/aa9fc458898c7c1c)
 
 ## Tips
 
@@ -38,14 +38,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 ## General
 
 [include:file]: ../../docs/Shared/Upgrade/FromV6.md
-[//]: # (start: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
+[//]: # (start: preprocess/9679e76379216855)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [ ] PHP 8.1 is not supported anymore. Migrate to the newer version.
 
 * [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
 
-[//]: # (end: 470dd21d18d5886f1873b1247130ac8173ed99258e41418c6bd32162325d628b)
+[//]: # (end: preprocess/9679e76379216855)
 
 * [ ] The [`JsonStringType`][code-links/9ad31c571587f0f4] is not implement [`TypeDefinition`][code-links/3c9ddc100b69df14] anymore. To add the scalar into the Schema, you can use `@type`/`@scalar` directive, or create a custom implementation of `TypeDefinition` contract to use with `Builder`/`Manipulator`.
 
@@ -73,12 +73,12 @@ This section is actual only if you are extending the package. Please review and 
 ## General
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
-[//]: # (start: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
+[//]: # (start: preprocess/2e85dad2b0618274)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
-[//]: # (end: 374d3c27b4b7982387512d35047d26f2bce3dd6c7b06bc14e53fdcd74bad8102)
+[//]: # (end: preprocess/2e85dad2b0618274)
 
 * [ ] [Input type auto-generation](README.md#input-type-auto-generation) reworked and may include more/fewer fields. Please check the documentation and update the schema if needed.
 
@@ -287,60 +287,88 @@ This section is actual only if you are extending the package. Please review and 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/372c362d9f824e7f]: src/Builder/Contracts/BuilderFieldResolver.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver"
+[code-links/372c362d9f824e7f]: src/Builder/Contracts/BuilderFieldResolver.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver"
 
-[code-links/4da92573cf155b67]: src/Builder/Contracts/Context.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context"
+[code-links/4da92573cf155b67]: src/Builder/Contracts/Context.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context"
 
-[code-links/69acaf2657f34907]: src/Builder/Contracts/Handler.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler"
+[code-links/69acaf2657f34907]: src/Builder/Contracts/Handler.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler"
 
-[code-links/93c5d66b7f26a3ec]: src/Builder/Contracts/Operator.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator"
+[code-links/93c5d66b7f26a3ec]: src/Builder/Contracts/Operator.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator"
 
-[code-links/3972e727bec7c972]: src/Builder/Contracts/Scope.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope"
+[code-links/3972e727bec7c972]: src/Builder/Contracts/Scope.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope"
 
-[code-links/c4fffbfe6bcac46f]: src/Builder/Contracts/Scout/FieldResolver.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver"
+[code-links/c4fffbfe6bcac46f]: src/Builder/Contracts/Scout/FieldResolver.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver"
 
-[code-links/3c9ddc100b69df14]: src/Builder/Contracts/TypeDefinition.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition"
+[code-links/3c9ddc100b69df14]: src/Builder/Contracts/TypeDefinition.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition"
 
-[code-links/ac7acd6cc65a080d]: src/Builder/Contracts/TypeDefinition.php#L18-L28 "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition::getTypeDefinition()"
+[code-links/ac7acd6cc65a080d]: src/Builder/Contracts/TypeDefinition.php#L18-L28
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition::getTypeDefinition()"
 
-[code-links/95d8c0cb57870603]: src/Builder/Contracts/TypeProvider.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider"
+[code-links/95d8c0cb57870603]: src/Builder/Contracts/TypeProvider.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider"
 
-[code-links/8462c350ae3f58ec]: src/Builder/Contracts/TypeSource.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource"
+[code-links/8462c350ae3f58ec]: src/Builder/Contracts/TypeSource.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource"
 
-[code-links/e547fd7224724e03]: src/Builder/Directives/HandlerDirective.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective"
+[code-links/e547fd7224724e03]: src/Builder/Directives/HandlerDirective.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Directives\HandlerDirective"
 
-[code-links/89331c0547a570ec]: src/Builder/Exceptions/Client/ConditionTooManyFields.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields"
+[code-links/89331c0547a570ec]: src/Builder/Exceptions/Client/ConditionTooManyFields.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields"
 
-[code-links/2cd9d43238896ed8]: src/Builder/Field.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Field"
+[code-links/2cd9d43238896ed8]: src/Builder/Field.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Field"
 
-[code-links/3027be4084984b5a]: src/Builder/Manipulator.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator"
+[code-links/3027be4084984b5a]: src/Builder/Manipulator.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator"
 
-[code-links/786d31a251fa3c1e]: src/Builder/Operators.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Operators"
+[code-links/786d31a251fa3c1e]: src/Builder/Operators.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Operators"
 
-[code-links/7c84e0ec8e3ddcb3]: src/Builder/Property.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Property"
+[code-links/7c84e0ec8e3ddcb3]: src/Builder/Property.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Property"
 
-[code-links/e0d23d0df71d20ae]: src/Builder/Traits/HandlerOperator.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator"
+[code-links/e0d23d0df71d20ae]: src/Builder/Traits/HandlerOperator.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator"
 
-[code-links/f7fa8cd7df69c5a4]: src/Builder/Traits/WithScoutSupport.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport"
+[code-links/f7fa8cd7df69c5a4]: src/Builder/Traits/WithScoutSupport.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithScoutSupport"
 
-[code-links/6c3b5e426f3af114]: src/Builder/Types/InputObject.php "\LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject"
+[code-links/6c3b5e426f3af114]: src/Builder/Types/InputObject.php
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject"
 
-[code-links/9ad31c571587f0f4]: src/Scalars/JsonStringType.php "\LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType"
+[code-links/9ad31c571587f0f4]: src/Scalars/JsonStringType.php
+    "\LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType"
 
-[code-links/ab92ab72ccf08721]: src/SearchBy/Definitions/SearchByOperatorFieldDirective.php "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective"
+[code-links/ab92ab72ccf08721]: src/SearchBy/Definitions/SearchByOperatorFieldDirective.php
+    "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective"
 
-[code-links/5f93528c6eb9dc8f]: src/SearchBy/Operators.php#L60 "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object"
+[code-links/5f93528c6eb9dc8f]: src/SearchBy/Operators.php#L60
+    "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object"
 
-[code-links/b26bb0f7b2034eb1]: src/SortBy/Definitions/SortByOperatorFieldDirective.php "\LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective"
+[code-links/b26bb0f7b2034eb1]: src/SortBy/Definitions/SortByOperatorFieldDirective.php
+    "\LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective"
 
-[code-links/107e39e7d99461b2]: src/SortBy/Operators/Operator.php "\LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator"
+[code-links/107e39e7d99461b2]: src/SortBy/Operators/Operator.php
+    "\LastDragon_ru\LaraASP\GraphQL\SortBy\Operators\Operator"
 
-[code-links/bed52c4a6cb03cac]: src/Stream/Directives/Directive.php "\LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive"
+[code-links/bed52c4a6cb03cac]: src/Stream/Directives/Directive.php
+    "\LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive"
 
-[code-links/a6029821bb9d8f2e]: src/Testing/GraphQLAssertions.php "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions"
+[code-links/a6029821bb9d8f2e]: src/Testing/GraphQLAssertions.php
+    "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions"
 
-[code-links/c84a35ff75f6a95e]: src/Testing/GraphQLAssertions.php#L90-L102 "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions::assertGraphQLSchemaEquals()"
+[code-links/c84a35ff75f6a95e]: src/Testing/GraphQLAssertions.php#L90-L102
+    "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions::assertGraphQLSchemaEquals()"
 
-[code-links/947cddaaef5e3f1b]: src/Utils/AstManipulator.php#L298-L339 "\LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()"
+[code-links/947cddaaef5e3f1b]: src/Utils/AstManipulator.php#L298-L339
+    "\LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()"
 
 [//]: # (end: code-links)

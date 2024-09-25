@@ -110,7 +110,7 @@ final class TaskTest extends TestCase {
 
         self::assertEquals(
             [
-                '036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4' => [
+                '4f76e5da6e5aabbc' => [
                     $a,
                     new Context($root, $file, './path/to/file%20%22value%22', null, $mutation),
                     './path/to/file "value"',
@@ -119,7 +119,7 @@ final class TaskTest extends TestCase {
                         new Location(5, 6, 0, null, 0),
                     ],
                 ],
-                '482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2' => [
+                'bb30809c6ca4c80a' => [
                     $b,
                     new Context($root, $file, './path/to/file', null, $mutation),
                     './path/to/file',
@@ -132,7 +132,7 @@ final class TaskTest extends TestCase {
                         new Location(31, 31, 0, null, 2),
                     ],
                 ],
-                '5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d' => [
+                'f5f55887ee415b3d' => [
                     $b,
                     new Context(
                         $root,
@@ -207,72 +207,72 @@ final class TaskTest extends TestCase {
             [unknown]: ./path/to/file (should not be parsed)
 
             [test:empty]: <./path/to/file "value">
-            [//]: # (start: 036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
+            [//]: # (start: preprocess/4f76e5da6e5aabbc)
             [//]: # (warning: Generated automatically. Do not edit.)
             [//]: # (empty)
-            [//]: # (end: 036f5cd95d39a2990511d9602015ccd8b4da87a199f021f507527c66bddc0fd4)
+            [//]: # (end: preprocess/4f76e5da6e5aabbc)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/bb30809c6ca4c80a)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/bb30809c6ca4c80a)
 
             [test:instruction]: <./path/to/file>
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/bb30809c6ca4c80a)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/bb30809c6ca4c80a)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/bb30809c6ca4c80a)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/bb30809c6ca4c80a)
 
             [test:instruction]: ./path/to/file
-            [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (start: preprocess/bb30809c6ca4c80a)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file","a":"a","b":[]})
 
-            [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            [//]: # (end: preprocess/bb30809c6ca4c80a)
 
             [test:instruction]: ./path/to/file/parametrized ({"a": "aa", "b": {"a": "a", "b": "b"}})
-            [//]: # (start: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (start: preprocess/f5f55887ee415b3d)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (end: preprocess/f5f55887ee415b3d)
 
             [test:instruction]: ./path/to/file/parametrized ({"b":{ "b": "b","a": "a"},"a":"aa"})
-            [//]: # (start: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (start: preprocess/f5f55887ee415b3d)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             result({"target":".\/path\/to\/file\/parametrized","a":"aa","b":{"a":"a","b":"b"}})
 
-            [//]: # (end: 5c77db20daf8999d844774772dce6db762c2c45f2e4f6993812bcaaeeb34e02d)
+            [//]: # (end: preprocess/f5f55887ee415b3d)
 
             > Quote
             >
             > [test:instruction]: ./path/to/file
-            > [//]: # (start: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            > [//]: # (start: preprocess/bb30809c6ca4c80a)
             > [//]: # (warning: Generated automatically. Do not edit.)
             >
             > result({"target":".\/path\/to\/file","a":"a","b":[]})
             >
-            > [//]: # (end: 482df4f411df199a43077cfefb8251f4e320a0dcc4de0005598872dc2aee76b2)
+            > [//]: # (end: preprocess/bb30809c6ca4c80a)
             >
 
             [test:document]: file.md
-            [//]: # (start: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+            [//]: # (start: preprocess/f895617206b7ff2f)
             [//]: # (warning: Generated automatically. Do not edit.)
 
             Summary [text](path/Document.md) summary [link][a282e9c32e7eee65-link] and summary[^a282e9c32e7eee65-1] and [self](#fragment) and [self][a282e9c32e7eee65-self].
@@ -282,7 +282,7 @@ final class TaskTest extends TestCase {
 
             [^a282e9c32e7eee65-1]: Footnote
 
-            [//]: # (end: 52e9837191b78e348b818a88a3a7f62fcbed43c7f2a0f76ac3e372babecf1eab)
+            [//]: # (end: preprocess/f895617206b7ff2f)
 
             MARKDOWN,
             $actual,

@@ -10,6 +10,7 @@ use Override;
 
 use function ltrim;
 use function preg_match;
+use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -39,6 +40,7 @@ class Factory implements LinkFactory {
             /imx
             REGEXP;
         $matches    = [];
+        $string     = trim($string);
 
         if (preg_match($regexp, $string, $matches, PREG_UNMATCHED_AS_NULL)) {
             $class = $matches['class'];

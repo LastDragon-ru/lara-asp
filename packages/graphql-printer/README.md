@@ -3,7 +3,7 @@
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (start: preprocess/78cfc4c7c7c55577)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -18,10 +18,10 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 |  | `^15.2.4` |   `4.2.0 ⋯ 4.0.0`   |
 |  | `^14.11.9` |  `3.0.0`   |
 
-[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (end: preprocess/78cfc4c7c7c55577)
 
 [include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql-printer"}})
-[//]: # (start: 173e32825c9e0296239282894ed3784c959423efa063826d9806fc9fa8b91675)
+[//]: # (start: preprocess/09a52ea0ed33d00a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -30,14 +30,14 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 composer require lastdragon-ru/lara-asp-graphql-printer
 ```
 
-[//]: # (end: 173e32825c9e0296239282894ed3784c959423efa063826d9806fc9fa8b91675)
+[//]: # (end: preprocess/09a52ea0ed33d00a)
 
 # Usage
 
 There are two primary methods: `Printer::print()` and `Printer::export()`. The `print()` will print the current type only, meanwhile `export()` will print the current type and all used types/directives:
 
 [include:example]: ./docs/Examples/Usage.php
-[//]: # (start: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
+[//]: # (start: preprocess/4c2bcd97f5d25b12)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -113,7 +113,7 @@ type B
 }
 ```
 
-[//]: # (end: 09d4b0171aeb5e738bed588b155864570d400f5a1aa8c592a289ae3708188cdf)
+[//]: # (end: preprocess/4c2bcd97f5d25b12)
 
 # Customization
 
@@ -132,7 +132,7 @@ Please see:
 The Printer allows filter out types and directives. This may be useful to exclude them from the schema completely. Filtering also works for queries. Please note that types filtering will work only if the schema is known (the schema is required to determine the type of argument nodes). For some AST node types, their type may also be required.
 
 [include:example]: ./docs/Examples/Filtering.php
-[//]: # (start: 6688f939261e38bcd99f9b5b3dde76656bf46cfed74a99dd23a54d69eafe24e6)
+[//]: # (start: preprocess/401190a2362b55dc)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
@@ -215,7 +215,7 @@ query {
 }
 ```
 
-[//]: # (end: 6688f939261e38bcd99f9b5b3dde76656bf46cfed74a99dd23a54d69eafe24e6)
+[//]: # (end: preprocess/401190a2362b55dc)
 
 # Laravel/Lighthouse
 
@@ -224,7 +224,7 @@ It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#printe
 # Testing Assertions
 
 [include:document-list]: ./docs/Assertions
-[//]: # (start: c9953bb428d837e4a82f61878dcfa1a88fc32adcfc3e683dcc228578acec584b)
+[//]: # (start: preprocess/c79a463462fd8331)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## `assertGraphQLExportableEquals`
@@ -239,18 +239,18 @@ Prints and compares two GraphQL schemas/types/nodes/etc.
 
 [Read more](<docs/Assertions/AssertGraphQLPrintableEquals.md>).
 
-[//]: # (end: c9953bb428d837e4a82f61878dcfa1a88fc32adcfc3e683dcc228578acec584b)
+[//]: # (end: preprocess/c79a463462fd8331)
 
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
 
 [include:file]: ../../docs/Shared/Contributing.md
-[//]: # (start: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+[//]: # (start: preprocess/c4ba75080f5a48b7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Contributing
 
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
-[//]: # (end: fc88f84f187016cb8144e9a024844024492f0c3a5a6f8d128bf69a5814cc8cc5)
+[//]: # (end: preprocess/c4ba75080f5a48b7)

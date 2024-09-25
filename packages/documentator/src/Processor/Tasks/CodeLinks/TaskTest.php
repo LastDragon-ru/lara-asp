@@ -105,7 +105,7 @@ final class TaskTest extends TestCase {
 
             [//]: # (start: code-links)
             [class]: ./class.php "App\ClassE"
-            [method]: ./class.php "App\ClassE::method()"
+            [method]: ./class.php "  App\ClassE::method()  "
             [//]: # (end: code-links)
             MARKDOWN,
         );
@@ -158,7 +158,7 @@ final class TaskTest extends TestCase {
                     <document xmlns="http://commonmark.org/xml/1.0">
                         <generated id="code-links" startMarkerLocation="[{13,0,null}]" endMarkerLocation="[{16,0,null}]" location="[{13,0,null},{14,0,null},{15,0,null},{16,0,null}]" blockPadding="0">
                             <reference label="class" destination="./class.php" title="App\ClassE" location="[{14,0,null}]" blockPadding="0" />
-                            <reference label="method" destination="./class.php" title="App\ClassE::method()" location="[{15,0,null},{16,0,null}]" blockPadding="0" />
+                            <reference label="method" destination="./class.php" title="  App\ClassE::method()  " location="[{15,0,null},{16,0,null}]" blockPadding="0" />
                         </generated>
                     </document>
                     XML,
@@ -283,7 +283,7 @@ final class TaskTest extends TestCase {
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
                             <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="./class.php" title="App\ClassE::method()" location="[{11,5,27}]" offset="19">
+                                <link destination="./class.php" title="  App\ClassE::method()  " location="[{11,5,27}]" offset="19">
                                     <code location="[{11,6,17}]" offset="1">Class::method()</code>
                                 </link>
                             </document>

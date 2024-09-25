@@ -3,7 +3,7 @@
 The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (start: preprocess/78cfc4c7c7c55577)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Requirements
@@ -25,7 +25,7 @@ The set provides best practices to make development more fun and classes/service
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 
-[//]: # (end: 0f999169cbabc32d4f47c79c31d74f8b4066c685962719bae5df3c63a08ea382)
+[//]: # (end: preprocess/78cfc4c7c7c55577)
 
 # Installation
 
@@ -42,7 +42,7 @@ composer require lastdragon-ru/lara-asp-<package>
 |:--:|---------------------------------|
 
 [include:package-list]: ./packages
-[//]: # (start: fed4ec353a970d6253d640feee67d7662b2a28757689a2bd7276fe1136209b8a)
+[//]: # (start: preprocess/aeb862adf9d9852d)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## (Laravel) Core
@@ -109,7 +109,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 [Read more](<packages/graphql-printer/README.md>).
 
-[//]: # (end: fed4ec353a970d6253d640feee67d7662b2a28757689a2bd7276fe1136209b8a)
+[//]: # (end: preprocess/aeb862adf9d9852d)
 
 # Upgrading
 
@@ -123,7 +123,7 @@ Please follow [Upgrade Guide](UPGRADE.md).
 4. Enjoy
 
 [include:file]: ./docs/Legend.md
-[//]: # (start: c27a3d72b85555e946885f9f19e2ece38998f1207fbd278bb3058890b864132a)
+[//]: # (start: preprocess/5488d85d082e47fb)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Legend
@@ -142,4 +142,4 @@ Please follow [Upgrade Guide](UPGRADE.md).
 |  🆆  | CI    | Running on Windows                                               |
 |  🅼  | CI    | Running on Mac OS X                                              |
 
-[//]: # (end: c27a3d72b85555e946885f9f19e2ece38998f1207fbd278bb3058890b864132a)
+[//]: # (end: preprocess/5488d85d082e47fb)

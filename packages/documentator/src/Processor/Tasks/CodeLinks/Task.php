@@ -22,13 +22,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use Override;
 
 use function array_map;
 use function array_values;
-use function hash;
 use function implode;
 use function ksort;
 use function sort;
@@ -209,7 +209,7 @@ class Task implements TaskContract {
 
         foreach ($links as [$token, $target]) {
             $link  = (string) $token->link;
-            $hash  = static::BlockMarker.'/'.hash('xxh3', $link);
+            $hash  = static::BlockMarker.'/'.Text::hash($link);
             $title = $token->link->getTitle();
             $title = $target && $title && !isset($duplicates[$title])
                 ? $title
@@ -221,7 +221,7 @@ class Task implements TaskContract {
             if ($target) {
                 $referenceTitle              = Utils::getLinkTitle($refsParentNode, $link);
                 $referenceTarget             = Utils::getLinkTarget($refsParentNode, (string) $target);
-                $references[$referenceTitle] = "[{$hash}]: {$referenceTarget} {$referenceTitle}";
+                $references[$referenceTitle] = "[{$hash}]: {$referenceTarget}\n    {$referenceTitle}";
             }
 
             foreach ($token->nodes as $node) {

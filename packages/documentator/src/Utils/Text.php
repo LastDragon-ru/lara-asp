@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
+use function hash;
 use function implode;
 use function mb_strlen;
 use function mb_substr;
@@ -19,6 +20,10 @@ use const PATHINFO_FILENAME;
 use const PHP_INT_MAX;
 
 class Text {
+    public static function hash(string $text): string {
+        return hash('xxh3', $text);
+    }
+
     /**
      * @param int<0, max> $level
      */

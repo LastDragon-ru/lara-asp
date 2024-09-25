@@ -20,11 +20,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Inst
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\NodeIterator;
 use Override;
 
-use function hash;
 use function is_array;
 use function json_decode;
 use function json_encode;
@@ -58,6 +58,8 @@ use const JSON_THROW_ON_ERROR;
  * * Nested `<instruction>` not supported.
  */
 class Task implements TaskContract {
+    protected const BlockMarker = 'preprocess';
+
     /**
      * @var InstanceList<Instruction<Parameters>>
      */
@@ -146,7 +148,7 @@ class Task implements TaskContract {
             }
 
             // Wrap
-            $content = GeneratedNode::get($hash, $content);
+            $content = GeneratedNode::get(static::BlockMarker.'/'.$hash, $content);
 
             // Replace
             foreach ($token->nodes as $node) {
@@ -209,7 +211,7 @@ class Task implements TaskContract {
             // Hash
             $target = rawurldecode($node->getDestination());
             $params = $this->getParametersJson($target, $node->getTitle());
-            $hash   = $this->getHash("{$name}({$params})");
+            $hash   = Text::hash("{$name}({$params})");
 
             // Parsed?
             if (isset($tokens[$hash])) {
@@ -236,10 +238,6 @@ class Task implements TaskContract {
 
         // Return
         return new TokenList($tokens);
-    }
-
-    protected function getHash(string $identifier): string {
-        return hash('sha256', $identifier);
     }
 
     private function getParametersJson(string $target, ?string $json): string {
