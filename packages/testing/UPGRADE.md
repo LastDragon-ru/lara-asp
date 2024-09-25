@@ -69,14 +69,19 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/5bf3a6e818e8ec48]: src/Assertions/Application/ScheduleAssertions.php "\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions"
+[code-links/5bf3a6e818e8ec48]: src/Assertions/Application/ScheduleAssertions.php
+    "\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions"
 
-[code-links/a5e57679c3a947a6]: src/Concerns/Override.php "\LastDragon_ru\LaraASP\Testing\Concerns\Override"
+[code-links/a5e57679c3a947a6]: src/Concerns/Override.php
+    "\LastDragon_ru\LaraASP\Testing\Concerns\Override"
 
-[code-links/e6637d2e31bd9516]: src/Database/QueryLog/WithQueryLog.php "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog"
+[code-links/e6637d2e31bd9516]: src/Database/QueryLog/WithQueryLog.php
+    "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog"
 
-[code-links/1e9b6004b06c7c68]: src/Database/RefreshDatabaseIfEmpty.php "\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty"
+[code-links/1e9b6004b06c7c68]: src/Database/RefreshDatabaseIfEmpty.php
+    "\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty"
 
-[code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"
+[code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"
 
 [//]: # (end: code-links)

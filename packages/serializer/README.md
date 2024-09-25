@@ -240,8 +240,10 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/65c47cc2803dd25a]: src/Casts/Serialized.php "\LastDragon_ru\LaraASP\Serializer\Casts\Serialized"
+[code-links/65c47cc2803dd25a]: src/Casts/Serialized.php
+    "\LastDragon_ru\LaraASP\Serializer\Casts\Serialized"
 
-[code-links/52d699d2b40ed389]: src/Contracts/Partial.php "\LastDragon_ru\LaraASP\Serializer\Contracts\Partial"
+[code-links/52d699d2b40ed389]: src/Contracts/Partial.php
+    "\LastDragon_ru\LaraASP\Serializer\Contracts\Partial"
 
 [//]: # (end: code-links)

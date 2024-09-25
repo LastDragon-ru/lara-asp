@@ -929,8 +929,10 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/f2055681d6897706]: src/Database/QueryLog/Query.php "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query"
+[code-links/f2055681d6897706]: src/Database/QueryLog/Query.php
+    "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query"
 
-[code-links/84706d7f00aadc5e]: src/Utils/TestData.php "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
+[code-links/84706d7f00aadc5e]: src/Utils/TestData.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
 
 [//]: # (end: code-links)

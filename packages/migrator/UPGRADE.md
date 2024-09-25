@@ -72,10 +72,13 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/6b3f8327188c3054]: src/Migrations/SqlMigration.php "\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration"
+[code-links/6b3f8327188c3054]: src/Migrations/SqlMigration.php
+    "\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration"
 
-[code-links/9c7c8e70a7e5978f]: src/Seeders/Seeder.php "\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder"
+[code-links/9c7c8e70a7e5978f]: src/Seeders/Seeder.php
+    "\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder"
 
-[code-links/365049c62f4308a2]: src/Seeders/SqlSeeder.php "\LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder"
+[code-links/365049c62f4308a2]: src/Seeders/SqlSeeder.php
+    "\LastDragon_ru\LaraASP\Migrator\Seeders\SqlSeeder"
 
 [//]: # (end: code-links)

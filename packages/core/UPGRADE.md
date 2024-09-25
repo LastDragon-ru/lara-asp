@@ -54,6 +54,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/141085a29c14a778]: src/Provider/WithRoutes.php#L16-L41 "\LastDragon_ru\LaraASP\Core\Provider\WithRoutes::bootRoutes()"
+[code-links/141085a29c14a778]: src/Provider/WithRoutes.php#L16-L41
+    "\LastDragon_ru\LaraASP\Core\Provider\WithRoutes::bootRoutes()"
 
 [//]: # (end: code-links)

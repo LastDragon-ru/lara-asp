@@ -70,16 +70,22 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-[code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
+[code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
 
-[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L18-L39 "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"
+[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L18-L39
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"
 
-[code-links/b5c6ff41fa24071c]: src/Processor/Exceptions/DependencyNotFound.php "\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound"
+[code-links/b5c6ff41fa24071c]: src/Processor/Exceptions/DependencyNotFound.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound"
 
-[code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction"
+[code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction"
 
-[code-links/ecd75d864090a13d]: src/Processor/Tasks/Preprocess/Contracts/Parameters.php "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters"
+[code-links/ecd75d864090a13d]: src/Processor/Tasks/Preprocess/Contracts/Parameters.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters"
 
-[code-links/f9077a28b352f84b]: src/Processor/Tasks/Preprocess/Instructions/IncludeExample/Contracts/Runner.php "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner"
+[code-links/f9077a28b352f84b]: src/Processor/Tasks/Preprocess/Instructions/IncludeExample/Contracts/Runner.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner"
 
 [//]: # (end: code-links)
