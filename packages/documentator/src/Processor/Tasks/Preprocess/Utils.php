@@ -11,9 +11,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Node\Node;
 
-use function hash;
 use function uniqid;
 
 /**
@@ -36,7 +36,7 @@ class Utils {
             $file instanceof Document => Path::getRelativePath($context->root->getPath(), $file->getPath() ?? ''),
             default                   => $file->getRelativePath($context->root),
         };
-        $path = hash('xxh3', $path ?: uniqid(self::class)); // @phpstan-ignore disallowed.function
+        $path = Text::hash($path ?: uniqid(self::class)); // @phpstan-ignore disallowed.function
 
         return $path;
     }
