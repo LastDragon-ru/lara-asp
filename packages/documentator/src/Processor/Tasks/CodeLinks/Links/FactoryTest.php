@@ -70,5 +70,11 @@ final class FactoryTest extends TestCase {
             new ClassPropertyLink($comment, '\\App\\Class', 'property'),
             $factory->create('App\\Class::$property'),
         );
+
+        // Whitespace
+        self::assertEquals(
+            new ClassLink($comment, '\\App\\Class'),
+            $factory->create('  \\App\\Class'),
+        );
     }
 }
