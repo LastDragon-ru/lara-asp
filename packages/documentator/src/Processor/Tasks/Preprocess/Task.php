@@ -19,15 +19,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Instruction as IncludeArtisan;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction as IncludeDocBlock;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Instruction as IncludeExample;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Instruction as IncludeExec;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile\Instruction as IncludeFile;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as IncludePackageList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\NodeIterator;
@@ -56,6 +47,7 @@ use const JSON_THROW_ON_ERROR;
  * ```
  *
  * Where:
+ *
  * * `<instruction>` the instruction name (unknown instructions will be ignored)
  * * `<target>` usually the path to the file or directory, but see the instruction description
  * * `<parameters>` optional JSON string with additional parameters
@@ -63,7 +55,7 @@ use const JSON_THROW_ON_ERROR;
  *
  * ## Limitations
  *
- * * Nested `<instruction>` doesn't support.
+ * * Nested `<instruction>` not supported.
  */
 class Task implements TaskContract {
     /**
@@ -77,16 +69,6 @@ class Task implements TaskContract {
         protected readonly Markdown $markdown,
     ) {
         $this->instructions = new InstanceList($container, $this->key(...));
-
-        $this->addInstruction(IncludeFile::class);
-        $this->addInstruction(IncludeExec::class);
-        $this->addInstruction(IncludeExample::class);
-        $this->addInstruction(IncludeArtisan::class);
-        $this->addInstruction(IncludeTemplate::class);
-        $this->addInstruction(IncludeDocBlock::class);
-        $this->addInstruction(IncludePackageList::class);
-        $this->addInstruction(IncludeDocumentList::class);
-        $this->addInstruction(IncludeGraphqlDirective::class);
     }
 
     /**

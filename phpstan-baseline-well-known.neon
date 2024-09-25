@@ -96,3 +96,11 @@ parameters:
                 - packages/serializer/src/Normalizers/DateTimeNormalizer.php
                 - packages/serializer/src/Normalizers/SerializableNormalizer.php
                 - packages/serializer/src/Normalizers/UnitEnumNormalizer.php
+
+        # Not supported yet (`class-string-map`)
+        # https://github.com/phpstan/phpstan/discussions/11736
+        # https://github.com/phpstan/phpstan/issues/9521 (?)
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Factory::tasks\\(\\) should return array<class-string<LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Task>, \\(Closure\\(LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Task\\): void\\)\\|null> but returns#"
+            paths:
+                - packages/documentator/src/Processor/Factory.php

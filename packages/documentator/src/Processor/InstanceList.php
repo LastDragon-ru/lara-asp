@@ -19,12 +19,17 @@ use function is_string;
  */
 class InstanceList {
     /**
+     * @var array<class-string<TInstance>, ?Closure(TInstance): void>
+     */
+    private array $configurators = [];
+
+    /**
      * @var array<class-string<TInstance>, TInstance>
      */
     private array $instances = [];
 
     /**
-     * @var array<string, array<class-string<TInstance>, class-string<TInstance>>>
+     * @var array<string, array<array-key, class-string<TInstance>>>
      */
     private array $map = [];
 
@@ -62,6 +67,19 @@ class InstanceList {
         return array_values(array_unique($classes));
     }
 
+    /**
+     * @return list<TInstance>
+     */
+    public function instances(): array {
+        $instances = [];
+
+        foreach ($this->classes() as $class) {
+            $instances[] = $this->resolve($class);
+        }
+
+        return $instances;
+    }
+
     public function has(string ...$key): bool {
         $exists = false;
 
@@ -91,15 +109,17 @@ class InstanceList {
     }
 
     /**
-     * @param TInstance|class-string<TInstance> $instance
+     * @param TInstance|class-string<TInstance>                        $instance
+     * @param ($instance is object ? null : ?Closure(TInstance): void) $configurator
      */
-    public function add(object|string $instance): static {
+    public function add(object|string $instance, ?Closure $configurator = null): static {
         $keys = (array) ($this->keyResolver)($instance);
 
         foreach ($keys as $key) {
-            $class                   = is_string($instance) ? $instance : $instance::class;
-            $resolved                = is_object($instance) ? $instance : null;
-            $this->map[$key][$class] = $class;
+            $class                       = is_string($instance) ? $instance : $instance::class;
+            $resolved                    = is_object($instance) ? $instance : null;
+            $this->map[$key][]           = $class;
+            $this->configurators[$class] = $configurator;
 
             if ($resolved) {
                 $this->instances[$class] = $resolved;
@@ -115,6 +135,14 @@ class InstanceList {
      * @return TInstance
      */
     protected function resolve(string $class): object {
-        return $this->instances[$class] ??= $this->container->getInstance()->make($class);
+        if (!isset($this->instances[$class])) {
+            $this->instances[$class] = $this->container->getInstance()->make($class);
+
+            if (isset($this->configurators[$class])) {
+                $this->configurators[$class]($this->instances[$class]);
+            }
+        }
+
+        return $this->instances[$class];
     }
 }

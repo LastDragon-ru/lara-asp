@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Factory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Mockery;
@@ -17,10 +18,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Preprocess::class)]
 final class PreprocessTest extends TestCase {
-    public function testGetProcessedHelpInstructions(): void {
-        $preprocess = Mockery::mock(Task::class);
-        $preprocess->shouldAllowMockingProtectedMethods();
-        $preprocess
+    public function testGetProcessedHelpTaskPreprocessInstructions(): void {
+        $factory = Mockery::mock(Factory::class);
+        $task    = Mockery::mock(PreprocessTask::class);
+        $task->shouldAllowMockingProtectedMethods();
+        $task
             ->shouldReceive('getInstructions')
             ->once()
             ->andReturn([
@@ -29,10 +31,10 @@ final class PreprocessTest extends TestCase {
                 PreprocessTest__InstructionNotSerializable::class,
             ]);
 
-        $command = new class($preprocess) extends Preprocess {
+        $command = new class($factory) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructions(): string {
-                return parent::getProcessedHelpInstructions();
+            public function getProcessedHelpTaskPreprocessInstructions(PreprocessTask $task, int $level): string {
+                return parent::getProcessedHelpTaskPreprocessInstructions($task, $level);
             }
         };
 
@@ -74,31 +76,31 @@ final class PreprocessTest extends TestCase {
               target target target target target target target target target.
             * `<parameters>` - additional parameters
             MARKDOWN,
-            $command->getProcessedHelpInstructions(),
+            $command->getProcessedHelpTaskPreprocessInstructions($task, 3),
         );
     }
 
-    public function testGetProcessedHelpInstructionTarget(): void {
-        $preprocess = Mockery::mock(Task::class);
-        $command    = new class($preprocess) extends Preprocess {
+    public function testGetProcessedHelpTaskPreprocessInstructionTarget(): void {
+        $factory = Mockery::mock(Factory::class);
+        $command = new class($factory) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionTarget(
+            public function getProcessedHelpTaskPreprocessInstructionTarget(
                 string $instruction,
                 string $target,
                 int $padding,
             ): ?string {
-                return parent::getProcessedHelpInstructionTarget($instruction, $target, $padding);
+                return parent::getProcessedHelpTaskPreprocessInstructionTarget($instruction, $target, $padding);
             }
         };
 
         self::assertEquals(
             <<<'MARKDOWN'
-                Target target target target target.
+            Target target target target target.
 
                 Target target target target target target target target target
                 target target target target target target target target target.
             MARKDOWN,
-            $command->getProcessedHelpInstructionTarget(
+            $command->getProcessedHelpTaskPreprocessInstructionTarget(
                 PreprocessTest__Instruction::class,
                 'target',
                 4,
@@ -106,16 +108,16 @@ final class PreprocessTest extends TestCase {
         );
     }
 
-    public function testGetProcessedHelpInstructionParameters(): void {
-        $preprocess = Mockery::mock(Task::class);
-        $command    = new class($preprocess) extends Preprocess {
+    public function testGetProcessedHelpTaskPreprocessParameters(): void {
+        $factory = Mockery::mock(Factory::class);
+        $command = new class($factory) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionParameters(
+            public function getProcessedHelpTaskPreprocessParameters(
                 string $instruction,
                 string $target,
                 int $padding,
             ): ?string {
-                return parent::getProcessedHelpInstructionParameters($instruction, $target, $padding);
+                return parent::getProcessedHelpTaskPreprocessParameters($instruction, $target, $padding);
             }
         };
 
@@ -129,7 +131,7 @@ final class PreprocessTest extends TestCase {
                     Description description description description description
                     description description description description.
             MARKDOWN,
-            $command->getProcessedHelpInstructionParameters(
+            $command->getProcessedHelpTaskPreprocessParameters(
                 PreprocessTest__Instruction::class,
                 'target',
                 4,
@@ -137,21 +139,21 @@ final class PreprocessTest extends TestCase {
         );
     }
 
-    public function testGetProcessedHelpInstructionParametersNoParameters(): void {
-        $preprocess = Mockery::mock(Task::class);
-        $command    = new class($preprocess) extends Preprocess {
+    public function testGetProcessedHelpTaskPreprocessParametersNoParameters(): void {
+        $factory = Mockery::mock(Factory::class);
+        $command = new class($factory) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionParameters(
+            public function getProcessedHelpTaskPreprocessParameters(
                 string $instruction,
                 string $target,
                 int $padding,
             ): ?string {
-                return parent::getProcessedHelpInstructionParameters($instruction, $target, $padding);
+                return parent::getProcessedHelpTaskPreprocessParameters($instruction, $target, $padding);
             }
         };
 
         self::assertNull(
-            $command->getProcessedHelpInstructionParameters(
+            $command->getProcessedHelpTaskPreprocessParameters(
                 PreprocessTest__InstructionNoParameters::class,
                 'target',
                 4,
@@ -159,22 +161,22 @@ final class PreprocessTest extends TestCase {
         );
     }
 
-    public function testGetProcessedHelpInstructionParametersNotSerializable(): void {
-        $preprocess = Mockery::mock(Task::class);
-        $command    = new class($preprocess) extends Preprocess {
+    public function testGetProcessedHelpTaskPreprocessParametersNotSerializable(): void {
+        $factory = Mockery::mock(Factory::class);
+        $command = new class($factory) extends Preprocess {
             #[Override]
-            public function getProcessedHelpInstructionParameters(
+            public function getProcessedHelpTaskPreprocessParameters(
                 string $instruction,
                 string $target,
                 int $padding,
             ): ?string {
-                return parent::getProcessedHelpInstructionParameters($instruction, $target, $padding);
+                return parent::getProcessedHelpTaskPreprocessParameters($instruction, $target, $padding);
             }
         };
 
         self::assertEquals(
             '',
-            $command->getProcessedHelpInstructionParameters(
+            $command->getProcessedHelpTaskPreprocessParameters(
                 PreprocessTest__InstructionNotSerializable::class,
                 'target',
                 4,
@@ -271,7 +273,7 @@ class PreprocessTest__Parameters implements Parameters, Serializable {
     /**
      * Description.
      */
-    public int $publicPropertyWithoutDefaultValue;
+    public int   $publicPropertyWithoutDefaultValue;
     public float $publicPropertyWithDefaultValue = 123;
 
     public function __construct(

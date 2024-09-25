@@ -7,8 +7,10 @@ use LastDragon_ru\LaraASP\Core\Provider\WithViews;
 use LastDragon_ru\LaraASP\Documentator\Commands\Commands;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Commands\Requirements;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Factory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Factory as ProcessorFactoryContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Factory as ProcessorFactory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory as LinkFactoryContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Factory as LinkFactory;
 use Override;
 
 class Provider extends ServiceProvider {
@@ -18,7 +20,8 @@ class Provider extends ServiceProvider {
     public function register(): void {
         parent::register();
 
-        $this->app->scopedIf(LinkFactory::class, Factory::class);
+        $this->app->scopedIf(ProcessorFactoryContract::class, ProcessorFactory::class);
+        $this->app->scopedIf(LinkFactoryContract::class, LinkFactory::class);
     }
 
     public function boot(): void {
