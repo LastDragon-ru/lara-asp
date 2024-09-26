@@ -40,11 +40,7 @@
   "autoload": {
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Serializer\\": "src/"
-    },
-    "exclude-from-classmap": [
-      "src/**Test.php",
-      "src/Testing/**.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {

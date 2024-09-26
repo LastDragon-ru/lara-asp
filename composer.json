@@ -98,28 +98,6 @@
     "orchestra/testbench": "^8.0.0|^9.0.0"
   },
   "autoload": {
-    "exclude-from-classmap": [
-      "packages/core/src/**Test.php",
-      "packages/core/src/Testing/**.php",
-      "packages/documentator/src/**Test.php",
-      "packages/documentator/src/Testing/**.php",
-      "packages/eloquent/src/**Test.php",
-      "packages/eloquent/src/Testing/**.php",
-      "packages/formatter/src/**Test.php",
-      "packages/formatter/src/Testing/**.php",
-      "packages/graphql-printer/src/**Test.php",
-      "packages/graphql-printer/src/Testing/**.php",
-      "packages/graphql/src/**Test.php",
-      "packages/graphql/src/Testing/**.php",
-      "packages/migrator/src/**Test.php",
-      "packages/migrator/src/Testing/**.php",
-      "packages/serializer/src/**Test.php",
-      "packages/serializer/src/Testing/**.php",
-      "packages/spa/src/**Test.php",
-      "packages/spa/src/Testing/**.php",
-      "packages/testing/src/**Test.php",
-      "packages/testing/src/Package/**.php"
-    ],
     "files": [
       "packages/eloquent/src/mixins.php",
       "packages/testing/src/mixins.php"
@@ -232,7 +210,7 @@
       "./vendor-bin/composer-require-checker/vendor/bin/composer-require-checker check"
     ],
     "composer-dependency-analyser": [
-      "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose"
+      "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose --show-all-usages"
     ],
     "monorepo-builder": [
       "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder validate"

@@ -62,11 +62,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Testing\\": "src/"
-    },
-    "exclude-from-classmap": [
-      "src/**Test.php",
-      "src/Package/**.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {

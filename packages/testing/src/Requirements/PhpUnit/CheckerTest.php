@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
 use Attribute;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

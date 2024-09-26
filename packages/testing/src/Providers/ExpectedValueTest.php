@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Providers;
 
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

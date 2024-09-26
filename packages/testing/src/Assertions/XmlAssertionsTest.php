@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Assertions;
 
 use LastDragon_ru\LaraASP\Testing\Constraints\Xml\XmlMatchesSchemaTest;
-use LastDragon_ru\LaraASP\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use LastDragon_ru\LaraASP\Testing\Utils\TestData;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\CoversClass;

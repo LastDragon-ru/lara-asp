@@ -26,49 +26,9 @@
     "optimize-autoloader": true
   },
   "repositories": {
-    "core": {
+    "lara-asp": {
       "type": "path",
-      "url": "../../packages/core"
-    },
-    "dev": {
-      "type": "path",
-      "url": "../../packages/dev"
-    },
-    "documentator": {
-      "type": "path",
-      "url": "../../packages/documentator"
-    },
-    "eloquent": {
-      "type": "path",
-      "url": "../../packages/eloquent"
-    },
-    "formatter": {
-      "type": "path",
-      "url": "../../packages/formatter"
-    },
-    "graphql": {
-      "type": "path",
-      "url": "../../packages/graphql"
-    },
-    "graphql-printer": {
-      "type": "path",
-      "url": "../../packages/graphql-printer"
-    },
-    "migrator": {
-      "type": "path",
-      "url": "../../packages/migrator"
-    },
-    "serializer": {
-      "type": "path",
-      "url": "../../packages/serializer"
-    },
-    "spa": {
-      "type": "path",
-      "url": "../../packages/spa"
-    },
-    "testing": {
-      "type": "path",
-      "url": "../../packages/testing"
+      "url": "../../packages/*"
     }
   }
 }
