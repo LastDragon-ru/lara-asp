@@ -63,10 +63,12 @@ $parse = static function (string $line): string {
         $line = '';
     }
 
-    // PHP & Pattern?
-    if (pathinfo($line, PATHINFO_EXTENSION) !== 'php') {
-        $line = '';
-    }
+    // File?
+    $line = match (pathinfo($line, PATHINFO_EXTENSION)) {
+        ''      => "{$line}/*.php",
+        'php'   => $line,
+        default => '',
+    };
 
     if (!str_contains($line, '*')) {
         $line = '';
@@ -94,6 +96,8 @@ foreach ($files as $file) {
     // Add as dev
     $dependencies = Finder::create()
         ->ignoreVCSIgnored(true)
+        ->notName('composer-dependency-analyser.php')
+        ->notName('monorepo-builder.php')
         ->exclude('node_modules')
         ->exclude('vendor-bin')
         ->exclude('vendor')
