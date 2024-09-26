@@ -36,7 +36,7 @@ parameters:
 			path: packages/graphql/src/Stream/Directives/Directive.php
 
 		-
-			message: "#^Parameter \\#2 \\$factory of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Package\\\\TestCase\\:\\:override\\(\\) contains unresolvable type\\.$#"
+			message: "#^Parameter \\#2 \\$factory of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Testing\\\\TestCase\\:\\:override\\(\\) contains unresolvable type\\.$#"
 			count: 1
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
 
