@@ -12,10 +12,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
-use function strcmp;
 use function usort;
 
 /**
@@ -28,6 +28,7 @@ use function usort;
 class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
+        protected readonly Sorter $sorter,
         protected readonly Markdown $markdown,
     ) {
         // empty
@@ -84,8 +85,10 @@ class Instruction implements InstructionContract {
         }
 
         // Sort
-        usort($documents, static function (array $a, $b): int {
-            return strcmp($a['title'], $b['title']);
+        $comparator = $this->sorter->forString($parameters->order);
+
+        usort($documents, static function (array $a, $b) use ($comparator): int {
+            return $comparator($a['title'], $b['title']);
         });
 
         // Render

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as ParametersContract;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Symfony\Component\Finder\Finder;
 
@@ -24,6 +25,10 @@ class Parameters implements ParametersContract, Serializable {
          * Blade template.
          */
         public readonly string $template = 'default',
+        /**
+         * Sort order.
+         */
+        public readonly SortOrder $order = SortOrder::Asc,
     ) {
         // empty
     }

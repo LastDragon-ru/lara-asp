@@ -1,5 +1,11 @@
 <!-- markdownlint-disable -->
 
+## `<` Document B `>`
+
+Summary text.
+
+[Read more](<InstructionTest/Document B.md>).
+
 ## Document
 
 Document summary.
@@ -11,9 +17,3 @@ Document summary.
 Summary text with special characters `<`, `>`, `&`.
 
 [Read more](<InstructionTest/Document A.md>).
-
-## `<` Document B `>`
-
-Summary text.
-
-[Read more](<InstructionTest/Document B.md>).

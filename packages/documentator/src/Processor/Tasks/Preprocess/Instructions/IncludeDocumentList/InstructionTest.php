@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
@@ -63,7 +64,7 @@ final class InstructionTest extends TestCase {
         $path     = self::getTestData()->path('nested/Document.md');
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
-        $params   = new Parameters('...', null);
+        $params   = new Parameters('...', null, order: SortOrder::Desc);
         $target   = './';
         $context  = new Context($root, $file, $target, '', new Nop());
         $instance = $this->app()->make(Instruction::class);

@@ -72,6 +72,7 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
   * `depth: array|string|int|null = 0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
     (eg the `0` means no nested directories, the `null` removes limits).
   * `template: string = 'default'` - Blade template.
+  * `order: LastDragon_ru\LaraASP\Documentator\Utils\SortOrder = <object>` - Sort order.
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
