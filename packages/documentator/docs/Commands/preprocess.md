@@ -58,8 +58,8 @@ run with default/normal level if it is not specified in its arguments.
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
-  * `summary: bool = true` - Include the class summary?
-  * `description: bool = true` - Include the class description?
+  * `summary`: `bool` = `true` - Include the class summary?
+  * `description`: `bool` = `true` - Include the class description?
 
 Includes the docblock of the first PHP class/interface/trait/enum/etc
 from `<target>` file. Inline tags include as is except `@see`/`@link`
@@ -69,10 +69,10 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `depth: array|string|int|null = 0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
+  * `depth`: `array|string|int|null` = `0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
     (eg the `0` means no nested directories, the `null` removes limits).
-  * `template: string = 'default'` - Blade template.
-  * `order: LastDragon_ru\LaraASP\Documentator\Utils\SortOrder = <object>` - Sort order.
+  * `template`: `string` = `'default'` - Blade template.
+  * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
@@ -115,8 +115,8 @@ Includes the definition of the directive as a Markdown code block.
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `template: string = 'default'` - Blade template.
-  * `order: LastDragon_ru\LaraASP\Documentator\Utils\SortOrder = <object>` - Sort order.
+  * `template`: `string` = `'default'` - Blade template.
+  * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
@@ -125,7 +125,7 @@ used to determine package name and summary.
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
-  * `data: array` - Array of variables (`${name}`) to replace.
+  * `data`: `array` - Array of variables (`${name}`) to replace.
 
 Includes the `<target>` as a template.
 
@@ -159,3 +159,14 @@ Directory to process.
 ### `--exclude=*`
 
 Glob(s) to exclude.
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/7e5c66e8748c6ff8]: ../../src/Utils/SortOrder.php
+    "\LastDragon_ru\LaraASP\Documentator\Utils\SortOrder"
+
+[code-links/08e0648f66e2d1a5]: ../../src/Utils/SortOrder.php#L6
+    "\LastDragon_ru\LaraASP\Documentator\Utils\SortOrder::Asc"
+
+[//]: # (end: code-links)

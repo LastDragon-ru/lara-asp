@@ -26,6 +26,7 @@ use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
+use UnitEnum;
 
 use function array_map;
 use function getcwd;
@@ -252,7 +253,7 @@ class Preprocess extends Command {
                 : null;
 
             if ($property->hasType()) {
-                $definition = "{$definition}: {$property->getType()}";
+                $definition = "`{$definition}`: `{$property->getType()}`";
             }
 
             if ($property->isPromoted()) {
@@ -269,8 +270,12 @@ class Preprocess extends Command {
             }
 
             if ($hasDefault) {
-                $default    = is_scalar($theDefault) ? var_export($theDefault, true) : '<'.gettype($theDefault).'>';
-                $definition = "{$definition} = {$default}";
+                $default = match (true) {
+                    $theDefault instanceof UnitEnum => $theDefault::class.'::'.$theDefault->name,
+                    is_scalar($theDefault)          => var_export($theDefault, true),
+                    default                         => '<'.gettype($theDefault).'>',
+                };
+                $definition = "{$definition} = `{$default}`";
             } else {
                 // empty
             }
@@ -290,7 +295,7 @@ class Preprocess extends Command {
         $list = '';
 
         foreach ($parameters as $definition => $description) {
-            $list .= "* `{$definition}` - {$description}\n";
+            $list .= "* {$definition} - {$description}\n";
         }
 
         $list = Text::setPadding($list, $padding);

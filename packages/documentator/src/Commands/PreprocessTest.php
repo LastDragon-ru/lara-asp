@@ -47,10 +47,11 @@ final class PreprocessTest extends TestCase {
               Target target target target target target target target target
               target target target target target target target target target.
             * `<parameters>` - additional parameters
-              * `publicPropertyWithoutDefaultValue: int` - Description.
-              * `publicPropertyWithDefaultValue: float = 123.0` - _No description provided_.
-              * `publicPromotedPropertyWithoutDefaultValue: int` - Description.
-              * `publicPromotedPropertyWithDefaultValue: int = 321` - Summary.
+              * `publicPropertyWithoutDefaultValue`: `int` - Description.
+              * `publicPropertyWithDefaultValue`: `float` = `123.0` - _No description provided_.
+              * `publicPropertyEnumWithDefaultValue`: `LastDragon_ru\LaraASP\Documentator\Commands\PreprocessTest__Enum` = `LastDragon_ru\LaraASP\Documentator\Commands\PreprocessTest__Enum::B` - _No description provided_.
+              * `publicPromotedPropertyWithoutDefaultValue`: `int` - Description.
+              * `publicPromotedPropertyWithDefaultValue`: `int` = `321` - Summary.
 
                 Description description description description description
                 description description description description.
@@ -123,10 +124,11 @@ final class PreprocessTest extends TestCase {
 
         self::assertEquals(
             <<<'MARKDOWN'
-                * `publicPropertyWithoutDefaultValue: int` - Description.
-                * `publicPropertyWithDefaultValue: float = 123.0` - _No description provided_.
-                * `publicPromotedPropertyWithoutDefaultValue: int` - Description.
-                * `publicPromotedPropertyWithDefaultValue: int = 321` - Summary.
+                * `publicPropertyWithoutDefaultValue`: `int` - Description.
+                * `publicPropertyWithDefaultValue`: `float` = `123.0` - _No description provided_.
+                * `publicPropertyEnumWithDefaultValue`: `LastDragon_ru\LaraASP\Documentator\Commands\PreprocessTest__Enum` = `LastDragon_ru\LaraASP\Documentator\Commands\PreprocessTest__Enum::B` - _No description provided_.
+                * `publicPromotedPropertyWithoutDefaultValue`: `int` - Description.
+                * `publicPromotedPropertyWithDefaultValue`: `int` = `321` - Summary.
 
                     Description description description description description
                     description description description description.
@@ -273,8 +275,9 @@ class PreprocessTest__Parameters implements Parameters, Serializable {
     /**
      * Description.
      */
-    public int   $publicPropertyWithoutDefaultValue;
-    public float $publicPropertyWithDefaultValue = 123;
+    public int                  $publicPropertyWithoutDefaultValue;
+    public float                $publicPropertyWithDefaultValue     = 123;
+    public PreprocessTest__Enum $publicPropertyEnumWithDefaultValue = PreprocessTest__Enum::B;
 
     public function __construct(
         /**
@@ -336,4 +339,13 @@ class PreprocessTest__ParametersNotSerializable implements Parameters {
     ) {
         // empty
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+enum PreprocessTest__Enum {
+    case A;
+    case B;
 }
