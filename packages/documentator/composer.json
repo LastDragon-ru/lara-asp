@@ -20,6 +20,7 @@
   "require": {
     "php": "^8.2|^8.3",
     "ext-filter": "*",
+    "ext-intl": "*",
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
     "illuminate/contracts": "^10.34.0|^11.0.0",
