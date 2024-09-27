@@ -7,6 +7,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\EnumCase;
 
 class ClassConstantLink extends Base implements Link {
     public function __construct(
@@ -27,11 +29,20 @@ class ClassConstantLink extends Base implements Link {
         // No method :'(
         $target = null;
 
-        foreach ($class->getConstants() as $constant) {
-            foreach ($constant->consts as $const) {
-                if ((string) $const->name === $this->constant) {
-                    $target = $constant;
+        if ($class instanceof Enum_) {
+            foreach ($class->stmts as $stmt) {
+                if ($stmt instanceof EnumCase && (string) $stmt->name === $this->constant) {
+                    $target = $stmt;
                     break;
+                }
+            }
+        } else {
+            foreach ($class->getConstants() as $constant) {
+                foreach ($constant->consts as $const) {
+                    if ((string) $const->name === $this->constant) {
+                        $target = $constant;
+                        break;
+                    }
                 }
             }
         }

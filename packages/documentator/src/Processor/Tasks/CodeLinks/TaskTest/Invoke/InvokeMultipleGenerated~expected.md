@@ -1,7 +1,11 @@
 # Code Links
 
 Text text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A`][code-links/a48295a76761baf6] text
-text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A`][code-links/a48295a76761baf6] text text.
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A`][code-links/a48295a76761baf6] text text
+text [`B::A`][code-links/a86e3c96985f1bef] text text
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::B`][code-links/8cdc0f86b75b851c] text text
+text [`C::A`][code-links/bbb195814bc23f4c] text text
+text [`C::B`][code-links/295495989b7a51ff] text text.
 
 [//]: # (start: generated block)
 should be untouched
@@ -20,12 +24,12 @@ text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTes
 Text [`B`][code-links/16591d639b61b142] text text
 text [`B::method()`][code-links/8343c4fede0f1f09] text
 text [`B::$property`][code-links/9889d47ea9b6ae82] text text
-text [`💀B::B`][code-links/a69ac32d7aff4ecd].
+text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::B`][code-links/a69ac32d7aff4ecd].
 
 Text [`B`][code-links/16591d639b61b142] text text
 text [`B::method()`][code-links/8343c4fede0f1f09] text
 text [`B::$property`][code-links/9889d47ea9b6ae82] text text
-text [`💀B::B`][code-links/a69ac32d7aff4ecd].
+text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::B`][code-links/a69ac32d7aff4ecd].
 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
@@ -44,6 +48,12 @@ text [`💀B::B`][code-links/a69ac32d7aff4ecd].
 
 [code-links/5dcd27cbfb8f1b9d]: A/A.php#L17-L22
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A\A::method()"
+
+[code-links/a86e3c96985f1bef]: B.php#L9
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::A"
+
+[code-links/8cdc0f86b75b851c]: B.php#L10
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::B"
 
 [code-links/ec022a8fb0895161]: B/A.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\A"
@@ -68,6 +78,12 @@ text [`💀B::B`][code-links/a69ac32d7aff4ecd].
 
 [code-links/8343c4fede0f1f09]: B/B.php#L20-L22
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::method()"
+
+[code-links/bbb195814bc23f4c]: C.php#L9
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C::A"
+
+[code-links/295495989b7a51ff]: C.php#L10
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C::B"
 
 [code-links/83a40c392c8376aa]: C/C.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C\C"
