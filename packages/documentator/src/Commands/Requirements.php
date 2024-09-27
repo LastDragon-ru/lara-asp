@@ -13,6 +13,8 @@ use LastDragon_ru\LaraASP\Documentator\Metadata\Storage;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Utils\Git;
+use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Documentator\Utils\Version;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -33,7 +35,6 @@ use function file_get_contents;
 use function getcwd;
 use function mb_strlen;
 use function mb_substr;
-use function natsort;
 use function preg_match;
 use function preg_quote;
 use function range;
@@ -42,6 +43,7 @@ use function str_starts_with;
 use function strtr;
 use function trim;
 use function uksort;
+use function usort;
 
 #[AsCommand(
     name       : Requirements::Name,
@@ -103,6 +105,12 @@ class Requirements extends Command {
         ```
         HELP;
 
+    public function __construct(
+        protected readonly Sorter $sorter,
+    ) {
+        parent::__construct();
+    }
+
     public function __invoke(
         PackageViewer $viewer,
         ComposerJsonFactory $factory,
@@ -114,7 +122,7 @@ class Requirements extends Command {
         $tags = $this->getPackageVersions($git, $cwd, [self::HEAD]);
 
         // Collect requirements
-        $storage  = new Storage($serializer, $cwd);
+        $storage  = new Storage($serializer, $this->sorter, $cwd);
         $metadata = $storage->load();
         $packages = $metadata->require !== [] ? $metadata->require : [
             'php'               => 'PHP',
@@ -195,7 +203,7 @@ class Requirements extends Command {
         $tags = array_unique($tags);
         $tags = array_combine($tags, $tags);
 
-        uksort($tags, static fn ($a, $b) => -Version::compare($a, $b));
+        uksort($tags, $this->sorter->forVersion(SortOrder::Desc));
 
         return $tags;
     }
@@ -271,7 +279,7 @@ class Requirements extends Command {
             $requirements[$requirement] = array_merge($requirements[$requirement] ?? [], $required);
             $requirements[$requirement] = array_values(array_unique($requirements[$requirement]));
 
-            natsort($requirements[$requirement]);
+            usort($requirements[$requirement], $this->sorter->forString(SortOrder::Asc));
         }
 
         return $requirements;

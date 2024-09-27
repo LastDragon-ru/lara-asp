@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -15,7 +16,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Requirements::class)]
 final class RequirementsTest extends TestCase {
     public function testGetMergedVersions(): void {
-        $command  = new class() extends Requirements {
+        $command  = new class($this->app()->make(Sorter::class)) extends Requirements {
             /**
              * @inheritDoc
              */
@@ -73,7 +74,7 @@ final class RequirementsTest extends TestCase {
             'laravel/framework' => 'Laravel',
             'php'               => 'PHP',
         ];
-        $command  = new class() extends Requirements {
+        $command  = new class($this->app()->make(Sorter::class)) extends Requirements {
             /**
              * @inheritDoc
              */
@@ -126,7 +127,7 @@ final class RequirementsTest extends TestCase {
                 'example/package'      => '~1.0.0',
             ],
         );
-        $command  = new class() extends Requirements {
+        $command  = new class($this->app()->make(Sorter::class)) extends Requirements {
             /**
              * @inheritDoc
              */
