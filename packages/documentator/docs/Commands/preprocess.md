@@ -116,6 +116,7 @@ Includes the definition of the directive as a Markdown code block.
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
   * `template: string = 'default'` - Blade template.
+  * `order: LastDragon_ru\LaraASP\Documentator\Utils\SortOrder = <object>` - Sort order.
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
