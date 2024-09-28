@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Utils\ArtisanSerializer;
@@ -14,6 +16,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
+use function getcwd;
 use function is_dir;
 
 #[AsCommand(
@@ -84,10 +87,14 @@ class Commands extends Command {
                     // Render
                     $name    = Str::after((string) $command->getName(), "{$namespace}:");
                     $path    = Path::getPath($target, "{$name}.md");
+                    $source  = Path::join((string) getcwd(), "{$name}.md");
                     $content = $viewer->render('commands.default', [
                         'serializer' => $serializer,
                         'command'    => $command,
                     ]);
+                    $content = (string) (new Document($content, $source))->mutate(
+                        new Move($path),
+                    );
 
                     $filesystem->dumpFile($path, $content);
                 },
