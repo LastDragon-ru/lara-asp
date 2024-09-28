@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\HeadingsLevel;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Factory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -314,17 +315,36 @@ class Preprocess extends Command {
         ?int $padding = null,
         ?int $level = null,
     ): string {
+        // Load
+        $path = match (true) {
+            $object instanceof ReflectionProperty => $object->getDeclaringClass()->getFileName(),
+            default                               => $object->getFileName(),
+        };
         $help = (new PhpDoc((string) $object->getDocComment()))->getText();
+        $help = new Document($help, $path !== false ? $path : null);
 
-        if ($level !== null) {
-            $level = max(1, min(6, $level));
-            $help  = (string) (new Document($help))->mutate(new HeadingsLevel($level));
+        // Move to cwd
+        $cwd = getcwd();
+
+        if ($cwd !== false) {
+            $help = $help->mutate(new Move("{$cwd}/help.md"));
         }
 
+        // Level?
+        if ($level !== null) {
+            $level = max(1, min(6, $level));
+            $help  = $help->mutate(new HeadingsLevel($level));
+        }
+
+        // To string
+        $help = (string) $help;
+
+        // Padding?
         if ($padding !== null) {
             $help = Text::setPadding($help, $padding);
         }
 
+        // Return
         return trim($help);
     }
 }
