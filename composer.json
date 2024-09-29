@@ -61,14 +61,17 @@
     "illuminate/testing": "^10.34.0|^11.0.0",
     "illuminate/translation": "^10.34.0|^11.0.0",
     "illuminate/validation": "^10.34.0|^11.0.0",
+    "larastan/larastan": "^2.8.1",
     "league/commonmark": "^2.5.1",
     "league/config": "^1.1.1",
     "mockery/mockery": "^1.6.5",
+    "nette/neon": "^3.4",
     "nikic/php-parser": "^5.0",
     "nuwave/lighthouse": "^6.5.0",
     "opis/json-schema": "^2.3.0",
     "phpdocumentor/type-resolver": "^1.7",
     "phpstan/phpdoc-parser": "^1.25",
+    "phpstan/phpstan": "^1.10",
     "phpunit/phpunit": "^10.1.0|^11.0.0",
     "psr/http-message": "^1.0.0|^2.0.0",
     "sebastian/comparator": "^5.0|^6.0.0",
@@ -85,6 +88,7 @@
     "symfony/property-info": "^6.3.9|^7.0.0",
     "symfony/psr-http-message-bridge": "^2.0.0|^6.4.0|^7.0.0",
     "symfony/serializer": "^6.4.0|^7.0.0",
+    "symfony/var-dumper": "^6.3.0|^7.0.0",
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
@@ -104,6 +108,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "packages/core/src/",
+      "LastDragon_ru\\LaraASP\\Dev\\": "packages/dev/src/",
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
@@ -118,6 +123,7 @@
   "autoload-dev": {
     "exclude-from-classmap": [
       "packages/core/docs/",
+      "packages/dev/docs/",
       "packages/documentator/docs/",
       "packages/eloquent/docs/",
       "packages/formatter/docs/",
@@ -130,6 +136,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/core/docs",
+      "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/dev/docs",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
       "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
@@ -164,6 +171,7 @@
     "laravel": {
       "providers": [
         "LastDragon_ru\\LaraASP\\Core\\Provider",
+        "LastDragon_ru\\LaraASP\\Dev\\App\\Provider",
         "LastDragon_ru\\LaraASP\\Documentator\\Provider",
         "LastDragon_ru\\LaraASP\\Eloquent\\Provider",
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
@@ -237,8 +245,8 @@
   },
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",
-    "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
+    "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",
