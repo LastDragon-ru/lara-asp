@@ -21,7 +21,7 @@
 /package-lock.json                                  export-ignore
 /phpcs.xml                                          export-ignore
 /phpstan.neon                                       export-ignore
-/larastan.neon                                      export-ignore
+/phpstan-larastan.neon                              export-ignore
 /phpstan-baseline.neon                              export-ignore
 /phpstan-baseline-well-known.neon                   export-ignore
 /phpunit.xml                                        export-ignore

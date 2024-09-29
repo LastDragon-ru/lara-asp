@@ -59,7 +59,7 @@ includes:
     - ./vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
-    - ./larastan.neon
+    - ./phpstan-larastan.neon
     - ./packages/dev/src/PhpStan/Container/extension.neon
     - ./packages/dev/src/PhpStan/ClassMustBeFinal/extension.neon
     - ./packages/dev/src/PhpStan/ClassMustBeInternal/extension.neon
