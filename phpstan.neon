@@ -7,7 +7,7 @@ parameters:
         - dev/storage
         - dev/vendor (?)
     scanDirectories:
-        - vendor-bin/phpstan/vendor/larastan/larastan
+        - vendor/larastan/larastan
 
     # The level 9 is the highest level
     level: max
@@ -47,22 +47,22 @@ parameters:
 
 includes:
     # Vendor
-    - ./vendor-bin/phpstan/vendor/phpstan/phpstan/conf/bleedingEdge.neon
-    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-mockery/extension.neon
-    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-phpunit/extension.neon
-    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-phpunit/rules.neon
-    - ./vendor-bin/phpstan/vendor/phpstan/phpstan-strict-rules/rules.neon
-    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/extension.neon
-    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
-    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
-    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
-    - ./vendor-bin/phpstan/vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
+    - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - ./vendor/phpstan/phpstan-mockery/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
+    - ./vendor/spaze/phpstan-disallowed-calls/disallowed-loose-calls.neon
 
     # Package
-    - ./vendor-bin/phpstan/larastan.neon
-    - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/Container/extension.neon
-    - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/ClassMustBeFinal/extension.neon
-    - ./vendor-bin/phpstan/vendor/lastdragon-ru/lara-asp-dev/src/PhpStan/ClassMustBeInternal/extension.neon
+    - ./larastan.neon
+    - ./packages/dev/src/PhpStan/Container/extension.neon
+    - ./packages/dev/src/PhpStan/ClassMustBeFinal/extension.neon
+    - ./packages/dev/src/PhpStan/ClassMustBeInternal/extension.neon
 
     # Baseline
     - phpstan-baseline-well-known.neon

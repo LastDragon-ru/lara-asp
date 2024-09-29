@@ -162,10 +162,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Install PHP
         uses: ./.github/actions/php
-      - name: Install phpstan
-        uses: ./.github/actions/tool
-        with:
-          tool: phpstan
       - name: Execute
         run: |
           composer run-script phpstan -- --error-format=checkstyle | cs2pr
