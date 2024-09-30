@@ -14,10 +14,13 @@ use WeakMap;
 
 class Factory {
     /**
-     * @var WeakMap<TestResponse|Response,ResponseInterface>
+     * @var WeakMap<TestResponse<*>|Response,ResponseInterface>
      */
     protected static WeakMap $cache;
 
+    /**
+     * @param TestResponse<*>|Response $response
+     */
     public static function make(TestResponse|Response $response): ResponseInterface {
         $psrResponse = static::getCache()[$response] ?? null;
 
@@ -35,7 +38,7 @@ class Factory {
     }
 
     /**
-     * @return WeakMap<TestResponse|Response,ResponseInterface>
+     * @return WeakMap<TestResponse<*>|Response,ResponseInterface>
      */
     protected static function getCache(): WeakMap {
         if (!isset(static::$cache)) {
