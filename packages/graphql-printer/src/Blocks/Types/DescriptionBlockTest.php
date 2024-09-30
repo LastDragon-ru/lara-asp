@@ -34,7 +34,7 @@ final class DescriptionBlockTest extends TestCase {
 
         self::assertEquals($expected, $actual);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::valueLiteral($actual);
         }
     }

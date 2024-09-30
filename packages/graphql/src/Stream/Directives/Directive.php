@@ -319,19 +319,19 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             },
         );
 
-        if ($argument && $arguments) {
+        if ($argument !== null && $arguments !== []) {
             // todo(graphql/@stream): Move to AstManipulator + check definition.
             $directiveNode = $manipulator->getDirective($argument, $directive);
-            $directiveNode = $directiveNode
+            $directiveNode = $directiveNode !== null
                 ? $manipulator->getDirectiveNode($directiveNode)
                 : null;
 
-            if ($directiveNode) {
+            if ($directiveNode !== null) {
                 foreach ($arguments as $argName => $argValue) {
                     $argNode  = $manipulator->getArgument($directiveNode, $argName);
                     $argValue = json_encode($argValue, JSON_THROW_ON_ERROR);
 
-                    if ($argNode) {
+                    if ($argNode !== null) {
                         $argNode->value = Parser::valueLiteral($argValue);
                     } else {
                         $directiveNode->arguments[] = Parser::argument("{$argName}: {$argValue}");
@@ -340,7 +340,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
         }
 
-        if ($argument && !$manipulator->isDeprecated($argument)) {
+        if ($argument !== null && !$manipulator->isDeprecated($argument)) {
             return;
         }
 
@@ -389,12 +389,12 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $type = $type instanceof ReflectionNamedType
                 ? $type->getName()
                 : null;
-            $type = $type && class_exists($type)
+            $type = $type !== null && class_exists($type)
                 ? $type
                 : null;
 
             // Scout?
-            if ($type && !is_a($type, ScoutBuilder::class, true)) {
+            if ($type !== null && !is_a($type, ScoutBuilder::class, true)) {
                 $scout = $field->hasArgument(
                     static function (mixed $argument, AstManipulator $manipulator): bool {
                         return $manipulator->getDirective($argument, SearchDirective::class) !== null;
@@ -536,7 +536,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $resolver = null;
         $builder  = (array) $this->directiveArgValue(self::ArgBuilder);
 
-        if ($builder) {
+        if ($builder !== []) {
             if (count($builder) > 1) {
                 // empty
             } elseif (isset($builder['builder'])) {
@@ -558,7 +558,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $parent   = $source->getParent()->getTypeName();
             $resolver = $this->getResolverQuery($parent, $source->getName());
 
-            if (!$resolver) {
+            if ($resolver === null) {
                 $resolver = RootType::isRootType($parent)
                     ? $this->getResolverModel(
                         $this->streamType->getOriginalTypeName($source->getTypeName()),
@@ -634,7 +634,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             }
         };
         $class    = $helper->getResolverClass($this->provider, $value, $method);
-        $resolver = $class ? [$class, $method] : null;
+        $resolver = $class !== null ? [$class, $method] : null;
 
         return $resolver;
     }
@@ -698,15 +698,13 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         }
 
         // Key
-        if ($field) {
+        if ($field !== null) {
             $rename = $manipulator->getDirective($field, RenameDirective::class);
-            $key    = $rename
-                ? $rename->attributeArgValue()
-                : $manipulator->getName($field);
+            $key    = $rename?->attributeArgValue() ?? $manipulator->getName($field);
         }
 
         // Found?
-        if (!$key) {
+        if ($key === null) {
             throw new KeyUnknown($source);
         }
 

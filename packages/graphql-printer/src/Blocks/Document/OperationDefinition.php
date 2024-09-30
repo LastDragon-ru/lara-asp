@@ -47,7 +47,7 @@ class OperationDefinition extends DefinitionBlock implements ExecutableDefinitio
         $content = parent::content($collector, $level, $used);
 
         // Statistics
-        if ($content && $type) {
+        if ($content !== '' && $type !== null) {
             $collector->addUsedType($this->getTypeName($type));
         }
 

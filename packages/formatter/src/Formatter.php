@@ -511,7 +511,7 @@ class Formatter {
             return '';
         }
 
-        $formatter = ($timezone ? $this->forTimezone($timezone) : $this)->getIntlDateFormatter($type, $format);
+        $formatter = ($timezone !== null ? $this->forTimezone($timezone) : $this)->getIntlDateFormatter($type, $format);
         $value     = $formatter->format($value);
 
         if ($value === false) {
@@ -555,7 +555,7 @@ class Formatter {
         $key       = json_encode([$type, $format], JSON_THROW_ON_ERROR);
         $formatter = $this->dateFormatters[$key] ?? $this->createIntlDateFormatter($type, $format);
 
-        if ($formatter) {
+        if ($formatter !== null) {
             $this->dateFormatters[$key] = $formatter;
         } else {
             throw new FailedToCreateDateFormatter($type, $format);
@@ -630,7 +630,7 @@ class Formatter {
         $key       = json_encode([$type, $decimals], JSON_THROW_ON_ERROR);
         $formatter = $this->numbersFormatters[$key] ?? $this->createIntlNumberFormatter($type, $decimals, $closure);
 
-        if ($formatter) {
+        if ($formatter !== null) {
             $this->numbersFormatters[$key] = $formatter;
         } else {
             throw new FailedToCreateNumberFormatter($type);
@@ -652,7 +652,7 @@ class Formatter {
         $symbols    = [];
         $texts      = [];
 
-        if ($closure) {
+        if ($closure !== null) {
             $decimals = $closure($type, $decimals);
         }
 
@@ -695,7 +695,7 @@ class Formatter {
                 break;
         }
 
-        if ($formatter) {
+        if ($formatter !== null) {
             $attributes = $attributes
                 + (array) $this->getLocaleOptions($type, self::IntlAttributes)
                 + (array) $this->getOptions(self::IntlAttributes);

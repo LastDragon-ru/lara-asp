@@ -39,7 +39,7 @@ trait RawSqlHelper {
         $file = basename($path, '.php');
         $dir  = dirname($path);
 
-        return $type
+        return $type !== null && $type !== ''
             ? "{$dir}/{$file}~{$type}.sql"
             : "{$dir}/{$file}.sql";
     }

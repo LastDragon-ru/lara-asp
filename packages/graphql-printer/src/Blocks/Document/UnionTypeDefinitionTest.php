@@ -35,7 +35,7 @@ final class UnionTypeDefinitionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new UnionTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::unionTypeDefinition($actual);
         }
 

@@ -49,7 +49,7 @@ class FragmentSpread extends DefinitionBlock implements ExecutableDefinitionBloc
         $content = parent::content($collector, $level, $used);
 
         // Statistics
-        if ($content && $this->type) {
+        if ($content !== '' && $this->type !== null) {
             $collector->addUsedType($this->getTypeName($this->type));
         }
 

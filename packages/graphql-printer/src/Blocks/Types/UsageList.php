@@ -56,15 +56,15 @@ abstract class UsageList extends ListBlock {
         $used    = $used + mb_strlen("{$prefix}{$space}");
         $content = parent::content($collector, $level, $used);
 
-        if ($content) {
+        if ($content !== '') {
             if ($this->isAlwaysMultiline() || $this->isStringMultiline($content)) {
                 $eol    = $this->eol();
                 $indent = $this->indent($level);
 
-                if ($prefix) {
+                if ($prefix !== '') {
                     $content = "{$prefix}{$eol}{$indent}{$content}";
                 }
-            } elseif ($prefix) {
+            } elseif ($prefix !== '') {
                 $content = "{$prefix}{$space}{$content}";
             } else {
                 // empty

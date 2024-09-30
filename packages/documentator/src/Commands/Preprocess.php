@@ -280,7 +280,7 @@ class Preprocess extends Command {
         }
 
         // Empty?
-        if (!$parameters) {
+        if ($parameters === []) {
             return null;
         }
 

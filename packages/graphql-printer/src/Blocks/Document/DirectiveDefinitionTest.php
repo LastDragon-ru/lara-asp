@@ -38,7 +38,7 @@ final class DirectiveDefinitionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new DirectiveDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::directiveDefinition($actual);
         }
 

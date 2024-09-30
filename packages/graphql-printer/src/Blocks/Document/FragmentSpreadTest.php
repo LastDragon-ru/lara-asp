@@ -39,7 +39,7 @@ final class FragmentSpreadTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new FragmentSpread($context, $definition, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::fragment($actual);
         }
 

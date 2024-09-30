@@ -27,7 +27,7 @@ class Template {
         $result  = $this->content;
         $matches = [];
 
-        if (preg_match_all('/\$\{(?<var>[^}]+)\}/u', $result, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('/\$\{(?<var>[^}]+)\}/u', $result, $matches, PREG_SET_ORDER) > 0) {
             $variables = array_unique(array_column($matches, 'var'));
 
             foreach ($variables as $name) {

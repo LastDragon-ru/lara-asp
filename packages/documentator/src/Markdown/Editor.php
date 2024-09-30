@@ -104,7 +104,7 @@ class Editor implements Stringable {
             $line    = $lines[$number] ?? '';
             $count   = count($text);
             $prefix  = mb_substr($line, 0, $coordinate->offset);
-            $suffix  = $coordinate->length
+            $suffix  = $coordinate->length !== null
                 ? mb_substr($line, $coordinate->offset + $coordinate->length)
                 : '';
             $padding = mb_substr($line, 0, $coordinate->padding);
@@ -123,7 +123,7 @@ class Editor implements Stringable {
                 array_splice($lines, $number, 1, $insert);
             } elseif ($count === 1) {
                 $lines[$number] = rtrim($prefix.$text[0].$suffix);
-            } elseif (($prefix && $prefix !== $padding) || $suffix) {
+            } elseif (($prefix !== '' && $prefix !== $padding) || $suffix !== '') {
                 $lines[$number] = rtrim($prefix.$suffix);
             } else {
                 unset($lines[$number]);
@@ -152,7 +152,7 @@ class Editor implements Stringable {
                 $coordinates[] = $coordinate;
             }
 
-            if ($coordinates) {
+            if ($coordinates !== []) {
                 $prepared[] = [$coordinates, $text];
             }
         }
@@ -212,12 +212,12 @@ class Editor implements Stringable {
                 $lines[$coordinate->line][] = $coordinate;
 
                 if ($this->isOverlapped($used, $coordinate)) {
-                    $lines = null;
+                    $lines = [];
                     break;
                 }
             }
 
-            if ($lines) {
+            if ($lines !== []) {
                 foreach ($lines as $line => $coords) {
                     $used[$line] = array_merge($used[$line] ?? [], $coords);
                 }

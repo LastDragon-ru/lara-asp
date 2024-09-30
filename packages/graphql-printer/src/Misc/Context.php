@@ -102,7 +102,7 @@ class Context {
     public function getOperationType(string $operation): (Type&NamedType)|null {
         $type = $this->getSchema()?->getOperationType($operation);
 
-        if (!$type && $this->getSchema()) {
+        if ($type === null && $this->getSchema() !== null) {
             throw new TypeNotFound($operation);
         }
 
@@ -122,7 +122,7 @@ class Context {
     public function getType(string $name): (Type&NamedType)|null {
         $type = $this->getSchema()?->getType($name);
 
-        if (!$type && $this->getSchema()) {
+        if ($type === null && $this->getSchema() !== null) {
             throw new TypeNotFound($name);
         }
 
@@ -131,7 +131,7 @@ class Context {
 
     public function isTypeAllowed(string $type): bool {
         // Schema?
-        if (!$this->getSchema()) {
+        if ($this->getSchema() === null) {
             return true;
         }
 
@@ -233,7 +233,7 @@ class Context {
         $directive = $this->getSchema()?->getDirective($name)
             ?? $this->getDirectiveResolver()?->getDefinition($name);
 
-        if (!$directive && $this->getSchema()) {
+        if ($directive === null && $this->getSchema() !== null) {
             throw new DirectiveDefinitionNotFound($name);
         }
 
@@ -316,7 +316,7 @@ class Context {
             // empty
         }
 
-        if ($this->getSchema() && !$argument) {
+        if ($argument === null && $this->getSchema() !== null) {
             throw new DirectiveArgumentNotFound("@{$directive}", $name);
         }
 
@@ -335,7 +335,7 @@ class Context {
             $field = $definition->findField($name);
         }
 
-        if ($this->getSchema() && !$field) {
+        if ($field === null && $this->getSchema() !== null) {
             throw new FieldNotFound($type, $name);
         }
 
@@ -355,7 +355,7 @@ class Context {
             }
         }
 
-        if ($this->getSchema() && !$argument) {
+        if ($argument === null && $this->getSchema() !== null) {
             throw new FieldArgumentNotFound($this->getTypeName($object), $field, $name);
         }
 

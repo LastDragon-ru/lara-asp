@@ -83,7 +83,7 @@ final class AllOfTest extends TestCase {
         ?Closure $resolver,
         ?Closure $fieldResolver,
     ): void {
-        if ($fieldResolver) {
+        if ($fieldResolver !== null) {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 

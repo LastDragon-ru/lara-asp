@@ -47,7 +47,7 @@ class Enumeration implements TypeDefinition {
         // Operators?
         $provider = $context->get(HandlerContextOperators::class)?->value;
 
-        if (!$provider) {
+        if ($provider === null) {
             return null;
         }
 
@@ -56,7 +56,7 @@ class Enumeration implements TypeDefinition {
         $operators = $provider->getOperators($manipulator, $type->getTypeName(), $type, $context)
             ?: $provider->getOperators($manipulator, Operators::Enum, $type, $context);
 
-        if (!$operators) {
+        if ($operators === []) {
             return null;
         }
 

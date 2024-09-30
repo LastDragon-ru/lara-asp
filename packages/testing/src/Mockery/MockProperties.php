@@ -43,7 +43,7 @@ trait MockProperties {
             $property = "{$this->mockery_getName()}::\${$name}";
             $director = $this->mockery_getExpectationsFor($method);
 
-            if ($director) {
+            if ($director !== null) {
                 throw new BadMethodCallException(
                     "The property `{$property}` already mocked.",
                 );

@@ -44,7 +44,7 @@ class StringValue extends Block {
         $content = $this->getString();
 
         // Whitespace only? (it cannot be rendered as BlockString)
-        if (preg_match('/^\h+$/u', $content)) {
+        if (preg_match('/^\h+$/u', $content) > 0) {
             return json_encode($content, JSON_THROW_ON_ERROR);
         }
 

@@ -35,13 +35,16 @@ class Text {
         $cut     = PHP_INT_MAX;
 
         foreach ($lines as $line) {
-            if (!$line) {
+            if ($line === '') {
                 continue;
             }
 
             $trims = 0;
 
-            while ($line && (str_starts_with($line, $padding) || ($trimmed && str_starts_with($line, $trimmed)))) {
+            while (
+                $line !== ''
+                && (str_starts_with($line, $padding) || ($trimmed !== '' && str_starts_with($line, $trimmed)))
+            ) {
                 $line = mb_substr($line, $length);
 
                 $trims++;

@@ -34,7 +34,7 @@ final class ObjectTypeExtensionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new ObjectTypeExtension($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::objectTypeExtension($actual);
         }
 

@@ -202,7 +202,7 @@ class Printer implements PrinterContract {
                 if ($directives) {
                     $directive = $context->getDirective(mb_substr($name, 1));
 
-                    if ($directive) {
+                    if ($directive !== null) {
                         $block          = $this->getBlock($context, $directive);
                         $printed[$name] = true;
                     }
@@ -210,14 +210,14 @@ class Printer implements PrinterContract {
             } else {
                 $type = $context->getType($name);
 
-                if ($type) {
+                if ($type !== null) {
                     $block          = $this->getBlock($context, $type);
                     $printed[$name] = true;
                 }
             }
 
             // Stack
-            if ($block && !isset($output[$block]) && !isset($root[$block])) {
+            if ($block !== null && !isset($output[$block]) && !isset($root[$block])) {
                 $statistics = new Collector();
                 $output[]   = $this->analyze($statistics, $block, $level, $used);
                 $statistics = $collector->addUsed($statistics);

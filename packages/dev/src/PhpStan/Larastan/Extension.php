@@ -119,7 +119,7 @@ class Extension {
         // Unused?
         $unused = array_keys(array_filter($disabled));
 
-        if ($unused) {
+        if ($unused !== []) {
             throw new Exception(
                 sprintf(
                     'The following services is unknown: `%s`',

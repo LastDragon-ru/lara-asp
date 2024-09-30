@@ -102,7 +102,7 @@ class Document implements Stringable {
     }
 
     public function setPath(?string $path): static {
-        $this->path = $path ? Path::normalize($path) : null;
+        $this->path = $path !== null ? Path::normalize($path) : null;
 
         return $this;
     }
@@ -118,12 +118,7 @@ class Document implements Stringable {
         $document = clone $this;
 
         foreach ($mutations as $mutation) {
-            $changes = $mutation($document, $document->getNode());
-
-            if (!$changes) {
-                continue;
-            }
-
+            $changes  = $mutation($document, $document->getNode());
             $content  = trim((string) $document->getEditor()->mutate($changes))."\n";
             $document = $document->setContent($content);
         }
@@ -222,7 +217,7 @@ class Document implements Stringable {
         $location = $node?->getStartLine() !== null && $node->getEndLine() !== null
             ? new Location($node->getStartLine(), $node->getEndLine())
             : null;
-        $text     = $location
+        $text     = $location !== null
             ? $this->getText($location)
             : null;
 

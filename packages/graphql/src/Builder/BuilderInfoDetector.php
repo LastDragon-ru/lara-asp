@@ -85,7 +85,7 @@ class BuilderInfoDetector {
             $reason = $exception;
         }
 
-        if (!$builder) {
+        if ($builder === null) {
             throw new BuilderUnknown($source, $reason);
         }
 
@@ -131,9 +131,9 @@ class BuilderInfoDetector {
                     || $directive instanceof WithRelationDirective;
             },
         );
-        $directive  = reset($directives);
+        $directive  = reset($directives) ?: null;
 
-        if ($directive) {
+        if ($directive !== null) {
             $type = null;
 
             if ($directive instanceof PaginateDirective) {
@@ -176,7 +176,7 @@ class BuilderInfoDetector {
                 $resolver = $directive->getResolverFromArgument($argument);
                 $return   = $this->getCallableReturnType($resolver);
 
-                if ($return) {
+                if ($return !== null) {
                     $type = $return;
                 }
 
@@ -204,7 +204,7 @@ class BuilderInfoDetector {
         $return = $return instanceof ReflectionNamedType
             ? $return->getName()
             : null;
-        $return = $return && class_exists($return)
+        $return = $return !== null && class_exists($return)
             ? $return
             : null;
 

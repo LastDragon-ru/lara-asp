@@ -27,7 +27,7 @@ class TestData {
     public function __construct(string $test) {
         $path = (new ReflectionClass($test))->getFileName();
 
-        if (!$path) {
+        if ($path === false) {
             throw new InvalidArgumentClass('$test', $test);
         }
 

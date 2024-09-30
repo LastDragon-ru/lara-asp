@@ -49,7 +49,7 @@ trait BuilderHelperFactory {
 
         if (!array_key_exists($builder, $this->instances)) {
             $class                     = $this->getHelperClass($builder);
-            $this->instances[$builder] = $class
+            $this->instances[$builder] = $class !== null
                 ? $this->getContainerResolver()->getInstance()->make($class)
                 : null;
         }

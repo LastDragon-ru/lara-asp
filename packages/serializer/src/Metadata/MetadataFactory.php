@@ -103,7 +103,7 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
     }
 
     protected function getTypeExtractor(): PropertyTypeExtractorInterface {
-        if (!$this->extractor) {
+        if ($this->extractor === null) {
             if (!class_exists(ContextFactory::class) || !class_exists(PhpDocParser::class)) {
                 /**
                  * These classes are required for {@see PhpStanExtractor}. We

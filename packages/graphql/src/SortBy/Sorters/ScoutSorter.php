@@ -29,7 +29,7 @@ class ScoutSorter implements Sorter {
 
     #[Override]
     public function sort(object $builder, Field $field, Direction $direction, ?Nulls $nulls = null): object {
-        if ($nulls) {
+        if ($nulls !== null) {
             throw new NotImplemented('NULLs ordering');
         }
 

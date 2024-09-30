@@ -54,7 +54,7 @@ class ObjectValue extends ListBlock {
     #[Override]
     protected function block(string|int $key, mixed $item): Block {
         $name = $item->name->value;
-        $type = $this->type
+        $type = $this->type !== null
             ? $this->getContext()->getField($this->type, $name)?->getType()
             : null;
 

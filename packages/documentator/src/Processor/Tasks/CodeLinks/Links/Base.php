@@ -50,7 +50,7 @@ abstract class Base implements Link {
         // Class?
         $comment = $source->getMetadata($this->comment);
 
-        if (!$comment) {
+        if ($comment === null) {
             return null;
         }
 

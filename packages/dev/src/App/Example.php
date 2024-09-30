@@ -44,7 +44,7 @@ final class Example implements Runner {
     }
 
     protected static function getDumper(): Dumper {
-        if (!self::$dumper) {
+        if (self::$dumper === null) {
             throw new LogicException(
                 sprintf(
                     'The `%s` can be called only within example context.',
@@ -79,7 +79,7 @@ final class Example implements Runner {
             $dumps  = self::$dumper->getDumps();
             $output = implode("\n\n", array_map(trim(...), $dumps));
 
-            if ($output) {
+            if ($output !== '') {
                 $result = "<markdown>{$output}</markdown>";
             }
         } finally {
@@ -100,7 +100,7 @@ final class Example implements Runner {
     }
 
     protected static function app(): Application {
-        if (!self::$app) {
+        if (self::$app === null) {
             throw new LogicException(
                 sprintf(
                     'The `%s` can be called only within example context.',

@@ -27,7 +27,7 @@ class Listener {
         // Supported?
         [$class, $method] = $this->getTarget($event);
 
-        if (!$class) {
+        if ($class === null) {
             return;
         }
 

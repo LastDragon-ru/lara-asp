@@ -16,6 +16,10 @@ use function sprintf;
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class RequiresComposerPackage implements Requirement {
+    /**
+     * @param non-empty-string      $package
+     * @param non-empty-string|null $version
+     */
     public function __construct(
         protected readonly string $package,
         protected readonly ?string $version = null,
@@ -25,7 +29,7 @@ class RequiresComposerPackage implements Requirement {
 
     #[Override]
     public function isSatisfied(): bool {
-        return $this->version
+        return $this->version !== null
             ? InstalledVersions::satisfies(new VersionParser(), $this->package, $this->version)
             : InstalledVersions::isInstalled($this->package);
     }
@@ -34,7 +38,7 @@ class RequiresComposerPackage implements Requirement {
     public function __toString(): string {
         return sprintf(
             'The package `%s` is not installed.',
-            $this->package.($this->version ? ":{$this->version}" : ''),
+            $this->package.($this->version !== null ? ":{$this->version}" : ''),
         );
     }
 }

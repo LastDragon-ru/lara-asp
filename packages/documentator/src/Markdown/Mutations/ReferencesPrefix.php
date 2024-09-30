@@ -42,7 +42,7 @@ class ReferencesPrefix implements Mutation {
             // Location?
             $location = Utils::getLocation($reference);
 
-            if (!$location) {
+            if ($location === null) {
                 continue;
             }
 
@@ -67,7 +67,7 @@ class ReferencesPrefix implements Mutation {
                     break;
                 }
 
-                if ($coordinate) {
+                if ($coordinate !== null) {
                     $startLine = $coordinate->line;
                     $endLine   = $startLine;
                     $offset    = $coordinate->offset + 1;

@@ -33,7 +33,7 @@ class EloquentSorter extends DatabaseSorter {
         // Column
         $relation = $field->getParent()->getPath();
 
-        if ($relation) {
+        if ($relation !== []) {
             $column = $field->getName();
             $column = $this->getRelationColumn($builder, $relation, $column, $direction);
         } else {
@@ -126,7 +126,7 @@ class EloquentSorter extends DatabaseSorter {
                 $currentAlias,
                 "{$currentAlias}.{$relation->getOwnerKeyName()}",
                 '=',
-                $parentAlias
+                $parentAlias !== ''
                     ? "{$parentAlias}.{$relation->getForeignKeyName()}"
                     : $relation->getQualifiedForeignKeyName(),
             );
@@ -138,7 +138,7 @@ class EloquentSorter extends DatabaseSorter {
                     $join->on(
                         "{$currentAlias}.{$relation->getForeignKeyName()}",
                         '=',
-                        $parentAlias
+                        $parentAlias !== ''
                             ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                             : $relation->getQualifiedParentKeyName(),
                     );
@@ -155,7 +155,7 @@ class EloquentSorter extends DatabaseSorter {
                 $currentAlias,
                 "{$currentAlias}.{$relation->getForeignKeyName()}",
                 '=',
-                $parentAlias
+                $parentAlias !== ''
                     ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                     : $relation->getQualifiedParentKeyName(),
             );
@@ -173,7 +173,7 @@ class EloquentSorter extends DatabaseSorter {
                 $currentAlias,
                 "{$currentAlias}.{$currentAlias}_key",
                 '=',
-                $parentAlias
+                $parentAlias !== ''
                     ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                     : $relation->getQualifiedLocalKeyName(),
             );
@@ -183,7 +183,7 @@ class EloquentSorter extends DatabaseSorter {
                 $currentAlias,
                 "{$currentAlias}.{$relation->getParentKeyName()}",
                 '=',
-                $parentAlias
+                $parentAlias !== ''
                     ? "{$parentAlias}.{$relation->getRelatedKeyName()}"
                     : $relation->getQualifiedRelatedKeyName(),
             );

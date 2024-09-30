@@ -39,7 +39,7 @@ class ReferencesInline implements Mutation {
             // Location?
             $location = Utils::getLocation($reference);
 
-            if (!$location) {
+            if ($location === null) {
                 continue;
             }
 
@@ -53,7 +53,7 @@ class ReferencesInline implements Mutation {
                 if ($location !== null) {
                     $title  = Utils::getLinkTitle($reference, (string) $reference->getTitle());
                     $target = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
-                    $text   = $title ? "({$target} {$title})" : "({$target})";
+                    $text   = $title !== '' ? "({$target} {$title})" : "({$target})";
                 }
             } elseif ($reference instanceof Reference) {
                 $text = '';

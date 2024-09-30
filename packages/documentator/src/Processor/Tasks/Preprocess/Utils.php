@@ -27,7 +27,7 @@ class Utils {
      */
     public static function isInstruction(Node $node, InstanceList $instructions): bool {
         return $node instanceof ReferenceNode
-            && !MarkdownUtils::getParent($node, GeneratedNode::class)
+            && MarkdownUtils::getParent($node, GeneratedNode::class) === null
             && $instructions->has($node->getLabel());
     }
 

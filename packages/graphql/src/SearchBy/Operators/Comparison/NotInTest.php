@@ -84,7 +84,7 @@ final class NotInTest extends TestCase {
         ?Closure $fieldResolver,
     ): void {
         // Prepare
-        if ($fieldResolver) {
+        if ($fieldResolver !== null) {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 

@@ -37,7 +37,7 @@ class VariableDefinition extends DefinitionBlock implements ExecutableDefinition
     #[Override]
     protected function value(bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $value      = $definition->defaultValue
+        $value      = $definition->defaultValue !== null
             ? new Value($this->getContext(), $definition->defaultValue, $definition->type)
             : null;
 

@@ -36,7 +36,7 @@ trait RefreshDatabaseIfEmpty {
             $connection = $this->app()->make(DatabaseManager::class)->connection();
             $tables     = $connection->getSchemaBuilder()->getTables();
 
-            if ($tables) {
+            if ($tables !== []) {
                 RefreshDatabaseState::$migrated = true;
             }
         }

@@ -32,7 +32,7 @@ final class EnumTypeExtensionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new EnumTypeExtension($context, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::enumTypeExtension($actual);
         }
 

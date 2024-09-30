@@ -34,7 +34,7 @@ final class VariableDefinitionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new VariableDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::variableDefinition($actual);
         }
 

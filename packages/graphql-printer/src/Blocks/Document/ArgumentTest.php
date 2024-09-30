@@ -36,7 +36,7 @@ final class ArgumentTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new Argument($context, $argumentNode, $argumentType))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::argument($actual);
         }
 

@@ -49,7 +49,7 @@ class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
         // Data?
-        if (!$parameters->data) {
+        if ($parameters->data === []) {
             throw new TemplateDataMissed($context);
         }
 
@@ -85,14 +85,14 @@ class Instruction implements InstructionContract {
         // Unused?
         $unused = array_diff($vars, $used);
 
-        if ($unused) {
+        if ($unused !== []) {
             throw new TemplateVariablesUnused($context, array_values($unused));
         }
 
         // Missed?
         $missed = array_diff($known, $used);
 
-        if ($missed) {
+        if ($missed !== []) {
             throw new TemplateVariablesMissed($context, array_values($missed));
         }
 

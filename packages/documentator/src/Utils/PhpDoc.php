@@ -46,7 +46,7 @@ class PhpDoc {
     }
 
     public function isDeprecated(): bool {
-        return $this->node && $this->node->getDeprecatedTagValues() !== [];
+        return $this->node !== null && $this->node->getDeprecatedTagValues() !== [];
     }
 
     /**
@@ -58,7 +58,7 @@ class PhpDoc {
 
     private function parse(?string $comment): ?PhpDocNode {
         // Empty?
-        if (!$comment || trim($comment) === '') {
+        if ($comment === null || trim($comment) === '') {
             return null;
         }
 

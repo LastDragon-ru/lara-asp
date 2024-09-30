@@ -44,7 +44,7 @@ readonly class InstructionsRemove implements Mutation {
             // Location?
             $location = MarkdownUtils::getLocation($block);
 
-            if ($location) {
+            if ($location !== null) {
                 $changes[] = [$location, null];
             }
         }

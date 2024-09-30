@@ -58,7 +58,7 @@ trait OperatorTests {
             self::expectExceptionObject($expected);
         }
 
-        if ($resolver) {
+        if ($resolver !== null) {
             $this->override(
                 BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
@@ -73,7 +73,7 @@ trait OperatorTests {
 
         $operator = $this->app()->make($this->getOperator());
         $argument = $argumentFactory($this);
-        $context  = $contextFactory ? $contextFactory($this) : new Context();
+        $context  = $contextFactory !== null ? $contextFactory($this) : new Context();
         $handler  = $this->app()->make($directive);
         $builder  = $builderFactory($this);
         $actual   = $operator->call($handler, $builder, $field, $argument, $context);
@@ -112,9 +112,9 @@ trait OperatorTests {
         $class = new ReflectionClass($this);
         $attrs = $class->getAttributes(CoversClass::class, ReflectionAttribute::IS_INSTANCEOF);
         $attr  = reset($attrs);
-        $class = $attr ? $attr->newInstance()->className() : null;
+        $class = $attr !== false ? $attr->newInstance()->className() : null;
 
-        if (!$class || !is_a($class, Operator::class, true)) {
+        if ($class === null || !is_a($class, Operator::class, true)) {
             throw new LogicException(
                 sprintf(
                     'The `%s` attribute is missed or is not an `%s` instance.',

@@ -40,7 +40,7 @@ class EloquentBuilderMixin {
             /** @var Builder<Model> $this */
             $iterator = new ChunkedIterator($this);
 
-            if ($chunk) {
+            if ($chunk !== null) {
                 $iterator->setChunkSize($chunk);
             }
 
@@ -56,7 +56,7 @@ class EloquentBuilderMixin {
             /** @var Builder<Model> $this */
             $iterator = new ChunkedChangeSafeIterator($this, $column);
 
-            if ($chunk) {
+            if ($chunk !== null) {
                 $iterator->setChunkSize($chunk);
             }
 

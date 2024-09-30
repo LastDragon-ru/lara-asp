@@ -69,7 +69,7 @@ class Instruction implements InstructionContract {
             CODE;
 
         // Runner?
-        if ($this->runner) {
+        if ($this->runner !== null) {
             // Run
             try {
                 $output = trim((string) ($this->runner)($target));
@@ -117,7 +117,7 @@ class Instruction implements InstructionContract {
 
                     </details>
                     CODE;
-            } elseif ($output) {
+            } elseif ($output !== '') {
                 $output = <<<CODE
                     Example output:
 

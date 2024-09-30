@@ -44,7 +44,7 @@ trait SqlHelper {
             $directory = dirname($path);
             $type      = implode('.', array_filter($type));
             $name      = pathinfo($path, PATHINFO_FILENAME);
-            $path      = $type
+            $path      = $type !== ''
                 ? "{$directory}/{$name}~{$type}.{$sql}"
                 : "{$directory}/{$name}.{$sql}";
         }

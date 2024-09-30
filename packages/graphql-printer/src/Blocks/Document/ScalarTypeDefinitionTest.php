@@ -33,7 +33,7 @@ final class ScalarTypeDefinitionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new ScalarTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::scalarTypeDefinition($actual);
         }
 

@@ -43,7 +43,7 @@ class UnicodeDateTimeFormatParser implements IteratorAggregate {
 
         foreach ($this->tokenize($this->pattern) as $token => $value) {
             $isEscape  = $token === $escape;
-            $isPattern = !$isEscape && !$inEscape && preg_match('/[a-z]+/i', $token);
+            $isPattern = !$isEscape && !$inEscape && preg_match('/[a-z]+/i', $token) > 0;
 
             if ($inEscape) {
                 if ($isEscape) {
@@ -60,7 +60,7 @@ class UnicodeDateTimeFormatParser implements IteratorAggregate {
                     $text .= $value;
                 }
             } elseif ($isPattern) {
-                if ($text) {
+                if ($text !== null) {
                     yield new UnicodeDateTimeFormatToken($escape, strtr($text, $replace));
 
                     $text = null;
@@ -72,7 +72,7 @@ class UnicodeDateTimeFormatParser implements IteratorAggregate {
             }
         }
 
-        if ($text) {
+        if ($text !== null) {
             yield new UnicodeDateTimeFormatToken($escape, strtr($text, $replace));
         }
 
@@ -86,7 +86,7 @@ class UnicodeDateTimeFormatParser implements IteratorAggregate {
         // Split into char & string of the same chars
         $strings = preg_split('/((.)\g{-1}*)/um', $pattern, flags: PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
-        if (!$strings) {
+        if ($strings === false || $strings === []) {
             yield from [];
 
             return;

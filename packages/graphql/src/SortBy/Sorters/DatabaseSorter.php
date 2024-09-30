@@ -93,7 +93,7 @@ abstract class DatabaseSorter implements Sorter {
                     $query   = $builder instanceof EloquentBuilder ? $builder->getQuery() : $builder;
                     $columns = $query->columns ?? [];
 
-                    if (!$columns) {
+                    if ($columns === []) {
                         $builder->addSelect('*');
                     }
 

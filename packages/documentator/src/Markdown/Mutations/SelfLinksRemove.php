@@ -37,7 +37,7 @@ readonly class SelfLinksRemove implements Mutation {
             $location = Utils::getLocation($link);
             $offset   = Data::get($link, Offset::class);
 
-            if (!$location || !$offset) {
+            if ($location === null || $offset === null) {
                 continue;
             }
 

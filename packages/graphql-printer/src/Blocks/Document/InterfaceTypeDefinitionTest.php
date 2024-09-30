@@ -34,7 +34,7 @@ final class InterfaceTypeDefinitionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new InterfaceTypeDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::interfaceTypeDefinition($actual);
         }
 

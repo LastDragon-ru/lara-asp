@@ -34,7 +34,7 @@ final class ObjectTypeDefinitionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new ObjectTypeDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::objectTypeDefinition($actual);
         }
 

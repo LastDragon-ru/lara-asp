@@ -137,7 +137,7 @@ class Requirements extends Command {
             // Load
             $package = $this->getPackageInfo($factory, $git, $tag, $cwd);
 
-            if (!$package) {
+            if ($package === null) {
                 break;
             }
 
@@ -161,7 +161,8 @@ class Requirements extends Command {
 
         // Unreleased
         if (
-            $metadata->version
+            $metadata->version !== null
+            && $metadata->version !== ''
             && !isset($metadata->requirements[$metadata->version])
             && isset($metadata->requirements[self::HEAD])
         ) {
@@ -245,7 +246,7 @@ class Requirements extends Command {
             $match = false;
 
             foreach ($regexps as $regexp => $key) {
-                if (preg_match($regexp, $requirement)) {
+                if (preg_match($regexp, $requirement) > 0) {
                     $requirement = $key;
                     $match       = true;
                     break;
@@ -336,7 +337,7 @@ class Requirements extends Command {
             }
         }
 
-        if ($current) {
+        if ($current !== []) {
             $ranges[] = $current;
         }
 

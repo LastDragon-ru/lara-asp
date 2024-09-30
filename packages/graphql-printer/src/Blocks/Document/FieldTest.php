@@ -38,7 +38,7 @@ final class FieldTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new Field($context, $definition, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::field($actual);
         }
 

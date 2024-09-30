@@ -87,7 +87,7 @@ class Listener implements EnvironmentAwareInterface {
         $start    = null;
         $end      = null;
 
-        if ($previous) {
+        if ($previous !== null) {
             $start = $previous->getEndLine();
 
             if ($start !== null) {

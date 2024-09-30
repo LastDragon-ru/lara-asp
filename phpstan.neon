@@ -22,7 +22,6 @@ parameters:
     noEnvCallsOutsideOfConfig: true
     strictRules:
         strictArrayFilter: false
-        booleansInConditions: false
 
     # Package
     classMustBeFinal:

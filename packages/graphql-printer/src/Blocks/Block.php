@@ -49,7 +49,7 @@ abstract class Block {
             $this->statistics = $collector;
             $this->level      = $level;
             $this->used       = $used;
-        } elseif ($this->statistics) {
+        } elseif ($this->statistics !== null) {
             $collector->addUsed($this->statistics);
         } else {
             // empty

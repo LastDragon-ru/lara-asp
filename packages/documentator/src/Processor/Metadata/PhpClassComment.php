@@ -25,7 +25,7 @@ class PhpClassComment implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         $class   = $file->getMetadata($this->class);
-        $comment = $class
+        $comment = $class !== null
             ? new class ($class->class, $class->context, new PhpDoc($class->class->getDocComment()?->getText())) {
                 public function __construct(
                     public readonly ClassLike $class,

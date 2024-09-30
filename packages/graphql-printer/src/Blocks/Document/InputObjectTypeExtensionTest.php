@@ -35,7 +35,7 @@ final class InputObjectTypeExtensionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new InputObjectTypeExtension($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::inputObjectTypeExtension($actual);
         }
 

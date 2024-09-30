@@ -52,7 +52,7 @@ class DurationFormatter {
     }
 
     public static function getTimestamp(DateInterval $interval): float {
-        return ($interval->invert ? -1 : 1) * (0
+        return ($interval->invert !== 0 ? -1 : 1) * (0
                 + $interval->y * self::SecondsInYear
                 + $interval->m * self::SecondsInMonth
                 + $interval->d * self::SecondsInDay

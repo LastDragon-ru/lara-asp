@@ -74,7 +74,7 @@ class HeadingsLevel implements Mutation {
             // Location?
             $location = Utils::getLocation($child);
 
-            if (!$location) {
+            if ($location === null) {
                 continue;
             }
 

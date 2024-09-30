@@ -23,7 +23,7 @@ final class BuilderFieldResolver implements BuilderFieldResolverContract {
 
     #[Override]
     public function getField(object $builder, Field $field): string {
-        return $builder instanceof ScoutBuilder && $this->resolver
+        return $builder instanceof ScoutBuilder && $this->resolver !== null
             ? $this->resolver->getField($builder->model, new Property(...$field->getPath()))
             : implode('.', $field->getPath());
     }

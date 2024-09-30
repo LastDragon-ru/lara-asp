@@ -31,7 +31,7 @@ final class ScalarTypeExtensionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new ScalarTypeExtension($context, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::scalarTypeExtension($actual);
         }
 

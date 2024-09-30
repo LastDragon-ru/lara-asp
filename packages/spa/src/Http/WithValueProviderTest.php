@@ -49,7 +49,7 @@ final class WithValueProviderTest extends TestCase {
         $rule          = new class() implements ValidationRule {
             #[Override]
             public function validate(string $attribute, mixed $value, Closure $fail): void {
-                if (!$value) {
+                if (! ((bool) $value)) {
                     $fail(static::class);
                 }
             }

@@ -44,7 +44,7 @@ class InstanceList {
     }
 
     public function isEmpty(): bool {
-        return !$this->map;
+        return $this->map === [];
     }
 
     /**
@@ -121,7 +121,7 @@ class InstanceList {
             $this->map[$key][]           = $class;
             $this->configurators[$class] = $configurator;
 
-            if ($resolved) {
+            if ($resolved !== null) {
                 $this->instances[$class] = $resolved;
             }
         }

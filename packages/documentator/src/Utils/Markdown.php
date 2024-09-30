@@ -41,7 +41,7 @@ class Markdown {
      */
     public static function getTitle(string $string): ?string {
         $title = static::getText($string, static::getTitleNode($string));
-        $title = $title ? ltrim($title, '# ') : null;
+        $title = $title !== null ? ltrim($title, '# ') : null;
         $title = $title ?: null;
 
         return $title;
@@ -53,7 +53,7 @@ class Markdown {
     public static function getSummary(string $string): ?string {
         $title   = static::getTitleNode($string);
         $summary = static::getFirstNode($title?->next(), Paragraph::class);
-        $summary = $summary
+        $summary = $summary !== null
             ? static::getText($string, $summary)
             : null;
 
@@ -76,7 +76,7 @@ class Markdown {
 
         foreach ($lines as $i => $line) {
             $line      = mb_substr($line, $cut);
-            $line      = ($line ? $prefix : '').$line;
+            $line      = ($line !== '' ? $prefix : '').$line;
             $lines[$i] = $line;
         }
 
@@ -101,7 +101,7 @@ class Markdown {
     protected static function getText(string $string, ?AbstractBlock $node): ?string {
         // todo(documentator): There is no way to convert AST back to Markdown yet
         //      https://github.com/thephpleague/commonmark/issues/419
-        if (!$node || $node->getStartLine() === null || $node->getEndLine() === null) {
+        if ($node?->getStartLine() === null || $node->getEndLine() === null) {
             return null;
         }
 

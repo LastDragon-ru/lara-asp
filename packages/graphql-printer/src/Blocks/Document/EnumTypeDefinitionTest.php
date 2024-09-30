@@ -33,7 +33,7 @@ final class EnumTypeDefinitionTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new EnumTypeDefinition($context, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::enumTypeDefinition($actual);
         }
 

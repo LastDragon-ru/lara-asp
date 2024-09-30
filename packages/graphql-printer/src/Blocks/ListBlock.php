@@ -135,7 +135,7 @@ abstract class ListBlock extends Block {
             $blockContent   = $block->serialize($collector, $blockLevel, $used);
             $blockMultiline = $this->isStringMultiline($blockContent);
 
-            if (!$blockContent) {
+            if ($blockContent === '') {
                 continue;
             }
 
@@ -160,7 +160,7 @@ abstract class ListBlock extends Block {
         }
 
         // Empty?
-        if (!$serialized) {
+        if ($serialized === []) {
             return $this->getEmptyValue();
         }
 
@@ -196,12 +196,12 @@ abstract class ListBlock extends Block {
         }
 
         // Prefix & Suffix
-        if ($prefix) {
+        if ($prefix !== '') {
             $prefix  = $multiline ? $prefix.$eol : $prefix;
             $content = "{$prefix}{$content}";
         }
 
-        if ($suffix) {
+        if ($suffix !== '') {
             $indent   = $multiline ? $eol.$this->indent($level) : '';
             $content .= "{$indent}{$suffix}";
         }

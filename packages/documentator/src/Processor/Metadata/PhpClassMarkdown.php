@@ -34,7 +34,7 @@ class PhpClassMarkdown implements Metadata {
         // Comment?
         $comment = $file->getMetadata($this->comment);
 
-        if (!$comment) {
+        if ($comment === null) {
             return null;
         }
 
@@ -57,7 +57,7 @@ class PhpClassMarkdown implements Metadata {
                     },
                 );
 
-                if ($reference) {
+                if ($reference !== null) {
                     $result = "`{$reference}`";
                 }
 

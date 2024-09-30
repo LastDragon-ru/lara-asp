@@ -134,7 +134,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
             );
             $this->attributes[$class] = array_fill_keys($properties, true);
 
-            if ($mapping) {
+            if ($mapping !== null) {
                 $property                     = $mapping->getTypeProperty();
                 $this->discriminators[$class] = $property;
 
@@ -221,8 +221,8 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     private function getTypeClass(string $type, mixed $data): string {
         $mapping  = $this->classDiscriminatorResolver?->getMappingForClass($type);
         $property = $mapping?->getTypeProperty();
-        $class    = $property && is_array($data) && isset($data[$property]) && is_string($data[$property])
-            ? $mapping->getClassForType($data[$property])
+        $class    = $property !== null && is_array($data) && isset($data[$property]) && is_string($data[$property])
+            ? $mapping?->getClassForType($data[$property])
             : null;
 
         return $class ?? $type;

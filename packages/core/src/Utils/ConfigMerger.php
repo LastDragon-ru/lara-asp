@@ -91,7 +91,7 @@ class ConfigMerger {
         // Merge
         foreach ($config as $key => &$value) {
             // Current path
-            $current = $path ? "{$path}.{$key}" : "{$key}";
+            $current = $path !== '' ? "{$path}.{$key}" : "{$key}";
 
             // Only scalars/nulls and arrays of them allowed
             if (!is_scalar($value) && !is_null($value) && !is_array($value)) {
@@ -106,11 +106,11 @@ class ConfigMerger {
                         throw new InvalidArgumentException('Array cannot be replaced by scalar/null value.');
                     }
 
-                    if ($target[$key][static::Replace] ?? false) {
+                    if (isset($target[$key][static::Replace]) && $target[$key][static::Replace] === true) {
                         $target[$key] = [static::Replace => true] + (array) $value;
                     } elseif (is_string(key($target[$key]))) {
                         $this->process($target[$key], (array) $value, $current);
-                    } elseif (!$target[$key]) {
+                    } elseif ($target[$key] === []) {
                         $target[$key] = (array) $value;
                     } else {
                         $target[$key] = array_values((array) $value);

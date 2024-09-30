@@ -25,8 +25,9 @@ class JsonResponse extends Response {
         JsonSchema $schema,
         JsonSerializable|SplFileInfo|stdClass|array|string|int|float|bool|null $content = null,
     ) {
-        if ($content) {
+        if ($content !== null) {
             $content = Args::getJson($content);
+            $content = new JsonMatches(Args::getJsonString($content));
         }
 
         parent::__construct(
@@ -34,9 +35,7 @@ class JsonResponse extends Response {
             new JsonContentType(),
             new JsonBody(...array_filter([
                 new JsonMatchesSchema($schema),
-                $content
-                    ? new JsonMatches(Args::getJsonString($content))
-                    : null,
+                $content,
             ])),
         );
     }

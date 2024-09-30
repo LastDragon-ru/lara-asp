@@ -24,7 +24,7 @@ class Factory {
     public static function make(TestResponse|Response $response): ResponseInterface {
         $psrResponse = static::getCache()[$response] ?? null;
 
-        if (!$psrResponse) {
+        if ($psrResponse === null) {
             if ($response instanceof TestResponse) {
                 $psrResponse = static::create($response->baseResponse);
             } else {

@@ -36,7 +36,7 @@ class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBloc
         $name = '...';
         $type = $this->getDefinition()->typeCondition->name->value ?? null;
 
-        if ($type) {
+        if ($type !== null) {
             $space = $this->space();
             $name  = "{$name}{$space}on{$space}{$type}";
         }
@@ -55,7 +55,7 @@ class InlineFragment extends DefinitionBlock implements ExecutableDefinitionBloc
         $content = parent::content($collector, $level, $used);
 
         // Statistics
-        if ($content && $this->type) {
+        if ($content !== '' && $this->type !== null) {
             $collector->addUsedType($this->getTypeName($this->type));
         }
 

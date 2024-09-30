@@ -68,7 +68,7 @@ class PrintableList extends ListBlock implements ArrayAccess {
     protected function content(Collector $collector, int $level, int $used): string {
         $content = parent::content($collector, $level, $used);
 
-        if ($content && $this->isRoot()) {
+        if ($content !== '' && $this->isRoot()) {
             $content = "{$this->indent($level)}{$content}";
 
             if ($this->eof) {

@@ -869,7 +869,7 @@ final class DirectiveTest extends TestCase {
             $field,
         );
 
-        if ($expected) {
+        if ($expected !== null) {
             $directive
                 ->shouldReceive($expected['method'])
                 ->withArgs($expected['args'])

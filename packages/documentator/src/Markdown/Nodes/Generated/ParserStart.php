@@ -32,7 +32,7 @@ class ParserStart implements BlockStartParserInterface {
             return BlockStart::none();
         }
 
-        if (Utils::getParent($parserState->getActiveBlockParser()->getBlock(), Block::class)) {
+        if (Utils::getParent($parserState->getActiveBlockParser()->getBlock(), Block::class) !== null) {
             return BlockStart::none();
         }
 
@@ -40,7 +40,11 @@ class ParserStart implements BlockStartParserInterface {
         $padding = $cursor->getPosition();
         $matches = [];
 
-        if (!preg_match('!^\[//]: # \(start: ([^)]+)\)($|\R)!u', $cursor->getRemainder(), $matches)) {
+        if (
+            !(preg_match('!^\[//]: # \(start: ([^)]+)\)($|\R)!u', $cursor->getRemainder(), $matches) > 0)
+            || !isset($matches[0])
+            || !isset($matches[1])
+        ) {
             return BlockStart::none();
         }
 

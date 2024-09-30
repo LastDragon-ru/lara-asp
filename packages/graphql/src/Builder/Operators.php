@@ -198,7 +198,7 @@ abstract class Operators {
         }
 
         // Empty?
-        if (!$operators) {
+        if ($operators === []) {
             $operators = $this->findOperators($manipulator, $type, $level + 1, $processed);
         }
 

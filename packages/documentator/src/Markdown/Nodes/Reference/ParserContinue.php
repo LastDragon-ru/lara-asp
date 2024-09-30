@@ -78,7 +78,11 @@ class ParserContinue implements BlockContinueParserInterface {
 
         $this->block->setReference($reference);
 
-        if ($reference && $this->referenceMap && !$this->referenceMap->contains($reference->getLabel())) {
+        if (
+            $reference !== null
+            && $this->referenceMap !== null
+            && !$this->referenceMap->contains($reference->getLabel())
+        ) {
             $this->referenceMap->add($reference);
         }
 

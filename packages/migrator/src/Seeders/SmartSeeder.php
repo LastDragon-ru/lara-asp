@@ -43,7 +43,7 @@ abstract class SmartSeeder extends IlluminateSeeder {
 
         if (is_string($target) && is_subclass_of($target, Model::class, true)) {
             $seeded = $target::query()->count() > 0;
-        } elseif ($target) {
+        } elseif ($target !== null && $target !== '') {
             $seeded = $this->getConnectionInstance()->table($target)->count() > 0;
         } else {
             $seeded = $this->service->isSeeded();
@@ -58,7 +58,7 @@ abstract class SmartSeeder extends IlluminateSeeder {
     public function run(): void {
         $reason = $this->isSkipped();
 
-        if ($reason) {
+        if ($reason !== false) {
             if (is_string($reason)) {
                 $this->skipped($reason);
             } else {
@@ -82,7 +82,9 @@ abstract class SmartSeeder extends IlluminateSeeder {
     protected function skipped(?string $reason = null): void {
         if ($this->command !== null) {
             $this->command->getOutput()
-                ->writeln('<comment>         skipped</comment>'.($reason ? " ({$reason})" : ''));
+                ->writeln(
+                    '<comment>         skipped</comment>'.($reason !== null && $reason !== '' ? " ({$reason})" : ''),
+                );
         }
     }
 

@@ -34,7 +34,7 @@ readonly class FootnotesRemove implements Mutation {
                 default                                                   => null,
             };
 
-            if ($location) {
+            if ($location !== null) {
                 yield [$location, null];
             }
         }

@@ -24,7 +24,7 @@ class AnyOf extends Logical {
     #[Override]
     public function getFieldType(TypeProvider $provider, TypeSource $source, Context $context): ?string {
         $parent = parent::getFieldType($provider, $source, $context);
-        $type   = $parent ? "[{$parent}!]" : null;
+        $type   = $parent !== null ? "[{$parent}!]" : null;
 
         return $type;
     }

@@ -129,7 +129,7 @@ class Relationship extends Operator {
             $operator,
             $count,
             static function (EloquentBuilder $builder) use ($context, $relation, $handler, $alias, $has): void {
-                if (!$alias || $alias === $relation->getRelationCountHash(false)) {
+                if ($alias === '' || $alias === $relation->getRelationCountHash(false)) {
                     $alias = $builder->getModel()->getTable();
                 }
 

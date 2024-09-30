@@ -41,9 +41,9 @@ readonly class FootnotesPrefix implements Mutation {
 
             // Replace
             $label    = $this->getLabel($document, $child);
-            $location = $label ? $this->getLabelLocation($child, $label) : null;
+            $location = $label !== null ? $this->getLabelLocation($child, $label) : null;
 
-            if ($location) {
+            if ($location !== null) {
                 yield [$location, "{$this->prefix}-{$label}"];
             }
         }
@@ -56,7 +56,7 @@ readonly class FootnotesPrefix implements Mutation {
 
         if ($footnote instanceof FootnoteRef) {
             $location = Utils::getLocation($footnote);
-            $label    = $location
+            $label    = $location !== null
                 ? (mb_substr($document->getText($location) ?? '', 2, -1) ?: '')
                 : null;
         }

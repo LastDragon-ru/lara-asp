@@ -96,7 +96,7 @@ abstract class SqlMigration extends Migration {
         // Defaults
         $file = (new ReflectionClass($this))->getFileName();
 
-        if ($file) {
+        if ($file !== false) {
             $this->upFrom($file);
             $this->downFrom($file);
         }
