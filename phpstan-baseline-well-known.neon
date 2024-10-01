@@ -5,7 +5,6 @@ parameters:
     ignoreErrors:
         # Unwanted strict rules
         # (is there a better way to disable them?)
-        - "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
         -
             message: "#does not call parent constructor from#"
             path: packages/**/*Test.php

@@ -65,7 +65,7 @@ class Document implements Stringable {
             $this->title = $title;
         }
 
-        return $this->title ?: null;
+        return $this->title !== '' ? $this->title : null;
     }
 
     /**
@@ -79,7 +79,7 @@ class Document implements Stringable {
             $this->summary = $summary;
         }
 
-        return $this->summary ?: null;
+        return $this->summary !== '' ? $this->summary : null;
     }
 
     /**
@@ -92,7 +92,8 @@ class Document implements Stringable {
         $body    = $start !== null && is_int($end)
             ? $this->getText(new Location($start + 1, $end))
             : null;
-        $body    = trim((string) $body) ?: null;
+        $body    = trim((string) $body);
+        $body    = $body !== '' ? $body : null;
 
         return $body;
     }

@@ -62,7 +62,7 @@ class ReferencesInline implements Mutation {
             }
 
             if ($location !== null && $text !== null) {
-                yield [$location, $text ?: null];
+                yield [$location, $text !== '' ? $text : null];
             }
         }
     }

@@ -119,13 +119,15 @@ class Preprocess extends Command {
     protected function getProcessedHelpTasks(int $level): string {
         $help      = '';
         $heading   = str_repeat('#', $level);
+        $default   = '_No description provided_.';
         $processor = ($this->factory)();
 
         foreach ($processor->tasks() as $index => $task) {
-            $description = '_No description provided_.';
-            $description = trim($this->getProcessedHelpTaskDescription($task, $level + 1)) ?: $description;
+            $description = trim($this->getProcessedHelpTaskDescription($task, $level + 1));
+            $description = $description !== '' ? $description : $default;
             $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';
-            $title       = trim((string) $this->getProcessedHelpTaskTitle($task)) ?: "Task №{$index}";
+            $title       = trim((string) $this->getProcessedHelpTaskTitle($task));
+            $title       = $title !== '' ? $title : "Task №{$index}";
             $help       .= <<<MARKDOWN
                 {$heading} {$title} ({$extensions})
 
@@ -135,7 +137,7 @@ class Preprocess extends Command {
                 MARKDOWN;
         }
 
-        return $help ?: '_No tasks defined_.';
+        return $help !== '' ? $help : '_No tasks defined_.';
     }
 
     protected function getProcessedHelpTaskTitle(Task $task): ?string {
@@ -165,8 +167,8 @@ class Preprocess extends Command {
             $class  = new ReflectionClass($instruction);
             $name   = $instruction::getName();
             $desc   = $this->getDocBlock($class, null, $level + 1);
-            $target = $this->getProcessedHelpTaskPreprocessInstructionTarget($instruction, 'target', 2);
-            $target = trim($target ?: '_No description provided_.');
+            $target = trim((string) $this->getProcessedHelpTaskPreprocessInstructionTarget($instruction, 'target', 2));
+            $target = $target !== '' ? $target : '_No description provided_.';
             $params = $this->getProcessedHelpTaskPreprocessParameters($instruction, 'target', 2);
 
             if ($params !== null) {
@@ -274,9 +276,9 @@ class Preprocess extends Command {
             }
 
             // Add
-            $parameters[trim($definition)] = trim(
-                $this->getDocBlock($property, $padding) ?: '_No description provided_.',
-            );
+            $description                   = trim($this->getDocBlock($property, $padding));
+            $description                   = $description !== '' ? $description : '_No description provided_.';
+            $parameters[trim($definition)] = $description;
         }
 
         // Empty?
@@ -307,7 +309,7 @@ class Preprocess extends Command {
         ?int $padding = null,
         ?int $level = null,
     ): string {
-        $help = (new PhpDoc($object->getDocComment() ?: null))->getText();
+        $help = (new PhpDoc((string) $object->getDocComment()))->getText();
 
         if ($level !== null) {
             $level = max(1, min(6, $level));

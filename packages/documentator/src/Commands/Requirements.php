@@ -116,7 +116,7 @@ class Requirements extends Command {
         // Collect requirements
         $storage  = new Storage($serializer, $cwd);
         $metadata = $storage->load();
-        $packages = $metadata->require ?: [
+        $packages = $metadata->require !== [] ? $metadata->require : [
             'php'               => 'PHP',
             'laravel/framework' => 'Laravel',
         ];
@@ -265,7 +265,7 @@ class Requirements extends Command {
             // Add
             $required                   = explode('|', Cast::toString($constraint));
             $required                   = array_map(trim(...), $required);
-            $required                   = array_filter($required, static fn($string) => $string !== '');
+            $required                   = array_filter($required, static fn ($string) => $string !== '');
             $required                   = array_values($required);
             $requirement                = Cast::toString($requirement);
             $requirements[$requirement] = array_merge($requirements[$requirement] ?? [], $required);

@@ -53,8 +53,11 @@ class Enumeration implements TypeDefinition {
 
         // Operators
         $type      = $manipulator->getTypeSource($source->getType());
-        $operators = $provider->getOperators($manipulator, $type->getTypeName(), $type, $context)
-            ?: $provider->getOperators($manipulator, Operators::Enum, $type, $context);
+        $operators = $provider->getOperators($manipulator, $type->getTypeName(), $type, $context);
+
+        if ($operators === []) {
+            $operators = $provider->getOperators($manipulator, Operators::Enum, $type, $context);
+        }
 
         if ($operators === []) {
             return null;

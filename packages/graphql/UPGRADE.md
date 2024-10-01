@@ -60,6 +60,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
+* [`GraphQLAssertions`][code-links/a6029821bb9d8f2e] methods updated to allow `null` for `$message` argument.
+
 ## API
 
 This section is actual only if you are extending the package. Please review and update (listed the most significant changes only):

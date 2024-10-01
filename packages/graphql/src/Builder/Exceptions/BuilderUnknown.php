@@ -15,7 +15,7 @@ class BuilderUnknown extends BuilderException {
         parent::__construct(
             sprintf(
                 'Impossible to determine builder type for `%s`.',
-                $this->source ?: 'null',
+                $this->source ?? 'null',
             ),
             $previous,
         );

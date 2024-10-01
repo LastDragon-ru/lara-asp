@@ -25,8 +25,8 @@ trait ScheduleAssertions {
     /**
      * Asserts that Schedule contains task.
      */
-    public function assertScheduled(string $expected, string $message = ''): void {
-        $message   = $message ?: sprintf('The `%s` is not scheduled.', $expected);
+    public function assertScheduled(string $expected, ?string $message = null): void {
+        $message ??= sprintf('The `%s` is not scheduled.', $expected);
         $scheduled = $this->isScheduledEvent($expected);
 
         Assert::assertTrue($scheduled, $message);

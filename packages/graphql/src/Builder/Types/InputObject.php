@@ -39,7 +39,6 @@ use Override;
 use function count;
 use function is_a;
 use function is_string;
-use function reset;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
@@ -339,7 +338,7 @@ abstract class InputObject implements TypeDefinition {
 
             if ($type !== null && $provider !== null) {
                 $operators = $provider->getOperators($manipulator, $type, $field, $context);
-                $operator  = reset($operators) ?: null;
+                $operator  = $operators[0] ?? null;
             }
         }
 
@@ -391,7 +390,8 @@ abstract class InputObject implements TypeDefinition {
         }
 
         if ($description !== null) {
-            $description = trim($description) ?: null;
+            $description = trim($description);
+            $description = $description !== '' ? $description : null;
         }
 
         return $description;

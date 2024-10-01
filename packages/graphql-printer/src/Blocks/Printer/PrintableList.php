@@ -131,9 +131,10 @@ class PrintableList extends ListBlock implements ArrayAccess {
     }
 
     private function offset(?Block $offset): ?string {
-        return $offset instanceof NamedBlock
-            ? ($offset->getName() ?: null)
-            : null;
+        $offset = $offset instanceof NamedBlock ? $offset->getName() : null;
+        $offset = $offset !== '' ? $offset : null;
+
+        return $offset;
     }
     // </editor-fold>
 }

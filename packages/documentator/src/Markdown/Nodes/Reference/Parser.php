@@ -32,7 +32,7 @@ class Parser {
 
     public function parse(string $line): bool {
         // Parse
-        $this->parser->parse($line ?: "\n");
+        $this->parser->parse($line !== '' ? $line : "\n");
 
         // Not a Reference
         if ($this->hasState($this->parserStateParagraph)) {

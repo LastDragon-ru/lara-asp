@@ -104,7 +104,7 @@ trait GraphQLAssertions {
     /**
      * Validates current (application) schema.
      */
-    public function assertGraphQLSchemaValid(string $message = ''): void {
+    public function assertGraphQLSchemaValid(?string $message = null): void {
         // To perform validation, we should load all directives first. This is
         // required because they can be defined inside the schema (and it is
         // fine) or as a PHP class (in this case, the definition should be added
@@ -113,13 +113,14 @@ trait GraphQLAssertions {
         // Why do not use `lighthouse:validate-schema` command? Because it loads
         // all existing directives (even not used) and thus extremely slow.
 
-        $valid = true;
+        $valid     = true;
+        $message ??= 'The schema is not valid.';
 
         try {
             BuildSchema::build($this->getGraphQLSchemaString())->assertValid();
         } catch (Exception $exception) {
             $valid   = false;
-            $message = ($message ?: 'The schema is not valid.')."\n\n".$exception->getMessage();
+            $message = "{$message}\n\n{$exception->getMessage()}";
         }
 
         self::assertTrue($valid, $message);
@@ -130,13 +131,13 @@ trait GraphQLAssertions {
      */
     public function assertGraphQLSchemaNoBreakingChanges(
         SplFileInfo|string $expected,
-        string $message = '',
+        ?string $message = null,
     ): void {
         $oldSchema = BuildSchema::build(Args::content($expected));
         $newSchema = BuildSchema::build($this->getGraphQLSchemaString());
         $changes   = BreakingChangesFinder::findBreakingChanges($oldSchema, $newSchema);
         $changes   = $this->getGraphQLChanges($changes);
-        $message   = ($message ?: 'The breaking changes found!')."\n\n{$changes}\n";
+        $message   = ($message ?? 'The breaking changes found!')."\n\n{$changes}\n";
 
         self::assertTrue($changes === '', $message);
     }
@@ -146,13 +147,13 @@ trait GraphQLAssertions {
      */
     public function assertGraphQLSchemaNoDangerousChanges(
         SplFileInfo|string $expected,
-        string $message = '',
+        ?string $message = null,
     ): void {
         $oldSchema = BuildSchema::build(Args::content($expected));
         $newSchema = BuildSchema::build($this->getGraphQLSchemaString());
         $changes   = BreakingChangesFinder::findDangerousChanges($oldSchema, $newSchema);
         $changes   = $this->getGraphQLChanges($changes);
-        $message   = ($message ?: 'The dangerous changes found!')."\n\n{$changes}\n";
+        $message   = ($message ?? 'The dangerous changes found!')."\n\n{$changes}\n";
 
         self::assertTrue($changes === '', $message);
     }

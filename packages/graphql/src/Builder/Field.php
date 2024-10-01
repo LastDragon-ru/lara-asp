@@ -19,7 +19,7 @@ class Field {
     }
 
     public function getName(): string {
-        return end($this->path) ?: '';
+        return (string) end($this->path);
     }
 
     /**

@@ -24,7 +24,7 @@ class DateTimeRule extends DateRule {
     #[Override]
     public function getValue(mixed $value): DateTimeInterface|null {
         $value = parent::getValue($value);
-        $tz    = $this->config->getInstance()->get('app.timezone') ?: 'UTC';
+        $tz    = $this->config->getInstance()->get('app.timezone') ?? 'UTC';
 
         if ($value instanceof DateTime || $value instanceof DateTimeImmutable) {
             $value = $value->setTimezone($tz);

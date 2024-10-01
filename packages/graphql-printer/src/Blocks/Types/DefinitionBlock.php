@@ -352,7 +352,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             ? $definition->extensionASTNodes
             : [];
 
-        foreach ($astExtensionNodes ?: [] as $astExtensionNode) {
+        foreach ($astExtensionNodes as $astExtensionNode) {
             $directives = $directives->merge($astExtensionNode->directives ?? []);
         }
 

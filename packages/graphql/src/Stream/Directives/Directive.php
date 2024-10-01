@@ -234,7 +234,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 $manipulator,
                 $source,
                 SearchByDirective::class,
-                Cast::toString($repository->get("{$prefix}.search.name") ?: 'where'),
+                Cast::toString($repository->get("{$prefix}.search.name") ?? 'where'),
                 $manipulator::Placeholder,
             );
         }
@@ -251,7 +251,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
                 $manipulator,
                 $source,
                 SortByDirective::class,
-                Cast::toString($repository->get("{$prefix}.sort.name") ?: 'order'),
+                Cast::toString($repository->get("{$prefix}.sort.name") ?? 'order'),
                 $manipulator::Placeholder,
             );
         }

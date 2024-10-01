@@ -42,7 +42,7 @@ class Markdown {
     public static function getTitle(string $string): ?string {
         $title = static::getText($string, static::getTitleNode($string));
         $title = $title !== null ? ltrim($title, '# ') : null;
-        $title = $title ?: null;
+        $title = $title !== '' ? $title : null;
 
         return $title;
     }
@@ -65,7 +65,8 @@ class Markdown {
      */
     public static function setPadding(string $string, int $spaces): string {
         $prefix = str_repeat(' ', $spaces);
-        $lines  = preg_split('/\R/u', $string) ?: [];
+        $lines  = preg_split('/\R/u', $string);
+        $lines  = $lines !== false ? $lines : [];
         $cut    = PHP_INT_MAX;
 
         foreach ($lines as $line) {
@@ -107,7 +108,8 @@ class Markdown {
 
         $start = $node->getStartLine() - 1;
         $end   = $node->getEndLine() - 1;
-        $lines = (array) preg_split('/\R/u', $string);
+        $lines = preg_split('/\R/u', $string);
+        $lines = $lines !== false ? $lines : [];
         $lines = array_slice($lines, $start, $end - $start + 1);
         $text  = trim(implode("\n", $lines));
 

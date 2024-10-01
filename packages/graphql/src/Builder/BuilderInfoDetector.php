@@ -131,9 +131,9 @@ class BuilderInfoDetector {
                     || $directive instanceof WithRelationDirective;
             },
         );
-        $directive  = reset($directives) ?: null;
+        $directive  = reset($directives);
 
-        if ($directive !== null) {
+        if ($directive instanceof Directive) {
             $type = null;
 
             if ($directive instanceof PaginateDirective) {

@@ -186,7 +186,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         }
 
         // Definition
-        $field       = $field ?: $operator::getName();
+        $field     ??= $operator::getName();
         $directives  = implode(
             "\n",
             array_map(
@@ -194,8 +194,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 $directives,
             ),
         );
-        $description = $description ?: $operator->getFieldDescription();
-        $description = BlockString::print((string) $description);
+        $description = BlockString::print(
+            (string) ($description ?? $operator->getFieldDescription()),
+        );
 
         return <<<GRAPHQL
             {$description}

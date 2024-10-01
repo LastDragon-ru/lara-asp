@@ -67,7 +67,10 @@ class Text {
      * @return list<string>
      */
     public static function getLines(string $text): array {
-        return preg_split('/\R/u', $text) ?: [];
+        $lines = preg_split('/\R/u', $text);
+        $lines = $lines !== false ? $lines : [];
+
+        return  $lines;
     }
 
     public static function getPathTitle(string $path): string {

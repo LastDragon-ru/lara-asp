@@ -44,7 +44,6 @@ use Override;
 use function array_map;
 use function count;
 use function is_array;
-use function reset;
 
 /**
  * @see HandlerContextBuilderInfo
@@ -201,7 +200,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
 
             $field = $field->getChild($name);
             $value = $argument;
-            $op    = reset($operators) ?: null;
+            $op    = $operators[0] ?? null;
 
             if (count($operators) > 1) {
                 throw new ConditionTooManyOperators(

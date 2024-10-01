@@ -149,8 +149,9 @@ final class FormatterTest extends TestCase {
     }
 
     public function testTime(): void {
-        $time = DateTime::createFromFormat('H:i:s', '23:24:59') ?: null;
+        $time = DateTime::createFromFormat('H:i:s', '23:24:59');
 
+        self::assertIsObject($time);
         self::assertEquals('11:24 PM', str_replace("\u{202F}", ' ', $this->formatter->time($time)));
         self::assertEquals(
             '2:24 AM',
@@ -163,8 +164,9 @@ final class FormatterTest extends TestCase {
             Package::Name.'.options.'.Formatter::Time => IntlDateFormatter::MEDIUM,
         ]);
 
-        $time = DateTime::createFromFormat('H:i:s', '23:24:59') ?: null;
+        $time = DateTime::createFromFormat('H:i:s', '23:24:59');
 
+        self::assertIsObject($time);
         self::assertEquals('11:24:59 PM', str_replace("\u{202F}", ' ', $this->formatter->time($time)));
     }
 
@@ -175,15 +177,17 @@ final class FormatterTest extends TestCase {
             Package::Name.'.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
         ]);
 
-        $time = DateTime::createFromFormat('H:i:s', '23:24:59') ?: null;
+        $time = DateTime::createFromFormat('H:i:s', '23:24:59');
 
+        self::assertIsObject($time);
         self::assertEquals('23:24:59.000', $this->formatter->time($time));
         self::assertEquals('23:24:59.000', $this->formatter->time($time, 'custom2'));
     }
 
     public function testDate(): void {
-        $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
+        $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
+        self::assertIsObject($date);
         self::assertEquals('5/12/05', $this->formatter->date($date));
         self::assertEquals('5/13/05', $this->formatter->date($date, null, 'Europe/Moscow'));
     }
@@ -193,8 +197,9 @@ final class FormatterTest extends TestCase {
             Package::Name.'.options.'.Formatter::Date => IntlDateFormatter::MEDIUM,
         ]);
 
-        $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
+        $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
+        self::assertIsObject($date);
         self::assertEquals('May 12, 2005', $this->formatter->date($date));
     }
 
@@ -205,15 +210,17 @@ final class FormatterTest extends TestCase {
             Package::Name.'.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
         ]);
 
-        $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
+        $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
+        self::assertIsObject($date);
         self::assertEquals('12 May 2005', $this->formatter->date($date));
         self::assertEquals('12 May 2005', $this->formatter->date($date, 'custom2'));
     }
 
     public function testDatetime(): void {
-        $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
+        $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
+        self::assertIsObject($datetime);
         self::assertEquals('5/12/05, 11:00 PM', str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime)));
         self::assertEquals(
             '5/13/05, 3:00 AM',
@@ -226,8 +233,9 @@ final class FormatterTest extends TestCase {
             Package::Name.'.options.'.Formatter::DateTime => IntlDateFormatter::MEDIUM,
         ]);
 
-        $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
+        $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
+        self::assertIsObject($datetime);
         self::assertEquals(
             'May 12, 2005, 11:00:00 PM',
             str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime)),
@@ -241,8 +249,9 @@ final class FormatterTest extends TestCase {
             Package::Name.'.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
         ]);
 
-        $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00') ?: null;
+        $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
+        self::assertIsObject($datetime);
         self::assertEquals('12 May 2005 || 23:00:00', $this->formatter->datetime($datetime));
         self::assertEquals('12 May 2005 || 23:00:00', $this->formatter->datetime($datetime, 'custom2'));
     }

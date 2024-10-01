@@ -36,7 +36,8 @@ class Utils {
             $file instanceof Document => Path::getRelativePath($context->root->getPath(), $file->getPath() ?? ''),
             default                   => $file->getRelativePath($context->root),
         };
-        $path = Text::hash($path ?: uniqid(self::class)); // @phpstan-ignore disallowed.function
+        $path = $path !== '' ? $path : uniqid(self::class); // @phpstan-ignore disallowed.function
+        $path = Text::hash($path);
 
         return $path;
     }

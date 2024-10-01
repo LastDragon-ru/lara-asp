@@ -169,7 +169,12 @@ class Editor implements Stringable {
         $expanded = [];
         $append   = [];
         $sort     = static function (Coordinate $a, Coordinate $b): int {
-            return $a->line <=> $b->line ?: $a->offset <=> $b->offset;
+            $result = $a->line <=> $b->line;
+            $result = $result === 0
+                ? $a->offset <=> $b->offset
+                : $result;
+
+            return $result;
         };
 
         foreach ($changes as [$coordinates, $text]) {

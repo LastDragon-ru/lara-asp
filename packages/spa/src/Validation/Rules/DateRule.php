@@ -29,7 +29,10 @@ class DateRule extends Rule implements ValueProvider {
 
     #[Override]
     public function getValue(mixed $value): DateTimeInterface|null {
-        return Date::createFromFormat("{$this->getFormat()}|", $value) ?: null;
+        $value = Date::createFromFormat("{$this->getFormat()}|", $value);
+        $value = $value instanceof DateTimeInterface ? $value : null;
+
+        return $value;
     }
 
     protected function getFormat(): string {

@@ -71,7 +71,7 @@ class Instruction implements InstructionContract {
             }
 
             // Readme
-            $readme  = $package->getPath(Cast::toString($packageInfo->readme ?: 'README.md'));
+            $readme  = $package->getPath(Cast::toString($packageInfo->readme ?? 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
             $content = $readme->getMetadata($this->markdown);
 

@@ -26,7 +26,9 @@ final class EloquentModelComparatorTest extends TestCase {
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
         if ($equals !== true) {
             self::expectException(ComparisonFailure::class);
-            self::expectExceptionMessageMatches($equals ?: '/Failed asserting that two models are equal/i');
+            self::expectExceptionMessageMatches(
+                $equals !== false ? $equals : '/Failed asserting that two models are equal/i',
+            );
         }
 
         $comparator = new EloquentModelComparator();

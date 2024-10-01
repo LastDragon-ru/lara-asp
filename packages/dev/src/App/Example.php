@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LogicException;
 use Override;
 use PhpParser\ErrorHandler\Collecting;
@@ -25,7 +26,6 @@ use function array_slice;
 use function debug_backtrace;
 use function end;
 use function implode;
-use function preg_split;
 use function sprintf;
 use function str_contains;
 use function trim;
@@ -136,7 +136,7 @@ final class Example implements Runner {
         }
 
         // Extract first arg
-        $lines  = preg_split('/\R/u', self::$file?->getContent() ?? '') ?: [];
+        $lines  = Text::getLines(self::$file?->getContent() ?? '');
         $code   = implode("\n", array_slice($lines, $context['line'] - 1));
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $stmts  = (array) $parser->parse("<?php\n{$code}", new Collecting());

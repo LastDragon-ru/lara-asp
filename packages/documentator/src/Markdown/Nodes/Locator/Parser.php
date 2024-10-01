@@ -113,7 +113,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
                 $inlineLinesCount = count($inlineLines) - 1;
                 $startLine        = $startLine + $beforeLinesCount;
                 $endLine          = $startLine + $inlineLinesCount;
-                $start            = (end($beforeLines) ?: '').(reset($inlineLines) ?: '');
+                $start            = ((string) end($beforeLines)).((string) reset($inlineLines));
 
                 if ($beforeLinesCount > 0) {
                     $correction = (mb_strlen(implode("\n", array_slice($beforeLines, 0, -1))) + 1);

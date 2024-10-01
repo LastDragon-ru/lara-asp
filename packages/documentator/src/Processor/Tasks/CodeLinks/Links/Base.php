@@ -34,7 +34,7 @@ abstract class Base implements Link {
             $title = mb_substr($title, $position + 1);
         }
 
-        return $title ?: null;
+        return $title !== '' ? $title : null;
     }
 
     /**
