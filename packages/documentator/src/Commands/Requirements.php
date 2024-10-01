@@ -264,7 +264,9 @@ class Requirements extends Command {
 
             // Add
             $required                   = explode('|', Cast::toString($constraint));
-            $required                   = array_values(array_filter(array_map(trim(...), $required)));
+            $required                   = array_map(trim(...), $required);
+            $required                   = array_filter($required, static fn($string) => $string !== '');
+            $required                   = array_values($required);
             $requirement                = Cast::toString($requirement);
             $requirements[$requirement] = array_merge($requirements[$requirement] ?? [], $required);
             $requirements[$requirement] = array_values(array_unique($requirements[$requirement]));

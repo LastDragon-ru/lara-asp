@@ -20,8 +20,6 @@ parameters:
     checkBenevolentUnionTypes: true
     checkUninitializedProperties: true
     noEnvCallsOutsideOfConfig: true
-    strictRules:
-        strictArrayFilter: false
 
     # Package
     classMustBeFinal:
