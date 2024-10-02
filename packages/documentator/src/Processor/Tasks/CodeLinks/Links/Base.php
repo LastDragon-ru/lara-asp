@@ -27,14 +27,37 @@ abstract class Base implements Link {
 
     #[Override]
     public function getTitle(): ?string {
-        $title    = (string) $this;
-        $position = mb_strrpos($title, '\\');
+        $title = $this->un((string) $this);
+        $title = $title !== '' ? $title : null;
 
-        if ($position !== false) {
-            $title = mb_substr($title, $position + 1);
+        return $title;
+    }
+
+    #[Override]
+    public function isSimilar(Link $link): bool {
+        // Self?
+        if ($link === $this) {
+            return false;
         }
 
-        return $title !== '' ? $title : null;
+        // Base?
+        if ($link instanceof self) {
+            if ($link->class === $this->class) {
+                return false;
+            }
+
+            if ($this->un($link->class) === $this->un($this->class)) {
+                return true;
+            }
+        }
+
+        // Same title?
+        if ($link->getTitle() !== null && $link->getTitle() === $this->getTitle()) {
+            return true;
+        }
+
+        // Else
+        return (string) $link === (string) $this;
     }
 
     /**
@@ -88,5 +111,16 @@ abstract class Base implements Link {
         }
 
         return new LinkTarget($path, $deprecated, $startLine, $endLine);
+    }
+
+    private function un(string $class): string {
+        $class    = ltrim($class, '\\');
+        $position = mb_strrpos($class, '\\');
+
+        if ($position !== false) {
+            $class = mb_substr($class, $position + 1);
+        }
+
+        return $class;
     }
 }
