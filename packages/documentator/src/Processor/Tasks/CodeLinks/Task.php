@@ -26,8 +26,10 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use Override;
+use WeakMap;
 
 use function array_map;
+use function array_pop;
 use function array_values;
 use function implode;
 use function ksort;
@@ -186,32 +188,15 @@ class Task implements TaskContract {
             }
         }
 
-        // Group links
-        $titles     = [];
-        $duplicates = [];
-
-        foreach ($links as [$token, $target]) {
-            $title = $token->link->getTitle();
-
-            if ($target === null || $title === null || $title === '') {
-                continue;
-            }
-
-            if (isset($titles[$title])) {
-                $duplicates[$title] = true;
-            } else {
-                $titles[$title] = true;
-            }
-        }
-
         // Update links
+        $duplicates = $this->getDuplicates($links);
         $references = [];
 
         foreach ($links as [$token, $target]) {
             $link  = (string) $token->link;
             $hash  = static::BlockMarker.'/'.Text::hash($link);
             $title = $token->link->getTitle();
-            $title = $target !== null && $title !== null && $title !== '' && !isset($duplicates[$title])
+            $title = $target !== null && $title !== null && $title !== '' && !isset($duplicates[$token])
                 ? $title
                 : $link;
             $title = $target === null || $target->deprecated
@@ -250,6 +235,46 @@ class Task implements TaskContract {
 
         // Return
         return $changes;
+    }
+
+    /**
+     * @param list<array{LinkToken, ?LinkTarget}> $links
+     *
+     * @return WeakMap<LinkToken, true>
+     */
+    private function getDuplicates(array $links): WeakMap {
+        /** @var WeakMap<LinkToken, true> $duplicates */
+        $duplicates = new WeakMap();
+
+        while ($link = array_pop($links)) {
+            // Target?
+            [$currentToken, $currentTarget] = $link;
+
+            if ($currentTarget === null) {
+                continue;
+            }
+
+            // Search
+            foreach ($links as $key => [$token, $target]) {
+                // Target?
+                if ($target === null) {
+                    unset($links[$key]);
+                    continue;
+                }
+
+                // Similar?
+                if (!$currentToken->link->isSimilar($token->link)) {
+                    continue;
+                }
+
+                // Yep
+                $duplicates[$currentToken] = true;
+                $duplicates[$token]        = true;
+            }
+        }
+
+        // Return
+        return $duplicates;
     }
 
     /**

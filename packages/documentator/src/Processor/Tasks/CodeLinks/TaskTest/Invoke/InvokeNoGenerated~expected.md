@@ -2,10 +2,10 @@
 
 Text text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A`][code-links/a48295a76761baf6] text
 text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A`][code-links/a48295a76761baf6] text text
-text [`B::A`][code-links/a86e3c96985f1bef] text text
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::A`][code-links/a86e3c96985f1bef] text text
 text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::B`][code-links/8cdc0f86b75b851c] text text
-text [`C::A`][code-links/bbb195814bc23f4c] text text
-text [`C::B`][code-links/295495989b7a51ff] text text.
+text [`E::A`][code-links/120e29e95faad75c] text text
+text [`E::B`][code-links/3ad5e9222d97ec17] text text.
 
 [//]: # (start: generated block)
 should be untouched
@@ -21,14 +21,14 @@ text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTes
 text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\A::$property`][code-links/35cc9911dc30e23e] text text
 text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\A::A`][code-links/c18fdff7b584b292].
 
-Text [`B`][code-links/16591d639b61b142] text text
-text [`B::method()`][code-links/8343c4fede0f1f09] text
-text [`B::$property`][code-links/9889d47ea9b6ae82] text text
+Text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B`][code-links/16591d639b61b142] text text
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::method()`][code-links/8343c4fede0f1f09] text
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::$property`][code-links/9889d47ea9b6ae82] text text
 text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::B`][code-links/a69ac32d7aff4ecd].
 
-Text [`B`][code-links/16591d639b61b142] text text
-text [`B::method()`][code-links/8343c4fede0f1f09] text
-text [`B::$property`][code-links/9889d47ea9b6ae82] text text
+Text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B`][code-links/16591d639b61b142] text text
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::method()`][code-links/8343c4fede0f1f09] text
+text [`\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::$property`][code-links/9889d47ea9b6ae82] text text
 text [`💀\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::B`][code-links/a69ac32d7aff4ecd].
 
 Text [`💀C`][code-links/83a40c392c8376aa] text text
@@ -93,12 +93,6 @@ Text text `LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest
 [code-links/8343c4fede0f1f09]: B/B.php#L20-L22
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B\B::method()"
 
-[code-links/bbb195814bc23f4c]: C.php#L9
-    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C::A"
-
-[code-links/295495989b7a51ff]: C.php#L10
-    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C::B"
-
 [code-links/83a40c392c8376aa]: C/C.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C\C"
 
@@ -110,5 +104,11 @@ Text text `LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest
 
 [code-links/6369c3badb265e68]: C/C.php#L18-L20
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C\C::method()"
+
+[code-links/120e29e95faad75c]: E.php#L9
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\E::A"
+
+[code-links/3ad5e9222d97ec17]: E.php#L10
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\E::B"
 
 [//]: # (end: code-links)

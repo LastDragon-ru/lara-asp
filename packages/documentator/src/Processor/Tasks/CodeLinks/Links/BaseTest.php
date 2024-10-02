@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
@@ -53,31 +54,9 @@ final class BaseTest extends TestCase {
         self::assertEquals($expected, $link->getTitle());
     }
 
-    public function testGetSource(): void {
-        $meta     = Mockery::mock(PhpClassComment::class);
-        $class    = $this::class;
-        $resolved = ['a/b/c.php'];
-        $package  = Mockery::mock(Package::class);
-        $package
-            ->shouldReceive('resolve')
-            ->with($class)
-            ->once()
-            ->andReturn($resolved);
-        $root = Mockery::mock(Directory::class);
-        $file = Mockery::mock(File::class);
-        $link = new class ($meta, $class) extends Base {
-            #[Override]
-            public function __toString(): string {
-                return $this->class;
-            }
-
-            #[Override]
-            protected function getTargetNode(ClassLike $class): ?Node {
-                return null;
-            }
-        };
-
-        self::assertEquals($resolved, $link->getSource($root, $file, $package));
+    #[DataProvider('dataProviderIsSimilar')]
+    public function testIsSimilar(bool $expected, Link $a, Link $b): void {
+        self::assertEquals($expected, $a->isSimilar($b));
     }
 
     public function testGetTarget(): void {
@@ -234,5 +213,94 @@ final class BaseTest extends TestCase {
             'FQN'   => ['Class::method()', '\\App\\Class::method()'],
         ];
     }
+
+    /**
+     * @return array<string, array{bool, Link, Link}>
+     */
+    public static function dataProviderIsSimilar(): array {
+        $link = new BaseTest_BaseLink('\A', 'a');
+
+        return [
+            'same'                    => [false, $link, $link],
+            'same class'              => [false, new BaseTest_BaseLink('\A', 'a'), new BaseTest_BaseLink('\A', 'a')],
+            'same title'              => [true, new BaseTest_BaseLink('\A', 'a'), new BaseTest_BaseLink('\B', 'a')],
+            'no title'                => [false, new BaseTest_BaseLink('\A'), new BaseTest_BaseLink('\B')],
+            'different class'         => [true, new BaseTest_BaseLink('\A\B'), new BaseTest_BaseLink('\B\B')],
+            'no title but same'       => [true, new BaseTest_BaseLink('\A'), new BaseTest_Link('\A')],
+            'same class but not base' => [true, new BaseTest_BaseLink('\A', 'a'), new BaseTest_Link('\A', 'a')],
+        ];
+    }
     //</editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class BaseTest_BaseLink extends Base {
+    public function __construct(
+        string $class,
+        public readonly ?string $title = null,
+    ) {
+        parent::__construct(Mockery::mock(PhpClassComment::class), $class);
+    }
+
+    #[Override]
+    protected function getTargetNode(ClassLike $class): ?Node {
+        return null;
+    }
+
+    #[Override]
+    public function getTitle(): ?string {
+        return $this->title;
+    }
+
+    #[Override]
+    public function __toString(): string {
+        return $this->class;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class BaseTest_Link implements Link {
+    public function __construct(
+        public readonly string $class,
+        public readonly ?string $title = null,
+    ) {
+        // empty
+    }
+
+    #[Override]
+    public function __toString(): string {
+        return $this->class;
+    }
+
+    #[Override]
+    public function getTitle(): ?string {
+        return $this->title;
+    }
+
+    #[Override]
+    public function isSimilar(Link $link): bool {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function getSource(Directory $root, File $file, Package $package): array|string|null {
+        return null;
+    }
+
+    #[Override]
+    public function getTarget(Directory $root, File $file, File $source): ?LinkTarget {
+        return null;
+    }
 }
