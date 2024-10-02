@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\
 /**
  * @internal
  */
-enum C: string {
+enum E: string {
     case A = 'A';
     case B = 'B';
 }

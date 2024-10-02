@@ -4,8 +4,8 @@ Text text `LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest
 text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\A` text text
 text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::A` text text
 text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\B::B` text text
-text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C::A` text text
-text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\C::B` text text.
+text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\E::A` text text
+text `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\E::B` text text.
 
 [//]: # (start: generated block)
 should be untouched
