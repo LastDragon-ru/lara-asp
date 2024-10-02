@@ -92,7 +92,7 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `@searchByOperatorRelation` => `@searchByOperatorRelationship` (and class too; generated types will be named as `SearchByRelationship*` instead of `SearchByComplex*`). 🤝
 
-* [ ] `💀\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => [`Operators::Object`][code-links/5f93528c6eb9dc8f].
+* [ ] `💀\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Condition` => [`\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object`][code-links/5f93528c6eb9dc8f].
 
 * [ ] Scalars to add operators were renamed
 
@@ -258,7 +258,7 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Directives\PropertyDirective` removed
 
-* [ ] [`Operators`][code-links/786d31a251fa3c1e]
+* [ ] [`\LastDragon_ru\LaraASP\GraphQL\Builder\Operators`][code-links/786d31a251fa3c1e]
 
 * [ ] `LastDragon_ru\LaraASP\GraphQL\Builder\Sources\*`
 
