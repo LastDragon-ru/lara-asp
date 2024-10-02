@@ -35,13 +35,16 @@ class Text {
         $cut     = PHP_INT_MAX;
 
         foreach ($lines as $line) {
-            if (!$line) {
+            if ($line === '') {
                 continue;
             }
 
             $trims = 0;
 
-            while ($line && (str_starts_with($line, $padding) || ($trimmed && str_starts_with($line, $trimmed)))) {
+            while (
+                $line !== ''
+                && (str_starts_with($line, $padding) || ($trimmed !== '' && str_starts_with($line, $trimmed)))
+            ) {
                 $line = mb_substr($line, $length);
 
                 $trims++;
@@ -64,7 +67,10 @@ class Text {
      * @return list<string>
      */
     public static function getLines(string $text): array {
-        return preg_split('/\R/u', $text) ?: [];
+        $lines = preg_split('/\R/u', $text);
+        $lines = $lines !== false ? $lines : [];
+
+        return  $lines;
     }
 
     public static function getPathTitle(string $path): string {

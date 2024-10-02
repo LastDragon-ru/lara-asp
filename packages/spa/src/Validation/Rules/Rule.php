@@ -93,9 +93,9 @@ abstract class Rule implements RuleContract, ValidationRule {
                 return [$variant => $this->translate($variant, $replace)];
             })
             ->first(static function (string $value, string $key): bool {
-                return $key !== $value;
+                return $key !== $value && $value !== '';
             })
-            ?: $this->getMessageDefault();
+            ?? $this->getMessageDefault();
 
         return $translation;
     }

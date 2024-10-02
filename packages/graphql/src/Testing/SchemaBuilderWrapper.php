@@ -55,7 +55,7 @@ class SchemaBuilderWrapper extends SchemaBuilder {
 
     public function setSchema(Container $container, ?SchemaSourceProvider $provider): void {
         // Origins
-        if (!$this->singletons) {
+        if ($this->singletons === []) {
             $this->singletons = [
                 ASTCache::class   => $container->make(ASTCache::class),
                 ASTBuilder::class => $container->make(ASTBuilder::class),
@@ -65,7 +65,7 @@ class SchemaBuilderWrapper extends SchemaBuilder {
         // Build
         $builder = null;
 
-        if ($provider) {
+        if ($provider !== null) {
             $types      = $container->make(TypeRegistry::class);
             $dispatcher = $container->make(Dispatcher::class);
             $directives = $container->make(DirectiveLocator::class);

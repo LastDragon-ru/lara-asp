@@ -82,7 +82,7 @@ class Value extends Block {
         // Statistics
         $collector->addUsed($content);
 
-        if ($this->type) {
+        if ($this->type !== null) {
             $collector->addUsedType($this->getTypeName($this->type));
         }
 

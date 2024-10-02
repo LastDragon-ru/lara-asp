@@ -76,7 +76,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Create new
         $node = $instance->getTypeDefinition($this, $source, $context, $name);
 
-        if (!$node) {
+        if ($node === null) {
             throw new TypeDefinitionImpossibleToCreateType($definition, $source, $context);
         }
 
@@ -132,7 +132,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Operators?
         $provider = $context->get(HandlerContextOperators::class)?->value;
 
-        if (!$provider) {
+        if ($provider === null) {
             return null;
         }
 
@@ -143,7 +143,7 @@ class Manipulator extends AstManipulator implements TypeProvider {
         foreach ($directives as $directive) {
             $directive = $provider->getOperator($this, $directive, $source, $context);
 
-            if ($directive) {
+            if ($directive !== null) {
                 $instance = $directive;
                 break;
             }
@@ -181,12 +181,12 @@ class Manipulator extends AstManipulator implements TypeProvider {
         // Type?
         $type = $operator->getFieldType($this, $source, $context);
 
-        if (!$type) {
+        if ($type === null) {
             throw new OperatorImpossibleToCreateField($operator, $source, $context);
         }
 
         // Definition
-        $field       = $field ?: $operator::getName();
+        $field     ??= $operator::getName();
         $directives  = implode(
             "\n",
             array_map(
@@ -194,8 +194,9 @@ class Manipulator extends AstManipulator implements TypeProvider {
                 $directives,
             ),
         );
-        $description = $description ?: $operator->getFieldDescription();
-        $description = BlockString::print((string) $description);
+        $description = BlockString::print(
+            (string) ($description ?? $operator->getFieldDescription()),
+        );
 
         return <<<GRAPHQL
             {$description}

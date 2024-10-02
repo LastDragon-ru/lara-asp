@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Testing\Assertions\XmlAssertions;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Factory;
 use PHPUnit\Framework\Assert as PHPUnitAssert;
 use PHPUnit\Framework\Constraint\Constraint;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @internal
@@ -18,6 +19,10 @@ class Assert extends PHPUnitAssert {
 
     /**
      * Asserts that TestResponse satisfies given constraint.
+     *
+     * @template T of Response
+     *
+     * @param TestResponse<T> $response
      */
     public static function assertThatResponse(
         TestResponse $response,

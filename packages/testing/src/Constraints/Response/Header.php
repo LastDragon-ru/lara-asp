@@ -34,7 +34,7 @@ class Header extends Response {
     #[Override]
     public function toString(): string {
         return "has {$this->getName()} header".(
-            $this->getConstraints() ? ' that '.parent::toString() : ''
+            $this->getConstraints() !== [] ? ' that '.parent::toString() : ''
             );
     }
 

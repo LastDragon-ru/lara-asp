@@ -100,7 +100,7 @@ abstract class IteratorImpl implements Iterator {
 
     #[Override]
     public function onBeforeChunk(?Closure $closure): static {
-        if ($closure) {
+        if ($closure !== null) {
             $this->beforeChunk->attach($closure);
         } else {
             $this->beforeChunk->reset();
@@ -111,7 +111,7 @@ abstract class IteratorImpl implements Iterator {
 
     #[Override]
     public function onAfterChunk(?Closure $closure): static {
-        if ($closure) {
+        if ($closure !== null) {
             $this->afterChunk->attach($closure);
         } else {
             $this->afterChunk->reset();
@@ -127,7 +127,7 @@ abstract class IteratorImpl implements Iterator {
     public function getIterator(): Generator {
         // Prepare
         $index = $this->getIndex();
-        $chunk = $this->limit ? min($this->limit, $this->chunk) : $this->chunk;
+        $chunk = $this->limit > 0 ? min($this->limit, $this->chunk) : $this->chunk;
         $limit = $this->limit;
 
         // Limit?
@@ -140,7 +140,7 @@ abstract class IteratorImpl implements Iterator {
             $builder = (clone $this->getBuilder())->tap(static function (Builder $builder): void {
                 $builder->offset(0);
             });
-            $chunk   = $limit ? min($chunk, $limit - $index) : $chunk;
+            $chunk   = $limit > 0 ? min($chunk, $limit - $index) : $chunk;
             $items   = $this->getChunk($builder, $chunk);
             $count   = count($items);
 
@@ -152,7 +152,7 @@ abstract class IteratorImpl implements Iterator {
                 $this->setIndex($index);
             }
 
-            if (!$this->chunkProcessed($items) || ($limit && $index >= $limit)) {
+            if (!$this->chunkProcessed($items) || ($limit > 0 && $index >= $limit)) {
                 break;
             }
         } while ($count !== 0 && $count >= $chunk);
@@ -187,7 +187,7 @@ abstract class IteratorImpl implements Iterator {
 
     protected function getDefaultLimit(): ?int {
         $builder = $this->getBuilder()->getQuery();
-        $limit   = $builder->unions
+        $limit   = $builder->unions !== null && $builder->unions !== []
             ? $builder->unionLimit
             : $builder->limit;
 
@@ -196,7 +196,7 @@ abstract class IteratorImpl implements Iterator {
 
     protected function getDefaultOffset(): ?int {
         $builder = $this->getBuilder()->getQuery();
-        $offset  = $builder->unions
+        $offset  = $builder->unions !== null && $builder->unions !== []
             ? $builder->unionOffset
             : $builder->offset;
 

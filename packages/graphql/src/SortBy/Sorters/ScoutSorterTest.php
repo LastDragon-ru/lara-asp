@@ -45,7 +45,7 @@ final class ScoutSorterTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        if ($resolver) {
+        if ($resolver !== null) {
             $this->override(
                 BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
@@ -58,7 +58,7 @@ final class ScoutSorterTest extends TestCase {
             );
         }
 
-        if ($fieldResolver) {
+        if ($fieldResolver !== null) {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 

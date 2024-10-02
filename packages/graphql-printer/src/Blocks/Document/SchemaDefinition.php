@@ -85,7 +85,7 @@ class SchemaDefinition extends DefinitionBlock {
             ARRAY_FILTER_USE_BOTH,
         );
 
-        return !$nonStandard;
+        return $nonStandard === [];
     }
 
     /**
@@ -106,7 +106,7 @@ class SchemaDefinition extends DefinitionBlock {
             foreach ($operations as $operation => $type) {
                 $type = $definition->getOperationType($operation);
 
-                if ($type) {
+                if ($type !== null) {
                     $operations[$operation] = $type;
                 }
             }

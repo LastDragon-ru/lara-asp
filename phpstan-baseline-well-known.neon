@@ -5,7 +5,6 @@ parameters:
     ignoreErrors:
         # Unwanted strict rules
         # (is there a better way to disable them?)
-        - "#^Short ternary operator is not allowed\\. Use null coalesce operator if applicable or consider using long ternary\\.$#"
         -
             message: "#does not call parent constructor from#"
             path: packages/**/*Test.php
@@ -15,7 +14,7 @@ parameters:
         - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesConfiguration\\:\\:(configurationIsCached|routesAreCached|langPath)\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesRoutes\\:\\:routesAreCached\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Validation\\\\Factory\\:\\:(validate)\\(\\)\\.$#"
-        - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\:\\:assert[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\<[^>]+\\>\\:\\:assert[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\[^\\\\]+(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
@@ -69,12 +68,13 @@ parameters:
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
         # https://github.com/phpstan/phpstan/issues/8904
+        # https://github.com/phpstan/phpstan/issues/11267
         -
             message: "#^PHPDoc tag @var with type Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Mixins\\\\EloquentBuilderMixin\\)\\.$#"
             paths:
                 - packages/eloquent/src/Mixins/EloquentBuilderMixin.php
         -
-            message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
+            message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse\\<Symfony\\\\Component\\\\HttpFoundation\\\\Response\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 

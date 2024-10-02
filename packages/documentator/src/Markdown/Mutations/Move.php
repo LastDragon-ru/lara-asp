@@ -71,7 +71,7 @@ readonly class Move implements Mutation {
             // Location?
             $location = Utils::getLocation($resource);
 
-            if (!$location) {
+            if ($location === null) {
                 continue;
             }
 
@@ -92,7 +92,7 @@ readonly class Move implements Mutation {
                     $targetValue  = Path::getRelativePath($newDirectory, $targetValue);
                     $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
                     $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
-                    $text         = $title ? "({$target} {$title})" : "({$target})";
+                    $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
                 }
             } elseif ($resource instanceof Reference) {
                 $origin       = trim((string) $document->getText($location));

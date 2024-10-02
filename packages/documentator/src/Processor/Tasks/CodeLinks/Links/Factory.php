@@ -42,9 +42,11 @@ class Factory implements LinkFactory {
         $matches    = [];
         $string     = trim($string);
 
-        if (preg_match($regexp, $string, $matches, PREG_UNMATCHED_AS_NULL)) {
-            $class = $matches['class'];
-            $class = $resolver ? $resolver($class) : $class;
+        if (preg_match($regexp, $string, $matches, PREG_UNMATCHED_AS_NULL) > 0) {
+            $class = $matches['class'] ?? null;
+            $class = $class !== null && $resolver !== null
+                ? $resolver($class)
+                : $class;
 
             if ($class !== null) {
                 $class     = '\\'.ltrim($class, '\\');

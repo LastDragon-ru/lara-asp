@@ -27,7 +27,7 @@ final class ResolverRuleTest extends TestCase {
              */
             #[Override]
             protected function resolve(mixed $value, array $parameters): mixed {
-                return $value ? new stdClass() : null;
+                return $value !== false ? new stdClass() : null;
             }
         };
         $rule       = new ResolverRule($translator, $resolver);

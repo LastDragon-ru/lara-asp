@@ -87,7 +87,7 @@ class Listener implements EnvironmentAwareInterface {
         $start    = null;
         $end      = null;
 
-        if ($previous) {
+        if ($previous !== null) {
             $start = $previous->getEndLine();
 
             if ($start !== null) {
@@ -136,12 +136,9 @@ class Listener implements EnvironmentAwareInterface {
         }
 
         // Yep
-        $cells    = preg_split('/(?<!\\\\)[|]/u', mb_substr($text, $padding)) ?: []; // `|` must be always escaped
-        $cells    = array_slice(
-            $cells,
-            1,
-            -1,
-        );                                                                           // First and Last characters are `|`, skip them
+        $cells    = preg_split('/(?<!\\\\)[|]/u', mb_substr($text, $padding));  // `|` must be always escaped
+        $cells    = $cells !== false ? $cells : [];
+        $cells    = array_slice($cells, 1, -1);                                 // First&Last characters are `|`, skip
         $index    = 0;
         $offset   = 1;
         $children = $this->toArray($row->children());

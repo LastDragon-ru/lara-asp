@@ -61,11 +61,6 @@ parameters:
 			path: packages/spa/src/Http/Resources/Resource.php
 
 		-
-			message: "#^Method class@anonymous/packages/spa/src/Http/WithValueProviderTest\\.php\\:49\\:\\:validate\\(\\) has parameter \\$fail with no signature specified for Closure\\.$#"
-			count: 1
-			path: packages/spa/src/Http/WithValueProviderTest.php
-
-		-
 			message: "#^Cannot access property \\$id on mixed\\.$#"
 			count: 1
 			path: packages/spa/src/Routing/ResolverTest.php
@@ -74,11 +69,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$timezone of method DateTime\\:\\:setTimezone\\(\\) expects DateTimeZone, mixed given\\.$#"
 			count: 1
 			path: packages/spa/src/Validation/Rules/DateTimeRule.php
-
-		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Validation\\\\Rules\\\\Rule\\:\\:validate\\(\\) has parameter \\$fail with no signature specified for Closure\\.$#"
-			count: 1
-			path: packages/spa/src/Validation/Rules/Rule.php
 
 		-
 			message: "#^Parameter \\#1 \\$query of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Comparators\\\\DatabaseQueryComparator\\:\\:normalize\\(\\) expects LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query, mixed given\\.$#"

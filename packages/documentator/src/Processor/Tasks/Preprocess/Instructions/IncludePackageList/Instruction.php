@@ -66,16 +66,16 @@ class Instruction implements InstructionContract {
             $packageFile = Cast::to(File::class, yield new FileReference($package->getPath('composer.json')));
             $packageInfo = $packageFile->getMetadata($this->composer)->json ?? null;
 
-            if (!$packageInfo) {
+            if ($packageInfo === null) {
                 throw new PackageComposerJsonIsMissing($context, $package);
             }
 
             // Readme
-            $readme  = $package->getPath(Cast::toString($packageInfo->readme ?: 'README.md'));
+            $readme  = $package->getPath(Cast::toString($packageInfo->readme ?? 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
             $content = $readme->getMetadata($this->markdown);
 
-            if (!$content || $content->isEmpty()) {
+            if ($content === null || $content->isEmpty()) {
                 throw new PackageReadmeIsEmpty($context, $package, $readme);
             }
 
@@ -92,7 +92,7 @@ class Instruction implements InstructionContract {
         }
 
         // Packages?
-        if (!$packages) {
+        if ($packages === []) {
             return '';
         }
 

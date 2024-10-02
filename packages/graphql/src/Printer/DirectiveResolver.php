@@ -54,7 +54,7 @@ class DirectiveResolver implements DirectiveResolverContract {
             $directive = null;
             $class     = $this->getDirectiveClass($name);
 
-            if ($class) {
+            if ($class !== null) {
                 $document = Parser::parse($class::definition());
 
                 foreach ($document->definitions as $definition) {
@@ -120,7 +120,7 @@ class DirectiveResolver implements DirectiveResolverContract {
             }
         }
 
-        if ($type) {
+        if ($type !== null) {
             $this->registry->register($type);
         }
     }

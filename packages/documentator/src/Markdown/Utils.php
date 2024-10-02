@@ -186,7 +186,7 @@ class Utils {
     }
 
     public static function getLinkTarget(Node $container, string $target, ?bool $wrap = null): string {
-        $target = ($wrap ?? preg_match('/\s/u', $target))
+        $target = ($wrap ?? preg_match('/\s/u', $target) > 0)
             ? '<'.strtr($target, ['<' => '\\<', '>' => '\\>']).'>'
             : UrlEncoder::unescapeAndEncode($target);
         $target = self::escapeTextInTableCell($container, $target);
@@ -195,7 +195,7 @@ class Utils {
     }
 
     public static function getLinkTitle(Node $container, string $title, ?string $wrapper = null): string {
-        if (!$title) {
+        if ($title === '') {
             return '';
         }
 
@@ -269,8 +269,8 @@ class Utils {
 
     public static function isPathToSelf(string $path, ?Document $document = null): bool {
         $name = Path::normalize(basename($document?->getPath() ?? ''));
-        $path = Path::normalize(parse_url($path, PHP_URL_PATH) ?: '');
-        $self = $path === '' || ($name && $path === $name);
+        $path = Path::normalize((string) parse_url($path, PHP_URL_PATH));
+        $self = $path === '' || ($name !== '' && $path === $name);
 
         return $self;
     }

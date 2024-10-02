@@ -20,7 +20,7 @@ trait WithTempFile {
         $path = $fs->tempnam(sys_get_temp_dir(), $pkg, $suffix);
         $file = new SplFileInfo($path);
 
-        if ($content) {
+        if ($content !== null) {
             $fs->dumpFile($path, $content);
         }
 

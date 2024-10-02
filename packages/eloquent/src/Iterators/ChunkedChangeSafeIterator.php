@@ -76,12 +76,12 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     protected function chunkProcessed(Collection $items): bool {
         $last = $this->column($items->last());
 
-        if ($last) {
+        if ($last !== null) {
             $this->setOffset($last);
         }
 
         return parent::chunkProcessed($items)
-            && $last;
+            && $last !== null;
     }
 
     /**
@@ -92,7 +92,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
         $column = explode('.', $this->getColumn());
         $column = trim(end($column), '`"[]');
 
-        if ($item) {
+        if ($item !== null) {
             $value = $item->getAttribute($column);
         }
 

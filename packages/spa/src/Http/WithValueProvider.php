@@ -39,7 +39,7 @@ trait WithValueProvider {
                 }
             }
 
-            if ($provider && Arr::has($validated, $attribute)) {
+            if ($provider !== null && Arr::has($validated, $attribute)) {
                 $value = Arr::get($validated, $attribute);
 
                 if (!is_null($value)) {

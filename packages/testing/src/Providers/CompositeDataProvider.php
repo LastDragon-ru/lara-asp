@@ -72,7 +72,7 @@ class CompositeDataProvider extends BaseDataProvider {
                 $cExpected   = reset($cData);
                 $cParameters = array_slice($cData, 1);
 
-                if ($this->isExpectedFinal($cExpected) || !$previous) {
+                if ($this->isExpectedFinal($cExpected) || $previous === []) {
                     $data[$cKey] = array_merge([$cExpected], $cParameters);
                 } else {
                     foreach ($previous as $pKey => $pData) {

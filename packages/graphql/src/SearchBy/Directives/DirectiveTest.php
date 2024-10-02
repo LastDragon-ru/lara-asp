@@ -104,7 +104,7 @@ final class DirectiveTest extends TestCase {
      */
     #[DataProvider('dataProviderManipulateArgDefinition')]
     public function testManipulateArgDefinition(string $expected, string $graphql, ?Closure $prepare = null): void {
-        if ($prepare) {
+        if ($prepare !== null) {
             $prepare($this);
         }
 
@@ -427,7 +427,7 @@ final class DirectiveTest extends TestCase {
         $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
-        if ($resolver) {
+        if ($resolver !== null) {
             $this->override(
                 BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
@@ -440,7 +440,7 @@ final class DirectiveTest extends TestCase {
             );
         }
 
-        if ($fieldResolver) {
+        if ($fieldResolver !== null) {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 
@@ -505,7 +505,7 @@ final class DirectiveTest extends TestCase {
         $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
 
-        if ($resolver) {
+        if ($resolver !== null) {
             $this->override(
                 BuilderFieldResolver::class,
                 static function (MockInterface $mock) use ($resolver): void {
@@ -518,7 +518,7 @@ final class DirectiveTest extends TestCase {
             );
         }
 
-        if ($fieldResolver) {
+        if ($fieldResolver !== null) {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 

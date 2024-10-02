@@ -64,7 +64,7 @@ class Context {
 
     private function getMutation(Document $document): Mutation {
         $path = $this->file->getPath();
-        $path = $document->getPath()
+        $path = $document->getPath() !== null
             ? Path::getPath(dirname($path), basename($document->getPath()))
             : $path;
 

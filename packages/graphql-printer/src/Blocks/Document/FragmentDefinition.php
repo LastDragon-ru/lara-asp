@@ -34,7 +34,7 @@ class FragmentDefinition extends DefinitionBlock implements ExecutableDefinition
         $content = parent::content($collector, $level, $used);
 
         // Statistics
-        if ($content) {
+        if ($content !== '') {
             $collector->addUsedType($this->getTypeName($this->getDefinition()->typeCondition));
         }
 

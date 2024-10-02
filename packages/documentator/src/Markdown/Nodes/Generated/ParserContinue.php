@@ -81,14 +81,14 @@ class ParserContinue implements BlockContinueParserInterface {
         // Start
         $start = $this->getStartMarkerLocation();
 
-        if ($start) {
+        if ($start !== null) {
             Data::set($this->block, new StartMarkerLocation($start));
         }
 
         // End
         $end = $this->getEndMarkerLocation();
 
-        if ($end) {
+        if ($end !== null) {
             Data::set($this->block, new EndMarkerLocation($end));
         }
     }

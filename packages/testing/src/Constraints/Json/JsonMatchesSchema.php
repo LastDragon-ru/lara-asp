@@ -59,10 +59,10 @@ class JsonMatchesSchema extends Constraint {
     protected function additionalFailureDescription(mixed $other): string {
         $description = parent::additionalFailureDescription($other);
 
-        if ($this->result) {
+        if ($this->result !== null) {
             $error = $this->result->error();
 
-            if ($error) {
+            if ($error !== null) {
                 $formatted    = (new ErrorFormatter())->format($error);
                 $padding      = '    ';
                 $description .= PHP_EOL.$padding.'Errors: ';

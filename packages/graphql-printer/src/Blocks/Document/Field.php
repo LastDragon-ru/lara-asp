@@ -38,7 +38,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
     #[Override]
     protected function prefix(): ?string {
         $definition = $this->getDefinition();
-        $type       = $definition->alias
+        $type       = $definition->alias !== null
             ? "{$definition->alias->value}:"
             : '';
 
@@ -49,7 +49,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
     protected function content(Collector $collector, int $level, int $used): string {
         // Print?
         $parent = $this->type;
-        $type   = $parent
+        $type   = $parent !== null
             ? $this->getContext()->getField($parent, $this->name())?->getType()
             : null;
 
@@ -61,12 +61,12 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
         $content = parent::content($collector, $level, $used);
 
         // Statistics
-        if ($content) {
-            if ($parent) {
+        if ($content !== '') {
+            if ($parent !== null) {
                 $collector->addUsedType($this->getTypeName($parent));
             }
 
-            if ($type) {
+            if ($type !== null) {
                 $collector->addUsedType($this->getTypeName($type));
             }
         }
@@ -86,7 +86,7 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
             $definition->arguments,
             static function (ArgumentNode $argument) use ($context, $type, $field): TypeNode|Type|null {
                 $name = $argument->name->value;
-                $type = $type
+                $type = $type !== null
                     ? $context->getFieldArgument($type, $field, $name)?->getType()
                     : null;
 
@@ -100,10 +100,10 @@ class Field extends DefinitionBlock implements ExecutableDefinitionBlock {
     #[Override]
     protected function fields(bool $multiline): ?Block {
         $definition = $this->getDefinition();
-        $type       = $this->type
+        $type       = $this->type !== null
             ? $this->getContext()->getField($this->type, $this->name())?->getType()
             : null;
-        $set        = $definition->selectionSet
+        $set        = $definition->selectionSet !== null
             ? new SelectionSet($this->getContext(), $definition->selectionSet, $type)
             : null;
 

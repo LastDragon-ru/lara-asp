@@ -38,14 +38,14 @@ readonly class GeneratedUnwrap implements Mutation {
             // Start?
             $startMarker = Data::get($child, StartMarkerLocation::class);
 
-            if ($startMarker) {
+            if ($startMarker !== null) {
                 yield [$startMarker, null];
             }
 
             // End
             $endMarker = Data::get($child, EndMarkerLocation::class);
 
-            if ($endMarker) {
+            if ($endMarker !== null) {
                 yield [$endMarker, null];
             }
         }

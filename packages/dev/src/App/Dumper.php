@@ -23,7 +23,7 @@ class Dumper {
     public function __construct() {
         $this->cloner = new VarCloner([
             '*' => static function (object $obj, array $a, Stub $stub, bool $isNested, int $filter = 0): array {
-                return $filter ? Caster::filter($a, $filter) : $a;
+                return $filter > 0 ? Caster::filter($a, $filter) : $a;
             },
         ]);
         $this->dumper = new CliDumper(
@@ -50,7 +50,7 @@ class Dumper {
 
     public function raw(Stringable|string $value, ?string $expression, string $type): void {
         $dump          = trim((string) $value);
-        $dump          = ($expression ? "The `{$expression}` is:\n\n" : '')."```{$type}\n{$dump}\n```\n";
+        $dump          = ($expression !== null ? "The `{$expression}` is:\n\n" : '')."```{$type}\n{$dump}\n```\n";
         $this->dumps[] = $dump;
     }
 }

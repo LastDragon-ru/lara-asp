@@ -69,7 +69,7 @@ abstract class TestCase extends PackageTestCase {
         Schema|SplFileInfo|string|null $schema = null,
     ): Argument {
         try {
-            if ($schema) {
+            if ($schema !== null) {
                 $this->useGraphQLSchema($schema);
             }
 

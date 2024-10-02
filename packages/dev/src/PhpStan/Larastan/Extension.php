@@ -14,6 +14,7 @@ use Nette\Neon\Neon;
 use function array_filter;
 use function array_keys;
 use function array_values;
+use function dirname;
 use function file_get_contents;
 use function file_put_contents;
 use function getcwd;
@@ -27,13 +28,13 @@ use const PHP_EOL;
 class Extension {
     /**
      * Removes unwanted/conflicting services from `larastan/extension.neon` and
-     * dump remaining into `larastan.neon` (that should be used instead of the
-     * original file).
+     * dump remaining into `phpstan-larastan.neon` (that should be used instead
+     * of the original file).
      */
     public static function dump(): void {
         // Prepare
         $origin = Path::join(self::getLarastanPath(), 'extension.neon');
-        $target = Path::getPath(self::getRootPath(), 'larastan.neon');
+        $target = Path::getPath(self::getRootPath(), 'phpstan-larastan.neon');
 
         // Load
         $extension = Neon::decode((string) file_get_contents($origin));
@@ -68,7 +69,7 @@ class Extension {
         // Update
         $source = self::getLarastanPath();
         $files  = (array) ($extension['parameters']['bootstrapFiles'] ?? []);
-        $root   = Path::getDirname($path);
+        $root   = dirname($path);
 
         foreach ($files as $index => $file) {
             if (!is_string($file)) {
@@ -118,7 +119,7 @@ class Extension {
         // Unused?
         $unused = array_keys(array_filter($disabled));
 
-        if ($unused) {
+        if ($unused !== []) {
             throw new Exception(
                 sprintf(
                     'The following services is unknown: `%s`',

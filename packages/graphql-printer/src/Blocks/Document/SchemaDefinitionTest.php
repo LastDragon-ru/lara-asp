@@ -39,7 +39,7 @@ final class SchemaDefinitionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new SchemaDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected && !str_starts_with($actual, '"""')) {
+        if ($expected !== '' && !str_starts_with($actual, '"""')) {
             // https://github.com/webonyx/graphql-php/issues/1027
             Parser::schemaDefinition($actual);
         }

@@ -38,7 +38,7 @@ final class OperationDefinitionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new OperationDefinition($context, $definition, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::operationDefinition($actual);
         }
 

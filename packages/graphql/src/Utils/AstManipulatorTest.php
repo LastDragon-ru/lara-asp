@@ -277,7 +277,7 @@ final class AstManipulatorTest extends TestCase {
         // Field
         $schema   = $this->app()->make(SchemaBuilder::class)->schema();
         $query    = $schema->getQueryType();
-        $field    = $query ? $manipulator->getField($query, 'test') : null;
+        $field    = $query !== null ? $manipulator->getField($query, 'test') : null;
         $expected = [
             AllDirective::class,
             AstManipulatorTest_BDirective::class,
@@ -600,7 +600,7 @@ final class AstManipulatorTest extends TestCase {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function getManipulator(?string $schema = null): AstManipulator {
-        $document    = $schema
+        $document    = $schema !== null
             ? DocumentAST::fromSource($schema)
             : $this->app()->make(ASTBuilder::class)->documentAST();
         $manipulator = $this->app()->make(AstManipulator::class, [

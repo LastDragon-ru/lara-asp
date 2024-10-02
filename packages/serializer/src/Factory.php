@@ -99,7 +99,7 @@ class Factory {
 
     protected function getConfigFormat(?string $config): ?string {
         /** @var ?string $format */
-        $format = $config
+        $format = $config !== null && $config !== ''
             ? $this->config->getInstance()->get("{$config}.default")
             : null;
 
@@ -111,7 +111,7 @@ class Factory {
      */
     protected function getConfigContext(?string $config): array {
         /** @var array<string, mixed> $context */
-        $context = $config
+        $context = $config !== null && $config !== ''
             ? (array) $this->config->getInstance()->get("{$config}.context")
             : [];
 
@@ -146,7 +146,7 @@ class Factory {
      */
     protected function getConfigEncoders(?string $config): array {
         /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders */
-        $encoders = $config
+        $encoders = $config !== null && $config !== ''
             ? (array) $this->config->getInstance()->get("{$config}.encoders")
             : [];
 
@@ -208,7 +208,7 @@ class Factory {
      */
     protected function getConfigNormalizers(?string $config): array {
         /** @var array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers */
-        $normalizers = $config
+        $normalizers = $config !== null && $config !== ''
             ? (array) $this->config->getInstance()->get("{$config}.normalizers")
             : $config;
 

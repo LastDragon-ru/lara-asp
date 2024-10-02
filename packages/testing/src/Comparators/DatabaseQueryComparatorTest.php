@@ -27,7 +27,9 @@ final class DatabaseQueryComparatorTest extends TestCase {
     public function testAssertEquals(bool|string $equals, mixed $expected, mixed $actual): void {
         if ($equals !== true) {
             self::expectException(ComparisonFailure::class);
-            self::expectExceptionMessageMatches($equals ?: '/Failed asserting that two database queries are equal/i');
+            self::expectExceptionMessageMatches(
+                $equals !== false ? $equals : '/Failed asserting that two database queries are equal/i',
+            );
         }
 
         $comparator = new DatabaseQueryComparator();

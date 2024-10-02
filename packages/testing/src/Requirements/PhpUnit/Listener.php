@@ -27,7 +27,7 @@ class Listener {
         // Supported?
         [$class, $method] = $this->getTarget($event);
 
-        if (!$class) {
+        if ($class === null) {
             return;
         }
 
@@ -36,7 +36,7 @@ class Listener {
         $satisfied = $this->checker->isSatisfied($class, $method, $failed);
 
         if (!$satisfied) {
-            Assert::markTestSkipped(implode(PHP_EOL, $failed ?: ['Unknown requirement.']));
+            Assert::markTestSkipped(implode(PHP_EOL, $failed !== [] ? $failed : ['Unknown requirement.']));
         }
     }
 

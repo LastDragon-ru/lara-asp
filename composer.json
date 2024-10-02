@@ -61,14 +61,17 @@
     "illuminate/testing": "^10.34.0|^11.0.0",
     "illuminate/translation": "^10.34.0|^11.0.0",
     "illuminate/validation": "^10.34.0|^11.0.0",
+    "larastan/larastan": "^2.8.1",
     "league/commonmark": "^2.5.1",
     "league/config": "^1.1.1",
     "mockery/mockery": "^1.6.5",
+    "nette/neon": "^3.4",
     "nikic/php-parser": "^5.0",
     "nuwave/lighthouse": "^6.5.0",
     "opis/json-schema": "^2.3.0",
     "phpdocumentor/type-resolver": "^1.7",
     "phpstan/phpdoc-parser": "^1.25",
+    "phpstan/phpstan": "^1.10",
     "phpunit/phpunit": "^10.1.0|^11.0.0",
     "psr/http-message": "^1.0.0|^2.0.0",
     "sebastian/comparator": "^5.0|^6.0.0",
@@ -85,6 +88,7 @@
     "symfony/property-info": "^6.3.9|^7.0.0",
     "symfony/psr-http-message-bridge": "^2.0.0|^6.4.0|^7.0.0",
     "symfony/serializer": "^6.4.0|^7.0.0",
+    "symfony/var-dumper": "^6.3.0|^7.0.0",
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
@@ -95,7 +99,12 @@
     "illuminate/cache": "^10.34.0|^11.0.0",
     "illuminate/config": "^10.34.0|^11.0.0",
     "laravel/scout": "^9.8.0|^10.0.0",
-    "orchestra/testbench": "^8.0.0|^9.0.0"
+    "orchestra/testbench": "^8.0.0|^9.0.0",
+    "phpstan/phpstan": "1.12.5",
+    "phpstan/phpstan-mockery": "^1.1",
+    "phpstan/phpstan-phpunit": "^1.3",
+    "phpstan/phpstan-strict-rules": "^1.5",
+    "spaze/phpstan-disallowed-calls": "^3.0"
   },
   "autoload": {
     "files": [
@@ -104,6 +113,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "packages/core/src/",
+      "LastDragon_ru\\LaraASP\\Dev\\": "packages/dev/src/",
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
@@ -118,6 +128,7 @@
   "autoload-dev": {
     "exclude-from-classmap": [
       "packages/core/docs/",
+      "packages/dev/docs/",
       "packages/documentator/docs/",
       "packages/eloquent/docs/",
       "packages/formatter/docs/",
@@ -130,6 +141,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/core/docs",
+      "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/dev/docs",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
       "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
@@ -164,6 +176,7 @@
     "laravel": {
       "providers": [
         "LastDragon_ru\\LaraASP\\Core\\Provider",
+        "LastDragon_ru\\LaraASP\\Dev\\Provider",
         "LastDragon_ru\\LaraASP\\Documentator\\Provider",
         "LastDragon_ru\\LaraASP\\Eloquent\\Provider",
         "LastDragon_ru\\LaraASP\\Formatter\\Provider",
@@ -175,6 +188,15 @@
     }
   },
   "scripts": {
+    "post-install-cmd": [
+      "composer run-script dump:larastan"
+    ],
+    "post-update-cmd": [
+      "composer run-script dump:larastan"
+    ],
+    "dump:larastan": [
+      "LastDragon_ru\\LaraASP\\Dev\\PhpStan\\Larastan\\Extension::dump"
+    ],
     "validate:commit": [
       "@phpstan",
       "@phpunit",
@@ -192,7 +214,7 @@
       "jq --indent 2 '.' composer.json > composer.tmp && mv composer.tmp composer.json"
     ],
     "phpstan": [
-      "./vendor-bin/phpstan/vendor/bin/phpstan analyse -v"
+      "./vendor/bin/phpstan analyse -v"
     ],
     "phpunit": [
       "./vendor/bin/phpunit"
@@ -237,8 +259,8 @@
   },
   "replace": {
     "lastdragon-ru/lara-asp-core": "self.version",
-    "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
+    "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",

@@ -35,7 +35,7 @@ final class UnionTypeExtensionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new UnionTypeExtension($context, $type))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::unionTypeExtension($actual);
         }
 

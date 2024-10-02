@@ -79,7 +79,7 @@ class Sort extends Operator {
     ): object {
         $sorter = $this->factory->create($builder);
 
-        if ($sorter) {
+        if ($sorter !== null) {
             $direction = $argument->value instanceof Direction ? $argument->value : Direction::Asc;
             $nulls     = $this->getNulls($sorter, $context, $direction);
 

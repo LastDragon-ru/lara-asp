@@ -24,7 +24,7 @@ class Git {
     public function getTags(?callable $filter = null, ?string $root = null): array {
         $tags = $this->run(['git', 'tag', '--list'], $root);
         $tags = explode("\n", $tags);
-        $tags = $filter ? array_filter($tags, $filter) : $tags;
+        $tags = $filter !== null ? array_filter($tags, $filter) : $tags;
         $tags = array_values($tags);
 
         return $tags;

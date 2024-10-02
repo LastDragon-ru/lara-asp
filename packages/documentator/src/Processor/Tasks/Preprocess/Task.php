@@ -117,7 +117,7 @@ class Task implements TaskContract {
         // Markdown?
         $document = $file->getMetadata($this->markdown);
 
-        if (!$document) {
+        if ($document === null) {
             return false;
         }
 
@@ -161,20 +161,20 @@ class Task implements TaskContract {
                 } else {
                     $location = MarkdownUtils::getLocation($node);
 
-                    if ($location) {
+                    if ($location !== null) {
                         $instruction = trim((string) $document->getText($location));
                         $text        = "{$instruction}\n{$text}";
                     }
                 }
 
-                if ($location) {
+                if ($location !== null) {
                     $changes[] = [$location, $text];
                 }
             }
         }
 
         // Mutate
-        if ($changes) {
+        if ($changes !== []) {
             $file->setContent(
                 (string) $document->mutate(new Changeset($changes)),
             );
@@ -204,7 +204,7 @@ class Task implements TaskContract {
             $name        = $node->getLabel();
             $instruction = $this->instructions->get($name)[0] ?? null;
 
-            if (!$instruction) {
+            if ($instruction === null) {
                 continue;
             }
 
@@ -221,7 +221,9 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($root, $file, $node->getDestination(), $node->getTitle() ?: null, $mutation);
+            $title      = $node->getTitle();
+            $title      = $title !== '' ? $title : null;
+            $context    = new Context($root, $file, $node->getDestination(), $title, $mutation);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
@@ -241,7 +243,9 @@ class Task implements TaskContract {
     }
 
     private function getParametersJson(string $target, ?string $json): string {
-        $parameters           = (array) ($json ? json_decode($json, true, flags: JSON_THROW_ON_ERROR) : []);
+        $parameters           = $json !== null && $json !== ''
+            ? (array) json_decode($json, true, flags: JSON_THROW_ON_ERROR)
+            : [];
         $parameters['target'] = $target;
         $parameters           = $this->getParametersJsonNormalize($parameters);
         $parameters           = json_encode($parameters, JSON_THROW_ON_ERROR);

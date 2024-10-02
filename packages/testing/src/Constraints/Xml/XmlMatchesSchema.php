@@ -71,7 +71,7 @@ class XmlMatchesSchema extends Constraint {
         libxml_clear_errors();
 
         try {
-            $matches = $constraint && $constraint->isMatchesSchema($this->schema, $other);
+            $matches = $constraint !== null && $constraint->isMatchesSchema($this->schema, $other);
         } finally {
             $this->errors = libxml_get_errors();
 

@@ -52,12 +52,12 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     #[Override]
     public function getName(): string {
         $name   = $this->name();
-        $prefix = $this->prefix();
+        $prefix = (string) $this->prefix();
 
-        if ($prefix && $name) {
+        if ($prefix !== '' && $name !== '') {
             $space = $this->space();
             $name  = "{$prefix}{$space}{$name}";
-        } elseif ($prefix) {
+        } elseif ($prefix !== '') {
             $name = $prefix;
         } else {
             // empty
@@ -95,7 +95,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Description
         $description = $this->description()?->serialize($collector, $level, $used);
 
-        if ($description) {
+        if ($description !== null && $description !== '') {
             $content .= "{$description}{$eol}{$indent}";
             $used     = $indentLength; // because new line has started
         }
@@ -108,7 +108,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Arguments
         $arguments = $this->arguments($multiline);
 
-        if ($arguments) {
+        if ($arguments !== null) {
             $serialized = $arguments->serialize($collector, $level, $used);
             $content   .= $serialized;
 
@@ -124,7 +124,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $prefix = ":{$space}";
         $type   = $this->type($multiline);
 
-        if ($type) {
+        if ($type !== null) {
             $serialized = "{$prefix}{$type->serialize($collector, $level, $used + mb_strlen($prefix))}";
             $content   .= $serialized;
 
@@ -140,7 +140,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $prefix = "{$space}={$space}";
         $value  = $this->value($multiline);
 
-        if ($value) {
+        if ($value !== null) {
             $serialized = "{$prefix}{$value->serialize($collector, $level, $used + mb_strlen($prefix))}";
             $content   .= $serialized;
 
@@ -154,10 +154,8 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
 
         // Body
         $body       = $this->body($multiline);
-        $serialized = $body
-            ? $body->serialize($collector, $level, $used + $spaceLength)
-            : '';
-        $hasBody    = $body && $serialized !== '';
+        $serialized = (string) $body?->serialize($collector, $level, $used + $spaceLength);
+        $hasBody    = $body !== null && $serialized !== '';
 
         if ($hasBody) {
             if ($multiline || ($body instanceof UsageList && $this->isStringMultiline($serialized))) {
@@ -178,10 +176,8 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $directives    = $this->getSettings()->isPrintDirectives()
             ? $this->directives($multiline)
             : null;
-        $serialized    = $directives
-            ? $directives->serialize($collector, $level, $indentLength)
-            : '';
-        $hasDirectives = $directives && $serialized !== '';
+        $serialized    = (string) $directives?->serialize($collector, $level, $indentLength);
+        $hasDirectives = $directives !== null && $serialized !== '';
 
         if ($hasDirectives) {
             $multiline = true;
@@ -192,11 +188,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         // Fields
         $prefix     = $space;
         $fields     = $this->fields($multiline);
-        $serialized = $fields
-            ? $fields->serialize($collector, $level, $used)
-            : '';
+        $serialized = (string) $fields?->serialize($collector, $level, $used);
 
-        if ($fields && $serialized !== '') {
+        if ($fields !== null && $serialized !== '') {
             if ($multiline && ($hasBody || $hasDirectives)) {
                 $content .= "{$eol}{$indent}{$serialized}";
             } else {
@@ -208,7 +202,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         if (!($this instanceof ExtensionDefinitionBlock) && !($this instanceof ExecutableDefinitionBlock)) {
             $name = $this->name();
 
-            if ($name) {
+            if ($name !== '') {
                 if ($this instanceof DirectiveDefinition) {
                     $collector->addUsedDirective($name);
                 } elseif ($this instanceof TypeDefinitionBlock) {
@@ -358,7 +352,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
             ? $definition->extensionASTNodes
             : [];
 
-        foreach ($astExtensionNodes ?: [] as $astExtensionNode) {
+        foreach ($astExtensionNodes as $astExtensionNode) {
             $directives = $directives->merge($astExtensionNode->directives ?? []);
         }
 

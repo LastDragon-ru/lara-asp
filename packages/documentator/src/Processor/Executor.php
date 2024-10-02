@@ -233,7 +233,7 @@ class Executor {
         $excluded = false;
 
         foreach ($this->exclude as $regexp) {
-            if (preg_match($regexp, $path)) {
+            if (preg_match($regexp, $path) > 0) {
                 $excluded = true;
                 break;
             }

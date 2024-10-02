@@ -55,8 +55,8 @@ abstract class Resolver {
      * @throws UnresolvedValueException
      */
     public function get(mixed $value, ?Request $request = null, ?Route $route = null): mixed {
-        $route      = $route ?: $this->router->getCurrentRoute();
-        $request    = $request ?: $this->router->getCurrentRequest();
+        $route    ??= $this->router->getCurrentRoute();
+        $request  ??= $this->router->getCurrentRequest();
         $parameters = $this->resolveParameters($request, $route);
         $key        = $this->key(array_merge([$value], $parameters));
 

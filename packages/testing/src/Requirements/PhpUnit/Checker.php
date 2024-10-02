@@ -36,7 +36,7 @@ class Checker {
     public function isSatisfied(string $class, ?string $method = null, array &$failed = []): bool {
         $failed = array_merge(
             $this->getClassFailedRequirements($class),
-            $method
+            $method !== null
                 ? $this->getMethodFailedRequirements($class, $method)
                 : [],
         );
@@ -77,7 +77,7 @@ class Checker {
             $instance = $requirement->newInstance();
             $reason   = $instance->isSatisfied() ? false : (string) $instance;
 
-            if ($reason) {
+            if ($reason !== false) {
                 $failed[] = $reason;
                 break;
             }

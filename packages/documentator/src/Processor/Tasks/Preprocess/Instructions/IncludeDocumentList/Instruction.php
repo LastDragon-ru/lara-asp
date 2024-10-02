@@ -65,7 +65,7 @@ class Instruction implements InstructionContract {
             // Empty?
             $document = $file->getMetadata($this->markdown);
 
-            if (!$document || $document->isEmpty()) {
+            if ($document === null || $document->isEmpty()) {
                 continue;
             }
 
@@ -79,7 +79,7 @@ class Instruction implements InstructionContract {
         }
 
         // Empty?
-        if (!$documents) {
+        if ($documents === []) {
             return '';
         }
 

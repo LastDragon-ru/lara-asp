@@ -55,7 +55,7 @@ final class DateRuleTest extends TestCase {
         $rule       = new DateRule($translator);
         $date       = $rule->getValue($value);
 
-        self::assertEquals($expected, $date ? $date->format('Y-m-d\TH:i:s.uP') : null);
+        self::assertEquals($expected, $date?->format('Y-m-d\TH:i:s.uP'));
     }
     // </editor-fold>
 

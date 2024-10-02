@@ -38,11 +38,11 @@ final class DirectiveTest extends TestCase {
         ?Schema $schema,
     ): void {
         $collector = new Collector();
-        $resolver  = $directive ? $this->getDirectiveResolver($directive) : null;
+        $resolver  = $directive !== null ? $this->getDirectiveResolver($directive) : null;
         $context   = new Context($settings, $resolver, $schema);
         $actual    = (new Directive($context, $node))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::directive($actual);
         }
 

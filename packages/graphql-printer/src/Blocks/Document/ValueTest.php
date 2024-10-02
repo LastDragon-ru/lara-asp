@@ -52,7 +52,7 @@ final class ValueTest extends TestCase {
         $actual    = (new Value($context, $node, $type))->serialize($collector, $level, $used);
         $parsed    = null;
 
-        if ($expected) {
+        if ($expected !== '') {
             $parsed = Parser::valueLiteral($actual);
         }
 

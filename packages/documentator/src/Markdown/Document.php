@@ -65,7 +65,7 @@ class Document implements Stringable {
             $this->title = $title;
         }
 
-        return $this->title ?: null;
+        return $this->title !== '' ? $this->title : null;
     }
 
     /**
@@ -79,7 +79,7 @@ class Document implements Stringable {
             $this->summary = $summary;
         }
 
-        return $this->summary ?: null;
+        return $this->summary !== '' ? $this->summary : null;
     }
 
     /**
@@ -92,7 +92,8 @@ class Document implements Stringable {
         $body    = $start !== null && is_int($end)
             ? $this->getText(new Location($start + 1, $end))
             : null;
-        $body    = trim((string) $body) ?: null;
+        $body    = trim((string) $body);
+        $body    = $body !== '' ? $body : null;
 
         return $body;
     }
@@ -102,7 +103,7 @@ class Document implements Stringable {
     }
 
     public function setPath(?string $path): static {
-        $this->path = $path ? Path::normalize($path) : null;
+        $this->path = $path !== null ? Path::normalize($path) : null;
 
         return $this;
     }
@@ -118,12 +119,7 @@ class Document implements Stringable {
         $document = clone $this;
 
         foreach ($mutations as $mutation) {
-            $changes = $mutation($document, $document->getNode());
-
-            if (!$changes) {
-                continue;
-            }
-
+            $changes  = $mutation($document, $document->getNode());
             $content  = trim((string) $document->getEditor()->mutate($changes))."\n";
             $document = $document->setContent($content);
         }
@@ -222,7 +218,7 @@ class Document implements Stringable {
         $location = $node?->getStartLine() !== null && $node->getEndLine() !== null
             ? new Location($node->getStartLine(), $node->getEndLine())
             : null;
-        $text     = $location
+        $text     = $location !== null
             ? $this->getText($location)
             : null;
 

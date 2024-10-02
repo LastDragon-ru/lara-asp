@@ -104,7 +104,7 @@ readonly class RendererWrapper implements
             $lines[] = '{'.implode(',', [$line->line, $line->offset, $line->length ?? 'null']).'}';
         }
 
-        return $lines ? '['.implode(',', $lines).']' : null;
+        return $lines !== [] ? '['.implode(',', $lines).']' : null;
     }
 
     /**

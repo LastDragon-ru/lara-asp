@@ -85,7 +85,7 @@ class DatabaseQueryComparator extends ObjectComparator {
 
         // Laravel's aliases have a global counter and are dependent on tests
         // execution order -> we need to normalize them before comparison.
-        if (preg_match_all('/(?<group>laravel_reserved_[\d]+)/', $sql, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('/(?<group>laravel_reserved_[\d]+)/', $sql, $matches, PREG_SET_ORDER) > 0) {
             $matches = array_unique(array_column($matches, 'group'));
 
             natsort($matches);

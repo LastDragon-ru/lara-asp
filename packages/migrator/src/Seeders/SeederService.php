@@ -72,7 +72,7 @@ class SeederService {
         //      https://github.com/LastDragon-ru/lara-asp/issues/143
         $default = 'migrations';
         $table   = $this->config->getInstance()->get('database.migrations', $default);
-        $table   = is_array($table) ? ($table['table'] ?: $default) : $table;
+        $table   = is_array($table) ? ($table['table'] ?? $default) : $table;
         $table   = mb_strtolower(Cast::toString($table));
 
         return $table;

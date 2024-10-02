@@ -54,7 +54,7 @@ final class PrinterTest extends TestCase {
     ): void {
         $schema    = $schemaFactory($this);
         $printer   = new Printer($settings, null, $schema);
-        $type      = $typeFactory ? $typeFactory($this, $schema) : null;
+        $type      = $typeFactory !== null ? $typeFactory($this, $schema) : null;
         $printable = $printableFactory($this, $schema);
         $actual    = $printer->print($printable, $level, $used, $type);
 
@@ -83,7 +83,7 @@ final class PrinterTest extends TestCase {
     ): void {
         $schema     = $schemaFactory($this);
         $printer    = new Printer($settings, null, $schema);
-        $type       = $typeFactory ? $typeFactory($this, $schema) : null;
+        $type       = $typeFactory !== null ? $typeFactory($this, $schema) : null;
         $exportable = $exportableFactory($this, $schema);
         $actual     = $printer->export($exportable, $level, $used, $type);
 

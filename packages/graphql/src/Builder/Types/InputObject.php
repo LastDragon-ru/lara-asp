@@ -39,7 +39,6 @@ use Override;
 use function count;
 use function is_a;
 use function is_string;
-use function reset;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
@@ -110,7 +109,7 @@ abstract class InputObject implements TypeDefinition {
             // Add
             $fieldDefinition = $this->getFieldDefinition($manipulator, $fieldSource, $context);
 
-            if ($fieldDefinition) {
+            if ($fieldDefinition !== null) {
                 $definition->fields[] = $fieldDefinition;
             }
         }
@@ -137,7 +136,7 @@ abstract class InputObject implements TypeDefinition {
     ): array {
         $type      = $this->getTypeForOperators();
         $provider  = $context->get(HandlerContextOperators::class)?->value;
-        $operators = $type && $provider
+        $operators = $type !== null && $provider !== null
             ? $provider->getOperators($manipulator, $type, $source, $context)
             : [];
 
@@ -182,7 +181,7 @@ abstract class InputObject implements TypeDefinition {
         }
 
         // Convertable?
-        $convertable = $context->get(HandlerContextImplicit::class)?->value
+        $convertable = $context->get(HandlerContextImplicit::class)?->value === true
             ? $this->isFieldConvertableImplicit($manipulator, $field, $context)
             : $this->isFieldConvertableExplicit($manipulator, $field, $context);
 
@@ -221,19 +220,19 @@ abstract class InputObject implements TypeDefinition {
         // Operator?
         $operator = $this->getFieldOperatorDirective($manipulator, $field, $context, $this->getFieldMarkerOperator());
 
-        if ($operator) {
+        if ($operator !== null) {
             return true;
         }
 
         // Resolver?
         $resolver = $manipulator->getDirective($field->getField(), FieldResolver::class);
 
-        if ($resolver && !$this->isFieldConvertableResolver($manipulator, $field, $context, $resolver)) {
+        if ($resolver !== null && !$this->isFieldConvertableResolver($manipulator, $field, $context, $resolver)) {
             return false;
         }
 
         // Object/Arguments allowed only if Resolver defined and convertable
-        if (($field->hasArguments() || $field->isObject()) && !$resolver) {
+        if (($field->hasArguments() || $field->isObject()) && $resolver === null) {
             return false;
         }
 
@@ -264,7 +263,7 @@ abstract class InputObject implements TypeDefinition {
         // Marker?
         $marker = $this->getFieldMarkerIgnored();
 
-        if (!$marker) {
+        if ($marker === null) {
             return false;
         }
 
@@ -306,7 +305,7 @@ abstract class InputObject implements TypeDefinition {
         // Operator?
         $operator = $this->getFieldOperator($manipulator, $field, $context);
 
-        if (!$operator) {
+        if ($operator === null) {
             return null;
         }
 
@@ -333,13 +332,13 @@ abstract class InputObject implements TypeDefinition {
     ): ?Operator {
         $operator = $this->getFieldOperatorDirective($manipulator, $field, $context, $this->getFieldMarkerOperator());
 
-        if (!$operator) {
+        if ($operator === null) {
             $type     = $this->getTypeForFieldOperator();
             $provider = $context->get(HandlerContextOperators::class)?->value;
 
-            if ($type && $provider) {
+            if ($type !== null && $provider !== null) {
                 $operators = $provider->getOperators($manipulator, $type, $field, $context);
-                $operator  = reset($operators) ?: null;
+                $operator  = $operators[0] ?? null;
             }
         }
 
@@ -366,7 +365,7 @@ abstract class InputObject implements TypeDefinition {
         foreach ($nodes as $node) {
             $operator = $manipulator->getOperatorDirective($node, $directive, $field, $context);
 
-            if ($operator) {
+            if ($operator !== null) {
                 break;
             }
         }
@@ -390,8 +389,9 @@ abstract class InputObject implements TypeDefinition {
             $description = $description->value;
         }
 
-        if ($description) {
-            $description = trim($description) ?: null;
+        if ($description !== null) {
+            $description = trim($description);
+            $description = $description !== '' ? $description : null;
         }
 
         return $description;
@@ -411,7 +411,7 @@ abstract class InputObject implements TypeDefinition {
             if ($this->isFieldDirectiveAllowed($manipulator, $field, $context, $directive)) {
                 $node = $manipulator->getDirectiveNode($directive);
 
-                if ($node) {
+                if ($node !== null) {
                     $directives[] = $node;
                 }
             }
@@ -428,7 +428,7 @@ abstract class InputObject implements TypeDefinition {
     ): bool {
         // Explicit type is an `input` and we are expecting this type was created
         // for the directive, so all field's directives are allowed.
-        if (!$context->get(HandlerContextImplicit::class)?->value) {
+        if (!($context->get(HandlerContextImplicit::class)?->value === true)) {
             if ($directive instanceof Operator) {
                 return is_a($directive, $this->getFieldMarkerOperator());
             }

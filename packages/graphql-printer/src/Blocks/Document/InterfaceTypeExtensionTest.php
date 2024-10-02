@@ -34,7 +34,7 @@ final class InterfaceTypeExtensionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new InterfaceTypeExtension($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::interfaceTypeExtension($actual);
         }
 

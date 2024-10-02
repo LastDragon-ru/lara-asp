@@ -34,7 +34,7 @@ abstract class Base implements Link {
             $title = mb_substr($title, $position + 1);
         }
 
-        return $title ?: null;
+        return $title !== '' ? $title : null;
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class Base implements Link {
         // Class?
         $comment = $source->getMetadata($this->comment);
 
-        if (!$comment) {
+        if ($comment === null) {
             return null;
         }
 

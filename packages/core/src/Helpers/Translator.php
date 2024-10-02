@@ -74,7 +74,7 @@ abstract class Translator {
         $translated = array_splice($variants, -1);
         $translated = (string) end($translated);
 
-        if ($variants) {
+        if ($variants !== []) {
             foreach ($variants as $variant) {
                 $result = $callback($variant);
 

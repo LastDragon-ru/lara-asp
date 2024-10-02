@@ -48,7 +48,7 @@ class ArtisanSerializer {
         $default   = $option->getDefault() !== null && $option->acceptValue();
         $signature = '--';
 
-        if ($option->getShortcut()) {
+        if ($option->getShortcut() !== null && $option->getShortcut() !== '') {
             $signature .= $option->getShortcut().'|';
         }
 

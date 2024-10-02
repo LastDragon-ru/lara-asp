@@ -90,7 +90,7 @@ class Task implements TaskContract {
         // Markdown?
         $document = $file->getMetadata($this->markdown);
 
-        if (!$document || $document->isEmpty()) {
+        if ($document === null || $document->isEmpty()) {
             return true;
         }
 
@@ -115,12 +115,12 @@ class Task implements TaskContract {
                 $path   = $root->getPath($path);
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
-                if ($source) {
+                if ($source !== null) {
                     break;
                 }
             }
 
-            if (!$source && !$token->deprecated) {
+            if ($source === null && !$token->deprecated) {
                 $unresolved[] = $token;
                 continue;
             }
@@ -128,10 +128,10 @@ class Task implements TaskContract {
             // Target?
             $target = null;
 
-            if ($source) {
+            if ($source !== null) {
                 $target = $token->link->getTarget($root, $file, $source);
 
-                if (!$target && !$token->deprecated) {
+                if ($target === null && !$token->deprecated) {
                     $unresolved[] = $token;
                     continue;
                 }
@@ -142,7 +142,7 @@ class Task implements TaskContract {
         }
 
         // Unresolved?
-        if ($unresolved) {
+        if ($unresolved !== []) {
             $unresolved = array_map(static fn ($token) => (string) $token->link, $unresolved);
 
             sort($unresolved);
@@ -153,7 +153,7 @@ class Task implements TaskContract {
         // Mutate
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
-        if ($changes) {
+        if ($changes !== []) {
             $file->setContent(
                 (string) $document->mutate(new Changeset($changes)),
             );
@@ -181,7 +181,7 @@ class Task implements TaskContract {
             $refsParentNode     = $block;
             $refsParentLocation = Utils::getLocation($block);
 
-            if ($refsParentLocation) {
+            if ($refsParentLocation !== null) {
                 $changes[] = [$refsParentLocation, null];
             }
         }
@@ -193,7 +193,7 @@ class Task implements TaskContract {
         foreach ($links as [$token, $target]) {
             $title = $token->link->getTitle();
 
-            if (!$target || !$title) {
+            if ($target === null || $title === null || $title === '') {
                 continue;
             }
 
@@ -211,14 +211,14 @@ class Task implements TaskContract {
             $link  = (string) $token->link;
             $hash  = static::BlockMarker.'/'.Text::hash($link);
             $title = $token->link->getTitle();
-            $title = $target && $title && !isset($duplicates[$title])
+            $title = $target !== null && $title !== null && $title !== '' && !isset($duplicates[$title])
                 ? $title
                 : $link;
-            $title = !$target || $target->deprecated
+            $title = $target === null || $target->deprecated
                 ? static::DeprecationMarker.$title
                 : $title;
 
-            if ($target) {
+            if ($target !== null) {
                 $referenceTitle              = Utils::getLinkTitle($refsParentNode, $link);
                 $referenceTarget             = Utils::getLinkTarget($refsParentNode, (string) $target);
                 $references[$referenceTitle] = "[{$hash}]: {$referenceTarget}\n    {$referenceTitle}";
@@ -227,15 +227,15 @@ class Task implements TaskContract {
             foreach ($token->nodes as $node) {
                 $location = Utils::getLocation($node);
 
-                if ($location) {
+                if ($location !== null) {
                     $linkTitle = Utils::escapeTextInTableCell($node, $title);
-                    $changes[] = [$location, $target ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
+                    $changes[] = [$location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
                 }
             }
         }
 
         // References
-        if ($references) {
+        if ($references !== []) {
             ksort($references);
 
             $location = $refsParentLocation ?? new Append();
@@ -276,7 +276,7 @@ class Task implements TaskContract {
                     $link   = $this->factory->create((string) $parent->getTitle()) ?? $link;
                 }
 
-                if (!$link) {
+                if ($link === null) {
                     continue;
                 }
 

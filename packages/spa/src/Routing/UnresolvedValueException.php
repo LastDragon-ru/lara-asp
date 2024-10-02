@@ -21,6 +21,6 @@ class UnresolvedValueException extends RuntimeException {
     }
 
     public function getInnerException(): Exception {
-        return new NotFoundHttpException($this->getMessage() ?: 'Not found.', $this);
+        return new NotFoundHttpException($this->getMessage() !== '' ? $this->getMessage() : 'Not found.', $this);
     }
 }

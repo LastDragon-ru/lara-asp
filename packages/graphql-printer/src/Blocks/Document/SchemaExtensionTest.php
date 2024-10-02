@@ -36,7 +36,7 @@ final class SchemaExtensionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new SchemaExtension($context, $node))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::schemaTypeExtension($actual);
         }
 

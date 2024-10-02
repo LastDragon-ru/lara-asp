@@ -52,7 +52,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
-* [ ] [`ScheduleAssertions`][code-links/5bf3a6e818e8ec48] methods became non-static (#151).
+* [ ] [`ScheduleAssertions`][code-links/5bf3a6e818e8ec48] methods became non-static and signature changes (#151).
 
 # Upgrade from v5
 

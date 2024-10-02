@@ -70,7 +70,7 @@ class Protocol {
 
         if ($uri->host() === self::HostWindows) {
             // For Windows it can be `/C:/path`, so we need to remove the slash
-            if (preg_match('/^\/[a-z]\:/i', $path)) {
+            if (preg_match('/^\/[a-z]\:/i', $path) > 0) {
                 $path = ltrim($path, '/');
             }
         }

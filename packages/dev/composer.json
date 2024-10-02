@@ -40,7 +40,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Dev\\App\\Provider"
+        "LastDragon_ru\\LaraASP\\Dev\\Provider"
       ]
     }
   },

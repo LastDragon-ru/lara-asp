@@ -44,7 +44,6 @@ use Override;
 use function array_map;
 use function count;
 use function is_array;
-use function reset;
 
 /**
  * @see HandlerContextBuilderInfo
@@ -201,7 +200,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
 
             $field = $field->getChild($name);
             $value = $argument;
-            $op    = reset($operators);
+            $op    = $operators[0] ?? null;
 
             if (count($operators) > 1) {
                 throw new ConditionTooManyOperators(
@@ -216,7 +215,7 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         }
 
         // Operator?
-        if (!$op || !$value) {
+        if ($op === null || $value === null) {
             throw new ConditionEmpty();
         }
 
@@ -287,17 +286,17 @@ abstract class HandlerDirective extends BaseDirective implements Handler, Enhanc
         $provider = $context->get(HandlerContextOperators::class)?->value;
         $operator = $provider?->getOperator($manipulator, $operator, $argument, $context);
 
-        if (!$operator) {
+        if ($operator === null) {
             return null;
         }
 
         // Type
-        $definition = $context->get(HandlerContextImplicit::class)?->value
+        $definition = $context->get(HandlerContextImplicit::class)?->value === true
             ? $manipulator->getTypeDefinition($manipulator->getOriginType($argument->getField()))
             : $argument->getTypeDefinition();
         $source     = $manipulator->getTypeSource($definition);
         $type       = $operator->getFieldType($manipulator, $source, $context);
-        $type       = $type ? Parser::typeReference($type) : null;
+        $type       = $type !== null ? Parser::typeReference($type) : null;
 
         return $type;
     }

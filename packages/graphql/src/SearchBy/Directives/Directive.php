@@ -68,7 +68,7 @@ class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDi
     ): ListTypeNode|NamedTypeNode|NonNullTypeNode {
         $type = $this->getArgumentTypeDefinitionNode($manipulator, $document, $argument, $context, Root::class);
 
-        if (!$type) {
+        if ($type === null) {
             throw new FailedToCreateSearchCondition($argument);
         }
 

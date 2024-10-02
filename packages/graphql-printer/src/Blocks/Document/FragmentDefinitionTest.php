@@ -34,7 +34,7 @@ final class FragmentDefinitionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new FragmentDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::fragmentDefinition($actual);
         }
 

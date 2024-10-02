@@ -34,10 +34,17 @@ class CommandMatcher implements ScheduleMatcher {
 
         // Check
         $variants = match (true) {
-            is_string($task) && is_a($task, Command::class, true) => array_unique(array_filter([
-                Application::formatCommandString($this->container->make($task)->getName() ?? ''),
-                Application::formatCommandString($task::getDefaultName() ?? ''),
-            ])),
+            is_string($task) && is_a($task, Command::class, true) => array_unique(
+                array_filter(
+                    [
+                        Application::formatCommandString($this->container->make($task)->getName() ?? ''),
+                        Application::formatCommandString($task::getDefaultName() ?? ''),
+                    ],
+                    static function (string $command): bool {
+                        return $command !== '';
+                    },
+                ),
+            ),
             is_string($task)                                      => [
                 Application::formatCommandString($task),
                 $task,

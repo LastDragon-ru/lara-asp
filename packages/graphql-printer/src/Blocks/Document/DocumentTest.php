@@ -34,7 +34,7 @@ final class DocumentTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new Document($context, $document))->serialize($collector, $level, $used);
 
-        if ($expected) {
+        if ($expected !== '') {
             Parser::parse($actual);
         }
 

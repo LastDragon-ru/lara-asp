@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Formatter\Utils;
 use DateInterval;
 
 use function abs;
-use function array_filter;
 use function array_key_exists;
 use function array_reduce;
 use function floor;
@@ -52,7 +51,7 @@ class DurationFormatter {
     }
 
     public static function getTimestamp(DateInterval $interval): float {
-        return ($interval->invert ? -1 : 1) * (0
+        return ($interval->invert !== 0 ? -1 : 1) * (0
                 + $interval->y * self::SecondsInYear
                 + $interval->m * self::SecondsInMonth
                 + $interval->d * self::SecondsInDay
@@ -97,18 +96,16 @@ class DurationFormatter {
     private function prepare(array $tokens, float|int $value, array $units): array {
         // Calculate values
         $values   = [];
-        $patterns = array_filter(
-            array_reduce(
-                $tokens,
-                static function (array $used, UnicodeDateTimeFormatToken $token) use ($units): array {
-                    if (array_key_exists($token->pattern, $units)) {
-                        $used[$token->pattern] = true;
-                    }
+        $patterns = array_reduce(
+            $tokens,
+            static function (array $used, UnicodeDateTimeFormatToken $token) use ($units): array {
+                if (array_key_exists($token->pattern, $units)) {
+                    $used[$token->pattern] = true;
+                }
 
-                    return $used;
-                },
-                [],
-            ),
+                return $used;
+            },
+            [],
         );
 
         foreach ($units as $pattern => $multiplier) {

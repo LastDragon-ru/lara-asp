@@ -108,7 +108,7 @@ class Rule implements RuleContract {
     private function mustBeIsTestInternal(ClassReflection $reflection): bool {
         $classname = $reflection->getNativeReflection()->getShortName();
         $filename  = pathinfo((string) $reflection->getFileName(), PATHINFO_FILENAME);
-        $mustBe    = $filename
+        $mustBe    = $filename !== ''
             && str_ends_with($filename, 'Test')
             && str_starts_with($classname, "{$filename}_");
 

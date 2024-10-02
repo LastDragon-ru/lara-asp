@@ -39,7 +39,7 @@ class Scheduler {
         $settings = $this->getSettings($class, $instance);
 
         // Enabled?
-        if (!($settings['enabled'] ?? true) || !$settings['cron']) {
+        if (!($settings['enabled'] ?? true) || $settings['cron'] === '') {
             return false;
         }
 

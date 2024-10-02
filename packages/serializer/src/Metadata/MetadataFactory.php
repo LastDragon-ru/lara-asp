@@ -26,7 +26,6 @@ use function class_exists;
 use function get_debug_type;
 use function is_object;
 use function is_string;
-use function reset;
 use function sprintf;
 
 class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtractorInterface {
@@ -103,7 +102,7 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
     }
 
     protected function getTypeExtractor(): PropertyTypeExtractorInterface {
-        if (!$this->extractor) {
+        if ($this->extractor === null) {
             if (!class_exists(ContextFactory::class) || !class_exists(PhpDocParser::class)) {
                 /**
                  * These classes are required for {@see PhpStanExtractor}. We
@@ -167,7 +166,7 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
      */
     private function getAttribute(ReflectionProperty $object, string $attribute): ?object {
         $attributes = $object->getAttributes($attribute, ReflectionAttribute::IS_INSTANCEOF);
-        $instance   = (reset($attributes) ?: null)?->newInstance();
+        $instance   = ($attributes[0] ?? null)?->newInstance();
 
         return $instance;
     }

@@ -89,7 +89,7 @@ trait Override {
             : $factory;
 
         if (is_callable($factory)) {
-            $mock = $factory($mock, $this) ?: $mock;
+            $mock = $factory($mock, $this) ?? $mock;
         } elseif (is_string($factory)) {
             $mock = $this->app()->make($factory);
         } else {

@@ -316,7 +316,7 @@ class AstManipulator {
                 ? PaginateDirectiveHelper::getPaginationType($directive)
                 : RelationDirectiveHelper::getPaginationType($directive);
 
-            if ($pagination) {
+            if ($pagination !== null) {
                 if ($pagination->isPaginator()) {
                     $type = mb_substr($name, 0, -mb_strlen('Paginator'));
                 } elseif ($pagination->isSimple()) {
@@ -331,7 +331,7 @@ class AstManipulator {
             // empty
         }
 
-        if ($type) {
+        if ($type !== null) {
             $origin = Parser::typeReference("[{$type}!]!");
         }
 
@@ -363,7 +363,7 @@ class AstManipulator {
             }
 
             // Callback?
-            if ($callback && !$callback($directive)) {
+            if ($callback !== null && !$callback($directive)) {
                 continue;
             }
 
@@ -391,8 +391,10 @@ class AstManipulator {
         $directives = [];
 
         if ($node instanceof NamedType) {
-            if ($node->astNode()) {
-                $directives = $this->getDirectives($node->astNode(), $class, $callback);
+            $astNode = $node->astNode();
+
+            if ($astNode !== null) {
+                $directives = $this->getDirectives($astNode, $class, $callback);
             }
         } elseif ($node instanceof Node) {
             $associated = $this->getDirectiveLocator()->associated($node);
@@ -400,12 +402,12 @@ class AstManipulator {
             if ($class !== null || $callback !== null) {
                 foreach ($associated as $directive) {
                     // Class?
-                    if ($class && !($directive instanceof $class)) {
+                    if ($class !== null && !($directive instanceof $class)) {
                         continue;
                     }
 
                     // Callback?
-                    if ($callback && !$callback($directive)) {
+                    if ($callback !== null && !$callback($directive)) {
                         continue;
                     }
 
@@ -416,7 +418,7 @@ class AstManipulator {
                 $directives = $associated->all();
             }
         } elseif ($node instanceof InputObjectField || $node instanceof FieldDefinition || $node instanceof Argument) {
-            if ($node->astNode) {
+            if ($node->astNode !== null) {
                 $directives = $this->getDirectives($node->astNode, $class, $callback);
             }
         } else {
@@ -680,7 +682,7 @@ class AstManipulator {
         ?string $description = null,
     ): InputValueDefinitionNode|Argument {
         // Added?
-        if ($this->getArgument($field, $name)) {
+        if ($this->getArgument($field, $name) !== null) {
             throw new ArgumentAlreadyDefined(
                 sprintf(
                     '%s { %s(%s) }',
@@ -694,7 +696,7 @@ class AstManipulator {
         // Add
         if ($field instanceof FieldDefinitionNode) {
             $argument = ''
-                .($description ? BlockString::print($description) : '')
+                .($description !== null && $description !== '' ? BlockString::print($description) : '')
                 ."{$name}: {$type}"
                 .($default !== null ? ' = '.json_encode($default, JSON_THROW_ON_ERROR) : '');
             $argument = Parser::inputValueDefinition($argument);
@@ -720,7 +722,7 @@ class AstManipulator {
             // Field?
             $interfaceField = $this->getField($interface, $fieldName);
 
-            if (!$interfaceField) {
+            if ($interfaceField === null) {
                 continue;
             }
 
@@ -752,7 +754,7 @@ class AstManipulator {
         if ($node instanceof Argument) {
             // Unfortunately directives exists only in AST :(
             // https://github.com/webonyx/graphql-php/issues/588
-            if ($node->astNode) {
+            if ($node->astNode !== null) {
                 return $this->addDirective($node->astNode, $directive, $arguments);
             } else {
                 throw new NotImplemented($node::class);
@@ -794,7 +796,7 @@ class AstManipulator {
             // Field?
             $interfaceField = $this->getField($interface, $fieldName);
 
-            if (!$interfaceField) {
+            if ($interfaceField === null) {
                 continue;
             }
 
@@ -831,7 +833,7 @@ class AstManipulator {
             // Field?
             $interfaceField = $this->getField($interface, $fieldName);
 
-            if (!$interfaceField) {
+            if ($interfaceField === null) {
                 continue;
             }
 

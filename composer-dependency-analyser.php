@@ -29,7 +29,13 @@ $config = (new Configuration())
 $path = Path::realpath(getopt('', ['composer-json:'])['composer-json'] ?? 'composer.json');
 $root = Path::realpath(dirname(__FILE__).'/composer.json') === $path;
 
-if (!$root) {
+if ($root) {
+    $config
+        ->ignoreErrorsOnPackage('phpstan/phpstan-mockery', [ErrorType::UNUSED_DEPENDENCY])
+        ->ignoreErrorsOnPackage('phpstan/phpstan-phpunit', [ErrorType::UNUSED_DEPENDENCY])
+        ->ignoreErrorsOnPackage('phpstan/phpstan-strict-rules', [ErrorType::UNUSED_DEPENDENCY])
+        ->ignoreErrorsOnPackage('spaze/phpstan-disallowed-calls', [ErrorType::UNUSED_DEPENDENCY]);
+} else {
     $config->disableReportingUnmatchedIgnores();
 }
 

@@ -116,7 +116,7 @@ class Requirements extends Command {
         // Collect requirements
         $storage  = new Storage($serializer, $cwd);
         $metadata = $storage->load();
-        $packages = $metadata->require ?: [
+        $packages = $metadata->require !== [] ? $metadata->require : [
             'php'               => 'PHP',
             'laravel/framework' => 'Laravel',
         ];
@@ -137,7 +137,7 @@ class Requirements extends Command {
             // Load
             $package = $this->getPackageInfo($factory, $git, $tag, $cwd);
 
-            if (!$package) {
+            if ($package === null) {
                 break;
             }
 
@@ -161,7 +161,8 @@ class Requirements extends Command {
 
         // Unreleased
         if (
-            $metadata->version
+            $metadata->version !== null
+            && $metadata->version !== ''
             && !isset($metadata->requirements[$metadata->version])
             && isset($metadata->requirements[self::HEAD])
         ) {
@@ -245,7 +246,7 @@ class Requirements extends Command {
             $match = false;
 
             foreach ($regexps as $regexp => $key) {
-                if (preg_match($regexp, $requirement)) {
+                if (preg_match($regexp, $requirement) > 0) {
                     $requirement = $key;
                     $match       = true;
                     break;
@@ -263,7 +264,9 @@ class Requirements extends Command {
 
             // Add
             $required                   = explode('|', Cast::toString($constraint));
-            $required                   = array_values(array_filter(array_map(trim(...), $required)));
+            $required                   = array_map(trim(...), $required);
+            $required                   = array_filter($required, static fn ($string) => $string !== '');
+            $required                   = array_values($required);
             $requirement                = Cast::toString($requirement);
             $requirements[$requirement] = array_merge($requirements[$requirement] ?? [], $required);
             $requirements[$requirement] = array_values(array_unique($requirements[$requirement]));
@@ -336,7 +339,7 @@ class Requirements extends Command {
             }
         }
 
-        if ($current) {
+        if ($current !== []) {
             $ranges[] = $current;
         }
 

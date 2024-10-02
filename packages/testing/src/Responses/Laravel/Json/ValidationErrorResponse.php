@@ -32,7 +32,7 @@ class ValidationErrorResponse extends Response {
             new JsonContentType(),
             new JsonBody(...array_filter([
                 new JsonMatchesSchema(new JsonSchemaFile(self::getTestData(self::class)->file('.json'))),
-                $errors
+                $errors !== null && $errors !== []
                     ? new JsonMatchesSchema(new JsonSchemaValue($this->getErrorsSchema($errors)))
                     : null,
             ])),
@@ -48,7 +48,7 @@ class ValidationErrorResponse extends Response {
         $properties = [];
 
         foreach ($errors as $key => $error) {
-            if (is_null($error) || (is_array($error) && !$error)) {
+            if (is_null($error) || (is_array($error) && $error !== [])) {
                 $properties[$key] = [
                     'type'     => 'array',
                     'minItems' => 1,

@@ -43,18 +43,14 @@ class PhpDocBlock implements Metadata {
         // Class?
         $class = $file->getMetadata($this->class);
 
-        if (!$class) {
+        if ($class === null) {
             return null;
         }
 
-        // Parse
+        // Prepare
         $content = (new PhpDoc($class->class->getDocComment()?->getText()))->getText();
         $content = $this->preprocess($class->context, $content);
         $content = trim($content);
-
-        if (!$content) {
-            return new Document('', $file->getPath());
-        }
 
         // Create
         return new Document($content, $file->getPath());
@@ -72,7 +68,7 @@ class PhpDocBlock implements Metadata {
                     },
                 );
 
-                if ($reference) {
+                if ($reference !== null) {
                     $result = "`{$reference}`";
                 }
 

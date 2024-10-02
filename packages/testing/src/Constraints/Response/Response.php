@@ -99,7 +99,7 @@ class Response extends Constraint {
 
         $description = [];
 
-        if ($this->failed) {
+        if ($this->failed !== null) {
             $description[] = $this->failed instanceof self
                 ? $this->failed->additionalFailureDescription($other, false)
                 : $this->failed->additionalFailureDescription($other);
@@ -113,8 +113,8 @@ class Response extends Constraint {
             return trim($text, PHP_EOL);
         }, $description);
         $description = array_unique($description);
-        $description = array_filter($description);
-        $description = $description
+        $description = array_filter($description, static fn ($line) => $line !== '');
+        $description = $description !== []
             ? PHP_EOL.implode(PHP_EOL.PHP_EOL, $description).PHP_EOL
             : '';
 

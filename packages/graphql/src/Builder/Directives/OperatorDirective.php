@@ -72,7 +72,7 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
         // Builder?
         $builder = $context->get(HandlerContextBuilderInfo::class)?->value->getBuilder();
 
-        if (!$builder || !$this->isBuilderSupported($builder)) {
+        if ($builder === null || !$this->isBuilderSupported($builder)) {
             return false;
         }
 
