@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Metadata;
 
 use LastDragon_ru\LaraASP\Core\Utils\Path;
-use LastDragon_ru\LaraASP\Documentator\Utils\Version;
+use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
 
 use function file_get_contents;
 use function file_put_contents;
 use function is_file;
-use function strcmp;
 use function trim;
 use function uksort;
 use function usort;
@@ -38,6 +38,7 @@ class Storage {
 
     public function __construct(
         private readonly Serializer $serializer,
+        private readonly Sorter $sorter,
         private readonly string $path,
     ) {
         // empty
@@ -66,15 +67,16 @@ class Storage {
     }
 
     protected function normalize(Metadata $metadata): Metadata {
-        $comparator = static fn($a, $b) => -Version::compare($a, $b);
+        $stringComparator  = $this->sorter->forString(SortOrder::Asc);
+        $versionComparator = $this->sorter->forVersion(SortOrder::Desc);
 
-        uksort($metadata->requirements, $comparator);
+        uksort($metadata->requirements, $versionComparator);
 
         foreach ($metadata->requirements as &$requirement) {
-            uksort($requirement, strcmp(...));
+            uksort($requirement, $stringComparator);
 
             foreach ($requirement as &$versions) {
-                usort($versions, $comparator);
+                usort($versions, $versionComparator);
             }
         }
 

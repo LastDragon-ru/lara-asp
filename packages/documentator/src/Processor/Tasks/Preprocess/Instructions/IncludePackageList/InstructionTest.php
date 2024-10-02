@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -26,12 +27,12 @@ final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderProcess')]
-    public function testInvoke(string $expected, string $template): void {
+    public function testInvoke(string $expected, string $template, SortOrder $order): void {
         $path     = Path::normalize(self::getTestData()->path('Document.md'));
         $root     = new Directory(dirname($path), false);
         $file     = new File($path, false);
         $target   = $root->getPath('packages');
-        $params   = new Parameters('...', template: $template);
+        $params   = new Parameters('...', template: $template, order: $order);
         $context  = new Context($root, $file, $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
@@ -90,12 +91,13 @@ final class InstructionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{string, ?string}>
+     * @return array<string, array{string, ?string, SortOrder}>
      */
     public static function dataProviderProcess(): array {
         return [
-            'default'    => ['~default.md', 'default'],
-            'upgradable' => ['~upgradable.md', 'upgradable'],
+            'default-asc'  => ['~DefaultAsc.md', 'default', SortOrder::Asc],
+            'default-desc' => ['~DefaultDesc.md', 'default', SortOrder::Desc],
+            'upgradable'   => ['~Upgradable.md', 'upgradable', SortOrder::Asc],
         ];
     }
     // </editor-fold>
