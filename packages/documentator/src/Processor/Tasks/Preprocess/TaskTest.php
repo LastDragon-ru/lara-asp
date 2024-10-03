@@ -27,6 +27,7 @@ use function array_map;
 use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
+use const PHP_INT_MAX;
 
 /**
  * @internal
@@ -97,65 +98,74 @@ final class TaskTest extends TestCase {
         $document = new Document(self::MARKDOWN);
         $tokens   = $task->parse($root, $file, $document);
         $actual   = array_map(
-            static function (Token $token): array {
-                $nodes = array_map(Utils::getLocation(...), $token->nodes);
+            static function (array $tokens): array {
+                return array_map(
+                    static function (Token $token): array {
+                        $nodes = array_map(Utils::getLocation(...), $token->nodes);
 
-                return [
-                    $token->instruction,
-                    $token->context,
-                    $token->target,
-                    $token->parameters,
-                    $nodes,
-                ];
+                        return [
+                            $token->instruction,
+                            $token->context,
+                            $token->target,
+                            $token->parameters,
+                            $nodes,
+                        ];
+                    },
+                    $tokens,
+                );
             },
             $tokens,
         );
 
         self::assertEquals(
             [
-                '4f76e5da6e5aabbc' => [
-                    $a,
-                    new Context($root, $file, './path/to/file%20%22value%22', null, $mutation),
-                    './path/to/file "value"',
-                    new TaskTest__ParametersEmpty('./path/to/file "value"'),
-                    [
-                        new Location(5, 6, 0, null, 0),
-                    ],
-                ],
-                'bb30809c6ca4c80a' => [
-                    $b,
-                    new Context($root, $file, './path/to/file', null, $mutation),
-                    './path/to/file',
-                    new TaskTest__Parameters('./path/to/file'),
-                    [
-                        new Location(7, 8, 0, null, 0),
-                        new Location(9, 9, 0, null, 0),
-                        new Location(21, 22, 0, null, 0),
-                        new Location(23, 24, 0, null, 0),
-                        new Location(31, 31, 0, null, 2),
-                    ],
-                ],
-                'f5f55887ee415b3d' => [
-                    $b,
-                    new Context(
-                        $root,
-                        $file,
-                        './path/to/file/parametrized',
-                        '{"a": "aa", "b": {"a": "a", "b": "b"}}',
-                        $mutation,
-                    ),
-                    './path/to/file/parametrized',
-                    new TaskTest__Parameters(
-                        './path/to/file/parametrized',
-                        'aa',
+                0           => [
+                    'bb30809c6ca4c80a' => [
+                        $b,
+                        new Context($root, $file, './path/to/file', null, $mutation),
+                        './path/to/file',
+                        new TaskTest__Parameters('./path/to/file'),
                         [
-                            'a' => 'a',
-                            'b' => 'b',
+                            new Location(7, 8, 0, null, 0),
+                            new Location(9, 9, 0, null, 0),
+                            new Location(21, 22, 0, null, 0),
+                            new Location(23, 24, 0, null, 0),
+                            new Location(31, 31, 0, null, 2),
                         ],
-                    ),
-                    [
-                        new Location(25, 26, 0, null, 0),
-                        new Location(27, 28, 0, null, 0),
+                    ],
+                    'f5f55887ee415b3d' => [
+                        $b,
+                        new Context(
+                            $root,
+                            $file,
+                            './path/to/file/parametrized',
+                            '{"a": "aa", "b": {"a": "a", "b": "b"}}',
+                            $mutation,
+                        ),
+                        './path/to/file/parametrized',
+                        new TaskTest__Parameters(
+                            './path/to/file/parametrized',
+                            'aa',
+                            [
+                                'a' => 'a',
+                                'b' => 'b',
+                            ],
+                        ),
+                        [
+                            new Location(25, 26, 0, null, 0),
+                            new Location(27, 28, 0, null, 0),
+                        ],
+                    ],
+                ],
+                PHP_INT_MAX => [
+                    '4f76e5da6e5aabbc' => [
+                        $a,
+                        new Context($root, $file, './path/to/file%20%22value%22', null, $mutation),
+                        './path/to/file "value"',
+                        new TaskTest__ParametersEmpty('./path/to/file "value"'),
+                        [
+                            new Location(5, 6, 0, null, 0),
+                        ],
                     ],
                 ],
             ],
@@ -309,6 +319,11 @@ class TaskTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
+    public static function getPriority(): ?int {
+        return PHP_INT_MAX;
+    }
+
+    #[Override]
     public static function getParameters(): string {
         return TaskTest__ParametersEmpty::class;
     }
@@ -332,6 +347,11 @@ class TaskTest__TestInstruction implements Instruction {
     }
 
     #[Override]
+    public static function getPriority(): ?int {
+        return null;
+    }
+
+    #[Override]
     public static function getParameters(): string {
         return TaskTest__Parameters::class;
     }
@@ -352,6 +372,11 @@ class TaskTest__DocumentInstruction implements Instruction {
     #[Override]
     public static function getName(): string {
         return 'test:document';
+    }
+
+    #[Override]
+    public static function getPriority(): ?int {
+        return null;
     }
 
     #[Override]
