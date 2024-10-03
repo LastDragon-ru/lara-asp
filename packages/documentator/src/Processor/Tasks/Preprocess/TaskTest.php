@@ -77,8 +77,11 @@ final class TaskTest extends TestCase {
             $this->app()->make(Serializer::class),
             $this->app()->make(Markdown::class),
         ) extends Task {
+            /**
+             * @inheritDoc
+             */
             #[Override]
-            public function parse(Directory $root, File $file, Document $document): TokenList {
+            public function parse(Directory $root, File $file, Document $document): array {
                 return parent::parse($root, $file, $document);
             }
         };
@@ -105,7 +108,7 @@ final class TaskTest extends TestCase {
                     $nodes,
                 ];
             },
-            $tokens->tokens,
+            $tokens,
         );
 
         self::assertEquals(

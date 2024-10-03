@@ -126,7 +126,7 @@ class Task implements TaskContract {
         $parsed  = $this->parse($root, $file, $document);
         $changes = [];
 
-        foreach ($parsed->tokens as $hash => $token) {
+        foreach ($parsed as $hash => $token) {
             // Run
             try {
                 // Run
@@ -185,10 +185,13 @@ class Task implements TaskContract {
         return true;
     }
 
-    protected function parse(Directory $root, File $file, Document $document): TokenList {
+    /**
+     * @return array<string, Token<*>>
+     */
+    protected function parse(Directory $root, File $file, Document $document): array {
         // Empty?
         if ($this->instructions->isEmpty()) {
-            return new TokenList();
+            return [];
         }
 
         // Extract all possible instructions
@@ -240,7 +243,7 @@ class Task implements TaskContract {
         }
 
         // Return
-        return new TokenList($tokens);
+        return $tokens;
     }
 
     private function getParametersJson(string $target, ?string $json): string {
