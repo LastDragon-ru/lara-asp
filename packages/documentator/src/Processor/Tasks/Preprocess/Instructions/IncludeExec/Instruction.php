@@ -33,6 +33,11 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
+    public static function getPriority(): ?int {
+        return null;
+    }
+
+    #[Override]
     public static function getParameters(): string {
         return Parameters::class;
     }

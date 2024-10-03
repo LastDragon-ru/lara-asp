@@ -124,71 +124,83 @@ class Task implements TaskContract {
 
         // Process
         $parsed  = $this->parse($root, $file, $document);
-        $changes = [];
+        $mutated = false;
 
-        foreach ($parsed->tokens as $hash => $token) {
+        foreach ($parsed as $group) {
             // Run
-            try {
+            $changes = [];
+
+            foreach ($group as $hash => $token) {
                 // Run
-                $content = ($token->instruction)($token->context, $token->target, $token->parameters);
+                try {
+                    // Run
+                    $content = ($token->instruction)($token->context, $token->target, $token->parameters);
 
-                if ($content instanceof Generator) {
-                    yield from $content;
+                    if ($content instanceof Generator) {
+                        yield from $content;
 
-                    $content = $content->getReturn();
+                        $content = $content->getReturn();
+                    }
+
+                    // Markdown?
+                    if ($content instanceof Document) {
+                        $content = (string) $token->context->toInlinable($content);
+                    }
+                } catch (ProcessorError $exception) {
+                    throw $exception;
+                } catch (Exception $exception) {
+                    throw new PreprocessFailed($exception);
                 }
 
-                // Markdown?
-                if ($content instanceof Document) {
-                    $content = (string) $token->context->toInlinable($content);
-                }
-            } catch (ProcessorError $exception) {
-                throw $exception;
-            } catch (Exception $exception) {
-                throw new PreprocessFailed($exception);
-            }
+                // Wrap
+                $content = GeneratedNode::get(static::BlockMarker.'/'.$hash, $content);
 
-            // Wrap
-            $content = GeneratedNode::get(static::BlockMarker.'/'.$hash, $content);
+                // Replace
+                foreach ($token->nodes as $node) {
+                    $location = null;
+                    $text     = "{$content}\n";
+                    $next     = $node->next();
 
-            // Replace
-            foreach ($token->nodes as $node) {
-                $location = null;
-                $text     = "{$content}\n";
-                $next     = $node->next();
+                    if ($next instanceof GeneratedNode) {
+                        $location = MarkdownUtils::getLocation($next);
+                    } else {
+                        $location = MarkdownUtils::getLocation($node);
 
-                if ($next instanceof GeneratedNode) {
-                    $location = MarkdownUtils::getLocation($next);
-                } else {
-                    $location = MarkdownUtils::getLocation($node);
+                        if ($location !== null) {
+                            $instruction = trim((string) $document->getText($location));
+                            $text        = "{$instruction}\n{$text}";
+                        }
+                    }
 
                     if ($location !== null) {
-                        $instruction = trim((string) $document->getText($location));
-                        $text        = "{$instruction}\n{$text}";
+                        $changes[] = [$location, $text];
                     }
                 }
+            }
 
-                if ($location !== null) {
-                    $changes[] = [$location, $text];
-                }
+            // Mutate
+            if ($changes !== []) {
+                $document = $document->mutate(new Changeset($changes));
+                $mutated  = true;
             }
         }
 
         // Mutate
-        if ($changes !== []) {
-            $file->setContent(
-                (string) $document->mutate(new Changeset($changes)),
-            );
+        if ($mutated) {
+            $file->setContent((string) $document);
         }
 
         // Return
         return true;
     }
 
-    protected function parse(Directory $root, File $file, Document $document): TokenList {
+    /**
+     * @return array<int, array<string, Token<*>>>
+     */
+    protected function parse(Directory $root, File $file, Document $document): array {
         // Empty?
         if ($this->instructions->isEmpty()) {
-            return new TokenList();
+            return [];
         }
 
         // Extract all possible instructions
@@ -210,13 +222,14 @@ class Task implements TaskContract {
             }
 
             // Hash
-            $target = rawurldecode($node->getDestination());
-            $params = $this->getParametersJson($target, $node->getTitle());
-            $hash   = Text::hash("{$name}({$params})");
+            $priority = $instruction::getPriority() ?? 0;
+            $target   = rawurldecode($node->getDestination());
+            $params   = $this->getParametersJson($target, $node->getTitle());
+            $hash     = Text::hash("{$name}({$params})");
 
             // Parsed?
-            if (isset($tokens[$hash])) {
-                $tokens[$hash]->nodes[] = $node;
+            if (isset($tokens[$priority][$hash])) {
+                $tokens[$priority][$hash]->nodes[] = $node;
 
                 continue;
             }
@@ -228,7 +241,7 @@ class Task implements TaskContract {
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
-            $tokens[$hash] = new Token(
+            $tokens[$priority][$hash] = new Token(
                 $instruction,
                 $context,
                 $target,
@@ -239,8 +252,11 @@ class Task implements TaskContract {
             );
         }
 
+        // Sort
+        ksort($tokens);
+
         // Return
-        return new TokenList($tokens);
+        return $tokens;
     }
 
     private function getParametersJson(string $target, ?string $json): string {

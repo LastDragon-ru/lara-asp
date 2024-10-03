@@ -14,6 +14,11 @@ interface Instruction {
     public static function getName(): string;
 
     /**
+     * The recommended priority is `null` unless you really need to change it.
+     */
+    public static function getPriority(): ?int;
+
+    /**
      * @return class-string<Parameters>
      */
     public static function getParameters(): string;
