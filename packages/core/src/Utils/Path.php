@@ -2,11 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Core\Utils;
 
+use LastDragon_ru\LaraASP\Core\Package;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 use function is_dir;
 use function is_file;
+use function trigger_deprecation;
 
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s`/`%s` instead.', FilePath::class, DirectoryPath::class);
+
+/**
+ * @deprecated %{VERSION} Please use {@see FilePath}/{@see DirectoryPath} instead.
+ */
 class Path {
     public static function getPath(string $root, string $path): string {
         $path = static::isRelative($path)
