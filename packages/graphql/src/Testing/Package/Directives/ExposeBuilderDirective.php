@@ -29,7 +29,7 @@ class ExposeBuilderDirective extends BaseDirective implements FieldResolver, Bui
     public static QueryBuilder|EloquentBuilder|ScoutBuilder $builder;
 
     /**
-     * @var QueryBuilder|EloquentBuilder<Model>|ScoutBuilder<Model>|Relation<Model>|null
+     * @var QueryBuilder|EloquentBuilder<Model>|ScoutBuilder<Model>|Relation<Model, covariant Model, mixed>|null
      */
     public static QueryBuilder|EloquentBuilder|ScoutBuilder|Relation|null $result = null;
 

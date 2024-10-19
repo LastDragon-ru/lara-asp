@@ -36,7 +36,7 @@ class Car extends Model {
     }
 
     /**
-     * @return BelongsTo<User, Car>
+     * @return BelongsTo<User, covariant Model>
      */
     public function user(): BelongsTo {
         return $this
@@ -45,7 +45,7 @@ class Car extends Model {
     }
 
     /**
-     * @return HasOne<CarEngine>
+     * @return HasOne<CarEngine, covariant Model>
      */
     public function engine(): HasOne {
         return $this
@@ -54,7 +54,7 @@ class Car extends Model {
     }
 
     /**
-     * @return HasMany<CarEngine>
+     * @return HasMany<CarEngine, covariant Model>
      */
     public function engines(): HasMany {
         return $this

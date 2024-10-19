@@ -186,28 +186,28 @@ class ModelHelperTest__Model extends Model {
     }
 
     /**
-     * @return BelongsTo<self,self>|HasOne<self>
+     * @return BelongsTo<self,covariant Model>|HasOne<self, Model>
      */
     public function union(): BelongsTo|HasOne {
         return $this->belongsTo(self::class);
     }
 
     /**
-     * @return BelongsTo<self,self>|stdClass
+     * @return BelongsTo<self,covariant Model>|stdClass
      */
     public function unionNotRelation(): BelongsTo|stdClass {
         return $this->belongsTo(self::class);
     }
 
     /**
-     * @return BelongsTo<self,self>&BuilderContract
+     * @return BelongsTo<self,covariant Model>&BuilderContract
      */
     public function intersection(): BelongsTo&BuilderContract {
         return $this->belongsTo(self::class);
     }
 
     /**
-     * @return BelongsTo<self,self>
+     * @return BelongsTo<self,covariant Model>
      */
     public function ok(): BelongsTo {
         return $this->belongsTo(self::class);

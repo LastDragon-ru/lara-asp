@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models;
 
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
 
@@ -25,7 +26,7 @@ class Image extends Model {
     }
 
     /**
-     * @return MorphTo<User|Role, Image>
+     * @return MorphTo<EloquentModel, covariant self>
      */
     public function imageable(): MorphTo {
         return $this->morphTo();

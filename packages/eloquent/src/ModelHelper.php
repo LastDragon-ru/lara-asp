@@ -114,7 +114,7 @@ class ModelHelper {
     }
 
     /**
-     * @return Relation<TModel>
+     * @return Relation<TModel, covariant Model, mixed>
      */
     public function getRelation(string $name): Relation {
         $relation = null;

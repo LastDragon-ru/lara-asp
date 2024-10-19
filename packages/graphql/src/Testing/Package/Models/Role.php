@@ -26,7 +26,7 @@ class Role extends Model {
     }
 
     /**
-     * @return MorphOne<Image>
+     * @return MorphOne<Image, covariant Model>
      */
     public function image(): MorphOne {
         return $this
@@ -34,7 +34,7 @@ class Role extends Model {
     }
 
     /**
-     * @return HasOneThrough<User>
+     * @return HasOneThrough<User, UserRole, covariant Model>
      */
     public function user(): HasOneThrough {
         return $this
@@ -49,7 +49,7 @@ class Role extends Model {
     }
 
     /**
-     * @return BelongsToMany<User>
+     * @return BelongsToMany<User, covariant Model>
      */
     public function users(): BelongsToMany {
         return $this

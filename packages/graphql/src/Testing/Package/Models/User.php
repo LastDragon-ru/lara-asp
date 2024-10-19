@@ -32,7 +32,7 @@ class User extends Model {
     }
 
     /**
-     * @return HasOne<User>
+     * @return HasOne<User, covariant Model>
      */
     public function parent(): HasOne {
         return $this
@@ -40,7 +40,7 @@ class User extends Model {
     }
 
     /**
-     * @return BelongsTo<Organization, User>
+     * @return BelongsTo<Organization, covariant Model>
      */
     public function organization(): BelongsTo {
         return $this
@@ -48,7 +48,7 @@ class User extends Model {
     }
 
     /**
-     * @return HasOne<Car>
+     * @return HasOne<Car, covariant Model>
      */
     public function car(): HasOne {
         return $this
@@ -57,7 +57,7 @@ class User extends Model {
     }
 
     /**
-     * @return HasMany<Car>
+     * @return HasMany<Car, covariant Model>
      */
     public function cars(): HasMany {
         return $this
@@ -66,7 +66,7 @@ class User extends Model {
     }
 
     /**
-     * @return HasOneThrough<Role>
+     * @return HasOneThrough<Role, UserRole, covariant Model>
      */
     public function role(): HasOneThrough {
         return $this
@@ -82,7 +82,7 @@ class User extends Model {
     }
 
     /**
-     * @return BelongsToMany<Role>
+     * @return BelongsToMany<Role, covariant Model>
      */
     public function roles(): BelongsToMany {
         return $this
@@ -98,7 +98,7 @@ class User extends Model {
     }
 
     /**
-     * @return MorphOne<Image>
+     * @return MorphOne<Image, covariant Model>
      */
     public function avatar(): MorphOne {
         return $this
@@ -107,7 +107,7 @@ class User extends Model {
     }
 
     /**
-     * @return MorphMany<Image>
+     * @return MorphMany<Image, covariant Model>
      */
     public function images(): MorphMany {
         return $this
@@ -116,7 +116,7 @@ class User extends Model {
     }
 
     /**
-     * @return MorphToMany<Tag>
+     * @return MorphToMany<Tag, covariant Model>
      */
     public function tags(): MorphToMany {
         return $this->morphToMany(

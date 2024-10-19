@@ -23,7 +23,7 @@ class CarEngine extends Model {
     }
 
     /**
-     * @return HasManyThrough<User>
+     * @return HasManyThrough<User, Car, covariant Model>
      */
     public function users(): HasManyThrough {
         return $this

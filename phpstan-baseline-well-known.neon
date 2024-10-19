@@ -78,11 +78,6 @@ parameters:
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 
-        # False positive for non-initialized properties (Laravel specific)
-        # https://github.com/phpstan/phpstan/issues/10305
-        - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$orders \\(array\\) on left side of \\?\\? is not nullable\\.$#"
-        - "#^Property Illuminate\\\\Database\\\\Query\\\\Builder::\\$unionOrders \\(array\\) on left side of \\?\\? is not nullable\\.$#"
-
         # (dev) Required for tests
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"

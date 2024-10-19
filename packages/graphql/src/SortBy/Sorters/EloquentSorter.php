@@ -100,7 +100,7 @@ class EloquentSorter extends DatabaseSorter {
      * @param EloquentBuilder<T> $builder
      * @param array<int, string> $stack
      *
-     * @return Relation<T>
+     * @return Relation<T, covariant Model, mixed>
      */
     protected function getRelation(EloquentBuilder $builder, string $name, array $stack = []): Relation {
         return (new ModelHelper($builder))->getRelation($name);
@@ -109,8 +109,8 @@ class EloquentSorter extends DatabaseSorter {
     /**
      * @template T of Model
      *
-     * @param EloquentBuilder<T> $builder
-     * @param Relation<T>        $relation
+     * @param EloquentBuilder<T>                  $builder
+     * @param Relation<T, covariant Model, mixed> $relation
      *
      * @return EloquentBuilder<T>
      */

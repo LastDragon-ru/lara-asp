@@ -22,7 +22,7 @@ class Tag extends Model {
     }
 
     /**
-     * @return MorphToMany<User>
+     * @return MorphToMany<User, covariant Model>
      */
     public function users(): MorphToMany {
         return $this->morphedByMany(
