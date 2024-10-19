@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Composer;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -25,30 +26,30 @@ final class PackageTest extends TestCase {
 
         self::assertEquals(
             [
-                'a/b/c/Class.php',
-                'a/b/C/Class.php',
+                (new FilePath('a/b/c/Class.php'))->getNormalizedPath(),
+                (new FilePath('a/b/C/Class.php'))->getNormalizedPath(),
             ],
             $package->resolve('\\A\\B\\C\\Class'),
         );
         self::assertEquals(
             [
-                'a/b/Class.php',
+                (new FilePath('a/b/Class.php'))->getNormalizedPath(),
             ],
             $package->resolve('\\A\\B\\Class'),
         );
         self::assertEquals(
             [
-                'c/a/Class.php',
-                'c/b/Class.php',
-                'Class.php',
+                (new FilePath('c/a/Class.php'))->getNormalizedPath(),
+                (new FilePath('c/b/Class.php'))->getNormalizedPath(),
+                (new FilePath('Class.php'))->getNormalizedPath(),
             ],
             $package->resolve('\\C\\Class'),
         );
         self::assertEquals(
             [
-                'c/a/D/Class.php',
-                'c/b/D/Class.php',
-                'D/Class.php',
+                (new FilePath('c/a/D/Class.php'))->getNormalizedPath(),
+                (new FilePath('c/b/D/Class.php'))->getNormalizedPath(),
+                (new FilePath('D/Class.php'))->getNormalizedPath(),
             ],
             $package->resolve('\\C\\D\\Class'),
         );

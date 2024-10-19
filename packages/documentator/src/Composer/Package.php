@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Composer;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 
 use function array_key_exists;
 use function array_unique;
@@ -15,11 +16,11 @@ use function uksort;
 
 class Package {
     /**
-     * @var array<string, list<string>>|null
+     * @var array<string, list<DirectoryPath>>|null
      */
     private ?array $namespaces = null;
     /**
-     * @var array<string, non-empty-list<string>|null>
+     * @var array<string, non-empty-list<FilePath>|null>
      */
     private array $resolved = [];
 
@@ -30,7 +31,7 @@ class Package {
     }
 
     /**
-     * @return non-empty-list<string>|null
+     * @return non-empty-list<FilePath>|null
      */
     public function resolve(string $class): ?array {
         $class = $this->normalize($class);
@@ -44,7 +45,7 @@ class Package {
                     $suffix = mb_substr($class, mb_strlen($namespace));
 
                     foreach ($directories as $directory) {
-                        $paths[] = Path::join($directory, "{$suffix}.php");
+                        $paths[] = $directory->getFilePath("{$suffix}.php");
                     }
                 }
             }
@@ -62,7 +63,7 @@ class Package {
     }
 
     /**
-     * @return array<string, list<string>>
+     * @return array<string, list<DirectoryPath>>
      */
     private function getNamespaces(): array {
         if (!isset($this->namespaces)) {
@@ -77,7 +78,7 @@ class Package {
                     $namespace = $this->normalize($namespace);
 
                     foreach ((array) $paths as $path) {
-                        $this->namespaces[$namespace][] = $path;
+                        $this->namespaces[$namespace][] = new DirectoryPath($path);
                     }
                 }
             }

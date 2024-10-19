@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -39,13 +39,13 @@ class Storage {
     public function __construct(
         private readonly Serializer $serializer,
         private readonly Sorter $sorter,
-        private readonly string $path,
+        private readonly DirectoryPath $path,
     ) {
         // empty
     }
 
     protected function getPath(): string {
-        return Path::join($this->path, 'metadata.json');
+        return (string) $this->path->getFilePath('metadata.json');
     }
 
     public function load(): Metadata {

@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
@@ -51,7 +52,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public function __invoke(Directory $root, File $file): bool {
-                $this->processed[] = $file->getRelativePath($root);
+                $this->processed[] = (string) $root->getRelativePath($file);
 
                 return true;
             }
@@ -98,12 +99,12 @@ final class ProcessorTest extends TestCase {
                 }
 
                 $this->processed[] = [
-                    $file->getRelativePath($root),
+                    (string) $root->getRelativePath($file),
                     array_map(
                         static function (mixed $file) use ($root): mixed {
-                            return match (true) {
-                                $file instanceof File => $file->getRelativePath($root),
-                                default               => $file,
+                            return (string) match (true) {
+                                $file instanceof File => $root->getRelativePath($file),
+                                default               => null,
                             };
                         },
                         $resolved,
@@ -114,7 +115,7 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root   = Path::normalize(self::getTestData()->path(''));
+        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $count  = 0;
         $events = [];
 
@@ -125,8 +126,8 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, Result $result) use (&$count, &$events): void {
-                    $events[$path] = $result;
+                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                    $events[(string) $path] = $result;
                     $count++;
                 },
             );
@@ -223,7 +224,7 @@ final class ProcessorTest extends TestCase {
             #[Override]
             public function __invoke(Directory $root, File $file): ?bool {
                 // Postponed?
-                $path = $file->getRelativePath($root);
+                $path = (string) $root->getRelativePath($file);
 
                 if ($file->getExtension() === 'html' && !isset($this->postponed[$path])) {
                     $this->postponed[$path] = true;
@@ -238,7 +239,7 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root   = Path::normalize(self::getTestData()->path(''));
+        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $count  = 0;
         $events = [];
 
@@ -247,8 +248,8 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, Result $result) use (&$count, &$events): void {
-                    $events[$path] = $result;
+                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                    $events[(string) $path] = $result;
                     $count++;
                 },
             );
@@ -330,7 +331,7 @@ final class ProcessorTest extends TestCase {
                     yield new FileReference($dependency);
                 }
 
-                $this->processed[] = $file->getRelativePath($root);
+                $this->processed[] = (string) $root->getRelativePath($file);
 
                 return true;
             }
@@ -351,13 +352,13 @@ final class ProcessorTest extends TestCase {
 
             #[Override]
             public function __invoke(Directory $root, File $file): bool {
-                $this->processed[] = $file->getRelativePath($root);
+                $this->processed[] = (string) $root->getRelativePath($file);
 
                 return true;
             }
         };
 
-        $root   = Path::normalize(self::getTestData()->path(''));
+        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $count  = 0;
         $events = [];
 
@@ -367,8 +368,8 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $root,
                 ['excluded.txt', '**/**/excluded.txt'],
-                static function (string $path, Result $result) use (&$count, &$events): void {
-                    $events[$path] = $result;
+                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                    $events[(string) $path] = $result;
                     $count++;
                 },
             );
@@ -439,7 +440,7 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root = Path::normalize(self::getTestData()->path(''));
+        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage("Dependency `404.html` of `a/a.txt` not found (root: `{$root}`).");
@@ -476,7 +477,7 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root = Path::normalize(self::getTestData()->path(''));
+        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(CircularDependency::class);
         self::expectExceptionMessage(
@@ -522,7 +523,7 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root = Path::normalize(self::getTestData()->path(''));
+        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(CircularDependency::class);
         self::expectExceptionMessage(

@@ -4,11 +4,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Closure;
 use Iterator;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Core\Path\Path;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 use WeakReference;
 
-use function dirname;
 use function file_put_contents;
 use function is_dir;
 use function is_file;
@@ -23,19 +24,20 @@ class FileSystem {
         // empty
     }
 
-    public function getFile(Directory $root, SplFileInfo|File|string $path): ?File {
+    public function getFile(Directory $root, SplFileInfo|File|FilePath|string $path): ?File {
         // Object?
-        if ($path instanceof SplFileInfo) {
+        if ($path instanceof File || $path instanceof FilePath) {
+            $path = (string) $path;
+        } elseif ($path instanceof SplFileInfo) {
             $path = $path->getPathname();
-        } elseif ($path instanceof File) {
-            $path = $path->getPath();
         } else {
             // empty
         }
 
         // Cached?
-        $path = $root->getPath($path);
-        $file = ($this->cache[$path] ?? null)?->get();
+        $pathObject = $root->getPath()->getFilePath($path);
+        $path       = (string) $pathObject;
+        $file       = ($this->cache[$path] ?? null)?->get();
 
         if ($file !== null && !($file instanceof File)) {
             return null;
@@ -47,22 +49,22 @@ class FileSystem {
 
         // Create
         if (is_file($path)) {
-            $writable           = $root->isWritable() && $root->isInside($path);
-            $file               = new File($path, $writable);
+            $writable           = $root->isWritable() && $root->isInside($pathObject);
+            $file               = new File($pathObject, $writable);
             $this->cache[$path] = WeakReference::create($file);
         }
 
         return $file;
     }
 
-    public function getDirectory(Directory $root, SplFileInfo|Directory|File|string $path): ?Directory {
+    public function getDirectory(Directory $root, SplFileInfo|Directory|File|Path|string $path): ?Directory {
         // Object?
         if ($path instanceof SplFileInfo) {
             $path = $path->getPathname();
-        } elseif ($path instanceof File) {
-            $path = dirname($path->getPath());
-        } elseif ($path instanceof Directory) {
-            $path = $path->getPath();
+        } elseif ($path instanceof Directory || $path instanceof File) {
+            $path = (string) $path->getPath()->getDirectoryPath();
+        } elseif ($path instanceof Path) {
+            $path = (string) $path->getDirectoryPath();
         } else {
             // empty
         }
@@ -73,8 +75,9 @@ class FileSystem {
         }
 
         // Cached?
-        $path      = $root->getPath($path);
-        $directory = ($this->cache[$path] ?? null)?->get();
+        $pathObject = $root->getPath()->getDirectoryPath($path);
+        $path       = (string) $pathObject;
+        $directory  = ($this->cache[$path] ?? null)?->get();
 
         if ($directory !== null && !($directory instanceof Directory)) {
             return null;
@@ -86,9 +89,9 @@ class FileSystem {
 
         // Create
         if (is_dir($path)) {
-            $writable           = $root->isWritable() && $root->isInside($path);
-            $directory          = $root->getPath() !== $path
-                ? new Directory($path, $writable)
+            $writable           = $root->isWritable() && $root->isInside($pathObject);
+            $directory          = !$root->getPath()->isEqual($pathObject)
+                ? new Directory($pathObject, $writable)
                 : $root;
             $this->cache[$path] = WeakReference::create($directory);
         }
@@ -149,7 +152,7 @@ class FileSystem {
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
-            ->in($root->getPath())
+            ->in((string) $root)
             ->sortByName(true);
 
         if ($patterns !== null) {
@@ -177,6 +180,6 @@ class FileSystem {
 
     public function save(File $file): bool {
         return !$file->isModified()
-            || ($file->isWritable() && file_put_contents($file->getPath(), $file->getContent()) !== false);
+            || ($file->isWritable() && file_put_contents((string) $file->getPath(), $file->getContent()) !== false);
     }
 }

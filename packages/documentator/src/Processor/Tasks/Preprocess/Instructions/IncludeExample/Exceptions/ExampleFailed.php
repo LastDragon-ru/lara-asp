@@ -19,8 +19,8 @@ class ExampleFailed extends InstructionFailed {
             $context,
             sprintf(
                 'Example `%s` failed (in `%s`).',
-                $this->example->getRelativePath($context->root),
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($this->example),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

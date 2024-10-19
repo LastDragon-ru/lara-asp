@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -21,23 +22,25 @@ use function sprintf;
 #[CoversClass(FileIterator::class)]
 final class FileIteratorTest extends TestCase {
     public function testToString(): void {
-        $directory = new Directory(Path::normalize(__DIR__), false);
+        $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $directory = new Directory($path, false);
 
         self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory')));
-        self::assertEquals($directory->getPath(), (string) (new FileIterator($directory)));
+        self::assertEquals((string) $directory, (string) (new FileIterator($directory)));
+        self::assertEquals((string) $path, (string) (new FileIterator($path)));
     }
 
     public function testInvoke(): void {
         $fs        = new FileSystem();
-        $path      = Path::normalize(self::getTestData()->path(''));
-        $root      = new Directory(Path::normalize(__DIR__), false);
-        $file      = new File(Path::normalize(__FILE__), false);
+        $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $pattern   = '*.txt';
         $absolute  = new FileIterator($path, $pattern);
-        $relative  = new FileIterator(basename($path), $pattern);
+        $relative  = new FileIterator(basename((string) $path), $pattern);
         $directory = new FileIterator(new Directory($path, false), $pattern);
         $formatter = static function (File $file) use ($path): string {
-            return  Path::getRelativePath($path, $file->getPath());
+            return (string) $path->getRelativePath($file->getPath());
         };
         $expected  = [
             'a/a.txt',
@@ -56,8 +59,8 @@ final class FileIteratorTest extends TestCase {
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory(Path::normalize(__DIR__), false);
-        $file = new File(Path::normalize(__FILE__), false);
+        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);

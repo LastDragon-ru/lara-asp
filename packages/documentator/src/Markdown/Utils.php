@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as DataLength;
@@ -19,7 +19,6 @@ use League\CommonMark\Node\Node;
 use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Util\UrlEncoder;
 
-use function basename;
 use function filter_var;
 use function mb_strpos;
 use function parse_url;
@@ -264,12 +263,12 @@ class Utils {
         return filter_var($path, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
             && !str_starts_with($path, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
             && !str_starts_with($path, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
-            && Path::isRelative($path);
+            && (new FilePath($path))->isRelative();
     }
 
     public static function isPathToSelf(string $path, ?Document $document = null): bool {
-        $name = Path::normalize(basename($document?->getPath() ?? ''));
-        $path = Path::normalize((string) parse_url($path, PHP_URL_PATH));
+        $name = $document?->getPath()?->getName() ?? '';
+        $path = (string) (new FilePath((string) parse_url($path, PHP_URL_PATH)))->getNormalizedPath();
         $self = $path === '' || ($name !== '' && $path === $name);
 
         return $self;

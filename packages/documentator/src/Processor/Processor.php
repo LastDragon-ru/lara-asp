@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -55,10 +57,10 @@ class Processor {
     }
 
     /**
-     * @param array<array-key, string>|string|null                              $exclude glob(s) to exclude.
-     * @param Closure(string $path, Result $result, float $duration): void|null $listener
+     * @param array<array-key, string>|string|null                                $exclude glob(s) to exclude.
+     * @param Closure(FilePath $path, Result $result, float $duration): void|null $listener
      */
-    public function run(string $path, array|string|null $exclude = null, ?Closure $listener = null): float {
+    public function run(DirectoryPath $path, array|string|null $exclude = null, ?Closure $listener = null): float {
         $start      = microtime(true);
         $extensions = !$this->tasks->has('*')
             ? array_map(static fn ($e) => "*.{$e}", $this->tasks->keys())

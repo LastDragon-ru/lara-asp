@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -40,7 +41,7 @@ final class FootnotesPrefixTest extends TestCase {
                 text text text text text text text text text text text text text
                 text.
             MARKDOWN;
-        $document = new class($markdown, __FILE__) extends Document {
+        $document = new class($markdown, new FilePath(__FILE__)) extends Document {
             #[Override]
             public function getNode(): DocumentNode {
                 return parent::getNode();

@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -39,10 +39,10 @@ final class CommandsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testInvoke(): void {
-        $directory = Path::normalize(self::getTempDirectory());
+        $directory = (new DirectoryPath(self::getTempDirectory()))->getNormalizedPath();
 
         self::assertNotFalse(
-            file_put_contents(Path::join($directory, 'file.txt'), self::class),
+            file_put_contents((string) $directory->getFilePath('file.txt'), self::class),
         );
 
         $result = $this
@@ -51,7 +51,7 @@ final class CommandsTest extends TestCase {
 
         self::assertEquals(Command::SUCCESS, $result);
 
-        $files = iterator_to_array(Finder::create()->in($directory)->files());
+        $files = iterator_to_array(Finder::create()->in((string) $directory)->files());
         $files = array_reduce($files, static function (array $combined, SplFileInfo $file): array {
             return array_merge($combined, [
                 $file->getFilename() => $file->getContents(),

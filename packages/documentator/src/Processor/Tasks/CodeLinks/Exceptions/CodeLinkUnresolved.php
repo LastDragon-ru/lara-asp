@@ -23,7 +23,7 @@ class CodeLinkUnresolved extends CodeLinkError {
             sprintf(
                 'The following unresolved code links have been found in `%2$s`: %1$s (root: `%3$s`)',
                 '`'.implode('`, `', $this->unresolved).'`',
-                $this->target->getRelativePath($this->root),
+                $this->root->getRelativePath($this->target),
                 $this->root->getPath(),
             ),
             $previous,

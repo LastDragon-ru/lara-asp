@@ -6,7 +6,8 @@ use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
 use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -22,7 +23,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use function dirname;
 use function sprintf;
 
 /**
@@ -31,8 +31,8 @@ use function sprintf;
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
@@ -80,8 +80,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeFailed(): void {
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $command  = 'command to execute';
         $context  = new Context($root, $file, $command, '{...}', new Nop());
@@ -128,7 +128,7 @@ final class InstructionTest extends TestCase {
                 'Artisan command `%s` exited with status code `%s` (in `%s`).',
                 $command,
                 Command::FAILURE,
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
         );
 
@@ -136,8 +136,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testGetCommand(): void {
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
         $context  = new Context($root, $file, $command, '{...}', new Nop());
@@ -151,7 +151,7 @@ final class InstructionTest extends TestCase {
         self::assertEquals(
             sprintf(
                 'artisan:command $directory %1$s "%1$s" $file %2$s "%2$s"',
-                dirname($file->getPath()),
+                $file->getPath()->getDirectoryPath(),
                 $file->getPath(),
             ),
             $instance->getCommand($context, $command, $params),

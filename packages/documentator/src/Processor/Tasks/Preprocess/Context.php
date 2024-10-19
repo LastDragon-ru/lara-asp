@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
@@ -15,9 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-
-use function basename;
-use function dirname;
 
 class Context {
     public function __construct(
@@ -65,7 +62,7 @@ class Context {
     private function getMutation(Document $document): Mutation {
         $path = $this->file->getPath();
         $path = $document->getPath() !== null
-            ? Path::getPath(dirname($path), basename($document->getPath()))
+            ? $path->getPath(new FilePath($document->getPath()->getName()))
             : $path;
 
         return new Composite(

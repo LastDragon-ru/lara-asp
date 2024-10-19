@@ -80,11 +80,11 @@ class InstanceList {
         return $instances;
     }
 
-    public function has(string ...$key): bool {
+    public function has(?string ...$key): bool {
         $exists = false;
 
         foreach ($key as $k) {
-            if (isset($this->map[$k])) {
+            if ($k !== null && isset($this->map[$k])) {
                 $exists = true;
                 break;
             }
@@ -96,12 +96,14 @@ class InstanceList {
     /**
      * @return list<TInstance>
      */
-    public function get(string ...$key): array {
+    public function get(?string ...$key): array {
         $instances = [];
 
         foreach ($key as $k) {
-            foreach ($this->map[$k] ?? [] as $class) {
-                $instances[$class] ??= $this->resolve($class);
+            if ($k !== null && isset($this->map[$k])) {
+                foreach ($this->map[$k] as $class) {
+                    $instances[$class] ??= $this->resolve($class);
+                }
             }
         }
 

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
@@ -17,8 +17,6 @@ use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function dirname;
-
 /**
  * @internal
  */
@@ -28,12 +26,12 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(string $expected, string $template, SortOrder $order): void {
-        $path     = Path::normalize(self::getTestData()->path('Document.md'));
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
-        $target   = $root->getPath('packages');
+        $target   = $root->getDirectoryPath('packages');
         $params   = new Parameters('...', template: $template, order: $order);
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, (string) $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -49,12 +47,12 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeNoReadme(): void {
         $fs       = new FileSystem();
-        $path     = self::getTestData()->path('Document.md');
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
-        $target   = $root->getPath('no readme');
+        $target   = $root->getDirectoryPath('no readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, (string) $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
 
@@ -68,12 +66,12 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeEmptyReadme(): void {
         $fs       = new FileSystem();
-        $path     = self::getTestData()->path('Document.md');
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
-        $target   = $root->getPath('empty readme');
+        $target   = $root->getDirectoryPath('empty readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, (string) $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
         $expected = $fs->getFile($root, 'empty readme/package/README.md');

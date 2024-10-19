@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -23,8 +22,8 @@ class DependencyNotFound extends ProcessorError {
         parent::__construct(
             sprintf(
                 'Dependency `%s` of `%s` not found (root: `%s`).',
-                Path::getRelativePath($this->root->getPath(), (string) $this->dependency),
-                $this->target->getRelativePath($this->root),
+                $this->target->getRelativePath($this->target->getPath()->getFilePath((string) $this->dependency)),
+                $this->root->getRelativePath($this->target),
                 $this->root->getPath(),
             ),
             $previous,

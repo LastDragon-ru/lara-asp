@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use Iterator;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -15,9 +16,9 @@ use Symfony\Component\Finder\Finder;
  * @see Finder
  * @implements Dependency<Iterator<mixed, File>>
  */
-class FileIterator extends Base implements Dependency {
+class FileIterator implements Dependency {
     public function __construct(
-        protected readonly Directory|string $directory,
+        protected readonly Directory|DirectoryPath|string $directory,
         /**
          * @var array<array-key, string>|string|null {@see Finder::name()}
          */
@@ -31,7 +32,7 @@ class FileIterator extends Base implements Dependency {
          */
         protected readonly array|string|null $exclude = null,
     ) {
-        parent::__construct();
+        // empty
     }
 
     #[Override]
@@ -40,7 +41,7 @@ class FileIterator extends Base implements Dependency {
         $directory = $this->directory;
 
         if (!($directory instanceof Directory)) {
-            $directory = $fs->getDirectory($root, $this->getPath($file));
+            $directory = $fs->getDirectory($root, $file->getPath()->getDirectoryPath((string) $this));
 
             if ($directory === null) {
                 throw new DependencyNotFound($root, $file, $this);
@@ -53,9 +54,6 @@ class FileIterator extends Base implements Dependency {
 
     #[Override]
     public function __toString(): string {
-        return match (true) {
-            $this->directory instanceof Directory => $this->directory->getPath(),
-            default                               => $this->directory,
-        };
+        return (string) $this->directory;
     }
 }

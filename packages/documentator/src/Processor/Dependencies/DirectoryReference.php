@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -12,11 +13,11 @@ use Override;
 /**
  * @implements Dependency<Directory>
  */
-class DirectoryReference extends Base implements Dependency {
+class DirectoryReference implements Dependency {
     public function __construct(
-        protected readonly Directory|string $reference,
+        protected readonly Directory|DirectoryPath|string $reference,
     ) {
-        parent::__construct();
+        // empty
     }
 
     #[Override]
@@ -27,7 +28,7 @@ class DirectoryReference extends Base implements Dependency {
         }
 
         // Create
-        $resolved = $fs->getDirectory($root, $this->getPath($file));
+        $resolved = $fs->getDirectory($root, $file->getPath()->getDirectoryPath((string) $this));
 
         if ($resolved === null) {
             throw new DependencyNotFound($root, $file, $this);
@@ -38,9 +39,6 @@ class DirectoryReference extends Base implements Dependency {
 
     #[Override]
     public function __toString(): string {
-        return match (true) {
-            $this->reference instanceof Directory => $this->reference->getPath(),
-            default                               => $this->reference,
-        };
+        return (string) $this->reference;
     }
 }

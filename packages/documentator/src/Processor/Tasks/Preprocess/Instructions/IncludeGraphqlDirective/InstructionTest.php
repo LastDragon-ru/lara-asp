@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use ArrayAccess;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -72,8 +73,8 @@ final class InstructionTest extends TestCase {
         }
 
         // Test
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = '@test';
         $context  = new Context($root, $file, $target, '{...}', new Nop());
@@ -100,8 +101,8 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = '@test';
         $context  = new Context($root, $file, $target, '{...}', new Nop());
@@ -119,8 +120,8 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver(null);
         });
 
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = '@test';
         $context  = new Context($root, $file, $target, '{...}', new Nop());

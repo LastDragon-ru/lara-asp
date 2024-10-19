@@ -19,8 +19,8 @@ class PackageComposerJsonIsMissing extends InstructionFailed {
             $context,
             sprintf(
                 "The package `%s` doesn't contain `composer.json` (in `%s`).",
-                $this->package->getRelativePath($context->root),
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($this->package),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

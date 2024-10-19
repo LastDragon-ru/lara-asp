@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Package;
@@ -40,7 +40,8 @@ class Commands extends Command {
         // Options
         $application = Cast::to(Application::class, $this->getApplication());
         $namespace   = $application->findNamespace(Cast::toString($this->argument('namespace')));
-        $target      = Cast::toString($this->argument('target'));
+        $cwd         = new DirectoryPath((string) getcwd());
+        $target      = $cwd->getDirectoryPath(Cast::toString($this->argument('target')));
         $defaults    = Cast::toBool($this->option('defaults'));
         $commands    = $application->all($namespace);
 
@@ -48,12 +49,12 @@ class Commands extends Command {
         $this->components->task(
             'Prepare',
             static function () use ($filesystem, $target): void {
-                if (is_dir($target)) {
+                if (is_dir((string) $target)) {
                     $filesystem->remove(
-                        Finder::create()->in($target),
+                        Finder::create()->in((string) $target),
                     );
                 } else {
-                    $filesystem->mkdir($target);
+                    $filesystem->mkdir((string) $target);
                 }
             },
         );
@@ -71,6 +72,7 @@ class Commands extends Command {
                     $serializer,
                     $viewer,
                     $namespace,
+                    $cwd,
                     $target,
                     $defaults,
                     $command,
@@ -86,8 +88,8 @@ class Commands extends Command {
 
                     // Render
                     $name    = Str::after((string) $command->getName(), "{$namespace}:");
-                    $path    = Path::getPath($target, "{$name}.md");
-                    $source  = Path::join((string) getcwd(), "{$name}.md");
+                    $path    = $target->getFilePath("{$name}.md");
+                    $source  = $cwd->getFilePath("{$name}.md");
                     $content = $viewer->render('commands.default', [
                         'serializer' => $serializer,
                         'command'    => $command,
@@ -96,7 +98,7 @@ class Commands extends Command {
                         new Move($path),
                     );
 
-                    $filesystem->dumpFile($path, $content);
+                    $filesystem->dumpFile((string) $path, $content);
                 },
             );
         }

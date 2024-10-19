@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -42,7 +43,7 @@ final class SelfLinksRemoveTest extends TestCase {
             | Cell [link][self] cell. | Cell `\|` \\| ![table][image] |
             | Cell                    | Cell cell [table][self].      |
             MARKDOWN;
-        $document = new class($markdown, 'path/to/file.md') extends Document {
+        $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
             #[Override]
             public function getNode(): DocumentNode {
                 return parent::getNode();

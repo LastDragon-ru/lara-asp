@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -16,7 +17,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function dirname;
 use function pathinfo;
 
 use const PATHINFO_EXTENSION;
@@ -33,8 +33,8 @@ final class InstructionTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source, array $data): void {
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...', $data);
         $target   = self::getTestData()->path($source);
         $context  = new Context($root, $file, $target, '{...}', new Nop());
@@ -52,11 +52,11 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoData(): void {
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...', []);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, (string) $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -67,8 +67,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeVariablesUnused(): void {
-        $path     = self::getTestData()->path('.md');
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $params   = new Parameters('...', [
             'a' => 'A',
@@ -77,7 +77,7 @@ final class InstructionTest extends TestCase {
             'd' => 'D',
         ]);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, (string) $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -88,14 +88,14 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeVariablesMissed(): void {
-        $path     = self::getTestData()->path('.md');
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $params   = new Parameters('...', [
             'a' => 'A',
         ]);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, (string) $target, '{...}', new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

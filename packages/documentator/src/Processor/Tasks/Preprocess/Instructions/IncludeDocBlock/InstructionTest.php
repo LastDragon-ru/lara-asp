@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -15,7 +16,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function dirname;
 use function trim;
 
 /**
@@ -30,8 +30,8 @@ final class InstructionTest extends TestCase {
      */
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
-        $path     = self::getTestData()->path($file);
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $target   = $file->getName();
         $context  = new Context($root, $file, $target, null, new Nop());

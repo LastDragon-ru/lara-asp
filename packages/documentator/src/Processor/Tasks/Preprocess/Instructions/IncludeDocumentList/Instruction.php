@@ -64,7 +64,7 @@ class Instruction implements InstructionContract {
             $file = Cast::to(File::class, $file);
 
             // Same?
-            if ($self === $file->getPath()) {
+            if ($self->isEqual($file->getPath())) {
                 continue;
             }
 
@@ -78,7 +78,7 @@ class Instruction implements InstructionContract {
             // Add
             $document    = $context->toSplittable($document);
             $documents[] = [
-                'path'    => $file->getRelativePath($context->file),
+                'path'    => $context->file->getRelativePath($file),
                 'title'   => $document->getTitle() ?? Text::getPathTitle($file->getName()),
                 'summary' => $document->getSummary(),
             ];

@@ -17,7 +17,7 @@ class FileSaveFailed extends ProcessorError {
         parent::__construct(
             sprintf(
                 'Failed to save `%s` file (root: `%s`).',
-                $this->target->getRelativePath($this->root),
+                $this->root->getRelativePath($this->target),
                 $this->root->getPath(),
             ),
             $previous,

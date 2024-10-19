@@ -15,7 +15,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-use function dirname;
 use function getenv;
 use function putenv;
 use function strtr;
@@ -83,10 +82,9 @@ class Instruction implements InstructionContract {
     }
 
     protected function getCommand(Context $context, string $target, Parameters $parameters): string {
-        $file      = $context->file->getPath();
-        $directory = dirname($file);
-        $target    = strtr($target, [
-            '{$directory}' => $directory,
+        $file   = $context->file->getPath();
+        $target = strtr($target, [
+            '{$directory}' => $file->getDirectoryPath(),
             '{$file}'      => $file,
         ]);
 

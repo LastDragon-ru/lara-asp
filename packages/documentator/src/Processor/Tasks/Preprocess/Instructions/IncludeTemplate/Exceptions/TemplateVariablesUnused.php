@@ -23,7 +23,7 @@ class TemplateVariablesUnused extends InstructionFailed {
             sprintf(
                 'Variables `%s` are not used in `%s`.',
                 '`'.implode('`, `', $this->variables).'`',
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

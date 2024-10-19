@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use Stringable;
 
 /**
  * @internal
@@ -35,10 +36,10 @@ class ProcessorHelper {
     public static function runInstruction(
         Instruction $instruction,
         Context $context,
-        string $target,
+        Stringable|string $target,
         mixed $parameters,
     ): Document|string {
-        $result = ($instruction)($context, $target, $parameters);
+        $result = ($instruction)($context, (string) $target, $parameters);
         $result = $result instanceof Generator
             ? self::getResult($context->root, $context->file, $result)
             : $result;

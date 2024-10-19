@@ -15,7 +15,7 @@ class TargetIsNotValidPhpFile extends InstructionFailed {
             sprintf(
                 'The `%s` is not a valid PHP file (in `%s`).',
                 $context->target,
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

@@ -31,8 +31,8 @@ class CircularDependency extends ProcessorError {
 
                 (root: `%3$s`)
                 MESSAGE,
-                $this->dependency->getRelativePath($this->root),
-                '* '.implode("\n* ", array_map(fn ($f) => $f->getRelativePath($this->root), $this->stack)),
+                $this->root->getRelativePath($this->dependency),
+                '* '.implode("\n* ", array_map(fn ($f) => $this->root->getRelativePath($f), $this->stack)),
                 $this->root->getPath(),
             ),
             $previous,

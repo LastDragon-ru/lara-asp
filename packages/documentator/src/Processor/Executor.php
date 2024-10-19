@@ -6,7 +6,7 @@ use Closure;
 use Exception;
 use Generator;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
@@ -23,7 +23,6 @@ use Traversable;
 
 use function array_values;
 use function microtime;
-use function preg_match;
 
 /**
  * @internal
@@ -55,7 +54,7 @@ class Executor {
          */
         private readonly Iterator $iterator,
         /**
-         * @var Closure(string, Result, float): void|null
+         * @var Closure(FilePath, Result, float): void|null
          */
         private readonly ?Closure $listener = null,
     ) {
@@ -82,7 +81,7 @@ class Executor {
 
     private function runFile(File $file): float {
         // Processed?
-        $path = $file->getPath();
+        $path = (string) $file;
 
         if (isset($this->processed[$path])) {
             return 0;
@@ -207,9 +206,10 @@ class Executor {
         // Call
         $start = microtime(true);
         $path  = match (true) {
-            $file instanceof Dependency => Path::getRelativePath($this->root->getPath(), (string) $file),
-            default                     => $file->getRelativePath($this->root),
+            $file instanceof Dependency => new FilePath((string) $file),
+            default                     => $file->getPath(),
         };
+        $path = $this->root->getRelativePath($path);
 
         ($this->listener)($path, $result, $duration);
 
@@ -223,7 +223,7 @@ class Executor {
         }
 
         // Outside?
-        $path = $file->getRelativePath($this->root);
+        $path = $this->root->getRelativePath($file);
 
         if (!$this->root->isInside($file)) {
             return true;
@@ -233,7 +233,7 @@ class Executor {
         $excluded = false;
 
         foreach ($this->exclude as $regexp) {
-            if (preg_match($regexp, $path) > 0) {
+            if ($path->isMatch($regexp)) {
                 $excluded = true;
                 break;
             }
