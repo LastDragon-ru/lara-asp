@@ -32,6 +32,7 @@ use function array_map;
 use function array_pop;
 use function array_values;
 use function implode;
+use function is_array;
 use function ksort;
 use function sort;
 use function str_starts_with;
@@ -81,7 +82,7 @@ class Task implements TaskContract {
     #[Override]
     public function __invoke(Directory $root, File $file): Generator {
         // Composer?
-        $composer = $root->getPath('composer.json');
+        $composer = $root->getFilePath('composer.json');
         $composer = Cast::toNullable(File::class, yield new Optional(new FileReference($composer)));
         $composer = $composer?->getMetadata($this->composer);
 
@@ -109,12 +110,11 @@ class Task implements TaskContract {
             if ($paths === null) {
                 continue;
             }
-
             // File?
             $source = null;
+            $paths  = is_array($paths) ? $paths : [$paths];
 
-            foreach ((array) $paths as $path) {
-                $path   = $root->getPath($path);
+            foreach ($paths as $path) {
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
                 if ($source !== null) {

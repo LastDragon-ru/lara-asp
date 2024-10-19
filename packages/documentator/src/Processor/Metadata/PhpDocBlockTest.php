@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -34,7 +34,7 @@ final class PhpDocBlockTest extends TestCase {
         }
         PHP;
         $file     = new File(
-            Path::normalize(self::getTempFile($content)->getPathname()),
+            (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
             false,
         );
         $factory  = new PhpDocBlock(
@@ -55,7 +55,7 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeEmpty(): void {
-        $file     = new File(Path::normalize(__FILE__), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $factory  = new PhpDocBlock($this->app()->make(LinkFactory::class), new PhpClass());
         $metadata = $factory($file);
 
@@ -64,7 +64,7 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File(Path::normalize(__FILE__), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $factory  = new PhpDocBlock(
             $this->app()->make(LinkFactory::class),
             new class() extends PhpClass {

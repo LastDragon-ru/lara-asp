@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
@@ -16,7 +16,6 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
-use function dirname;
 use function ltrim;
 use function mb_substr;
 use function preg_match;
@@ -33,7 +32,7 @@ use function trim;
  */
 readonly class Move implements Mutation {
     public function __construct(
-        protected string $path,
+        protected FilePath $path,
     ) {
         // empty
     }
@@ -50,22 +49,20 @@ readonly class Move implements Mutation {
         $docPath = $document->getPath();
 
         if ($docPath === null) {
-            $document->setPath(Path::normalize($this->path));
+            $document->setPath($this->path->getNormalizedPath());
 
-            return false;
+            return;
         }
 
         // Same?
-        $docDirectory = dirname($docPath);
-        $newPath      = Path::getPath($docDirectory, $this->path);
+        $newPath = $docPath->getPath($this->path);
 
-        if ($docPath === $newPath) {
-            return false;
+        if ($docPath->isEqual($newPath)) {
+            return;
         }
 
         // Update
-        $resources    = $this->getRelativeResources($document, $node);
-        $newDirectory = dirname($newPath);
+        $resources = $this->getRelativeResources($document, $node);
 
         foreach ($resources as $resource) {
             // Location?
@@ -88,10 +85,10 @@ readonly class Move implements Mutation {
                     $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
                     $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
                     $targetValue  = rawurldecode($resource->getUrl());
-                    $targetValue  = Path::getPath($docDirectory, $targetValue);
-                    $targetValue  = Path::getRelativePath($newDirectory, $targetValue);
+                    $targetValue  = $docPath->getFilePath($targetValue);
+                    $targetValue  = $newPath->getRelativePath($targetValue);
                     $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
-                    $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
+                    $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
                     $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
                 }
             } elseif ($resource instanceof Reference) {
@@ -101,10 +98,10 @@ readonly class Move implements Mutation {
                 $titleWrapper = mb_substr($origin, -1, 1);
                 $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
                 $targetValue  = rawurldecode($resource->getDestination());
-                $targetValue  = Path::getPath($docDirectory, $targetValue);
-                $targetValue  = Path::getRelativePath($newDirectory, $targetValue);
+                $targetValue  = $docPath->getFilePath($targetValue);
+                $targetValue  = $newPath->getRelativePath($targetValue);
                 $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
-                $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
+                $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
                 $text         = trim("[{$label}]: {$target} {$title}");
 
                 if ($location->startLine !== $location->endLine) {
@@ -131,9 +128,6 @@ readonly class Move implements Mutation {
 
         // Set
         $document->setPath($newPath);
-
-        // Return
-        return true;
     }
 
     /**

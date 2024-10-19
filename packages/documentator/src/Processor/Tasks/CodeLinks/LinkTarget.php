@@ -2,12 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use Override;
 use Stringable;
 
 readonly class LinkTarget implements Stringable {
     public function __construct(
-        public string $target,
+        public FilePath $target,
         public bool $deprecated,
         /**
          * @var positive-int|null

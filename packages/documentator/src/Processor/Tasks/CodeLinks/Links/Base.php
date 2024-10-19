@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -64,7 +65,7 @@ abstract class Base implements Link {
      * @inheritDoc
      */
     #[Override]
-    public function getSource(Directory $root, File $file, Package $package): array|string|null {
+    public function getSource(Directory $root, File $file, Package $package): array|FilePath|null {
         return $package->resolve($this->class);
     }
 
@@ -82,7 +83,7 @@ abstract class Base implements Link {
         }
 
         // Resolve
-        $path       = $source->getRelativePath($file);
+        $path       = $file->getRelativePath($source);
         $node       = $this->getTargetNode($comment->class);
         $deprecated = $comment->comment->isDeprecated();
         $target     = $this->target($path, $node, $deprecated);
@@ -93,7 +94,7 @@ abstract class Base implements Link {
 
     abstract protected function getTargetNode(ClassLike $class): ?Node;
 
-    private function target(string $path, ?Node $node, bool $deprecated): ?LinkTarget {
+    private function target(FilePath $path, ?Node $node, bool $deprecated): ?LinkTarget {
         if ($node === null) {
             return null;
         }

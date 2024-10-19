@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -12,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
-use function dirname;
 
 /**
  * @internal
@@ -20,8 +20,8 @@ use function dirname;
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
     public function testInvokeSameDirectory(): void {
-        $path     = self::getTestData()->path('Document.md');
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $params   = new Parameters('...');
         $target   = './';
@@ -40,8 +40,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeAnotherDirectory(): void {
-        $path    = self::getTestData()->path('~AnotherDirectory.md');
-        $root    = new Directory(dirname($path), false);
+        $path    = (new FilePath(self::getTestData()->path('~AnotherDirectory.md')))->getNormalizedPath();
+        $root    = new Directory($path->getDirectoryPath(), false);
         $file    = new File($path, false);
         $params  = new Parameters('...');
         $target  = basename(self::getTestData()->path('/'));
@@ -61,8 +61,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNestedDirectories(): void {
-        $path     = self::getTestData()->path('nested/Document.md');
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('nested/Document.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $params   = new Parameters('...', null, order: SortOrder::Desc);
         $target   = './';

@@ -20,7 +20,7 @@ class ArtisanCommandFailed extends InstructionFailed {
                 'Artisan command `%s` exited with status code `%s` (in `%s`).',
                 $context->target,
                 $this->result,
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

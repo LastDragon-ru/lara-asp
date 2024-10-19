@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
@@ -39,7 +39,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function array_map;
 use function array_walk_recursive;
-use function dirname;
 use function is_callable;
 use function trim;
 
@@ -55,9 +54,9 @@ final class TaskTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
-        $path = Path::normalize(self::getTestData()->path($document));
+        $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
         $file = new File($path, true);
-        $root = new Directory(dirname($path), true);
+        $root = new Directory($path->getDirectoryPath(), true);
         $task = $this->app()->make(Task::class);
 
         if (!is_callable($expected)) {

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use Closure;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
@@ -40,11 +40,11 @@ class Document implements Stringable {
 
     private ?MarkdownParser $parser  = null;
     private ?Editor         $editor  = null;
-    private ?string         $path    = null;
+    private ?FilePath       $path    = null;
     private ?string         $title   = null;
     private ?string         $summary = null;
 
-    public function __construct(string $content, ?string $path = null) {
+    public function __construct(string $content, ?FilePath $path = null) {
         $this->setContent($content);
         $this->setPath($path);
     }
@@ -98,12 +98,12 @@ class Document implements Stringable {
         return $body;
     }
 
-    public function getPath(): ?string {
+    public function getPath(): ?FilePath {
         return $this->path;
     }
 
-    public function setPath(?string $path): static {
-        $this->path = $path !== null ? Path::normalize($path) : null;
+    public function setPath(?FilePath $path): static {
+        $this->path = $path;
 
         return $this;
     }

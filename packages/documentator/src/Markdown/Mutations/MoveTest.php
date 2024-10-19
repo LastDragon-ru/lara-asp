@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -22,7 +23,8 @@ final class MoveTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, ?string $path, string $content, string $target): void {
-        $mutation = new Move($target);
+        $path     = $path !== null ? new FilePath($path) : null;
+        $mutation = new Move(new FilePath($target));
         $document = new class($content, $path) extends Document {
             #[Override]
             public function getNode(): DocumentNode {

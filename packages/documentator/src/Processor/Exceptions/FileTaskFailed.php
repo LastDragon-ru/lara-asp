@@ -20,7 +20,7 @@ class FileTaskFailed extends ProcessorError {
             sprintf(
                 'The `%s` task failed for `%s` file (root: `%s`).',
                 $this->task::class,
-                $this->target->getRelativePath($this->root),
+                $this->root->getRelativePath($this->target),
                 $this->root->getPath(),
             ),
             $previous,

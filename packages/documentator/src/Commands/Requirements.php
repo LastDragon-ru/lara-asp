@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJsonFactory;
 use LastDragon_ru\LaraASP\Documentator\Metadata\Metadata;
@@ -118,7 +118,7 @@ class Requirements extends Command {
         Serializer $serializer,
     ): void {
         // Get Versions
-        $cwd  = Cast::toString($this->argument('cwd') ?? getcwd());
+        $cwd  = new DirectoryPath(Cast::toString($this->argument('cwd') ?? getcwd()));
         $tags = $this->getPackageVersions($git, $cwd, [self::HEAD]);
 
         // Collect requirements
@@ -198,7 +198,7 @@ class Requirements extends Command {
      *
      * @return array<string, string>
      */
-    protected function getPackageVersions(Git $git, string $cwd, array $tags = []): array {
+    protected function getPackageVersions(Git $git, DirectoryPath $cwd, array $tags = []): array {
         $tags = array_merge($tags, $git->getTags(Version::isVersion(...), $cwd));
         $tags = array_unique($tags);
         $tags = array_combine($tags, $tags);
@@ -208,10 +208,10 @@ class Requirements extends Command {
         return $tags;
     }
 
-    protected function getPackageInfo(ComposerJsonFactory $factory, Git $git, string $tag, string $cwd): ?ComposerJson {
+    protected function getPackageInfo(ComposerJsonFactory $factory, Git $git, string $tag, DirectoryPath $cwd): ?ComposerJson {
         try {
-            $root    = Path::normalize($git->getRoot($cwd));
-            $path    = Path::join($cwd, 'composer.json');
+            $root    = (string) $git->getRoot($cwd);
+            $path    = (string) $cwd->getFilePath('composer.json');
             $gitPath = str_starts_with($path, $root)
                 ? mb_substr($path, mb_strlen($root) + 1)
                 : $path;

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -36,7 +37,7 @@ final class BaseTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getSource(Directory $root, File $file, Package $package): array|string|null {
+            public function getSource(Directory $root, File $file, Package $package): array|FilePath|null {
                 return null;
             }
 
@@ -78,7 +79,6 @@ final class BaseTest extends TestCase {
             ->andReturn(true, false);
 
         $root = Mockery::mock(Directory::class);
-        $file = Mockery::mock(File::class);
         $meta = Mockery::mock(PhpClassComment::class);
         $data = new class ($class, $comment) {
             public function __construct(
@@ -95,11 +95,15 @@ final class BaseTest extends TestCase {
             ->with($meta)
             ->twice()
             ->andReturn($data);
-        $source
+
+        $file = Mockery::mock(File::class);
+        $file
             ->shouldReceive('getRelativePath')
-            ->with($file)
+            ->with($source)
             ->twice()
-            ->andReturn('relative/path/to/class/a.php');
+            ->andReturn(
+                new FilePath('relative/path/to/class/a.php'),
+            );
 
         $doc = Mockery::mock(Doc::class);
         $doc
@@ -133,12 +137,12 @@ final class BaseTest extends TestCase {
             ->andReturn($class, $node);
 
         self::assertEquals(
-            new LinkTarget('relative/path/to/class/a.php', true, null, null),
+            new LinkTarget(new FilePath('relative/path/to/class/a.php'), true, null, null),
             $link->getTarget($root, $file, $source),
         );
 
         self::assertEquals(
-            new LinkTarget('relative/path/to/class/a.php', true, 234, 321),
+            new LinkTarget(new FilePath('relative/path/to/class/a.php'), true, 234, 321),
             $link->getTarget($root, $file, $source),
         );
     }
@@ -295,7 +299,7 @@ class BaseTest_Link implements Link {
      * @inheritDoc
      */
     #[Override]
-    public function getSource(Directory $root, File $file, Package $package): array|string|null {
+    public function getSource(Directory $root, File $file, Package $package): array|FilePath|null {
         return null;
     }
 

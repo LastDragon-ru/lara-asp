@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -19,8 +20,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
-        $root     = new Directory(Path::normalize(__DIR__), false);
-        $file     = new File(Path::normalize(__FILE__), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
@@ -39,7 +40,7 @@ final class InstructionTest extends TestCase {
         self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
 
         $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
-            return $process->path === $root->getPath()
+            return $process->path === (string) $root->getPath()
                 && $process->command === $command;
         });
     }

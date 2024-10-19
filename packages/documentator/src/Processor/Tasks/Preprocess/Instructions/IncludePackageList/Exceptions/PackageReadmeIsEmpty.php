@@ -21,9 +21,9 @@ class PackageReadmeIsEmpty extends InstructionFailed {
             $context,
             sprintf(
                 'The package `%s` readme file `%s` is empty or not readable (in `%s`).',
-                $this->package->getRelativePath($context->root),
-                $this->readme->getRelativePath($context->root),
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($this->package),
+                $context->root->getRelativePath($this->readme),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

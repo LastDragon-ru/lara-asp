@@ -18,7 +18,7 @@ class ArtisanCommandError extends InstructionFailed {
             sprintf(
                 'Artisan command `%s` failed (in `%s`).',
                 $context->target,
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

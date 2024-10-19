@@ -23,7 +23,7 @@ class TemplateVariablesMissed extends InstructionFailed {
             sprintf(
                 'Variables `%s` required in `%s`, but missed.',
                 '`'.implode('`, `', $this->variables).'`',
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -14,7 +14,6 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function dirname;
 use function implode;
 use function range;
 use function trim;
@@ -28,8 +27,8 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $output): void {
-        $path    = Path::normalize(__FILE__);
-        $root    = new Directory(dirname($path), false);
+        $path    = (new FilePath(__FILE__))->getNormalizedPath();
+        $root    = new Directory($path->getDirectoryPath(), false);
         $file    = new File($path, false);
         $params  = new Parameters('...');
         $target  = self::getTestData()->path('Example.md');
@@ -39,7 +38,7 @@ final class InstructionTest extends TestCase {
             $mock
                 ->shouldReceive('__invoke')
                 ->withArgs(static function (File $arg) use ($target): bool {
-                    return $arg->getPath() === $target;
+                    return (string) $arg->getPath() === $target;
                 })
                 ->once()
                 ->andReturn($output);
@@ -54,8 +53,8 @@ final class InstructionTest extends TestCase {
     public function testInvokeNoRun(): void {
         self::assertFalse($this->app()->bound(Runner::class));
 
-        $path     = Path::normalize(self::getTestData()->path('Example.md'));
-        $root     = new Directory(dirname($path), false);
+        $path     = (new FilePath(self::getTestData()->path('Example.md')))->getNormalizedPath();
+        $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $params   = new Parameters('...');
         $target   = $file->getName();

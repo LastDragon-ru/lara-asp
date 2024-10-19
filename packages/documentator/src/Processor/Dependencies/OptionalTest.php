@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -24,8 +25,8 @@ final class OptionalTest extends TestCase {
     public function testInvoke(): void {
         $dependency = new FileReference(__FILE__);
         $optional   = new Optional($dependency);
-        $file       = new File(Path::normalize(__FILE__), false);
-        $root       = new Directory(Path::normalize(__DIR__), false);
+        $file       = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
         $fs         = new FileSystem();
 
         self::assertEquals($file, $dependency($fs, $root, $file));
@@ -35,8 +36,8 @@ final class OptionalTest extends TestCase {
     public function testInvokeNotFound(): void {
         $dependency = new FileReference('path/to/file');
         $optional   = new Optional($dependency);
-        $file       = new File(Path::normalize(__FILE__), false);
-        $root       = new Directory(Path::normalize(__DIR__), false);
+        $file       = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
         $fs         = new FileSystem();
 
         self::assertNull($optional($fs, $root, $file));

@@ -69,7 +69,7 @@ class Instruction implements InstructionContract {
             $package = Cast::to(Directory::class, $package);
 
             // Package?
-            $packageFile = Cast::to(File::class, yield new FileReference($package->getPath('composer.json')));
+            $packageFile = Cast::to(File::class, yield new FileReference($package->getFilePath('composer.json')));
             $packageInfo = $packageFile->getMetadata($this->composer)->json ?? null;
 
             if ($packageInfo === null) {
@@ -77,7 +77,7 @@ class Instruction implements InstructionContract {
             }
 
             // Readme
-            $readme  = $package->getPath(Cast::toString($packageInfo->readme ?? 'README.md'));
+            $readme  = $package->getFilePath(Cast::toString($packageInfo->readme ?? 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
             $content = $readme->getMetadata($this->markdown);
 
@@ -87,13 +87,15 @@ class Instruction implements InstructionContract {
 
             // Add
             $content    = $context->toSplittable($content);
-            $upgrade    = $package->getPath('UPGRADE.md');
+            $upgrade    = $package->getFilePath('UPGRADE.md');
             $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
             $packages[] = [
-                'path'    => $readme->getRelativePath($context->file),
+                'path'    => $context->file->getRelativePath($readme),
                 'title'   => $content->getTitle() ?? Text::getPathTitle("{$package->getName()}.md"),
                 'summary' => $content->getSummary(),
-                'upgrade' => $upgrade?->getRelativePath($context->file),
+                'upgrade' => $upgrade !== null
+                    ? $context->file->getRelativePath($upgrade)
+                    : null,
             ];
         }
 

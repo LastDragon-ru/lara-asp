@@ -23,7 +23,7 @@ class FileMetadataFailed extends MetadataError {
             sprintf(
                 'Failed to retrieve `%s` metadata for `%s` file (root: `%s`).',
                 $this->metadata::class,
-                $this->target->getRelativePath($this->root),
+                $this->root->getRelativePath($this->target),
                 $this->root->getPath(),
             ),
             $previous,

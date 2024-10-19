@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -25,9 +26,9 @@ interface Link extends Stringable {
     /**
      * Returns one or more file paths to the source code of the link.
      *
-     * @return list<string>|string|null
+     * @return list<FilePath>|FilePath|null
      */
-    public function getSource(Directory $root, File $file, Package $package): array|string|null;
+    public function getSource(Directory $root, File $file, Package $package): array|FilePath|null;
 
     /**
      * Returns the url for the (first resolved) `$source` file.

@@ -3,13 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use SplFileInfo;
 
-use function basename;
-use function dirname;
 use function sprintf;
 
 /**
@@ -18,69 +16,56 @@ use function sprintf;
 #[CoversClass(Directory::class)]
 final class DirectoryTest extends TestCase {
     public function testConstruct(): void {
-        $path      = Path::normalize(__DIR__);
+        $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path, false);
 
         self::assertEquals($path, $directory->getPath());
-        self::assertEquals("{$path}", $directory->getPath());
+        self::assertEquals((string) $path, (string) $directory->getPath());
     }
 
     public function testConstructNotNormalized(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
 
-        new Directory('/../path', false);
+        new Directory(new DirectoryPath('/../path'), false);
     }
 
     public function testConstructNotAbsolute(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
-        new Directory('../path', false);
+        new Directory(new DirectoryPath('../path'), false);
     }
 
     public function testConstructNotDirectory(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage(sprintf('The `%s` is not a directory.', Path::normalize(__FILE__)));
+        $path = (new DirectoryPath(__FILE__))->getNormalizedPath();
 
-        new Directory(Path::normalize(__FILE__), false);
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage(sprintf('The `%s` is not a directory.', $path));
+
+        new Directory($path, false);
     }
 
     public function testIsInside(): void {
-        $path         = __FILE__;
-        $file         = new File(Path::normalize($path), false);
-        $splFile      = new SplFileInfo($path);
-        $directory    = new Directory(Path::normalize(__DIR__), true);
-        $splDirectory = new SplFileInfo(Path::join(__DIR__, 'abc'));
+        $a         = (new FilePath(self::getTestData()->path('a/a.txt')));
+        $b         = $a->getPath(new DirectoryPath('../../..'));
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), true);
 
-        self::assertTrue($directory->isInside($path));
+        self::assertTrue($directory->isInside($a));
+        self::assertFalse($directory->isInside($b));
         self::assertTrue($directory->isInside($file));
-        self::assertFalse($directory->isInside(__DIR__));
         self::assertFalse($directory->isInside($directory));
-        self::assertTrue($directory->isInside('./file.txt'));
-        self::assertFalse($directory->isInside('./../file.txt'));
-        self::assertTrue($directory->isInside('./path/../file.txt'));
-        self::assertTrue($directory->isInside($splFile));
-        self::assertTrue($directory->isInside($splDirectory));
     }
 
     public function testGetRelativePath(): void {
-        $path      = Path::normalize(self::getTestData()->path('a/a.txt'));
-        $file      = new File(Path::normalize(__FILE__), false);
-        $internal  = new Directory(dirname($path), false);
-        $directory = new Directory(Path::normalize(__DIR__), true);
+        $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $parent    = new Directory($path->getDirectoryPath(), false);
+        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), true);
 
-        self::assertEquals('DirectoryTest/a', $internal->getRelativePath($directory));
-        self::assertEquals('DirectoryTest/a', $internal->getRelativePath($file));
-    }
-
-    public function testGetPath(): void {
-        $file      = Path::normalize(__FILE__);
-        $path      = Path::normalize(__DIR__);
-        $directory = new Directory($path, true);
-
-        self::assertEquals($path, $directory->getPath());
-        self::assertEquals($file, $directory->getPath($file));
-        self::assertEquals($file, $directory->getPath(basename($file)));
+        self::assertEquals('DirectoryTest/a', (string) $directory->getRelativePath($parent));
+        self::assertEquals('DirectoryTest.php', (string) $directory->getRelativePath($file));
+        self::assertEquals('DirectoryTest/a/a.txt', (string) $directory->getRelativePath($path));
     }
 }

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
@@ -179,6 +180,7 @@ final class TaskTest extends TestCase {
             ->addInstruction(new TaskTest__TestInstruction())
             ->addInstruction(new TaskTest__DocumentInstruction());
         $actual = null;
+        $path   = new FilePath('path/to/file.md');
         $file   = Mockery::mock(File::class);
         $file
             ->shouldReceive('setContent')
@@ -195,20 +197,24 @@ final class TaskTest extends TestCase {
             ->with(Mockery::type(Markdown::class))
             ->once()
             ->andReturnUsing(
-                static function (): Document {
-                    return new Document(static::MARKDOWN);
+                static function () use ($path): Document {
+                    return new Document(static::MARKDOWN, $path);
                 },
             );
         $file
             ->shouldReceive('getPath')
             ->once()
-            ->andReturn('path/to/file.md');
+            ->andReturn(
+                $path,
+            );
 
         $root = Mockery::mock(Directory::class);
         $root
-            ->shouldReceive('getPath')
+            ->shouldReceive('getRelativePath')
             ->once()
-            ->andReturn('/test');
+            ->andReturn(
+                new FilePath('path/to/file.md'),
+            );
 
         $result = ProcessorHelper::runTask($task, $root, $file);
 
@@ -397,7 +403,7 @@ class TaskTest__DocumentInstruction implements Instruction {
             [^1]: Footnote
             [//]: # (end: block)
             MARKDOWN,
-            'path/to/file.md',
+            new FilePath('path/to/file.md'),
         );
     }
 }

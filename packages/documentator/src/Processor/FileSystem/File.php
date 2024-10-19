@@ -4,22 +4,19 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Core\Path\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
 use Override;
 use Stringable;
 
 use function array_key_exists;
-use function dirname;
 use function file_get_contents;
 use function is_file;
 use function is_writable;
-use function pathinfo;
 use function sprintf;
-
-use const PATHINFO_BASENAME;
-use const PATHINFO_EXTENSION;
 
 class File implements Stringable {
     private ?string $content = null;
@@ -31,10 +28,10 @@ class File implements Stringable {
     private array $metadata = [];
 
     public function __construct(
-        private readonly string $path,
+        private readonly FilePath $path,
         private readonly bool $writable,
     ) {
-        if (!Path::isNormalized($this->path)) {
+        if (!$this->path->isNormalized()) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be normalized, `%s` given.',
@@ -43,7 +40,7 @@ class File implements Stringable {
             );
         }
 
-        if (!Path::isAbsolute($this->path)) {
+        if (!$this->path->isAbsolute()) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be absolute, `%s` given.',
@@ -52,7 +49,7 @@ class File implements Stringable {
             );
         }
 
-        if (!is_file($this->path)) {
+        if (!is_file((string) $this->path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `%s` is not a file.',
@@ -62,20 +59,20 @@ class File implements Stringable {
         }
     }
 
-    public function getPath(): string {
+    public function getPath(): FilePath {
         return $this->path;
     }
 
     public function getName(): string {
-        return pathinfo($this->path, PATHINFO_BASENAME);
+        return $this->path->getName();
     }
 
-    public function getExtension(): string {
-        return pathinfo($this->path, PATHINFO_EXTENSION);
+    public function getExtension(): ?string {
+        return $this->path->getExtension();
     }
 
     public function isWritable(): bool {
-        return $this->writable && is_writable($this->path);
+        return $this->writable && is_writable((string) $this->path);
     }
 
     public function isModified(): bool {
@@ -84,7 +81,7 @@ class File implements Stringable {
 
     public function getContent(): string {
         if ($this->content === null) {
-            $this->content = (string) file_get_contents($this->path);
+            $this->content = (string) file_get_contents((string) $this->path);
         }
 
         return $this->content;
@@ -119,15 +116,22 @@ class File implements Stringable {
         return $this->metadata[$metadata::class];
     }
 
-    public function getRelativePath(Directory|self $root): string {
-        $root = $root instanceof self ? dirname($root->getPath()) : $root->getPath();
-        $path = Path::getRelativePath($root, $this->path);
+    /**
+     * @template T of Directory|self|Path
+     *
+     * @param T $path
+     *
+     * @return (T is Path ? new<T> : (T is Directory ? DirectoryPath : FilePath))
+    */
+    public function getRelativePath(Directory|self|Path $path): Path {
+        $path = $path instanceof Path ? $path : $path->getPath();
+        $path = $this->path->getRelativePath($path);
 
         return $path;
     }
 
     #[Override]
     public function __toString(): string {
-        return $this->getPath();
+        return (string) $this->path;
     }
 }

@@ -21,7 +21,7 @@ class DependencyIsMissing extends InstructionFailed {
             sprintf(
                 'The dependency `%s` is missed (in `%s`).',
                 $this->class,
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

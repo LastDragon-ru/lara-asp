@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -18,30 +19,35 @@ use function sprintf;
 #[CoversClass(DirectoryReference::class)]
 final class DirectoryReferenceTest extends TestCase {
     public function testToString(): void {
-        $directory = new Directory(Path::normalize(__DIR__), false);
+        $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $directory = new Directory($path, false);
 
         self::assertEquals('path/to/directory', (string) (new DirectoryReference('path/to/directory')));
-        self::assertEquals($directory->getPath(), (string) (new DirectoryReference($directory)));
+        self::assertEquals((string) $directory, (string) (new DirectoryReference($directory)));
+        self::assertEquals((string) $path, (string) (new DirectoryReference($path)));
     }
 
     public function testInvoke(): void {
         $fs        = new FileSystem();
-        $root      = new Directory(Path::normalize(__DIR__), false);
-        $file      = new File(Path::normalize(__FILE__), false);
-        $another   = new Directory(Path::normalize(__DIR__), false);
+        $dir       = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $root      = new Directory($dir, false);
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $another   = new Directory($dir, false);
+        $dirpath   = new DirectoryReference($dir);
         $absolute  = new DirectoryReference(__DIR__);
         $relative  = new DirectoryReference('.');
         $reference = new DirectoryReference($another);
 
         self::assertEquals($root, $absolute($fs, $root, $file));
         self::assertEquals($root, $relative($fs, $root, $file));
+        self::assertEquals($root, $dirpath($fs, $root, $file));
         self::assertSame($another, $reference($fs, $root, $file));
     }
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory(Path::normalize(__DIR__), false);
-        $file = new File(Path::normalize(__FILE__), false);
+        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);

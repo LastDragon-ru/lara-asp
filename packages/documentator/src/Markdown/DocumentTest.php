@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
@@ -75,7 +76,7 @@ final class DocumentTest extends TestCase {
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 MARKDOWN,
-                'path/to/FileName.txt',
+                new FilePath('path/to/FileName.txt'),
             ))
                 ->getTitle(),
         );

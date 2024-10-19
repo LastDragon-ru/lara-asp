@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
@@ -32,10 +31,8 @@ class Utils {
     }
 
     public static function getSeed(Context $context, Document|File $file): string {
-        $path = match (true) {
-            $file instanceof Document => Path::getRelativePath($context->root->getPath(), $file->getPath() ?? ''),
-            default                   => $file->getRelativePath($context->root),
-        };
+        $path = $file instanceof Document ? $file->getPath() : $file;
+        $path = $path !== null ? (string) $context->root->getRelativePath($path) : '';
         $path = $path !== '' ? $path : uniqid(self::class); // @phpstan-ignore disallowed.function
         $path = Text::hash($path);
 

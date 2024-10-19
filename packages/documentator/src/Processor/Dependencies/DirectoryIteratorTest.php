@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -21,22 +22,24 @@ use function sprintf;
 #[CoversClass(DirectoryIterator::class)]
 final class DirectoryIteratorTest extends TestCase {
     public function testToString(): void {
-        $directory = new Directory(Path::normalize(__DIR__), false);
+        $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $directory = new Directory($path, false);
 
         self::assertEquals('path/to/directory', (string) (new DirectoryIterator('path/to/directory')));
-        self::assertEquals($directory->getPath(), (string) (new DirectoryIterator($directory)));
+        self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory)));
+        self::assertEquals((string) $path, (string) (new DirectoryIterator($path)));
     }
 
     public function testInvoke(): void {
         $fs        = new FileSystem();
-        $path      = Path::normalize(self::getTestData()->path(''));
-        $root      = new Directory(Path::normalize(__DIR__), false);
-        $file      = new File(Path::normalize(__FILE__), false);
+        $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $absolute  = new DirectoryIterator($path);
-        $relative  = new DirectoryIterator(basename($path));
+        $relative  = new DirectoryIterator(basename((string) $path));
         $directory = new DirectoryIterator(new Directory($path, false));
         $formatter = static function (Directory $directory) use ($path): string {
-            return Path::getRelativePath($path, $directory->getPath());
+            return (string) $path->getRelativePath($directory->getPath());
         };
         $expected  = [
             'a',
@@ -54,8 +57,8 @@ final class DirectoryIteratorTest extends TestCase {
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory(Path::normalize(__DIR__), false);
-        $file = new File(Path::normalize(__FILE__), false);
+        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $file = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);

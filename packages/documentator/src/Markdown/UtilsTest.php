@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -42,8 +43,8 @@ final class UtilsTest extends TestCase {
         self::assertTrue(Utils::isPathToSelf('#fragment'));
 
         // Yep if match to Document file name
-        $a = new Document('', '/path/to/a.md');
-        $b = new Document('', '/path/to/b.md');
+        $a = new Document('', new FilePath('/path/to/a.md'));
+        $b = new Document('', new FilePath('/path/to/b.md'));
 
         self::assertTrue(Utils::isPathToSelf('a.md', $a));
         self::assertTrue(Utils::isPathToSelf('./a.md', $a));

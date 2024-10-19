@@ -15,7 +15,7 @@ class TargetIsNotDirective extends InstructionFailed {
             sprintf(
                 'The `%s` is not a directive (in `%s`).',
                 $context->target,
-                $context->file->getRelativePath($context->root),
+                $context->root->getRelativePath($context->file),
             ),
             $previous,
         );

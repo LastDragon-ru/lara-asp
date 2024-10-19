@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\HeadingsLevel;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
@@ -83,11 +84,10 @@ class Preprocess extends Command {
 
     public function __invoke(Formatter $formatter): void {
         $cwd      = getcwd();
-        $path     = Cast::toString($this->argument('path') ?? $cwd);
-        $path     = Path::normalize($path);
+        $path     = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
         $width    = min((new Terminal())->getWidth(), 150);
         $exclude  = array_map(strval(...), (array) $this->option('exclude'));
-        $listener = function (string $path, Result $result, float $duration) use ($formatter, $width): void {
+        $listener = function (FilePath $path, Result $result, float $duration) use ($formatter, $width): void {
             [$resultMessage, $resultColor, $resultVerbosity] = match ($result) {
                 Result::Failed  => ['FAIL', 'red', OutputInterface::VERBOSITY_NORMAL],
                 Result::Success => ['DONE', 'green', OutputInterface::VERBOSITY_NORMAL],
@@ -96,7 +96,7 @@ class Preprocess extends Command {
             };
 
             $duration = $formatter->duration($duration);
-            $length   = $width - (mb_strlen($path) + mb_strlen($duration) + mb_strlen($resultMessage) + 5);
+            $length   = $width - (mb_strlen((string) $path) + mb_strlen($duration) + mb_strlen($resultMessage) + 5);
             $line     = $path
                 .' '.($length > 0 ? '<fg=gray>'.str_repeat('.', $length).'</>' : '')
                 .' '."<fg=gray>{$duration}</>"
@@ -320,15 +320,13 @@ class Preprocess extends Command {
             $object instanceof ReflectionProperty => $object->getDeclaringClass()->getFileName(),
             default                               => $object->getFileName(),
         };
+        $path = $path !== false ? new FilePath($path) : null;
         $help = (new PhpDoc((string) $object->getDocComment()))->getText();
-        $help = new Document($help, $path !== false ? $path : null);
+        $help = new Document($help, $path);
 
         // Move to cwd
-        $cwd = getcwd();
-
-        if ($cwd !== false) {
-            $help = $help->mutate(new Move("{$cwd}/help.md"));
-        }
+        $cwd  = new DirectoryPath((string) getcwd());
+        $help = $help->mutate(new Move($cwd->getFilePath('help.md')));
 
         // Level?
         if ($level !== null) {
