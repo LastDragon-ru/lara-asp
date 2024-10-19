@@ -3,7 +3,8 @@
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Connection;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
@@ -63,7 +64,7 @@ final class SqlMigrationTest extends TestCase {
 
         // With file, No Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
-        $directory = __DIR__;
+        $directory = new DirectoryPath(__DIR__);
         $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
@@ -77,7 +78,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && Path::normalize($path) === Path::join($directory, "{$file}~up.sql");
+                        && $directory->getFilePath("{$file}~up.sql")->isEqual(new FilePath($path));
                 },
             )
             ->once()
@@ -89,7 +90,7 @@ final class SqlMigrationTest extends TestCase {
 
         // With file, With Driver
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
-        $directory = __DIR__;
+        $directory = new DirectoryPath(__DIR__);
         $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
@@ -103,7 +104,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && Path::normalize($path) === Path::join($directory, "{$file}~a.up.sql");
+                        && $directory->getFilePath("{$file}~a.up.sql")->isEqual(new FilePath($path));
                 },
             )
             ->once()
@@ -116,7 +117,7 @@ final class SqlMigrationTest extends TestCase {
 
         // With file, With Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
-        $directory = __DIR__;
+        $directory = new DirectoryPath(__DIR__);
         $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
@@ -130,7 +131,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($bConnection, $directory, $file): bool {
                     return $bConnection === $connection
-                        && Path::normalize($path) === Path::join($directory, "{$file}~up.sql");
+                        && $directory->getFilePath("{$file}~up.sql")->isEqual(new FilePath($path));
                 },
             )
             ->once()
@@ -187,7 +188,7 @@ final class SqlMigrationTest extends TestCase {
 
         // With file, No Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
-        $directory = __DIR__;
+        $directory = new DirectoryPath(__DIR__);
         $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
@@ -201,7 +202,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && Path::normalize($path) === Path::join($directory, "{$file}~down.sql");
+                        && $directory->getFilePath("{$file}~down.sql")->isEqual(new FilePath($path));
                 },
             )
             ->once()
@@ -213,7 +214,7 @@ final class SqlMigrationTest extends TestCase {
 
         // With file, With Driver
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
-        $directory = __DIR__;
+        $directory = new DirectoryPath(__DIR__);
         $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
@@ -227,7 +228,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && Path::normalize($path) === Path::join($directory, "{$file}~a.down.sql");
+                        && $directory->getFilePath("{$file}~a.down.sql")->isEqual(new FilePath($path));
                 },
             )
             ->once()
@@ -240,7 +241,7 @@ final class SqlMigrationTest extends TestCase {
 
         // With file, With Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
-        $directory = __DIR__;
+        $directory = new DirectoryPath(__DIR__);
         $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
@@ -254,7 +255,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($bConnection, $directory, $file): bool {
                     return $bConnection === $connection
-                        && Path::normalize($path) === Path::join($directory, "{$file}~down.sql");
+                        && $directory->getFilePath("{$file}~down.sql")->isEqual(new FilePath($path));
                 },
             )
             ->once()
