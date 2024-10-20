@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Core\Utils;
 
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Core\Package;
 
 use function array_key_exists;
 use function array_values;
@@ -11,9 +12,16 @@ use function is_null;
 use function is_scalar;
 use function is_string;
 use function key;
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'Please migrate to object-based config.');
 
 /**
  * The merger for array-based configs.
+ *
+ * @deprecated %{VERSION} Please migrate to object-based config.
  */
 class ConfigMerger {
     /**
