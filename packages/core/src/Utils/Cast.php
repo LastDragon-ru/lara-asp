@@ -9,6 +9,7 @@ use function is_bool;
 use function is_float;
 use function is_int;
 use function is_iterable;
+use function is_object;
 use function is_scalar;
 use function is_string;
 
@@ -96,6 +97,18 @@ class Cast {
      */
     public static function toIterable(mixed $value): iterable {
         assert(is_iterable($value));
+
+        return $value;
+    }
+
+    public static function toObject(mixed $value): object {
+        assert(is_object($value));
+
+        return $value;
+    }
+
+    public static function toObjectNullable(mixed $value): ?object {
+        assert($value === null || is_object($value));
 
         return $value;
     }
