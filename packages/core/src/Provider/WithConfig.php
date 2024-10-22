@@ -13,7 +13,16 @@ use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
 trait WithConfig {
     use Helper;
 
+    /**
+     * @deprecated %{VERSION} Please migrate to {@see self::registerConfig()} and object-based config.
+     */
     protected function bootConfig(): void {
+        trigger_deprecation(
+            Package::Name,
+            '%{VERSION}',
+            'Please migrate to `self::registerConfig()` and object-based config.',
+        );
+
         $package = $this->getName();
         $path    = $this->getPath('../defaults/config.php');
 
