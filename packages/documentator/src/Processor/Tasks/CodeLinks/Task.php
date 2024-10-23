@@ -110,11 +110,13 @@ class Task implements TaskContract {
             if ($paths === null) {
                 continue;
             }
+
             // File?
             $source = null;
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
+                $path   = $root->getPath()->getPath($path);
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
                 if ($source !== null) {
