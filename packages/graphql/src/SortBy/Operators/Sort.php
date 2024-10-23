@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
@@ -10,7 +9,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\OperatorUnsupportedBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
@@ -26,7 +25,7 @@ class Sort extends Operator {
      * @param SorterFactory<object> $factory
      */
     public function __construct(
-        protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $config,
         protected readonly SorterFactory $factory,
         BuilderFieldResolver $resolver,
     ) {
@@ -107,7 +106,7 @@ class Sort extends Operator {
 
         // Default
         $nulls     = null;
-        $config    = $this->config->getInstance()->get(Package::Name.'.sort_by.nulls');
+        $config    = $this->config->getInstance()->sortBy->nulls;
         $direction = match ($direction) {
             Direction::asc  => Direction::Asc,
             Direction::desc => Direction::Desc,

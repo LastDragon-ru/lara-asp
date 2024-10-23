@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfoDetector;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\BuilderUnknown;
@@ -23,8 +22,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
+use LastDragon_ru\LaraASP\GraphQL\Config\Config;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators;
@@ -282,14 +282,16 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testManipulateFieldDefinition(): void {
-        $this->setConfig([
-            'lighthouse.namespaces.models'       => [
-                (new ReflectionClass(TestObject::class))->getNamespaceName(),
-            ],
-            Package::Name.'.search_by.operators' => [
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->searchBy->operators = [
                 Operators::ID => [
                     SearchByOperatorEqualDirective::class,
                 ],
+            ];
+        });
+        $this->setConfig([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],
         ]);
 
@@ -302,14 +304,16 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testManipulateFieldDefinitionScoutBuilder(): void {
-        $this->setConfig([
-            'lighthouse.namespaces.models'       => [
-                (new ReflectionClass(TestObject::class))->getNamespaceName(),
-            ],
-            Package::Name.'.search_by.operators' => [
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->searchBy->operators = [
                 Operators::ID => [
                     SearchByOperatorEqualDirective::class,
                 ],
+            ];
+        });
+        $this->setConfig([
+            'lighthouse.namespaces.models' => [
+                (new ReflectionClass(TestObject::class))->getNamespaceName(),
             ],
         ]);
 
@@ -333,7 +337,7 @@ final class DirectiveTest extends TestCase {
         $directive
             ->shouldUseProperty('config')
             ->value(
-                $this->app()->make(ConfigResolver::class),
+                $this->app()->make(PackageConfig::class),
             );
         $directive
             ->shouldUseProperty('detector')

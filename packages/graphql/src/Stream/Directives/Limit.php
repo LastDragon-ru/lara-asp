@@ -10,10 +10,9 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -35,23 +34,10 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
     final public const ArgMax     = 'max';
 
     public function __construct(
+        protected readonly PackageConfig $config,
         private readonly ManipulatorFactory $manipulatorFactory,
     ) {
         // empty
-    }
-
-    /**
-     * @return array{name: string, default: int, max: int}
-     */
-    final public static function settings(): array {
-        $repository = Container::getInstance()->make(Repository::class);
-        $settings   = (array) $repository->get(Directive::Settings.'.limit');
-
-        return [
-            'name'    => Cast::toString($settings['name'] ?? 'limit'),
-            'default' => Cast::toInt($settings['default'] ?? 25),
-            'max'     => Cast::toInt($settings['max'] ?? 100),
-        ];
     }
 
     #[Override]
@@ -119,7 +105,8 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
      * @return int<1, max>
      */
     protected function getArgMax(): int {
-        $value = Cast::toInt($this->directiveArgValue(self::ArgMax) ?? static::settings()['max']);
+        $value = $this->directiveArgValue(self::ArgMax) ?? $this->config->getInstance()->stream->limit->max;
+        $value = Cast::toInt($value);
         $value = max(1, $value);
 
         return $value;
@@ -130,7 +117,8 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
      */
     protected function getArgDefault(): int {
         $max   = $this->getArgMax();
-        $value = Cast::toInt($this->directiveArgValue(self::ArgDefault) ?? static::settings()['default']);
+        $value = $this->directiveArgValue(self::ArgDefault) ?? $this->config->getInstance()->stream->limit->default;
+        $value = Cast::toInt($value);
         $value = min($max, max(1, $value));
 
         return $value;

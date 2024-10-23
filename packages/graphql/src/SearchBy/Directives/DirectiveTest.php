@@ -28,8 +28,9 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFiel
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
+use LastDragon_ru\LaraASP\GraphQL\Config\Config;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionUnknown;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
@@ -118,11 +119,11 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testManipulateArgDefinitionScoutBuilder(): void {
-        $this->setConfig([
-            Package::Name.'.search_by.operators.Date' => [
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->searchBy->operators['Date'] = [
                 SearchByOperatorEqualDirective::class,
-            ],
-        ]);
+            ];
+        });
 
         $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
@@ -158,11 +159,11 @@ final class DirectiveTest extends TestCase {
                 ->andReturn(false);
         });
 
-        $this->setConfig([
-            Package::Name.'.search_by.operators.Date' => [
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->searchBy->operators['Date'] = [
                 SearchByOperatorEqualDirective::class,
-            ],
-        ]);
+            ];
+        });
 
         $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
@@ -688,32 +689,38 @@ final class DirectiveTest extends TestCase {
                     $locator->setResolved('allowed', $allowed::class);
                     $locator->setResolved('forbidden', $forbidden::class);
 
-                    $test->setConfig([
-                        Package::Name.'.builder.allowed_directives'            => [
-                            RenameDirective::class,
-                            $allowed::class,
-                        ],
-                        Package::Name.'.search_by.operators.String'            => [
-                            SearchByOperatorEqualDirective::class,
-                        ],
-                        Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            SearchByOperatorFieldDirective::class,
-                        ],
-                    ]);
+                    $test->setConfiguration(
+                        PackageConfig::class,
+                        static function (Config $config) use ($allowed): void {
+                            $config->builder->allowedDirectives            = [
+                                RenameDirective::class,
+                                $allowed::class,
+                            ];
+                            $config->searchBy->operators['String']         = [
+                                SearchByOperatorEqualDirective::class,
+                            ];
+                            $config->searchBy->operators[Operators::Extra] = [
+                                SearchByOperatorFieldDirective::class,
+                            ];
+                        },
+                    );
                 },
             ],
             'Ignored'               => [
                 'Ignored.expected.graphql',
                 'Ignored.schema.graphql',
                 static function (TestCase $test): void {
-                    $test->setConfig([
-                        Package::Name.'.search_by.operators.String'            => [
-                            SearchByOperatorEqualDirective::class,
-                        ],
-                        Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            SearchByOperatorFieldDirective::class,
-                        ],
-                    ]);
+                    $test->setConfiguration(
+                        PackageConfig::class,
+                        static function (Config $config): void {
+                            $config->searchBy->operators['String']         = [
+                                SearchByOperatorEqualDirective::class,
+                            ];
+                            $config->searchBy->operators[Operators::Extra] = [
+                                SearchByOperatorFieldDirective::class,
+                            ];
+                        },
+                    );
 
                     $test->app()->make(TypeRegistry::class)->register(
                         new class([
@@ -734,25 +741,31 @@ final class DirectiveTest extends TestCase {
                 'Example.expected.graphql',
                 'Example.schema.graphql',
                 static function (TestCase $test): void {
-                    $test->setConfig([
-                        Package::Name.'.search_by.operators.Date' => [
-                            SearchByOperatorBetweenDirective::class,
-                        ],
-                    ]);
+                    $test->setConfiguration(
+                        PackageConfig::class,
+                        static function (Config $config): void {
+                            $config->searchBy->operators['Date'] = [
+                                SearchByOperatorBetweenDirective::class,
+                            ];
+                        },
+                    );
                 },
             ],
             'InterfaceUpdate'       => [
                 'InterfaceUpdate.expected.graphql',
                 'InterfaceUpdate.schema.graphql',
                 static function (TestCase $test): void {
-                    $test->setConfig([
-                        Package::Name.'.search_by.operators.'.Operators::ID    => [
-                            SearchByOperatorEqualDirective::class,
-                        ],
-                        Package::Name.'.search_by.operators.'.Operators::Extra => [
-                            SearchByOperatorFieldDirective::class,
-                        ],
-                    ]);
+                    $test->setConfiguration(
+                        PackageConfig::class,
+                        static function (Config $config): void {
+                            $config->searchBy->operators[Operators::ID]    = [
+                                SearchByOperatorEqualDirective::class,
+                            ];
+                            $config->searchBy->operators[Operators::Extra] = [
+                                SearchByOperatorFieldDirective::class,
+                            ];
+                        },
+                    );
                 },
             ],
             'V5Compat'              => [

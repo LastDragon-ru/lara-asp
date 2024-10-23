@@ -254,52 +254,44 @@ on
 
 ### Schema
 
+[include:example]: @searchByConfigOperators.php
+[//]: # (start: preprocess/95312ea5dfacf197)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 
-/**
- * -----------------------------------------------------------------------------
- * GraphQL Settings
- * -----------------------------------------------------------------------------
- *
- * @var array{
- *      search_by: array{
- *          operators: array<string, list<string|class-string<Operator>>>
- *      }
- *      } $settings
- */
-$settings = [
-    'search_by' => [
-        'operators' => [
-            // You can define a list of operators for each type
-            'Date'     => [
-                SearchByOperatorEqualDirective::class,
-                SearchByOperatorBetweenDirective::class,
-                MyCustomOperator::class,
-            ],
+$config = PackageConfig::getDefaultConfig();
 
-            // Or re-use existing type
-            'DateTime' => [
-                'Date',
-            ],
-
-            // Or re-use built-in type
-            'Int' => [
-                'Int',                  // built-in operators for `Int` will be used
-                MyCustomOperator::class,
-            ],
-
-            // You can also use enum name to redefine default operators for it:
-            'MyEnum' => [
-                'Boolean',
-            ],
-        ],
-    ],
+// You can define a list of operators for each type
+$config->searchBy->operators['Date'] = [
+    SearchByOperatorEqualDirective::class,
+    SearchByOperatorBetweenDirective::class,
+    // MyCustomOperator::class,
 ];
 
-return $settings;
+// Or re-use existing type
+$config->searchBy->operators['DateTime'] = [
+    'Date',
+];
+
+// Or re-use built-in type
+$config->searchBy->operators['Int'] = [
+    'Int',                      // built-in operators for `Int` will be used
+    // MyCustomOperator::class, // the custom operator will be added
+];
+
+// You can also use enum name to redefine default operators for it:
+$config->searchBy->operators['MyEnum'] = [
+    'Boolean',
+];
+
+// Return
+return $config;
 ```
+
+[//]: # (end: preprocess/95312ea5dfacf197)

@@ -13,7 +13,6 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextOperators;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context;
@@ -29,7 +28,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use Nuwave\Lighthouse\Schema\Directives\RelationDirective;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
@@ -38,12 +37,11 @@ use Override;
 
 use function count;
 use function is_a;
-use function is_string;
 use function trim;
 
 abstract class InputObject implements TypeDefinition {
     public function __construct(
-        protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $config,
     ) {
         // empty
     }
@@ -443,10 +441,10 @@ abstract class InputObject implements TypeDefinition {
 
         // Allowed?
         $isAllowed = false;
-        $allowed   = (array) $this->config->getInstance()->get(Package::Name.'.builder.allowed_directives');
+        $allowed   = $this->config->getInstance()->builder->allowedDirectives;
 
         foreach ($allowed as $class) {
-            if (is_string($class) && $directive instanceof $class) {
+            if ($directive instanceof $class) {
                 $isAllowed = true;
                 break;
             }

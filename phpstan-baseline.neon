@@ -31,7 +31,7 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:480\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
+			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:471\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
 			count: 1
 			path: packages/graphql/src/Stream/Directives/Directive.php
 

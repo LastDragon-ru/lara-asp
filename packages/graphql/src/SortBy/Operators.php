@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\SortBy;
 
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator as BuilderOperator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators as BuilderOperators;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorChildDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective;
@@ -40,13 +38,9 @@ class Operators extends BuilderOperators {
 
     public function __construct(
         ContainerResolver $container,
-        protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $config,
     ) {
-        /** @var array<string, list<class-string<BuilderOperator>|string>> $operators */
-        $operators = (array) $this->config->getInstance()
-            ->get(Package::Name.'.sort_by.operators');
-
-        parent::__construct($container, $operators);
+        parent::__construct($container, $this->config->getInstance()->sortBy->operators);
     }
 
     #[Override]

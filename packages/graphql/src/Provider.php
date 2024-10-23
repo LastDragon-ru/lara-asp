@@ -38,7 +38,6 @@ class Provider extends ServiceProvider {
     use WithConfig;
 
     public function boot(Dispatcher $dispatcher): void {
-        $this->bootConfig();
         $this->bootDirectives($dispatcher);
     }
 
@@ -46,6 +45,7 @@ class Provider extends ServiceProvider {
     public function register(): void {
         parent::register();
 
+        $this->registerConfig(PackageConfig::class);
         $this->registerBindings();
         $this->registerSchemaPrinter();
     }
