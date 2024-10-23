@@ -27,7 +27,8 @@ class Scout extends Stream {
     public function __construct(object $builder, string $key, int $limit, Offset $offset) {
         parent::__construct($builder, $key, $limit, $offset);
 
-        $this->page = new Page($limit, max(0, Cast::toInt($offset->offset)));
+        $offset     = Cast::toInt($offset->offset);
+        $this->page = new Page($limit, max(0, $offset));
     }
 
     /**
@@ -43,7 +44,10 @@ class Scout extends Stream {
 
     #[Override]
     public function getLength(): ?int {
-        return max(0, $this->getPaginator()->total());
+        $length = $this->getPaginator()->total();
+        $length = max(0, $length);
+
+        return $length;
     }
 
     #[Override]

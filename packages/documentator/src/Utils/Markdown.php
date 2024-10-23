@@ -102,15 +102,16 @@ class Markdown {
     protected static function getText(string $string, ?AbstractBlock $node): ?string {
         // todo(documentator): There is no way to convert AST back to Markdown yet
         //      https://github.com/thephpleague/commonmark/issues/419
-        if ($node?->getStartLine() === null || $node->getEndLine() === null) {
+        $start = $node?->getStartLine();
+        $end   = $node?->getEndLine();
+
+        if ($start === null || $end === null) {
             return null;
         }
 
-        $start = $node->getStartLine() - 1;
-        $end   = $node->getEndLine() - 1;
         $lines = preg_split('/\R/u', $string);
         $lines = $lines !== false ? $lines : [];
-        $lines = array_slice($lines, $start, $end - $start + 1);
+        $lines = array_slice($lines, $start - 1, $end - $start + 1);
         $text  = trim(implode("\n", $lines));
 
         return $text;

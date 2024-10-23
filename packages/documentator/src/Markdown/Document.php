@@ -215,10 +215,12 @@ class Document implements Stringable {
     }
 
     private function getBlockText(?AbstractBlock $node): ?string {
-        $location = $node?->getStartLine() !== null && $node->getEndLine() !== null
-            ? new Location($node->getStartLine(), $node->getEndLine())
+        $startLine = $node?->getStartLine();
+        $endLine   = $node?->getEndLine();
+        $location  = $startLine !== null && $endLine !== null
+            ? new Location($startLine, $endLine)
             : null;
-        $text     = $location !== null
+        $text      = $location !== null
             ? $this->getText($location)
             : null;
 

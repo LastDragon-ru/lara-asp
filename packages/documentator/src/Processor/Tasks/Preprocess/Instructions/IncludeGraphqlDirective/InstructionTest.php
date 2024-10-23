@@ -68,8 +68,10 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeNoPrinter(): void {
         // Reset
-        if ($this->app() instanceof ArrayAccess) {
-            unset($this->app()[PrinterContract::class]);
+        $app = $this->app();
+
+        if ($app instanceof ArrayAccess) {
+            unset($app[PrinterContract::class]);
         }
 
         // Test

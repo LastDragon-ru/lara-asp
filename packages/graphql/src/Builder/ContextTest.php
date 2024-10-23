@@ -31,6 +31,6 @@ final class ContextTest extends TestCase {
         self::assertNull($context->get($class));
         self::assertTrue($overridden->has($class));
         self::assertNotNull($overridden->get($class));
-        self::assertEquals('overridden', $overridden->get($class)->value);
+        self::assertEquals('overridden', $overridden->get($class)->value ?? null);
     }
 }

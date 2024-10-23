@@ -103,7 +103,8 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
             //      of them with the hash from `$cursor` and throw an error if
             //      doesn't match.
         } elseif (is_int($value)) {
-            $value = new StreamOffset($path, max(0, Cast::toInt($value)));
+            $value = Cast::toInt($value);
+            $value = new StreamOffset($path, max(0, $value));
         } else {
             $value = new StreamOffset($path, 0);
         }

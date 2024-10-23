@@ -38,7 +38,9 @@ class Database extends Stream {
     #[Override]
     public function getLength(): ?int {
         if ($this->length === null) {
-            $this->length = max(0, $this->builder->count());
+            $length       = $this->builder->count();
+            $length       = max(0, $length);
+            $this->length = $length;
         }
 
         return $this->length;

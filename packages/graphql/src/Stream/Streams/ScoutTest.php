@@ -45,8 +45,10 @@ final class ScoutTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testGetItems(): void {
-        $limit   = max(1, $this->getFaker()->numberBetween(1, 4));
-        $offset  = max(0, $this->getFaker()->numberBetween(0, 2));
+        $limit   = $this->getFaker()->numberBetween(1, 4);
+        $limit   = max(1, $limit);
+        $offset  = $this->getFaker()->numberBetween(0, 2);
+        $offset  = max(0, $offset);
         $builder = TestObjectSearchable::search();
         $stream  = new Scout($builder, $builder->model->getKeyName(), $limit, new Offset('path', $offset, null));
         $objects = [

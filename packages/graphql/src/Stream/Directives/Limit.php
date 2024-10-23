@@ -119,33 +119,28 @@ class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirect
      * @return int<1, max>
      */
     protected function getArgMax(): int {
-        return max(
-            1,
-            Cast::toInt(
-                $this->directiveArgValue(self::ArgMax) ?? static::settings()['max'],
-            ),
-        );
+        $value = Cast::toInt($this->directiveArgValue(self::ArgMax) ?? static::settings()['max']);
+        $value = max(1, $value);
+
+        return $value;
     }
 
     /**
      * @return int<1, max>
      */
     protected function getArgDefault(): int {
-        return min(
-            $this->getArgMax(),
-            max(
-                1,
-                Cast::toInt(
-                    $this->directiveArgValue(self::ArgDefault) ?? static::settings()['default'],
-                ),
-            ),
-        );
+        $max   = $this->getArgMax();
+        $value = Cast::toInt($this->directiveArgValue(self::ArgDefault) ?? static::settings()['default']);
+        $value = min($max, max(1, $value));
+
+        return $value;
     }
 
     #[Override]
     public function getFieldArgumentValue(ResolveInfo $info, mixed $value): mixed {
-        return $value !== null
-            ? max(1, Cast::toInt($value))
-            : $this->getArgDefault();
+        $value = Cast::toIntNullable($value);
+        $value = $value !== null ? max(1, $value) : $this->getArgDefault();
+
+        return $value;
     }
 }

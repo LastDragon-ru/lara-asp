@@ -24,8 +24,10 @@ final class DatabaseTest extends TestCase {
     use WithTestObject;
 
     public function testGetItems(): void {
-        $limit   = max(1, $this->getFaker()->numberBetween(1, 4));
-        $offset  = max(0, $this->getFaker()->numberBetween(0, 2));
+        $limit   = $this->getFaker()->numberBetween(1, 4);
+        $limit   = max(1, $limit);
+        $offset  = $this->getFaker()->numberBetween(0, 2);
+        $offset  = max(0, $offset);
         $builder = TestObject::query();
         $stream  = new Database(
             $builder,
