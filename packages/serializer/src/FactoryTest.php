@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Serializer\Config\Config;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
@@ -26,34 +26,32 @@ use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
 #[CoversClass(Factory::class)]
 final class FactoryTest extends TestCase {
     public function testCreate(): void {
-        $this->setConfig([
-            Package::Name => [
-                'default'     => 'format from config',
-                'encoders'    => [
-                    XmlEncoder::class  => [],
-                    JsonEncoder::class => [
-                        'context option from config' => 'encoder',
-                        'encoder option from config' => 'encoder',
-                        'encoder option'             => 'encoder',
-                    ],
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->default     = 'format from config';
+            $config->encoders    = [
+                XmlEncoder::class  => [],
+                JsonEncoder::class => [
+                    'context option from config' => 'encoder',
+                    'encoder option from config' => 'encoder',
+                    'encoder option'             => 'encoder',
                 ],
-                'normalizers' => [
-                    SerializableNormalizer::class => null,
-                    DateTimeNormalizer::class     => [
-                        'context option from config'    => 'normalizer',
-                        'normalizer option from config' => 'normalizer',
-                        'normalizer option'             => 'normalizer',
-                    ],
-                    DataUriNormalizer::class      => [],
+            ];
+            $config->normalizers = [
+                SerializableNormalizer::class => null,
+                DateTimeNormalizer::class     => [
+                    'context option from config'    => 'normalizer',
+                    'normalizer option from config' => 'normalizer',
+                    'normalizer option'             => 'normalizer',
                 ],
-                'context'     => [
-                    'context option from config' => 'context',
-                    'context option'             => 'context',
-                ],
-            ],
-        ]);
+                DataUriNormalizer::class      => [],
+            ];
+            $config->context     = [
+                'context option from config' => 'context',
+                'context option'             => 'context',
+            ];
+        });
 
-        $config    = $this->app()->make(ConfigResolver::class);
+        $config    = $this->app()->make(PackageConfig::class);
         $container = $this->app()->make(ContainerResolver::class);
         $factory   = Mockery::mock(Factory::class, [$container, $config])
             ->shouldAllowMockingProtectedMethods()

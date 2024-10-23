@@ -15,13 +15,10 @@ class Provider extends ServiceProvider {
     public function register(): void {
         parent::register();
 
+        $this->registerConfig(PackageConfig::class);
         $this->app->scopedIf(Serializer::class, static function (Container $container): Serializer {
             return $container->make(Factory::class)->create();
         });
-    }
-
-    public function boot(): void {
-        $this->bootConfig();
     }
 
     #[Override]

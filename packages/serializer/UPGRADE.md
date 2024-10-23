@@ -39,6 +39,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/9679e76379216855)
 
+* [ ] Package config now uses objects instead of an array, it is recommended to migrate to the new format. 🤝
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
