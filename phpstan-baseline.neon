@@ -51,11 +51,6 @@ parameters:
 			path: packages/serializer/src/Casts/SerializedAttributeTest.php
 
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$configs of method LastDragon_ru\\\\LaraASP\\\\Core\\\\Utils\\\\ConfigMerger\\:\\:merge\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: packages/spa/src/Http/Controllers/SpaController.php
-
-		-
 			message: "#^Parameter \\#3 \\$path of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:mapResourceValue\\(\\) expects array\\<string\\>, array given\\.$#"
 			count: 1
 			path: packages/spa/src/Http/Resources/Resource.php
