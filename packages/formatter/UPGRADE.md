@@ -39,6 +39,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/9679e76379216855)
 
+* [ ] Array-based config is not supported anymore. Please migrate to object-based config.
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
