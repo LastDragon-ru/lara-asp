@@ -8,7 +8,7 @@ use function sprintf;
 
 class FailedToCreateCurrencyFormatter extends FailedToCreateFormatter {
     public function __construct(
-        protected string $currency,
+        protected ?string $currency,
         protected string $format,
         ?Throwable $previous = null,
     ) {
@@ -22,7 +22,7 @@ class FailedToCreateCurrencyFormatter extends FailedToCreateFormatter {
         );
     }
 
-    public function getCurrency(): string {
+    public function getCurrency(): ?string {
         return $this->currency;
     }
 

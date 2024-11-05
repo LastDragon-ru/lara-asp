@@ -17,10 +17,6 @@ use Override;
 class Config extends Configuration {
     public function __construct(
         /**
-         * Default formats.
-         */
-        public Defaults $defaults = new Defaults(),
-        /**
          * Options and patterns/formats for all locales.
          */
         public Locale $global = new Locale(),

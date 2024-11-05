@@ -352,17 +352,17 @@ final class FormatterTest extends TestCase {
     }
 
     public function testCurrency(): void {
-        self::assertEquals('$10.00', $this->formatter->currency(10));
-        self::assertEquals('$10.03', $this->formatter->currency(10.0324234));
+        $formatter = $this->formatter->forLocale('en_US');
+
+        self::assertEquals('$10.00', $formatter->currency(10));
+        self::assertEquals('$10.03', $formatter->currency(10.0324234));
     }
 
     public function testCurrencyConfig(): void {
-        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $config->defaults->currency = 'RUB';
-        });
+        $formatter = $this->formatter->forLocale('ru_RU');
 
-        self::assertEquals("RUB\u{00A0}10.00", $this->formatter->currency(10));
-        self::assertEquals("RUB\u{00A0}10.03", $this->formatter->currency(10.0324234));
+        self::assertEquals("10,00\u{00A0}₽", $formatter->currency(10));
+        self::assertEquals("10,03\u{00A0}₽", $formatter->currency(10.0324234));
     }
     // </editor-fold>
 }

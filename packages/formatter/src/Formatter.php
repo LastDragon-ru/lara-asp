@@ -257,12 +257,11 @@ class Formatter {
      */
     protected function formatCurrency(string $format, float|int|null $value, ?string $currency = null): string {
         // Prepare
-        $config     = $this->configuration->getInstance();
-        $locale     = $this->getLocale();
-        $pattern    = $config->global->currency->formats[$format]->pattern
+        $config  = $this->configuration->getInstance();
+        $locale  = $this->getLocale();
+        $pattern = $config->global->currency->formats[$format]->pattern
             ?? $config->locales[$locale]->currency->formats[$format]->pattern
             ?? null;
-        $currency ??= $config->defaults->currency;
 
         // Create
         try {
@@ -279,6 +278,7 @@ class Formatter {
         }
 
         // Format
+        $currency ??= $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
         $formatted = $formatter->formatCurrency((float) $value, $currency);
 
         if ($formatted === false) {
