@@ -6,16 +6,22 @@ use Throwable;
 
 use function sprintf;
 
-class FailedToCreateNumberFormatter extends FailedToCreateFormatter {
+class FailedToFormatNumber extends FailedToFormatValue {
     public function __construct(
         protected string $format,
+        int $intlErrorCode,
+        string $intlErrorMessage,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to create Number Formatter for `%s` format.',
+                'Failed to format number into `%s` format: `%s` (`%s`).',
                 $this->getFormat(),
+                $this->getIntlErrorMessage(),
+                $this->getIntlErrorCode(),
             ),
+            $intlErrorCode,
+            $intlErrorMessage,
             $previous,
         );
     }

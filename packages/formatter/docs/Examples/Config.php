@@ -29,6 +29,6 @@ $default  = app()->make(Formatter::class);
 $locale   = $default->forLocale('ru_RU');
 
 Example::dump($default->date($datetime));
-Example::dump($default->date($datetime, 'custom'));
+Example::dump($default->date($datetime));
 Example::dump($locale->date($datetime));
-Example::dump($locale->date($datetime, 'custom'));
+Example::dump($locale->date($datetime));

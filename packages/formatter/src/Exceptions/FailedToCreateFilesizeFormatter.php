@@ -6,14 +6,14 @@ use Throwable;
 
 use function sprintf;
 
-class FailedToCreateNumberFormatter extends FailedToCreateFormatter {
+class FailedToCreateFilesizeFormatter extends FailedToCreateFormatter {
     public function __construct(
         protected string $format,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to create Number Formatter for `%s` format.',
+                'Failed to create Filesize Formatter for `%s` format.',
                 $this->getFormat(),
             ),
             $previous,

@@ -5,32 +5,21 @@ namespace LastDragon_ru\LaraASP\Formatter\Exceptions;
 use LastDragon_ru\LaraASP\Formatter\PackageException;
 use Throwable;
 
-use function sprintf;
-
-class FailedToFormatValue extends PackageException {
+abstract class FailedToFormatValue extends PackageException {
     public function __construct(
-        protected string $type,
-        protected int $errorCode,
-        protected string $errorMessage,
+        string $message,
+        protected int $intlErrorCode,
+        protected string $intlErrorMessage,
         ?Throwable $previous = null,
     ) {
-        parent::__construct(sprintf(
-            'Formatting for type `%s` failed: `%s` (`%s`).',
-            $this->getType(),
-            $this->getErrorMessage(),
-            $this->getErrorCode(),
-        ), $previous);
+        parent::__construct($message, $previous);
     }
 
-    public function getType(): string {
-        return $this->type;
+    public function getIntlErrorCode(): int {
+        return $this->intlErrorCode;
     }
 
-    public function getErrorCode(): int {
-        return $this->errorCode;
-    }
-
-    public function getErrorMessage(): string {
-        return $this->errorMessage;
+    public function getIntlErrorMessage(): string {
+        return $this->intlErrorMessage;
     }
 }

@@ -2,32 +2,38 @@
 
 namespace LastDragon_ru\LaraASP\Formatter;
 
-use Closure;
 use DateInterval;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateFormatter;
+use LastDragon_ru\LaraASP\Formatter\Config\Config;
+use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
+use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
+use LastDragon_ru\LaraASP\Formatter\Config\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateCurrencyFormatter;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateTimeFormatter;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDurationFormatter;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateFilesizeFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatValue;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateSecretFormatter;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatCurrency;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDateTime;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDuration;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatNumber;
 use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
 use NumberFormatter;
 use OutOfBoundsException;
 
-use function abs;
 use function bccomp;
 use function bcdiv;
 use function is_float;
-use function is_int;
 use function is_null;
-use function is_string;
-use function json_encode;
 use function mb_str_pad;
 use function mb_strlen;
 use function mb_substr;
@@ -35,185 +41,29 @@ use function sprintf;
 use function str_replace;
 use function trim;
 
-use const JSON_THROW_ON_ERROR;
-
 class Formatter {
     use Macroable;
 
-    /**
-     * @see NumberFormatter::setSymbol()
-     */
-    final public const IntlSymbols = 'intl_symbols';
-
-    /**
-     * @see NumberFormatter::setAttribute()
-     */
-    final public const IntlAttributes = 'intl_attributes';
-
-    /**
-     * @see NumberFormatter::setTextAttribute()
-     */
-    final public const IntlTextAttributes = 'intl_text_attributes';
-
-    /**
-     * Options:
-     * - none
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
-     * - {@link Formatter::IntlSymbols}
-     */
-    public const Integer = 'integer';
-
-    /**
-     * Options:
-     * - none
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes}
-     * - {@link Formatter::IntlSymbols}
-     */
+    public const Default    = 'default';
+    public const Integer    = 'integer';
     public const Scientific = 'scientific';
-
-    /**
-     * Options:
-     * - none
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes}
-     * - {@link Formatter::IntlSymbols}
-     */
-    public const Spellout = 'spellout';
-
-    /**
-     * Options:
-     * - none
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes}
-     * - {@link Formatter::IntlSymbols}
-     */
-    public const Ordinal = 'ordinal';
-
-    /**
-     * Options (one of):
-     *  - `int`: {@link NumberFormatter::DURATION}
-     *  - `string`: the name of custom format
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes}
-     * - {@link Formatter::IntlSymbols}
-     * - `string`: available only for custom formats: locale specific pattern
-     *       (key: `locales.<locale>.duration.<format>` and/or default pattern
-     *       (key: `all.duration.<format>`)
-     *       {@link DurationFormatter}
-     */
-    public const Duration = 'duration';
-
-    /**
-     * Options:
-     * - `int`: fraction digits
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
-     * - {@link Formatter::IntlSymbols}
-     */
-    public const Decimal = 'decimal';
-
-    /**
-     * Options:
-     * - `string`: default currency
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
-     * - {@link Formatter::IntlSymbols}
-     */
-    public const Currency = 'currency';
-
-    /**
-     * Options:
-     * - `int`: fraction digits
-     *
-     * Locales options:
-     * - {@link Formatter::IntlTextAttributes}
-     * - {@link Formatter::IntlAttributes} (except {@link NumberFormatter::FRACTION_DIGITS})
-     * - {@link Formatter::IntlSymbols}
-     */
-    public const Percent = 'percent';
-
-    /**
-     * Options (one of):
-     * - `int`: {@link IntlDateFormatter::SHORT}, {@link IntlDateFormatter::FULL},
-     *      {@link IntlDateFormatter::LONG} or {@link IntlDateFormatter::MEDIUM}
-     * - `string`: the name of custom format
-     *
-     * Locales options:
-     * - `string`: available only for custom formats: locale specific pattern
-     *      (key: `locales.<locale>.time.<format>` and/or default pattern
-     *      (key: `all.time.<format>`)
-     */
-    public const Time = 'time';
-
-    /**
-     * @see Formatter::Time
-     */
-    public const Date = 'date';
-
-    /**
-     * @see Formatter::Time
-     */
-    public const DateTime = 'datetime';
-
-    /**
-     * Options:
-     * - `int`: fraction digits
-     *
-     * Locales options:
-     * - none
-     */
-    public const Filesize = 'filesize';
-
-    /**
-     * Options:
-     * - `int`: fraction digits
-     *
-     * Locales options:
-     * - none
-     */
-    public const Disksize = 'disksize';
-
-    /**
-     * Options:
-     * - `int`: how many characters should be shown
-     *
-     * Locales options:
-     * - none
-     */
-    public const Secret = 'secret';
+    public const Spellout   = 'spellout';
+    public const Ordinal    = 'ordinal';
+    public const Decimal    = 'decimal';
+    public const Percent    = 'percent';
+    public const Time       = 'time';
+    public const Date       = 'date';
+    public const DateTime   = 'datetime';
+    public const Filesize   = 'filesize';
+    public const Disksize   = 'disksize';
 
     private ?string                               $locale   = null;
     private IntlTimeZone|DateTimeZone|string|null $timezone = null;
 
-    /**
-     * @var array<string, IntlDateFormatter>
-     */
-    private array $dateFormatters = [];
-
-    /**
-     * @var array<string, NumberFormatter>
-     */
-    private array $numbersFormatters = [];
-
     public function __construct(
         protected readonly ApplicationResolver $application,
         protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $configuration,
         private PackageTranslator $translator,
     ) {
         // empty
@@ -275,171 +125,73 @@ class Formatter {
         return trim((string) $value);
     }
 
-    public function integer(int|float|null $value): string {
-        return $this->formatValue(static::Integer, $value);
+    public function integer(float|int|null $value): string {
+        return $this->formatNumber(self::Integer, $value);
     }
 
-    public function decimal(float|int|null $value, ?int $decimals = null): string {
-        return $this->formatValue(static::Decimal, $value, $decimals, function () use ($decimals): int {
-            return $decimals ?? Cast::toInt($this->getOptions(static::Decimal, 2));
-        });
+    public function decimal(float|int|null $value): string {
+        return $this->formatNumber(self::Decimal, $value);
     }
 
-    public function currency(?float $value, ?string $currency = null): string {
-        $type       = static::Currency;
-        $value      = (float) $value;
-        $currency ??= Cast::toString($this->getOptions($type, 'USD'));
-        $formatter = $this->getIntlNumberFormatter($type);
-        $formatted = $formatter->formatCurrency($value, $currency);
-
-        if ($formatted === false) {
-            throw new FailedToFormatValue($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
-        }
-
-        return $formatted;
+    public function currency(float|int|null $value): string {
+        return $this->formatCurrency(self::Default, $value);
     }
 
     /**
-     * @param float|null $value must be between 0-100
+     * @param float|int|null $value must be between 0-100
      */
-    public function percent(?float $value, ?int $decimals = null): string {
-        return $this->formatValue(static::Percent, (float) $value / 100, $decimals, function () use ($decimals): int {
-            return $decimals ?? Cast::toInt($this->getOptions(static::Percent, 0));
-        });
+    public function percent(float|int|null $value): string {
+        return $this->formatNumber(self::Percent, $value !== null ? $value / 100 : $value);
     }
 
-    public function scientific(?float $value): string {
-        return $this->formatValue(static::Scientific, $value);
+    public function scientific(float|int|null $value): string {
+        return $this->formatNumber(self::Scientific, $value);
     }
 
-    public function spellout(?float $value): string {
-        return $this->formatValue(static::Spellout, $value);
+    public function spellout(float|int|null $value): string {
+        return $this->formatNumber(self::Spellout, $value);
     }
 
     public function ordinal(?int $value): string {
-        return $this->formatValue(static::Ordinal, $value);
+        return $this->formatNumber(self::Ordinal, $value);
     }
 
-    public function duration(DateInterval|float|int|null $value, ?string $format = null): string {
-        $type     = static::Duration;
-        $format ??= $this->getOptions($type);
-        $format   = is_string($format)
-            ? Cast::toString($this->getLocaleOptions($type, $format))
-            : $format;
-        $format ??= 'HH:mm:ss.SSS';
-        $value  ??= 0;
-        $value    = $value instanceof DateInterval
-            ? DurationFormatter::getTimestamp($value)
-            : $value;
-        $value    = is_string($format)
-            ? (new DurationFormatter($format))->format($value)
-            : $this->formatValue($type, $value);
-
-        return $value;
+    public function duration(DateInterval|float|int|null $value): string {
+        return $this->formatDuration(self::Default, $value);
     }
 
-    public function time(
-        ?DateTimeInterface $value,
-        ?string $format = null,
-        IntlTimeZone|DateTimeZone|string|null $timezone = null,
-    ): string {
-        return $this->formatDateTime(self::Time, $value, $format, $timezone);
+    public function time(?DateTimeInterface $value): string {
+        return $this->formatDateTime(self::Time, $value);
     }
 
-    public function date(
-        ?DateTimeInterface $value,
-        ?string $format = null,
-        IntlTimeZone|DateTimeZone|string|null $timezone = null,
-    ): string {
-        return $this->formatDateTime(self::Date, $value, $format, $timezone);
+    public function date(?DateTimeInterface $value): string {
+        return $this->formatDateTime(self::Date, $value);
     }
 
-    public function datetime(
-        ?DateTimeInterface $value,
-        ?string $format = null,
-        IntlTimeZone|DateTimeZone|string|null $timezone = null,
-    ): string {
-        return $this->formatDateTime(self::DateTime, $value, $format, $timezone);
+    public function datetime(?DateTimeInterface $value): string {
+        return $this->formatDateTime(self::DateTime, $value);
     }
 
     /**
      * Formats number of bytes into units based on powers of 2 (kibibyte, mebibyte, etc).
      *
-     * @param numeric-string|float|int<0, max>|null $bytes
+     * @param numeric-string|float|int|null $bytes
      */
-    public function filesize(string|float|int|null $bytes, ?int $decimals = null): string {
-        return $this->formatFilesize(
-            $bytes,
-            $decimals ?? Cast::toInt($this->getOptions(static::Filesize, 2)),
-            1024,
-            [
-                $this->getTranslation(['filesize.B', 'B']),
-                $this->getTranslation(['filesize.KiB', 'KiB']),
-                $this->getTranslation(['filesize.MiB', 'MiB']),
-                $this->getTranslation(['filesize.GiB', 'GiB']),
-                $this->getTranslation(['filesize.TiB', 'TiB']),
-                $this->getTranslation(['filesize.PiB', 'PiB']),
-                $this->getTranslation(['filesize.EiB', 'EiB']),
-                $this->getTranslation(['filesize.ZiB', 'ZiB']),
-                $this->getTranslation(['filesize.YiB', 'YiB']),
-                $this->getTranslation(['filesize.RiB', 'RiB']),
-                $this->getTranslation(['filesize.QiB', 'QiB']),
-            ],
-        );
+    public function filesize(string|float|int|null $bytes): string {
+        return $this->formatFilesize(self::Filesize, $bytes);
     }
 
     /**
      * Formats number of bytes into units based on powers of 10 (kilobyte, megabyte, etc).
      *
-     * @param numeric-string|float|int<0, max>|null $bytes
+     * @param numeric-string|float|int|null $bytes
      */
-    public function disksize(string|float|int|null $bytes, ?int $decimals = null): string {
-        return $this->formatFilesize(
-            $bytes,
-            $decimals ?? Cast::toInt($this->getOptions(static::Disksize, 2)),
-            1000,
-            [
-                $this->getTranslation(['disksize.B', 'B']),
-                $this->getTranslation(['disksize.kB', 'kB']),
-                $this->getTranslation(['disksize.MB', 'MB']),
-                $this->getTranslation(['disksize.GB', 'GB']),
-                $this->getTranslation(['disksize.TB', 'TB']),
-                $this->getTranslation(['disksize.PB', 'PB']),
-                $this->getTranslation(['disksize.EB', 'EB']),
-                $this->getTranslation(['disksize.ZB', 'ZB']),
-                $this->getTranslation(['disksize.YB', 'YB']),
-                $this->getTranslation(['disksize.RB', 'RB']),
-                $this->getTranslation(['disksize.QB', 'QB']),
-            ],
-        );
+    public function disksize(string|float|int|null $bytes): string {
+        return $this->formatFilesize(self::Disksize, $bytes);
     }
 
-    public function secret(?string $value, ?int $show = null): string {
-        if (is_null($value)) {
-            return '';
-        }
-
-        $show ??= Cast::toInt($this->getOptions(static::Secret, 5));
-        $length = mb_strlen($value);
-        $hidden = $length - $show;
-
-        if ($length <= $show) {
-            $value = mb_str_pad('*', $length, '*');
-        } elseif ($hidden < $show) {
-            $value = str_replace(
-                mb_substr($value, 0, $show),
-                mb_str_pad('*', $show, '*'),
-                $value,
-            );
-        } else {
-            $value = str_replace(
-                mb_substr($value, 0, $hidden),
-                mb_str_pad('*', $hidden, '*'),
-                $value,
-            );
-        }
-
-        return $value;
+    public function secret(?string $value): string {
+        return $this->formatSecret(self::Default, $value);
     }
     // </editor-fold>
 
@@ -453,24 +205,6 @@ class Formatter {
         return $this->config->getInstance()->get('app.timezone') ?? null;
     }
 
-    protected function getOptions(string $type, mixed $default = null): mixed {
-        $repository = $this->config->getInstance();
-        $package    = Package::Name;
-        $key        = "{$package}.options.{$type}";
-
-        return $repository->get($key, $default);
-    }
-
-    protected function getLocaleOptions(string $type, string $option): mixed {
-        $repository = $this->config->getInstance();
-        $package    = Package::Name;
-        $locale     = $this->getLocale();
-        $pattern    = $repository->get("{$package}.locales.{$locale}.{$type}.{$option}")
-            ?? $repository->get("{$package}.all.{$type}.{$option}");
-
-        return $pattern;
-    }
-
     /**
      * @param list<string>|string  $key
      * @param array<string, mixed> $replace
@@ -479,54 +213,237 @@ class Formatter {
         return $this->getTranslator()->get($key, $replace, $this->getLocale());
     }
 
-    /**
-     * @param Closure(string, ?int):(int|null)|null $closure
-     */
-    protected function formatValue(
-        string $type,
-        float|int|null $value,
-        ?int $decimals = null,
-        ?Closure $closure = null,
-    ): string {
-        $value     = (float) $value;
-        $formatter = $this->getIntlNumberFormatter($type, $decimals, $closure);
-        $formatted = $formatter->format($value);
+    protected function formatNumber(string $format, float|int|null $value): string {
+        // Definition
+        $config  = $this->configuration->getInstance();
+        $locale  = $this->getLocale();
+        $style   = $config->global->number->formats[$format]->style
+            ?? $config->locales[$locale]->number->formats[$format]->style
+            ?? null;
+        $pattern = $config->global->number->formats[$format]->pattern
+            ?? $config->locales[$locale]->number->formats[$format]->pattern
+            ?? null;
+
+        if ($style === null) {
+            throw new FailedToCreateNumberFormatter($format);
+        }
+
+        // Create
+        try {
+            $formatter = $this->getNumberFormatter(
+                $style,
+                $pattern,
+                $config->locales[$locale]->number->formats[$format] ?? null,
+                $config->locales[$locale]->number ?? null,
+                $config->global->number->formats[$format] ?? null,
+                $config->global->number,
+            );
+        } catch (Exception $exception) {
+            throw new FailedToCreateNumberFormatter($format, $exception);
+        }
+
+        // Format
+        $formatted = $formatter->format($value ?? 0);
 
         if ($formatted === false) {
-            throw new FailedToFormatValue($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
+            throw new FailedToFormatNumber($format, $formatter->getErrorCode(), $formatter->getErrorMessage());
         }
 
         return $formatted;
     }
 
-    protected function formatDateTime(
-        string $type,
-        ?DateTimeInterface $value,
-        ?string $format = null,
-        IntlTimeZone|DateTimeZone|string|null $timezone = null,
-    ): string {
+    /**
+     * @param non-empty-string|null $currency
+     */
+    protected function formatCurrency(string $format, float|int|null $value, ?string $currency = null): string {
+        // Prepare
+        $config     = $this->configuration->getInstance();
+        $locale     = $this->getLocale();
+        $pattern    = $config->global->currency->formats[$format]->pattern
+            ?? $config->locales[$locale]->currency->formats[$format]->pattern
+            ?? null;
+        $currency ??= $config->defaults->currency;
+
+        // Create
+        try {
+            $formatter = $this->getNumberFormatter(
+                NumberFormatter::CURRENCY,
+                $pattern,
+                $config->locales[$locale]->currency->formats[$format] ?? null,
+                $config->locales[$locale]->currency ?? null,
+                $config->global->currency->formats[$format] ?? null,
+                $config->global->currency,
+            );
+        } catch (Exception $exception) {
+            throw new FailedToCreateCurrencyFormatter($currency, $format, $exception);
+        }
+
+        // Format
+        $formatted = $formatter->formatCurrency((float) $value, $currency);
+
+        if ($formatted === false) {
+            throw new FailedToFormatCurrency(
+                $currency,
+                $format,
+                $formatter->getErrorCode(),
+                $formatter->getErrorMessage(),
+            );
+        }
+
+        // Return
+        return $formatted;
+    }
+
+    protected function formatDateTime(string $format, ?DateTimeInterface $value): string {
+        // Null?
         if (is_null($value)) {
             return '';
         }
 
-        $formatter = ($timezone !== null ? $this->forTimezone($timezone) : $this)->getIntlDateFormatter($type, $format);
-        $value     = $formatter->format($value);
+        // Prepare
+        $config   = $this->configuration->getInstance();
+        $locale   = $this->getLocale();
+        $pattern  = $config->global->datetime->formats[$format]->pattern
+            ?? $config->locales[$locale]->datetime->formats[$format]->pattern
+            ?? null;
+        $dateType = $config->global->datetime->formats[$format]->dateType
+            ?? $config->locales[$locale]->datetime->formats[$format]->dateType
+            ?? null;
+        $timeType = $config->global->datetime->formats[$format]->timeType
+            ?? $config->locales[$locale]->datetime->formats[$format]->timeType
+            ?? null;
 
-        if ($value === false) {
-            throw new FailedToFormatValue($type, $formatter->getErrorCode(), $formatter->getErrorMessage());
+        if ($dateType === null || $timeType === null) {
+            throw new FailedToCreateDateTimeFormatter($format);
         }
 
-        return $value;
+        // Create
+        try {
+            $formatter = $this->getDateTimeFormatter($dateType, $timeType, $pattern);
+        } catch (Exception $exception) {
+            throw new FailedToCreateDateTimeFormatter($format, $exception);
+        }
+
+        // Format
+        $formatted = $formatter->format($value);
+
+        if ($formatted === false) {
+            throw new FailedToFormatDateTime(
+                $format,
+                $formatter->getErrorCode(),
+                $formatter->getErrorMessage(),
+            );
+        }
+
+        // Return
+        return $formatted;
+    }
+
+    protected function formatSecret(string $format, ?string $value): string {
+        // Null?
+        if (is_null($value)) {
+            return '';
+        }
+
+        // Prepare
+        $config  = $this->configuration->getInstance();
+        $locale  = $this->getLocale();
+        $visible = $config->global->secret->formats[$format]->visible
+            ?? $config->locales[$locale]->secret->formats[$format]->visible
+            ?? null;
+
+        if ($visible === null) {
+            throw new FailedToCreateSecretFormatter($format);
+        }
+
+        // Format
+        $length    = mb_strlen($value);
+        $hidden    = $length - $visible;
+        $formatted = match (true) {
+            $length <= $visible => mb_str_pad('*', $length, '*'),
+            $hidden < $visible  => str_replace(mb_substr($value, 0, $visible), mb_str_pad('*', $visible, '*'), $value),
+            default             => str_replace(mb_substr($value, 0, $hidden), mb_str_pad('*', $hidden, '*'), $value),
+        };
+
+        // Return
+        return $formatted;
+    }
+
+    protected function formatDuration(string $format, DateInterval|float|int|null $value): string {
+        $config    = $this->configuration->getInstance();
+        $locale    = $this->getLocale();
+        $type      = $config->locales[$locale]->duration->formats[$format]
+            ?? $config->global->duration->formats[$format]
+            ?? null;
+        $value     = ($value instanceof DateInterval ? DurationFormatter::getTimestamp($value) : $value) ?? 0;
+        $formatted = match (true) {
+            $type instanceof DurationFormatPattern => $this->formatDurationPattern($type, $value),
+            $type instanceof DurationFormatIntl    => $this->formatDurationIntl($config, $locale, $format, $value),
+            default                                => throw new FailedToCreateDurationFormatter($format),
+        };
+
+        return $formatted;
+    }
+
+    private function formatDurationPattern(DurationFormatPattern $config, float|int $value): string {
+        return (new DurationFormatter($config->pattern))->format($value);
+    }
+
+    private function formatDurationIntl(Config $config, string $locale, string $format, float|int $value): string {
+        // Create
+        try {
+            $formatIntl = $config->locales[$locale]->duration->formats[$format] ?? null;
+            $globalIntl = $config->global->duration->formats[$format] ?? null;
+            $pattern    = $config->global->duration->formats[$format]->pattern
+                ?? $config->locales[$locale]->duration->formats[$format]->pattern
+                ?? null;
+            $formatter  = $this->getNumberFormatter(
+                NumberFormatter::DURATION,
+                $pattern,
+                $formatIntl instanceof IntlOptions ? $formatIntl : null,
+                $globalIntl instanceof IntlOptions ? $globalIntl : null,
+            );
+        } catch (Exception $exception) {
+            throw new FailedToCreateDurationFormatter($format, $exception);
+        }
+
+        // Format
+        $formatted = $formatter->format($value);
+
+        if ($formatted === false) {
+            throw new FailedToFormatDuration($format, $formatter->getErrorCode(), $formatter->getErrorMessage());
+        }
+
+        return $formatted;
     }
 
     /**
-     * @param numeric-string|float|int<0, max>|null $bytes
-     * @param array<int<0, max>, string>            $units
+     * @param numeric-string|float|int|null $bytes
      */
-    protected function formatFilesize(string|float|int|null $bytes, int $decimals, int $base, array $units): string {
+    protected function formatFilesize(string $format, string|float|int|null $bytes): string {
+        // Prepare
+        $config        = $this->configuration->getInstance();
+        $locale        = $this->getLocale();
+        $base          = $config->locales[$locale]->filesize->formats[$format]->base
+            ?? $config->global->filesize->formats[$format]->base
+            ?? null;
+        $units         = $config->locales[$locale]->filesize->formats[$format]->units
+            ?? $config->global->filesize->formats[$format]->units
+            ?? null;
+        $integerFormat = $config->locales[$locale]->filesize->formats[$format]->integerFormat
+            ?? $config->global->filesize->formats[$format]->integerFormat
+            ?? self::Integer;
+        $decimalFormat = $config->locales[$locale]->filesize->formats[$format]->decimalFormat
+            ?? $config->global->filesize->formats[$format]->decimalFormat
+            ?? self::Decimal;
+
+        if ($base === null || $units === null) {
+            throw new FailedToCreateFileSizeFormatter($format);
+        }
+
         $unit  = 0;
         $base  = (string) $base;
-        $scale = 2 * $decimals;
+        $scale = mb_strlen($base) + 1;
         $bytes = match (true) {
             is_float($bytes) => sprintf('%0.0f', $bytes),
             $bytes === null  => '0',
@@ -542,212 +459,85 @@ class Formatter {
         }
 
         // Format
-        return $unit === 0
-            ? $this->integer((int) $bytes)." {$units[$unit]}"
-            : $this->decimal((float) $bytes, $decimals)." {$units[$unit]}";
+        $isInt     = $unit === 0;
+        $bytes     = $isInt ? (int) $bytes : (float) $bytes;
+        $format    = $isInt ? $integerFormat : $decimalFormat;
+        $suffix    = $this->getTranslation($units[$unit]);
+        $formatted = "{$this->formatNumber($format, $bytes)} {$suffix}";
+
+        return $formatted;
     }
     // </editor-fold>
 
     // <editor-fold desc="Internal">
     // =========================================================================
-    private function getIntlDateFormatter(string $type, ?string $format = null): IntlDateFormatter {
-        $key       = json_encode([$type, $format], JSON_THROW_ON_ERROR);
-        $formatter = $this->dateFormatters[$key] ?? $this->createIntlDateFormatter($type, $format);
-
-        if ($formatter !== null) {
-            $this->dateFormatters[$key] = $formatter;
-        } else {
-            throw new FailedToCreateDateFormatter($type, $format);
-        }
+    private function getDateTimeFormatter(int $dateType, int $timeType, ?string $pattern): IntlDateFormatter {
+        $locale    = $this->getLocale();
+        $timezone  = $this->getTimezone();
+        $formatter = new IntlDateFormatter($locale, $dateType, $timeType, $timezone, null, $pattern);
 
         return $formatter;
     }
 
-    private function createIntlDateFormatter(string $type, ?string $format = null): ?IntlDateFormatter {
-        $formatter = null;
-        $pattern   = '';
-        $default   = IntlDateFormatter::SHORT;
-        $format  ??= $this->getOptions($type, $default);
-        $tz        = $this->getTimezone();
+    private function getNumberFormatter(int $style, ?string $pattern, ?IntlOptions ...$options): NumberFormatter {
+        // Create
+        $locale    = $this->getLocale();
+        $formatter = new NumberFormatter($locale, $style, $pattern);
 
-        if (is_string($format)) {
-            $pattern = Cast::toString($this->getLocaleOptions($type, $format));
-            $format  = IntlDateFormatter::FULL;
-        }
+        // Collect Intl options
+        $textAttributes = [];
+        $attributes     = [];
+        $symbols        = [];
 
-        if (!is_int($format)) {
-            $format = $default;
-        }
-
-        switch ($type) {
-            case self::Time:
-                $formatter = new IntlDateFormatter(
-                    $this->getLocale(),
-                    IntlDateFormatter::NONE,
-                    $format,
-                    $tz,
-                    null,
-                    $pattern,
-                );
-                break;
-            case self::Date:
-                $formatter = new IntlDateFormatter(
-                    $this->getLocale(),
-                    $format,
-                    IntlDateFormatter::NONE,
-                    $tz,
-                    null,
-                    $pattern,
-                );
-                break;
-            case self::DateTime:
-                $formatter = new IntlDateFormatter(
-                    $this->getLocale(),
-                    $format,
-                    $format,
-                    $tz,
-                    null,
-                    $pattern,
-                );
-                break;
-            default:
-                // empty
-                break;
-        }
-
-        return $formatter;
-    }
-
-    /**
-     * @param Closure(string, ?int):(int|null)|null $closure
-     */
-    private function getIntlNumberFormatter(
-        string $type,
-        ?int $decimals = null,
-        ?Closure $closure = null,
-    ): NumberFormatter {
-        $key       = json_encode([$type, $decimals], JSON_THROW_ON_ERROR);
-        $formatter = $this->numbersFormatters[$key] ?? $this->createIntlNumberFormatter($type, $decimals, $closure);
-
-        if ($formatter !== null) {
-            $this->numbersFormatters[$key] = $formatter;
-        } else {
-            throw new FailedToCreateNumberFormatter($type);
-        }
-
-        return $formatter;
-    }
-
-    /**
-     * @param Closure(string, ?int):(int|null)|null $closure
-     */
-    private function createIntlNumberFormatter(
-        string $type,
-        ?int $decimals = null,
-        ?Closure $closure = null,
-    ): ?NumberFormatter {
-        $formatter  = null;
-        $attributes = [];
-        $symbols    = [];
-        $texts      = [];
-
-        if ($closure !== null) {
-            $decimals = $closure($type, $decimals);
-        }
-
-        switch ($type) {
-            case static::Integer:
-                $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                $attributes = $attributes + [
-                        NumberFormatter::FRACTION_DIGITS => 0,
-                    ];
-                break;
-            case static::Decimal:
-                $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::DECIMAL);
-                $attributes = $attributes + [
-                        NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
-                    ];
-                break;
-            case static::Currency:
-                $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::CURRENCY);
-                break;
-            case static::Percent:
-                $formatter  = new NumberFormatter($this->getLocale(), NumberFormatter::PERCENT);
-                $attributes = $attributes + [
-                        NumberFormatter::FRACTION_DIGITS => abs((int) $decimals),
-                    ];
-                break;
-            case static::Scientific:
-                $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SCIENTIFIC);
-                break;
-            case static::Spellout:
-                $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::SPELLOUT);
-                break;
-            case static::Ordinal:
-                $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::ORDINAL);
-                break;
-            case static::Duration:
-                $formatter = new NumberFormatter($this->getLocale(), NumberFormatter::DURATION);
-                break;
-            default:
-                // null
-                break;
-        }
-
-        if ($formatter !== null) {
-            $attributes = $attributes
-                + (array) $this->getLocaleOptions($type, self::IntlAttributes)
-                + (array) $this->getOptions(self::IntlAttributes);
-            $symbols    = $symbols
-                + (array) $this->getLocaleOptions($type, self::IntlSymbols)
-                + (array) $this->getOptions(self::IntlSymbols);
-            $texts      = $texts
-                + (array) $this->getLocaleOptions($type, self::IntlTextAttributes)
-                + (array) $this->getOptions(self::IntlTextAttributes);
-
-            foreach ($attributes as $attribute => $value) {
-                if (!is_int($attribute) || !$formatter->setAttribute($attribute, Cast::toNumber($value))) {
-                    throw new OutOfBoundsException(
-                        sprintf(
-                            '%s::setAttribute() failed: `%s` is unknown/invalid.',
-                            NumberFormatter::class,
-                            $attribute,
-                        ),
-                    );
-                }
+        foreach ($options as $intl) {
+            if ($intl === null) {
+                continue;
             }
 
-            foreach ($symbols as $symbol => $value) {
-                if (!is_int($symbol) || !$formatter->setSymbol($symbol, Cast::toString($value))) {
-                    throw new OutOfBoundsException(
-                        sprintf(
-                            '%s::setSymbol() failed: `%s` is unknown/invalid.',
-                            NumberFormatter::class,
-                            $symbol,
-                        ),
-                    );
-                }
-            }
+            $symbols        += $intl->symbols;
+            $attributes     += $intl->attributes;
+            $textAttributes += $intl->textAttributes;
+        }
 
-            foreach ($texts as $text => $value) {
-                if (!is_int($text) || !$formatter->setTextAttribute($text, Cast::toString($value))) {
-                    throw new OutOfBoundsException(
-                        sprintf(
-                            '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
-                            NumberFormatter::class,
-                            $text,
-                        ),
-                    );
-                }
+        // Apply
+        foreach ($attributes as $attribute => $value) {
+            if (!$formatter->setAttribute($attribute, $value)) {
+                throw new OutOfBoundsException(
+                    sprintf(
+                        '%s::setAttribute() failed: `%s` is unknown/invalid.',
+                        NumberFormatter::class,
+                        $attribute,
+                    ),
+                );
             }
         }
 
-        return $formatter;
-    }
+        foreach ($symbols as $symbol => $value) {
+            if (!$formatter->setSymbol($symbol, $value)) {
+                throw new OutOfBoundsException(
+                    sprintf(
+                        '%s::setSymbol() failed: `%s` is unknown/invalid.',
+                        NumberFormatter::class,
+                        $symbol,
+                    ),
+                );
+            }
+        }
 
-    public function __clone(): void {
-        $this->dateFormatters    = [];
-        $this->numbersFormatters = [];
+        foreach ($textAttributes as $attribute => $value) {
+            if (!$formatter->setTextAttribute($attribute, $value)) {
+                throw new OutOfBoundsException(
+                    sprintf(
+                        '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
+                        NumberFormatter::class,
+                        $attribute,
+                    ),
+                );
+            }
+        }
+
+        // Return
+        return $formatter;
     }
     //</editor-fold>
 }
