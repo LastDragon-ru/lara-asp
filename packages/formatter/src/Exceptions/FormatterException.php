@@ -4,6 +4,6 @@ namespace LastDragon_ru\LaraASP\Formatter\Exceptions;
 
 use LastDragon_ru\LaraASP\Formatter\PackageException;
 
-abstract class FailedToCreateFormatter extends PackageException {
+abstract class FormatterException extends PackageException {
     // empty
 }

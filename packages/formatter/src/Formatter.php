@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
+use IntlException;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
@@ -16,16 +17,8 @@ use LastDragon_ru\LaraASP\Formatter\Config\Config;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Config\IntlOptions;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateCurrencyFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDateTimeFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateDurationFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateFilesizeFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateNumberFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToCreateSecretFormatter;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatCurrency;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDateTime;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatDuration;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FailedToFormatNumber;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
+use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
 use NumberFormatter;
 use OutOfBoundsException;
@@ -56,6 +49,13 @@ class Formatter {
     public const DateTime   = 'datetime';
     public const Filesize   = 'filesize';
     public const Disksize   = 'disksize';
+
+    private const FormatterNumber   = 'Number';
+    private const FormatterSecret   = 'Secret';
+    private const FormatterDateTime = 'DateTime';
+    private const FormatterDuration = 'Duration';
+    private const FormatterCurrency = 'Currency';
+    private const FormatterFilesize = 'Filesize';
 
     private ?string                               $locale   = null;
     private IntlTimeZone|DateTimeZone|string|null $timezone = null;
@@ -225,7 +225,7 @@ class Formatter {
             ?? null;
 
         if ($style === null) {
-            throw new FailedToCreateNumberFormatter($format);
+            throw new FormatterFailedToCreateFormatter(self::FormatterNumber, $format);
         }
 
         // Create
@@ -239,14 +239,19 @@ class Formatter {
                 $config->global->number,
             );
         } catch (Exception $exception) {
-            throw new FailedToCreateNumberFormatter($format, $exception);
+            throw new FormatterFailedToCreateFormatter(self::FormatterNumber, $format, $exception);
         }
 
         // Format
         $formatted = $formatter->format($value ?? 0);
 
         if ($formatted === false) {
-            throw new FailedToFormatNumber($format, $formatter->getErrorCode(), $formatter->getErrorMessage());
+            throw new FormatterFailedToFormatValue(
+                self::FormatterNumber,
+                $format,
+                $value,
+                new IntlException($formatter->getErrorMessage(), $formatter->getErrorCode()),
+            );
         }
 
         return $formatted;
@@ -274,19 +279,23 @@ class Formatter {
                 $config->global->currency,
             );
         } catch (Exception $exception) {
-            throw new FailedToCreateCurrencyFormatter($currency, $format, $exception);
+            throw new FormatterFailedToCreateFormatter(
+                self::FormatterCurrency,
+                "{$format}@".($currency ?? 'NULL'),
+                $exception,
+            );
         }
 
         // Format
-        $currency ??= $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
-        $formatted = $formatter->formatCurrency((float) $value, $currency);
+        $as        = $currency ?? $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
+        $formatted = $formatter->formatCurrency((float) $value, $as);
 
         if ($formatted === false) {
-            throw new FailedToFormatCurrency(
-                $currency,
-                $format,
-                $formatter->getErrorCode(),
-                $formatter->getErrorMessage(),
+            throw new FormatterFailedToFormatValue(
+                self::FormatterCurrency,
+                "{$format}@".($currency ?? 'NULL')." ({$as})",
+                $value,
+                new IntlException($formatter->getErrorMessage(), $formatter->getErrorCode()),
             );
         }
 
@@ -314,24 +323,28 @@ class Formatter {
             ?? null;
 
         if ($dateType === null || $timeType === null) {
-            throw new FailedToCreateDateTimeFormatter($format);
+            throw new FormatterFailedToCreateFormatter(self::FormatterDateTime, $format);
         }
 
         // Create
         try {
             $formatter = $this->getDateTimeFormatter($dateType, $timeType, $pattern);
         } catch (Exception $exception) {
-            throw new FailedToCreateDateTimeFormatter($format, $exception);
+            throw new FormatterFailedToCreateFormatter(self::FormatterDateTime, $format, $exception);
         }
 
         // Format
         $formatted = $formatter->format($value);
 
         if ($formatted === false) {
-            throw new FailedToFormatDateTime(
+            throw new FormatterFailedToFormatValue(
+                self::FormatterDateTime,
                 $format,
-                $formatter->getErrorCode(),
-                $formatter->getErrorMessage(),
+                $value,
+                throw new IntlException(
+                    $formatter->getErrorMessage(),
+                    $formatter->getErrorCode(),
+                ),
             );
         }
 
@@ -353,7 +366,7 @@ class Formatter {
             ?? null;
 
         if ($visible === null) {
-            throw new FailedToCreateSecretFormatter($format);
+            throw new FormatterFailedToCreateFormatter(self::FormatterSecret, $format);
         }
 
         // Format
@@ -379,7 +392,10 @@ class Formatter {
         $formatted = match (true) {
             $type instanceof DurationFormatPattern => $this->formatDurationPattern($type, $value),
             $type instanceof DurationFormatIntl    => $this->formatDurationIntl($config, $locale, $format, $value),
-            default                                => throw new FailedToCreateDurationFormatter($format),
+            default                                => throw new FormatterFailedToCreateFormatter(
+                self::FormatterDuration,
+                $format,
+            ),
         };
 
         return $formatted;
@@ -404,14 +420,22 @@ class Formatter {
                 $globalIntl instanceof IntlOptions ? $globalIntl : null,
             );
         } catch (Exception $exception) {
-            throw new FailedToCreateDurationFormatter($format, $exception);
+            throw new FormatterFailedToCreateFormatter(self::FormatterDuration, $format, $exception);
         }
 
         // Format
         $formatted = $formatter->format($value);
 
         if ($formatted === false) {
-            throw new FailedToFormatDuration($format, $formatter->getErrorCode(), $formatter->getErrorMessage());
+            throw new FormatterFailedToFormatValue(
+                self::FormatterDuration,
+                $format,
+                $value,
+                throw new IntlException(
+                    $formatter->getErrorMessage(),
+                    $formatter->getErrorCode(),
+                ),
+            );
         }
 
         return $formatted;
@@ -438,7 +462,7 @@ class Formatter {
             ?? self::Decimal;
 
         if ($base === null || $units === null) {
-            throw new FailedToCreateFileSizeFormatter($format);
+            throw new FormatterFailedToCreateFormatter(self::FormatterFilesize, $format);
         }
 
         $unit  = 0;
