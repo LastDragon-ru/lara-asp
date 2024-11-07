@@ -2,31 +2,26 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Formatter\Config\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Config\IntlNumberOptions;
 use NumberFormatter;
 
 /**
  * @see NumberFormatter
  */
-class NumberFormat extends IntlOptions {
+class NumberFormat extends IntlNumberOptions {
     /**
+     * @param ?NumberFormatter::*   $style
      * @param array<int, string>    $symbols
      * @param array<int, int|float> $attributes
      * @param array<int, string>    $textAttributes
      */
     public function __construct(
-        /**
-         * @var NumberFormatter::*
-         */
-        public ?int $style = null,
-        /**
-         * @see NumberFormatter::setPattern()
-         */
-        public ?string $pattern = null,
+        ?int $style = null,
+        ?string $pattern = null,
         array $symbols = [],
         array $attributes = [],
         array $textAttributes = [],
     ) {
-        parent::__construct($symbols, $attributes, $textAttributes);
+        parent::__construct($style, $pattern, $symbols, $attributes, $textAttributes);
     }
 }

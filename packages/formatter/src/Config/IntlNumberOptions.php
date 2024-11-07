@@ -5,8 +5,19 @@ namespace LastDragon_ru\LaraASP\Formatter\Config;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use NumberFormatter;
 
-class IntlOptions extends Configuration {
+/**
+ * @see NumberFormatter
+ */
+class IntlNumberOptions extends Configuration {
     public function __construct(
+        /**
+         * @var NumberFormatter::*|null
+         */
+        public ?int $style = null,
+        /**
+         * @see NumberFormatter::setPattern()
+         */
+        public ?string $pattern = null,
         /**
          * @see NumberFormatter::setSymbol()
          *

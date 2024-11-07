@@ -11,12 +11,13 @@ use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use IntlException;
 use IntlTimeZone;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Formatter\Config\Config;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
-use LastDragon_ru\LaraASP\Formatter\Config\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Config\IntlNumberOptions;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
@@ -214,25 +215,11 @@ class Formatter {
     }
 
     protected function formatNumber(string $format, float|int|null $value): string {
-        // Definition
-        $config  = $this->configuration->getInstance();
-        $locale  = $this->getLocale();
-        $style   = $config->global->number->formats[$format]->style
-            ?? $config->locales[$locale]->number->formats[$format]->style
-            ?? null;
-        $pattern = $config->global->number->formats[$format]->pattern
-            ?? $config->locales[$locale]->number->formats[$format]->pattern
-            ?? null;
-
-        if ($style === null) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterNumber, $format);
-        }
-
         // Create
         try {
+            $config    = $this->configuration->getInstance();
+            $locale    = $this->getLocale();
             $formatter = $this->getNumberFormatter(
-                $style,
-                $pattern,
                 $config->locales[$locale]->number->formats[$format] ?? null,
                 $config->locales[$locale]->number ?? null,
                 $config->global->number->formats[$format] ?? null,
@@ -261,18 +248,12 @@ class Formatter {
      * @param non-empty-string|null $currency
      */
     protected function formatCurrency(string $format, float|int|null $value, ?string $currency = null): string {
-        // Prepare
-        $config  = $this->configuration->getInstance();
-        $locale  = $this->getLocale();
-        $pattern = $config->global->currency->formats[$format]->pattern
-            ?? $config->locales[$locale]->currency->formats[$format]->pattern
-            ?? null;
-
         // Create
         try {
+            $config    = $this->configuration->getInstance();
+            $locale    = $this->getLocale();
             $formatter = $this->getNumberFormatter(
-                NumberFormatter::CURRENCY,
-                $pattern,
+                new IntlNumberOptions(NumberFormatter::CURRENCY),
                 $config->locales[$locale]->currency->formats[$format] ?? null,
                 $config->locales[$locale]->currency ?? null,
                 $config->global->currency->formats[$format] ?? null,
@@ -410,14 +391,10 @@ class Formatter {
         try {
             $formatIntl = $config->locales[$locale]->duration->formats[$format] ?? null;
             $globalIntl = $config->global->duration->formats[$format] ?? null;
-            $pattern    = $config->global->duration->formats[$format]->pattern
-                ?? $config->locales[$locale]->duration->formats[$format]->pattern
-                ?? null;
             $formatter  = $this->getNumberFormatter(
-                NumberFormatter::DURATION,
-                $pattern,
-                $formatIntl instanceof IntlOptions ? $formatIntl : null,
-                $globalIntl instanceof IntlOptions ? $globalIntl : null,
+                new IntlNumberOptions(NumberFormatter::DURATION),
+                $formatIntl instanceof IntlNumberOptions ? $formatIntl : null,
+                $globalIntl instanceof IntlNumberOptions ? $globalIntl : null,
             );
         } catch (Exception $exception) {
             throw new FormatterFailedToCreateFormatter(self::FormatterDuration, $format, $exception);
@@ -503,25 +480,34 @@ class Formatter {
         return $formatter;
     }
 
-    private function getNumberFormatter(int $style, ?string $pattern, ?IntlOptions ...$options): NumberFormatter {
-        // Create
-        $locale    = $this->getLocale();
-        $formatter = new NumberFormatter($locale, $style, $pattern);
-
+    private function getNumberFormatter(?IntlNumberOptions ...$options): NumberFormatter {
         // Collect Intl options
-        $textAttributes = [];
-        $attributes     = [];
+        $style          = null;
+        $pattern        = null;
         $symbols        = [];
+        $attributes     = [];
+        $textAttributes = [];
 
         foreach ($options as $intl) {
             if ($intl === null) {
                 continue;
             }
 
+            $style         ??= $intl->style;
+            $pattern       ??= $intl->pattern;
             $symbols        += $intl->symbols;
             $attributes     += $intl->attributes;
             $textAttributes += $intl->textAttributes;
         }
+
+        // Possible?
+        if ($style === null) {
+            throw new InvalidArgumentException('The `$style` in unknown');
+        }
+
+        // Create
+        $locale    = $this->getLocale();
+        $formatter = new NumberFormatter($locale, $style, $pattern);
 
         // Apply
         foreach ($attributes as $attribute => $value) {

@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Formatter\Config\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Config\IntlNumberOptions;
 
-class CurrencyConfig extends IntlOptions {
+class CurrencyConfig extends IntlNumberOptions {
     /**
      * @param array<int, string>    $symbols
      * @param array<int, int|float> $attributes
@@ -19,6 +19,6 @@ class CurrencyConfig extends IntlOptions {
         array $attributes = [],
         array $textAttributes = [],
     ) {
-        parent::__construct($symbols, $attributes, $textAttributes);
+        parent::__construct(null, null, $symbols, $attributes, $textAttributes);
     }
 }
