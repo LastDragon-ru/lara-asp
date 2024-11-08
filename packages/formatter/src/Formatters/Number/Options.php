@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Config;
+namespace LastDragon_ru\LaraASP\Formatter\Formatters\Number;
 
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use NumberFormatter;
@@ -8,7 +8,7 @@ use NumberFormatter;
 /**
  * @see NumberFormatter
  */
-class IntlNumberOptions extends Configuration {
+class Options extends Configuration {
     public function __construct(
         /**
          * @var NumberFormatter::*|null

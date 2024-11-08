@@ -11,18 +11,17 @@ use Illuminate\Support\Traits\Macroable;
 use IntlDateFormatter;
 use IntlException;
 use IntlTimeZone;
-use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Formatter\Config\Config;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
-use LastDragon_ru\LaraASP\Formatter\Config\IntlNumberOptions;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatter;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
 use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
-use NumberFormatter;
-use OutOfBoundsException;
+use NumberFormatter as IntlNumberFormatter;
 
 use function bccomp;
 use function bcdiv;
@@ -219,26 +218,16 @@ class Formatter {
         try {
             $config    = $this->configuration->getInstance();
             $locale    = $this->getLocale();
-            $formatter = $this->getNumberFormatter(
+            $formatter = new NumberFormatter(
+                $locale,
                 $config->locales[$locale]->number->formats[$format] ?? null,
                 $config->locales[$locale]->number ?? null,
                 $config->global->number->formats[$format] ?? null,
                 $config->global->number,
             );
+            $formatted = $formatter->formatNumber($value ?? 0);
         } catch (Exception $exception) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterNumber, $format, $exception);
-        }
-
-        // Format
-        $formatted = $formatter->format($value ?? 0);
-
-        if ($formatted === false) {
-            throw new FormatterFailedToFormatValue(
-                self::FormatterNumber,
-                $format,
-                $value,
-                new IntlException($formatter->getErrorMessage(), $formatter->getErrorCode()),
-            );
+            throw new FormatterFailedToFormatValue(self::FormatterNumber, $format, $value, $exception);
         }
 
         return $formatted;
@@ -252,31 +241,21 @@ class Formatter {
         try {
             $config    = $this->configuration->getInstance();
             $locale    = $this->getLocale();
-            $formatter = $this->getNumberFormatter(
-                new IntlNumberOptions(NumberFormatter::CURRENCY),
+            $formatter = new NumberFormatter(
+                $locale,
+                new Options(IntlNumberFormatter::CURRENCY),
                 $config->locales[$locale]->currency->formats[$format] ?? null,
                 $config->locales[$locale]->currency ?? null,
                 $config->global->currency->formats[$format] ?? null,
                 $config->global->currency,
             );
+            $formatted = $formatter->formatCurrency($value ?? 0, $currency);
         } catch (Exception $exception) {
-            throw new FormatterFailedToCreateFormatter(
-                self::FormatterCurrency,
-                "{$format}@".($currency ?? 'NULL'),
-                $exception,
-            );
-        }
-
-        // Format
-        $as        = $currency ?? $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
-        $formatted = $formatter->formatCurrency((float) $value, $as);
-
-        if ($formatted === false) {
             throw new FormatterFailedToFormatValue(
                 self::FormatterCurrency,
-                "{$format}@".($currency ?? 'NULL')." ({$as})",
+                "{$format}@".($currency ?? 'NULL'),
                 $value,
-                new IntlException($formatter->getErrorMessage(), $formatter->getErrorCode()),
+                $exception,
             );
         }
 
@@ -387,32 +366,18 @@ class Formatter {
     }
 
     private function formatDurationIntl(Config $config, string $locale, string $format, float|int $value): string {
-        // Create
         try {
             $formatIntl = $config->locales[$locale]->duration->formats[$format] ?? null;
             $globalIntl = $config->global->duration->formats[$format] ?? null;
-            $formatter  = $this->getNumberFormatter(
-                new IntlNumberOptions(NumberFormatter::DURATION),
-                $formatIntl instanceof IntlNumberOptions ? $formatIntl : null,
-                $globalIntl instanceof IntlNumberOptions ? $globalIntl : null,
+            $formatter  = new NumberFormatter(
+                $locale,
+                new Options(IntlNumberFormatter::DURATION),
+                $formatIntl instanceof Options ? $formatIntl : null,
+                $globalIntl instanceof Options ? $globalIntl : null,
             );
+            $formatted  = $formatter->formatNumber($value);
         } catch (Exception $exception) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterDuration, $format, $exception);
-        }
-
-        // Format
-        $formatted = $formatter->format($value);
-
-        if ($formatted === false) {
-            throw new FormatterFailedToFormatValue(
-                self::FormatterDuration,
-                $format,
-                $value,
-                throw new IntlException(
-                    $formatter->getErrorMessage(),
-                    $formatter->getErrorCode(),
-                ),
-            );
+            throw new FormatterFailedToFormatValue(self::FormatterDuration, $format, $value, $exception);
         }
 
         return $formatted;
@@ -477,76 +442,6 @@ class Formatter {
         $timezone  = $this->getTimezone();
         $formatter = new IntlDateFormatter($locale, $dateType, $timeType, $timezone, null, $pattern);
 
-        return $formatter;
-    }
-
-    private function getNumberFormatter(?IntlNumberOptions ...$options): NumberFormatter {
-        // Collect Intl options
-        $style          = null;
-        $pattern        = null;
-        $symbols        = [];
-        $attributes     = [];
-        $textAttributes = [];
-
-        foreach ($options as $intl) {
-            if ($intl === null) {
-                continue;
-            }
-
-            $style         ??= $intl->style;
-            $pattern       ??= $intl->pattern;
-            $symbols        += $intl->symbols;
-            $attributes     += $intl->attributes;
-            $textAttributes += $intl->textAttributes;
-        }
-
-        // Possible?
-        if ($style === null) {
-            throw new InvalidArgumentException('The `$style` in unknown');
-        }
-
-        // Create
-        $locale    = $this->getLocale();
-        $formatter = new NumberFormatter($locale, $style, $pattern);
-
-        // Apply
-        foreach ($attributes as $attribute => $value) {
-            if (!$formatter->setAttribute($attribute, $value)) {
-                throw new OutOfBoundsException(
-                    sprintf(
-                        '%s::setAttribute() failed: `%s` is unknown/invalid.',
-                        NumberFormatter::class,
-                        $attribute,
-                    ),
-                );
-            }
-        }
-
-        foreach ($symbols as $symbol => $value) {
-            if (!$formatter->setSymbol($symbol, $value)) {
-                throw new OutOfBoundsException(
-                    sprintf(
-                        '%s::setSymbol() failed: `%s` is unknown/invalid.',
-                        NumberFormatter::class,
-                        $symbol,
-                    ),
-                );
-            }
-        }
-
-        foreach ($textAttributes as $attribute => $value) {
-            if (!$formatter->setTextAttribute($attribute, $value)) {
-                throw new OutOfBoundsException(
-                    sprintf(
-                        '%s::setTextAttribute() failed: `%s` is unknown/invalid.',
-                        NumberFormatter::class,
-                        $attribute,
-                    ),
-                );
-            }
-        }
-
-        // Return
         return $formatter;
     }
     //</editor-fold>

@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Formatter\Config\IntlNumberOptions;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
 use NumberFormatter;
 
-class NumberConfig extends IntlNumberOptions {
+class NumberConfig extends Options {
     /**
      * @param NumberFormatter::*|null $style
      * @param array<int, string>      $symbols

@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Formatter\Config\IntlNumberOptions;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
 use NumberFormatter;
 
 /**
  * @see NumberFormatter::formatCurrency()
  */
-class CurrencyFormat extends IntlNumberOptions {
+class CurrencyFormat extends Options {
     /**
      * @param array<int, string>    $symbols
      * @param array<int, int|float> $attributes
