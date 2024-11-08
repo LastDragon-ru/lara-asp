@@ -2,17 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Secret\Options;
 
-class SecretFormat extends Configuration {
-    public function __construct(
-        /**
-         * Number of how many characters should be shown.
-         *
-         * @var int<0, max>
-         */
-        public int $visible,
-    ) {
-        parent::__construct();
-    }
+class SecretFormat extends Options {
+    // empty
 }

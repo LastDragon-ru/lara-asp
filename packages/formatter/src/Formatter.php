@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Secret\Formatter as SecretFormatter;
 use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
 use NumberFormatter as IntlNumberFormatter;
 
@@ -26,11 +27,8 @@ use function bccomp;
 use function bcdiv;
 use function is_float;
 use function is_null;
-use function mb_str_pad;
 use function mb_strlen;
-use function mb_substr;
 use function sprintf;
-use function str_replace;
 use function trim;
 
 class Formatter {
@@ -294,25 +292,18 @@ class Formatter {
             return '';
         }
 
-        // Prepare
-        $config  = $this->configuration->getInstance();
-        $locale  = $this->getLocale();
-        $visible = $config->global->secret->formats[$format]->visible
-            ?? $config->locales[$locale]->secret->formats[$format]->visible
-            ?? null;
-
-        if ($visible === null) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterSecret, $format);
-        }
-
         // Format
-        $length    = mb_strlen($value);
-        $hidden    = $length - $visible;
-        $formatted = match (true) {
-            $length <= $visible => mb_str_pad('*', $length, '*'),
-            $hidden < $visible  => str_replace(mb_substr($value, 0, $visible), mb_str_pad('*', $visible, '*'), $value),
-            default             => str_replace(mb_substr($value, 0, $hidden), mb_str_pad('*', $hidden, '*'), $value),
-        };
+        try {
+            $config    = $this->configuration->getInstance();
+            $locale    = $this->getLocale();
+            $formatter = new SecretFormatter(
+                $config->locales[$locale]->secret->formats[$format] ?? null,
+                $config->global->secret->formats[$format] ?? null,
+            );
+            $formatted = $formatter->format($value);
+        } catch (Exception $exception) {
+            throw new FormatterFailedToFormatValue(self::FormatterSecret, $format, $value, $exception);
+        }
 
         // Return
         return $formatted;
