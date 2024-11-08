@@ -8,8 +8,6 @@ use DateTimeZone;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use IntlDateFormatter;
-use IntlException;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
@@ -18,6 +16,7 @@ use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
+use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
 use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
@@ -269,43 +268,20 @@ class Formatter {
             return '';
         }
 
-        // Prepare
-        $config   = $this->configuration->getInstance();
-        $locale   = $this->getLocale();
-        $pattern  = $config->global->datetime->formats[$format]->pattern
-            ?? $config->locales[$locale]->datetime->formats[$format]->pattern
-            ?? null;
-        $dateType = $config->global->datetime->formats[$format]->dateType
-            ?? $config->locales[$locale]->datetime->formats[$format]->dateType
-            ?? null;
-        $timeType = $config->global->datetime->formats[$format]->timeType
-            ?? $config->locales[$locale]->datetime->formats[$format]->timeType
-            ?? null;
-
-        if ($dateType === null || $timeType === null) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterDateTime, $format);
-        }
-
-        // Create
-        try {
-            $formatter = $this->getDateTimeFormatter($dateType, $timeType, $pattern);
-        } catch (Exception $exception) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterDateTime, $format, $exception);
-        }
-
         // Format
-        $formatted = $formatter->format($value);
-
-        if ($formatted === false) {
-            throw new FormatterFailedToFormatValue(
-                self::FormatterDateTime,
-                $format,
-                $value,
-                throw new IntlException(
-                    $formatter->getErrorMessage(),
-                    $formatter->getErrorCode(),
-                ),
+        try {
+            $config    = $this->configuration->getInstance();
+            $locale    = $this->getLocale();
+            $timezone  = $this->getTimezone();
+            $formatter = new DateTimeFormatter(
+                $locale,
+                $timezone,
+                $config->locales[$locale]->datetime->formats[$format] ?? null,
+                $config->global->datetime->formats[$format] ?? null,
             );
+            $formatted = $formatter->format($value);
+        } catch (Exception $exception) {
+            throw new FormatterFailedToFormatValue(self::FormatterDateTime, $format, $value, $exception);
         }
 
         // Return
@@ -434,15 +410,4 @@ class Formatter {
         return $formatted;
     }
     // </editor-fold>
-
-    // <editor-fold desc="Internal">
-    // =========================================================================
-    private function getDateTimeFormatter(int $dateType, int $timeType, ?string $pattern): IntlDateFormatter {
-        $locale    = $this->getLocale();
-        $timezone  = $this->getTimezone();
-        $formatter = new IntlDateFormatter($locale, $dateType, $timeType, $timezone, null, $pattern);
-
-        return $formatter;
-    }
-    //</editor-fold>
 }
