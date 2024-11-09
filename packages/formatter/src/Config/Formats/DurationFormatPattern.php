@@ -2,16 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
-use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\PatternFormatter;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\PatternOptions;
 
 /**
- * @see DurationFormatter
+ * @see PatternFormatter
  */
-class DurationFormatPattern extends Configuration {
-    public function __construct(
-        public string $pattern,
-    ) {
-        parent::__construct();
-    }
+class DurationFormatPattern extends PatternOptions {
+    // empty
 }

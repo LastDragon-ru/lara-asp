@@ -83,6 +83,10 @@ class Formatter {
         }
     }
 
+    public function format(float|int $value): string {
+        return $this->formatNumber($value);
+    }
+
     public function formatNumber(float|int $value): string {
         $formatted = $this->formatter->format($value);
 

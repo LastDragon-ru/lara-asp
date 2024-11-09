@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Utils;
+namespace LastDragon_ru\LaraASP\Formatter\Formatters\Duration;
 
 use DateInterval;
 use DateTime;
@@ -11,18 +11,18 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * @internal
  */
-#[CoversClass(DurationFormatter::class)]
-final class DurationFormatterTest extends TestCase {
+#[CoversClass(PatternFormatter::class)]
+final class PatternFormatterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderGetTimestamp')]
     public function testGetTimestamp(float $expected, DateInterval $interval): void {
-        self::assertEquals($expected, DurationFormatter::getTimestamp($interval));
+        self::assertEquals($expected, PatternFormatter::getTimestamp($interval));
     }
 
     #[DataProvider('dataProviderFormat')]
     public function testFormat(string $expected, string $format, float|int $duration): void {
-        $formatter = new DurationFormatter($format);
+        $formatter = new PatternFormatter($format);
         $actual    = $formatter->format($duration);
 
         self::assertEquals($expected, $actual);
@@ -54,7 +54,7 @@ final class DurationFormatterTest extends TestCase {
      */
     public static function dataProviderFormat(): array {
         $duration = static function (string $interval): float {
-            return DurationFormatter::getTimestamp(new DateInterval($interval));
+            return PatternFormatter::getTimestamp(new DateInterval($interval));
         };
 
         return [

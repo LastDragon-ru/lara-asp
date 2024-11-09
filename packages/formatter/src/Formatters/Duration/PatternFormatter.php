@@ -1,8 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Utils;
+namespace LastDragon_ru\LaraASP\Formatter\Formatters\Duration;
 
 use DateInterval;
+use LastDragon_ru\LaraASP\Formatter\Utils\UnicodeDateTimeFormatParser;
+use LastDragon_ru\LaraASP\Formatter\Utils\UnicodeDateTimeFormatToken;
 
 use function abs;
 use function array_key_exists;
@@ -37,7 +39,7 @@ use const STR_PAD_LEFT;
  *
  * @internal
  */
-class DurationFormatter {
+class PatternFormatter {
     final protected const SecondsInMinute = 60;
     final protected const SecondsInHour   = 60 * self::SecondsInMinute;
     final protected const SecondsInDay    = 24 * self::SecondsInHour;

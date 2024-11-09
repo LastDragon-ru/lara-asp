@@ -11,16 +11,13 @@ use Illuminate\Support\Traits\Macroable;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
-use LastDragon_ru\LaraASP\Formatter\Config\Config;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\Formatter as DurationFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Secret\Formatter as SecretFormatter;
-use LastDragon_ru\LaraASP\Formatter\Utils\DurationFormatter;
 use NumberFormatter as IntlNumberFormatter;
 
 use function bccomp;
@@ -310,43 +307,21 @@ class Formatter {
     }
 
     protected function formatDuration(string $format, DateInterval|float|int|null $value): string {
-        $config    = $this->configuration->getInstance();
-        $locale    = $this->getLocale();
-        $type      = $config->locales[$locale]->duration->formats[$format]
-            ?? $config->global->duration->formats[$format]
-            ?? null;
-        $value     = ($value instanceof DateInterval ? DurationFormatter::getTimestamp($value) : $value) ?? 0;
-        $formatted = match (true) {
-            $type instanceof DurationFormatPattern => $this->formatDurationPattern($type, $value),
-            $type instanceof DurationFormatIntl    => $this->formatDurationIntl($config, $locale, $format, $value),
-            default                                => throw new FormatterFailedToCreateFormatter(
-                self::FormatterDuration,
-                $format,
-            ),
-        };
-
-        return $formatted;
-    }
-
-    private function formatDurationPattern(DurationFormatPattern $config, float|int $value): string {
-        return (new DurationFormatter($config->pattern))->format($value);
-    }
-
-    private function formatDurationIntl(Config $config, string $locale, string $format, float|int $value): string {
+        // Format
         try {
-            $formatIntl = $config->locales[$locale]->duration->formats[$format] ?? null;
-            $globalIntl = $config->global->duration->formats[$format] ?? null;
-            $formatter  = new NumberFormatter(
+            $config    = $this->configuration->getInstance();
+            $locale    = $this->getLocale();
+            $formatter = new DurationFormatter(
                 $locale,
-                new Options(IntlNumberFormatter::DURATION),
-                $formatIntl instanceof Options ? $formatIntl : null,
-                $globalIntl instanceof Options ? $globalIntl : null,
+                $config->locales[$locale]->duration->formats[$format] ?? null,
+                $config->global->duration->formats[$format] ?? null,
             );
-            $formatted  = $formatter->formatNumber($value);
+            $formatted = $formatter->format($value ?? 0);
         } catch (Exception $exception) {
             throw new FormatterFailedToFormatValue(self::FormatterDuration, $format, $value, $exception);
         }
 
+        // Return
         return $formatted;
     }
 

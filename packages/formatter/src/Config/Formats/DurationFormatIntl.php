@@ -2,24 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Config\Formats;
 
-use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
+use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\IntlOptions;
 use NumberFormatter;
 
 /**
  * @see NumberFormatter
  */
-class DurationFormatIntl extends Options {
-    /**
-     * @param array<int, string>    $symbols
-     * @param array<int, int|float> $attributes
-     * @param array<int, string>    $textAttributes
-     */
-    public function __construct(
-        ?string $pattern = null,
-        array $symbols = [],
-        array $attributes = [],
-        array $textAttributes = [],
-    ) {
-        parent::__construct(null, $pattern, $symbols, $attributes, $textAttributes);
-    }
+class DurationFormatIntl extends IntlOptions {
+    // empty
 }
