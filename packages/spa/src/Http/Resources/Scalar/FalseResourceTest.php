@@ -7,6 +7,8 @@ use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function urlencode;
+
 /**
  * @internal
  */
@@ -18,6 +20,6 @@ final class FalseResourceTest extends TestCase {
                 return new FalseResource();
             });
 
-        $this->get(__METHOD__)->assertThat(new OkResponse(FalseResource::class));
+        $this->get(urlencode(__METHOD__))->assertThat(new OkResponse(FalseResource::class));
     }
 }
