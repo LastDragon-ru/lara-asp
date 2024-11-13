@@ -11,6 +11,8 @@ use Illuminate\Support\Traits\Macroable;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
+use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
+use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
@@ -19,6 +21,8 @@ use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatt
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Secret\Formatter as SecretFormatter;
 use NumberFormatter as IntlNumberFormatter;
+use OutOfBoundsException;
+use Stringable;
 
 use function bccomp;
 use function bcdiv;
@@ -26,12 +30,12 @@ use function is_float;
 use function is_null;
 use function mb_strlen;
 use function sprintf;
-use function trim;
 
 class Formatter {
     use Macroable;
 
     public const Default    = 'default';
+    public const String     = 'string';
     public const Integer    = 'integer';
     public const Scientific = 'scientific';
     public const Spellout   = 'spellout';
@@ -57,7 +61,7 @@ class Formatter {
     public function __construct(
         protected readonly ApplicationResolver $application,
         protected readonly ConfigResolver $config,
-        protected readonly PackageConfig $configuration,
+        protected readonly PackageConfig $package,
         private PackageTranslator $translator,
     ) {
         // empty
@@ -72,7 +76,7 @@ class Formatter {
         $formatter = $this;
 
         if ($this->locale !== $locale) {
-            $formatter         = $this->create();
+            $formatter         = clone $this;
             $formatter->locale = $locale;
         }
 
@@ -86,15 +90,11 @@ class Formatter {
         $formatter = $this;
 
         if ($this->timezone !== $timezone) {
-            $formatter           = $this->create();
+            $formatter           = clone $this;
             $formatter->timezone = $timezone;
         }
 
         return $formatter;
-    }
-
-    protected function create(): static {
-        return clone $this;
     }
     // </editor-fold>
 
@@ -113,10 +113,46 @@ class Formatter {
     }
     // </editor-fold>
 
+    // <editor-fold desc="Format">
+    // =========================================================================
+    public function format(string $format, mixed $value): string {
+        try {
+            return ($this->getFormat($format))($value);
+        } catch (Exception $exception) {
+            throw new FormatterFailedToFormatValue($format, $format, $value, $exception);
+        }
+    }
+
+    /**
+     * @return Format<Configuration, mixed>|Format<null, mixed>
+     */
+    protected function getFormat(string $format): Format {
+        // Known?
+        $config   = $this->package->getInstance();
+        $settings = $config->formats[$format] ?? null;
+
+        if ($settings === null) {
+            throw new OutOfBoundsException(sprintf('The `%s` format is unknown.', $format));
+        }
+
+        // Create
+        $locale    = $this->getLocale();
+        $formatter = $this->application->getInstance()->make($settings->class, [
+            'formatter' => $this,
+            'options'   => [
+                $settings->locales[$locale] ?? null,
+                $settings->default,
+            ],
+        ]);
+
+        return $formatter;
+    }
+    // </editor-fold>
+
     // <editor-fold desc="Formats">
     // =========================================================================
-    public function string(?string $value): string {
-        return trim((string) $value);
+    public function string(Stringable|string|null $value): string {
+        return $this->format(self::String, $value);
     }
 
     public function integer(float|int|null $value): string {
@@ -210,7 +246,7 @@ class Formatter {
     protected function formatNumber(string $format, float|int|null $value): string {
         // Create
         try {
-            $config    = $this->configuration->getInstance();
+            $config    = $this->package->getInstance();
             $locale    = $this->getLocale();
             $formatter = new NumberFormatter(
                 $locale,
@@ -233,7 +269,7 @@ class Formatter {
     protected function formatCurrency(string $format, float|int|null $value, ?string $currency = null): string {
         // Create
         try {
-            $config    = $this->configuration->getInstance();
+            $config    = $this->package->getInstance();
             $locale    = $this->getLocale();
             $formatter = new NumberFormatter(
                 $locale,
@@ -265,7 +301,7 @@ class Formatter {
 
         // Format
         try {
-            $config    = $this->configuration->getInstance();
+            $config    = $this->package->getInstance();
             $locale    = $this->getLocale();
             $timezone  = $this->getTimezone();
             $formatter = new DateTimeFormatter(
@@ -291,7 +327,7 @@ class Formatter {
 
         // Format
         try {
-            $config    = $this->configuration->getInstance();
+            $config    = $this->package->getInstance();
             $locale    = $this->getLocale();
             $formatter = new SecretFormatter(
                 $config->locales[$locale]->secret->formats[$format] ?? null,
@@ -309,7 +345,7 @@ class Formatter {
     protected function formatDuration(string $format, DateInterval|float|int|null $value): string {
         // Format
         try {
-            $config    = $this->configuration->getInstance();
+            $config    = $this->package->getInstance();
             $locale    = $this->getLocale();
             $formatter = new DurationFormatter(
                 $locale,
@@ -330,7 +366,7 @@ class Formatter {
      */
     protected function formatFilesize(string $format, string|float|int|null $bytes): string {
         // Prepare
-        $config        = $this->configuration->getInstance();
+        $config        = $this->package->getInstance();
         $locale        = $this->getLocale();
         $base          = $config->locales[$locale]->filesize->formats[$format]->base
             ?? $config->global->filesize->formats[$format]->base

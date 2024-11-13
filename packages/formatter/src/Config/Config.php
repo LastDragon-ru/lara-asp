@@ -10,12 +10,17 @@ use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\FilesizeFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\SecretFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\String\StringFormat;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use NumberFormatter;
 use Override;
 
 class Config extends Configuration {
     public function __construct(
+        /**
+         * @var array<string, Format<Configuration, mixed>|Format<null, mixed>>
+         */
+        public array $formats = [],
         /**
          * Options and patterns/formats for all locales.
          */
@@ -28,6 +33,8 @@ class Config extends Configuration {
         public array $locales = [],
     ) {
         parent::__construct();
+
+        $this->formats[Formatter::String] = new Format(StringFormat::class);
 
         $this->global->number->attributes += [
             NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
