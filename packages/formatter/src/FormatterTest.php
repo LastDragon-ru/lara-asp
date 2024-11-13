@@ -6,13 +6,15 @@ use DateTime;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Config\Config;
+use LastDragon_ru\LaraASP\Formatter\Config\Format;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberConfig;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberFormat;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\SecretFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Locale;
+use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use NumberFormatter;
 use Override;
@@ -302,7 +304,13 @@ final class FormatterTest extends TestCase {
 
     public function testSecretConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            Cast::to(SecretFormat::class, $config->global->secret->formats[Formatter::Default])->visible = 3;
+            $config->formats[Formatter::Secret] = new Format(
+                class  : SecretFormat::class,
+                default: new SecretOptions(3),
+                locales: [
+                    'ru_RU' => new SecretOptions(2),
+                ],
+            );
         });
 
         self::assertEquals('', $this->formatter->secret(null));
@@ -314,6 +322,7 @@ final class FormatterTest extends TestCase {
         self::assertEquals('***456', $this->formatter->secret('123456'));
         self::assertEquals('****567', $this->formatter->secret('1234567'));
         self::assertEquals('*****678', $this->formatter->secret('12345678'));
+        self::assertEquals('******78', $this->formatter->forLocale('ru_RU')->secret('12345678'));
     }
 
     public function testFilesize(): void {

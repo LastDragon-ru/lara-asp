@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Formatters\Secret;
+namespace LastDragon_ru\LaraASP\Formatter\Formats\Secret;
 
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 
-class Options extends Configuration {
+class SecretOptions extends Configuration {
     public function __construct(
         /**
          * Number of how many characters should be shown.

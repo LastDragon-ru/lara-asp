@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeConfig;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationConfig;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\FilesizeConfig;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberConfig;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\SecretConfig;
 
 class Locale extends Configuration {
     public function __construct(
@@ -16,7 +15,6 @@ class Locale extends Configuration {
         public CurrencyConfig $currency = new CurrencyConfig(),
         public DateTimeConfig $datetime = new DateTimeConfig(),
         public DurationConfig $duration = new DurationConfig(),
-        public SecretConfig $secret = new SecretConfig(),
         public FilesizeConfig $filesize = new FilesizeConfig(),
     ) {
         parent::__construct();

@@ -9,7 +9,8 @@ use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\FilesizeFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberFormat;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\SecretFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\String\StringFormat;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use NumberFormatter;
@@ -18,7 +19,7 @@ use Override;
 class Config extends Configuration {
     public function __construct(
         /**
-         * @var array<string, Format<Configuration, mixed>|Format<null, mixed>>
+         * @var array<string, Format<*, mixed>>
          */
         public array $formats = [],
         /**
@@ -35,6 +36,7 @@ class Config extends Configuration {
         parent::__construct();
 
         $this->formats[Formatter::String] = new Format(StringFormat::class);
+        $this->formats[Formatter::Secret] = new Format(SecretFormat::class, new SecretOptions(5));
 
         $this->global->number->attributes += [
             NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
@@ -84,9 +86,6 @@ class Config extends Configuration {
         ];
         $this->global->duration->formats  += [
             Formatter::Default => new DurationFormatPattern('HH:mm:ss.SSS'),
-        ];
-        $this->global->secret->formats    += [
-            Formatter::Default => new SecretFormat(5),
         ];
         $this->global->filesize->formats  += [
             Formatter::Disksize => new FileSizeFormat(

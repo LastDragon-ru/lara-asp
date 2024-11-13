@@ -1,8 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Formatters\Secret;
+namespace LastDragon_ru\LaraASP\Formatter\Formats\Secret;
 
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
+use Override;
 
 use function mb_str_pad;
 use function mb_strlen;
@@ -10,12 +12,15 @@ use function mb_substr;
 use function str_replace;
 
 /**
- * @internal
+ * @implements Format<SecretOptions, string|null>
  */
-class Formatter {
+class SecretFormat implements Format {
     protected readonly int $visible;
 
-    public function __construct(?Options ...$options) {
+    /**
+     * @param list<SecretOptions|null> $options
+     */
+    public function __construct(array $options = []) {
         // Collect options
         $visible = null;
 
@@ -36,7 +41,13 @@ class Formatter {
         $this->visible = $visible;
     }
 
-    public function format(string $value): string {
+    #[Override]
+    public function __invoke(mixed $value): string {
+        // Null?
+        if ($value === null) {
+            return '';
+        }
+
         // Format
         $visible   = $this->visible;
         $length    = mb_strlen($value);

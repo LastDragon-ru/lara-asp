@@ -11,7 +11,6 @@ use Illuminate\Support\Traits\Macroable;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
-use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
@@ -19,7 +18,6 @@ use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFor
 use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\Formatter as DurationFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
-use LastDragon_ru\LaraASP\Formatter\Formatters\Secret\Formatter as SecretFormatter;
 use NumberFormatter as IntlNumberFormatter;
 use OutOfBoundsException;
 use Stringable;
@@ -47,9 +45,9 @@ class Formatter {
     public const DateTime   = 'datetime';
     public const Filesize   = 'filesize';
     public const Disksize   = 'disksize';
+    public const Secret     = 'secret';
 
     private const FormatterNumber   = 'Number';
-    private const FormatterSecret   = 'Secret';
     private const FormatterDateTime = 'DateTime';
     private const FormatterDuration = 'Duration';
     private const FormatterCurrency = 'Currency';
@@ -124,7 +122,7 @@ class Formatter {
     }
 
     /**
-     * @return Format<Configuration, mixed>|Format<null, mixed>
+     * @return Format<*, mixed>
      */
     protected function getFormat(string $format): Format {
         // Known?
@@ -221,7 +219,7 @@ class Formatter {
     }
 
     public function secret(?string $value): string {
-        return $this->formatSecret(self::Default, $value);
+        return $this->format(self::Secret, $value);
     }
     // </editor-fold>
 
@@ -313,29 +311,6 @@ class Formatter {
             $formatted = $formatter->format($value);
         } catch (Exception $exception) {
             throw new FormatterFailedToFormatValue(self::FormatterDateTime, $format, $value, $exception);
-        }
-
-        // Return
-        return $formatted;
-    }
-
-    protected function formatSecret(string $format, ?string $value): string {
-        // Null?
-        if (is_null($value)) {
-            return '';
-        }
-
-        // Format
-        try {
-            $config    = $this->package->getInstance();
-            $locale    = $this->getLocale();
-            $formatter = new SecretFormatter(
-                $config->locales[$locale]->secret->formats[$format] ?? null,
-                $config->global->secret->formats[$format] ?? null,
-            );
-            $formatted = $formatter->format($value);
-        } catch (Exception $exception) {
-            throw new FormatterFailedToFormatValue(self::FormatterSecret, $format, $value, $exception);
         }
 
         // Return
