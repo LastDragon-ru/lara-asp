@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
-use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\Formatter as DurationFormatter;
 use OutOfBoundsException;
 use Stringable;
 
@@ -44,9 +43,9 @@ class Formatter {
     public const Disksize   = 'disksize';
     public const Secret     = 'secret';
     public const Currency   = 'currency';
+    public const Duration   = 'duration';
 
     private const FormatterDateTime = 'DateTime';
-    private const FormatterDuration = 'Duration';
     private const FormatterFilesize = 'Filesize';
 
     private ?string                               $locale   = null;
@@ -181,7 +180,7 @@ class Formatter {
     }
 
     public function duration(DateInterval|float|int|null $value): string {
-        return $this->formatDuration(self::Default, $value);
+        return $this->format(self::Duration, $value);
     }
 
     public function time(?DateTimeInterface $value): string {
@@ -257,25 +256,6 @@ class Formatter {
             $formatted = $formatter->format($value);
         } catch (Exception $exception) {
             throw new FormatterFailedToFormatValue(self::FormatterDateTime, $format, $value, $exception);
-        }
-
-        // Return
-        return $formatted;
-    }
-
-    protected function formatDuration(string $format, DateInterval|float|int|null $value): string {
-        // Format
-        try {
-            $config    = $this->package->getInstance();
-            $locale    = $this->getLocale();
-            $formatter = new DurationFormatter(
-                $this,
-                $config->locales[$locale]->duration->formats[$format] ?? null,
-                $config->global->duration->formats[$format] ?? null,
-            );
-            $formatted = $formatter->format($value ?? 0);
-        } catch (Exception $exception) {
-            throw new FormatterFailedToFormatValue(self::FormatterDuration, $format, $value, $exception);
         }
 
         // Return

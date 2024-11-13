@@ -6,8 +6,9 @@ use Exception;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\FilesizeFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlCurrencyFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
@@ -104,6 +105,12 @@ class Config extends Configuration {
                 ],
             ),
         );
+        $this->formats[Formatter::Duration]   = new Format(
+            DurationFormat::class,
+            new DurationOptions(
+                'HH:mm:ss.SSS',
+            ),
+        );
 
         $this->global->datetime->formats += [
             Formatter::Time     => new DateTimeFormat(
@@ -118,9 +125,6 @@ class Config extends Configuration {
                 dateType: IntlDateFormatter::SHORT,
                 timeType: IntlDateFormatter::SHORT,
             ),
-        ];
-        $this->global->duration->formats += [
-            Formatter::Default => new DurationFormatPattern('HH:mm:ss.SSS'),
         ];
         $this->global->filesize->formats += [
             Formatter::Disksize => new FileSizeFormat(

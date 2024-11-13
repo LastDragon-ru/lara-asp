@@ -13,7 +13,7 @@ use function sprintf;
 /**
  * @see NumberFormatter
  *
- * @template TOptions of IntlOptions
+ * @template TOptions of IntlOptions|null
  * @template TValue
  *
  * @implements Format<TOptions, TValue>

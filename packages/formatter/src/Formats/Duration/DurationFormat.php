@@ -1,10 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Formatters\Duration;
+namespace LastDragon_ru\LaraASP\Formatter\Formats\Duration;
 
 use DateInterval;
+use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
+use LastDragon_ru\LaraASP\Formatter\Utils\Duration;
 use LastDragon_ru\LaraASP\Formatter\Utils\UnicodeDateTimeFormatParser;
 use LastDragon_ru\LaraASP\Formatter\Utils\UnicodeDateTimeFormatToken;
+use Override;
 
 use function abs;
 use function array_key_exists;
@@ -37,41 +41,46 @@ use const STR_PAD_LEFT;
  * | `'`    | escape for text               |
  * | `''`   | two single quotes produce one |
  *
- * @internal
+ * @implements Format<DurationOptions, DateInterval|float|int|null>
  */
-class PatternFormatter {
-    final protected const SecondsInMinute = 60;
-    final protected const SecondsInHour   = 60 * self::SecondsInMinute;
-    final protected const SecondsInDay    = 24 * self::SecondsInHour;
-    final protected const SecondsInMonth  = 30 * self::SecondsInDay;
-    final protected const SecondsInYear   = 365 * self::SecondsInDay;
+class DurationFormat implements Format {
+    protected readonly string $pattern;
 
-    public function __construct(
-        protected readonly string $pattern,
-    ) {
-        // empty
+    /**
+     * @param list<DurationOptions|null> $options
+     */
+    public function __construct(array $options = []) {
+        // Collect options
+        $pattern = null;
+
+        foreach ($options as $option) {
+            if ($option === null) {
+                continue;
+            }
+
+            $pattern ??= $option->pattern;
+        }
+
+        // Possible?
+        if ($pattern === null) {
+            throw new InvalidArgumentException('The `$patten` in unknown.');
+        }
+
+        // Save
+        $this->pattern = $pattern;
     }
 
-    public static function getTimestamp(DateInterval $interval): float {
-        return ($interval->invert !== 0 ? -1 : 1) * (0
-                + $interval->y * self::SecondsInYear
-                + $interval->m * self::SecondsInMonth
-                + $interval->d * self::SecondsInDay
-                + $interval->h * self::SecondsInHour
-                + $interval->i * self::SecondsInMinute
-                + $interval->s
-                + $interval->f);
-    }
-
-    public function format(float|int $value): string {
+    #[Override]
+    public function __invoke(mixed $value): string {
         $formatted = '';
         $tokens    = iterator_to_array(new UnicodeDateTimeFormatParser($this->pattern));
+        $value     = Duration::getTimestamp($value);
         $units     = $this->prepare($tokens, abs($value), [
-            'y' => self::SecondsInYear,
-            'M' => self::SecondsInMonth,
-            'd' => self::SecondsInDay,
-            'H' => self::SecondsInHour,
-            'm' => self::SecondsInMinute,
+            'y' => Duration::SecondsInYear,
+            'M' => Duration::SecondsInMonth,
+            'd' => Duration::SecondsInDay,
+            'H' => Duration::SecondsInHour,
+            'm' => Duration::SecondsInMinute,
             's' => 1,
             'S' => null,
         ]);

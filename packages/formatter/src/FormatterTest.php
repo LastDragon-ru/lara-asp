@@ -8,8 +8,9 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Config\Config;
 use LastDragon_ru\LaraASP\Formatter\Config\Format;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
+use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlDurationFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
@@ -167,7 +168,9 @@ final class FormatterTest extends TestCase {
 
     public function testDurationConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $config->global->duration->formats[Formatter::Default] = new DurationFormatIntl();
+            $config->formats[Formatter::Duration] = new Format(
+                IntlDurationFormat::class,
+            );
         });
 
         self::assertEquals('3:25:45', $this->formatter->duration(12_345));
@@ -176,7 +179,12 @@ final class FormatterTest extends TestCase {
 
     public function testDurationCustomFormat(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $config->global->duration->formats[Formatter::Default] = new DurationFormatPattern('mm:ss');
+            $config->formats[Formatter::Duration] = new Format(
+                DurationFormat::class,
+                new DurationOptions(
+                    'mm:ss',
+                ),
+            );
         });
 
         self::assertEquals('02:03', $this->formatter->duration(123.456));
