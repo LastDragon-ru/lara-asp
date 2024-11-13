@@ -1,25 +1,30 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Formatters\Number;
+namespace LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber;
 
-use IntlException;
 use InvalidArgumentException;
+use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
 use NumberFormatter;
 use OutOfBoundsException;
 
 use function sprintf;
 
 /**
- * @internal
  * @see NumberFormatter
+ *
+ * @template TOptions of IntlOptions
+ * @template TValue
+ *
+ * @implements Format<TOptions, TValue>
  */
-class Formatter {
+abstract class IntlFormat implements Format {
     protected readonly NumberFormatter $formatter;
 
-    public function __construct(
-        protected readonly string $locale,
-        ?Options ...$options,
-    ) {
+    /**
+     * @param list<TOptions|null> $options
+     */
+    public function __construct(Formatter $formatter, array $options = []) {
         // Collect options
         $style          = null;
         $pattern        = null;
@@ -45,6 +50,7 @@ class Formatter {
         }
 
         // Create
+        $locale          = $formatter->getLocale();
         $pattern         = $pattern !== '' ? $pattern : null;
         $this->formatter = new NumberFormatter($locale, $style, $pattern);
 
@@ -81,30 +87,5 @@ class Formatter {
                 );
             }
         }
-    }
-
-    public function format(float|int $value): string {
-        return $this->formatNumber($value);
-    }
-
-    public function formatNumber(float|int $value): string {
-        $formatted = $this->formatter->format($value);
-
-        if ($formatted === false) {
-            throw new IntlException($this->formatter->getErrorMessage(), $this->formatter->getErrorCode());
-        }
-
-        return $formatted;
-    }
-
-    public function formatCurrency(float|int $value, ?string $currency = null): string {
-        $currency ??= $this->formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
-        $formatted = $this->formatter->formatCurrency($value, $currency);
-
-        if ($formatted === false) {
-            throw new IntlException($this->formatter->getErrorMessage(), $this->formatter->getErrorCode());
-        }
-
-        return $formatted;
     }
 }

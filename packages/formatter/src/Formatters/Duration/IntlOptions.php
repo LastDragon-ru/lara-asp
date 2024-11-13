@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Formatters\Duration;
 
-use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions as NumberIntlOptions;
 
-class IntlOptions extends Options {
+class IntlOptions extends NumberIntlOptions {
     // empty
 }

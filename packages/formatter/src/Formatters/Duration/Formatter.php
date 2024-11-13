@@ -4,18 +4,19 @@ namespace LastDragon_ru\LaraASP\Formatter\Formatters\Duration;
 
 use DateInterval;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as IntlFormatter;
-use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options as IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Formatter as GlobalFormatter;
 use NumberFormatter;
 
 /**
  * @internal
  */
 class Formatter {
-    protected readonly PatternFormatter|IntlFormatter $formatter;
+    protected readonly PatternFormatter|IntlNumberFormat $formatter;
 
     public function __construct(
-        protected readonly string $locale,
+        GlobalFormatter $formatter,
         IntlOptions|PatternOptions|null ...$options,
     ) {
         // Collect options
@@ -49,13 +50,15 @@ class Formatter {
 
         // Create
         $this->formatter = $isPattern === false
-            ? new IntlFormatter($locale, ...$intl)
+            ? new IntlNumberFormat($formatter, $intl)
             : new PatternFormatter($pattern);
     }
 
     public function format(DateInterval|float|int $value): string {
         $value     = $value instanceof DateInterval ? PatternFormatter::getTimestamp($value) : $value;
-        $formatted = $this->formatter->format($value);
+        $formatted = $this->formatter instanceof PatternFormatter
+            ? $this->formatter->format($value)
+            : ($this->formatter)($value);
 
         return $formatted;
     }

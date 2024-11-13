@@ -10,9 +10,8 @@ use LastDragon_ru\LaraASP\Formatter\Config\Format;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatIntl;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\DurationFormatPattern;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberConfig;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\NumberFormat;
-use LastDragon_ru\LaraASP\Formatter\Config\Locale;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
@@ -87,25 +86,22 @@ final class FormatterTest extends TestCase {
 
     public function testDecimalConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            Cast::to(NumberFormat::class, $config->global->number->formats[Formatter::Decimal])->attributes = [
-                NumberFormatter::FRACTION_DIGITS => 4,
-            ];
-
-            $config->locales['ru_RU'] = new Locale(
-                number: new NumberConfig(
-                    formats   : [
-                        Formatter::Decimal => new NumberFormat(
-                            style     : NumberFormatter::DECIMAL,
-                            attributes: [
-                                NumberFormatter::FRACTION_DIGITS => 2,
-                                NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
-                            ],
-                        ),
-                    ],
+            $config->formats[Formatter::Decimal] = new Format(
+                IntlNumberFormat::class,
+                new IntlOptions(
+                    style     : NumberFormatter::DECIMAL,
                     attributes: [
-                        NumberFormatter::FRACTION_DIGITS => 5, // should be ignored
+                        NumberFormatter::FRACTION_DIGITS => 4,
                     ],
                 ),
+                [
+                    'ru_RU' => new IntlOptions(
+                        attributes: [
+                            NumberFormatter::FRACTION_DIGITS => 2,
+                            NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
+                        ],
+                    ),
+                ],
             );
         });
 
@@ -150,9 +146,15 @@ final class FormatterTest extends TestCase {
 
     public function testPercentConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            Cast::to(NumberFormat::class, $config->global->number->formats[Formatter::Percent])->attributes = [
-                NumberFormatter::FRACTION_DIGITS => 2,
-            ];
+            $config->formats[Formatter::Percent] = new Format(
+                IntlNumberFormat::class,
+                new IntlOptions(
+                    style     : NumberFormatter::PERCENT,
+                    attributes: [
+                        NumberFormatter::FRACTION_DIGITS => 2,
+                    ],
+                ),
+            );
         });
 
         self::assertEquals('10.99%', $this->formatter->percent(10.99));

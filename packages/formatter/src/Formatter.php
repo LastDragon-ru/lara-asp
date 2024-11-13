@@ -16,9 +16,6 @@ use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
 use LastDragon_ru\LaraASP\Formatter\Formatters\Duration\Formatter as DurationFormatter;
-use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Formatter as NumberFormatter;
-use LastDragon_ru\LaraASP\Formatter\Formatters\Number\Options;
-use NumberFormatter as IntlNumberFormatter;
 use OutOfBoundsException;
 use Stringable;
 
@@ -46,11 +43,10 @@ class Formatter {
     public const Filesize   = 'filesize';
     public const Disksize   = 'disksize';
     public const Secret     = 'secret';
+    public const Currency   = 'currency';
 
-    private const FormatterNumber   = 'Number';
     private const FormatterDateTime = 'DateTime';
     private const FormatterDuration = 'Duration';
-    private const FormatterCurrency = 'Currency';
     private const FormatterFilesize = 'Filesize';
 
     private ?string                               $locale   = null;
@@ -154,34 +150,34 @@ class Formatter {
     }
 
     public function integer(float|int|null $value): string {
-        return $this->formatNumber(self::Integer, $value);
+        return $this->format(self::Integer, $value);
     }
 
     public function decimal(float|int|null $value): string {
-        return $this->formatNumber(self::Decimal, $value);
+        return $this->format(self::Decimal, $value);
     }
 
     public function currency(float|int|null $value): string {
-        return $this->formatCurrency(self::Default, $value);
+        return $this->format(self::Currency, $value);
     }
 
     /**
      * @param float|int|null $value must be between 0-100
      */
     public function percent(float|int|null $value): string {
-        return $this->formatNumber(self::Percent, $value !== null ? $value / 100 : $value);
+        return $this->format(self::Percent, $value !== null ? $value / 100 : $value);
     }
 
     public function scientific(float|int|null $value): string {
-        return $this->formatNumber(self::Scientific, $value);
+        return $this->format(self::Scientific, $value);
     }
 
     public function spellout(float|int|null $value): string {
-        return $this->formatNumber(self::Spellout, $value);
+        return $this->format(self::Spellout, $value);
     }
 
     public function ordinal(?int $value): string {
-        return $this->formatNumber(self::Ordinal, $value);
+        return $this->format(self::Ordinal, $value);
     }
 
     public function duration(DateInterval|float|int|null $value): string {
@@ -241,56 +237,6 @@ class Formatter {
         return $this->getTranslator()->get($key, $replace, $this->getLocale());
     }
 
-    protected function formatNumber(string $format, float|int|null $value): string {
-        // Create
-        try {
-            $config    = $this->package->getInstance();
-            $locale    = $this->getLocale();
-            $formatter = new NumberFormatter(
-                $locale,
-                $config->locales[$locale]->number->formats[$format] ?? null,
-                $config->locales[$locale]->number ?? null,
-                $config->global->number->formats[$format] ?? null,
-                $config->global->number,
-            );
-            $formatted = $formatter->formatNumber($value ?? 0);
-        } catch (Exception $exception) {
-            throw new FormatterFailedToFormatValue(self::FormatterNumber, $format, $value, $exception);
-        }
-
-        return $formatted;
-    }
-
-    /**
-     * @param non-empty-string|null $currency
-     */
-    protected function formatCurrency(string $format, float|int|null $value, ?string $currency = null): string {
-        // Create
-        try {
-            $config    = $this->package->getInstance();
-            $locale    = $this->getLocale();
-            $formatter = new NumberFormatter(
-                $locale,
-                new Options(IntlNumberFormatter::CURRENCY),
-                $config->locales[$locale]->currency->formats[$format] ?? null,
-                $config->locales[$locale]->currency ?? null,
-                $config->global->currency->formats[$format] ?? null,
-                $config->global->currency,
-            );
-            $formatted = $formatter->formatCurrency($value ?? 0, $currency);
-        } catch (Exception $exception) {
-            throw new FormatterFailedToFormatValue(
-                self::FormatterCurrency,
-                "{$format}@".($currency ?? 'NULL'),
-                $value,
-                $exception,
-            );
-        }
-
-        // Return
-        return $formatted;
-    }
-
     protected function formatDateTime(string $format, ?DateTimeInterface $value): string {
         // Null?
         if (is_null($value)) {
@@ -323,7 +269,7 @@ class Formatter {
             $config    = $this->package->getInstance();
             $locale    = $this->getLocale();
             $formatter = new DurationFormatter(
-                $locale,
+                $this,
                 $config->locales[$locale]->duration->formats[$format] ?? null,
                 $config->global->duration->formats[$format] ?? null,
             );
@@ -382,7 +328,7 @@ class Formatter {
         $bytes     = $isInt ? (int) $bytes : (float) $bytes;
         $format    = $isInt ? $integerFormat : $decimalFormat;
         $suffix    = $this->getTranslation($units[$unit]);
-        $formatted = "{$this->formatNumber($format, $bytes)} {$suffix}";
+        $formatted = "{$this->format($format, $bytes)} {$suffix}";
 
         return $formatted;
     }
