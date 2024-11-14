@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlDurationFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
-use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
@@ -89,14 +89,14 @@ final class FormatterTest extends TestCase {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
             $config->formats[Formatter::Decimal] = new Format(
                 IntlNumberFormat::class,
-                new IntlOptions(
+                new IntlNumberOptions(
                     style     : NumberFormatter::DECIMAL,
                     attributes: [
                         NumberFormatter::FRACTION_DIGITS => 4,
                     ],
                 ),
                 [
-                    'ru_RU' => new IntlOptions(
+                    'ru_RU' => new IntlNumberOptions(
                         attributes: [
                             NumberFormatter::FRACTION_DIGITS => 2,
                             NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
@@ -149,7 +149,7 @@ final class FormatterTest extends TestCase {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
             $config->formats[Formatter::Percent] = new Format(
                 IntlNumberFormat::class,
-                new IntlOptions(
+                new IntlNumberOptions(
                     style     : NumberFormatter::PERCENT,
                     attributes: [
                         NumberFormatter::FRACTION_DIGITS => 2,

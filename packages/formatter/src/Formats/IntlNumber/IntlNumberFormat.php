@@ -8,7 +8,7 @@ use Override;
 
 /**
  * @see NumberFormatter
- * @extends IntlFormat<IntlOptions, float|int|null>
+ * @extends IntlFormat<IntlNumberOptions, float|int|null>
  */
 class IntlNumberFormat extends IntlFormat {
     #[Override]

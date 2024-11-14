@@ -8,7 +8,7 @@ use NumberFormatter;
 /**
  * @see NumberFormatter
  */
-class IntlOptions extends Configuration {
+class IntlNumberOptions extends Configuration {
     public function __construct(
         /**
          * @var NumberFormatter::*|null

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber;
 
 use IntlException;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\LaraASP\Formatter\PackageConfig;
 use NumberFormatter;
 use Override;
 
@@ -11,15 +12,15 @@ use function is_array;
 
 /**
  * @see NumberFormatter
- * @extends IntlFormat<IntlOptions, array{float|int|null, ?non-empty-string}|float|int|null>
+ * @extends IntlFormat<?IntlNumberOptions, array{float|int|null, ?non-empty-string}|float|int|null>
  */
 class IntlCurrencyFormat extends IntlFormat {
     /**
-     * @param list<IntlOptions|null> $options
+     * @param list<IntlNumberOptions|null> $options
      */
-    public function __construct(Formatter $formatter, array $options = []) {
-        parent::__construct($formatter, [
-            new IntlOptions(NumberFormatter::CURRENCY),
+    public function __construct(PackageConfig $config, Formatter $formatter, array $options = []) {
+        parent::__construct($config, $formatter, [
+            new IntlNumberOptions(NumberFormatter::CURRENCY),
             ...$options,
         ]);
     }

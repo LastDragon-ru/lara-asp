@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlCurrencyFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
-use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\String\StringFormat;
@@ -27,75 +27,70 @@ class Config extends Configuration {
          * @var array<string, Format<*, mixed>>
          */
         public array $formats = [],
+        /**
+         * Global Intl settings (for all formats/locales).
+         */
+        public ?Intl $intl = null,
     ) {
         parent::__construct();
+
+        $this->intl = new Intl(
+            number: new IntlNumberOptions(
+                attributes: [
+                    NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
+                ],
+            ),
+        );
 
         $this->formats[Formatter::String]     = new Format(StringFormat::class);
         $this->formats[Formatter::Secret]     = new Format(SecretFormat::class, new SecretOptions(5));
         $this->formats[Formatter::Integer]    = new Format(
             IntlNumberFormat::class,
-            new IntlOptions(
+            new IntlNumberOptions(
                 style     : NumberFormatter::DECIMAL,
                 attributes: [
-                    NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_HALFUP,
                     NumberFormatter::FRACTION_DIGITS => 0,
                 ],
             ),
         );
         $this->formats[Formatter::Decimal]    = new Format(
             IntlNumberFormat::class,
-            new IntlOptions(
+            new IntlNumberOptions(
                 style     : NumberFormatter::DECIMAL,
                 attributes: [
-                    NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_HALFUP,
                     NumberFormatter::FRACTION_DIGITS => 2,
                 ],
             ),
         );
         $this->formats[Formatter::Scientific] = new Format(
             IntlNumberFormat::class,
-            new IntlOptions(
-                style     : NumberFormatter::SCIENTIFIC,
-                attributes: [
-                    NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
-                ],
+            new IntlNumberOptions(
+                style: NumberFormatter::SCIENTIFIC,
             ),
         );
         $this->formats[Formatter::Spellout]   = new Format(
             IntlNumberFormat::class,
-            new IntlOptions(
-                style     : NumberFormatter::SPELLOUT,
-                attributes: [
-                    NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
-                ],
+            new IntlNumberOptions(
+                style: NumberFormatter::SPELLOUT,
             ),
         );
         $this->formats[Formatter::Ordinal]    = new Format(
             IntlNumberFormat::class,
-            new IntlOptions(
-                style     : NumberFormatter::ORDINAL,
-                attributes: [
-                    NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
-                ],
+            new IntlNumberOptions(
+                style: NumberFormatter::ORDINAL,
             ),
         );
         $this->formats[Formatter::Percent]    = new Format(
             IntlNumberFormat::class,
-            new IntlOptions(
+            new IntlNumberOptions(
                 style     : NumberFormatter::PERCENT,
                 attributes: [
-                    NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_HALFUP,
                     NumberFormatter::FRACTION_DIGITS => 0,
                 ],
             ),
         );
         $this->formats[Formatter::Currency]   = new Format(
             IntlCurrencyFormat::class,
-            new IntlOptions(
-                attributes: [
-                    NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP,
-                ],
-            ),
         );
         $this->formats[Formatter::Duration]   = new Format(
             DurationFormat::class,

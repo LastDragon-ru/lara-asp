@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\LaraASP\Formatter\PackageConfig;
 use NumberFormatter;
 use OutOfBoundsException;
 
@@ -13,7 +14,7 @@ use function sprintf;
 /**
  * @see NumberFormatter
  *
- * @template TOptions of IntlOptions|null
+ * @template TOptions of IntlNumberOptions|null
  * @template TValue
  *
  * @implements Format<TOptions, TValue>
@@ -24,24 +25,25 @@ abstract class IntlFormat implements Format {
     /**
      * @param list<TOptions|null> $options
      */
-    public function __construct(Formatter $formatter, array $options = []) {
+    public function __construct(PackageConfig $config, Formatter $formatter, array $options = []) {
         // Collect options
         $style          = null;
         $pattern        = null;
         $symbols        = [];
         $attributes     = [];
         $textAttributes = [];
+        $options[]      = $config->getInstance()->intl->number ?? null;
 
-        foreach ($options as $intl) {
-            if ($intl === null) {
+        foreach ($options as $option) {
+            if ($option === null) {
                 continue;
             }
 
-            $style         ??= $intl->style;
-            $pattern       ??= $intl->pattern;
-            $symbols        += $intl->symbols;
-            $attributes     += $intl->attributes;
-            $textAttributes += $intl->textAttributes;
+            $style         ??= $option->style;
+            $pattern       ??= $option->pattern;
+            $symbols        += $option->symbols;
+            $attributes     += $option->attributes;
+            $textAttributes += $option->textAttributes;
         }
 
         // Possible?
