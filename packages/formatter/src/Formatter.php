@@ -95,7 +95,7 @@ class Formatter {
         try {
             return ($this->getFormat($format))($value);
         } catch (Exception $exception) {
-            throw new FormatterFailedToFormatValue($format, $format, $value, $exception);
+            throw new FormatterFailedToFormatValue($format, $value, $exception);
         }
     }
 

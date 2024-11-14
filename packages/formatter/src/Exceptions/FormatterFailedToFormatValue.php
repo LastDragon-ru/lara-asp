@@ -9,23 +9,17 @@ use function sprintf;
 
 class FormatterFailedToFormatValue extends PackageException {
     public function __construct(
-        protected string $formatter,
         protected string $format,
         protected mixed $value,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Formatter `%s` failed to format value into `%s` format.',
-                $this->getFormatter(),
+                'Failed to format value into `%s` format.',
                 $this->getFormat(),
             ),
             $previous,
         );
-    }
-
-    public function getFormatter(): string {
-        return $this->formatter;
     }
 
     public function getFormat(): string {
