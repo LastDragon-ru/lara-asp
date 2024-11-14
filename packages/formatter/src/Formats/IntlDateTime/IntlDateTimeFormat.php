@@ -1,40 +1,42 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Formatter\Formatters\DateTime;
+namespace LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime;
 
 use DateTimeInterface;
-use DateTimeZone;
 use IntlDateFormatter;
 use IntlException;
-use IntlTimeZone;
 use InvalidArgumentException;
-use NumberFormatter;
+use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
+use LastDragon_ru\LaraASP\Formatter\Formatter;
+use Override;
+
+use function is_null;
 
 /**
- * @internal
- * @see NumberFormatter
+ * @see IntlDateFormatter
+ *
+ * @implements Format<IntlDateTimeOptions, DateTimeInterface|null>
  */
-class Formatter {
+class IntlDateTimeFormat implements Format {
     protected readonly IntlDateFormatter $formatter;
 
-    public function __construct(
-        protected readonly string $locale,
-        protected readonly IntlTimeZone|DateTimeZone|string|null $timezone,
-        ?Options ...$options,
-    ) {
+    /**
+     * @param list<IntlDateTimeOptions|null> $options
+     */
+    public function __construct(Formatter $formatter, array $options = []) {
         // Collect options
         $dateType = null;
         $timeType = null;
         $pattern  = null;
 
-        foreach ($options as $intl) {
-            if ($intl === null) {
+        foreach ($options as $option) {
+            if ($option === null) {
                 continue;
             }
 
-            $dateType ??= $intl->dateType;
-            $timeType ??= $intl->timeType;
-            $pattern  ??= $intl->pattern;
+            $dateType ??= $option->dateType;
+            $timeType ??= $option->timeType;
+            $pattern  ??= $option->pattern;
         }
 
         // Possible?
@@ -47,11 +49,20 @@ class Formatter {
         }
 
         // Create
+        $locale          = $formatter->getLocale();
         $pattern         = $pattern !== '' ? $pattern : null;
+        $timezone        = $formatter->getTimezone();
         $this->formatter = new IntlDateFormatter($locale, $dateType, $timeType, $timezone, null, $pattern);
     }
 
-    public function format(DateTimeInterface $value): string {
+    #[Override]
+    public function __invoke(mixed $value): string {
+        // Null?
+        if (is_null($value)) {
+            return '';
+        }
+
+        // Format
         $formatted = $this->formatter->format($value);
 
         if ($formatted === false) {

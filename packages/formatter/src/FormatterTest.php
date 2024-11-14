@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\Formatter;
 
 use DateTime;
 use IntlDateFormatter;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Formatter\Config\Config;
 use LastDragon_ru\LaraASP\Formatter\Config\Format;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlDurationFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
@@ -199,8 +199,13 @@ final class FormatterTest extends TestCase {
 
     public function testTimeConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $format           = Cast::to(DateTimeFormat::class, $config->global->datetime->formats[Formatter::Time]);
-            $format->timeType = IntlDateFormatter::MEDIUM;
+            $config->formats[Formatter::Time] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::NONE,
+                    timeType: IntlDateFormatter::MEDIUM,
+                ),
+            );
         });
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
@@ -211,8 +216,14 @@ final class FormatterTest extends TestCase {
 
     public function testTimeCustomFormat(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $format          = Cast::to(DateTimeFormat::class, $config->global->datetime->formats[Formatter::Time]);
-            $format->pattern = 'HH:mm:ss.SSS';
+            $config->formats[Formatter::Time] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::NONE,
+                    timeType: IntlDateFormatter::SHORT,
+                    pattern : 'HH:mm:ss.SSS',
+                ),
+            );
         });
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
@@ -230,8 +241,13 @@ final class FormatterTest extends TestCase {
 
     public function testDateConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $format           = Cast::to(DateTimeFormat::class, $config->global->datetime->formats[Formatter::Date]);
-            $format->dateType = IntlDateFormatter::MEDIUM;
+            $config->formats[Formatter::Date] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::MEDIUM,
+                    timeType: IntlDateFormatter::NONE,
+                ),
+            );
         });
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -242,8 +258,14 @@ final class FormatterTest extends TestCase {
 
     public function testDateCustomFormat(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $format          = Cast::to(DateTimeFormat::class, $config->global->datetime->formats[Formatter::Date]);
-            $format->pattern = 'd MMM YYYY';
+            $config->formats[Formatter::Date] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::SHORT,
+                    timeType: IntlDateFormatter::NONE,
+                    pattern : 'd MMM YYYY',
+                ),
+            );
         });
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -261,12 +283,13 @@ final class FormatterTest extends TestCase {
 
     public function testDatetimeConfig(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $format           = Cast::to(
-                DateTimeFormat::class,
-                $config->global->datetime->formats[Formatter::DateTime],
+            $config->formats[Formatter::DateTime] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::MEDIUM,
+                    timeType: IntlDateFormatter::MEDIUM,
+                ),
             );
-            $format->dateType = IntlDateFormatter::MEDIUM;
-            $format->timeType = IntlDateFormatter::MEDIUM;
         });
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
@@ -280,8 +303,14 @@ final class FormatterTest extends TestCase {
 
     public function testDatetimeCustomFormat(): void {
         $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
-            $format          = Cast::to(DateTimeFormat::class, $config->global->datetime->formats[Formatter::DateTime]);
-            $format->pattern = 'd MMM YYYY || HH:mm:ss';
+            $config->formats[Formatter::DateTime] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::MEDIUM,
+                    timeType: IntlDateFormatter::MEDIUM,
+                    pattern : 'd MMM YYYY || HH:mm:ss',
+                ),
+            );
         });
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');

@@ -14,21 +14,18 @@ use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
-use LastDragon_ru\LaraASP\Formatter\Formatters\DateTime\Formatter as DateTimeFormatter;
 use OutOfBoundsException;
 use Stringable;
 
 use function bccomp;
 use function bcdiv;
 use function is_float;
-use function is_null;
 use function mb_strlen;
 use function sprintf;
 
 class Formatter {
     use Macroable;
 
-    public const Default    = 'default';
     public const String     = 'string';
     public const Integer    = 'integer';
     public const Scientific = 'scientific';
@@ -45,7 +42,6 @@ class Formatter {
     public const Currency   = 'currency';
     public const Duration   = 'duration';
 
-    private const FormatterDateTime = 'DateTime';
     private const FormatterFilesize = 'Filesize';
 
     private ?string                               $locale   = null;
@@ -184,15 +180,15 @@ class Formatter {
     }
 
     public function time(?DateTimeInterface $value): string {
-        return $this->formatDateTime(self::Time, $value);
+        return $this->format(self::Time, $value);
     }
 
     public function date(?DateTimeInterface $value): string {
-        return $this->formatDateTime(self::Date, $value);
+        return $this->format(self::Date, $value);
     }
 
     public function datetime(?DateTimeInterface $value): string {
-        return $this->formatDateTime(self::DateTime, $value);
+        return $this->format(self::DateTime, $value);
     }
 
     /**
@@ -234,32 +230,6 @@ class Formatter {
      */
     protected function getTranslation(array|string $key, array $replace = []): string {
         return $this->getTranslator()->get($key, $replace, $this->getLocale());
-    }
-
-    protected function formatDateTime(string $format, ?DateTimeInterface $value): string {
-        // Null?
-        if (is_null($value)) {
-            return '';
-        }
-
-        // Format
-        try {
-            $config    = $this->package->getInstance();
-            $locale    = $this->getLocale();
-            $timezone  = $this->getTimezone();
-            $formatter = new DateTimeFormatter(
-                $locale,
-                $timezone,
-                $config->locales[$locale]->datetime->formats[$format] ?? null,
-                $config->global->datetime->formats[$format] ?? null,
-            );
-            $formatted = $formatter->format($value);
-        } catch (Exception $exception) {
-            throw new FormatterFailedToFormatValue(self::FormatterDateTime, $format, $value, $exception);
-        }
-
-        // Return
-        return $formatted;
     }
 
     /**

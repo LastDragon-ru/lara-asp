@@ -5,10 +5,11 @@ namespace LastDragon_ru\LaraASP\Formatter\Config;
 use Exception;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\DateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Config\Formats\FilesizeFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlCurrencyFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlOptions;
@@ -111,21 +112,28 @@ class Config extends Configuration {
                 'HH:mm:ss.SSS',
             ),
         );
-
-        $this->global->datetime->formats += [
-            Formatter::Time     => new DateTimeFormat(
+        $this->formats[Formatter::Time]       = new Format(
+            IntlDateTimeFormat::class,
+            new IntlDateTimeOptions(
                 dateType: IntlDateFormatter::NONE,
                 timeType: IntlDateFormatter::SHORT,
             ),
-            Formatter::Date     => new DateTimeFormat(
+        );
+        $this->formats[Formatter::Date]       = new Format(
+            IntlDateTimeFormat::class,
+            new IntlDateTimeOptions(
                 dateType: IntlDateFormatter::SHORT,
                 timeType: IntlDateFormatter::NONE,
             ),
-            Formatter::DateTime => new DateTimeFormat(
+        );
+        $this->formats[Formatter::DateTime]   = new Format(
+            IntlDateTimeFormat::class,
+            new IntlDateTimeOptions(
                 dateType: IntlDateFormatter::SHORT,
                 timeType: IntlDateFormatter::SHORT,
             ),
-        ];
+        );
+
         $this->global->filesize->formats += [
             Formatter::Disksize => new FileSizeFormat(
                 base : 1000,
