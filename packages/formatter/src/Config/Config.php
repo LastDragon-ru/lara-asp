@@ -5,9 +5,10 @@ namespace LastDragon_ru\LaraASP\Formatter\Config;
 use Exception;
 use IntlDateFormatter;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
-use LastDragon_ru\LaraASP\Formatter\Config\Formats\FilesizeFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\Filesize\FilesizeFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Filesize\FilesizeOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlCurrencyFormat;
@@ -26,16 +27,6 @@ class Config extends Configuration {
          * @var array<string, Format<*, mixed>>
          */
         public array $formats = [],
-        /**
-         * Options and patterns/formats for all locales.
-         */
-        public Locale $global = new Locale(),
-        /**
-         * Options and patterns/formats for concrete locale.
-         *
-         * @var array<non-empty-string, Locale>
-         */
-        public array $locales = [],
     ) {
         parent::__construct();
 
@@ -133,9 +124,9 @@ class Config extends Configuration {
                 timeType: IntlDateFormatter::SHORT,
             ),
         );
-
-        $this->global->filesize->formats += [
-            Formatter::Disksize => new FileSizeFormat(
+        $this->formats[Formatter::Disksize]   = new Format(
+            FilesizeFormat::class,
+            new FilesizeOptions(
                 base : 1000,
                 units: [
                     ['disksize.B', 'B'],
@@ -151,7 +142,10 @@ class Config extends Configuration {
                     ['disksize.QB', 'QB'],
                 ],
             ),
-            Formatter::Filesize => new FileSizeFormat(
+        );
+        $this->formats[Formatter::Filesize]   = new Format(
+            FilesizeFormat::class,
+            new FilesizeOptions(
                 base : 1024,
                 units: [
                     ['filesize.B', 'B'],
@@ -167,7 +161,7 @@ class Config extends Configuration {
                     ['filesize.QiB', 'QiB'],
                 ],
             ),
-        ];
+        );
     }
 
     /**

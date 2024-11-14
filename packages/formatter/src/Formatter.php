@@ -6,21 +6,15 @@ use DateInterval;
 use DateTimeInterface;
 use DateTimeZone;
 use Exception;
-use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use IntlTimeZone;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
-use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToCreateFormatter;
 use LastDragon_ru\LaraASP\Formatter\Exceptions\FormatterFailedToFormatValue;
 use OutOfBoundsException;
 use Stringable;
 
-use function bccomp;
-use function bcdiv;
-use function is_float;
-use function mb_strlen;
 use function sprintf;
 
 class Formatter {
@@ -42,8 +36,6 @@ class Formatter {
     public const Currency   = 'currency';
     public const Duration   = 'duration';
 
-    private const FormatterFilesize = 'Filesize';
-
     private ?string                               $locale   = null;
     private IntlTimeZone|DateTimeZone|string|null $timezone = null;
 
@@ -51,7 +43,6 @@ class Formatter {
         protected readonly ApplicationResolver $application,
         protected readonly ConfigResolver $config,
         protected readonly PackageConfig $package,
-        private PackageTranslator $translator,
     ) {
         // empty
     }
@@ -95,10 +86,6 @@ class Formatter {
 
     public function getTimezone(): IntlTimeZone|DateTimeZone|string|null {
         return $this->timezone ?? $this->getDefaultTimezone();
-    }
-
-    protected function getTranslator(): PackageTranslator {
-        return $this->translator;
     }
     // </editor-fold>
 
@@ -197,7 +184,7 @@ class Formatter {
      * @param numeric-string|float|int|null $bytes
      */
     public function filesize(string|float|int|null $bytes): string {
-        return $this->formatFilesize(self::Filesize, $bytes);
+        return $this->format(self::Filesize, $bytes);
     }
 
     /**
@@ -206,7 +193,7 @@ class Formatter {
      * @param numeric-string|float|int|null $bytes
      */
     public function disksize(string|float|int|null $bytes): string {
-        return $this->formatFilesize(self::Disksize, $bytes);
+        return $this->format(self::Disksize, $bytes);
     }
 
     public function secret(?string $value): string {
@@ -222,65 +209,6 @@ class Formatter {
 
     protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {
         return $this->config->getInstance()->get('app.timezone') ?? null;
-    }
-
-    /**
-     * @param list<string>|string  $key
-     * @param array<string, mixed> $replace
-     */
-    protected function getTranslation(array|string $key, array $replace = []): string {
-        return $this->getTranslator()->get($key, $replace, $this->getLocale());
-    }
-
-    /**
-     * @param numeric-string|float|int|null $bytes
-     */
-    protected function formatFilesize(string $format, string|float|int|null $bytes): string {
-        // Prepare
-        $config        = $this->package->getInstance();
-        $locale        = $this->getLocale();
-        $base          = $config->locales[$locale]->filesize->formats[$format]->base
-            ?? $config->global->filesize->formats[$format]->base
-            ?? null;
-        $units         = $config->locales[$locale]->filesize->formats[$format]->units
-            ?? $config->global->filesize->formats[$format]->units
-            ?? null;
-        $integerFormat = $config->locales[$locale]->filesize->formats[$format]->integerFormat
-            ?? $config->global->filesize->formats[$format]->integerFormat
-            ?? self::Integer;
-        $decimalFormat = $config->locales[$locale]->filesize->formats[$format]->decimalFormat
-            ?? $config->global->filesize->formats[$format]->decimalFormat
-            ?? self::Decimal;
-
-        if ($base === null || $units === null) {
-            throw new FormatterFailedToCreateFormatter(self::FormatterFilesize, $format);
-        }
-
-        $unit  = 0;
-        $base  = (string) $base;
-        $scale = mb_strlen($base) + 1;
-        $bytes = match (true) {
-            is_float($bytes) => sprintf('%0.0f', $bytes),
-            $bytes === null  => '0',
-            default          => (string) $bytes,
-        };
-        $length = static function (string $bytes): int {
-            return mb_strlen(Str::before($bytes, '.'));
-        };
-
-        while ((bccomp($bytes, $base, $scale) >= 0 || $length($bytes) > 2) && isset($units[$unit + 1])) {
-            $bytes = bcdiv($bytes, $base, $scale);
-            $unit++;
-        }
-
-        // Format
-        $isInt     = $unit === 0;
-        $bytes     = $isInt ? (int) $bytes : (float) $bytes;
-        $format    = $isInt ? $integerFormat : $decimalFormat;
-        $suffix    = $this->getTranslation($units[$unit]);
-        $formatted = "{$this->format($format, $bytes)} {$suffix}";
-
-        return $formatted;
     }
     // </editor-fold>
 }
