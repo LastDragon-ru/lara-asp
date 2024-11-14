@@ -36,6 +36,10 @@ class Formatter {
     public const Currency   = 'currency';
     public const Duration   = 'duration';
 
+    /**
+     * @var array<string, Format<*, mixed>>
+     */
+    private array                                 $cache    = [];
     private ?string                               $locale   = null;
     private IntlTimeZone|DateTimeZone|string|null $timezone = null;
 
@@ -103,6 +107,11 @@ class Formatter {
      * @return Format<*, mixed>
      */
     protected function getFormat(string $format): Format {
+        // Cached?
+        if (isset($this->cache[$format])) {
+            return $this->cache[$format];
+        }
+
         // Known?
         $config   = $this->package->getInstance();
         $settings = $config->formats[$format] ?? null;
@@ -112,8 +121,8 @@ class Formatter {
         }
 
         // Create
-        $locale    = $this->getLocale();
-        $formatter = $this->application->getInstance()->make($settings->class, [
+        $locale               = $this->getLocale();
+        $this->cache[$format] = $this->application->getInstance()->make($settings->class, [
             'formatter' => $this,
             'options'   => [
                 $settings->locales[$locale] ?? null,
@@ -121,7 +130,7 @@ class Formatter {
             ],
         ]);
 
-        return $formatter;
+        return $this->cache[$format];
     }
     // </editor-fold>
 
@@ -209,6 +218,10 @@ class Formatter {
 
     protected function getDefaultTimezone(): IntlTimeZone|DateTimeZone|string|null {
         return $this->config->getInstance()->get('app.timezone') ?? null;
+    }
+
+    public function __clone(): void {
+        $this->cache = [];
     }
     // </editor-fold>
 }
