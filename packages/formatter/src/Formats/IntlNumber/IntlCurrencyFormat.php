@@ -12,24 +12,43 @@ use function is_array;
 
 /**
  * @see NumberFormatter
- * @extends IntlFormat<?IntlNumberOptions, array{float|int|null, ?non-empty-string}|float|int|null>
+ * @extends IntlFormat<?IntlCurrencyOptions, array{float|int|null, ?non-empty-string}|float|int|null>
  */
 class IntlCurrencyFormat extends IntlFormat {
     /**
-     * @param list<IntlNumberOptions|null> $options
+     * @var non-empty-string|null
+     */
+    protected readonly ?string $currency;
+
+    /**
+     * @param list<IntlCurrencyOptions|null> $options
      */
     public function __construct(PackageConfig $config, Formatter $formatter, array $options = []) {
+        // Parent
         parent::__construct($config, $formatter, [
-            new IntlNumberOptions(NumberFormatter::CURRENCY),
+            new IntlCurrencyOptions(NumberFormatter::CURRENCY),
             ...$options,
         ]);
+
+        // Currency
+        $currency = null;
+
+        foreach ($options as $option) {
+            if ($option === null) {
+                continue;
+            }
+
+            $currency ??= $option->currency;
+        }
+
+        $this->currency = $currency;
     }
 
     #[Override]
     public function __invoke(mixed $value): string {
         [$value, $currency] = is_array($value) ? $value : [$value, null];
         $value            ??= 0;
-        $currency         ??= $this->formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
+        $currency         ??= $this->currency ?? $this->formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
         $formatted          = $this->formatter->formatCurrency($value, $currency);
 
         if ($formatted === false) {
