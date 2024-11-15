@@ -71,7 +71,7 @@ This package provides highly powerful [`@searchBy`](packages/graphql/docs/Direct
 
 ## (Laravel) Intl Formatter
 
-This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application.
+This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining own.
 
 [Read more](<packages/formatter/README.md>).
 

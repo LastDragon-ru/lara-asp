@@ -26,6 +26,11 @@ parameters:
 			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
 
 		-
+			message: "#^Variable \\$currency on left side of \\?\\?\\= always exists and is always null\\.$#"
+			count: 1
+			path: packages/formatter/src/Formats/IntlNumber/IntlCurrencyFormat.php
+
+		-
 			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Formatter\\\\Formatter\\:\\:getDefaultTimezone\\(\\) should return DateTimeZone\\|IntlTimeZone\\|string\\|null but returns mixed\\.$#"
 			count: 1
 			path: packages/formatter/src/Formatter.php

@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Dev\App;
 
-use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
-use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
+use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
+use LastDragon_ru\LaraASP\Core\Application\Configuration\ConfigurationResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -83,6 +83,8 @@ final class Example implements Runner {
                 $result = "<markdown>{$output}</markdown>";
             }
         } finally {
+            self::$app->forgetScopedInstances();
+
             self::$app    = null;
             self::$file   = null;
             self::$dumper = null;
@@ -113,17 +115,15 @@ final class Example implements Runner {
     }
 
     /**
-     * @param array<string, mixed> $settings
+     * @template T of Configuration
+     *
+     * @param class-string<ConfigurationResolver<T>> $resolver
+     * @param callable(T): void|null                 $callback
      */
-    public static function config(string $root, array $settings): void {
-        // Update
-        $repository = self::app()->make(Repository::class);
-        $config     = (array) $repository->get($root, []);
-        $config     = (new ConfigMerger())->merge([ConfigMerger::Strict => false], $config, $settings);
-
-        $repository->set([
-            $root => $config,
-        ]);
+    public static function config(string $resolver, ?callable $callback): void {
+        if ($callback !== null) {
+            $callback(self::app()->make($resolver)->getInstance());
+        }
     }
 
     private static function getExpression(string $method): ?string {

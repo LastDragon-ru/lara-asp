@@ -4,6 +4,17 @@ namespace LastDragon_ru\LaraASP\Formatter;
 
 use DateTime;
 use IntlDateFormatter;
+use LastDragon_ru\LaraASP\Formatter\Config\Config;
+use LastDragon_ru\LaraASP\Formatter\Config\Format;
+use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Duration\DurationOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlDateTime\IntlDateTimeOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlDurationFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberOptions;
+use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
+use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
 use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
 use NumberFormatter;
 use Override;
@@ -75,17 +86,29 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDecimalConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Decimal                                     => 4,
-            Package::Name.'.locales.ru_RU.'.Formatter::Decimal.'.'.Formatter::IntlAttributes => [
-                NumberFormatter::FRACTION_DIGITS => 9, // should be ignored
-                NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
-            ],
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Decimal] = new Format(
+                IntlNumberFormat::class,
+                new IntlNumberOptions(
+                    style     : NumberFormatter::DECIMAL,
+                    attributes: [
+                        NumberFormatter::FRACTION_DIGITS => 4,
+                    ],
+                ),
+                [
+                    'ru_RU' => new IntlNumberOptions(
+                        attributes: [
+                            NumberFormatter::FRACTION_DIGITS => 2,
+                            NumberFormatter::ROUNDING_MODE   => NumberFormatter::ROUND_FLOOR,
+                        ],
+                    ),
+                ],
+            );
+        });
 
         self::assertEquals('1,000.0000', $this->formatter->decimal(1000));
         self::assertEquals('1,000.0001', $this->formatter->decimal(1000.000099));
-        self::assertEquals("1\u{00A0}000,0000", $this->formatter->forLocale('ru_RU')->decimal(1000.000099));
+        self::assertEquals("1\u{00A0}000,00", $this->formatter->forLocale('ru_RU')->decimal(1000.0099));
     }
 
     public function testOrdinal(): void {
@@ -99,8 +122,16 @@ final class FormatterTest extends TestCase {
 
     public function testSpellout(): void {
         self::assertEquals(
+            'ninety-nine',
+            $this->formatter->spellout(99),
+        );
+        self::assertEquals(
             'one thousand three hundred twenty-four point two five',
             $this->formatter->spellout(1324.25),
+        );
+        self::assertEquals(
+            'девяносто пять',
+            $this->formatter->forLocale('ru_RU')->spellout(95),
         );
         self::assertEquals(
             'двадцать пять целых пять десятых',
@@ -111,14 +142,21 @@ final class FormatterTest extends TestCase {
     public function testPercent(): void {
         self::assertEquals('10%', $this->formatter->percent(10));
         self::assertEquals('25%', $this->formatter->percent(24.59));
-        self::assertEquals('24.59%', $this->formatter->percent(24.59, 2));
         self::assertEquals("56\u{00A0}%", $this->formatter->forLocale('ru_RU')->percent(56.09));
     }
 
     public function testPercentConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Percent => 2,
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Percent] = new Format(
+                IntlNumberFormat::class,
+                new IntlNumberOptions(
+                    style     : NumberFormatter::PERCENT,
+                    attributes: [
+                        NumberFormatter::FRACTION_DIGITS => 2,
+                    ],
+                ),
+            );
+        });
 
         self::assertEquals('10.99%', $this->formatter->percent(10.99));
     }
@@ -129,23 +167,27 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDurationConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Duration => NumberFormatter::DURATION,
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Duration] = new Format(
+                IntlDurationFormat::class,
+            );
+        });
 
         self::assertEquals('3:25:45', $this->formatter->duration(12_345));
         self::assertEquals("12\u{00A0}345", $this->formatter->forLocale('ru_RU')->duration(12_345));
     }
 
     public function testDurationCustomFormat(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Duration        => 'custom',
-            Package::Name.'.all.'.Formatter::Duration.'.custom'  => 'mm:ss',
-            Package::Name.'.all.'.Formatter::Duration.'.custom2' => 'H:mm:ss.SSS',
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Duration] = new Format(
+                DurationFormat::class,
+                new DurationOptions(
+                    'mm:ss',
+                ),
+            );
+        });
 
         self::assertEquals('02:03', $this->formatter->duration(123.456));
-        self::assertEquals('0:02:03.456', $this->formatter->duration(123.456, 'custom2'));
     }
 
     public function testTime(): void {
@@ -153,16 +195,18 @@ final class FormatterTest extends TestCase {
 
         self::assertIsObject($time);
         self::assertEquals('11:24 PM', str_replace("\u{202F}", ' ', $this->formatter->time($time)));
-        self::assertEquals(
-            '2:24 AM',
-            str_replace("\u{202F}", ' ', $this->formatter->time($time, null, 'Europe/Moscow')),
-        );
     }
 
     public function testTimeConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Time => IntlDateFormatter::MEDIUM,
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Time] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::NONE,
+                    timeType: IntlDateFormatter::MEDIUM,
+                ),
+            );
+        });
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
 
@@ -171,17 +215,21 @@ final class FormatterTest extends TestCase {
     }
 
     public function testTimeCustomFormat(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Time        => 'custom',
-            Package::Name.'.all.'.Formatter::Time.'.custom'  => 'HH:mm:ss.SSS',
-            Package::Name.'.all.'.Formatter::Time.'.custom2' => 'HH:mm:ss.SSS',
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Time] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::NONE,
+                    timeType: IntlDateFormatter::SHORT,
+                    pattern : 'HH:mm:ss.SSS',
+                ),
+            );
+        });
 
         $time = DateTime::createFromFormat('H:i:s', '23:24:59');
 
         self::assertIsObject($time);
         self::assertEquals('23:24:59.000', $this->formatter->time($time));
-        self::assertEquals('23:24:59.000', $this->formatter->time($time, 'custom2'));
     }
 
     public function testDate(): void {
@@ -189,13 +237,18 @@ final class FormatterTest extends TestCase {
 
         self::assertIsObject($date);
         self::assertEquals('5/12/05', $this->formatter->date($date));
-        self::assertEquals('5/13/05', $this->formatter->date($date, null, 'Europe/Moscow'));
     }
 
     public function testDateConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Date => IntlDateFormatter::MEDIUM,
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Date] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::MEDIUM,
+                    timeType: IntlDateFormatter::NONE,
+                ),
+            );
+        });
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
@@ -204,17 +257,21 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDateCustomFormat(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Date        => 'custom',
-            Package::Name.'.all.'.Formatter::Date.'.custom'  => 'd MMM YYYY',
-            Package::Name.'.all.'.Formatter::Date.'.custom2' => 'd MMM YYYY',
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Date] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::SHORT,
+                    timeType: IntlDateFormatter::NONE,
+                    pattern : 'd MMM YYYY',
+                ),
+            );
+        });
 
         $date = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
         self::assertIsObject($date);
         self::assertEquals('12 May 2005', $this->formatter->date($date));
-        self::assertEquals('12 May 2005', $this->formatter->date($date, 'custom2'));
     }
 
     public function testDatetime(): void {
@@ -222,16 +279,18 @@ final class FormatterTest extends TestCase {
 
         self::assertIsObject($datetime);
         self::assertEquals('5/12/05, 11:00 PM', str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime)));
-        self::assertEquals(
-            '5/13/05, 3:00 AM',
-            str_replace("\u{202F}", ' ', $this->formatter->datetime($datetime, null, 'Europe/Moscow')),
-        );
     }
 
     public function testDatetimeConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::DateTime => IntlDateFormatter::MEDIUM,
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::DateTime] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::MEDIUM,
+                    timeType: IntlDateFormatter::MEDIUM,
+                ),
+            );
+        });
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
@@ -243,20 +302,25 @@ final class FormatterTest extends TestCase {
     }
 
     public function testDatetimeCustomFormat(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::DateTime        => 'custom',
-            Package::Name.'.all.'.Formatter::DateTime.'.custom'  => 'd MMM YYYY || HH:mm:ss',
-            Package::Name.'.all.'.Formatter::DateTime.'.custom2' => 'd MMM YYYY || HH:mm:ss',
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::DateTime] = new Format(
+                IntlDateTimeFormat::class,
+                new IntlDateTimeOptions(
+                    dateType: IntlDateFormatter::MEDIUM,
+                    timeType: IntlDateFormatter::MEDIUM,
+                    pattern : 'd MMM YYYY || HH:mm:ss',
+                ),
+            );
+        });
 
         $datetime = DateTime::createFromFormat('d.m.Y H:i:s', '12.05.2005 23:00:00');
 
         self::assertIsObject($datetime);
         self::assertEquals('12 May 2005 || 23:00:00', $this->formatter->datetime($datetime));
-        self::assertEquals('12 May 2005 || 23:00:00', $this->formatter->datetime($datetime, 'custom2'));
     }
 
     public function testScientific(): void {
+        self::assertEquals('1E1', $this->formatter->scientific(10));
         self::assertEquals('1.00324234E1', $this->formatter->scientific(10.0324234));
         self::assertEquals('1.00324234E8', $this->formatter->scientific(100_324_234));
         self::assertEquals('-1,00324234E8', $this->formatter->forLocale('ru_RU')->scientific(-100_324_234));
@@ -278,9 +342,15 @@ final class FormatterTest extends TestCase {
     }
 
     public function testSecretConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Secret => 3,
-        ]);
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->formats[Formatter::Secret] = new Format(
+                class  : SecretFormat::class,
+                default: new SecretOptions(3),
+                locales: [
+                    'ru_RU' => new SecretOptions(2),
+                ],
+            );
+        });
 
         self::assertEquals('', $this->formatter->secret(null));
         self::assertEquals('*', $this->formatter->secret('1'));
@@ -291,23 +361,24 @@ final class FormatterTest extends TestCase {
         self::assertEquals('***456', $this->formatter->secret('123456'));
         self::assertEquals('****567', $this->formatter->secret('1234567'));
         self::assertEquals('*****678', $this->formatter->secret('12345678'));
+        self::assertEquals('******78', $this->formatter->forLocale('ru_RU')->secret('12345678'));
     }
 
     public function testFilesize(): void {
         self::assertEquals('0 B', $this->formatter->filesize(null));
         self::assertEquals('0 B', $this->formatter->filesize(0));
         self::assertEquals('10 B', $this->formatter->filesize(10));
-        self::assertEquals('1.00 MiB', $this->formatter->filesize(1023 * 1024, 2));
+        self::assertEquals('1.00 MiB', $this->formatter->filesize(1023 * 1024));
         self::assertEquals('10.33 MiB', $this->formatter->filesize(10 * 1024 * 1024 + 1024 * 334));
-        self::assertEquals('10.00 GiB', $this->formatter->filesize(10 * 1024 * 1024 * 1024, 2));
-        self::assertEquals('0.87 EiB', $this->formatter->filesize(999_999_999_999_999_999, 2));
-        self::assertEquals('8.00 EiB', $this->formatter->filesize(PHP_INT_MAX, 2));
-        self::assertEquals('10.00 QiB', $this->formatter->filesize(10 * pow(2, 100), 2));
-        self::assertEquals('10.00 QiB', $this->formatter->filesize('12676506002282294014967032053760', 2));
-        self::assertEquals('100.00 QiB', $this->formatter->filesize('126765060022822940149670320537699', 2));
+        self::assertEquals('10.00 GiB', $this->formatter->filesize(10 * 1024 * 1024 * 1024));
+        self::assertEquals('0.87 EiB', $this->formatter->filesize(999_999_999_999_999_999));
+        self::assertEquals('8.00 EiB', $this->formatter->filesize(PHP_INT_MAX));
+        self::assertEquals('10.00 QiB', $this->formatter->filesize(10 * pow(2, 100)));
+        self::assertEquals('10.00 QiB', $this->formatter->filesize('12676506002282294014967032053760'));
+        self::assertEquals('100.00 QiB', $this->formatter->filesize('126765060022822940149670320537699'));
         self::assertEquals(
             '10,000.00 QiB',
-            $this->formatter->filesize(10 * 1000 * pow(2, 100), 2),
+            $this->formatter->filesize(10 * 1000 * pow(2, 100)),
         );
     }
 
@@ -315,31 +386,32 @@ final class FormatterTest extends TestCase {
         self::assertEquals('0 B', $this->formatter->disksize(null));
         self::assertEquals('0 B', $this->formatter->disksize(0));
         self::assertEquals('10 B', $this->formatter->disksize(10));
-        self::assertEquals('1.00 MB', $this->formatter->disksize(999 * 1000, 2));
+        self::assertEquals('1.00 MB', $this->formatter->disksize(999 * 1000));
         self::assertEquals('10.83 MB', $this->formatter->disksize(10 * 1024 * 1024 + 1024 * 334));
-        self::assertEquals('10.00 GB', $this->formatter->disksize(10 * 1000 * 1000 * 1000, 2));
-        self::assertEquals('9.22 EB', $this->formatter->disksize(PHP_INT_MAX, 2));
-        self::assertEquals('10.00 QB', $this->formatter->disksize(10_000_000_000_000_000_000_000_000_000_000, 2));
-        self::assertEquals('10.00 QB', $this->formatter->disksize('10000000000000000000000000000000', 2));
-        self::assertEquals('100.00 QB', $this->formatter->disksize('99999999999999999999999999999999', 2));
+        self::assertEquals('10.00 GB', $this->formatter->disksize(10 * 1000 * 1000 * 1000));
+        self::assertEquals('9.22 EB', $this->formatter->disksize(PHP_INT_MAX));
+        self::assertEquals('10.00 QB', $this->formatter->disksize(10_000_000_000_000_000_000_000_000_000_000));
+        self::assertEquals('10.00 QB', $this->formatter->disksize('10000000000000000000000000000000'));
+        self::assertEquals('100.00 QB', $this->formatter->disksize('99999999999999999999999999999999'));
         self::assertEquals(
             '10,000.00 QB',
-            $this->formatter->disksize(10_000_000_000_000_000_000_000_000_000_000_000, 2),
+            $this->formatter->disksize(10_000_000_000_000_000_000_000_000_000_000_000),
         );
     }
 
     public function testCurrency(): void {
-        self::assertEquals('$10.03', $this->formatter->currency(10.0324234));
-        self::assertEquals("RUB\u{00A0}100,324,234.00", $this->formatter->currency(100_324_234, 'RUB'));
-        self::assertEquals("100,99\u{00A0}₽", $this->formatter->forLocale('ru_RU')->currency(100.985, 'RUB'));
+        $formatter = $this->formatter->forLocale('en_US');
+
+        self::assertEquals('$10.00', $formatter->currency(10));
+        self::assertEquals('€10.00', $formatter->currency(10, 'EUR'));
+        self::assertEquals('$10.03', $formatter->currency(10.0324234));
     }
 
     public function testCurrencyConfig(): void {
-        $this->setConfig([
-            Package::Name.'.options.'.Formatter::Currency => 'RUB',
-        ]);
+        $formatter = $this->formatter->forLocale('ru_RU');
 
-        self::assertEquals("RUB\u{00A0}10.03", $this->formatter->currency(10.0324234));
+        self::assertEquals("10,00\u{00A0}₽", $formatter->currency(10));
+        self::assertEquals("10,03\u{00A0}₽", $formatter->currency(10.0324234));
     }
     // </editor-fold>
 }

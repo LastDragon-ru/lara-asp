@@ -17,6 +17,7 @@ parameters:
         - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\<[^>]+\\>\\:\\:assert[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
+        - "#^Dynamic call to static method Illuminate\\\\Container\\\\Container::forgetScopedInstances\\(\\)\\.$#"
 
         # Sometimes it is needed...
         # https://github.com/phpstan/phpstan/issues/3296
