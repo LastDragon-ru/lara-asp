@@ -8,6 +8,7 @@
     "GuzzleHttp\\Psr7\\Response",
     "Illuminate\\Cache\\Repository",
     "Illuminate\\Config\\Repository",
+    "Illuminate\\Contracts\\Config\\Repository",
     "Illuminate\\Foundation\\Http\\FormRequest",
     "Illuminate\\Foundation\\Testing\\RefreshDatabase",
     "Illuminate\\Foundation\\Testing\\RefreshDatabaseState",
