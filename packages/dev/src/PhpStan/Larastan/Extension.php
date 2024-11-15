@@ -8,13 +8,13 @@ use Larastan\Larastan\ReturnTypes\ApplicationMakeDynamicReturnTypeExtension;
 use Larastan\Larastan\ReturnTypes\AppMakeDynamicReturnTypeExtension;
 use Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension;
 use Larastan\Larastan\ReturnTypes\ContainerMakeDynamicReturnTypeExtension;
-use LastDragon_ru\LaraASP\Core\Utils\Path;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use Nette\Neon\Neon;
 
 use function array_filter;
 use function array_keys;
 use function array_values;
-use function dirname;
 use function file_get_contents;
 use function file_put_contents;
 use function getcwd;
@@ -33,11 +33,11 @@ class Extension {
      */
     public static function dump(): void {
         // Prepare
-        $origin = Path::join(self::getLarastanPath(), 'extension.neon');
-        $target = Path::getPath(self::getRootPath(), 'phpstan-larastan.neon');
+        $origin = self::getLarastanPath()->getFilePath('extension.neon');
+        $target = self::getRootPath()->getFilePath('phpstan-larastan.neon');
 
         // Load
-        $extension = Neon::decode((string) file_get_contents($origin));
+        $extension = Neon::decode((string) file_get_contents((string) $origin));
 
         if (!is_array($extension)) {
             throw new Exception('The `$extension` expected to be an array.');
@@ -50,7 +50,7 @@ class Extension {
         // Save
         $neon = Neon::encode($extension, true, '    ');
 
-        file_put_contents($target, $neon);
+        file_put_contents((string) $target, $neon);
 
         echo "  Updated {$target}".PHP_EOL;
     }
@@ -60,7 +60,7 @@ class Extension {
      *
      * @return array<array-key, mixed>
      */
-    private static function updateBootstrapFiles(string $path, array $extension): array {
+    private static function updateBootstrapFiles(FilePath $path, array $extension): array {
         // Valid?
         if (!isset($extension['parameters']) || !is_array($extension['parameters'])) {
             throw new Exception('The `$extension[\'parameters\']` expected to be an array.');
@@ -69,7 +69,6 @@ class Extension {
         // Update
         $source = self::getLarastanPath();
         $files  = (array) ($extension['parameters']['bootstrapFiles'] ?? []);
-        $root   = dirname($path);
 
         foreach ($files as $index => $file) {
             if (!is_string($file)) {
@@ -81,8 +80,8 @@ class Extension {
                 );
             }
 
-            $file                                              = Path::getPath($source, $file);
-            $extension['parameters']['bootstrapFiles'][$index] = Path::getRelativePath($root, $file);
+            $file                                              = $source->getFilePath($file);
+            $extension['parameters']['bootstrapFiles'][$index] = (string) $path->getRelativePath($file);
         }
 
         // Return
@@ -94,7 +93,7 @@ class Extension {
      *
      * @return array<array-key, mixed>
      */
-    private static function updateServices(string $path, array $extension): array {
+    private static function updateServices(FilePath $path, array $extension): array {
         // Remove
         $disabled = [
             ApplicationMakeDynamicReturnTypeExtension::class            => true,
@@ -132,16 +131,19 @@ class Extension {
         return $extension;
     }
 
-    private static function getRootPath(): string {
-        return (string) getcwd();
+    private static function getRootPath(): DirectoryPath {
+        return new DirectoryPath((string) getcwd());
     }
 
-    private static function getLarastanPath(): string {
+    private static function getLarastanPath(): DirectoryPath {
         return self::getPackagePath('larastan/larastan');
     }
 
-    private static function getPackagePath(string $package): string {
-        return InstalledVersions::getInstallPath($package)
+    private static function getPackagePath(string $package): DirectoryPath {
+        $path = InstalledVersions::getInstallPath($package)
             ?? throw new Exception(sprintf('The `%s` package is not found/installed.', $package));
+        $path = new DirectoryPath($path);
+
+        return $path;
     }
 }
