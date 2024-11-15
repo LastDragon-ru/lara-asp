@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 
 use function array_splice;
 use function end;
+use function str_contains;
 
 /**
  * Special wrapper around {@see TranslatorContract} to help translate package's messages.
@@ -62,7 +63,11 @@ abstract class Translator {
     }
 
     protected function key(string $key): string {
-        return "{$this->getName()}::messages.{$key}";
+        if (!str_contains($key, '::')) {
+            $key = "{$this->getName()}::messages.{$key}";
+        }
+
+        return $key;
     }
 
     /**

@@ -201,6 +201,22 @@ final class TranslatorTest extends TestCase {
                 ],
                 'unk',
             ],
+            'translation exists (namespace)'     => [
+                'translated text',
+                static function (TestCase $test, string $currentLocale, string $fallbackLocale): array {
+                    return [
+                        $currentLocale => [
+                            'test::should.be.translated' => '{1} one |[2,*] translated :value',
+                        ],
+                    ];
+                },
+                ['should.not.be.translated', 'test::should.be.translated', 'default'],
+                2,
+                [
+                    'value' => 'text',
+                ],
+                null,
+            ],
         ];
     }
     // </editor-fold>
