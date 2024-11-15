@@ -47,6 +47,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/9679e76379216855)
 
+* [ ] Package config now uses objects instead of an array, it is recommended to migrate to the new format. 🤝
+
 * [ ] The [`JsonStringType`][code-links/9ad31c571587f0f4] is not implement [`TypeDefinition`][code-links/3c9ddc100b69df14] anymore. To add the scalar into the Schema, you can use `@type`/`@scalar` directive, or create a custom implementation of `TypeDefinition` contract to use with `Builder`/`Manipulator`.
 
 ## Tests
@@ -352,7 +354,7 @@ This section is actual only if you are extending the package. Please review and 
 [code-links/ab92ab72ccf08721]: src/SearchBy/Definitions/SearchByOperatorFieldDirective.php
     "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective"
 
-[code-links/5f93528c6eb9dc8f]: src/SearchBy/Operators.php#L60
+[code-links/5f93528c6eb9dc8f]: src/SearchBy/Operators.php#L58
     "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object"
 
 [code-links/b26bb0f7b2034eb1]: src/SortBy/Definitions/SortByOperatorFieldDirective.php

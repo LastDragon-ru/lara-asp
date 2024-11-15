@@ -7,11 +7,12 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\Config\Config;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Config as SortByConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Sorter;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\SorterFactory;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Directives\Directive;
@@ -156,23 +157,26 @@ final class SortTest extends TestCase {
     }
 
     /**
-     * @param array<string, mixed>            $config
      * @param Closure(static): Sorter<object> $sorterFactory
      * @param Closure(static): Context        $contextFactory
      */
     #[DataProvider('dataProviderGetNulls')]
     public function testGetNulls(
         ?Nulls $expected,
-        ?array $config,
+        ?SortByConfig $configuration,
         Closure $sorterFactory,
         Closure $contextFactory,
         Direction $direction,
     ): void {
-        $this->setConfig($config);
+        if ($configuration !== null) {
+            $this->setConfiguration(PackageConfig::class, static function (Config $config) use ($configuration): void {
+                $config->sortBy = $configuration;
+            });
+        }
 
         $sorter   = $sorterFactory($this);
         $context  = $contextFactory($this);
-        $config   = $this->app()->make(ConfigResolver::class);
+        $config   = $this->app()->make(PackageConfig::class);
         $factory  = Mockery::mock(SorterFactory::class);
         $resolver = Mockery::mock(BuilderFieldResolver::class);
         $operator = Mockery::mock(Sort::class, [$config, $factory, $resolver]);
@@ -261,14 +265,13 @@ final class SortTest extends TestCase {
     /**
      * @return array<string, array{
      *      ?Nulls,
-     *      ?array<string, mixed>,
+     *      ?SortByConfig,
      *      Closure(static): Sorter<object>,
      *      Closure(static): Context,
      *      Direction,
      *      }>
      */
     public static function dataProviderGetNulls(): array {
-        $key              = Package::Name.'.sort_by.nulls';
         $contextFactory   = static function (): Context {
             return new Context();
         };
@@ -309,78 +312,62 @@ final class SortTest extends TestCase {
             ],
             'nulls are not sortable'                     => [
                 null,
-                [
-                    $key => Nulls::First,
-                ],
+                new SortByConfig(nulls: Nulls::First),
                 $getSorterFactory(false),
                 $contextFactory,
                 Direction::Asc,
             ],
             'nulls are sortable (asc)'                   => [
                 Nulls::Last,
-                [
-                    $key => Nulls::Last,
-                ],
+                new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::Asc,
             ],
             'nulls are sortable (desc)'                  => [
                 Nulls::Last,
-                [
-                    $key => Nulls::Last,
-                ],
+                new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::Desc,
             ],
             'nulls are sortable (separate)'              => [
                 Nulls::First,
-                [
-                    $key => [
-                        Direction::Asc->value  => Nulls::Last,
-                        Direction::Desc->value => Nulls::First,
-                    ],
-                ],
+                new SortByConfig(nulls: [
+                    Direction::Asc->value  => Nulls::Last,
+                    Direction::Desc->value => Nulls::First,
+                ]),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::Desc,
             ],
             '(deprecated) nulls are sortable (asc)'      => [
                 Nulls::Last,
-                [
-                    $key => Nulls::Last,
-                ],
+                new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::asc,
             ],
             '(deprecated) nulls are sortable (desc)'     => [
                 Nulls::Last,
-                [
-                    $key => Nulls::Last,
-                ],
+                new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::desc,
             ],
             '(deprecated) nulls are sortable (separate)' => [
                 Nulls::First,
-                [
-                    $key => [
-                        Direction::Asc->value  => Nulls::Last,
-                        Direction::Desc->value => Nulls::First,
-                    ],
-                ],
+                new SortByConfig(nulls: [
+                    Direction::Asc->value  => Nulls::Last,
+                    Direction::Desc->value => Nulls::First,
+                ]),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::desc,
             ],
             'nulls are sortable (Context null)'          => [
                 null,
-                [
-                    $key => Nulls::Last,
-                ],
+                new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 static function (): Context {
                     return (new Context())->override([
@@ -391,9 +378,7 @@ final class SortTest extends TestCase {
             ],
             'nulls are sortable (Context first)'         => [
                 Nulls::First,
-                [
-                    $key => Nulls::Last,
-                ],
+                new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 static function (): Context {
                     return (new Context())->override([

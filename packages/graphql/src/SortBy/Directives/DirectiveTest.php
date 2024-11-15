@@ -19,7 +19,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFiel
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\Config\Config;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorFieldDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
@@ -103,14 +104,14 @@ final class DirectiveTest extends TestCase {
 
     #[RequiresLaravelScout]
     public function testManipulateArgDefinitionScoutBuilder(): void {
-        $this->setConfig([
-            Package::Name.'.sort_by.operators' => [
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->sortBy->operators = [
                 Operators::Extra => [
                     Operators::Extra,
                     SortByOperatorRandomDirective::class,
                 ],
-            ],
-        ]);
+            ];
+        });
 
         $this->app()->make(DirectiveLocator::class)
             ->setResolved('search', SearchDirective::class);
@@ -146,13 +147,13 @@ final class DirectiveTest extends TestCase {
     }
 
     public function testManipulateArgDefinitionTypeRegistryEmpty(): void {
-        $this->setConfig([
-            Package::Name.'.sort_by.operators' => [
+        $this->setConfiguration(PackageConfig::class, static function (Config $config): void {
+            $config->sortBy->operators = [
                 Operators::Extra => [
                     SortByOperatorFieldDirective::class,
                 ],
-            ],
-        ]);
+            ];
+        });
 
         $type = new ObjectType([
             'name'   => 'TestType',
@@ -626,26 +627,29 @@ final class DirectiveTest extends TestCase {
                     $locator->setResolved('allowed', $allowed::class);
                     $locator->setResolved('forbidden', $forbidden::class);
 
-                    $test->setConfig([
-                        Package::Name.'.builder.allowed_directives'          => [
-                            RenameDirective::class,
-                            $allowed::class,
-                        ],
-                        Package::Name.'.sort_by.operators.'.Operators::Extra => [
-                            SortByOperatorFieldDirective::class,
-                        ],
-                    ]);
+                    $test->setConfiguration(
+                        PackageConfig::class,
+                        static function (Config $config) use ($allowed): void {
+                            $config->builder->allowedDirectives          = [
+                                RenameDirective::class,
+                                $allowed::class,
+                            ];
+                            $config->sortBy->operators[Operators::Extra] = [
+                                SortByOperatorFieldDirective::class,
+                            ];
+                        },
+                    );
                 },
             ],
             'Ignored'           => [
                 'Ignored.expected.graphql',
                 'Ignored.schema.graphql',
                 static function (TestCase $test): void {
-                    $test->setConfig([
-                        Package::Name.'.sort_by.operators.'.Operators::Extra => [
+                    $test->setConfiguration(PackageConfig::class, static function (Config $config): void {
+                        $config->sortBy->operators[Operators::Extra] = [
                             SortByOperatorFieldDirective::class,
-                        ],
-                    ]);
+                        ];
+                    });
 
                     $test->app()->make(TypeRegistry::class)->register(
                         new class([
@@ -666,11 +670,11 @@ final class DirectiveTest extends TestCase {
                 'InterfaceUpdate.expected.graphql',
                 'InterfaceUpdate.schema.graphql',
                 static function (TestCase $test): void {
-                    $test->setConfig([
-                        Package::Name.'.sort_by.operators.'.Operators::Extra => [
+                    $test->setConfiguration(PackageConfig::class, static function (Config $config): void {
+                        $config->sortBy->operators[Operators::Extra] = [
                             SortByOperatorFieldDirective::class,
-                        ],
-                    ]);
+                        ];
+                    });
                 },
             ],
             'TypeRegistry'      => [
@@ -881,16 +885,14 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     static function (TestCase $test): void {
-                        $package = Package::Name;
-
-                        $test->setConfig([
-                            "{$package}.sort_by.operators" => [
+                        $test->setConfiguration(PackageConfig::class, static function (Config $config): void {
+                            $config->sortBy->operators = [
                                 Operators::Extra => [
                                     SortByOperatorFieldDirective::class,
                                     SortByOperatorRandomDirective::class,
                                 ],
-                            ],
-                        ]);
+                            ];
+                        });
                     },
                 ],
                 'nulls ordering'              => [
@@ -920,14 +922,12 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     static function (TestCase $test): void {
-                        $package = Package::Name;
-
-                        $test->setConfig([
-                            "{$package}.sort_by.nulls" => [
+                        $test->setConfiguration(PackageConfig::class, static function (Config $config): void {
+                            $config->sortBy->nulls = [
                                 Direction::Asc->value  => Nulls::Last,
                                 Direction::Desc->value => Nulls::First,
-                            ],
-                        ]);
+                            ];
+                        });
                     },
                 ],
                 'nullsFirst'                  => [
@@ -1084,16 +1084,14 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     static function (TestCase $test): void {
-                        $package = Package::Name;
-
-                        $test->setConfig([
-                            "{$package}.sort_by.operators" => [
+                        $test->setConfiguration(PackageConfig::class, static function (Config $config): void {
+                            $config->sortBy->operators = [
                                 Operators::Extra => [
                                     SortByOperatorFieldDirective::class,
                                     SortByOperatorRandomDirective::class,
                                 ],
-                            ],
-                        ]);
+                            ];
+                        });
                     },
                 ],
                 'nulls ordering'      => [
@@ -1119,14 +1117,12 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     static function (TestCase $test): void {
-                        $package = Package::Name;
-
-                        $test->setConfig([
-                            "{$package}.sort_by.nulls" => [
+                        $test->setConfiguration(PackageConfig::class, static function (Config $config): void {
+                            $config->sortBy->nulls = [
                                 Direction::Asc->value  => Nulls::Last,
                                 Direction::Desc->value => Nulls::First,
-                            ],
-                        ]);
+                            ];
+                        });
                     },
                 ],
                 'nullsFirst'          => [

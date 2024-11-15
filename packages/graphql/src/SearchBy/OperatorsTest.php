@@ -9,7 +9,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Manipulator;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\Config\Config;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
@@ -26,16 +27,19 @@ final class OperatorsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testConstructor(): void {
-        $this->setConfig([
-            Package::Name.'.search_by.operators' => [
-                Operators::ID  => [
-                    OperatorsTest__Operator::class,
-                ],
-                Operators::Int => [
-                    OperatorsTest__Operator::class,
-                ],
-            ],
-        ]);
+        $this->setConfiguration(
+            PackageConfig::class,
+            static function (Config $config): void {
+                $config->searchBy->operators = [
+                    Operators::ID  => [
+                        OperatorsTest__Operator::class,
+                    ],
+                    Operators::Int => [
+                        OperatorsTest__Operator::class,
+                    ],
+                ];
+            },
+        );
 
         $source      = Mockery::mock(TypeSource::class);
         $context     = Mockery::mock(Context::class);

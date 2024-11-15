@@ -134,7 +134,7 @@ For Implicit type, the following rules are applied (in this order; concrete dire
     * Otherwise - include
 * Ignored (if supported)? - exclude
 
-When converting the field, some of the original directives will be copied into the newly generated field. For the Explicit type, all directives except operators of other directives will be copied. For Implicit type, you can use [`builder.allowed_directives`](defaults/config.php) setting to control. Be aware of directive locations - the package doesn't perform any checks to ensure that the copied directive allowed on `INPUT_FIELD_DEFINITION`, it just copies it as is.
+When converting the field, some of the original directives will be copied into the newly generated field. For the Explicit type, all directives except operators of other directives will be copied. For Implicit type, you can use [`Config::$allowedDirectives`][code-links/2537184413e9d748] setting to control. Be aware of directive locations - the package doesn't perform any checks to ensure that the copied directive allowed on `INPUT_FIELD_DEFINITION`, it just copies it as is.
 
 # Builder field/column name
 
@@ -605,3 +605,11 @@ Please follow [Upgrade Guide](UPGRADE.md).
 This package is the part of Awesome Set of Packages for Laravel. Please use the [main repository](https://github.com/LastDragon-ru/lara-asp) to [report issues](https://github.com/LastDragon-ru/lara-asp/issues), send [pull requests](https://github.com/LastDragon-ru/lara-asp/pulls), or [ask questions](https://github.com/LastDragon-ru/lara-asp/discussions).
 
 [//]: # (end: preprocess/c4ba75080f5a48b7)
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/2537184413e9d748]: src/Builder/Config.php#L11-L29
+    "\LastDragon_ru\LaraASP\GraphQL\Builder\Config::$allowedDirectives"
+
+[//]: # (end: code-links)

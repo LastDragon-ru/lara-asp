@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
-use LastDragon_ru\LaraASP\Spa\Package;
+use LastDragon_ru\LaraASP\Spa\Config\Config;
+use LastDragon_ru\LaraASP\Spa\PackageConfig;
 use LastDragon_ru\LaraASP\Spa\Provider;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile;
@@ -37,11 +38,14 @@ final class SpaControllerTest extends TestCase {
         array $headers = [],
         array $settings = [],
     ): void {
-        $this->setConfig([
-            Package::Name.'.routes.enabled' => $routes,
-            Package::Name.'.routes.prefix'  => $prefix,
-            Package::Name.'.spa'            => $settings,
-        ]);
+        $this->setConfiguration(
+            PackageConfig::class,
+            static function (Config $config) use ($routes, $prefix, $settings): void {
+                $config->routes->enabled = $routes;
+                $config->routes->prefix  = $prefix;
+                $config->spa             = $settings;
+            },
+        );
 
         $provider = new class($this->app()) extends Provider {
             // empty

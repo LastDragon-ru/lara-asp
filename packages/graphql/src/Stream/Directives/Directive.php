@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Eloquent\ModelHelper;
@@ -32,6 +31,7 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithSource;
 use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByDirective;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\FieldArgumentDirective;
@@ -104,7 +104,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
      */
     public function __construct(
         protected readonly ContainerResolver $container,
-        protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $config,
         protected readonly BuilderInfoDetector $detector,
         protected readonly StreamFactory $streamFactory,
         protected readonly StreamType $streamType,
@@ -194,10 +194,9 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         ObjectTypeDefinitionNode|InterfaceTypeDefinitionNode &$parentType,
     ): void {
         // Prepare
-        $repository  = $this->config->getInstance();
         $manipulator = $this->manipulatorFactory->create($documentAST);
         $source      = $this->getFieldSource($manipulator, $parentType, $fieldDefinition);
-        $prefix      = self::Settings;
+        $config      = $this->config->getInstance();
 
         // Updated?
         if ($this->streamType->is($source->getTypeName())) {
@@ -223,35 +222,27 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         $this->detector->getFieldBuilderInfo($documentAST, $parentType, $fieldDefinition);
 
         // Searchable?
-        $searchable = Cast::toBool(
-            $this->directiveArgValue(self::ArgSearchable)
-            ?? $repository->get("{$prefix}.search.enabled")
-            ?? false,
-        );
+        $searchable = Cast::toBool($this->directiveArgValue(self::ArgSearchable) ?? $config->stream->search->enabled);
 
         if ($searchable) {
             $this->addArgument(
                 $manipulator,
                 $source,
                 SearchByDirective::class,
-                Cast::toString($repository->get("{$prefix}.search.name") ?? 'where'),
+                $config->stream->search->name,
                 $manipulator::Placeholder,
             );
         }
 
         // Sortable?
-        $sortable = Cast::toBool(
-            $this->directiveArgValue(self::ArgSortable)
-            ?? $repository->get("{$prefix}.sort.enabled")
-            ?? false,
-        );
+        $sortable = Cast::toBool($this->directiveArgValue(self::ArgSortable) ?? $config->stream->sort->enabled);
 
         if ($sortable) {
             $this->addArgument(
                 $manipulator,
                 $source,
                 SortByDirective::class,
-                Cast::toString($repository->get("{$prefix}.sort.name") ?? 'order'),
+                $config->stream->sort->name,
                 $manipulator::Placeholder,
             );
         }
@@ -261,7 +252,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $manipulator,
             $source,
             StreamLimitDirective::class,
-            StreamLimitDirective::settings()['name'],
+            $config->stream->limit->name,
             $manipulator::Placeholder,
             null,
             $this->directiveArgValue(self::ArgLimit) !== null
@@ -274,7 +265,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
             $manipulator,
             $source,
             StreamOffsetDirective::class,
-            StreamOffsetDirective::settings()['name'],
+            $config->stream->offset->name,
             $manipulator::Placeholder,
         );
 

@@ -31,7 +31,7 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:480\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
+			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:471\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
 			count: 1
 			path: packages/graphql/src/Stream/Directives/Directive.php
 
@@ -49,11 +49,6 @@ parameters:
 			message: "#^Callable callable\\(\\)\\: \\(object\\|null\\) invoked with 1 parameter, 0 required\\.$#"
 			count: 3
 			path: packages/serializer/src/Casts/SerializedAttributeTest.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$configs of method LastDragon_ru\\\\LaraASP\\\\Core\\\\Utils\\\\ConfigMerger\\:\\:merge\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: packages/spa/src/Http/Controllers/SpaController.php
 
 		-
 			message: "#^Parameter \\#3 \\$path of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:mapResourceValue\\(\\) expects array\\<string\\>, array given\\.$#"

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Serializer;
 
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
@@ -38,7 +37,7 @@ use const JSON_UNESCAPED_UNICODE;
 class Factory {
     public function __construct(
         protected readonly ContainerResolver $container,
-        protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $config,
     ) {
         // empty
     }
@@ -54,12 +53,12 @@ class Factory {
         array $normalizers = [],
         array $context = [],
         ?string $format = null,
-        ?string $config = Package::Name,
     ): SerializerContract {
-        $format      = $format ?? $this->getConfigFormat($config) ?? JsonEncoder::FORMAT;
-        $context     = $context + $this->getConfigContext($config);
-        $encoders    = $this->getEncoders($encoders, $context, $config);
-        $normalizers = $this->getNormalizers($normalizers, $context, $config);
+        $config      = $this->config->getInstance();
+        $format    ??= $config->default;
+        $context     = $context + $config->context;
+        $encoders    = $this->getEncoders($encoders, $context);
+        $normalizers = $this->getNormalizers($normalizers, $context);
         $serializer  = $this->make($encoders, $normalizers, $context, $format);
 
         return $serializer;
@@ -97,35 +96,14 @@ class Factory {
         );
     }
 
-    protected function getConfigFormat(?string $config): ?string {
-        /** @var ?string $format */
-        $format = $config !== null && $config !== ''
-            ? $this->config->getInstance()->get("{$config}.default")
-            : null;
-
-        return $format;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getConfigContext(?string $config): array {
-        /** @var array<string, mixed> $context */
-        $context = $config !== null && $config !== ''
-            ? (array) $this->config->getInstance()->get("{$config}.context")
-            : [];
-
-        return $context;
-    }
-
     /**
      * @param array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders
      * @param array<string, mixed>                                                         $context
      *
      * @return list<class-string<EncoderInterface|DecoderInterface>>
      */
-    protected function getEncoders(array $encoders, array &$context, ?string $config): array {
-        $groups = [$encoders, $this->getConfigEncoders($config), $this->getDefaultEncoders()];
+    protected function getEncoders(array $encoders, array &$context): array {
+        $groups = [$encoders, $this->config->getInstance()->encoders, $this->getDefaultEncoders()];
         $list   = [];
 
         foreach ($groups as $group) {
@@ -139,18 +117,6 @@ class Factory {
         }
 
         return array_keys($list);
-    }
-
-    /**
-     * @return array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>>
-     */
-    protected function getConfigEncoders(?string $config): array {
-        /** @var array<class-string<EncoderInterface|DecoderInterface>, array<string, mixed>> $encoders */
-        $encoders = $config !== null && $config !== ''
-            ? (array) $this->config->getInstance()->get("{$config}.encoders")
-            : [];
-
-        return $encoders;
     }
 
     /**
@@ -180,8 +146,8 @@ class Factory {
      *
      * @return list<class-string<NormalizerInterface|DenormalizerInterface>>
      */
-    protected function getNormalizers(array $normalizers, array &$context, ?string $config): array {
-        $groups = [$normalizers, $this->getConfigNormalizers($config), $this->getDefaultNormalizers()];
+    protected function getNormalizers(array $normalizers, array &$context): array {
+        $groups = [$normalizers, $this->config->getInstance()->normalizers, $this->getDefaultNormalizers()];
         $list   = [];
 
         foreach ($groups as $group) {
@@ -201,18 +167,6 @@ class Factory {
         }
 
         return array_keys(array_filter($list));
-    }
-
-    /**
-     * @return array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null>
-     */
-    protected function getConfigNormalizers(?string $config): array {
-        /** @var array<class-string<NormalizerInterface|DenormalizerInterface>, array<string, mixed>|null> $normalizers */
-        $normalizers = $config !== null && $config !== ''
-            ? (array) $this->config->getInstance()->get("{$config}.normalizers")
-            : $config;
-
-        return $normalizers;
     }
 
     /**

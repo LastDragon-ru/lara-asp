@@ -23,7 +23,6 @@
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
     "illuminate/collections": "^10.34.0|^11.0.0",
-    "illuminate/container": "^10.34.0|^11.0.0",
     "illuminate/contracts": "^10.34.0|^11.0.0",
     "illuminate/database": "^10.34.0|^11.0.0",
     "illuminate/support": "^10.34.0|^11.0.0",

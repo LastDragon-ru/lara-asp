@@ -6,11 +6,12 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\Core\Utils\ConfigMerger;
-use LastDragon_ru\LaraASP\Spa\Package;
+use LastDragon_ru\LaraASP\Spa\PackageConfig;
 
 class SpaController extends Controller {
     public function __construct(
         protected readonly ConfigResolver $config,
+        protected readonly PackageConfig $configuration,
     ) {
         // empty
     }
@@ -33,17 +34,16 @@ class SpaController extends Controller {
      * @return array<string, mixed>
      */
     protected function getSettings(): array {
-        $repository = $this->config->getInstance();
-        $package    = Package::Name;
-        $default    = [
+        $config   = $this->config->getInstance();
+        $default  = [
             ConfigMerger::Strict => false,
-            'title'              => $repository->get('app.name'),
+            'title'              => $config->get('app.name'),
             'upload'             => [
                 'max' => UploadedFile::getMaxFilesize(),
             ],
         ];
-        $custom     = $repository->get("{$package}.spa");
-        $settings   = (new ConfigMerger())->merge($default, $custom);
+        $custom   = $this->configuration->getInstance()->spa;
+        $settings = (new ConfigMerger())->merge($default, $custom);
 
         return $settings;
     }

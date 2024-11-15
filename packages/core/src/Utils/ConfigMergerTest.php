@@ -11,6 +11,7 @@ use stdClass;
 
 /**
  * @internal
+ * @deprecated %{VERSION}
  */
 #[CoversClass(ConfigMerger::class)]
 final class ConfigMergerTest extends TestCase {

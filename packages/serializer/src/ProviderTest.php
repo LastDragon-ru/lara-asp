@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\Serializer;
 
 use DateTimeInterface;
 use Exception;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Carbon;
 use JsonSerializable;
+use LastDragon_ru\LaraASP\Serializer\Config\Config;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Partial;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
@@ -20,10 +22,13 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Stringable;
 use Symfony\Component\Serializer\Attribute\DiscriminatorMap;
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Exception\CircularReferenceException;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use function get_debug_type;
 use function is_string;
@@ -92,6 +97,44 @@ final class ProviderTest extends TestCase {
                 throw $exception;
             }
         }
+    }
+
+    public function testConfig(): void {
+        self::assertConfigurationExportable(PackageConfig::class);
+    }
+
+    /**
+     * @deprecated %{VERSION} Array-base config is deprecated.
+     */
+    public function testLegacyConfig(): void {
+        // Prepare
+        $app     = $this->app();
+        $config  = $app->make(Repository::class);
+        $legacy  = (array) require self::getTestData()->path('~LegacyConfig.php');
+        $package = Package::Name;
+
+        $config->set($package, $legacy);
+
+        self::assertIsArray($config->get($package));
+
+        (new Provider($app))->register();
+
+        // Test
+        $expected              = new Config();
+        $expected->default     = 'xml';
+        $expected->encoders    = [
+            XmlEncoder::class => [
+                XmlEncoder::REMOVE_EMPTY_TAGS => false,
+            ],
+        ];
+        $expected->normalizers = [
+            ObjectNormalizer::class => null,
+        ];
+        $expected->context     = [
+            JsonDecode::ASSOCIATIVE => true,
+        ];
+
+        self::assertEquals($expected, $config->get($package));
     }
     // </editor-fold>
 

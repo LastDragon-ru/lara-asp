@@ -115,36 +115,27 @@ extend scalar SortByOperatorsExtra
 
 or via config
 
+[include:example]: @sortByConfigOrderByRandom.php
+[//]: # (start: preprocess/d2d497ec780cf493)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
-use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
+use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
-/**
- * -----------------------------------------------------------------------------
- * GraphQL Settings
- * -----------------------------------------------------------------------------
- *
- * @var array{
- *      sort_by: array{
- *          operators: array<string, list<string|class-string<Operator>>>
- *      },
- *      } $settings
- */
-$settings = [
-    'sort_by'   => [
-        'operators' => [
-            SortByOperators::Extra => [
-                SortByOperatorRandomDirective::class,
-            ],
-        ],
-    ],
+$config = PackageConfig::getDefaultConfig();
+
+$config->sortBy->operators[Operators::Extra] = [
+    SortByOperatorRandomDirective::class,
 ];
 
-return $settings;
+return $config;
 ```
+
+[//]: # (end: preprocess/d2d497ec780cf493)
 
 And after this, you can 🎉
 
@@ -163,53 +154,49 @@ query {
 
 Default ordering can be changed via config. You may set it for all directions if single value used, in this case NULL always be first/last:
 
+[include:example]: @sortByConfigNullsSingleValue.php
+[//]: # (start: preprocess/0a3d52d172342702)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 
-/**
- * @var array{
- *      sort_by: array{
- *          nulls: Nulls|non-empty-array<value-of<Direction>, Nulls>|null,
- *      },
- *      } $settings
- */
-$settings = [
-    'sort_by' => [
-        'nulls' => Nulls::First,
-    ],
-];
+$config = PackageConfig::getDefaultConfig();
 
-return $settings;
+$config->sortBy->nulls = Nulls::First;
+
+return $config;
 ```
+
+[//]: # (end: preprocess/0a3d52d172342702)
 
 Or individually for each direction:
 
+[include:example]: @sortByConfigNullsArrayValue.php
+[//]: # (start: preprocess/d7692bfa2035b990)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 ```php
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Direction;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 
-/**
- * @var array{
- *      sort_by: array{
- *          nulls: Nulls|non-empty-array<value-of<Direction>, Nulls>|null,
- *      },
- *      } $settings
- */
-$settings = [
-    'sort_by' => [
-        'nulls' => [
-            Direction::Asc->value  => Nulls::First,
-            Direction::Desc->value => Nulls::Last,
-        ],
-    ],
+$config = PackageConfig::getDefaultConfig();
+
+$config->sortBy->nulls = [
+    Direction::Asc->value  => Nulls::First,
+    Direction::Desc->value => Nulls::Last,
 ];
 
-return $settings;
+return $config;
 ```
+
+[//]: # (end: preprocess/d7692bfa2035b990)
 
 The query is also supported and have highest priority (will override default settings):
 

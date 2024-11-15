@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Types;
 
 use Exception;
-use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context\HandlerContextImplicit;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Context as ContextContract;
@@ -19,7 +18,8 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\InterfaceSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectFieldSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Sources\ObjectSource;
-use LastDragon_ru\LaraASP\GraphQL\Package;
+use LastDragon_ru\LaraASP\GraphQL\Config\Config;
+use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
@@ -48,15 +48,15 @@ final class InputObjectTest extends TestCase {
         ContextContract $context,
     ): void {
         if ($allowed !== null) {
-            $this->setConfig([
-                Package::Name.'.builder.allowed_directives' => $allowed,
-            ]);
+            $this->setConfiguration(PackageConfig::class, static function (Config $config) use ($allowed): void {
+                $config->builder->allowedDirectives = $allowed;
+            });
         }
 
         $manipulator = Mockery::mock(Manipulator::class);
         $field       = Mockery::mock(ObjectFieldSource::class);
         $input       = new InputObjectTest__InputObject(
-            $this->app()->make(ConfigResolver::class),
+            $this->app()->make(PackageConfig::class),
         );
 
         self::assertEquals($expected, $input->isFieldDirectiveAllowed($manipulator, $field, $context, $directive));

@@ -7,8 +7,6 @@ use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
@@ -39,18 +37,6 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
         private readonly ManipulatorFactory $manipulatorFactory,
     ) {
         // empty
-    }
-
-    /**
-     * @return array{name: string}
-     */
-    final public static function settings(): array {
-        $repository = Container::getInstance()->make(Repository::class);
-        $settings   = (array) $repository->get(Directive::Settings.'.offset');
-
-        return [
-            'name' => Cast::toString($settings['name'] ?? 'offset'),
-        ];
     }
 
     #[Override]
