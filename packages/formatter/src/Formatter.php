@@ -148,8 +148,11 @@ class Formatter {
         return $this->format(self::Decimal, $value);
     }
 
-    public function currency(float|int|null $value): string {
-        return $this->format(self::Currency, $value);
+    /**
+     * @param non-empty-string|null $currency
+     */
+    public function currency(float|int|null $value, ?string $currency = null): string {
+        return $this->format(self::Currency, [$value, $currency]);
     }
 
     /**

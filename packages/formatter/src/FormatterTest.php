@@ -403,6 +403,7 @@ final class FormatterTest extends TestCase {
         $formatter = $this->formatter->forLocale('en_US');
 
         self::assertEquals('$10.00', $formatter->currency(10));
+        self::assertEquals('€10.00', $formatter->currency(10, 'EUR'));
         self::assertEquals('$10.03', $formatter->currency(10.0324234));
     }
 
