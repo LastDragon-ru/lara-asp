@@ -54,7 +54,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 ## Tests
 
 * [ ] Following traits required `app()` method to get access to the Container (#151)
-  * [`GraphQLAssertions`][code-links/a6029821bb9d8f2e]
+  * [ ] [`GraphQLAssertions`][code-links/a6029821bb9d8f2e]
 
   ```php
   protected function app(): Application {
@@ -62,7 +62,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
-* [`GraphQLAssertions`][code-links/a6029821bb9d8f2e] methods updated to allow `null` for `$message` argument.
+* [ ] [`GraphQLAssertions`][code-links/a6029821bb9d8f2e] methods updated to allow `null` for `$message` argument.
 
 ## API
 
@@ -71,6 +71,8 @@ This section is actual only if you are extending the package. Please review and 
 * [ ] [`TypeDefinition::getTypeDefinition()`][code-links/ac7acd6cc65a080d] return type changed.
 
 * [ ] `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\WithManipulator` removed, create instance by hand instead (reason #151).
+
+* [ ] Use [`PackageProvider`][code-links/5a85dae192df8d40] instead of [`💀Provider`][code-links/ed0d5cdf6cb5b4d9].
 
 # Upgrade from v5
 
@@ -347,6 +349,12 @@ This section is actual only if you are extending the package. Please review and 
 
 [code-links/6c3b5e426f3af114]: src/Builder/Types/InputObject.php
     "\LastDragon_ru\LaraASP\GraphQL\Builder\Types\InputObject"
+
+[code-links/5a85dae192df8d40]: src/PackageProvider.php
+    "\LastDragon_ru\LaraASP\GraphQL\PackageProvider"
+
+[code-links/ed0d5cdf6cb5b4d9]: src/Provider.php
+    "\LastDragon_ru\LaraASP\GraphQL\Provider"
 
 [code-links/9ad31c571587f0f4]: src/Scalars/JsonStringType.php
     "\LastDragon_ru\LaraASP\GraphQL\Scalars\JsonStringType"
