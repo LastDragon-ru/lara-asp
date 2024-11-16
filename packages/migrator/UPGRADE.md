@@ -59,6 +59,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Migrate to the new [`Seeder`][code-links/9c7c8e70a7e5978f] and [`SqlSeeder`][code-links/365049c62f4308a2] classes 🤝
 
+* [ ] Use [`PackageProvider`][code-links/32f50dc36e80e945] instead of [`💀Provider`][code-links/e7bb9f5ec22ad158].
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
@@ -74,6 +76,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/6b3f8327188c3054]: src/Migrations/SqlMigration.php
     "\LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigration"
+
+[code-links/32f50dc36e80e945]: src/PackageProvider.php
+    "\LastDragon_ru\LaraASP\Migrator\PackageProvider"
+
+[code-links/e7bb9f5ec22ad158]: src/Provider.php
+    "\LastDragon_ru\LaraASP\Migrator\Provider"
 
 [code-links/9c7c8e70a7e5978f]: src/Seeders/Seeder.php
     "\LastDragon_ru\LaraASP\Migrator\Seeders\Seeder"

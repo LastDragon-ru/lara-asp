@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Filesystem\Filesystem;
-use LastDragon_ru\LaraASP\Migrator\Provider;
+use LastDragon_ru\LaraASP\Migrator\PackageProvider;
 use LastDragon_ru\LaraASP\Migrator\Seeders\SeederService;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use Mockery;
@@ -26,7 +26,7 @@ use function trim;
  * @internal
  */
 #[CoversClass(Migrator::class)]
-#[CoversClass(Provider::class)]
+#[CoversClass(PackageProvider::class)]
 final class MigratorTest extends TestCase {
     public function testProvider(): void {
         $defaultMigrator = $this->app()->make('migrator');
