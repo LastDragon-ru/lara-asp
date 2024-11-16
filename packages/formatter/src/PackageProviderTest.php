@@ -10,8 +10,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(Provider::class)]
-final class ProviderTest extends TestCase {
+#[CoversClass(PackageProvider::class)]
+final class PackageProviderTest extends TestCase {
     public function testRegister(): void {
         self::assertSame(
             $this->app()->make(Formatter::class),
@@ -42,6 +42,6 @@ final class ProviderTest extends TestCase {
             'Array-based config is not supported anymore. Please migrate to object-based config.',
         );
 
-        (new Provider($app))->register();
+        (new PackageProvider($app))->register();
     }
 }

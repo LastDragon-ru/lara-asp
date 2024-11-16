@@ -44,7 +44,7 @@ composer require lastdragon-ru/lara-asp-formatter
 Config can be used to customize formats. Before this, you need to publish it via the following command, and then you can edit `config/lara-asp-formatter.php`.
 
 ```shell
-php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\Provider --tag=config
+php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Formatter\\PackageProvider --tag=config
 ```
 
 # Usage

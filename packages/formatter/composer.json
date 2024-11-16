@@ -49,7 +49,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Formatter\\Provider"
+        "LastDragon_ru\\LaraASP\\Formatter\\PackageProvider"
       ]
     },
     "lara-asp": {

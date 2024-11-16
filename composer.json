@@ -179,7 +179,7 @@
         "LastDragon_ru\\LaraASP\\Dev\\PackageProvider",
         "LastDragon_ru\\LaraASP\\Documentator\\PackageProvider",
         "LastDragon_ru\\LaraASP\\Eloquent\\PackageProvider",
-        "LastDragon_ru\\LaraASP\\Formatter\\Provider",
+        "LastDragon_ru\\LaraASP\\Formatter\\PackageProvider",
         "LastDragon_ru\\LaraASP\\GraphQL\\Provider",
         "LastDragon_ru\\LaraASP\\Migrator\\Provider",
         "LastDragon_ru\\LaraASP\\Serializer\\Provider",
