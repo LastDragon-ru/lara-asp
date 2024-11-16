@@ -39,6 +39,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/9679e76379216855)
 
+* [ ] Use [`PackageProvider`][code-links/7d48369ba7f64059] instead of [`💀Provider`][code-links/a893f38bdb4f8ccd].
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
@@ -48,3 +50,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: preprocess/2e85dad2b0618274)
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/7d48369ba7f64059]: src/PackageProvider.php
+    "\LastDragon_ru\LaraASP\Eloquent\PackageProvider"
+
+[code-links/a893f38bdb4f8ccd]: src/Provider.php
+    "\LastDragon_ru\LaraASP\Eloquent\Provider"
+
+[//]: # (end: code-links)

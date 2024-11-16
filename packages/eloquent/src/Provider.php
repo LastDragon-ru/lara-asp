@@ -2,8 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent;
 
-use Illuminate\Support\ServiceProvider;
-
-class Provider extends ServiceProvider {
+/**
+ * @deprecated %{VERSION} The {@see PackageProvider} should be used instead.
+ */
+class Provider extends PackageProvider {
     // empty
 }
