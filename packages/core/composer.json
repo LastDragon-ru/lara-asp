@@ -61,7 +61,7 @@
     },
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Core\\Provider"
+        "LastDragon_ru\\LaraASP\\Core\\PackageProvider"
       ]
     }
   },
