@@ -182,7 +182,7 @@
         "LastDragon_ru\\LaraASP\\Formatter\\PackageProvider",
         "LastDragon_ru\\LaraASP\\GraphQL\\PackageProvider",
         "LastDragon_ru\\LaraASP\\Migrator\\PackageProvider",
-        "LastDragon_ru\\LaraASP\\Serializer\\Provider",
+        "LastDragon_ru\\LaraASP\\Serializer\\PackageProvider",
         "LastDragon_ru\\LaraASP\\Spa\\Provider"
       ]
     }

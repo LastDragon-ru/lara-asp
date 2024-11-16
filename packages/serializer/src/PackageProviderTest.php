@@ -37,10 +37,10 @@ use function sprintf;
 /**
  * @internal
  */
-#[CoversClass(Provider::class)]
+#[CoversClass(PackageProvider::class)]
 #[CoversClass(Serializer::class)]
 #[CoversClass(SerializableNormalizer::class)]
-final class ProviderTest extends TestCase {
+final class PackageProviderTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testRegister(): void {
@@ -117,7 +117,7 @@ final class ProviderTest extends TestCase {
 
         self::assertIsArray($config->get($package));
 
-        (new Provider($app))->register();
+        (new PackageProvider($app))->register();
 
         // Test
         $expected              = new Config();

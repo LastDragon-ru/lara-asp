@@ -53,7 +53,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\Serializer\\Provider"
+        "LastDragon_ru\\LaraASP\\Serializer\\PackageProvider"
       ]
     },
     "lara-asp": {

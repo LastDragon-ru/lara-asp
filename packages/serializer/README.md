@@ -152,7 +152,7 @@ Out of the box, the package supports only the following objects (see [`Factory`]
 Publish the config and add normalizers/denormalizers if you need more:
 
 ```shell
-php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\Provider --tag=config
+php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\Serializer\\PackageProvider --tag=config
 ```
 
 # Eloquent Accessor/Mutator[^1]
