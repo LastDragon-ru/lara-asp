@@ -10,8 +10,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(Provider::class)]
-final class ProviderTest extends TestCase {
+#[CoversClass(PackageProvider::class)]
+final class PackageProviderTest extends TestCase {
     public function testConfig(): void {
         self::assertConfigurationExportable(PackageConfig::class);
     }
@@ -30,7 +30,7 @@ final class ProviderTest extends TestCase {
 
         self::assertIsArray($config->get($package));
 
-        (new Provider($app))->register();
+        (new PackageProvider($app))->register();
 
         // Test
         $expected                  = new Config();
