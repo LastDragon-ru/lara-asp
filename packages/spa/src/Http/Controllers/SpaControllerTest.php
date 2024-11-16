@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
 use LastDragon_ru\LaraASP\Spa\Config\Config;
 use LastDragon_ru\LaraASP\Spa\PackageConfig;
-use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Spa\PackageProvider;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
@@ -47,7 +47,7 @@ final class SpaControllerTest extends TestCase {
             },
         );
 
-        $provider = new class($this->app()) extends Provider {
+        $provider = new class($this->app()) extends PackageProvider {
             // empty
         };
         $provider->boot();

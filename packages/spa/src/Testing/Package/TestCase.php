@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Testing\Package;
 
-use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
-use LastDragon_ru\LaraASP\Spa\Provider;
+use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
+use LastDragon_ru\LaraASP\Spa\PackageProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
 use Override;
 
@@ -19,7 +19,7 @@ abstract class TestCase extends PackageTestCase {
     #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
-            Provider::class,
+            PackageProvider::class,
             CoreProvider::class,
         ]);
     }

@@ -48,7 +48,7 @@ composer require lastdragon-ru/lara-asp-graphql
 Config can be used, for example, to customize supported operators for each type. Before this, you need to publish it via the following command, and then you can edit `config/lara-asp-graphql.php`.
 
 ```shell
-php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\Provider --tag=config
+php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\PackageProvider --tag=config
 ```
 
 # Directives

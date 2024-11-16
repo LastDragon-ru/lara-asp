@@ -63,7 +63,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "LastDragon_ru\\LaraASP\\GraphQL\\Provider"
+        "LastDragon_ru\\LaraASP\\GraphQL\\PackageProvider"
       ]
     },
     "lara-asp": {

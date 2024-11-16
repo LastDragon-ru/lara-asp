@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
-use LastDragon_ru\LaraASP\Core\Provider as CoreProvider;
-use LastDragon_ru\LaraASP\GraphQL\Provider;
+use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
+use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
@@ -17,7 +17,7 @@ use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
-use LastDragon_ru\LaraASP\Serializer\Provider as SerializerProvider;
+use LastDragon_ru\LaraASP\Serializer\PackageProvider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
@@ -44,7 +44,7 @@ abstract class TestCase extends PackageTestCase {
     #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
-            Provider::class,
+            PackageProvider::class,
             CoreProvider::class,
             TestProvider::class,
             CoreProvider::class,

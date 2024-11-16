@@ -2,16 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Dev;
 
-use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Dev\App\Example;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
-use Override;
-
-class Provider extends ServiceProvider {
-    #[Override]
-    public function register(): void {
-        parent::register();
-
-        $this->app->bind(Runner::class, Example::class);
-    }
+/**
+ * @deprecated %{VERSION} The {@see PackageProvider} should be used instead.
+ */
+class Provider extends PackageProvider {
+    // empty
 }

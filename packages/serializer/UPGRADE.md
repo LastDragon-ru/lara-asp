@@ -41,6 +41,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Package config now uses objects instead of an array, it is recommended to migrate to the new format. 🤝
 
+* [ ] Use [`PackageProvider`][code-links/f67757c3076438c4] instead of [`💀Provider`][code-links/675ff07d439efcf2].
+
 # Upgrade from v5
 
 [include:file]: ../../docs/Shared/Upgrade/FromV5.md
@@ -50,3 +52,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Laravel v9 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: preprocess/2e85dad2b0618274)
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/f67757c3076438c4]: src/PackageProvider.php
+    "\LastDragon_ru\LaraASP\Serializer\PackageProvider"
+
+[code-links/675ff07d439efcf2]: src/Provider.php
+    "\LastDragon_ru\LaraASP\Serializer\Provider"
+
+[//]: # (end: code-links)
