@@ -38,3 +38,16 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 * [ ] Direct usages of `Container::getInstances()` were replaced by explicit constructor parameters. You may need to update your code accordingly (#151).
 
 [//]: # (end: preprocess/9679e76379216855)
+
+* [ ] Use [`PackageProvider`][code-links/462e33ec6b6fe967] instead of [`💀Provider`][code-links/076fdf36381becef].
+
+[//]: # (start: code-links)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/462e33ec6b6fe967]: src/PackageProvider.php
+    "\LastDragon_ru\LaraASP\Dev\PackageProvider"
+
+[code-links/076fdf36381becef]: src/Provider.php
+    "\LastDragon_ru\LaraASP\Dev\Provider"
+
+[//]: # (end: code-links)
