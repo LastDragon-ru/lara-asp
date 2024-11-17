@@ -24,7 +24,7 @@ final class PackageProviderTest extends TestCase {
     }
 
     /**
-     * @deprecated %{VERSION} Array-base config is deprecated.
+     * @deprecated 7.0.0 Array-base config is deprecated.
      */
     public function testLegacyConfig(): void {
         // Prepare

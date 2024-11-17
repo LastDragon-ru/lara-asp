@@ -10,7 +10,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @deprecated %{VERSION}
+ * @deprecated 7.0.0
  * @internal
  */
 #[CoversClass(PhpDocBlock::class)]

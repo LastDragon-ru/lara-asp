@@ -30,10 +30,10 @@ use const PHP_INT_MAX;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use %s/%s instead.', MarkdownDocument::class, Text::class);
+trigger_deprecation(Package::Name, '7.0.0', 'Please use %s/%s instead.', MarkdownDocument::class, Text::class);
 
 /**
- * @deprecated %{VERSION} Please use {@see MarkdownDocument}/{@see Text} instead.
+ * @deprecated 7.0.0 Please use {@see MarkdownDocument}/{@see Text} instead.
  */
 class Markdown {
     /**

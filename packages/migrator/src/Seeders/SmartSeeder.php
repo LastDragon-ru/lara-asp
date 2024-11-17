@@ -14,7 +14,7 @@ use function is_subclass_of;
  * Smart Seeder. Unlike standard seeder checks, and stops seeding if the
  * database already seeded.
  *
- * @deprecated %{VERSION} Please use {@see Seeder} instead.
+ * @deprecated 7.0.0 Please use {@see Seeder} instead.
  */
 abstract class SmartSeeder extends IlluminateSeeder {
     public function __construct(

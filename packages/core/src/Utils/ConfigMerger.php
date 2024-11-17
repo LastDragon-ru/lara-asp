@@ -16,12 +16,12 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please migrate to object-based config.');
+trigger_deprecation(Package::Name, '7.0.0', 'Please migrate to object-based config.');
 
 /**
  * The merger for array-based configs.
  *
- * @deprecated %{VERSION} Please migrate to object-based config.
+ * @deprecated 7.0.0 Please migrate to object-based config.
  */
 class ConfigMerger {
     /**

@@ -20,10 +20,10 @@ use const PREG_UNMATCHED_AS_NULL;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', PhpClassComment::class);
+trigger_deprecation(Package::Name, '7.0.0', 'Please use `%s` instead.', PhpClassComment::class);
 
 /**
- * @deprecated %{VERSION} Please use {@see PhpClassComment} instead.
+ * @deprecated 7.0.0 Please use {@see PhpClassComment} instead.
  *
  * @implements Metadata<?Document>
  */

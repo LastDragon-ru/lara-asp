@@ -16,7 +16,7 @@ use function method_exists;
 
 /**
  * @see SqlHelper
- * @deprecated %{VERSION} Please use {@see SqlHelper} instead.
+ * @deprecated 7.0.0 Please use {@see SqlHelper} instead.
  * @internal
  */
 trait RawSqlHelper {

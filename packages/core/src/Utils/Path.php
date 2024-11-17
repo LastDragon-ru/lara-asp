@@ -13,10 +13,10 @@ use function trigger_deprecation;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s`/`%s` instead.', FilePath::class, DirectoryPath::class);
+trigger_deprecation(Package::Name, '7.0.0', 'Please use `%s`/`%s` instead.', FilePath::class, DirectoryPath::class);
 
 /**
- * @deprecated %{VERSION} Please use {@see FilePath}/{@see DirectoryPath} instead.
+ * @deprecated 7.0.0 Please use {@see FilePath}/{@see DirectoryPath} instead.
  */
 class Path {
     public static function getPath(string $root, string $path): string {

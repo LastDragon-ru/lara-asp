@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Migrator\Concerns\RawSqlHelper;
 use Override;
 
 /**
- * @deprecated %{VERSION} Please use {@see SqlMigration} instead.
+ * @deprecated 7.0.0 Please use {@see SqlMigration} instead.
  */
 abstract class RawMigration extends Migration {
     use RawSqlHelper;

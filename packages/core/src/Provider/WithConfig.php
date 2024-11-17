@@ -22,12 +22,12 @@ trait WithConfig {
     use Helper;
 
     /**
-     * @deprecated %{VERSION} Please migrate to {@see self::registerConfig()} and object-based config.
+     * @deprecated 7.0.0 Please migrate to {@see self::registerConfig()} and object-based config.
      */
     protected function bootConfig(): void {
         trigger_deprecation(
             Package::Name,
-            '%{VERSION}',
+            '7.0.0',
             'Please migrate to `self::registerConfig()` and object-based config.',
         );
 
@@ -86,7 +86,7 @@ trait WithConfig {
                 // todo(core): Remove somewhere in v9 or later.
                 trigger_deprecation(
                     Package::Name,
-                    '%{VERSION}',
+                    '7.0.0',
                     'Array-based config is deprecated. Please migrate to object-based config.',
                 );
 

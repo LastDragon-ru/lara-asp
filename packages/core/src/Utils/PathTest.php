@@ -11,7 +11,7 @@ use function str_replace;
 
 /**
  * @internal
- * @deprecated %{VERSION}
+ * @deprecated 7.0.0
  */
 #[CoversClass(Path::class)]
 final class PathTest extends TestCase {

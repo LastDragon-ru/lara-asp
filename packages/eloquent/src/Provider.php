@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Eloquent;
 
 /**
- * @deprecated %{VERSION} The {@see PackageProvider} should be used instead.
+ * @deprecated 7.0.0 The {@see PackageProvider} should be used instead.
  */
 class Provider extends PackageProvider {
     // empty

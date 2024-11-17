@@ -52,7 +52,7 @@ abstract class Configuration implements ArrayAccess {
     }
 
     /**
-     * @deprecated %{VERSION} Array-based config is deprecated. Please migrate to object-based config.
+     * @deprecated 7.0.0 Array-based config is deprecated. Please migrate to object-based config.
      *
      * @param array<array-key, mixed> $array
      */
@@ -68,7 +68,7 @@ abstract class Configuration implements ArrayAccess {
     }
 
     /**
-     * @deprecated %{VERSION}
+     * @deprecated 7.0.0
      */
     protected static function fromArrayGetPropertyName(int|string $property): string {
         if (!is_string($property)) {
@@ -89,7 +89,7 @@ abstract class Configuration implements ArrayAccess {
     }
 
     /**
-     * @deprecated %{VERSION}
+     * @deprecated 7.0.0
      */
     protected static function fromArrayGetPropertyValue(string $property, mixed $value): mixed {
         if (is_array($value) && (!array_is_list($value) || $value === [])) {

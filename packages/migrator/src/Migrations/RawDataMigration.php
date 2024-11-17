@@ -13,7 +13,7 @@ use Override;
  * and unlike {@link RawMigration} it will be applied only if the database
  * already seeded.
  *
- * @deprecated %{VERSION} Please use {@see SqlMigration} instead.
+ * @deprecated 7.0.0 Please use {@see SqlMigration} instead.
  */
 abstract class RawDataMigration extends RawMigration {
     // <editor-fold desc="Migration">
