@@ -84,7 +84,7 @@ after the Header will be used as a summary.
 * `<target>` - File path.
 
 Includes contents of the `<target>` file as an example wrapped into
-` ```code block``` `. If {@see Runner} bound, it will be called to execute
+` ```code block``` `. If [`Runner`][code-links/f9077a28b352f84b] bound, it will be called to execute
 the example. Its return value will be added right after the code block.
 
 By default, the `Runner` return value will be included as ` ```plain text``` `
@@ -163,6 +163,9 @@ Glob(s) to exclude.
 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/f9077a28b352f84b]: ../../src/Processor/Tasks/Preprocess/Instructions/IncludeExample/Contracts/Runner.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner"
 
 [code-links/7e5c66e8748c6ff8]: ../../src/Utils/SortOrder.php
     "\LastDragon_ru\LaraASP\Documentator\Utils\SortOrder"

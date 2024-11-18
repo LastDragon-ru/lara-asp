@@ -38,6 +38,8 @@ final class PreprocessTest extends TestCase {
             }
         };
 
+        $command->setLaravel($this->app());
+
         self::assertEquals(
             <<<'MARKDOWN'
             ### `[test:instruction]: <target> <parameters>`
@@ -94,6 +96,8 @@ final class PreprocessTest extends TestCase {
             }
         };
 
+        $command->setLaravel($this->app());
+
         self::assertEquals(
             <<<'MARKDOWN'
             Target target target target target.
@@ -121,6 +125,8 @@ final class PreprocessTest extends TestCase {
                 return parent::getProcessedHelpTaskPreprocessParameters($instruction, $target, $padding);
             }
         };
+
+        $command->setLaravel($this->app());
 
         self::assertEquals(
             <<<'MARKDOWN'

@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\HeadingsLevel;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Package;
@@ -18,7 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLin
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
-use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -76,6 +75,8 @@ class Preprocess extends Command {
         %tasks%
         HELP;
 
+    private ?PhpDocumentFactory $phpDocumentFactory = null;
+
     public function __construct(
         protected readonly Factory $factory,
     ) {
@@ -92,7 +93,7 @@ class Preprocess extends Command {
                 Result::Failed  => ['FAIL', 'red', OutputInterface::VERBOSITY_NORMAL],
                 Result::Success => ['DONE', 'green', OutputInterface::VERBOSITY_NORMAL],
                 Result::Skipped => ['SKIP', 'gray', OutputInterface::VERBOSITY_VERBOSE],
-                Result::Missed  => ['MISS', 'gray', OutputInterface::VERBOSITY_VERBOSE],
+                Result::Missed  => ['MISS', 'yellow', OutputInterface::VERBOSITY_VERBOSE],
             };
 
             $duration = $formatter->duration($duration);
@@ -113,9 +114,13 @@ class Preprocess extends Command {
 
     #[Override]
     public function getProcessedHelp(): string {
-        return strtr(parent::getProcessedHelp(), [
-            '%tasks%' => trim($this->getProcessedHelpTasks(3)),
-        ]);
+        try {
+            return strtr(parent::getProcessedHelp(), [
+                '%tasks%' => trim($this->getProcessedHelpTasks(3)),
+            ]);
+        } finally {
+            $this->phpDocumentFactory = null;
+        }
     }
 
     protected function getProcessedHelpTasks(int $level): string {
@@ -316,13 +321,8 @@ class Preprocess extends Command {
         ?int $level = null,
     ): string {
         // Load
-        $path = match (true) {
-            $object instanceof ReflectionProperty => $object->getDeclaringClass()->getFileName(),
-            default                               => $object->getFileName(),
-        };
-        $path = $path !== false ? new FilePath($path) : null;
-        $help = (new PhpDoc((string) $object->getDocComment()))->getText();
-        $help = new Document($help, $path);
+        $this->phpDocumentFactory ??= $this->laravel->make(PhpDocumentFactory::class);
+        $help                       = ($this->phpDocumentFactory)($object);
 
         // Move to cwd
         $cwd  = new DirectoryPath((string) getcwd());

@@ -7,13 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use Override;
-use PhpParser\NameContext;
-use PhpParser\Node\Name;
-
-use function preg_replace_callback;
-use function trim;
-
-use const PREG_UNMATCHED_AS_NULL;
 
 /**
  * @implements Metadata<?Document>
@@ -39,32 +32,8 @@ class PhpClassMarkdown implements Metadata {
         }
 
         // Parse
-        $content  = $this->preprocess($comment->context, $comment->comment->getText());
-        $document = new Document(trim($content), $file->getPath());
+        $document = $comment->comment->getDocument($this->factory, $comment->context, $file->getPath());
 
         return $document;
-    }
-
-    private function preprocess(NameContext $context, string $string): string {
-        return (string) preg_replace_callback(
-            pattern : '/\{@(?:see|link)\s+(?P<reference>[^}\s]+)\s?}/imu',
-            callback: function (array $matches) use ($context): string {
-                $result    = $matches[0];
-                $reference = $this->factory->create(
-                    $matches['reference'],
-                    static function (string $class) use ($context): string {
-                        return (string) $context->getResolvedClassName(new Name($class));
-                    },
-                );
-
-                if ($reference !== null) {
-                    $result = "`{$reference}`";
-                }
-
-                return $result;
-            },
-            subject : $string,
-            flags   : PREG_UNMATCHED_AS_NULL,
-        );
     }
 }
