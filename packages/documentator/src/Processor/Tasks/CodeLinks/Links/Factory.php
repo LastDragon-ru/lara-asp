@@ -43,8 +43,8 @@ class Factory implements LinkFactory {
         $string     = trim($string);
 
         if (preg_match($regexp, $string, $matches, PREG_UNMATCHED_AS_NULL) > 0) {
-            $class = $matches['class'] ?? null;
-            $class = $class !== null && $resolver !== null
+            $class = $matches['class'];
+            $class = $resolver !== null
                 ? $resolver($class)
                 : $class;
 

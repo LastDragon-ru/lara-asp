@@ -46,6 +46,21 @@ parameters:
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
+			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\:\\:getCollection\\(\\) should return Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\>\\.$#"
+			count: 1
+			path: packages/graphql/src/Stream/Streams/Database.php
+
+		-
+			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\:\\:\\$collection \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\>\\|null\\) does not accept Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\.$#"
+			count: 1
+			path: packages/graphql/src/Stream/Streams/Database.php
+
+		-
+			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\:\\:\\$collection \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\>\\|null\\) is never assigned Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\> so it can be removed from the property type\\.$#"
+			count: 1
+			path: packages/graphql/src/Stream/Streams/Database.php
+
+		-
 			message: "#^Static property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Directives\\\\ExposeBuilderDirective\\:\\:\\$result \\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, covariant Illuminate\\\\Database\\\\Eloquent\\\\Model, mixed\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Laravel\\\\Scout\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|null\\) does not accept Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Laravel\\\\Scout\\\\Builder\\.$#"
 			count: 1
 			path: packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php

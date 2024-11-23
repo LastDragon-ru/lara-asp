@@ -19,6 +19,9 @@ use function trim;
  */
 class Block extends AbstractBlock {
     public function __construct(
+        /**
+         * @var non-empty-string
+         */
         public readonly string $id,
     ) {
         parent::__construct();

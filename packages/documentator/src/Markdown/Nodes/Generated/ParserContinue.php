@@ -28,6 +28,10 @@ class ParserContinue implements BlockContinueParserInterface {
      */
     private array $lines;
 
+    /**
+     * @param non-empty-string $line
+     * @param non-empty-string $id
+     */
     public function __construct(string $line, string $id, private int $padding) {
         $this->block    = new Block($id);
         $this->lines    = [$line];
