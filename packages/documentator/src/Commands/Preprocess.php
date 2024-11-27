@@ -279,6 +279,7 @@ class Preprocess extends Command {
                 $default = match (true) {
                     $theDefault instanceof UnitEnum => $theDefault::class.'::'.$theDefault->name,
                     is_scalar($theDefault)          => var_export($theDefault, true),
+                    $theDefault === null            => 'null',
                     default                         => '<'.gettype($theDefault).'>',
                 };
                 $definition = "{$definition} = `{$default}`";
