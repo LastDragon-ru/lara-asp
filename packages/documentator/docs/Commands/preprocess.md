@@ -72,7 +72,8 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
 * `<parameters>` - additional parameters
   * `depth`: `array|string|int|null` = `0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
     (eg the `0` means no nested directories, the `null` removes limits).
-  * `template`: `string` = `'default'` - Blade template.
+  * `template`: `string` = `'default'` - Blade template. The documents passed in the `$data` ([`Data`][code-links/84d51020d324cc16])
+    variable. Also, be careful with leading whitespaces.
   * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
@@ -163,6 +164,9 @@ Glob(s) to exclude.
 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/84d51020d324cc16]: ../../src/Processor/Tasks/Preprocess/Instructions/IncludeDocumentList/Template/Data.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data"
 
 [code-links/f9077a28b352f84b]: ../../src/Processor/Tasks/Preprocess/Instructions/IncludeExample/Contracts/Runner.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner"
