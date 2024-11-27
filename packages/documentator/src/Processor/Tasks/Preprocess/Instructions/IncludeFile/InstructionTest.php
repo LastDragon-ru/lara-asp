@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -31,7 +32,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = self::getTestData()->path($source);
-        $context  = new Context($root, $file, $target, '{...}', new Nop());
+        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);

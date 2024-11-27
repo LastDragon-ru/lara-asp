@@ -18,7 +18,7 @@ class ArtisanCommandFailed extends InstructionFailed {
             $context,
             sprintf(
                 'Artisan command `%s` exited with status code `%s` (in `%s`).',
-                $context->target,
+                $context->node->getDestination(),
                 $this->result,
                 $context->root->getRelativePath($context->file),
             ),

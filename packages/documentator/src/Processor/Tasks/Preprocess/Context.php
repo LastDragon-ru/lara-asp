@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesInline;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\SelfLinksRemove;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
@@ -20,8 +21,8 @@ class Context {
     public function __construct(
         public readonly Directory $root,
         public readonly File $file,
-        public readonly string $target,
-        public readonly ?string $parameters,
+        public readonly Document $document,
+        public readonly Block $node,
         private readonly Mutation $mutation,
     ) {
         // empty
