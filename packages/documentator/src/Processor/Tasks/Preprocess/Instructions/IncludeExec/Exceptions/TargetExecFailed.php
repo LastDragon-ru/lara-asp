@@ -14,7 +14,7 @@ class TargetExecFailed extends InstructionFailed {
             $context,
             sprintf(
                 'Failed to execute the `%s` command (in `%s`).',
-                $context->target,
+                $context->node->getDestination(),
                 $context->root->getRelativePath($context->file),
             ),
             $previous,
