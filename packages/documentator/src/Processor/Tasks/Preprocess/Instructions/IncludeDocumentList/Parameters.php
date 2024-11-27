@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as ParametersContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Symfony\Component\Finder\Finder;
@@ -22,7 +23,10 @@ class Parameters implements ParametersContract, Serializable {
          */
         public readonly array|string|int|null $depth = 0,
         /**
-         * Blade template.
+         * Blade template. The documents passed in the `$data` ({@see Data})
+         * variable. Also, be careful with leading whitespaces.
+         *
+         * @see Data
          */
         public readonly string $template = 'default',
         /**

@@ -1,17 +1,17 @@
 <?php
 /**
- * @var list<array{path: string, title: string, summary: ?string}> $documents
+ * @var \LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data $data
  */
 
 ?>
-@foreach ($documents as $document)
-## {!! $document['title'] !!}
-@if($document['summary'])
+@foreach ($data->documents as $document)
+## {!! $document->title !!}
+@if($document->summary)
 
-{!! $document['summary'] !!}
+{!! $document->summary !!}
 @endif
 
-[Read more](<{{ $document['path'] }}>).
+[Read more](<{{ $document->path }}>).
 @if (!$loop->last)
 
 @endif

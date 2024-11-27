@@ -12,6 +12,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data as TemplateData;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Document as TemplateDocument;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
@@ -54,7 +56,6 @@ class Instruction implements InstructionContract {
      */
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
-        /** @var list<array{path: string, title: string, summary: ?string}> $documents */
         $documents = [];
         $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, '*.md', $parameters->depth));
         $self      = $context->file->getPath();
@@ -77,11 +78,11 @@ class Instruction implements InstructionContract {
 
             // Add
             $document    = $context->toSplittable($document);
-            $documents[] = [
-                'path'    => $context->file->getRelativePath($file),
-                'title'   => $document->getTitle() ?? Text::getPathTitle($file->getName()),
-                'summary' => $document->getSummary(),
-            ];
+            $documents[] = new TemplateDocument(
+                $context->file->getRelativePath($file),
+                $document->getTitle() ?? Text::getPathTitle($file->getName()),
+                $document->getSummary(),
+            );
         }
 
         // Empty?
@@ -92,14 +93,14 @@ class Instruction implements InstructionContract {
         // Sort
         $comparator = $this->sorter->forString($parameters->order);
 
-        usort($documents, static function (array $a, $b) use ($comparator): int {
-            return $comparator($a['title'], $b['title']);
+        usort($documents, static function ($a, $b) use ($comparator): int {
+            return $comparator($a->title, $b->title);
         });
 
         // Render
         $template = "document-list.{$parameters->template}";
         $list     = $this->viewer->render($template, [
-            'documents' => $documents,
+            'data' => new TemplateData($documents),
         ]);
 
         // Return
