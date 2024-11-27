@@ -11,74 +11,204 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
+use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use League\CommonMark\Node\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-use function basename;
+use function json_decode;
+use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * @internal
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    public function testInvokeSameDirectory(): void {
-        $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
-        $params   = new Parameters('...');
-        $target   = './';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+    // <editor-fold desc="Tests">
+    // =========================================================================
+    #[DataProvider('dataProviderInvoke')]
+    public function testInvoke(string $expected, string $path, string $content): void {
+        // Prepare
+        $path        = (new FilePath(self::getTestData()->path($path)))->getNormalizedPath();
+        $root        = new Directory($path->getDirectoryPath(), false);
+        $file        = new File($path, false);
+        $document    = new Document($content, $path);
+        $instruction = (new Query())->where(Query::type(Block::class))->findOne($document->getNode());
+
+        self::assertInstanceOf(Block::class, $instruction);
+
+        // Parameters
+        $target               = $instruction->getDestination();
+        $parameters           = $instruction->getTitle();
+        $parameters           = $parameters !== ''
+            ? (array) json_decode($parameters, true, flags: JSON_THROW_ON_ERROR)
+            : [];
+        $parameters['target'] = $target;
+        $parameters           = json_encode($parameters, JSON_THROW_ON_ERROR);
+        $parameters           = $this->app()->make(Serializer::class)->deserialize(Parameters::class, $parameters);
+
+        // Test
+        $context  = new Context($root, $file, $document, $instruction, new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $parameters);
 
-        self::assertEquals(
-            self::getTestData()->content('~SameDirectory.md'),
-            <<<MARKDOWN
-            <!-- markdownlint-disable -->
-
-            {$actual}
-            MARKDOWN,
-        );
+        self::assertEquals($expected, $actual);
     }
+    // </editor-fold>
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function dataProviderInvoke(): array {
+        return [
+            'Same Directory / Default parameters'    => [
+                <<<'MARKDOWN'
+                # `<` Document B `>`
 
-    public function testInvokeAnotherDirectory(): void {
-        $path    = (new FilePath(self::getTestData()->path('~AnotherDirectory.md')))->getNormalizedPath();
-        $root    = new Directory($path->getDirectoryPath(), false);
-        $file    = new File($path, false);
-        $params  = new Parameters('...');
-        $target  = basename(self::getTestData()->path('/'));
-        $context = new Context($root, $file, new Document(''), new Block(), new Nop());
+                Summary text.
 
-        $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+                [Read more](<Document B.md>).
 
-        self::assertEquals(
-            self::getTestData()->content('~AnotherDirectory.md'),
-            <<<MARKDOWN
-            <!-- markdownlint-disable -->
+                # Document A
 
-            {$actual}
-            MARKDOWN,
-        );
+                Summary text with special characters `<`, `>`, `&`.
+
+                [Read more](<Document A.md>).
+
+                MARKDOWN,
+                'Document.md',
+                <<<'MARKDOWN'
+                [include:document-list]: ./
+                MARKDOWN,
+            ],
+            'Another Directory / Default parameters' => [
+                <<<'MARKDOWN'
+                # `<` Document B `>`
+
+                Summary text.
+
+                [Read more](<InstructionTest/Document B.md>).
+
+                # Document
+
+                Document summary.
+
+                [Read more](<InstructionTest/Document.md>).
+
+                # Document A
+
+                Summary text with special characters `<`, `>`, `&`.
+
+                [Read more](<InstructionTest/Document A.md>).
+
+                MARKDOWN,
+                '.php',
+                <<<'MARKDOWN'
+                [include:document-list]: ./InstructionTest
+                MARKDOWN,
+            ],
+            'Nested Directories'                     => [
+                <<<'MARKDOWN'
+                # Nested B
+
+                Summary [text](../Document.md).
+
+                [Read more](<B/Document B.md>).
+
+                # Nested A
+
+                Summary [text](../Document.md).
+
+                [Read more](<A/Document A.md>).
+
+                # Document C
+
+                Summary [text](../Document.md) summary [link](../Document.md "title") and summary and self and self.
+
+                [Read more](<Document C.md>).
+
+                MARKDOWN,
+                'nested/Document.md',
+                <<<'MARKDOWN'
+                [include:document-list]: . ({"depth": null, "order": "Desc"})
+                MARKDOWN,
+            ],
+            'Level `null`'                           => [
+                <<<'MARKDOWN'
+                ## `<` Document B `>`
+
+                Summary text.
+
+                [Read more](<Document B.md>).
+
+                ## Document A
+
+                Summary text with special characters `<`, `>`, `&`.
+
+                [Read more](<Document A.md>).
+
+                MARKDOWN,
+                'Document.md',
+                <<<'MARKDOWN'
+                # Header
+
+                Text text.
+
+                [include:document-list]: ./ ({"level": null})
+                MARKDOWN,
+            ],
+            'Level `0`'                              => [
+                <<<'MARKDOWN'
+                ### `<` Document B `>`
+
+                Summary text.
+
+                [Read more](<Document B.md>).
+
+                ### Document A
+
+                Summary text with special characters `<`, `>`, `&`.
+
+                [Read more](<Document A.md>).
+
+                MARKDOWN,
+                'Document.md',
+                <<<'MARKDOWN'
+                ### Header
+
+                Text text.
+
+                [include:document-list]: ./ ({"level": 0})
+                MARKDOWN,
+            ],
+            'Level `<number>`'                       => [
+                <<<'MARKDOWN'
+                #### `<` Document B `>`
+
+                Summary text.
+
+                [Read more](<Document B.md>).
+
+                #### Document A
+
+                Summary text with special characters `<`, `>`, `&`.
+
+                [Read more](<Document A.md>).
+
+                MARKDOWN,
+                'Document.md',
+                <<<'MARKDOWN'
+                # Header
+
+                Text text.
+
+                [include:document-list]: ./ ({"level": 4})
+                MARKDOWN,
+            ],
+        ];
     }
-
-    public function testInvokeNestedDirectories(): void {
-        $path     = (new FilePath(self::getTestData()->path('nested/Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
-        $params   = new Parameters('...', null, order: SortOrder::Desc);
-        $target   = './';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
-        $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
-
-        self::assertEquals(
-            self::getTestData()->content('~NestedDirectories.md'),
-            <<<MARKDOWN
-            <!-- markdownlint-disable -->
-
-            {$actual}
-            MARKDOWN,
-        );
-    }
+    //</editor-fold>
 }

@@ -8,6 +8,10 @@ readonly class Data {
          * @var non-empty-list<Document>
          */
         public array $documents,
+        /**
+         * @var int<1, 6>
+         */
+        public int $level,
     ) {
         // empty
     }

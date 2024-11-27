@@ -33,6 +33,14 @@ class Parameters implements ParametersContract, Serializable {
          * Sort order.
          */
         public readonly SortOrder $order = SortOrder::Asc,
+        /**
+         * Headings level. Possible values are
+         *
+         * * `null`: `<current level> + 1`
+         * * `int`: explicit level (`1-6`)
+         * * `0`: `<current level>`
+         */
+        public readonly ?int $level = null,
     ) {
         // empty
     }
