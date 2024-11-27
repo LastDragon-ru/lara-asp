@@ -5,7 +5,7 @@
 
 ?>
 @foreach ($data->documents as $document)
-## {!! $document->title !!}
+{{ str_repeat('#', $data->level) }} {!! $document->title !!}
 @if($document->summary)
 
 {!! $document->summary !!}

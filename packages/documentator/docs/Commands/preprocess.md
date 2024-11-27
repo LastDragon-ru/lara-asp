@@ -75,6 +75,11 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
   * `template`: `string` = `'default'` - Blade template. The documents passed in the `$data` ([`Data`][code-links/84d51020d324cc16])
     variable. Also, be careful with leading whitespaces.
   * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
+  * `level`: `?int` = `null` - Headings level. Possible values are
+
+    * `null`: `<current level> + 1`
+    * `int`: explicit level (`1-6`)
+    * `0`: `<current level>`
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph

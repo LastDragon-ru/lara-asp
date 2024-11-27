@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
@@ -16,8 +17,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Document as TemplateDocument;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use Override;
 
+use function max;
+use function min;
 use function usort;
 
 /**
@@ -99,11 +103,42 @@ class Instruction implements InstructionContract {
 
         // Render
         $template = "document-list.{$parameters->template}";
+        $level    = $this->getLevel($context->node, $parameters);
         $list     = $this->viewer->render($template, [
-            'data' => new TemplateData($documents),
+            'data' => new TemplateData($documents, $level),
         ]);
 
         // Return
         return $list;
+    }
+
+    /**
+     * @return int<1,6>
+     */
+    private function getLevel(Block $node, Parameters $parameters): int {
+        $level = match ($parameters->level) {
+            0       => $this->getNodeLevel($node),
+            null    => $this->getNodeLevel($node) + 1,
+            default => $parameters->level,
+        };
+        $level = min($level, 6);
+        $level = max($level, 1);
+
+        return $level;
+    }
+
+    private function getNodeLevel(Block $block): int {
+        $level = 0;
+
+        do {
+            $block = $block->previous();
+
+            if ($block instanceof Heading) {
+                $level = $block->getLevel();
+                $block = null;
+            }
+        } while ($block);
+
+        return $level;
     }
 }
