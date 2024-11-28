@@ -19,6 +19,9 @@ use function trim;
 #[AsCommand(
     name       : Package::Name.':sql-migration',
     description: 'Create a new SQL Migration file.',
+    aliases    : [
+        'make:sql-migration',
+    ],
 )]
 class SqlMigration extends BaseCommand {
     #[Override]

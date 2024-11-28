@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -12,9 +13,11 @@ use Symfony\Component\Finder\Finder;
  */
 #[CoversClass(SqlSeeder::class)]
 final class SqlSeederTest extends TestCase {
-    public function testHandle(): void {
+    // <editor-fold desc="Tests">
+    // =========================================================================
+    #[DataProvider('dataProviderHandle')]
+    public function testHandle(string $command): void {
         // Pre test
-        $pkg    = Package::Name;
         $path   = self::getTempDirectory();
         $finder = Finder::create()->in($path);
 
@@ -26,7 +29,7 @@ final class SqlSeederTest extends TestCase {
         $this->app->useDatabasePath($path);
 
         // Call
-        $this->artisan("{$pkg}:sql-seeder", [
+        $this->artisan($command, [
             'name' => 'SqlSeeder',
         ]);
 
@@ -43,4 +46,18 @@ final class SqlSeederTest extends TestCase {
 
         self::assertEquals($expected, $actual);
     }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function dataProviderHandle(): array {
+        return [
+            'name'  => [Package::Name.':sql-seeder'],
+            'alias' => ['make:sql-seeder'],
+        ];
+    }
+    // </editor-fold>
 }
