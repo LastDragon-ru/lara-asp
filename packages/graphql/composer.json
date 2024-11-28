@@ -26,7 +26,7 @@
     "illuminate/contracts": "^11.0.0",
     "illuminate/database": "^11.0.0",
     "illuminate/support": "^11.0.0",
-    "nuwave/lighthouse": "^6.5.0",
+    "nuwave/lighthouse": "^6.36.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
@@ -38,9 +38,9 @@
   "require-dev": {
     "ext-pdo_sqlite": "*",
     "illuminate/cache": "^11.0.0",
-    "laravel/scout": "^9.8.0|^10.0.0",
+    "laravel/scout": "^10.8.0",
     "mockery/mockery": "^1.6.5",
-    "phpunit/phpunit": "^10.1.0|^11.0.0",
+    "phpunit/phpunit": "^10.5.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^9.0.0"
   },
