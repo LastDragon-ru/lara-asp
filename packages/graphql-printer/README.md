@@ -227,13 +227,13 @@ It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#printe
 [//]: # (start: preprocess/c79a463462fd8331)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## `assertGraphQLExportableEquals`
+## [`assertGraphQLExportableEquals`](<docs/Assertions/AssertGraphQLExportableEquals.md>)
 
 Exports and compares two GraphQL schemas/types/nodes/etc.
 
 [Read more](<docs/Assertions/AssertGraphQLExportableEquals.md>).
 
-## `assertGraphQLPrintableEquals`
+## [`assertGraphQLPrintableEquals`](<docs/Assertions/AssertGraphQLPrintableEquals.md>)
 
 Prints and compares two GraphQL schemas/types/nodes/etc.
 

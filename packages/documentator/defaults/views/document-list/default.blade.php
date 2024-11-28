@@ -5,7 +5,7 @@
 
 ?>
 @foreach ($data->documents as $document)
-{{ str_repeat('#', $data->level) }} {!! $document->title !!}
+{{ str_repeat('#', $data->level) }} [{!! $document->title !!}](<{{ $document->path }}>)
 @if($document->summary)
 
 {!! $document->summary !!}

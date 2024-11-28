@@ -260,49 +260,49 @@ Disable models events during make/create.
 [//]: # (start: preprocess/c79a463462fd8331)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## `assertDatabaseQueryEquals`
+## [`assertDatabaseQueryEquals`](<docs/Assertions/AssertDatabaseQueryEquals.md>)
 
 Asserts that SQL Query equals SQL Query.
 
 [Read more](<docs/Assertions/AssertDatabaseQueryEquals.md>).
 
-## `assertJsonMatchesSchema`
+## [`assertJsonMatchesSchema`](<docs/Assertions/AssertJsonMatchesSchema.md>)
 
 Asserts that JSON matches [schema](https://json-schema.org/). Validation based on the [Opis JSON Schema](https://github.com/opis/json-schema) package.
 
 [Read more](<docs/Assertions/AssertJsonMatchesSchema.md>).
 
-## `assertPsrResponse`
+## [`assertPsrResponse`](<docs/Assertions/AssertPsrResponse.md>)
 
 Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](src/Constraints/Response) and [responses](src/Responses), but, of course, you can create a custom).
 
 [Read more](<docs/Assertions/AssertPsrResponse.md>).
 
-## `assertQueryLogEquals`
+## [`assertQueryLogEquals`](<docs/Assertions/AssertQueryLogEquals.md>)
 
 Asserts that `QueryLog` equals `QueryLog`.
 
 [Read more](<docs/Assertions/AssertQueryLogEquals.md>).
 
-## `assertScheduled`
+## [`assertScheduled`](<docs/Assertions/AssertScheduled.md>)
 
 Asserts that Schedule contains task.
 
 [Read more](<docs/Assertions/AssertScheduled.md>).
 
-## `assertScoutQueryEquals`
+## [`assertScoutQueryEquals`](<docs/Assertions/AssertScoutQueryEquals.md>)
 
 Asserts that Scout Query equals Scout Query.
 
 [Read more](<docs/Assertions/AssertScoutQueryEquals.md>).
 
-## `assertThatResponse` 💀
+## [`assertThatResponse` 💀](<docs/Assertions/AssertThatResponse.md>)
 
 Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](src/Constraints/Response) and [responses](src/Responses), but, of course, you can create a custom).
 
 [Read more](<docs/Assertions/AssertThatResponse.md>).
 
-## `assertXmlMatchesSchema`
+## [`assertXmlMatchesSchema`](<docs/Assertions/AssertXmlMatchesSchema.md>)
 
 Asserts that XML matches schema [XSD](https://en.wikipedia.org/wiki/XML_Schema_(W3C)) or [Relax NG](https://en.wikipedia.org/wiki/RELAX_NG). Validation based on the standard methods of [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class.
 
