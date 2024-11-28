@@ -27,6 +27,16 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v7
+
+[include:file]: ../../docs/Shared/Upgrade/FromV7.md
+[//]: # (start: preprocess/c45228918cc92f69)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+* [ ] Laravel v10 is not supported anymore. Migrate to the newer version.
+
+[//]: # (end: preprocess/c45228918cc92f69)
+
 # Upgrade from v6
 
 This version is the deep refactoring of the [`Formatter`][code-links/9fbde97537a14196] class to make it simple and allow adding new formats easily. All built-in formats are now instances of [`Format`][code-links/f729e209367a8080] interface. Also, the config now is the [`Config`][code-links/d45c59bc79a55ae4] instance instead of an array, and locale-specific settings were moved into format itself. Please check the updated documentation for more details.
