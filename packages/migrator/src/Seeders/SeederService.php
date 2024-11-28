@@ -68,8 +68,6 @@ class SeederService {
     }
 
     protected function getMigrationsTable(): string {
-        // todo(migrator): The string is used only in Laravel v10
-        //      https://github.com/LastDragon-ru/lara-asp/issues/143
         $default = 'migrations';
         $table   = $this->config->getInstance()->get('database.migrations', $default);
         $table   = is_array($table) ? ($table['table'] ?? $default) : $table;

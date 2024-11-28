@@ -22,10 +22,10 @@
     "ext-filter": "*",
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
-    "illuminate/collections": "^10.34.0|^11.0.0",
-    "illuminate/contracts": "^10.34.0|^11.0.0",
-    "illuminate/database": "^10.34.0|^11.0.0",
-    "illuminate/support": "^10.34.0|^11.0.0",
+    "illuminate/collections": "^11.0.0",
+    "illuminate/contracts": "^11.0.0",
+    "illuminate/database": "^11.0.0",
+    "illuminate/support": "^11.0.0",
     "nuwave/lighthouse": "^6.5.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
@@ -37,12 +37,12 @@
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
-    "illuminate/cache": "^10.34.0|^11.0.0",
+    "illuminate/cache": "^11.0.0",
     "laravel/scout": "^9.8.0|^10.0.0",
     "mockery/mockery": "^1.6.5",
     "phpunit/phpunit": "^10.1.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "orchestra/testbench": "^8.0.0|^9.0.0"
+    "orchestra/testbench": "^9.0.0"
   },
   "suggest": {
     "laravel/scout": "Can be used by @searchBy/@sortBy/etc directives to work with Scout Builder."

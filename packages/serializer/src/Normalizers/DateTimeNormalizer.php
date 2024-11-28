@@ -55,6 +55,7 @@ class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     /**
      * @return array<class-string, bool>
      */
+    #[Override]
     public function getSupportedTypes(?string $format): array {
         return [
             DateTimeInterface::class => self::class === static::class,

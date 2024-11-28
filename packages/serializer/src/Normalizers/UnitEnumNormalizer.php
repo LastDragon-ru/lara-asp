@@ -41,6 +41,7 @@ class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
     /**
      * @return array<class-string, bool>
      */
+    #[Override]
     public function getSupportedTypes(?string $format): array {
         return [
             UnitEnum::class => self::class === static::class,

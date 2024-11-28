@@ -74,6 +74,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     /**
      * @return array<class-string, bool>
      */
+    #[Override]
     public function getSupportedTypes(?string $format): array {
         return [
             Serializable::class => self::class === static::class,

@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
@@ -42,25 +40,21 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command, $expected): void {
-            if (InstalledVersions::satisfies(new VersionParser(), 'illuminate/contracts', '^11.0.0')) {
-                // todo(documentator): Remove after https://github.com/LastDragon-ru/lara-asp/issues/143
-                $mock
-                    ->shouldReceive('addCommands')
-                    ->atLeast()
-                    ->once()
-                    ->andReturns();
-                $mock
-                    ->shouldReceive('addCommandPaths')
-                    ->atLeast()
-                    ->once()
-                    ->andReturns();
-                $mock
-                    ->shouldReceive('addCommandRoutePaths')
-                    ->atLeast()
-                    ->once()
-                    ->andReturns();
-            }
-
+            $mock
+                ->shouldReceive('addCommands')
+                ->atLeast()
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('addCommandPaths')
+                ->atLeast()
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('addCommandRoutePaths')
+                ->atLeast()
+                ->once()
+                ->andReturns();
             $mock
                 ->shouldReceive('handle')
                 ->withArgs(
@@ -96,25 +90,21 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command): void {
-            // todo(documentator): Remove after https://github.com/LastDragon-ru/lara-asp/issues/143
-            if (InstalledVersions::satisfies(new VersionParser(), 'illuminate/contracts', '^11.0.0')) {
-                $mock
-                    ->shouldReceive('addCommands')
-                    ->atLeast()
-                    ->once()
-                    ->andReturns();
-                $mock
-                    ->shouldReceive('addCommandPaths')
-                    ->atLeast()
-                    ->once()
-                    ->andReturns();
-                $mock
-                    ->shouldReceive('addCommandRoutePaths')
-                    ->atLeast()
-                    ->once()
-                    ->andReturns();
-            }
-
+            $mock
+                ->shouldReceive('addCommands')
+                ->atLeast()
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('addCommandPaths')
+                ->atLeast()
+                ->once()
+                ->andReturns();
+            $mock
+                ->shouldReceive('addCommandRoutePaths')
+                ->atLeast()
+                ->once()
+                ->andReturns();
             $mock
                 ->shouldReceive('handle')
                 ->withArgs(
