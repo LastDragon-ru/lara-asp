@@ -57,25 +57,25 @@ php artisan vendor:publish --provider=LastDragon_ru\\LaraASP\\GraphQL\\PackagePr
 [//]: # (start: preprocess/bda62d219016136a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## `@searchBy`
+## [`@searchBy`](<docs/Directives/@searchBy.md>)
 
 Probably the most powerful directive to provide search (`where` conditions) for your GraphQL queries.
 
 [Read more](<docs/Directives/@searchBy.md>).
 
-## `@sortBy`
+## [`@sortBy`](<docs/Directives/@sortBy.md>)
 
 Probably the most powerful directive to provide sort (`order by` conditions) for your GraphQL queries.
 
 [Read more](<docs/Directives/@sortBy.md>).
 
-## `@stream` 🧪
+## [`@stream` 🧪](<docs/Directives/@stream.md>)
 
 Unlike the `@paginate` (and similar) directive, the `@stream` provides a uniform way to perform Offset/Limit and Cursor pagination of Eloquent/Query/Scout builders. Filtering and sorting enabled by default via [`@searchBy`](docs/Directives/@searchBy.md) and [`@sortBy`](docs/Directives/@sortBy.md) directives.
 
 [Read more](<docs/Directives/@stream.md>).
 
-## `@type`
+## [`@type`](<docs/Directives/@type.md>)
 
 Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, but uses Laravel Container to resolve instance and also supports PHP enums.
 
@@ -100,7 +100,7 @@ Converts scalar into GraphQL Type. Similar to Lighthouse's `@scalar` directive, 
 [//]: # (start: preprocess/e0862296ba011303)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## `JsonString`
+## [`JsonString`](<docs/Scalars/JsonString.md>)
 
 Represents [JSON](https://json.org) string.
 
@@ -560,31 +560,31 @@ type User {
 [//]: # (start: preprocess/c79a463462fd8331)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## `assertGraphQLIntrospectionEquals`
+## [`assertGraphQLIntrospectionEquals`](<docs/Assertions/AssertGraphQLIntrospectionEquals.md>)
 
 Compares default public schema (as the client sees it through introspection).
 
 [Read more](<docs/Assertions/AssertGraphQLIntrospectionEquals.md>).
 
-## `assertGraphQLSchemaEquals`
+## [`assertGraphQLSchemaEquals`](<docs/Assertions/AssertGraphQLSchemaEquals.md>)
 
 Compares default internal schema (with all directives).
 
 [Read more](<docs/Assertions/AssertGraphQLSchemaEquals.md>).
 
-## `assertGraphQLSchemaNoBreakingChanges`
+## [`assertGraphQLSchemaNoBreakingChanges`](<docs/Assertions/AssertGraphQLSchemaNoBreakingChanges.md>)
 
 Checks that no breaking changes in the default internal schema (with all directives).
 
 [Read more](<docs/Assertions/AssertGraphQLSchemaNoBreakingChanges.md>).
 
-## `assertGraphQLSchemaNoDangerousChanges`
+## [`assertGraphQLSchemaNoDangerousChanges`](<docs/Assertions/AssertGraphQLSchemaNoDangerousChanges.md>)
 
 Checks that no dangerous changes in the default internal schema (with all directives).
 
 [Read more](<docs/Assertions/AssertGraphQLSchemaNoDangerousChanges.md>).
 
-## `assertGraphQLSchemaValid`
+## [`assertGraphQLSchemaValid`](<docs/Assertions/AssertGraphQLSchemaValid.md>)
 
 Validates default internal schema (with all directives). Faster than `lighthouse:validate-schema` command because loads only used directives.
 

@@ -66,13 +66,13 @@ final class InstructionTest extends TestCase {
         return [
             'Same Directory / Default parameters'    => [
                 <<<'MARKDOWN'
-                # `<` Document B `>`
+                # [`<` Document B `>`](<Document B.md>)
 
                 Summary text.
 
                 [Read more](<Document B.md>).
 
-                # Document A
+                # [Document A](<Document A.md>)
 
                 Summary text with special characters `<`, `>`, `&`.
 
@@ -86,19 +86,19 @@ final class InstructionTest extends TestCase {
             ],
             'Another Directory / Default parameters' => [
                 <<<'MARKDOWN'
-                # `<` Document B `>`
+                # [`<` Document B `>`](<InstructionTest/Document B.md>)
 
                 Summary text.
 
                 [Read more](<InstructionTest/Document B.md>).
 
-                # Document
+                # [Document](<InstructionTest/Document.md>)
 
                 Document summary.
 
                 [Read more](<InstructionTest/Document.md>).
 
-                # Document A
+                # [Document A](<InstructionTest/Document A.md>)
 
                 Summary text with special characters `<`, `>`, `&`.
 
@@ -112,19 +112,19 @@ final class InstructionTest extends TestCase {
             ],
             'Nested Directories'                     => [
                 <<<'MARKDOWN'
-                # Nested B
+                # [Nested B](<B/Document B.md>)
 
                 Summary [text](../Document.md).
 
                 [Read more](<B/Document B.md>).
 
-                # Nested A
+                # [Nested A](<A/Document A.md>)
 
                 Summary [text](../Document.md).
 
                 [Read more](<A/Document A.md>).
 
-                # Document C
+                # [Document C](<Document C.md>)
 
                 Summary [text](../Document.md) summary [link](../Document.md "title") and summary and self and self.
 
@@ -138,13 +138,13 @@ final class InstructionTest extends TestCase {
             ],
             'Level `null`'                           => [
                 <<<'MARKDOWN'
-                ## `<` Document B `>`
+                ## [`<` Document B `>`](<Document B.md>)
 
                 Summary text.
 
                 [Read more](<Document B.md>).
 
-                ## Document A
+                ## [Document A](<Document A.md>)
 
                 Summary text with special characters `<`, `>`, `&`.
 
@@ -162,13 +162,13 @@ final class InstructionTest extends TestCase {
             ],
             'Level `0`'                              => [
                 <<<'MARKDOWN'
-                ### `<` Document B `>`
+                ### [`<` Document B `>`](<Document B.md>)
 
                 Summary text.
 
                 [Read more](<Document B.md>).
 
-                ### Document A
+                ### [Document A](<Document A.md>)
 
                 Summary text with special characters `<`, `>`, `&`.
 
@@ -186,13 +186,13 @@ final class InstructionTest extends TestCase {
             ],
             'Level `<number>`'                       => [
                 <<<'MARKDOWN'
-                #### `<` Document B `>`
+                #### [`<` Document B `>`](<Document B.md>)
 
                 Summary text.
 
                 [Read more](<Document B.md>).
 
-                #### Document A
+                #### [Document A](<Document A.md>)
 
                 Summary text with special characters `<`, `>`, `&`.
 

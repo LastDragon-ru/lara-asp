@@ -38,19 +38,19 @@ composer require lastdragon-ru/lara-asp-documentator
 [//]: # (start: preprocess/820df828d96420b5)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## `lara-asp-documentator:commands`
+## [`lara-asp-documentator:commands`](<docs/Commands/commands.md>)
 
 Saves help for each command in the `namespace` into a separate file in the `target` directory.
 
 [Read more](<docs/Commands/commands.md>).
 
-## `lara-asp-documentator:preprocess`
+## [`lara-asp-documentator:preprocess`](<docs/Commands/preprocess.md>)
 
 Perform one or more task on the file.
 
 [Read more](<docs/Commands/preprocess.md>).
 
-## `lara-asp-documentator:requirements`
+## [`lara-asp-documentator:requirements`](<docs/Commands/requirements.md>)
 
 Generates a table with the required versions of PHP/Laravel/etc in Markdown format.
 
