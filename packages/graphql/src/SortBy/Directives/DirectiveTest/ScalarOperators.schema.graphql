@@ -9,6 +9,9 @@ type Query {
 input A {
     a: Int!
 }
+
 extend scalar SortByOperatorsExtra
 @sortByExtendOperators
+
+extend scalar SortByOperatorsExtra
 @sortByOperatorRandom
