@@ -37,7 +37,10 @@ class TestData {
     public function path(string $path): string {
         $dir  = dirname(str_replace('\\', '/', $this->path));
         $name = basename($this->path, '.php');
-        $path = str_starts_with($path, '.') || str_starts_with($path, '~') ? $path : '/'.ltrim($path, '/');
+        $path = str_replace('\\', '/', $path);
+        $path = (str_starts_with($path, '.') && !str_starts_with($path, './') && !str_starts_with($path, '../')) || str_starts_with($path, '~')
+            ? $path
+            : '/'.ltrim($path, '/');
         $path = "{$dir}/{$name}{$path}";
 
         return $path;
