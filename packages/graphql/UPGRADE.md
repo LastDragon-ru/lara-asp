@@ -33,6 +33,16 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 >
 > Maybe a good idea to add test (at least) with [`GraphQLAssertions::assertGraphQLSchemaEquals()`][code-links/c84a35ff75f6a95e] assertion before the upgrade 🤗
 
+# Upgrade from v7
+
+[include:file]: ../../docs/Shared/Upgrade/FromV7.md
+[//]: # (start: preprocess/c45228918cc92f69)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+* [ ] Laravel v10 is not supported anymore. Migrate to the newer version.
+
+[//]: # (end: preprocess/c45228918cc92f69)
+
 # Upgrade from v6
 
 ## General

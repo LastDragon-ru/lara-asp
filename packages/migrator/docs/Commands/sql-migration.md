@@ -7,6 +7,7 @@ Create a new SQL Migration file.
 ## Usages
 
 * `artisan lara-asp-migrator:sql-migration [--path [PATH]] [--] <name>`
+* `artisan make:sql-migration`
 
 ## Arguments
 

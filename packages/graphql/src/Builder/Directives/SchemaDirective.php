@@ -76,10 +76,6 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
 
     #[Override]
     public function manipulateTypeDefinition(DocumentAST &$documentAST, TypeDefinitionNode &$typeDefinition): void {
-        // todo(graphql): Lighthouse since v6.34.0 merges directives from
-        //      extension nodes except standard types. So the implementation can
-        //      be simplified.
-
         // Apply `extend scalar`.
         $manipulator = $this->manipulatorFactory->create($documentAST);
 
@@ -92,9 +88,18 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
                 continue;
             }
 
-            // Extend
+            // Create node
+            // (it is required because Lighthouse cannot load custom scalars without `@scalar` directive)
+            // (Failed to find class XXX extends GraphQL\Type\Definition\ScalarType in namespaces [] for the scalar XXX.)
             $targetNode = $manipulator->addTypeDefinition($this->getScalarDefinitionNode($targetType));
 
+            // Standard?
+            // (custom scalars will be handled by Lighthouse itself)
+            if (!$manipulator->isStandard($type)) {
+                continue;
+            }
+
+            // Extend
             foreach ($extensions as $key => $extension) {
                 // Valid?
                 if (!($extension instanceof ScalarTypeExtensionNode)) {
@@ -102,22 +107,18 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
                 }
 
                 // Directives
-                if ($targetType === $type) {
-                    $targetNode->directives = $targetNode->directives->merge($extension->directives);
-                } else {
-                    // Only known directives will be copied for alias
-                    foreach ($extension->directives as $index => $directive) {
-                        if ($this->isDirective($directive->name->value)) {
-                            $targetNode->directives[] = $directive;
+                // (only known directives will be copied for alias)
+                foreach ($extension->directives as $index => $directive) {
+                    if ($this->isDirective($directive->name->value)) {
+                        $targetNode->directives[] = $directive;
 
-                            unset($extension->directives[$index]);
-                        }
+                        unset($extension->directives[$index]);
                     }
-
-                    $extension->directives->reindex();
                 }
 
-                // Remove to avoid conflicts with future Lighthouse version
+                $extension->directives->reindex();
+
+                // Remove to avoid conflicts with the future Lighthouse version
                 unset($documentAST->typeExtensions[$type][$key]);
 
                 if (count($documentAST->typeExtensions[$type]) === 0) {

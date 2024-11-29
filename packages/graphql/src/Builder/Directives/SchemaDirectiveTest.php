@@ -10,7 +10,6 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionIsNotScalarExtension;
 use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\Internal;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
@@ -120,31 +119,18 @@ final class SchemaDirectiveTest extends TestCase {
                 @scalar(
                     class: {$default}
                 )
-                @test
-                @a
                 GRAPHQL,
                 <<<'GRAPHQL'
                 type Query {
                     test: String! @mock
                 }
 
+                # Should be ignored because handled by Lighthouse.
                 extend scalar TestScalar
                 @test
 
                 extend scalar TestScalar
                 @a
-                GRAPHQL,
-                'TestScalar',
-            ],
-            'Not a scalar extension' => [
-                new TypeDefinitionIsNotScalarExtension('TestScalar', 'extend enum TestScalar'),
-                <<<'GRAPHQL'
-                type Query {
-                    test: String! @mock
-                }
-
-                extend enum TestScalar
-                @test
                 GRAPHQL,
                 'TestScalar',
             ],

@@ -18,19 +18,19 @@
   },
   "require": {
     "php": "^8.2|^8.3",
-    "illuminate/collections": "^10.34.0|^11.0.0",
-    "illuminate/database": "^10.34.0|^11.0.0",
-    "illuminate/support": "^10.34.0|^11.0.0",
+    "illuminate/collections": "^11.0.8",
+    "illuminate/database": "^11.0.8",
+    "illuminate/support": "^11.0.8",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/polyfill-php83": "^1.28"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
-    "illuminate/contracts": "^10.34.0|^11.0.0",
+    "illuminate/contracts": "^11.0.8",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.5",
-    "orchestra/testbench": "^8.0.0|^9.0.0",
-    "phpunit/phpunit": "^10.1.0|^11.0.0"
+    "orchestra/testbench": "^9.0.0",
+    "phpunit/phpunit": "^10.5.0|^11.0.0"
   },
   "autoload": {
     "files": [
