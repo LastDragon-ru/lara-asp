@@ -80,6 +80,8 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
     * `null`: `<current level> + 1`
     * `int`: explicit level (`1-6`)
     * `0`: `<current level>`
+  * `include`: `array|string|null` = `null` - [Rules which filenames must match](https://symfony.com/doc/current/components/finder.html#path)
+    (only Markdown documents will be listed).
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
