@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use Override;
 
+use function array_filter;
 use function max;
 use function min;
 use function usort;
@@ -60,9 +61,11 @@ class Instruction implements InstructionContract {
      */
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Generator {
-        $documents = [];
-        $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, '*.md', $parameters->depth));
         $self      = $context->file->getPath();
+        $patterns  = array_filter((array) $parameters->include, static fn ($s) => $s !== '');
+        $patterns  = $patterns === [] ? '*.md' : $patterns;
+        $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, $patterns, $parameters->depth));
+        $documents = [];
 
         foreach ($iterator as $file) {
             // Prepare

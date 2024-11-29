@@ -19,6 +19,7 @@ class Parameters implements ParametersContract, Serializable {
          * (eg the `0` means no nested directories, the `null` removes limits).
          *
          * @see Finder::depth()
+         *
          * @var array<array-key, string|int>|string|int|null
          */
         public readonly array|string|int|null $depth = 0,
@@ -41,6 +42,15 @@ class Parameters implements ParametersContract, Serializable {
          * * `0`: `<current level>`
          */
         public readonly ?int $level = null,
+        /**
+         * [Rules which filenames must match](https://symfony.com/doc/current/components/finder.html#path)
+         * (only Markdown documents will be listed).
+         *
+         * @see Finder::path()
+         *
+         * @var array<array-key, string>|string|null
+         */
+        public readonly array|string|null $include = null,
     ) {
         // empty
     }
