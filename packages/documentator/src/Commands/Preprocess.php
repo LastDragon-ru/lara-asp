@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLin
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
@@ -54,7 +55,8 @@ use function var_export;
     description: 'Perform one or more task on the file.',
 )]
 class Preprocess extends Command {
-    public const Name = Package::Name.':preprocess';
+    public const  Name              = Package::Name.':preprocess';
+    private const DeprecationMarker = '💀';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
@@ -133,10 +135,11 @@ class Preprocess extends Command {
             $description = trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
             $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';
+            $deprecated  = $this->getDeprecatedMark(new ReflectionClass($task));
             $title       = trim((string) $this->getProcessedHelpTaskTitle($task));
             $title       = $title !== '' ? $title : "Task №{$index}";
             $help       .= <<<MARKDOWN
-                {$heading} {$title} ({$extensions})
+                {$heading} {$title} ({$extensions}){$deprecated}
 
                 {$description}
 
@@ -171,17 +174,20 @@ class Preprocess extends Command {
         $help         = [];
 
         foreach ($instructions as $instruction) {
-            $class  = new ReflectionClass($instruction);
-            $name   = $instruction::getName();
-            $desc   = $this->getDocBlock($class, null, $level + 1);
-            $target = trim((string) $this->getProcessedHelpTaskPreprocessInstructionTarget($instruction, 'target', 2));
-            $target = $target !== '' ? $target : '_No description provided_.';
-            $params = $this->getProcessedHelpTaskPreprocessParameters($instruction, 'target', 2);
+            $class      = new ReflectionClass($instruction);
+            $name       = $instruction::getName();
+            $desc       = $this->getDocBlock($class, null, $level + 1);
+            $target     = trim(
+                (string) $this->getProcessedHelpTaskPreprocessInstructionTarget($instruction, 'target', 2),
+            );
+            $target     = $target !== '' ? $target : '_No description provided_.';
+            $params     = $this->getProcessedHelpTaskPreprocessParameters($instruction, 'target', 2);
+            $deprecated = $this->getDeprecatedMark($class);
 
             if ($params !== null) {
                 $help[$name] = rtrim(
                     <<<HELP
-                    {$heading} `[{$name}]: <target> <parameters>`
+                    {$heading} `[{$name}]: <target> <parameters>`{$deprecated}
 
                     * `<target>` - {$target}
                     * `<parameters>` - additional parameters
@@ -193,7 +199,7 @@ class Preprocess extends Command {
             } else {
                 $help[$name] = rtrim(
                     <<<HELP
-                    {$heading} `[{$name}]: <target>`
+                    {$heading} `[{$name}]: <target>`{$deprecated}
 
                     * `<target>` - {$target}
 
@@ -288,6 +294,7 @@ class Preprocess extends Command {
             }
 
             // Add
+            $definition                    = $this->getDeprecatedMark($property).$definition;
             $description                   = trim($this->getDocBlock($property, $padding));
             $description                   = $description !== '' ? $description : '_No description provided_.';
             $parameters[trim($definition)] = $description;
@@ -297,6 +304,9 @@ class Preprocess extends Command {
         if ($parameters === []) {
             return null;
         }
+
+        // Sort
+        ksort($parameters);
 
         // Serialize
         $list = '';
@@ -345,5 +355,16 @@ class Preprocess extends Command {
 
         // Return
         return trim($help);
+    }
+
+    /**
+     * @param ReflectionClass<object>|ReflectionProperty $object
+     */
+    private function getDeprecatedMark(ReflectionClass|ReflectionProperty $object): string {
+        $comment    = $object->getDocComment();
+        $deprecated = $comment !== false && (new PhpDoc($comment))->isDeprecated();
+        $deprecated = $deprecated ? ' '.self::DeprecationMarker : '';
+
+        return $deprecated;
     }
 }

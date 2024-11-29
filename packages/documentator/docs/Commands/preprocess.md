@@ -59,8 +59,8 @@ run with default/normal level if it is not specified in its arguments.
 
 * `<target>` - File path.
 * `<parameters>` - additional parameters
-  * `summary`: `bool` = `true` - Include the class summary?
   * `description`: `bool` = `true` - Include the class description?
+  * `summary`: `bool` = `true` - Include the class summary?
 
 Includes the docblock of the first PHP class/interface/trait/enum/etc
 from `<target>` file. Inline tags include as is except `@see`/`@link`
@@ -72,16 +72,16 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
 * `<parameters>` - additional parameters
   * `depth`: `array|string|int|null` = `0` - [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
     (eg the `0` means no nested directories, the `null` removes limits).
-  * `template`: `string` = `'default'` - Blade template. The documents passed in the `$data` ([`Data`][code-links/84d51020d324cc16])
-    variable. Also, be careful with leading whitespaces.
-  * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
+  * `include`: `array|string|null` = `null` - [Rules which filenames must match](https://symfony.com/doc/current/components/finder.html#path)
+    (only Markdown documents will be listed).
   * `level`: `?int` = `null` - Headings level. Possible values are
 
     * `null`: `<current level> + 1`
     * `int`: explicit level (`1-6`)
     * `0`: `<current level>`
-  * `include`: `array|string|null` = `null` - [Rules which filenames must match](https://symfony.com/doc/current/components/finder.html#path)
-    (only Markdown documents will be listed).
+  * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
+  * `template`: `string` = `'default'` - Blade template. The documents passed in the `$data` ([`Data`][code-links/84d51020d324cc16])
+    variable. Also, be careful with leading whitespaces.
 
 Returns the list of `*.md` files in the `<target>` directory. Each file
 must have `# Header` as the first construction. The first paragraph
@@ -120,12 +120,12 @@ Includes the `<target>` file.
 
 Includes the definition of the directive as a Markdown code block.
 
-#### `[include:package-list]: <target> <parameters>`
+#### `[include:package-list]: <target> <parameters>` 💀
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `template`: `string` = `'default'` - Blade template.
   * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
+  * `template`: `string` = `'default'` - Blade template.
 
 Generates package list from `<target>` directory. The readme file will be
 used to determine package name and summary.
