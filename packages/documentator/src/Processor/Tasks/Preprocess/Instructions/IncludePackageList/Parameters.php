@@ -6,6 +6,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 
+/**
+ * @deprecated %{VERSION}
+ */
 class Parameters implements ParametersContract, Serializable {
     public function __construct(
         /**

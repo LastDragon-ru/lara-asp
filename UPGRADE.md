@@ -27,26 +27,6 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/8aaed7c3a55b57f9)
 
-# Packages
-
-[include:package-list]: ./packages ({"template": "upgradable"})
-[//]: # (start: preprocess/54260d8bcef12cc3)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-* [(Laravel) Core](<packages/core/UPGRADE.md>)
-* [(Laravel) Documentator](<packages/documentator/UPGRADE.md>)
-* [(Laravel) Eloquent Helpers](<packages/eloquent/UPGRADE.md>)
-* [(Laravel) GraphQL Extensions for Lighthouse](<packages/graphql/UPGRADE.md>)
-* [(Laravel) Intl Formatter](<packages/formatter/UPGRADE.md>)
-* [(Laravel) Raw SQL Migrator/Seeder](<packages/migrator/UPGRADE.md>)
-* [(Laravel) SPA Helpers](<packages/spa/UPGRADE.md>)
-* [(Laravel) Symfony Serializer](<packages/serializer/UPGRADE.md>)
-* [(Laravel) Testing Helpers 🐝](<packages/testing/UPGRADE.md>)
-* [Dev 🐝](<packages/dev/UPGRADE.md>)
-* [GraphQL Printer](<packages/graphql-printer/UPGRADE.md>)
-
-[//]: # (end: preprocess/54260d8bcef12cc3)
-
 # Upgrade from v5
 
 * [ ] Installation of the root `lastdragon-ru/lara-asp` package is not recommended anymore 🤝
