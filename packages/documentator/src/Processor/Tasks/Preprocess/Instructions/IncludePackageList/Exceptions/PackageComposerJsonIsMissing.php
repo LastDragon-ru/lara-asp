@@ -9,6 +9,9 @@ use Throwable;
 
 use function sprintf;
 
+/**
+ * @deprecated %{VERSION}
+ */
 class PackageComposerJsonIsMissing extends InstructionFailed {
     public function __construct(
         Context $context,

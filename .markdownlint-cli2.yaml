@@ -283,7 +283,6 @@ config:
       "include:example",
       "include:artisan",
       "include:file",
-      "include:package-list",
       "include:template",
       "include:docblock",
       "include:graphql-directive"

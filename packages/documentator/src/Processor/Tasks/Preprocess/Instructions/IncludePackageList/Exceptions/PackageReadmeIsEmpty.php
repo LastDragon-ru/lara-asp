@@ -10,6 +10,9 @@ use Throwable;
 
 use function sprintf;
 
+/**
+ * @deprecated %{VERSION}
+ */
 class PackageReadmeIsEmpty extends InstructionFailed {
     public function __construct(
         Context $context,
