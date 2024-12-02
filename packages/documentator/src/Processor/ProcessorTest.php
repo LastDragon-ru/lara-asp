@@ -33,12 +33,7 @@ final class ProcessorTest extends TestCase {
             ->once()
             ->andReturns(['php']);
 
-        $taskA = new class() implements Task {
-            /**
-             * @var array<array-key, string>
-             */
-            public array $processed = [];
-
+        $taskA = new class() extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
@@ -46,74 +41,20 @@ final class ProcessorTest extends TestCase {
             public static function getExtensions(): array {
                 return ['htm'];
             }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): bool {
-                $this->processed[] = (string) $root->getRelativePath($file);
-
-                return true;
-            }
         };
-        $taskB = new class() implements Task {
-            /**
-             * @var array<array-key, array{string, array<string, mixed>}>
-             */
-            public array $processed = [];
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getExtensions(): array {
-                return ['txt', 'md'];
-            }
-
-            /**
-             * @return Generator<mixed, Dependency<*>, mixed, bool>
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): Generator {
-                $resolved     = [];
-                $dependencies = match ($file->getName()) {
-                    'a.txt'  => [
-                        '../b/b/bb.txt',
-                        '../c.txt',
-                        '../c.html',
-                        'excluded.txt',
-                    ],
-                    'bb.txt' => [
-                        '../../b/a/ba.txt',
-                        '../../c.txt',
-                        '../../../../../README.md',
-                    ],
-                    default  => [
-                        // empty
-                    ],
-                };
-
-                foreach ($dependencies as $dependency) {
-                    $resolved[$dependency] = yield new FileReference($dependency);
-                }
-
-                $this->processed[] = [
-                    (string) $root->getRelativePath($file),
-                    array_map(
-                        static function (mixed $file) use ($root): mixed {
-                            return (string) match (true) {
-                                $file instanceof File => $root->getRelativePath($file),
-                                default               => null,
-                            };
-                        },
-                        $resolved,
-                    ),
-                ];
-
-                return true;
-            }
-        };
+        $taskB = new ProcessorTest__Task([
+            'a.txt'  => [
+                '../b/b/bb.txt',
+                '../c.txt',
+                '../c.html',
+                'excluded.txt',
+            ],
+            'bb.txt' => [
+                '../../b/a/ba.txt',
+                '../../c.txt',
+                '../../../../../README.md',
+            ],
+        ]);
 
         $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $count  = 0;
@@ -151,7 +92,10 @@ final class ProcessorTest extends TestCase {
         self::assertCount($count, $events);
         self::assertEquals(
             [
-                'c.htm',
+                [
+                    'c.htm',
+                    [],
+                ],
             ],
             $taskA->processed,
         );
@@ -196,6 +140,49 @@ final class ProcessorTest extends TestCase {
                 ],
             ],
             $taskB->processed,
+        );
+    }
+
+    public function testRunFile(): void {
+        $task = new ProcessorTest__Task([
+            'c.txt' => [
+                'excluded.txt',
+            ],
+        ]);
+
+        $path   = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
+        $count  = 0;
+        $events = [];
+
+        (new Processor($this->app()->make(ContainerResolver::class)))
+            ->task($task)
+            ->run(
+                $path,
+                ['excluded.txt', '**/**/excluded.txt'],
+                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                    $events[(string) $path] = $result;
+                    $count++;
+                },
+            );
+
+        self::assertEquals(
+            [
+                'c.txt'        => Result::Success,
+                'excluded.txt' => Result::Skipped,
+            ],
+            $events,
+        );
+        self::assertCount($count, $events);
+        self::assertEquals(
+            [
+                [
+                    'c.txt',
+                    [
+                        'excluded.txt' => 'excluded.txt',
+                    ],
+                ],
+            ],
+            $task->processed,
         );
     }
 
@@ -298,12 +285,12 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunWildcard(): void {
-        $taskA = new class() implements Task {
-            /**
-             * @var array<array-key, string>
-             */
-            public array $processed = [];
-
+        $taskA = new class([
+            'b.html' => [
+                '../../../../README.md',
+                '../a/excluded.txt',
+            ],
+        ]) extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
@@ -311,50 +298,14 @@ final class ProcessorTest extends TestCase {
             public static function getExtensions(): array {
                 return ['html'];
             }
-
-            /**
-             * @return Generator<mixed, Dependency<*>, mixed, bool>
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): Generator {
-                $dependencies = match ($file->getName()) {
-                    'b.html' => [
-                        '../../../../README.md',
-                        '../a/excluded.txt',
-                    ],
-                    default  => [
-                        // empty
-                    ],
-                };
-
-                foreach ($dependencies as $dependency) {
-                    yield new FileReference($dependency);
-                }
-
-                $this->processed[] = (string) $root->getRelativePath($file);
-
-                return true;
-            }
         };
-        $taskB = new class() implements Task {
-            /**
-             * @var array<array-key, string>
-             */
-            public array $processed = [];
-
+        $taskB = new class() extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
             #[Override]
             public static function getExtensions(): array {
                 return ['*'];
-            }
-
-            #[Override]
-            public function __invoke(Directory $root, File $file): bool {
-                $this->processed[] = (string) $root->getRelativePath($file);
-
-                return true;
             }
         };
 
@@ -395,51 +346,77 @@ final class ProcessorTest extends TestCase {
         self::assertCount($count, $events);
         self::assertEquals(
             [
-                'a/a.html',
-                'b/b.html',
-                'c.html',
+                [
+                    'a/a.html',
+                    [],
+                ],
+                [
+                    'b/b.html',
+                    [
+                        '../../../../README.md' => '../../../README.md',
+                        '../a/excluded.txt'     => 'a/excluded.txt',
+                    ],
+                ],
+                [
+                    'c.html',
+                    [],
+                ],
             ],
             $taskA->processed,
         );
         self::assertEquals(
             [
-                'a/a.html',
-                'a/a.txt',
-                'a/a/aa.txt',
-                'a/b/ab.txt',
-                'b/a/ba.txt',
-                'b/b.html',
-                'b/b.txt',
-                'b/b/bb.txt',
-                'c.htm',
-                'c.html',
-                'c.txt',
+                [
+                    'a/a.html',
+                    [],
+                ],
+                [
+                    'a/a.txt',
+                    [],
+                ],
+                [
+                    'a/a/aa.txt',
+                    [],
+                ],
+                [
+                    'a/b/ab.txt',
+                    [],
+                ],
+                [
+                    'b/a/ba.txt',
+                    [],
+                ],
+                [
+                    'b/b.html',
+                    [],
+                ],
+                [
+                    'b/b.txt',
+                    [],
+                ],
+                [
+                    'b/b/bb.txt',
+                    [],
+                ],
+                [
+                    'c.htm',
+                    [],
+                ],
+                [
+                    'c.html',
+                    [],
+                ],
+                [
+                    'c.txt',
+                    [],
+                ],
             ],
             $taskB->processed,
         );
     }
 
     public function testRunFileNotFound(): void {
-        $task = new class() implements Task {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getExtensions(): array {
-                return ['txt'];
-            }
-
-            /**
-             * @return Generator<mixed, Dependency<*>, mixed, bool>
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): Generator {
-                yield new FileReference('404.html');
-
-                return true;
-            }
-        };
-
+        $task = new ProcessorTest__Task(['*' => ['404.html']]);
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(DependencyNotFound::class);
@@ -451,32 +428,12 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependency(): void {
-        $task = new class() implements Task {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getExtensions(): array {
-                return ['txt'];
-            }
-
-            /**
-             * @return Generator<mixed, Dependency<*>, mixed, bool>
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): Generator {
-                match ($file->getName()) {
-                    'a.txt'  => yield new FileReference('../b/b.txt'),
-                    'b.txt'  => yield new FileReference('../b/a/ba.txt'),
-                    'ba.txt' => yield new FileReference('../../c.txt'),
-                    'c.txt'  => yield new FileReference('a/a.txt'),
-                    default  => null,
-                };
-
-                return true;
-            }
-        };
-
+        $task = new ProcessorTest__Task([
+            'a.txt'  => ['../b/b.txt'],
+            'b.txt'  => ['../b/a/ba.txt'],
+            'ba.txt' => ['../../c.txt'],
+            'c.txt'  => ['a/a.txt'],
+        ]);
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(CircularDependency::class);
@@ -500,29 +457,9 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependencySelf(): void {
-        $task = new class() implements Task {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getExtensions(): array {
-                return ['txt'];
-            }
-
-            /**
-             * @return Generator<mixed, Dependency<*>, mixed, bool>
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): Generator {
-                match ($file->getName()) {
-                    'c.txt' => yield new FileReference('c.txt'),
-                    default => null,
-                };
-
-                return true;
-            }
-        };
-
+        $task = new ProcessorTest__Task([
+            'c.txt' => ['c.txt'],
+        ]);
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(CircularDependency::class);
@@ -540,5 +477,64 @@ final class ProcessorTest extends TestCase {
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
             ->run($root);
+    }
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProcessorTest__Task implements Task {
+    /**
+     * @var array<array-key, array{string, array<string, mixed>}>
+     */
+    public array $processed = [];
+
+    public function __construct(
+        /**
+         * @var array<string, list<string>>
+         */
+        private readonly array $dependencies = [],
+    ) {
+        // empty
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function getExtensions(): array {
+        return ['txt', 'md'];
+    }
+
+    /**
+     * @return Generator<mixed, Dependency<*>, mixed, bool>
+     */
+    #[Override]
+    public function __invoke(Directory $root, File $file): Generator {
+        $resolved     = [];
+        $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
+
+        foreach ($dependencies as $dependency) {
+            $resolved[$dependency] = yield new FileReference($dependency);
+        }
+
+        $this->processed[] = [
+            (string) $root->getRelativePath($file),
+            array_map(
+                static function (mixed $file) use ($root): mixed {
+                    return (string) match (true) {
+                        $file instanceof File => $root->getRelativePath($file),
+                        default               => null,
+                    };
+                },
+                $resolved,
+            ),
+        ];
+
+        return true;
     }
 }

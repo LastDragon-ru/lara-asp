@@ -60,24 +60,34 @@ class Processor {
      * @param array<array-key, string>|string|null                                $exclude glob(s) to exclude.
      * @param Closure(FilePath $path, Result $result, float $duration): void|null $listener
      */
-    public function run(DirectoryPath $path, array|string|null $exclude = null, ?Closure $listener = null): float {
-        $start      = microtime(true);
-        $extensions = !$this->tasks->has('*')
-            ? array_map(static fn ($e) => "*.{$e}", $this->tasks->keys())
-            : null;
-        $exclude    = array_map(Glob::toRegex(...), (array) $exclude);
-        $root       = new Directory($path, true);
-        $fs         = new FileSystem();
+    public function run(
+        DirectoryPath|FilePath $path,
+        array|string|null $exclude = null,
+        ?Closure $listener = null,
+    ): float {
+        $start = microtime(true);
+        $depth = match (true) {
+            $path instanceof FilePath => 0,
+            default                   => null,
+        };
+        $extensions = match (true) {
+            $path instanceof FilePath => $path->getName(),
+            !$this->tasks->has('*')   => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
+            default                   => null,
+        };
+        $exclude = array_map(Glob::toRegex(...), (array) $exclude);
+        $root    = new Directory($path->getDirectoryPath(), true);
+        $fs      = new FileSystem();
 
         try {
-            $iterator = $fs->getFilesIterator($root, patterns: $extensions, exclude: $exclude);
+            $iterator = $fs->getFilesIterator($root, $extensions, $depth, $exclude);
             $executor = new Executor($fs, $root, $exclude, $this->tasks, $iterator, $listener);
 
             $executor->run();
         } catch (ProcessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new ProcessingFailed($root, $exception);
+            throw new ProcessingFailed($path, $exception);
         }
 
         return microtime(true) - $start;
