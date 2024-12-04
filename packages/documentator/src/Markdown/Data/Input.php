@@ -2,10 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
+use League\CommonMark\Input\MarkdownInputInterface;
+
 /**
  * @internal
- * @extends Data<int>
+ * @extends Data<MarkdownInputInterface>
  */
-readonly class Padding extends Data {
+readonly class Input extends Data {
     // empty
 }

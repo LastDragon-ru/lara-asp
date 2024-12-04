@@ -2,21 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
-use Override;
-
 /**
  * @internal
- * @implements Value<int>
+ * @extends Data<int>
  */
-readonly class BlockPadding implements Value {
-    public function __construct(
-        private int $value,
-    ) {
-        // empty
-    }
-
-    #[Override]
-    public function get(): mixed {
-        return $this->value;
-    }
+readonly class BlockPadding extends Data {
+    // empty
 }

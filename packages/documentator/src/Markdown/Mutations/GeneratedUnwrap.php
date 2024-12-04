@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\EndMarkerLocation;
@@ -36,14 +35,14 @@ readonly class GeneratedUnwrap implements Mutation {
             }
 
             // Start?
-            $startMarker = Data::get($child, StartMarkerLocation::class);
+            $startMarker = StartMarkerLocation::get($child);
 
             if ($startMarker !== null) {
                 yield [$startMarker, null];
             }
 
             // End
-            $endMarker = Data::get($child, EndMarkerLocation::class);
+            $endMarker = EndMarkerLocation::get($child);
 
             if ($endMarker !== null) {
                 yield [$endMarker, null];

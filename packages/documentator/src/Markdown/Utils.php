@@ -3,13 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as DataLength;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines as DataLines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as DataLocation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as DataOffset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as DataPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as BlockPaddingData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as LengthData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines as LinesData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as PaddingData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\Table\TableCell;
@@ -88,9 +87,9 @@ class Utils {
 
         // Known?
         $type    = $line === null || $line === $container->getStartLine()
-            ? DataBlockPadding::class
-            : DataPadding::class;
-        $padding = Data::get($container, $type);
+            ? BlockPaddingData::class
+            : PaddingData::class;
+        $padding = $type::get($container);
 
         if ($padding !== null) {
             return $padding;
@@ -116,27 +115,27 @@ class Utils {
         }
 
         // Cache
-        Data::set($container, new $type($padding));
+        $type::set($container, $padding);
 
         // Return
         return $padding;
     }
 
     public static function getLine(DocumentNode $document, int $line): ?string {
-        $lines = Data::get($document, DataLines::class) ?? [];
+        $lines = LinesData::get($document) ?? [];
         $line  = $lines[$line] ?? null;
 
         return $line;
     }
 
     public static function getLocation(Node $node): ?Location {
-        $location = Data::get($node, DataLocation::class);
+        $location = LocationData::get($node);
 
         if ($location === null && $node instanceof AbstractBlock) {
             $start   = $node->getStartLine();
             $end     = $node->getEndLine();
-            $offset  = Data::get($node, DataOffset::class) ?? 0;
-            $length  = Data::get($node, DataLength::class);
+            $offset  = OffsetData::get($node) ?? 0;
+            $length  = LengthData::get($node);
             $padding = self::getPadding($node, null, null);
 
             if ($padding === null && $node->parent() instanceof DocumentNode) {

@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use Closure;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
@@ -150,7 +149,7 @@ class Document implements Stringable {
      * @return array<array-key, string>
      */
     protected function getLines(): array {
-        return Data::get($this->getNode(), Lines::class) ?? [];
+        return Lines::get($this->getNode()) ?? [];
     }
 
     protected function getEditor(): Editor {

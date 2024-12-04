@@ -9,41 +9,49 @@ use function is_object;
 
 /**
  * @internal
+ * @template T
  */
-class Data {
+abstract readonly class Data {
+    final public function __construct(
+        /**
+         * @var T
+         */
+        protected mixed $value,
+    ) {
+        // empty
+    }
+
     /**
-     * @template T
-     *
-     * @param class-string<Value<T>> $data
-     *
      * @return ?T
      */
-    public static function get(Node $node, string $data): mixed {
-        $value = $node->data->get($data, null);
-        $value = is_object($value) && is_a($value, $data, true)
-            ? $value->get()
-            : null;
+    public static function get(Node $node): mixed {
+        $data  = $node->data->get(static::class, null);
+        $value = is_object($data) && is_a($data, static::class, true)
+            ? $data->value
+            : static::default($node);
+
+        if ($data === null && $value !== null) {
+            static::set($node, $value);
+        }
 
         return $value;
     }
 
     /**
-     * @template T
-     *
-     * @param Value<T> $value
+     * @param T $value
      *
      * @return T
      */
     public static function set(Node $node, mixed $value): mixed {
-        $node->data->set($value::class, $value);
+        $node->data->set(static::class, new static($value));
 
-        return $value->get();
+        return $value;
     }
 
     /**
-     * @param class-string<Value<*>> $data
+     * @return ?T
      */
-    public static function remove(Node $node, string $data): void {
-        $node->data->remove($data);
+    protected static function default(Node $node): mixed {
+        return null;
     }
 }

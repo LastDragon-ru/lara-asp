@@ -2,36 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
-use League\CommonMark\Input\MarkdownInputInterface;
+use League\CommonMark\Node\Node;
 use Override;
 
 use function iterator_to_array;
 
 /**
- * @implements Value<array<array-key, string>>
  * @internal
+ * @extends Data<array<array-key, string>>
  */
-class Lines implements Value {
-    /**
-     * @var array<array-key, string>|null
-     */
-    private ?array $lines = null;
-
-    public function __construct(
-        private readonly MarkdownInputInterface $input,
-    ) {
-        // empty
-    }
-
-    /**
-     * @inheritDoc
-     */
+readonly class Lines extends Data {
     #[Override]
-    public function get(): array {
-        if ($this->lines === null) {
-            $this->lines = iterator_to_array($this->input->getLines());
-        }
-
-        return $this->lines;
+    protected static function default(Node $node): mixed {
+        return iterator_to_array(Input::get($node)?->getLines() ?? []);
     }
 }

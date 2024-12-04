@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\EndMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\StartMarkerLocation;
@@ -80,20 +79,20 @@ class ParserContinue implements BlockContinueParserInterface {
     #[Override]
     public function closeBlock(): void {
         // Padding
-        Data::set($this->block, new DataBlockPadding($this->padding));
+        BlockPadding::set($this->block, $this->padding);
 
         // Start
         $start = $this->getStartMarkerLocation();
 
         if ($start !== null) {
-            Data::set($this->block, new StartMarkerLocation($start));
+            StartMarkerLocation::set($this->block, $start);
         }
 
         // End
         $end = $this->getEndMarkerLocation();
 
         if ($end !== null) {
-            Data::set($this->block, new EndMarkerLocation($end));
+            EndMarkerLocation::set($this->block, $end);
         }
     }
 

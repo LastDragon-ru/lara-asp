@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
@@ -156,10 +155,10 @@ class Listener implements EnvironmentAwareInterface {
             $cell->setStartLine($line);
             $cell->setEndLine($line);
 
-            Data::set($cell, new BlockPadding($padding));
-            Data::set($cell, new Padding($trimmed));
-            Data::set($cell, new Offset($offset));
-            Data::set($cell, new Length($length));
+            BlockPadding::set($cell, $padding);
+            Padding::set($cell, $trimmed);
+            Offset::set($cell, $offset);
+            Length::set($cell, $length);
 
             $offset += $length + 1;
             $index  += 1;
@@ -197,7 +196,7 @@ class Listener implements EnvironmentAwareInterface {
             $padding = mb_strlen($line) - mb_strlen($trimmed);
         } while ($index < $end && $trimmed === '');
 
-        Data::set($footnote, new Padding($padding));
+        Padding::set($footnote, $padding);
     }
 
     /**

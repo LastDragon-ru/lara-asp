@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
@@ -28,7 +27,7 @@ final class ExtensionTest extends TestCase {
         $parser   = new MarkdownParser($environment);
         $markdown = "# Header\nParagraph [link](https://example.com/).";
         $document = $parser->parse($markdown);
-        $lines    = Data::get($document, Lines::class);
+        $lines    = Lines::get($document);
         $link     = (new Query())->where(Query::type(Link::class))->findOne($document);
 
         self::assertIsArray($lines);
@@ -39,7 +38,7 @@ final class ExtensionTest extends TestCase {
                 new Coordinate(2, 10, 28),
             ],
             iterator_to_array(
-                Data::get($link, Location::class) ?? [],
+                Location::get($link) ?? [],
             ),
         );
     }

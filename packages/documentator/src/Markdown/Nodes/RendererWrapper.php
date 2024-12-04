@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
@@ -122,7 +121,7 @@ readonly class RendererWrapper implements
         ];
 
         foreach ($data as $key => $class) {
-            $attributes[$key] = Data::get($node, $class);
+            $attributes[$key] = $class::get($node);
         }
 
         return $attributes;
