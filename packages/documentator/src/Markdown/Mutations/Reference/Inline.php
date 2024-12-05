@@ -42,7 +42,7 @@ class Inline implements Mutation {
 
             if ($reference instanceof Link || $reference instanceof Image) {
                 $offset   = Offset::get($reference);
-                $location = Utils::getOffsetLocation($location, $offset);
+                $location = $location->withOffset($offset);
                 $title    = Utils::getLinkTitle($reference, (string) $reference->getTitle());
                 $target   = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
                 $text     = $title !== '' ? "({$target} {$title})" : "({$target})";

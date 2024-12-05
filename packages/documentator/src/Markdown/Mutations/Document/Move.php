@@ -71,7 +71,7 @@ readonly class Move implements Mutation {
 
             if ($resource instanceof Link || $resource instanceof Image) {
                 $offset       = Offset::get($resource);
-                $location     = Utils::getOffsetLocation($location, $offset);
+                $location     = $location->withOffset($offset);
                 $origin       = trim((string) $document->getText($location));
                 $titleValue   = (string) $resource->getTitle();
                 $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);

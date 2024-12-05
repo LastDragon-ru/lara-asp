@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
@@ -123,28 +122,6 @@ class Utils {
         $line  = $lines[$line] ?? null;
 
         return $line;
-    }
-
-    public static function getLengthLocation(Location $location, ?int $length): Location {
-        return new Location(
-            $location->startLine,
-            $location->endLine,
-            $location->offset,
-            $length,
-            $location->startLinePadding,
-            $location->internalPadding,
-        );
-    }
-
-    public static function getOffsetLocation(Location $location, int $offset): Location {
-        return new Location(
-            $location->startLine,
-            $location->endLine,
-            $location->offset + $offset,
-            $location->length !== null ? $location->length - $offset : $location->length,
-            $location->startLinePadding,
-            $location->internalPadding,
-        );
     }
 
     public static function isReference(AbstractWebResource $node): bool {

@@ -45,7 +45,7 @@ class Prefix implements Mutation {
 
             if ($reference instanceof Link || $reference instanceof Image) {
                 $offset   = OffsetData::get($reference);
-                $location = Utils::getOffsetLocation($location, $offset);
+                $location = $location->withOffset($offset);
                 $target   = Utils::getReference($reference)?->getLabel();
                 $target   = "{$this->prefix}-{$target}";
                 $target   = Utils::escapeTextInTableCell($reference, $target);

@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
@@ -34,8 +33,8 @@ readonly class Remove implements Mutation {
             $location = Location::get($link);
             $offset   = Offset::get($link);
 
-            yield [Utils::getLengthLocation($location, 1), null];           // [
-            yield [Utils::getOffsetLocation($location, $offset - 1), null]; // ](...)
+            yield [$location->withLength(1), null];           // [
+            yield [$location->withOffset($offset - 1), null]; // ](...)
         }
 
         // Return
