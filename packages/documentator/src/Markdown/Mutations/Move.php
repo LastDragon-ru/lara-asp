@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
@@ -65,7 +66,7 @@ readonly class Move implements Mutation {
 
         foreach ($resources as $resource) {
             // Location?
-            $location = Utils::getLocation($resource);
+            $location = Location::get($resource);
 
             if ($location === null) {
                 continue;

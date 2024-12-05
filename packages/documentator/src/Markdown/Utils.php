@@ -3,12 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as BlockPaddingData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as LengthData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines as LinesData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as PaddingData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\Table\TableCell;
@@ -87,8 +84,8 @@ class Utils {
 
         // Known?
         $type    = $line === null || $line === $container->getStartLine()
-            ? BlockPaddingData::class
-            : PaddingData::class;
+            ? BlockPadding::class
+            : Padding::class;
         $padding = $type::get($container);
 
         if ($padding !== null) {
@@ -122,32 +119,10 @@ class Utils {
     }
 
     public static function getLine(DocumentNode $document, int $line): ?string {
-        $lines = LinesData::get($document) ?? [];
+        $lines = Lines::get($document) ?? [];
         $line  = $lines[$line] ?? null;
 
         return $line;
-    }
-
-    public static function getLocation(Node $node): ?Location {
-        $location = LocationData::get($node);
-
-        if ($location === null && $node instanceof AbstractBlock) {
-            $start   = $node->getStartLine();
-            $end     = $node->getEndLine();
-            $offset  = OffsetData::get($node) ?? 0;
-            $length  = LengthData::get($node);
-            $padding = self::getPadding($node, null, null);
-
-            if ($padding === null && $node->parent() instanceof DocumentNode) {
-                $padding = 0;
-            }
-
-            if ($start !== null && $end !== null && $padding !== null) {
-                $location = new Location($start, $end, $offset, $length, $padding);
-            }
-        }
-
-        return $location;
     }
 
     public static function getLengthLocation(Location $location, ?int $length): Location {

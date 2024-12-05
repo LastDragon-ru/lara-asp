@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
@@ -42,7 +42,7 @@ readonly class InstructionsRemove implements Mutation {
             }
 
             // Location?
-            $location = MarkdownUtils::getLocation($block);
+            $location = Location::get($block);
 
             if ($location !== null) {
                 $changes[] = [$location, null];

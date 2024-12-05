@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
@@ -33,7 +34,7 @@ readonly class SelfLinksRemove implements Mutation {
 
         foreach ($links as $link) {
             // Location & Offset?
-            $location = Utils::getLocation($link);
+            $location = Location::get($link);
             $offset   = Offset::get($link);
 
             if ($location === null || $offset === null) {

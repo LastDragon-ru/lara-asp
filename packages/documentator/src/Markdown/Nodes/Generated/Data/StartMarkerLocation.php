@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 
 /**
  * @internal
+ * @extends Data<Location>
  */
-readonly class StartMarkerLocation extends Location {
+readonly class StartMarkerLocation extends Data {
     // empty
 }

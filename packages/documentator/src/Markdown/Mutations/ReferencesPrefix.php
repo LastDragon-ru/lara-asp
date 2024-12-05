@@ -3,7 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
@@ -39,7 +40,7 @@ class ReferencesPrefix implements Mutation {
 
         foreach ($references as $reference) {
             // Location?
-            $location = Utils::getLocation($reference);
+            $location = LocationData::get($reference);
 
             if ($location === null) {
                 continue;
@@ -49,7 +50,7 @@ class ReferencesPrefix implements Mutation {
             $text = null;
 
             if ($reference instanceof Link || $reference instanceof Image) {
-                $offset   = Offset::get($reference);
+                $offset   = OffsetData::get($reference);
                 $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
 
                 if ($location !== null) {

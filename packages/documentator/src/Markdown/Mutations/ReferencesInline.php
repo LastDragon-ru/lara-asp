@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
@@ -36,7 +37,7 @@ class ReferencesInline implements Mutation {
 
         foreach ($references as $reference) {
             // Location?
-            $location = Utils::getLocation($reference);
+            $location = Location::get($reference);
 
             if ($location === null) {
                 continue;

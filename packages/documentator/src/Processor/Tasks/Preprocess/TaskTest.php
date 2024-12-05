@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
@@ -95,7 +95,7 @@ final class TaskTest extends TestCase {
             static function (array $tokens): array {
                 return array_map(
                     static function (Token $token): array {
-                        $nodes = array_map(Utils::getLocation(...), $token->nodes);
+                        $nodes = array_map(LocationData::get(...), $token->nodes);
 
                         return [
                             $token->instruction,

@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
 use League\CommonMark\Node\Block\Document as DocumentNode;
@@ -55,7 +55,7 @@ readonly class FootnotesPrefix implements Mutation {
         $label = $footnote->getReference()->getLabel();
 
         if ($footnote instanceof FootnoteRef) {
-            $location = Utils::getLocation($footnote);
+            $location = LocationData::get($footnote);
             $label    = $location !== null
                 ? mb_substr($document->getText($location) ?? '', 2, -1)
                 : null;
@@ -66,7 +66,7 @@ readonly class FootnotesPrefix implements Mutation {
 
     private function getLabelLocation(Footnote|FootnoteRef $footnote, string $label): ?Location {
         // Get the start line
-        $location   = Utils::getLocation($footnote);
+        $location   = LocationData::get($footnote);
         $coordinate = null;
 
         foreach ($location ?? [] as $c) {
