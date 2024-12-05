@@ -183,12 +183,9 @@ class Task implements TaskContract {
         $refsParentLocation = null;
 
         foreach ($blocks as $block) {
-            $refsParentNode     = $block;
             $refsParentLocation = LocationData::get($block);
-
-            if ($refsParentLocation !== null) {
-                $changes[] = [$refsParentLocation, null];
-            }
+            $refsParentNode     = $block;
+            $changes[]          = [$refsParentLocation, null];
         }
 
         // Update links
@@ -213,12 +210,9 @@ class Task implements TaskContract {
             }
 
             foreach ($token->nodes as $node) {
-                $location = LocationData::get($node);
-
-                if ($location !== null) {
-                    $linkTitle = Utils::escapeTextInTableCell($node, $title);
-                    $changes[] = [$location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
-                }
+                $location  = LocationData::get($node);
+                $linkTitle = Utils::escapeTextInTableCell($node, $title);
+                $changes[] = [$location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
             }
         }
 

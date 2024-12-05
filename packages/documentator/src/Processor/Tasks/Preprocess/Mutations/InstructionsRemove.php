@@ -41,12 +41,8 @@ readonly class InstructionsRemove implements Mutation {
                 continue;
             }
 
-            // Location?
-            $location = Location::get($block);
-
-            if ($location !== null) {
-                $changes[] = [$location, null];
-            }
+            // Change
+            $changes[] = [Location::get($block), null];
         }
 
         return $changes;

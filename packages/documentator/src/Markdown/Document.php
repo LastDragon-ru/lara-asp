@@ -149,7 +149,7 @@ class Document implements Stringable {
      * @return array<array-key, string>
      */
     protected function getLines(): array {
-        return Lines::get($this->getNode()) ?? [];
+        return Lines::get($this->getNode());
     }
 
     protected function getEditor(): Editor {

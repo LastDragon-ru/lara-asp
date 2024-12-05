@@ -30,8 +30,8 @@ class Renderer implements XmlRenderer {
 
         return [
             'id'                  => $node->id,
-            'startMarkerLocation' => StartMarkerLocation::get($node),
-            'endMarkerLocation'   => EndMarkerLocation::get($node),
+            'startMarkerLocation' => StartMarkerLocation::optional()->get($node),
+            'endMarkerLocation'   => EndMarkerLocation::optional()->get($node),
         ];
     }
 }

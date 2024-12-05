@@ -120,7 +120,7 @@ readonly class RendererWrapper implements
         ];
 
         foreach ($data as $key => $class) {
-            $attributes[$key] = $class::get($node);
+            $attributes[$key] = $class::optional()->get($node);
         }
 
         return $attributes;

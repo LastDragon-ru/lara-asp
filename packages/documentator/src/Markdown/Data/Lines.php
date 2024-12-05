@@ -14,6 +14,6 @@ use function iterator_to_array;
 readonly class Lines extends Data {
     #[Override]
     protected static function default(Node $node): mixed {
-        return iterator_to_array(Input::get($node)?->getLines() ?? []);
+        return iterator_to_array(Input::get($node)->getLines());
     }
 }

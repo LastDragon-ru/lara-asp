@@ -41,7 +41,7 @@ readonly class FootnotesPrefix implements Mutation {
 
             // Replace
             $label    = $this->getLabel($document, $child);
-            $location = $label !== null ? $this->getLabelLocation($child, $label) : null;
+            $location = $this->getLabelLocation($child, $label);
 
             if ($location !== null) {
                 yield [$location, "{$this->prefix}-{$label}"];
@@ -49,16 +49,14 @@ readonly class FootnotesPrefix implements Mutation {
         }
     }
 
-    private function getLabel(Document $document, Footnote|FootnoteRef $footnote): ?string {
+    private function getLabel(Document $document, Footnote|FootnoteRef $footnote): string {
         // The thephpleague/commonmark replaces the original title of
         // `FootnoteRef` to make it unique. We need to find original.
         $label = $footnote->getReference()->getLabel();
 
         if ($footnote instanceof FootnoteRef) {
             $location = LocationData::get($footnote);
-            $label    = $location !== null
-                ? mb_substr($document->getText($location) ?? '', 2, -1)
-                : null;
+            $label    = mb_substr($document->getText($location) ?? '', 2, -1);
         }
 
         return $label;
@@ -69,7 +67,7 @@ readonly class FootnotesPrefix implements Mutation {
         $location   = LocationData::get($footnote);
         $coordinate = null;
 
-        foreach ($location ?? [] as $c) {
+        foreach ($location as $c) {
             $coordinate = $c;
             break;
         }

@@ -27,7 +27,7 @@ final class ExtensionTest extends TestCase {
         $parser   = new MarkdownParser($environment);
         $markdown = "# Header\nParagraph [link](https://example.com/).";
         $document = $parser->parse($markdown);
-        $lines    = Lines::get($document);
+        $lines    = Lines::optional()->get($document);
         $link     = (new Query())->where(Query::type(Link::class))->findOne($document);
 
         self::assertIsArray($lines);
@@ -38,7 +38,7 @@ final class ExtensionTest extends TestCase {
                 new Coordinate(2, 10, 28),
             ],
             iterator_to_array(
-                Location::get($link) ?? [],
+                Location::optional()->get($link) ?? [],
             ),
         );
     }

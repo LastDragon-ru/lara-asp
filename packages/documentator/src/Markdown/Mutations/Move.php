@@ -65,32 +65,23 @@ readonly class Move implements Mutation {
         $resources = $this->getRelativeResources($document, $node);
 
         foreach ($resources as $resource) {
-            // Location?
-            $location = Location::get($resource);
-
-            if ($location === null) {
-                continue;
-            }
-
             // Changes
-            $text = null;
+            $location = Location::get($resource);
+            $text     = null;
 
             if ($resource instanceof Link || $resource instanceof Image) {
-                $offset   = Offset::get($resource);
-                $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
-
-                if ($location !== null) {
-                    $origin       = trim((string) $document->getText($location));
-                    $titleValue   = (string) $resource->getTitle();
-                    $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
-                    $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
-                    $targetValue  = rawurldecode($resource->getUrl());
-                    $targetValue  = $docPath->getFilePath($targetValue);
-                    $targetValue  = $newPath->getRelativePath($targetValue);
-                    $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
-                    $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
-                    $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
-                }
+                $offset       = Offset::get($resource);
+                $location     = Utils::getOffsetLocation($location, $offset);
+                $origin       = trim((string) $document->getText($location));
+                $titleValue   = (string) $resource->getTitle();
+                $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
+                $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
+                $targetValue  = rawurldecode($resource->getUrl());
+                $targetValue  = $docPath->getFilePath($targetValue);
+                $targetValue  = $newPath->getRelativePath($targetValue);
+                $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
+                $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
+                $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
             } elseif ($resource instanceof Reference) {
                 $origin       = trim((string) $document->getText($location));
                 $label        = $resource->getLabel();
@@ -106,12 +97,14 @@ readonly class Move implements Mutation {
 
                 if ($location->startLine !== $location->endLine) {
                     $padding = $location->internalPadding ?? $location->startLinePadding;
-                    $last    = $document->getText(new Coordinate(
-                        $location->endLine,
-                        $padding,
-                        $location->length,
-                        $padding,
-                    ));
+                    $last    = $document->getText(
+                        new Coordinate(
+                            $location->endLine,
+                            $padding,
+                            $location->length,
+                            $padding,
+                        ),
+                    );
 
                     if ($last === '') {
                         $text .= "\n";
@@ -121,7 +114,7 @@ readonly class Move implements Mutation {
                 // skipped
             }
 
-            if ($location !== null && $text !== null) {
+            if ($text !== null) {
                 yield [$location, $text];
             }
         }

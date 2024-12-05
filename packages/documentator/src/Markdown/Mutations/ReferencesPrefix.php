@@ -39,26 +39,17 @@ class ReferencesPrefix implements Mutation {
         $references = $this->getReferences($node);
 
         foreach ($references as $reference) {
-            // Location?
-            $location = LocationData::get($reference);
-
-            if ($location === null) {
-                continue;
-            }
-
             // Changes
-            $text = null;
+            $location = LocationData::get($reference);
+            $text     = null;
 
             if ($reference instanceof Link || $reference instanceof Image) {
                 $offset   = OffsetData::get($reference);
-                $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
-
-                if ($location !== null) {
-                    $target = Utils::getReference($reference)?->getLabel();
-                    $target = "{$this->prefix}-{$target}";
-                    $target = Utils::escapeTextInTableCell($reference, $target);
-                    $text   = "[{$target}]";
-                }
+                $location = Utils::getOffsetLocation($location, $offset);
+                $target   = Utils::getReference($reference)?->getLabel();
+                $target   = "{$this->prefix}-{$target}";
+                $target   = Utils::escapeTextInTableCell($reference, $target);
+                $text     = "[{$target}]";
             } elseif ($reference instanceof Reference) {
                 $coordinate = null;
 
@@ -79,7 +70,7 @@ class ReferencesPrefix implements Mutation {
                 // skipped
             }
 
-            if ($location !== null && $text !== null) {
+            if ($text !== null) {
                 yield [$location, $text];
             }
         }

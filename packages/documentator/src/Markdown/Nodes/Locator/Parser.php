@@ -173,13 +173,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             $cellPadding    = PaddingData::get($container);
             $offset         = OffsetData::get($container);
 
-            if (
-                $blockStartLine === null
-                || $blockEndLine === null
-                || $blockPadding === null
-                || $cellPadding === null
-                || $offset === null
-            ) {
+            if ($blockStartLine === null || $blockEndLine === null) {
                 continue;
             }
 

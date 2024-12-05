@@ -21,8 +21,8 @@ readonly class Location extends Data {
         if ($node instanceof AbstractBlock) {
             $start   = $node->getStartLine();
             $end     = $node->getEndLine();
-            $offset  = Offset::get($node) ?? 0;
-            $length  = Length::get($node);
+            $offset  = Offset::optional()->get($node) ?? 0;
+            $length  = Length::optional()->get($node);
             $padding = Utils::getPadding($node, null, null);
 
             if ($padding === null && $node->parent() instanceof Document) {

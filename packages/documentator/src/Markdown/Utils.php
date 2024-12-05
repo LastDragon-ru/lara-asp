@@ -86,7 +86,7 @@ class Utils {
         $type    = $line === null || $line === $container->getStartLine()
             ? BlockPadding::class
             : Padding::class;
-        $padding = $type::get($container);
+        $padding = $type::optional()->get($container);
 
         if ($padding !== null) {
             return $padding;
@@ -119,7 +119,7 @@ class Utils {
     }
 
     public static function getLine(DocumentNode $document, int $line): ?string {
-        $lines = Lines::get($document) ?? [];
+        $lines = Lines::get($document);
         $line  = $lines[$line] ?? null;
 
         return $line;

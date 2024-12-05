@@ -164,17 +164,12 @@ class Task implements TaskContract {
                     if ($next instanceof GeneratedNode) {
                         $location = Location::get($next);
                     } else {
-                        $location = Location::get($node);
-
-                        if ($location !== null) {
-                            $instruction = trim((string) $document->getText($location));
-                            $text        = "{$instruction}\n{$text}";
-                        }
+                        $location    = Location::get($node);
+                        $instruction = trim((string) $document->getText($location));
+                        $text        = "{$instruction}\n{$text}";
                     }
 
-                    if ($location !== null) {
-                        $changes[] = [$location, $text];
-                    }
+                    $changes[] = [$location, $text];
                 }
             }
 

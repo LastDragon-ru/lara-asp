@@ -71,15 +71,9 @@ class HeadingsLevel implements Mutation {
                 continue;
             }
 
-            // Location?
-            $location = LocationData::get($child);
-
-            if ($location === null) {
-                continue;
-            }
-
             // ATX?
-            $line = $document->getText($location);
+            $location = LocationData::get($child);
+            $line     = $document->getText($location);
 
             if ($line === null || !str_starts_with(trim($line), '#')) {
                 continue;

@@ -33,15 +33,9 @@ readonly class SelfLinksRemove implements Mutation {
         $links = $this->getLinks($document, $node);
 
         foreach ($links as $link) {
-            // Location & Offset?
             $location = Location::get($link);
             $offset   = Offset::get($link);
 
-            if ($location === null || $offset === null) {
-                continue;
-            }
-
-            // Changes
             yield [Utils::getLengthLocation($location, 1), null];           // [
             yield [Utils::getOffsetLocation($location, $offset - 1), null]; // ](...)
         }

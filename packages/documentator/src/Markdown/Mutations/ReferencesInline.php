@@ -36,32 +36,23 @@ class ReferencesInline implements Mutation {
         $references = $this->getReferences($node);
 
         foreach ($references as $reference) {
-            // Location?
-            $location = Location::get($reference);
-
-            if ($location === null) {
-                continue;
-            }
-
             // Change
-            $text = null;
+            $location = Location::get($reference);
+            $text     = null;
 
             if ($reference instanceof Link || $reference instanceof Image) {
                 $offset   = Offset::get($reference);
-                $location = $offset !== null ? Utils::getOffsetLocation($location, $offset) : null;
-
-                if ($location !== null) {
-                    $title  = Utils::getLinkTitle($reference, (string) $reference->getTitle());
-                    $target = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
-                    $text   = $title !== '' ? "({$target} {$title})" : "({$target})";
-                }
+                $location = Utils::getOffsetLocation($location, $offset);
+                $title    = Utils::getLinkTitle($reference, (string) $reference->getTitle());
+                $target   = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
+                $text     = $title !== '' ? "({$target} {$title})" : "({$target})";
             } elseif ($reference instanceof Reference) {
                 $text = '';
             } else {
                 // skipped
             }
 
-            if ($location !== null && $text !== null) {
+            if ($text !== null) {
                 yield [$location, $text !== '' ? $text : null];
             }
         }
