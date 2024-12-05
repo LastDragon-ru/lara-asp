@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;

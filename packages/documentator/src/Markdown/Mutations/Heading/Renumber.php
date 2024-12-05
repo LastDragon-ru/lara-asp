@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
@@ -21,7 +21,7 @@ use function trim;
 /**
  * Updates all ATX headings levels.
  */
-class HeadingsLevel implements Mutation {
+class Renumber implements Mutation {
     public function __construct(
         /**
          * @var int<1, 6>

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
@@ -16,8 +16,8 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(HeadingsLevel::class)]
-final class HeadingsLevelTest extends TestCase {
+#[CoversClass(Renumber::class)]
+final class RenumberTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -43,7 +43,7 @@ final class HeadingsLevelTest extends TestCase {
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
         $editor   = new Editor(array_values($lines), $offset);
-        $actual   = (string) $editor->mutate((new HeadingsLevel($level))($document, $node));
+        $actual   = (string) $editor->mutate((new Renumber($level))($document, $node));
 
         self::assertEquals($expected, $actual);
     }

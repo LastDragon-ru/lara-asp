@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -15,35 +16,34 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(ReferencesInline::class)]
-final class ReferencesInlineTest extends TestCase {
+#[CoversClass(SelfLinksRemove::class)]
+final class SelfLinksRemoveTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
-            text text ![image][image] text text.
+            text text [self][self] text text [self](#fragment) text text text
+            text text ![image][image] text text ![image](#fragment).
 
-            ![image][image]
-
-            [link]: https://example.com
-            [image]: https://example.com (image)
-            [table]: https://example.com (table | cell)
+            [self]: #fragment
+            [link]: ./path/to/file.md
+            [image]: ./#fragment
 
             # Special
 
             ## Inside Quote
 
-            > ![image][link]
+            > Text text [self][self] text text [self](#fragment) text text text
 
             ## Inside Table
 
             | Header                  |  [Header][link]               |
             |-------------------------|-------------------------------|
-            | Cell [link][link] cell. | Cell `\|` \\| ![table][table] |
-            | Cell                    | Cell cell ![table][link].     |
+            | Cell [link][self] cell. | Cell `\|` \\| ![table][image] |
+            | Cell                    | Cell cell [table][self].      |
             MARKDOWN;
-        $document = new class($markdown) extends Document {
+        $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
             #[Override]
             public function getNode(): DocumentNode {
                 return parent::getNode();
@@ -60,7 +60,7 @@ final class ReferencesInlineTest extends TestCase {
         $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new ReferencesInline();
+        $mutation = new SelfLinksRemove();
         $changes  = $mutation($document, $node);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
@@ -68,23 +68,26 @@ final class ReferencesInlineTest extends TestCase {
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [`link`](https://example.com) text
-            text text ![image](https://example.com "image") text text.
+            Text text [link](https://example.com) text text [`link`][link] text
+            text text self text text self text text text
+            text text ![image][image] text text ![image](#fragment).
 
-            ![image](https://example.com "image")
+            [self]: #fragment
+            [link]: ./path/to/file.md
+            [image]: ./#fragment
 
             # Special
 
             ## Inside Quote
 
-            > ![image](https://example.com)
+            > Text text self text text self text text text
 
             ## Inside Table
 
-            | Header                  |  [Header](https://example.com)               |
+            | Header                  |  [Header][link]               |
             |-------------------------|-------------------------------|
-            | Cell [link](https://example.com) cell. | Cell `\|` \\| ![table](https://example.com "table \| cell") |
-            | Cell                    | Cell cell ![table](https://example.com).     |
+            | Cell link cell. | Cell `\|` \\| ![table][image] |
+            | Cell                    | Cell cell table.      |
             MARKDOWN,
             $actual,
         );

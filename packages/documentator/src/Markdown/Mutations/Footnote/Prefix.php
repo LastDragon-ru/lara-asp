@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
@@ -17,7 +17,7 @@ use function mb_substr;
 /**
  * Adds unique prefix for all footnotes.
  */
-readonly class FootnotesPrefix implements Mutation {
+readonly class Prefix implements Mutation {
     public function __construct(
         protected string $prefix,
     ) {

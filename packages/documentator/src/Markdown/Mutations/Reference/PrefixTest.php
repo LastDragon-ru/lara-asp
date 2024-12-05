@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -16,8 +16,8 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(ReferencesPrefix::class)]
-final class ReferencesPrefixTest extends TestCase {
+#[CoversClass(Prefix::class)]
+final class PrefixTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
@@ -60,7 +60,7 @@ final class ReferencesPrefixTest extends TestCase {
         $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new ReferencesPrefix('prefix');
+        $mutation = new Prefix('prefix');
         $changes  = $mutation($document, $node);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 

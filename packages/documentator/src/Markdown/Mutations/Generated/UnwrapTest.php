@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
@@ -15,8 +15,8 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(GeneratedUnwrap::class)]
-final class GeneratedUnwrapTest extends TestCase {
+#[CoversClass(Unwrap::class)]
+final class UnwrapTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
@@ -71,7 +71,7 @@ final class GeneratedUnwrapTest extends TestCase {
         $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new GeneratedUnwrap();
+        $mutation = new Unwrap();
         $changes  = $mutation($document, $node);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 

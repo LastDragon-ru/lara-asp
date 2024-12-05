@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -14,7 +14,7 @@ use Override;
 /**
  * Removes start and end marks of Generated block.
  */
-readonly class GeneratedUnwrap implements Mutation {
+readonly class Unwrap implements Mutation {
     public function __construct() {
         // empty
     }

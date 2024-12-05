@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
@@ -14,7 +14,7 @@ use Override;
 /**
  * Removes all footnotes.
  */
-readonly class FootnotesRemove implements Mutation {
+readonly class Remove implements Mutation {
     public function __construct() {
         // empty
     }
