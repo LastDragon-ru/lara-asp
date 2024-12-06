@@ -23,10 +23,16 @@ final class RemoveToSelfTest extends TestCase {
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
-            text text [self][self] text text [self](#fragment) text text text
+            text text [self][self-a] text text [self](./file.md#fragment) text text text
+            text text [self][self-b] text text [self](./#fragment) text text text
+            text text [self][self-c] text text [self](#fragment) text text text
+            text text [self][self-d] text text [self](./file.md) text text text
             text text ![image][image] text text ![image](#fragment).
 
-            [self]: #fragment
+            [self-a]: ./file.md#fragment
+            [self-b]: ./#fragment
+            [self-c]: #fragment
+            [self-d]: ./file.md
             [link]: ./path/to/file.md
             [image]: ./#fragment
 
@@ -34,14 +40,18 @@ final class RemoveToSelfTest extends TestCase {
 
             ## Inside Quote
 
-            > Text text [self][self] text text [self](#fragment) text text text
+            > Text text [link](https://example.com) text text [`link`][link] text
+            > text text [self][self-a] text text [self](./file.md#fragment) text text text
+            > text text [self][self-b] text text [self](./#fragment) text text text
+            > text text [self][self-c] text text [self](#fragment) text text text
+            > text text [self][self-d] text text [self](./file.md) text text text
 
             ## Inside Table
 
-            | Header                  |  [Header][link]               |
-            |-------------------------|-------------------------------|
-            | Cell [link][self] cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell [table][self].      |
+            | Header                    |  [Header][link]               |
+            |---------------------------|-------------------------------|
+            | Cell [link][self-a] cell. | Cell `\|` \\| ![table][image] |
+            | Cell                      | Cell cell [table][self-b].    |
             MARKDOWN;
         $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
             #[Override]
@@ -70,9 +80,15 @@ final class RemoveToSelfTest extends TestCase {
 
             Text text [link](https://example.com) text text [`link`][link] text
             text text self text text self text text text
+            text text self text text self text text text
+            text text self text text self text text text
+            text text self text text self text text text
             text text ![image][image] text text ![image](#fragment).
 
-            [self]: #fragment
+            [self-a]: ./file.md#fragment
+            [self-b]: ./#fragment
+            [self-c]: #fragment
+            [self-d]: ./file.md
             [link]: ./path/to/file.md
             [image]: ./#fragment
 
@@ -80,14 +96,18 @@ final class RemoveToSelfTest extends TestCase {
 
             ## Inside Quote
 
-            > Text text self text text self text text text
+            > Text text [link](https://example.com) text text [`link`][link] text
+            > text text self text text self text text text
+            > text text self text text self text text text
+            > text text self text text self text text text
+            > text text self text text self text text text
 
             ## Inside Table
 
-            | Header                  |  [Header][link]               |
-            |-------------------------|-------------------------------|
+            | Header                    |  [Header][link]               |
+            |---------------------------|-------------------------------|
             | Cell link cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell table.      |
+            | Cell                      | Cell cell table.    |
             MARKDOWN,
             $actual,
         );
