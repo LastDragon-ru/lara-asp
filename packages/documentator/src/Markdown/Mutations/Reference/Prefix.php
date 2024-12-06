@@ -5,9 +5,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
@@ -46,11 +47,11 @@ class Prefix implements Mutation {
             if ($reference instanceof Link || $reference instanceof Image) {
                 $offset   = OffsetData::get($reference);
                 $location = $location->withOffset($offset);
-                $target   = Utils::getReference($reference)?->getLabel();
+                $target   = ReferenceData::get($reference)?->getLabel();
                 $target   = "{$this->prefix}-{$target}";
                 $target   = Utils::escapeTextInTableCell($reference, $target);
                 $text     = "[{$target}]";
-            } elseif ($reference instanceof Reference) {
+            } elseif ($reference instanceof ReferenceNode) {
                 $coordinate = null;
 
                 foreach ($location as $c) {
@@ -77,15 +78,15 @@ class Prefix implements Mutation {
     }
 
     /**
-     * @return list<AbstractWebResource|Reference>
+     * @return list<AbstractWebResource|ReferenceNode>
      */
     protected function getReferences(DocumentNode $node): array {
         $references = [];
 
         foreach ($node->iterator() as $child) {
-            if ($child instanceof AbstractWebResource && Utils::isReference($child)) {
+            if ($child instanceof AbstractWebResource && ReferenceData::get($child) !== null) {
                 $references[] = $child;
-            } elseif ($child instanceof Reference) {
+            } elseif ($child instanceof ReferenceNode) {
                 $references[] = $child;
             } else {
                 // empty

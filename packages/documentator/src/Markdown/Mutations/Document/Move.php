@@ -6,9 +6,10 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
@@ -82,7 +83,7 @@ readonly class Move implements Mutation {
                 $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
                 $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
                 $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
-            } elseif ($resource instanceof Reference) {
+            } elseif ($resource instanceof ReferenceNode) {
                 $origin       = trim((string) $document->getText($location));
                 $label        = $resource->getLabel();
                 $titleValue   = $resource->getTitle();
@@ -124,7 +125,7 @@ readonly class Move implements Mutation {
     }
 
     /**
-     * @return list<AbstractWebResource|Reference>
+     * @return list<AbstractWebResource|ReferenceNode>
      */
     protected function getRelativeResources(Document $document, DocumentNode $node): array {
         $resources = [];
@@ -132,9 +133,9 @@ readonly class Move implements Mutation {
         foreach ($node->iterator() as $child) {
             $url = null;
 
-            if ($child instanceof AbstractWebResource && !Utils::isReference($child)) {
+            if ($child instanceof AbstractWebResource && Reference::get($child) === null) {
                 $url = rawurldecode($child->getUrl());
-            } elseif ($child instanceof Reference) {
+            } elseif ($child instanceof ReferenceNode) {
                 $url = rawurldecode($child->getDestination());
             } else {
                 // empty

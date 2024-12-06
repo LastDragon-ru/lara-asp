@@ -6,12 +6,10 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
-use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
-use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Util\UrlEncoder;
 
 use function filter_var;
@@ -122,17 +120,6 @@ class Utils {
         $line  = $lines[$line] ?? null;
 
         return $line;
-    }
-
-    public static function isReference(AbstractWebResource $node): bool {
-        return self::getReference($node) !== null;
-    }
-
-    public static function getReference(AbstractWebResource $node): ?ReferenceInterface {
-        $reference = $node->data->get('reference', null);
-        $reference = $reference instanceof ReferenceInterface ? $reference : null;
-
-        return $reference;
     }
 
     public static function getLinkTarget(Node $container, string $target, ?bool $wrap = null): string {

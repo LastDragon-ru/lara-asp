@@ -5,8 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as Reference;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
@@ -46,7 +47,7 @@ class Inline implements Mutation {
                 $title    = Utils::getLinkTitle($reference, (string) $reference->getTitle());
                 $target   = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
                 $text     = $title !== '' ? "({$target} {$title})" : "({$target})";
-            } elseif ($reference instanceof Reference) {
+            } elseif ($reference instanceof ReferenceNode) {
                 $text = '';
             } else {
                 // skipped
@@ -59,15 +60,15 @@ class Inline implements Mutation {
     }
 
     /**
-     * @return list<AbstractWebResource|Reference>
+     * @return list<AbstractWebResource|ReferenceNode>
      */
     protected function getReferences(DocumentNode $node): array {
         $references = [];
 
         foreach ($node->iterator() as $child) {
-            if ($child instanceof AbstractWebResource && Utils::isReference($child)) {
+            if ($child instanceof AbstractWebResource && Reference::get($child) !== null) {
                 $references[] = $child;
-            } elseif ($child instanceof Reference) {
+            } elseif ($child instanceof ReferenceNode) {
                 $references[] = $child;
             } else {
                 // empty
