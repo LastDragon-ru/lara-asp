@@ -202,7 +202,7 @@ class Utils {
 
     public static function isPathRelative(string $path): bool {
         // Fast
-        if (str_starts_with($path, './') || str_starts_with($path, '../')) {
+        if (str_starts_with($path, './') || str_starts_with($path, '../') || str_starts_with($path, '#')) {
             return true;
         } elseif (str_starts_with($path, '/')) {
             return false;
