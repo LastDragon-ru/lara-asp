@@ -12,7 +12,7 @@ use function rawurldecode;
 /**
  * Removes all links to the self.
  */
-readonly class SelfLinksRemove extends Remove {
+readonly class RemoveToSelf extends Remove {
     #[Override]
     protected function isLink(Document $document, Link $node): bool {
         $url = rawurldecode($node->getUrl());

@@ -16,8 +16,8 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(SelfLinksRemove::class)]
-final class SelfLinksRemoveTest extends TestCase {
+#[CoversClass(RemoveToSelf::class)]
+final class RemoveToSelfTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
@@ -60,7 +60,7 @@ final class SelfLinksRemoveTest extends TestCase {
         $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new SelfLinksRemove();
+        $mutation = new RemoveToSelf();
         $changes  = $mutation($document, $node);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 

@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\Prefix as FootnotesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\Remove as FootnotesRemove;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\SelfLinksRemove;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\RemoveToSelf;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference\Inline as ReferencesInline;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference\Prefix as ReferencesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
@@ -55,7 +55,7 @@ class Context {
             new Composite(
                 new FootnotesRemove(),
                 new ReferencesInline(),
-                new SelfLinksRemove(),
+                new RemoveToSelf(),
             ),
         );
     }
