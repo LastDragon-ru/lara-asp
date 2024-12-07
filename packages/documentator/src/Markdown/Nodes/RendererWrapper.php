@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as BlockPaddingData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as LengthData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as PaddingData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;

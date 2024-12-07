@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\ParserStart as GenerateParser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Listener;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Parser;

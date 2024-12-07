@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\GithubFlavoredMarkdownConverter;

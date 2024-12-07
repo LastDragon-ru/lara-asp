@@ -4,10 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use Closure;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
+use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -107,7 +108,10 @@ class Document implements Stringable {
         return $this;
     }
 
-    public function getText(Location|Coordinate $location): ?string {
+    /**
+     * @param iterable<array-key, Coordinate> $location
+     */
+    public function getText(iterable $location): ?string {
         return $this->getEditor()->getText($location);
     }
 

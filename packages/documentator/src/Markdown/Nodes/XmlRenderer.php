@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use League\CommonMark\Node\Node;
 
 /**
