@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
+use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
@@ -27,9 +28,7 @@ readonly class Remove implements Mutation {
         yield from [];
 
         // Update
-        $links = $this->getLinks($document, $node);
-
-        foreach ($links as $link) {
+        foreach ($this->nodes($document, $node) as $link) {
             $location = Location::get($link);
             $offset   = Offset::get($link);
 
@@ -42,18 +41,18 @@ readonly class Remove implements Mutation {
     }
 
     /**
-     * @return list<Link>
+     * @return Iterator<array-key, Link>
      */
-    protected function getLinks(Document $document, DocumentNode $node): array {
-        $links = [];
+    private function nodes(Document $document, DocumentNode $node): Iterator {
+        // Just in case
+        yield from [];
 
+        // Search
         foreach ($node->iterator() as $child) {
             if ($child instanceof Link && $this->isLink($document, $child)) {
-                $links[] = $child;
+                yield $child;
             }
         }
-
-        return $links;
     }
 
     protected function isLink(Document $document, Link $node): bool {

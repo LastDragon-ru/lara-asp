@@ -15,8 +15,9 @@ use function rawurldecode;
 readonly class RemoveToSelf extends Remove {
     #[Override]
     protected function isLink(Document $document, Link $node): bool {
-        $url = rawurldecode($node->getUrl());
+        $url  = rawurldecode($node->getUrl());
+        $self = Utils::isPathRelative($url) && Utils::isPathToSelf($document, $url);
 
-        return Utils::isPathRelative($url) && Utils::isPathToSelf($document, $url);
+        return $self;
     }
 }

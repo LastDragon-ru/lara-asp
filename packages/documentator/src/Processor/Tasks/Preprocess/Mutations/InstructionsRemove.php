@@ -33,8 +33,10 @@ readonly class InstructionsRemove implements Mutation {
      */
     #[Override]
     public function __invoke(Document $document, DocumentNode $node): iterable {
-        $changes = [];
+        // Just in case
+        yield from [];
 
+        // Update
         foreach ($node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $block) {
             // Instruction?
             if (!Utils::isInstruction($block, $this->instructions)) {
@@ -42,9 +44,7 @@ readonly class InstructionsRemove implements Mutation {
             }
 
             // Change
-            $changes[] = [Location::get($block), null];
+            yield [Location::get($block), null];
         }
-
-        return $changes;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
+use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
@@ -34,9 +35,7 @@ class Inline implements Mutation {
         yield from [];
 
         // Process
-        $references = $this->getReferences($node);
-
-        foreach ($references as $reference) {
+        foreach ($this->nodes($node) as $reference) {
             // Change
             $location = Location::get($reference);
             $text     = null;
@@ -60,21 +59,21 @@ class Inline implements Mutation {
     }
 
     /**
-     * @return list<AbstractWebResource|ReferenceNode>
+     * @return Iterator<array-key, AbstractWebResource|ReferenceNode>
      */
-    protected function getReferences(DocumentNode $node): array {
-        $references = [];
+    private function nodes(DocumentNode $node): Iterator {
+        // Just in case
+        yield from [];
 
+        // Search
         foreach ($node->iterator() as $child) {
             if ($child instanceof AbstractWebResource && Reference::get($child) !== null) {
-                $references[] = $child;
+                yield $child;
             } elseif ($child instanceof ReferenceNode) {
-                $references[] = $child;
+                yield $child;
             } else {
                 // empty
             }
         }
-
-        return $references;
     }
 }
