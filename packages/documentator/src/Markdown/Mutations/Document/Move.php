@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
@@ -97,14 +97,14 @@ readonly class Move implements Mutation {
 
                 if ($location->startLine !== $location->endLine) {
                     $padding = $location->internalPadding ?? $location->startLinePadding;
-                    $last    = $document->getText(
+                    $last    = $document->getText([
                         new Coordinate(
                             $location->endLine,
                             $padding,
                             $location->length,
                             $padding,
                         ),
-                    );
+                    ]);
 
                     if ($last === '') {
                         $text .= "\n";

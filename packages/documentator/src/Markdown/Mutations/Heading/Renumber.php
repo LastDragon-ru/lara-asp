@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use Override;
 

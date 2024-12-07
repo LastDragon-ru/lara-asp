@@ -1,9 +1,7 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown;
+namespace LastDragon_ru\LaraASP\Documentator\Editor;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 use Stringable;
@@ -16,6 +14,7 @@ use function array_splice;
 use function array_values;
 use function count;
 use function implode;
+use function is_string;
 use function mb_substr;
 use function rtrim;
 use function usort;
@@ -23,46 +22,39 @@ use function usort;
 use const PHP_INT_MAX;
 
 /**
- * @internal
+ * @readonly Waiting for no PHP 8.2 (https://github.com/LastDragon-ru/lara-asp/issues/190)
  */
 class Editor implements Stringable {
-    public function __construct(
-        /**
-         * @var list<string>
-         */
-        private array $lines,
-        private int $offset = 0,
+    /**
+     * @var list<string>
+     */
+    protected readonly array $lines;
+
+    /**
+     * @param list<string>|string $content
+     */
+    final public function __construct(
+        array|string $content,
+        protected readonly int $startLine = 0,
+        protected readonly string $endOfLine = "\n",
     ) {
-        // empty
+        $this->lines = is_string($content) ? Text::getLines($content) : $content;
     }
 
     #[Override]
     public function __toString(): string {
-        return implode("\n", $this->lines);
+        return implode($this->endOfLine, $this->lines);
     }
 
     /**
-     * @return list<string>
+     * @param iterable<array-key, Coordinate> $location
      */
-    public function getLines(): array {
-        return $this->lines;
-    }
-
-    public function getOffset(): int {
-        return $this->offset;
-    }
-
-    public function getText(Location|Coordinate $location): ?string {
-        // Coordinate?
-        if ($location instanceof Coordinate) {
-            $location = [$location];
-        }
-
+    public function getText(iterable $location): ?string {
         // Select
         $selected = null;
 
         foreach ($location as $coordinate) {
-            $number = $coordinate->line - $this->offset;
+            $number = $coordinate->line - $this->startLine;
 
             if (isset($this->lines[$number])) {
                 $selected[] = mb_substr($this->lines[$number], $coordinate->offset, $coordinate->length);
@@ -77,11 +69,11 @@ class Editor implements Stringable {
         }
 
         // Return
-        return implode("\n", $selected);
+        return implode($this->endOfLine, $selected);
     }
 
     /**
-     * @param iterable<array-key, array{Location, ?string}> $changes
+     * @param iterable<array-key, array{iterable<array-key, Coordinate>, ?string}> $changes
      *
      * @return new<static>
      */
@@ -100,7 +92,7 @@ class Editor implements Stringable {
             }
 
             // Change
-            $number  = $coordinate->line - $this->offset;
+            $number  = $coordinate->line - $this->startLine;
             $line    = $lines[$number] ?? '';
             $count   = count($text);
             $prefix  = mb_substr($line, 0, $coordinate->offset);
@@ -131,14 +123,11 @@ class Editor implements Stringable {
         }
 
         // Return
-        $editor        = clone $this;
-        $editor->lines = array_values($lines);
-
-        return $editor;
+        return new static(array_values($lines), $this->startLine, $this->endOfLine);
     }
 
     /**
-     * @param iterable<array-key, array{Location, ?string}> $changes
+     * @param iterable<array-key, array{iterable<array-key, Coordinate>, ?string}> $changes
      *
      * @return list<array{list<Coordinate>, ?string}>
      */

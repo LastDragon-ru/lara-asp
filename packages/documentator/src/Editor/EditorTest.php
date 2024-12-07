@@ -1,10 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown;
+namespace LastDragon_ru\LaraASP\Documentator\Editor;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,7 +19,7 @@ use const PHP_INT_MAX;
 #[CoversClass(Editor::class)]
 final class EditorTest extends TestCase {
     public function testMutate(): void {
-        $lines    = [
+        $lines   = [
             0  => 'a b c d',
             1  => 'e f g h',
             2  => 'i j k l',
@@ -38,8 +37,7 @@ final class EditorTest extends TestCase {
             14 => '>',
             15 => '>',
         ];
-        $editor   = new Editor($lines, 1);
-        $changes  = [
+        $changes = [
             [new Location(1, 1, 2, 3), "123\n345\n567"],
             [new Location(2, 4, 4, 4), '123'],
             [new Location(6, 8, 4, 4), "123\n345"],
@@ -49,6 +47,15 @@ final class EditorTest extends TestCase {
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
         ];
+        $editor  = new class($lines, 1) extends Editor {
+            /**
+             * @return list<string>
+             */
+            public function getLines(): array {
+                return $this->lines;
+            }
+        };
+
         $actual   = $editor->mutate($changes);
         $expected = [
             'a 123',
@@ -200,7 +207,7 @@ final class EditorTest extends TestCase {
             <<<'TEXT'
             f g
             TEXT,
-            $editor->getText(new Coordinate(2, 2, 3)),
+            $editor->getText([new Coordinate(2, 2, 3)]),
         );
     }
 }

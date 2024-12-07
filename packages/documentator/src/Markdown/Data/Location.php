@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location as LocationContract;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location as LocationContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;

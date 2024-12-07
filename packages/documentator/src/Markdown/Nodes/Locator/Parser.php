@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as PaddingData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;

@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;

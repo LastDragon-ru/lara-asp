@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 
 /**
  * @internal
