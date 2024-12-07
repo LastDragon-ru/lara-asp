@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -318,7 +317,7 @@ final class DocumentTest extends TestCase {
         $mutation = Mockery::mock(Mutation::class);
         $mutation
             ->shouldReceive('__invoke')
-            ->with(Mockery::type(Document::class), Mockery::type(DocumentNode::class))
+            ->with(Mockery::type(Document::class))
             ->once()
             ->andReturn([
                 // empty

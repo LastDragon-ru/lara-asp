@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\EndMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\StartMarkerLocation;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\NodeIterator;
 use Override;
 
@@ -23,26 +22,26 @@ readonly class Unwrap implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Process
-        foreach ($node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $child) {
+        foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Generated?
-            if (!($child instanceof Block)) {
+            if (!($node instanceof Block)) {
                 continue;
             }
 
             // Start?
-            $startMarker = StartMarkerLocation::optional()->get($child);
+            $startMarker = StartMarkerLocation::optional()->get($node);
 
             if ($startMarker !== null) {
                 yield [$startMarker, null];
             }
 
             // End
-            $endMarker = EndMarkerLocation::optional()->get($child);
+            $endMarker = EndMarkerLocation::optional()->get($node);
 
             if ($endMarker !== null) {
                 yield [$endMarker, null];

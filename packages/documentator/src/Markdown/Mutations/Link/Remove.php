@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 /**
@@ -23,14 +22,14 @@ readonly class Remove implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Update
-        foreach ($this->nodes($document, $node) as $link) {
-            $location = Location::get($link);
-            $offset   = Offset::get($link);
+        foreach ($this->nodes($document) as $node) {
+            $location = Location::get($node);
+            $offset   = Offset::get($node);
 
             yield [$location->withLength(1), null];           // [
             yield [$location->withOffset($offset - 1), null]; // ](...)
@@ -43,14 +42,14 @@ readonly class Remove implements Mutation {
     /**
      * @return Iterator<array-key, Link>
      */
-    private function nodes(Document $document, DocumentNode $node): Iterator {
+    private function nodes(Document $document): Iterator {
         // Just in case
         yield from [];
 
         // Search
-        foreach ($node->iterator() as $child) {
-            if ($child instanceof Link && $this->isLink($document, $child)) {
-                yield $child;
+        foreach ($document->getNode()->iterator() as $node) {
+            if ($node instanceof Link && $this->isLink($document, $node)) {
+                yield $node;
             }
         }
     }

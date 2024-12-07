@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 use function mb_strlen;
@@ -28,20 +27,20 @@ readonly class Prefix implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Process
-        foreach ($node->iterator() as $child) {
+        foreach ($document->getNode()->iterator() as $node) {
             // Footnote?
-            if (!($child instanceof FootnoteRef) && !($child instanceof Footnote)) {
+            if (!($node instanceof FootnoteRef) && !($node instanceof Footnote)) {
                 continue;
             }
 
             // Replace
-            $label    = $this->getLabel($document, $child);
-            $location = $this->getLabelLocation($child, $label);
+            $label    = $this->getLabel($document, $node);
+            $location = $this->getLabelLocation($node, $label);
 
             if ($location !== null) {
                 yield [$location, "{$this->prefix}-{$label}"];

@@ -118,7 +118,7 @@ class Document implements Stringable {
         $document = clone $this;
 
         foreach ($mutations as $mutation) {
-            $changes  = $mutation($document, $document->getNode());
+            $changes  = $mutation($document);
             $content  = trim((string) $document->getEditor()->mutate($changes))."\n";
             $document = $document->setContent($content);
         }

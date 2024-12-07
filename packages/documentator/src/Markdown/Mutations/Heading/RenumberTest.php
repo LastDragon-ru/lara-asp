@@ -39,11 +39,10 @@ final class RenumberTest extends TestCase {
                 return parent::getLines();
             }
         };
-        $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
         $editor   = new Editor(array_values($lines), $offset);
-        $actual   = (string) $editor->mutate((new Renumber($level))($document, $node));
+        $actual   = (string) $editor->mutate((new Renumber($level))($document));
 
         self::assertEquals($expected, $actual);
     }

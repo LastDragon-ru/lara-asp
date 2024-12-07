@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\NodeIterator;
 use Override;
 
@@ -32,19 +31,19 @@ readonly class InstructionsRemove implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Update
-        foreach ($node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $block) {
+        foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
-            if (!Utils::isInstruction($block, $this->instructions)) {
+            if (!Utils::isInstruction($node, $this->instructions)) {
                 continue;
             }
 
             // Change
-            yield [Location::get($block), null];
+            yield [Location::get($node), null];
         }
     }
 }

@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use Override;
 
@@ -48,7 +47,7 @@ readonly class Move implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
@@ -69,31 +68,31 @@ readonly class Move implements Mutation {
         }
 
         // Update
-        foreach ($this->nodes($node) as $resource) {
+        foreach ($this->nodes($document) as $node) {
             // Changes
-            $location = Location::get($resource);
+            $location = Location::get($node);
             $text     = null;
 
-            if ($resource instanceof Link || $resource instanceof Image) {
-                $offset       = Offset::get($resource);
+            if ($node instanceof Link || $node instanceof Image) {
+                $offset       = Offset::get($node);
                 $location     = $location->withOffset($offset);
                 $origin       = trim((string) $document->getText($location));
-                $titleValue   = (string) $resource->getTitle();
+                $titleValue   = (string) $node->getTitle();
                 $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
-                $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
-                $targetValue  = $this->target($document, $docPath, $newPath, $resource->getUrl());
+                $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
+                $targetValue  = $this->target($document, $docPath, $newPath, $node->getUrl());
                 $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
-                $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
+                $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
                 $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
-            } elseif ($resource instanceof ReferenceNode) {
+            } elseif ($node instanceof ReferenceNode) {
                 $origin       = trim((string) $document->getText($location));
-                $label        = $resource->getLabel();
-                $titleValue   = $resource->getTitle();
+                $label        = $node->getLabel();
+                $titleValue   = $node->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);
-                $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
-                $targetValue  = $this->target($document, $docPath, $newPath, $resource->getDestination());
-                $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
-                $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
+                $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
+                $targetValue  = $this->target($document, $docPath, $newPath, $node->getDestination());
+                $targetWrap   = (bool) preg_match('/^\['.preg_quote($node->getLabel(), '/').']:\s+</u', $origin);
+                $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
                 $text         = trim("[{$label}]: {$target} {$title}");
 
                 if ($location->startLine !== $location->endLine) {
@@ -127,24 +126,24 @@ readonly class Move implements Mutation {
     /**
      * @return Iterator<array-key, Node>
      */
-    private function nodes(DocumentNode $node): Iterator {
+    private function nodes(Document $document): Iterator {
         // Just in case
         yield from [];
 
         // Search
-        foreach ($node->iterator() as $child) {
+        foreach ($document->getNode()->iterator() as $node) {
             $url = null;
 
-            if ($child instanceof AbstractWebResource && Reference::get($child) === null) {
-                $url = rawurldecode($child->getUrl());
-            } elseif ($child instanceof ReferenceNode) {
-                $url = rawurldecode($child->getDestination());
+            if ($node instanceof AbstractWebResource && Reference::get($node) === null) {
+                $url = rawurldecode($node->getUrl());
+            } elseif ($node instanceof ReferenceNode) {
+                $url = rawurldecode($node->getDestination());
             } else {
                 // empty
             }
 
             if ($url !== null && Utils::isPathRelative($url)) {
-                yield $child;
+                yield $node;
             }
         }
     }

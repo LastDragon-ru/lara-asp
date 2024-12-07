@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 use function rawurldecode;
@@ -30,23 +29,23 @@ class Inline implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Process
-        foreach ($this->nodes($node) as $reference) {
+        foreach ($this->nodes($document) as $node) {
             // Change
-            $location = Location::get($reference);
+            $location = Location::get($node);
             $text     = null;
 
-            if ($reference instanceof Link || $reference instanceof Image) {
-                $offset   = Offset::get($reference);
+            if ($node instanceof Link || $node instanceof Image) {
+                $offset   = Offset::get($node);
                 $location = $location->withOffset($offset);
-                $title    = Utils::getLinkTitle($reference, (string) $reference->getTitle());
-                $target   = Utils::getLinkTarget($reference, rawurldecode($reference->getUrl()));
+                $title    = Utils::getLinkTitle($node, (string) $node->getTitle());
+                $target   = Utils::getLinkTarget($node, rawurldecode($node->getUrl()));
                 $text     = $title !== '' ? "({$target} {$title})" : "({$target})";
-            } elseif ($reference instanceof ReferenceNode) {
+            } elseif ($node instanceof ReferenceNode) {
                 $text = '';
             } else {
                 // skipped
@@ -61,16 +60,16 @@ class Inline implements Mutation {
     /**
      * @return Iterator<array-key, AbstractWebResource|ReferenceNode>
      */
-    private function nodes(DocumentNode $node): Iterator {
+    private function nodes(Document $document): Iterator {
         // Just in case
         yield from [];
 
         // Search
-        foreach ($node->iterator() as $child) {
-            if ($child instanceof AbstractWebResource && Reference::get($child) !== null) {
-                yield $child;
-            } elseif ($child instanceof ReferenceNode) {
-                yield $child;
+        foreach ($document->getNode()->iterator() as $node) {
+            if ($node instanceof AbstractWebResource && Reference::get($node) !== null) {
+                yield $node;
+            } elseif ($node instanceof ReferenceNode) {
+                yield $node;
             } else {
                 // empty
             }

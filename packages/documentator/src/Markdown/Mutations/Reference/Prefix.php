@@ -14,7 +14,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 use function mb_strlen;
@@ -33,24 +32,24 @@ class Prefix implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Process
-        foreach ($this->nodes($node) as $reference) {
+        foreach ($this->nodes($document) as $node) {
             // Changes
-            $location = LocationData::get($reference);
+            $location = LocationData::get($node);
             $text     = null;
 
-            if ($reference instanceof Link || $reference instanceof Image) {
-                $offset   = OffsetData::get($reference);
+            if ($node instanceof Link || $node instanceof Image) {
+                $offset   = OffsetData::get($node);
                 $location = $location->withOffset($offset);
-                $target   = ReferenceData::get($reference)?->getLabel();
+                $target   = ReferenceData::get($node)?->getLabel();
                 $target   = "{$this->prefix}-{$target}";
-                $target   = Utils::escapeTextInTableCell($reference, $target);
+                $target   = Utils::escapeTextInTableCell($node, $target);
                 $text     = "[{$target}]";
-            } elseif ($reference instanceof ReferenceNode) {
+            } elseif ($node instanceof ReferenceNode) {
                 $coordinate = null;
 
                 foreach ($location as $c) {
@@ -62,8 +61,8 @@ class Prefix implements Mutation {
                     $startLine = $coordinate->line;
                     $endLine   = $startLine;
                     $offset    = $coordinate->offset + 1;
-                    $length    = mb_strlen($reference->getLabel());
-                    $text      = "{$this->prefix}-{$reference->getLabel()}";
+                    $length    = mb_strlen($node->getLabel());
+                    $text      = "{$this->prefix}-{$node->getLabel()}";
                     $location  = new Location($startLine, $endLine, $offset, $length);
                 }
             } else {
@@ -79,16 +78,16 @@ class Prefix implements Mutation {
     /**
      * @return Iterator<array-key, AbstractWebResource|ReferenceNode>
      */
-    private function nodes(DocumentNode $node): Iterator {
+    private function nodes(Document $document): Iterator {
         // Just in case
         yield from [];
 
         // Search
-        foreach ($node->iterator() as $child) {
-            if ($child instanceof AbstractWebResource && ReferenceData::get($child) !== null) {
-                yield $child;
-            } elseif ($child instanceof ReferenceNode) {
-                yield $child;
+        foreach ($document->getNode()->iterator() as $node) {
+            if ($node instanceof AbstractWebResource && ReferenceData::get($node) !== null) {
+                yield $node;
+            } elseif ($node instanceof ReferenceNode) {
+                yield $node;
             } else {
                 // empty
             }
