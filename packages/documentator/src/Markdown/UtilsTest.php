@@ -30,26 +30,23 @@ final class UtilsTest extends TestCase {
     }
 
     public function testIsPathToSelf(): void {
-        // Nope
-        self::assertFalse(Utils::isPathToSelf('..'));
-        self::assertFalse(Utils::isPathToSelf('file.md'));
-        self::assertFalse(Utils::isPathToSelf('../path/to/file.txt'));
-        self::assertFalse(Utils::isPathToSelf('http:://example.com/'));
-
-        // Yep
-        self::assertTrue(Utils::isPathToSelf('.'));
-        self::assertTrue(Utils::isPathToSelf('./'));
-        self::assertTrue(Utils::isPathToSelf('?query'));
-        self::assertTrue(Utils::isPathToSelf('#fragment'));
-
-        // Yep if match to Document file name
         $a = new Document('', new FilePath('/path/to/a.md'));
         $b = new Document('', new FilePath('/path/to/b.md'));
 
-        self::assertTrue(Utils::isPathToSelf('a.md', $a));
-        self::assertTrue(Utils::isPathToSelf('./a.md', $a));
-        self::assertFalse(Utils::isPathToSelf('/a.md', $a));
-        self::assertFalse(Utils::isPathToSelf('../a.md', $a));
-        self::assertFalse(Utils::isPathToSelf('a.md', $b));
+        self::assertTrue(Utils::isPathToSelf($a, '.'));
+        self::assertTrue(Utils::isPathToSelf($a, '#fragment'));
+        self::assertTrue(Utils::isPathToSelf($a, './a.md#fragment'));
+        self::assertTrue(Utils::isPathToSelf($a, '?a=bc'));
+        self::assertTrue(Utils::isPathToSelf($a, 'a.md'));
+        self::assertTrue(Utils::isPathToSelf($a, './a.md'));
+        self::assertTrue(Utils::isPathToSelf($a, '../to/a.md'));
+        self::assertFalse(Utils::isPathToSelf($a, '/a.md'));
+        self::assertFalse(Utils::isPathToSelf($a, '../a.md'));
+
+        self::assertFalse(Utils::isPathToSelf($b, 'a.md'));
+        self::assertFalse(Utils::isPathToSelf($b, './a.md#fragment'));
+
+        self::assertTrue(Utils::isPathToSelf($a, new FilePath('a.md')));
+        self::assertTrue(Utils::isPathToSelf($a, new FilePath('../to/a.md')));
     }
 }

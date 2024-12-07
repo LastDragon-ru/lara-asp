@@ -204,11 +204,11 @@ class Utils {
             && (new FilePath($path))->isRelative();
     }
 
-    public static function isPathToSelf(string $path, ?Document $document = null): bool {
-        $name = $document?->getPath()?->getName() ?? '';
-        $path = (string) (new FilePath((string) parse_url($path, PHP_URL_PATH)))->getNormalizedPath();
-        $self = $path === '' || ($name !== '' && $path === $name);
+    public static function isPathToSelf(Document $document, FilePath|string $path): bool {
+        $self = $document->getPath();
+        $path = (string) parse_url((string) $path, PHP_URL_PATH);
+        $is   = $path === '' || $path === '.' || $self === null || $self->isEqual($self->getFilePath($path));
 
-        return $self;
+        return $is;
     }
 }

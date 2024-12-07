@@ -77,13 +77,25 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/file.md',
             ],
+            'empty'          => [
+                <<<'MARKDOWN'
+                [foo]: # "title"
+                MARKDOWN,
+                '/path/from/file.md',
+                <<<'MARKDOWN'
+                [foo]: . "title"
+                MARKDOWN,
+                '/path/to/file.md',
+            ],
             'query&fragment' => [
                 <<<'MARKDOWN'
                 [foo]: ../from/path?a=123#fragment
+                [bar]: ?a=123#fragment
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'
                 [foo]: path?a=123#fragment
+                [bar]: file.md?a=123#fragment
                 MARKDOWN,
                 '/path/to/file.md',
             ],
@@ -92,7 +104,8 @@ final class MoveTest extends TestCase {
                 # General
 
                 [tel]: tel:+70000000000 "title"
-                [self]: #fragment
+                [self-fragment]: #fragment
+                [self-file]: #fragment
                 [link]: ../from/file/a
                 [link]: ../from/file/b ' <title> '
                 [title]: <../from/file/a> (title)
@@ -137,7 +150,8 @@ final class MoveTest extends TestCase {
                 # General
 
                 [tel]: tel:+70000000000 "title"
-                [self]: #fragment
+                [self-fragment]: #fragment
+                [self-file]: ./file.md#fragment
                 [link]: ./file/a
                 [link]: file/b ' <title> '
                 [title]: <./file/a> (title)
@@ -190,7 +204,8 @@ final class MoveTest extends TestCase {
                 Text text [tel](tel:+70000000000 "title") text [link](../from/file/a)
                 text [_`link`_](../from/file/b ' <title> ') text [title](<../from/file/a> (title))
                 [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
-                text [external](https://example.com/) text [self](#fragment).
+                text [external](https://example.com/) text [self](#fragment)
+                text [self](#fragment).
 
                 # Special
 
@@ -223,7 +238,8 @@ final class MoveTest extends TestCase {
                 Text text [tel](tel:+70000000000 "title") text [link](./file/a)
                 text [_`link`_](file/b ' <title> ') text [title](<./file/a> (title))
                 [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
-                text [external](https://example.com/) text [self](#fragment).
+                text [external](https://example.com/) text [self](#fragment)
+                text [self](file.md#fragment).
 
                 # Special
 

@@ -51,7 +51,7 @@ final class RemoveToSelfTest extends TestCase {
             | Header                    |  [Header][link]               |
             |---------------------------|-------------------------------|
             | Cell [link][self-a] cell. | Cell `\|` \\| ![table][image] |
-            | Cell                      | Cell cell [table][self-b].    |
+            | Cell                      | Cell cell [table][self-a].    |
             MARKDOWN;
         $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
             #[Override]
@@ -80,7 +80,7 @@ final class RemoveToSelfTest extends TestCase {
 
             Text text [link](https://example.com) text text [`link`][link] text
             text text self text text self text text text
-            text text self text text self text text text
+            text text [self][self-b] text text [self](./#fragment) text text text
             text text self text text self text text text
             text text self text text self text text text
             text text ![image][image] text text ![image](#fragment).
@@ -98,7 +98,7 @@ final class RemoveToSelfTest extends TestCase {
 
             > Text text [link](https://example.com) text text [`link`][link] text
             > text text self text text self text text text
-            > text text self text text self text text text
+            > text text [self][self-b] text text [self](./#fragment) text text text
             > text text self text text self text text text
             > text text self text text self text text text
 

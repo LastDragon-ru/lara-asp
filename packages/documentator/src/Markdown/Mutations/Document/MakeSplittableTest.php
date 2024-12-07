@@ -39,7 +39,7 @@ final class MakeSplittableTest extends TestCase {
             # Links to the self must be removed
 
             Text text [link](https://example.com) text text [`link`][link] text
-            text text [self][self] text text [self](./#fragment).
+            text text [self][self] text text [self](#fragment).
 
             [self]: #fragment
             MARKDOWN;

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
+use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
@@ -15,15 +16,20 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Block\Document as DocumentNode;
+use League\CommonMark\Node\Node;
 use Override;
 
 use function ltrim;
+use function mb_strlen;
 use function mb_substr;
+use function parse_url;
 use function preg_match;
 use function preg_quote;
 use function rawurldecode;
 use function rtrim;
 use function trim;
+
+use const PHP_URL_PATH;
 
 /**
  * Changes path and updates all relative links.
@@ -63,9 +69,7 @@ readonly class Move implements Mutation {
         }
 
         // Update
-        $resources = $this->getRelativeResources($document, $node);
-
-        foreach ($resources as $resource) {
+        foreach ($this->nodes($node) as $resource) {
             // Changes
             $location = Location::get($resource);
             $text     = null;
@@ -77,11 +81,9 @@ readonly class Move implements Mutation {
                 $titleValue   = (string) $resource->getTitle();
                 $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
                 $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
-                $targetValue  = rawurldecode($resource->getUrl());
-                $targetValue  = $docPath->getFilePath($targetValue);
-                $targetValue  = $newPath->getRelativePath($targetValue);
+                $targetValue  = $this->target($document, $docPath, $newPath, $resource->getUrl());
                 $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
-                $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
+                $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
                 $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
             } elseif ($resource instanceof ReferenceNode) {
                 $origin       = trim((string) $document->getText($location));
@@ -89,11 +91,9 @@ readonly class Move implements Mutation {
                 $titleValue   = $resource->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);
                 $title        = Utils::getLinkTitle($resource, $titleValue, $titleWrapper);
-                $targetValue  = rawurldecode($resource->getDestination());
-                $targetValue  = $docPath->getFilePath($targetValue);
-                $targetValue  = $newPath->getRelativePath($targetValue);
+                $targetValue  = $this->target($document, $docPath, $newPath, $resource->getDestination());
                 $targetWrap   = (bool) preg_match('/^\['.preg_quote($resource->getLabel(), '/').']:\s+</u', $origin);
-                $target       = Utils::getLinkTarget($resource, (string) $targetValue, $targetWrap);
+                $target       = Utils::getLinkTarget($resource, $targetValue, $targetWrap);
                 $text         = trim("[{$label}]: {$target} {$title}");
 
                 if ($location->startLine !== $location->endLine) {
@@ -125,11 +125,13 @@ readonly class Move implements Mutation {
     }
 
     /**
-     * @return list<AbstractWebResource|ReferenceNode>
+     * @return Iterator<array-key, Node>
      */
-    protected function getRelativeResources(Document $document, DocumentNode $node): array {
-        $resources = [];
+    private function nodes(DocumentNode $node): Iterator {
+        // Just in case
+        yield from [];
 
+        // Search
         foreach ($node->iterator() as $child) {
             $url = null;
 
@@ -141,15 +143,24 @@ readonly class Move implements Mutation {
                 // empty
             }
 
-            if ($url !== null && $this->isRelativeResource($document, $url)) {
-                $resources[] = $child;
+            if ($url !== null && Utils::isPathRelative($url)) {
+                yield $child;
             }
         }
-
-        return $resources;
     }
 
-    protected function isRelativeResource(Document $document, string $url): bool {
-        return Utils::isPathRelative($url) && !Utils::isPathToSelf($url, $document);
+    private function target(Document $document, FilePath $docPath, FilePath $newPath, string $target): string {
+        $target = rawurldecode($target);
+
+        if (Utils::isPathToSelf($document, $target)) {
+            $path   = (string) parse_url($target, PHP_URL_PATH);
+            $target = mb_substr($target, mb_strlen($path));
+            $target = $target !== '' ? $target : '#';
+        } else {
+            $target = $docPath->getFilePath($target);
+            $target = $newPath->getRelativePath($target);
+        }
+
+        return (string) $target;
     }
 }

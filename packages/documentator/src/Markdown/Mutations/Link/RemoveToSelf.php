@@ -17,6 +17,6 @@ readonly class RemoveToSelf extends Remove {
     protected function isLink(Document $document, Link $node): bool {
         $url = rawurldecode($node->getUrl());
 
-        return Utils::isPathRelative($url) && Utils::isPathToSelf($url, $document);
+        return Utils::isPathRelative($url) && Utils::isPathToSelf($document, $url);
     }
 }
