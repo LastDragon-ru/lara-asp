@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Parser\Block\BlockContinue;
 use League\CommonMark\Parser\Block\BlockContinueParserInterface;
@@ -87,7 +86,7 @@ class ParserContinue implements BlockContinueParserInterface {
         }
 
         // Data
-        Data::set($this->block, new DataBlockPadding($this->padding));
+        BlockPadding::set($this->block, $this->padding);
     }
 
     private function parse(Cursor $cursor): bool {

@@ -5,10 +5,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -162,19 +162,14 @@ class Task implements TaskContract {
                     $next     = $node->next();
 
                     if ($next instanceof GeneratedNode) {
-                        $location = MarkdownUtils::getLocation($next);
+                        $location = Location::get($next);
                     } else {
-                        $location = MarkdownUtils::getLocation($node);
-
-                        if ($location !== null) {
-                            $instruction = trim((string) $document->getText($location));
-                            $text        = "{$instruction}\n{$text}";
-                        }
+                        $location    = Location::get($node);
+                        $instruction = trim((string) $document->getText($location));
+                        $text        = "{$instruction}\n{$text}";
                     }
 
-                    if ($location !== null) {
-                        $changes[] = [$location, $text];
-                    }
+                    $changes[] = [$location, $text];
                 }
             }
 

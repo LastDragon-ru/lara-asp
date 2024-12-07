@@ -1,13 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 use function mb_strlen;
@@ -21,7 +20,7 @@ use function trim;
 /**
  * Updates all ATX headings levels.
  */
-class HeadingsLevel implements Mutation {
+class Renumber implements Mutation {
     public function __construct(
         /**
          * @var int<1, 6>
@@ -35,13 +34,13 @@ class HeadingsLevel implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Process
         $highest  = 6;
-        $headings = $this->getHeadings($document, $node, $highest);
+        $headings = $this->getHeadings($document, $highest);
         $diff     = $this->startLevel - $highest;
 
         if ($diff === 0) {
@@ -62,32 +61,26 @@ class HeadingsLevel implements Mutation {
     /**
      * @return list<array{Heading, Location, string}>
      */
-    private function getHeadings(Document $document, DocumentNode $node, int &$highest): array {
+    private function getHeadings(Document $document, int &$highest): array {
         $headings = [];
 
-        foreach ($node->iterator() as $child) {
+        foreach ($document->getNode()->iterator() as $node) {
             // Heading?
-            if (!($child instanceof Heading)) {
-                continue;
-            }
-
-            // Location?
-            $location = Utils::getLocation($child);
-
-            if ($location === null) {
+            if (!($node instanceof Heading)) {
                 continue;
             }
 
             // ATX?
-            $line = $document->getText($location);
+            $location = LocationData::get($node);
+            $line     = $document->getText($location);
 
             if ($line === null || !str_starts_with(trim($line), '#')) {
                 continue;
             }
 
             // Ok
-            $headings[] = [$child, $location, $line];
-            $highest    = min($highest, $child->getLevel());
+            $headings[] = [$node, $location, $line];
+            $highest    = min($highest, $node->getLevel());
         }
 
         return $headings;

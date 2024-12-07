@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -16,30 +16,25 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(FootnotesPrefix::class)]
-final class FootnotesPrefixTest extends TestCase {
+#[CoversClass(MakeInlinable::class)]
+final class MakeInlinableTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
-            # Header[^1]
+            # Footnotes must be prefixed[^1]
 
             Text text text[^2] text text [^1] text text text [^2] text text text
-            text text[^1] text text text [^2] text text text [^3] text[^bignote].
+            text text[^1] text text text [^2].
 
             [^1]: footnote 1
-
-            Text text text[^2].
-
             [^2]: footnote 2
 
-            [^4]: footnote 4
+            # References must be prefixed
 
-            [^bignote]: Text text text text text text text text text text text
-                text text text text text text text text text text text text text
-                text.
+            Text text [link](https://example.com) text text [`link`][link] text
+            text text ![image][image] text text.
 
-                Text text text text text text text text text text text text text
-                text text text text text text text text text text text text text
-                text.
+            [link]: https://example.com
+            [image]: https://example.com
             MARKDOWN;
         $document = new class($markdown, new FilePath(__FILE__)) extends Document {
             #[Override]
@@ -55,35 +50,29 @@ final class FootnotesPrefixTest extends TestCase {
                 return parent::getLines();
             }
         };
-        $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new FootnotesPrefix('prefix');
-        $changes  = $mutation($document, $node);
+        $mutation = new MakeInlinable('prefix');
+        $changes  = $mutation($document);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals(
             <<<'MARKDOWN'
-            # Header[^prefix-1]
+            # Footnotes must be prefixed[^prefix-1]
 
             Text text text[^prefix-2] text text [^prefix-1] text text text [^prefix-2] text text text
-            text text[^prefix-1] text text text [^prefix-2] text text text [^3] text[^prefix-bignote].
+            text text[^prefix-1] text text text [^prefix-2].
 
             [^prefix-1]: footnote 1
-
-            Text text text[^prefix-2].
-
             [^prefix-2]: footnote 2
 
-            [^4]: footnote 4
+            # References must be prefixed
 
-            [^prefix-bignote]: Text text text text text text text text text text text
-                text text text text text text text text text text text text text
-                text.
+            Text text [link](https://example.com) text text [`link`][prefix-link] text
+            text text ![image][prefix-image] text text.
 
-                Text text text text text text text text text text text text text
-                text text text text text text text text text text text text text
-                text.
+            [prefix-link]: https://example.com
+            [prefix-image]: https://example.com
             MARKDOWN,
             $actual,
         );

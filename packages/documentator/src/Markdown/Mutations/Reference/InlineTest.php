@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
@@ -15,8 +15,8 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(ReferencesInline::class)]
-final class ReferencesInlineTest extends TestCase {
+#[CoversClass(Inline::class)]
+final class InlineTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
@@ -57,11 +57,10 @@ final class ReferencesInlineTest extends TestCase {
                 return parent::getLines();
             }
         };
-        $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new ReferencesInline();
-        $changes  = $mutation($document, $node);
+        $mutation = new Inline();
+        $changes  = $mutation($document);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals(

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -16,32 +16,32 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(ReferencesPrefix::class)]
-final class ReferencesPrefixTest extends TestCase {
+#[CoversClass(Remove::class)]
+final class RemoveTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
-            text text ![image][image] text text.
+            text text [self][self] text text [self](#fragment) text text text
+            text text ![image][image] text text ![image](#fragment).
 
-            ![image][image]
-
-            [link]: https://example.com
-            [image]: https://example.com
+            [self]: #fragment
+            [link]: ./path/to/file.md
+            [image]: ./#fragment
 
             # Special
 
             ## Inside Quote
 
-            > ![image][link]
+            > Text text [self][self] text text [self](#fragment) text text text
 
             ## Inside Table
 
             | Header                  |  [Header][link]               |
             |-------------------------|-------------------------------|
-            | Cell [link][link] cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell [table][link].      |
+            | Cell [link][self] cell. | Cell `\|` \\| ![table][image] |
+            | Cell                    | Cell cell [table][self].      |
             MARKDOWN;
         $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
             #[Override]
@@ -57,37 +57,36 @@ final class ReferencesPrefixTest extends TestCase {
                 return parent::getLines();
             }
         };
-        $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new ReferencesPrefix('prefix');
-        $changes  = $mutation($document, $node);
+        $mutation = new Remove();
+        $changes  = $mutation($document);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals(
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [`link`][prefix-link] text
-            text text ![image][prefix-image] text text.
+            Text text link text text `link` text
+            text text self text text self text text text
+            text text ![image][image] text text ![image](#fragment).
 
-            ![image][prefix-image]
-
-            [prefix-link]: https://example.com
-            [prefix-image]: https://example.com
+            [self]: #fragment
+            [link]: ./path/to/file.md
+            [image]: ./#fragment
 
             # Special
 
             ## Inside Quote
 
-            > ![image][prefix-link]
+            > Text text self text text self text text text
 
             ## Inside Table
 
-            | Header                  |  [Header][prefix-link]               |
+            | Header                  |  Header               |
             |-------------------------|-------------------------------|
-            | Cell [link][prefix-link] cell. | Cell `\|` \\| ![table][prefix-image] |
-            | Cell                    | Cell cell [table][prefix-link].      |
+            | Cell link cell. | Cell `\|` \\| ![table][image] |
+            | Cell                    | Cell cell table.      |
             MARKDOWN,
             $actual,
         );

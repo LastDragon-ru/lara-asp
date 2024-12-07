@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 /**
@@ -25,7 +24,7 @@ readonly class Changeset implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         return $this->changes;
     }
 }

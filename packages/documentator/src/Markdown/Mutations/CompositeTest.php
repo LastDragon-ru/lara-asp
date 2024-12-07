@@ -25,7 +25,6 @@ final class CompositeTest extends TestCase {
                 return parent::getNode();
             }
         };
-        $node      = $document->getNode();
         $aChanges  = [
             [new Location(1, 1, 10), 'a'],
         ];
@@ -35,18 +34,18 @@ final class CompositeTest extends TestCase {
         $aMutation = Mockery::mock(Mutation::class);
         $aMutation
             ->shouldReceive('__invoke')
-            ->with($document, $node)
+            ->with($document)
             ->once()
             ->andReturn($aChanges);
         $bMutation = Mockery::mock(Mutation::class);
         $bMutation
             ->shouldReceive('__invoke')
-            ->with($document, $node)
+            ->with($document)
             ->once()
             ->andReturn($bChanges);
 
         $mutation = new Composite($aMutation, $bMutation);
-        $changes  = $mutation($document, $node);
+        $changes  = $mutation($document);
         $expected = array_merge($aChanges, $bChanges);
         $actual   = [];
 

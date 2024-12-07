@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -16,32 +16,32 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(SelfLinksRemove::class)]
-final class SelfLinksRemoveTest extends TestCase {
+#[CoversClass(Prefix::class)]
+final class PrefixTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
-            text text [self][self] text text [self](#fragment) text text text
-            text text ![image][image] text text ![image](#fragment).
+            text text ![image][image] text text.
 
-            [self]: #fragment
-            [link]: ./path/to/file.md
-            [image]: ./#fragment
+            ![image][image]
+
+            [link]: https://example.com
+            [image]: https://example.com
 
             # Special
 
             ## Inside Quote
 
-            > Text text [self][self] text text [self](#fragment) text text text
+            > ![image][link]
 
             ## Inside Table
 
             | Header                  |  [Header][link]               |
             |-------------------------|-------------------------------|
-            | Cell [link][self] cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell [table][self].      |
+            | Cell [link][link] cell. | Cell `\|` \\| ![table][image] |
+            | Cell                    | Cell cell [table][link].      |
             MARKDOWN;
         $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
             #[Override]
@@ -57,37 +57,36 @@ final class SelfLinksRemoveTest extends TestCase {
                 return parent::getLines();
             }
         };
-        $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new SelfLinksRemove();
-        $changes  = $mutation($document, $node);
+        $mutation = new Prefix('prefix');
+        $changes  = $mutation($document);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals(
             <<<'MARKDOWN'
             # Header
 
-            Text text [link](https://example.com) text text [`link`][link] text
-            text text self text text self text text text
-            text text ![image][image] text text ![image](#fragment).
+            Text text [link](https://example.com) text text [`link`][prefix-link] text
+            text text ![image][prefix-image] text text.
 
-            [self]: #fragment
-            [link]: ./path/to/file.md
-            [image]: ./#fragment
+            ![image][prefix-image]
+
+            [prefix-link]: https://example.com
+            [prefix-image]: https://example.com
 
             # Special
 
             ## Inside Quote
 
-            > Text text self text text self text text text
+            > ![image][prefix-link]
 
             ## Inside Table
 
-            | Header                  |  [Header][link]               |
+            | Header                  |  [Header][prefix-link]               |
             |-------------------------|-------------------------------|
-            | Cell link cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell table.      |
+            | Cell [link][prefix-link] cell. | Cell `\|` \\| ![table][prefix-image] |
+            | Cell                    | Cell cell [table][prefix-link].      |
             MARKDOWN,
             $actual,
         );

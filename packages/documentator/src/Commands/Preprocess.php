@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\HeadingsLevel;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Move;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Factory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -342,7 +342,7 @@ class Preprocess extends Command {
         // Level?
         if ($level !== null) {
             $level = max(1, min(6, $level));
-            $help  = $help->mutate(new HeadingsLevel($level));
+            $help  = $help->mutate(new Renumber($level));
         }
 
         // To string

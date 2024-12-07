@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\EndMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\StartMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\XmlRenderer;
@@ -31,8 +30,8 @@ class Renderer implements XmlRenderer {
 
         return [
             'id'                  => $node->id,
-            'startMarkerLocation' => Data::get($node, StartMarkerLocation::class),
-            'endMarkerLocation'   => Data::get($node, EndMarkerLocation::class),
+            'startMarkerLocation' => StartMarkerLocation::optional()->get($node),
+            'endMarkerLocation'   => EndMarkerLocation::optional()->get($node),
         ];
     }
 }

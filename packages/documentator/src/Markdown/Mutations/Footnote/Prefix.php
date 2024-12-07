@@ -1,14 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 
 use function mb_strlen;
@@ -17,7 +16,7 @@ use function mb_substr;
 /**
  * Adds unique prefix for all footnotes.
  */
-readonly class FootnotesPrefix implements Mutation {
+readonly class Prefix implements Mutation {
     public function __construct(
         protected string $prefix,
     ) {
@@ -28,20 +27,20 @@ readonly class FootnotesPrefix implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
+    public function __invoke(Document $document): iterable {
         // Just in case
         yield from [];
 
         // Process
-        foreach ($node->iterator() as $child) {
+        foreach ($document->getNode()->iterator() as $node) {
             // Footnote?
-            if (!($child instanceof FootnoteRef) && !($child instanceof Footnote)) {
+            if (!($node instanceof FootnoteRef) && !($node instanceof Footnote)) {
                 continue;
             }
 
             // Replace
-            $label    = $this->getLabel($document, $child);
-            $location = $label !== null ? $this->getLabelLocation($child, $label) : null;
+            $label    = $this->getLabel($document, $node);
+            $location = $this->getLabelLocation($node, $label);
 
             if ($location !== null) {
                 yield [$location, "{$this->prefix}-{$label}"];
@@ -49,16 +48,14 @@ readonly class FootnotesPrefix implements Mutation {
         }
     }
 
-    private function getLabel(Document $document, Footnote|FootnoteRef $footnote): ?string {
+    private function getLabel(Document $document, Footnote|FootnoteRef $footnote): string {
         // The thephpleague/commonmark replaces the original title of
         // `FootnoteRef` to make it unique. We need to find original.
         $label = $footnote->getReference()->getLabel();
 
         if ($footnote instanceof FootnoteRef) {
-            $location = Utils::getLocation($footnote);
-            $label    = $location !== null
-                ? mb_substr($document->getText($location) ?? '', 2, -1)
-                : null;
+            $location = LocationData::get($footnote);
+            $label    = mb_substr($document->getText($location) ?? '', 2, -1);
         }
 
         return $label;
@@ -66,10 +63,10 @@ readonly class FootnotesPrefix implements Mutation {
 
     private function getLabelLocation(Footnote|FootnoteRef $footnote, string $label): ?Location {
         // Get the start line
-        $location   = Utils::getLocation($footnote);
+        $location   = LocationData::get($footnote);
         $coordinate = null;
 
-        foreach ($location ?? [] as $c) {
+        foreach ($location as $c) {
             $coordinate = $c;
             break;
         }

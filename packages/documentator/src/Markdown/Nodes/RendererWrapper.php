@@ -2,13 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as BlockPaddingData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as LengthData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as PaddingData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
@@ -111,18 +110,17 @@ readonly class RendererWrapper implements
      * @return array<string, Location|scalar|null>
      */
     private function getXmlAdditionalAttributes(Node $node): array {
-        $attributes = [
-            'location' => Utils::getLocation($node),
-        ];
+        $attributes = [];
         $data       = [
-            'offset'       => Offset::class,
-            'length'       => Length::class,
-            'padding'      => Padding::class,
-            'blockPadding' => BlockPadding::class,
+            'location'     => LocationData::class,
+            'offset'       => OffsetData::class,
+            'length'       => LengthData::class,
+            'padding'      => PaddingData::class,
+            'blockPadding' => BlockPaddingData::class,
         ];
 
         foreach ($data as $key => $class) {
-            $attributes[$key] = Data::get($node, $class);
+            $attributes[$key] = $class::optional()->get($node);
         }
 
         return $attributes;

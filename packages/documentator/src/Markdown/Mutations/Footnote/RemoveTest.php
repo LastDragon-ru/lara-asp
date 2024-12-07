@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Editor;
@@ -15,8 +15,8 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(FootnotesRemove::class)]
-final class FootnotesRemoveTest extends TestCase {
+#[CoversClass(Remove::class)]
+final class RemoveTest extends TestCase {
     public function testInvoke(): void {
         $markdown = <<<'MARKDOWN'
             # Header[^1]
@@ -54,11 +54,10 @@ final class FootnotesRemoveTest extends TestCase {
                 return parent::getLines();
             }
         };
-        $node     = $document->getNode();
         $lines    = $document->getLines();
         $offset   = (int) array_key_first($lines);
-        $mutation = new FootnotesRemove();
-        $changes  = $mutation($document, $node);
+        $mutation = new Remove();
+        $changes  = $mutation($document);
         $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
 
         self::assertEquals(

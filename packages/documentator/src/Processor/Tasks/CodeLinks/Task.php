@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
@@ -182,12 +183,9 @@ class Task implements TaskContract {
         $refsParentLocation = null;
 
         foreach ($blocks as $block) {
+            $refsParentLocation = LocationData::get($block);
             $refsParentNode     = $block;
-            $refsParentLocation = Utils::getLocation($block);
-
-            if ($refsParentLocation !== null) {
-                $changes[] = [$refsParentLocation, null];
-            }
+            $changes[]          = [$refsParentLocation, null];
         }
 
         // Update links
@@ -212,12 +210,9 @@ class Task implements TaskContract {
             }
 
             foreach ($token->nodes as $node) {
-                $location = Utils::getLocation($node);
-
-                if ($location !== null) {
-                    $linkTitle = Utils::escapeTextInTableCell($node, $title);
-                    $changes[] = [$location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
-                }
+                $location  = LocationData::get($node);
+                $linkTitle = Utils::escapeTextInTableCell($node, $title);
+                $changes[] = [$location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
             }
         }
 

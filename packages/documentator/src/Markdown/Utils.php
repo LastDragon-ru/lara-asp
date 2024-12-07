@@ -3,20 +3,13 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length as DataLength;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines as DataLines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as DataLocation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as DataOffset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as DataPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
-use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
-use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Util\UrlEncoder;
 
 use function filter_var;
@@ -88,9 +81,9 @@ class Utils {
 
         // Known?
         $type    = $line === null || $line === $container->getStartLine()
-            ? DataBlockPadding::class
-            : DataPadding::class;
-        $padding = Data::get($container, $type);
+            ? BlockPadding::class
+            : Padding::class;
+        $padding = $type::optional()->get($container);
 
         if ($padding !== null) {
             return $padding;
@@ -116,72 +109,17 @@ class Utils {
         }
 
         // Cache
-        Data::set($container, new $type($padding));
+        $type::set($container, $padding);
 
         // Return
         return $padding;
     }
 
     public static function getLine(DocumentNode $document, int $line): ?string {
-        $lines = Data::get($document, DataLines::class) ?? [];
+        $lines = Lines::get($document);
         $line  = $lines[$line] ?? null;
 
         return $line;
-    }
-
-    public static function getLocation(Node $node): ?Location {
-        $location = Data::get($node, DataLocation::class);
-
-        if ($location === null && $node instanceof AbstractBlock) {
-            $start   = $node->getStartLine();
-            $end     = $node->getEndLine();
-            $offset  = Data::get($node, DataOffset::class) ?? 0;
-            $length  = Data::get($node, DataLength::class);
-            $padding = self::getPadding($node, null, null);
-
-            if ($padding === null && $node->parent() instanceof DocumentNode) {
-                $padding = 0;
-            }
-
-            if ($start !== null && $end !== null && $padding !== null) {
-                $location = new Location($start, $end, $offset, $length, $padding);
-            }
-        }
-
-        return $location;
-    }
-
-    public static function getLengthLocation(Location $location, ?int $length): Location {
-        return new Location(
-            $location->startLine,
-            $location->endLine,
-            $location->offset,
-            $length,
-            $location->startLinePadding,
-            $location->internalPadding,
-        );
-    }
-
-    public static function getOffsetLocation(Location $location, int $offset): Location {
-        return new Location(
-            $location->startLine,
-            $location->endLine,
-            $location->offset + $offset,
-            $location->length !== null ? $location->length - $offset : $location->length,
-            $location->startLinePadding,
-            $location->internalPadding,
-        );
-    }
-
-    public static function isReference(AbstractWebResource $node): bool {
-        return self::getReference($node) !== null;
-    }
-
-    public static function getReference(AbstractWebResource $node): ?ReferenceInterface {
-        $reference = $node->data->get('reference', null);
-        $reference = $reference instanceof ReferenceInterface ? $reference : null;
-
-        return $reference;
     }
 
     public static function getLinkTarget(Node $container, string $target, ?bool $wrap = null): string {
@@ -251,7 +189,7 @@ class Utils {
 
     public static function isPathRelative(string $path): bool {
         // Fast
-        if (str_starts_with($path, './') || str_starts_with($path, '../')) {
+        if (str_starts_with($path, './') || str_starts_with($path, '../') || str_starts_with($path, '#')) {
             return true;
         } elseif (str_starts_with($path, '/')) {
             return false;
@@ -266,11 +204,11 @@ class Utils {
             && (new FilePath($path))->isRelative();
     }
 
-    public static function isPathToSelf(string $path, ?Document $document = null): bool {
-        $name = $document?->getPath()?->getName() ?? '';
-        $path = (string) (new FilePath((string) parse_url($path, PHP_URL_PATH)))->getNormalizedPath();
-        $self = $path === '' || ($name !== '' && $path === $name);
+    public static function isPathToSelf(Document $document, FilePath|string $path): bool {
+        $self = $document->getPath();
+        $path = (string) parse_url((string) $path, PHP_URL_PATH);
+        $is   = $path === '' || $path === '.' || $self === null || $self->isEqual($self->getFilePath($path));
 
-        return $self;
+        return $is;
     }
 }

@@ -3,13 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\NodeIterator;
 use Override;
 
@@ -32,23 +31,19 @@ readonly class InstructionsRemove implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document, DocumentNode $node): iterable {
-        $changes = [];
+    public function __invoke(Document $document): iterable {
+        // Just in case
+        yield from [];
 
-        foreach ($node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $block) {
+        // Update
+        foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
-            if (!Utils::isInstruction($block, $this->instructions)) {
+            if (!Utils::isInstruction($node, $this->instructions)) {
                 continue;
             }
 
-            // Location?
-            $location = MarkdownUtils::getLocation($block);
-
-            if ($location !== null) {
-                $changes[] = [$location, null];
-            }
+            // Change
+            yield [Location::get($node), null];
         }
-
-        return $changes;
     }
 }
