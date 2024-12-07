@@ -43,6 +43,7 @@ final class UtilsTest extends TestCase {
         self::assertFalse(Utils::isPathToSelf($a, '/a.md'));
         self::assertFalse(Utils::isPathToSelf($a, '../a.md'));
 
+        self::assertTrue(Utils::isPathToSelf($b, '/path/to/b.md'));
         self::assertFalse(Utils::isPathToSelf($b, 'a.md'));
         self::assertFalse(Utils::isPathToSelf($b, './a.md#fragment'));
 
