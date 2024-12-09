@@ -333,7 +333,13 @@ class Preprocess extends Command {
     ): string {
         // Load
         $this->phpDocumentFactory ??= $this->laravel->make(PhpDocumentFactory::class);
-        $help                       = ($this->phpDocumentFactory)($object);
+        $phpdoc                     = new PhpDoc((string) $object->getDocComment());
+        $path                       = match (true) {
+            $object instanceof ReflectionProperty => $object->getDeclaringClass()->getFileName(),
+            default                               => $object->getFileName(),
+        };
+        $path = $path !== false ? new FilePath($path) : null;
+        $help = ($this->phpDocumentFactory)($phpdoc, $path);
 
         // Move to cwd
         $cwd  = new DirectoryPath((string) getcwd());

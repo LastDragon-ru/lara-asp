@@ -2,318 +2,62 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
  */
 #[CoversClass(Document::class)]
 final class DocumentTest extends TestCase {
-    public function testGetTitle(): void {
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                ## Header A
-                # Header B
-                MARKDOWN,
-            ))
-                ->getTitle(),
-        );
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
+    // <editor-fold desc="Test">
+    // =========================================================================
+    #[DataProvider('dataProviderGetTitle')]
+    public function testGetTitle(?string $expected, string $content): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = $document->getTitle();
 
-                # Header
-                MARKDOWN,
-            ))
-                ->getTitle(),
-        );
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                #
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getTitle(),
-        );
-        self::assertEquals(
-            'Header',
-            (new Document(
-                <<<'MARKDOWN'
-
-                # Header
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getTitle(),
-        );
-        self::assertEquals(
-            'Header',
-            (new Document(
-                <<<'MARKDOWN'
-                <!-- Comment -->
-
-                # Header
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getTitle(),
-        );
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                MARKDOWN,
-                new FilePath('path/to/FileName.txt'),
-            ))
-                ->getTitle(),
-        );
+        self::assertEquals($expected, $actual);
     }
 
-    public function testGetSummary(): void {
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                ## Header A
-                # Header B
+    #[DataProvider('dataProviderGetSummary')]
+    public function testGetSummary(?string $expected, string $content): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = $document->getSummary();
 
-                sdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getSummary(),
-        );
-        self::assertEquals(
-            'fsdfsdfsdf',
-            (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-
-                # Header
-
-                sdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getSummary(),
-        );
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                # Header
-
-                > Not a paragraph
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getSummary(),
-        );
-        self::assertEquals(
-            'fsdfsdfsdf',
-            (new Document(
-                <<<'MARKDOWN'
-                #
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getSummary(),
-        );
-        self::assertEquals(
-            <<<'TEXT'
-            fsdfsdfsdf
-            fsdfsdfsdf
-            TEXT,
-            (new Document(
-                <<<'MARKDOWN'
-
-                # Header
-
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getSummary(),
-        );
-        self::assertEquals(
-            <<<'TEXT'
-            fsdfsdfsdf
-            fsdfsdfsdf
-            TEXT,
-            (new Document(
-                <<<'MARKDOWN'
-                <!-- Comment -->
-
-                # Header
-
-                <!-- Comment -->
-
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getSummary(),
-        );
+        self::assertEquals($expected, $actual);
     }
 
-    public function testGetBody(): void {
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                ## Header A
-                # Header B
+    #[DataProvider('dataProviderGetBody')]
+    public function testGetBody(?string $expected, string $content): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = $document->getBody();
 
-                sdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getBody(),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            # Header
-
-            sdfsdfsdf
-            MARKDOWN,
-            (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-
-                # Header
-
-                sdfsdfsdf
-                MARKDOWN,
-            ))
-                ->getBody(),
-        );
-        self::assertNull(
-            (new Document(
-                <<<'MARKDOWN'
-                # Header
-
-                > Not a paragraph
-
-                fsdfsdfsdf
-
-                text text text
-                MARKDOWN,
-            ))
-                ->getBody(),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            text text text
-
-            text text text
-            MARKDOWN,
-            (new Document(
-                <<<'MARKDOWN'
-                #
-
-                fsdfsdfsdf
-
-                text text text
-
-                text text text
-                MARKDOWN,
-            ))
-                ->getBody(),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            text text text
-
-            text text text
-            MARKDOWN,
-            (new Document(
-                <<<'MARKDOWN'
-
-                # Header
-
-                fsdfsdfsdf
-                fsdfsdfsdf
-
-                text text text
-
-                text text text
-                MARKDOWN,
-            ))
-                ->getBody(),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            <!-- Comment -->
-
-            text text text
-            MARKDOWN,
-            (new Document(
-                <<<'MARKDOWN'
-                <!-- Comment -->
-
-                # Header
-
-                <!-- Comment -->
-
-                text text text
-
-                <!-- Comment -->
-
-                text text text
-                MARKDOWN,
-            ))
-                ->getBody(),
-        );
+        self::assertEquals($expected, $actual);
     }
 
-    public function testIsEmpty(): void {
-        self::assertFalse(
-            (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->isEmpty(),
-        );
-        self::assertFalse(
-            (new Document(
-                <<<'MARKDOWN'
-                [unused]: ../path/to/file
-                MARKDOWN,
-            ))
-                ->isEmpty(),
-        );
-        self::assertFalse(
-            (new Document(
-                <<<'MARKDOWN'
-                <!-- comment -->
-                MARKDOWN,
-            ))
-                ->isEmpty(),
-        );
-        self::assertTrue(
-            (new Document(
-                <<<'MARKDOWN'
+    #[DataProvider('dataProviderIsEmpty')]
+    public function testIsEmpty(bool $expected, string $content): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = $document->isEmpty();
 
-
-
-                MARKDOWN,
-            ))
-                ->isEmpty(),
-        );
+        self::assertEquals($expected, $actual);
     }
 
     public function testMutate(): void {
-        $document = new Document('');
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse('');
         $mutation = Mockery::mock(Mutation::class);
         $mutation
             ->shouldReceive('__invoke')
@@ -330,92 +74,357 @@ final class DocumentTest extends TestCase {
         self::assertEquals($clone, $document);
     }
 
-    public function testToString(): void {
-        self::assertEquals(
-            <<<'MARKDOWN'
-            fsdfsdfsdf
-            fsdfsdfsdf
+    #[DataProvider('dataProviderToString')]
+    public function testToString(string $expected, string $content, ?Mutation $mutation): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content)->mutate($mutation ?? new Nop());
+        $actual   = (string) $document;
 
-            MARKDOWN,
-            (string) (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-
-                MARKDOWN,
-            )),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            fsdfsdfsdf
-            fsdfsdfsdf
-            MARKDOWN,
-            (string) (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            )),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            fsdfsdfsdf
-            fsdfsdfsdf
-
-            MARKDOWN,
-            (string) (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-
-                MARKDOWN,
-            ))
-                ->mutate(new Changeset([])),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            fsdfsdfsdf
-            fsdfsdfsdf
-
-            MARKDOWN,
-            (string) (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->mutate(new Changeset([])),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            fsdfsdfsdf
-            fsdfsdfsdf
-            fsdfsdfsdf
-
-            MARKDOWN,
-            (string) (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-
-                MARKDOWN,
-            ))
-                ->mutate(new Changeset([[new Append(), 'fsdfsdfsdf']])),
-        );
-        self::assertEquals(
-            <<<'MARKDOWN'
-            fsdfsdfsdf
-            fsdfsdfsdf
-            fsdfsdfsdf
-
-            MARKDOWN,
-            (string) (new Document(
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ))
-                ->mutate(new Changeset([[new Append(), 'fsdfsdfsdf']])),
-        );
+        self::assertEquals($expected, $actual);
     }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{?string, string}>
+     */
+    public static function dataProviderGetTitle(): array {
+        return [
+            'No #'                => [
+                null,
+                <<<'MARKDOWN'
+                ## Header A
+                # Header B
+                MARKDOWN,
+            ],
+            'The # is not first'  => [
+                null,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+
+                # Header
+                MARKDOWN,
+            ],
+            'The # is empty'      => [
+                null,
+                <<<'MARKDOWN'
+                #
+
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+            'Empty line before #' => [
+                'Header',
+                <<<'MARKDOWN'
+
+                # Header
+
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+            'Comment before #'    => [
+                'Header',
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{?string, string}>
+     */
+    public static function dataProviderGetSummary(): array {
+        return [
+            'The # is not first'         => [
+                null,
+                <<<'MARKDOWN'
+                ## Header A
+                # Header B
+
+                sdfsdfsdf
+                MARKDOWN,
+            ],
+            'Summary is the first node'  => [
+                'fsdfsdfsdf',
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+
+                # Header
+
+                sdfsdfsdf
+                MARKDOWN,
+            ],
+            'Quote before #'             => [
+                null,
+                <<<'MARKDOWN'
+                # Header
+
+                > Not a paragraph
+
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+            'Empty #'                    => [
+                'fsdfsdfsdf',
+                <<<'MARKDOWN'
+                #
+
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+            'Multiline'                  => [
+                <<<'TEXT'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                TEXT,
+                <<<'MARKDOWN'
+
+                # Header
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+            'Comments should be ignored' => [
+                <<<'TEXT'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                TEXT,
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                <!-- Comment -->
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{?string, string}>
+     */
+    public static function dataProviderGetBody(): array {
+        return [
+            'The # is not first'         => [
+                null,
+                <<<'MARKDOWN'
+                ## Header A
+                # Header B
+
+                sdfsdfsdf
+                MARKDOWN,
+            ],
+            'Summary is the first node'  => [
+                <<<'TEXT'
+                # Header
+
+                sdfsdfsdf
+                TEXT,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+
+                # Header
+
+                sdfsdfsdf
+                MARKDOWN,
+            ],
+            'Quote before #'             => [
+                null,
+                <<<'MARKDOWN'
+                # Header
+
+                > Not a paragraph
+
+                fsdfsdfsdf
+
+                text text text
+                MARKDOWN,
+            ],
+            'Empty #'                    => [
+                <<<'TEXT'
+                text text text
+
+                text text text
+                TEXT,
+                <<<'MARKDOWN'
+                #
+
+                fsdfsdfsdf
+
+                text text text
+
+                text text text
+                MARKDOWN,
+            ],
+            'Multiline summary'          => [
+                <<<'TEXT'
+                text text text
+
+                text text text
+                TEXT,
+                <<<'MARKDOWN'
+
+                # Header
+
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                text text text
+
+                text text text
+                MARKDOWN,
+            ],
+            'Comments should be ignored' => [
+                <<<'TEXT'
+                <!-- Comment -->
+
+                text text text
+                TEXT,
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                <!-- Comment -->
+
+                summary
+
+                <!-- Comment -->
+
+                text text text
+                MARKDOWN,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{bool, string}>
+     */
+    public static function dataProviderIsEmpty(): array {
+        return [
+            'Empty'          => [
+                true,
+                <<<'MARKDOWN'
+
+
+
+                MARKDOWN,
+            ],
+            'Not empty'      => [
+                false,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+            ],
+            'Reference only' => [
+                false,
+                <<<'MARKDOWN'
+                [unused]: ../path/to/file
+                MARKDOWN,
+            ],
+            'Comment only'   => [
+                false,
+                <<<'MARKDOWN'
+                <!-- comment -->
+                MARKDOWN,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, ?Mutation}>
+     */
+    public static function dataProviderToString(): array {
+        return [
+            'Blank line on the end'                      => [
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                null,
+            ],
+            'No blank line on the end'                   => [
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+                null,
+            ],
+            'Blank line on the end + Empty Mutation'     => [
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                new Changeset([]),
+            ],
+            'No blank line on the end + Empty Mutation'  => [
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+                new Changeset([]),
+            ],
+            'Blank line on the end + Append Mutation'    => [
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                new Changeset([[new Append(), 'fsdfsdfsdf']]),
+            ],
+            'No blank line on the end + Append Mutation' => [
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                fsdfsdfsdf
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                fsdfsdfsdf
+                fsdfsdfsdf
+                MARKDOWN,
+                new Changeset([[new Append(), 'fsdfsdfsdf']]),
+            ],
+        ];
+    }
+    //</editor-fold>
 }

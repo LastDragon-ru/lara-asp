@@ -54,7 +54,7 @@ final class InstructionTest extends TestCase {
         $file     = Mockery::mock(File::class);
         $params   = new Parameters('...');
         $target   = '@test';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -81,7 +81,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = '@test';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -109,7 +109,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = '@test';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -128,7 +128,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $target   = '@test';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

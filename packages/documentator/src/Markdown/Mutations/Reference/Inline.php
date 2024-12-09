@@ -65,7 +65,7 @@ class Inline implements Mutation {
         yield from [];
 
         // Search
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             if ($node instanceof AbstractWebResource && Reference::get($node) !== null) {
                 yield $node;
             } elseif ($node instanceof ReferenceNode) {

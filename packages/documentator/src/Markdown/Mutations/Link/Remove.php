@@ -47,7 +47,7 @@ readonly class Remove implements Mutation {
         yield from [];
 
         // Search
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             if ($node instanceof Link && $this->isLink($document, $node)) {
                 yield $node;
             }

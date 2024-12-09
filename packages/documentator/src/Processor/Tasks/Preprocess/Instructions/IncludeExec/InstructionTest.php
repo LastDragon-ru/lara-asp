@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -27,7 +28,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();

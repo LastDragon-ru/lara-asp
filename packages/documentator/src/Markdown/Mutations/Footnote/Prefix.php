@@ -32,7 +32,7 @@ readonly class Prefix implements Mutation {
         yield from [];
 
         // Process
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             // Footnote?
             if (!($node instanceof FootnoteRef) && !($node instanceof Footnote)) {
                 continue;

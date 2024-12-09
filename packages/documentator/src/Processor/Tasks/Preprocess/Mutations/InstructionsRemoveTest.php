@@ -2,17 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use Mockery;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function array_key_first;
-use function array_values;
 
 /**
  * @internal
@@ -20,7 +14,7 @@ use function array_values;
 #[CoversClass(InstructionsRemove::class)]
 final class InstructionsRemoveTest extends TestCase {
     public function testInvoke(): void {
-        $markdown = <<<'MARKDOWN'
+        $content = <<<'MARKDOWN'
             # Header
 
             [test:instruction]: /path/to/file.md
@@ -41,20 +35,6 @@ final class InstructionsRemoveTest extends TestCase {
 
             [test]: /path/to/file.md
             MARKDOWN;
-        $document = new class($markdown) extends Document {
-            #[Override]
-            public function getNode(): DocumentNode {
-                return parent::getNode();
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLines(): array {
-                return parent::getLines();
-            }
-        };
 
         $instructions = Mockery::mock(InstanceList::class);
         $instructions
@@ -68,11 +48,9 @@ final class InstructionsRemoveTest extends TestCase {
             ->once()
             ->andReturn(false);
 
-        $lines    = $document->getLines();
-        $offset   = (int) array_key_first($lines);
-        $mutation = new InstructionsRemove($instructions);
-        $changes  = $mutation($document);
-        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = (string) $document->mutate(new InstructionsRemove($instructions));
 
         self::assertEquals(
             <<<'MARKDOWN'
@@ -93,6 +71,7 @@ final class InstructionsRemoveTest extends TestCase {
             [//]: # (end: block)
 
             [test]: /path/to/file.md
+
             MARKDOWN,
             $actual,
         );

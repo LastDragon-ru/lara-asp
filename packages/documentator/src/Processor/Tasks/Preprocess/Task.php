@@ -202,7 +202,7 @@ class Task implements TaskContract {
         $tokens   = [];
         $mutation = new InstructionsRemove($this->instructions);
 
-        foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
+        foreach ($document->node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
             if (!Utils::isInstruction($node, $this->instructions)) {
                 continue;

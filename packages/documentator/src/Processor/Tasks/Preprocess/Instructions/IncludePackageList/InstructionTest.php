@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -34,7 +35,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getDirectoryPath('packages');
         $params   = new Parameters('...', template: $template, order: $order);
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -55,7 +56,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getDirectoryPath('no readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
 
@@ -74,7 +75,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getDirectoryPath('empty readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
         $expected = $fs->getFile($root, 'empty readme/package/README.md');

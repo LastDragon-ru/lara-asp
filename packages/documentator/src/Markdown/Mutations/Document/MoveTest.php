@@ -3,16 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use function array_key_first;
-use function array_values;
 
 /**
  * @internal
@@ -24,25 +18,9 @@ final class MoveTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, ?string $path, string $content, string $target): void {
         $path     = $path !== null ? new FilePath($path) : null;
-        $mutation = new Move(new FilePath($target));
-        $document = new class($content, $path) extends Document {
-            #[Override]
-            public function getNode(): DocumentNode {
-                return parent::getNode();
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLines(): array {
-                return parent::getLines();
-            }
-        };
-        $lines    = $document->getLines();
-        $offset   = (int) array_key_first($lines);
-        $changes  = $mutation($document);
-        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content, $path);
+        $actual   = (string) $document->mutate(new Move(new FilePath($target)));
 
         self::assertEquals($expected, $actual);
     }
@@ -59,6 +37,7 @@ final class MoveTest extends TestCase {
             'from `null`'    => [
                 <<<'MARKDOWN'
                 [foo]: relative/path/from "title"
+
                 MARKDOWN,
                 null,
                 <<<'MARKDOWN'
@@ -69,6 +48,7 @@ final class MoveTest extends TestCase {
             'same'           => [
                 <<<'MARKDOWN'
                 [foo]: /path "title"
+
                 MARKDOWN,
                 '/path/file.md',
                 <<<'MARKDOWN'
@@ -79,6 +59,7 @@ final class MoveTest extends TestCase {
             'empty'          => [
                 <<<'MARKDOWN'
                 [foo]: # "title"
+
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'
@@ -90,6 +71,7 @@ final class MoveTest extends TestCase {
                 <<<'MARKDOWN'
                 [foo]: ../from/path?a=123#fragment
                 [bar]: ?a=123#fragment
+
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'
@@ -143,6 +125,7 @@ final class MoveTest extends TestCase {
                 > [quote]: ../file/a
                 >
                 > [quote]: ../from/file/b (title)
+
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'
@@ -229,6 +212,7 @@ final class MoveTest extends TestCase {
                 |-------------------------|-----------------------------------------------------------------|
                 | Cell [link][link] cell. | Cell `\|` \\| [table](<../from/file\|a> "\|")                           |
                 | Cell                    | Cell cell [table](https://example.com/) cell [table](../from/file/a). |
+
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'
@@ -301,6 +285,7 @@ final class MoveTest extends TestCase {
                 |-------------------------|-------------------------------------------------------------------|
                 | Cell [link][link] cell. | Cell `\|` \\| ![table](<../from/file\|a> "\|")                            |
                 | Cell                    | Cell cell ![table](https://example.com/) cell ![table](../from/file/a). |
+
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'
@@ -359,6 +344,7 @@ final class MoveTest extends TestCase {
 
                 [^note]: Text text [tel](tel:+70000000000 "title") text [link](../from/file/a)
                     text [absolute](/path/to/file 'title') text [link](../from/file/b)
+
                 MARKDOWN,
                 '/path/from/file.md',
                 <<<'MARKDOWN'

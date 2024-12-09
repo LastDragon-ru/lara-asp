@@ -3,16 +3,20 @@
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use PhpParser\NameContext;
+use PhpParser\Node\Name;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
-use ReflectionClass;
-use ReflectionProperty;
 
 use function file_get_contents;
+use function preg_replace_callback;
+use function trim;
+
+use const PREG_UNMATCHED_AS_NULL;
 
 /**
  * @internal
@@ -24,31 +28,42 @@ class PhpDocumentFactory {
     private array $context = [];
 
     public function __construct(
+        protected readonly Markdown $markdown,
         protected readonly LinkFactory $factory,
     ) {
         // empty
     }
 
-    /**
-     * @param ReflectionClass<object>|ReflectionProperty $object
-     */
-    public function __invoke(ReflectionClass|ReflectionProperty $object): Document {
-        $document = null;
-        $path     = match (true) {
-            $object instanceof ReflectionProperty => $object->getDeclaringClass()->getFileName(),
-            default                               => $object->getFileName(),
-        };
+    public function __invoke(PhpDoc $phpdoc, ?FilePath $path, ?NameContext $context = null): Document {
+        $text = $phpdoc->getText();
 
-        if ($path !== false) {
-            $phpdoc   = new PhpDoc((string) $object->getDocComment());
-            $context  = $this->getContext($path);
-            $document = $phpdoc->getDocument($this->factory, $context, new FilePath($path));
-        } else {
-            $phpdoc   = new PhpDoc((string) $object->getDocComment());
-            $document = new Document($phpdoc->getText(), null);
+        if ($path !== null) {
+            $context ??= $this->getContext((string) $path);
+            $text      = trim(
+                (string) preg_replace_callback(
+                    pattern : '/\{@(?:see|link)\s+(?P<reference>[^}\s]+)\s?}/imu',
+                    callback: function (array $matches) use ($context): string {
+                        $result    = $matches[0];
+                        $reference = $this->factory->create(
+                            $matches['reference'],
+                            static function (string $class) use ($context): string {
+                                return (string) $context->getResolvedClassName(new Name($class));
+                            },
+                        );
+
+                        if ($reference !== null) {
+                            $result = "`{$reference}`";
+                        }
+
+                        return $result;
+                    },
+                    subject : $text,
+                    flags   : PREG_UNMATCHED_AS_NULL,
+                ),
+            );
         }
 
-        return $document;
+        return $this->markdown->parse($text, $path);
     }
 
     private function getContext(string $path): NameContext {

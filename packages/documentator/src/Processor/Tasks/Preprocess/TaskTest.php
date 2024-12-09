@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -89,7 +90,7 @@ final class TaskTest extends TestCase {
 
         $root     = Mockery::mock(Directory::class);
         $file     = Mockery::mock(File::class);
-        $document = new Document(self::MARKDOWN);
+        $document = $this->app()->make(MarkdownContract::class)->parse(self::MARKDOWN);
         $tokens   = $task->parse($root, $file, $document);
         $actual   = array_map(
             static function (array $tokens): array {
@@ -159,9 +160,9 @@ final class TaskTest extends TestCase {
 
     public function testInvoke(): void {
         $task   = $this->app()->make(Task::class)
-            ->addInstruction(new TaskTest__EmptyInstruction())
-            ->addInstruction(new TaskTest__TestInstruction())
-            ->addInstruction(new TaskTest__DocumentInstruction());
+            ->addInstruction(TaskTest__EmptyInstruction::class)
+            ->addInstruction(TaskTest__TestInstruction::class)
+            ->addInstruction(TaskTest__DocumentInstruction::class);
         $actual = null;
         $path   = new FilePath('path/to/file.md');
         $file   = Mockery::mock(File::class);
@@ -180,8 +181,8 @@ final class TaskTest extends TestCase {
             ->with(Mockery::type(Markdown::class))
             ->once()
             ->andReturnUsing(
-                static function () use ($path): Document {
-                    return new Document(static::MARKDOWN, $path);
+                function () use ($path): Document {
+                    return $this->app()->make(MarkdownContract::class)->parse(static::MARKDOWN, $path);
                 },
             );
         $file
@@ -358,6 +359,12 @@ class TaskTest__TestInstruction implements Instruction {
  * @implements Instruction<TaskTest__ParametersEmpty>
  */
 class TaskTest__DocumentInstruction implements Instruction {
+    public function __construct(
+        protected readonly MarkdownContract $markdown,
+    ) {
+        // empty
+    }
+
     #[Override]
     public static function getName(): string {
         return 'test:document';
@@ -375,7 +382,7 @@ class TaskTest__DocumentInstruction implements Instruction {
 
     #[Override]
     public function __invoke(Context $context, string $target, mixed $parameters): Document {
-        return new Document(
+        return $this->markdown->parse(
             <<<'MARKDOWN'
             Summary [text](../Document.md) summary [link][link] and summary[^1] and [self](#fragment) and [self][self].
 

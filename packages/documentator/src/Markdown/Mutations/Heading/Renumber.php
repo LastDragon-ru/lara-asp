@@ -64,7 +64,7 @@ class Renumber implements Mutation {
     private function getHeadings(Document $document, int &$highest): array {
         $headings = [];
 
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             // Heading?
             if (!($node instanceof Heading)) {
                 continue;
