@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -34,7 +35,7 @@ final class InstructionTest extends TestCase {
         $file    = new File($path, false);
         $params  = new Parameters('...');
         $target  = self::getTestData()->path('Example.md');
-        $context = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
 
         $this->override(Runner::class, static function (MockInterface $mock) use ($target, $output): void {
             $mock
@@ -60,7 +61,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $params   = new Parameters('...');
         $target   = $file->getName();
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $expected = trim($file->getContent());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);

@@ -31,7 +31,7 @@ class Utils {
     }
 
     public static function getSeed(Context $context, Document|File $file): string {
-        $path = $file instanceof Document ? $file->getPath() : $file;
+        $path = $file instanceof Document ? $file->path : $file;
         $path = $path !== null ? (string) $context->root->getRelativePath($path) : '';
         $path = $path !== '' ? $path : uniqid(self::class); // @phpstan-ignore disallowed.function
         $path = Text::hash($path);

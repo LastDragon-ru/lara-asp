@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
@@ -88,7 +89,7 @@ final class TaskTest extends TestCase {
             return trim((string) $renderer->renderDocument($document));
         };
 
-        $document = new Document(
+        $document = $this->app()->make(MarkdownContract::class)->parse(
             <<<'MARKDOWN'
             Text `💀App\Deprecated` text `App\ClassA` text [App\ClassB](https://example.com/)
             text [`\App\ClassC`](https://example.com/) text [`Class`](./class.php "App\ClassD")

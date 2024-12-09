@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -30,8 +31,9 @@ final class UtilsTest extends TestCase {
     }
 
     public function testIsPathToSelf(): void {
-        $a = new Document('', new FilePath('/path/to/a.md'));
-        $b = new Document('', new FilePath('/path/to/b.md'));
+        $md = $this->app()->make(Markdown::class);
+        $a  = $md->parse('', new FilePath('/path/to/a.md'));
+        $b  = $md->parse('', new FilePath('/path/to/b.md'));
 
         self::assertTrue(Utils::isPathToSelf($a, '.'));
         self::assertTrue(Utils::isPathToSelf($a, '#fragment'));

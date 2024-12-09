@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
 
 /**
@@ -13,7 +13,7 @@ use Override;
  */
 class PhpClassMarkdown implements Metadata {
     public function __construct(
-        protected readonly LinkFactory $factory,
+        protected readonly PhpDocumentFactory $factory,
         protected readonly PhpClassComment $comment,
     ) {
         // empty
@@ -32,7 +32,7 @@ class PhpClassMarkdown implements Metadata {
         }
 
         // Parse
-        $document = $comment->comment->getDocument($this->factory, $comment->context, $file->getPath());
+        $document = ($this->factory)($comment->comment, $file->getPath(), $comment->context);
 
         return $document;
     }

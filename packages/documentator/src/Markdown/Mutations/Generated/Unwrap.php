@@ -27,7 +27,7 @@ readonly class Unwrap implements Mutation {
         yield from [];
 
         // Process
-        foreach ($document->getNode()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
+        foreach ($document->node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Generated?
             if (!($node instanceof Block)) {
                 continue;

@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
@@ -29,7 +30,9 @@ use const PREG_UNMATCHED_AS_NULL;
  * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
-    public function __construct() {
+    public function __construct(
+        protected readonly Markdown $markdown,
+    ) {
         // empty
     }
 
@@ -103,7 +106,7 @@ class Instruction implements InstructionContract {
 
         // Markdown?
         if ($file->getExtension() === 'md') {
-            $content = new Document($content, $file->getPath());
+            $content = $this->markdown->parse($content, $file->getPath());
         }
 
         // Return

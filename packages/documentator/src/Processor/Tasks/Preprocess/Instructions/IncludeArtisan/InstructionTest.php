@@ -36,7 +36,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command, $expected): void {
@@ -86,7 +86,7 @@ final class InstructionTest extends TestCase {
         };
         $params   = new Parameters('...');
         $command  = $node->getDestination();
-        $context  = new Context($root, $file, new Document(''), $node, new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), $node, new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command): void {
@@ -138,7 +138,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = new class (Mockery::mock(ApplicationResolver::class)) extends Instruction {
             #[Override]
             public function getCommand(Context $context, string $target, Parameters $parameters): string {

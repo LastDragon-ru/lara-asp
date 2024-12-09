@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -38,7 +39,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...', $data);
         $target   = self::getTestData()->path($source);
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
@@ -57,7 +58,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...', []);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -78,7 +79,7 @@ final class InstructionTest extends TestCase {
             'd' => 'D',
         ]);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -96,7 +97,7 @@ final class InstructionTest extends TestCase {
             'a' => 'A',
         ]);
         $target   = $file->getPath();
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

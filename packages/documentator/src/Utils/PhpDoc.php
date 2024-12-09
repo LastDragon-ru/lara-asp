@@ -2,11 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
-use PhpParser\NameContext;
-use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -17,10 +12,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 
 use function array_slice;
 use function implode;
-use function preg_replace_callback;
 use function trim;
-
-use const PREG_UNMATCHED_AS_NULL;
 
 /**
  * @internal
@@ -55,34 +47,6 @@ class PhpDoc {
 
     public function isDeprecated(): bool {
         return $this->node !== null && $this->node->getDeprecatedTagValues() !== [];
-    }
-
-    public function getDocument(LinkFactory $factory, NameContext $context, ?FilePath $path = null): Document {
-        return new Document(
-            trim(
-                (string) preg_replace_callback(
-                    pattern : '/\{@(?:see|link)\s+(?P<reference>[^}\s]+)\s?}/imu',
-                    callback: static function (array $matches) use ($context, $factory): string {
-                        $result    = $matches[0];
-                        $reference = $factory->create(
-                            $matches['reference'],
-                            static function (string $class) use ($context): string {
-                                return (string) $context->getResolvedClassName(new Name($class));
-                            },
-                        );
-
-                        if ($reference !== null) {
-                            $result = "`{$reference}`";
-                        }
-
-                        return $result;
-                    },
-                    subject : $this->getText(),
-                    flags   : PREG_UNMATCHED_AS_NULL,
-                ),
-            ),
-            $path,
-        );
     }
 
     /**

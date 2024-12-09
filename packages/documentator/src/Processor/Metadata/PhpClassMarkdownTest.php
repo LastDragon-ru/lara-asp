@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -37,7 +37,7 @@ final class PhpClassMarkdownTest extends TestCase {
             false,
         );
         $factory  = new PhpClassMarkdown(
-            $this->app()->make(LinkFactory::class),
+            $this->app()->make(PhpDocumentFactory::class),
             new PhpClassComment(new PhpClass()),
         );
         $metadata = $factory($file);
@@ -48,6 +48,7 @@ final class PhpClassMarkdownTest extends TestCase {
             Description.
 
             Summary `\stdClass` and `\LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`, {@see https://example.com/}.
+
             MARKDOWN,
             (string) $metadata,
         );
@@ -55,7 +56,10 @@ final class PhpClassMarkdownTest extends TestCase {
 
     public function testInvokeEmpty(): void {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
-        $factory  = new PhpClassMarkdown($this->app()->make(LinkFactory::class), new PhpClassComment(new PhpClass()));
+        $factory  = new PhpClassMarkdown(
+            $this->app()->make(PhpDocumentFactory::class),
+            new PhpClassComment(new PhpClass()),
+        );
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -65,7 +69,7 @@ final class PhpClassMarkdownTest extends TestCase {
     public function testInvokeNotPhp(): void {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $factory  = new PhpClassMarkdown(
-            $this->app()->make(LinkFactory::class),
+            $this->app()->make(PhpDocumentFactory::class),
             new class(new PhpClass()) extends PhpClassComment {
                 #[Override]
                 public function __invoke(File $file): mixed {

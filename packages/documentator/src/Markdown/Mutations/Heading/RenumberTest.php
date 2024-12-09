@@ -2,16 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use function array_key_first;
-use function array_values;
 
 /**
  * @internal
@@ -24,25 +18,10 @@ final class RenumberTest extends TestCase {
      * @param int<1, 6> $level
      */
     #[DataProvider('dataProviderInvoke')]
-    public function testInvoke(string $expected, int $level, string $markdown): void {
-        $document = new class($markdown) extends Document {
-            #[Override]
-            public function getNode(): DocumentNode {
-                return parent::getNode();
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLines(): array {
-                return parent::getLines();
-            }
-        };
-        $lines    = $document->getLines();
-        $offset   = (int) array_key_first($lines);
-        $editor   = new Editor(array_values($lines), $offset);
-        $actual   = (string) $editor->mutate((new Renumber($level))($document));
+    public function testInvoke(string $expected, int $level, string $content): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = (string) $document->mutate(new Renumber($level));
 
         self::assertEquals($expected, $actual);
     }
@@ -60,6 +39,7 @@ final class RenumberTest extends TestCase {
                 ## A
 
                 ### B ###
+
                 MARKDOWN,
                 2,
                 <<<'MARKDOWN'
@@ -106,6 +86,7 @@ final class RenumberTest extends TestCase {
                 ### Header 2
 
                 * item
+
                 MARKDOWN,
                 2,
                 <<<'MARKDOWN'
@@ -176,6 +157,7 @@ final class RenumberTest extends TestCase {
 
                 Foo *bar*
                 ---------
+
                 MARKDOWN,
                 1,
                 <<<'MARKDOWN'

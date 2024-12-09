@@ -205,7 +205,7 @@ class Utils {
     }
 
     public static function isPathToSelf(Document $document, FilePath|string $path): bool {
-        $self = $document->getPath();
+        $self = $document->path;
         $path = (string) parse_url((string) $path, PHP_URL_PATH);
         $is   = $path === '' || $path === '.' || $self === null || $self->isEqual($self->getFilePath($path));
 

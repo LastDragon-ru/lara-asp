@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -35,7 +36,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $target   = $file->getName();
-        $context  = new Context($root, $file, new Document(''), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
@@ -52,7 +53,7 @@ final class InstructionTest extends TestCase {
             self::assertIsString($actual);
         }
 
-        self::assertEquals($expected, (string) $actual);
+        self::assertEquals($expected, trim((string) $actual));
     }
     //</editor-fold>
 

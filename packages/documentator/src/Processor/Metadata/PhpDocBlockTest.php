@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -38,6 +39,7 @@ final class PhpDocBlockTest extends TestCase {
             false,
         );
         $factory  = new PhpDocBlock(
+            $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
             new PhpClass(),
         );
@@ -49,6 +51,7 @@ final class PhpDocBlockTest extends TestCase {
             Description.
 
             Summary `\stdClass` and `\LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`, {@see https://example.com/}.
+
             MARKDOWN,
             (string) $metadata,
         );
@@ -56,7 +59,11 @@ final class PhpDocBlockTest extends TestCase {
 
     public function testInvokeEmpty(): void {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
-        $factory  = new PhpDocBlock($this->app()->make(LinkFactory::class), new PhpClass());
+        $factory  = new PhpDocBlock(
+            $this->app()->make(Markdown::class),
+            $this->app()->make(LinkFactory::class),
+            new PhpClass(),
+        );
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -66,6 +73,7 @@ final class PhpDocBlockTest extends TestCase {
     public function testInvokeNotPhp(): void {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $factory  = new PhpDocBlock(
+            $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
             new class() extends PhpClass {
                 #[Override]

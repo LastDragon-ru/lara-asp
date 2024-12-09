@@ -179,7 +179,7 @@ class Task implements TaskContract {
         $changes = [];
 
         // Remove blocks
-        $refsParentNode     = $document->getNode();
+        $refsParentNode     = $document->node;
         $refsParentLocation = null;
 
         foreach ($blocks as $block) {
@@ -285,7 +285,7 @@ class Task implements TaskContract {
         $links  = [];
         $blocks = [];
 
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             if ($node instanceof GeneratedNode && $node->id === static::BlockMarker) {
                 $blocks[] = $node;
             } elseif ($node instanceof CodeNode) {

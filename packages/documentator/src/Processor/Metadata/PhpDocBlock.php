@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
@@ -29,6 +30,7 @@ trigger_deprecation(Package::Name, '7.0.0', 'Please use `%s` instead.', PhpClass
  */
 class PhpDocBlock implements Metadata {
     public function __construct(
+        protected readonly Markdown $markdown,
         protected readonly LinkFactory $factory,
         protected readonly PhpClass $class,
     ) {
@@ -53,7 +55,7 @@ class PhpDocBlock implements Metadata {
         $content = trim($content);
 
         // Create
-        return new Document($content, $file->getPath());
+        return $this->markdown->parse($content, $file->getPath());
     }
 
     private function preprocess(NameContext $context, string $string): string {

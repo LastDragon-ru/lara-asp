@@ -83,7 +83,7 @@ class Prefix implements Mutation {
         yield from [];
 
         // Search
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             if ($node instanceof AbstractWebResource && ReferenceData::get($node) !== null) {
                 yield $node;
             } elseif ($node instanceof ReferenceNode) {

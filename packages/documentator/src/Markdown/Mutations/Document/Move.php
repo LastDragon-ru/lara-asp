@@ -52,10 +52,10 @@ readonly class Move implements Mutation {
         yield from [];
 
         // No path?
-        $docPath = $document->getPath();
+        $docPath = $document->path;
 
         if ($docPath === null) {
-            $document->setPath($this->path->getNormalizedPath());
+            $document->path = $this->path->getNormalizedPath();
 
             return;
         }
@@ -120,7 +120,7 @@ readonly class Move implements Mutation {
         }
 
         // Set
-        $document->setPath($newPath);
+        $document->path = $newPath;
     }
 
     /**
@@ -131,7 +131,7 @@ readonly class Move implements Mutation {
         yield from [];
 
         // Search
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             $url = null;
 
             if ($node instanceof AbstractWebResource && Reference::get($node) === null) {

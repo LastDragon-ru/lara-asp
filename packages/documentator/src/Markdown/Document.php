@@ -7,16 +7,15 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Node;
-use League\CommonMark\Parser\MarkdownParser;
 use Override;
 use Stringable;
 
@@ -26,7 +25,6 @@ use function array_values;
 use function count;
 use function implode;
 use function is_int;
-use function is_string;
 use function ltrim;
 use function str_ends_with;
 use function str_starts_with;
@@ -36,26 +34,24 @@ use function trim;
 //      https://github.com/thephpleague/commonmark/issues/419
 
 class Document implements Stringable {
-    private DocumentNode|string $node;
+    private ?Editor $editor  = null;
+    private ?string $title   = null;
+    private ?string $summary = null;
 
-    private ?MarkdownParser $parser  = null;
-    private ?Editor         $editor  = null;
-    private ?FilePath       $path    = null;
-    private ?string         $title   = null;
-    private ?string         $summary = null;
-
-    public function __construct(string $content, ?FilePath $path = null) {
-        $this->setContent($content);
-        $this->setPath($path);
+    public function __construct(
+        protected readonly Markdown $markdown,
+        public readonly DocumentNode $node,
+        public ?FilePath $path = null,
+    ) {
+        // empty
     }
 
     public function isEmpty(): bool {
-        return !$this->getNode()->hasChildren() && count($this->getNode()->getReferenceMap()) === 0;
+        return !$this->node->hasChildren() && count($this->node->getReferenceMap()) === 0;
     }
 
     /**
-     * Returns the first `# Header` if present, the title based on filename
-     * if known, or `null`.
+     * Returns the first `# Header` if present.
      */
     public function getTitle(): ?string {
         if ($this->title === null) {
@@ -98,16 +94,6 @@ class Document implements Stringable {
         return $body;
     }
 
-    public function getPath(): ?FilePath {
-        return $this->path;
-    }
-
-    public function setPath(?FilePath $path): static {
-        $this->path = $path;
-
-        return $this;
-    }
-
     /**
      * @param iterable<array-key, Coordinate> $location
      */
@@ -115,45 +101,23 @@ class Document implements Stringable {
         return $this->getEditor()->getText($location);
     }
 
-    /**
-     * @return new<static>
-     */
-    public function mutate(Mutation ...$mutations): static {
+    public function mutate(Mutation ...$mutations): self {
         $document = clone $this;
 
         foreach ($mutations as $mutation) {
             $changes  = $mutation($document);
             $content  = trim((string) $document->getEditor()->mutate($changes))."\n";
-            $document = $document->setContent($content);
+            $document = $this->markdown->parse($content, $document->path);
         }
 
         return $document;
-    }
-
-    protected function setContent(string $content): static {
-        $this->node    = $content;
-        $this->title   = null;
-        $this->summary = null;
-        $this->editor  = null;
-
-        return $this;
-    }
-
-    protected function parse(string $string): DocumentNode {
-        if (!isset($this->parser)) {
-            $converter    = new GithubFlavoredMarkdownConverter();
-            $environment  = $converter->getEnvironment()->addExtension(new Extension());
-            $this->parser = new MarkdownParser($environment);
-        }
-
-        return $this->parser->parse($string);
     }
 
     /**
      * @return array<array-key, string>
      */
     protected function getLines(): array {
-        return Lines::get($this->getNode());
+        return Lines::get($this->node);
     }
 
     protected function getEditor(): Editor {
@@ -164,14 +128,6 @@ class Document implements Stringable {
         }
 
         return $this->editor;
-    }
-
-    public function getNode(): DocumentNode {
-        if (is_string($this->node)) {
-            $this->node = $this->parse($this->node);
-        }
-
-        return $this->node;
     }
 
     /**
@@ -186,7 +142,7 @@ class Document implements Stringable {
     private function getFirstNode(string $class, ?Closure $filter = null, ?Closure $skip = null): ?Node {
         $node = null;
 
-        foreach ($this->getNode()->children() as $child) {
+        foreach ($this->node->children() as $child) {
             // Comment?
             if (
                 $child instanceof HtmlBlock
@@ -239,6 +195,6 @@ class Document implements Stringable {
 
     #[Override]
     public function __toString(): string {
-        return is_string($this->node) ? $this->node : implode("\n", $this->getLines())."\n";
+        return implode("\n", $this->getLines())."\n";
     }
 }

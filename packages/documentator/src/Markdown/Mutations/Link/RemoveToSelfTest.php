@@ -3,15 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function array_key_first;
-use function array_values;
 
 /**
  * @internal
@@ -19,7 +13,7 @@ use function array_values;
 #[CoversClass(RemoveToSelf::class)]
 final class RemoveToSelfTest extends TestCase {
     public function testInvoke(): void {
-        $markdown = <<<'MARKDOWN'
+        $content = <<<'MARKDOWN'
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
@@ -53,25 +47,10 @@ final class RemoveToSelfTest extends TestCase {
             | Cell [link][self-a] cell. | Cell `\|` \\| ![table][image] |
             | Cell                      | Cell cell [table][self-a].    |
             MARKDOWN;
-        $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
-            #[Override]
-            public function getNode(): DocumentNode {
-                return parent::getNode();
-            }
 
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLines(): array {
-                return parent::getLines();
-            }
-        };
-        $lines    = $document->getLines();
-        $offset   = (int) array_key_first($lines);
-        $mutation = new RemoveToSelf();
-        $changes  = $mutation($document);
-        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content, new FilePath('path/to/file.md'));
+        $actual   = (string) $document->mutate(new RemoveToSelf());
 
         self::assertEquals(
             <<<'MARKDOWN'
@@ -107,6 +86,7 @@ final class RemoveToSelfTest extends TestCase {
             |---------------------------|-------------------------------|
             | Cell link cell. | Cell `\|` \\| ![table][image] |
             | Cell                      | Cell cell table.    |
+
             MARKDOWN,
             $actual,
         );

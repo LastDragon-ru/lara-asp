@@ -3,15 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function array_key_first;
-use function array_values;
 
 /**
  * @internal
@@ -19,7 +13,7 @@ use function array_values;
 #[CoversClass(Prefix::class)]
 final class PrefixTest extends TestCase {
     public function testInvoke(): void {
-        $markdown = <<<'MARKDOWN'
+        $content = <<<'MARKDOWN'
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
@@ -43,25 +37,10 @@ final class PrefixTest extends TestCase {
             | Cell [link][link] cell. | Cell `\|` \\| ![table][image] |
             | Cell                    | Cell cell [table][link].      |
             MARKDOWN;
-        $document = new class($markdown, new FilePath('path/to/file.md')) extends Document {
-            #[Override]
-            public function getNode(): DocumentNode {
-                return parent::getNode();
-            }
 
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLines(): array {
-                return parent::getLines();
-            }
-        };
-        $lines    = $document->getLines();
-        $offset   = (int) array_key_first($lines);
-        $mutation = new Prefix('prefix');
-        $changes  = $mutation($document);
-        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content, new FilePath('path/to/file.md'));
+        $actual   = (string) $document->mutate(new Prefix('prefix'));
 
         self::assertEquals(
             <<<'MARKDOWN'
@@ -87,6 +66,7 @@ final class PrefixTest extends TestCase {
             |-------------------------|-------------------------------|
             | Cell [link][prefix-link] cell. | Cell `\|` \\| ![table][prefix-image] |
             | Cell                    | Cell cell [table][prefix-link].      |
+
             MARKDOWN,
             $actual,
         );

@@ -27,7 +27,7 @@ readonly class Remove implements Mutation {
         yield from [];
 
         // Process
-        foreach ($document->getNode()->iterator() as $node) {
+        foreach ($document->node->iterator() as $node) {
             $location = match (true) {
                 $node instanceof FootnoteRef, $node instanceof Footnote => LocationData::get($node),
                 default                                                   => null,

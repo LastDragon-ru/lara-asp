@@ -53,7 +53,7 @@ class Context {
 
     private function getMutation(Document $document): Mutation {
         $path = $this->file->getPath();
-        $path = $path->getPath(new FilePath($document->getPath()?->getName() ?? ''));
+        $path = $path->getPath(new FilePath($document->path?->getName() ?? ''));
 
         return new Composite(
             new Move($path),

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -38,6 +38,7 @@ class Instruction implements InstructionContract {
     protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
     public function __construct(
+        protected readonly Markdown $markdown,
         protected readonly ?Runner $runner = null,
     ) {
         // empty
@@ -94,7 +95,7 @@ class Instruction implements InstructionContract {
                     subject : $output,
                     flags   : PREG_UNMATCHED_AS_NULL,
                 );
-                $output = new Document($output, $target->getPath());
+                $output = $this->markdown->parse($output, $target->getPath());
                 $output = $context->toInlinable($output);
                 $output = trim((string) $output);
             }

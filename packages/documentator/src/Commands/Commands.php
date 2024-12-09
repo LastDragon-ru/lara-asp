@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
@@ -36,7 +36,12 @@ class Commands extends Command {
         {--defaults : Include application default arguments/options like `--help`, etc.}
     SIGNATURE;
 
-    public function __invoke(PackageViewer $viewer, Filesystem $filesystem, ArtisanSerializer $serializer): void {
+    public function __invoke(
+        PackageViewer $viewer,
+        Filesystem $filesystem,
+        Markdown $markdown,
+        ArtisanSerializer $serializer,
+    ): void {
         // Options
         $application = Cast::to(Application::class, $this->getApplication());
         $namespace   = $application->findNamespace(Cast::toString($this->argument('namespace')));
@@ -68,6 +73,7 @@ class Commands extends Command {
             $this->components->task(
                 "Command: {$command->getName()}",
                 static function () use (
+                    $markdown,
                     $filesystem,
                     $serializer,
                     $viewer,
@@ -94,7 +100,7 @@ class Commands extends Command {
                         'serializer' => $serializer,
                         'command'    => $command,
                     ]);
-                    $content = (string) (new Document($content, $source))->mutate(
+                    $content = (string) $markdown->parse($content, $source)->mutate(
                         new Move($path),
                     );
 

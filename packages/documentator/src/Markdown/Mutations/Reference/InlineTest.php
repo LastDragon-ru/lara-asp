@@ -2,15 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Node\Block\Document as DocumentNode;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-
-use function array_key_first;
-use function array_values;
 
 /**
  * @internal
@@ -18,7 +12,7 @@ use function array_values;
 #[CoversClass(Inline::class)]
 final class InlineTest extends TestCase {
     public function testInvoke(): void {
-        $markdown = <<<'MARKDOWN'
+        $content = <<<'MARKDOWN'
             # Header
 
             Text text [link](https://example.com) text text [`link`][link] text
@@ -43,25 +37,10 @@ final class InlineTest extends TestCase {
             | Cell [link][link] cell. | Cell `\|` \\| ![table][table] |
             | Cell                    | Cell cell ![table][link].     |
             MARKDOWN;
-        $document = new class($markdown) extends Document {
-            #[Override]
-            public function getNode(): DocumentNode {
-                return parent::getNode();
-            }
 
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getLines(): array {
-                return parent::getLines();
-            }
-        };
-        $lines    = $document->getLines();
-        $offset   = (int) array_key_first($lines);
-        $mutation = new Inline();
-        $changes  = $mutation($document);
-        $actual   = (string) (new Editor(array_values($lines), $offset))->mutate($changes);
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($content);
+        $actual   = (string) $document->mutate(new Inline());
 
         self::assertEquals(
             <<<'MARKDOWN'
@@ -84,6 +63,7 @@ final class InlineTest extends TestCase {
             |-------------------------|-------------------------------|
             | Cell [link](https://example.com) cell. | Cell `\|` \\| ![table](https://example.com "table \| cell") |
             | Cell                    | Cell cell ![table](https://example.com).     |
+
             MARKDOWN,
             $actual,
         );
