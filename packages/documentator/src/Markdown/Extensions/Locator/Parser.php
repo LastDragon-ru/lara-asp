@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding as DataBlockPadding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding as PaddingData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Delimiter\DelimiterInterface;

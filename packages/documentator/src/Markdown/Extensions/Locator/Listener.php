@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;

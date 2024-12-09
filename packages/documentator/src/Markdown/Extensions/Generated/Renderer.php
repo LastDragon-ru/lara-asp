@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\EndMarkerLocation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Data\StartMarkerLocation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\XmlRenderer;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\XmlRenderer;
 use League\CommonMark\Node\Node;
 use Override;
 

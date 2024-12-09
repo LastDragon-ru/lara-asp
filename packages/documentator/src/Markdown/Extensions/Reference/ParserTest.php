@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\RendererWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;

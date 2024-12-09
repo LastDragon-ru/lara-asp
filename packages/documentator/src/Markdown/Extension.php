@@ -4,10 +4,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\ParserStart as GenerateParser;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Listener;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator\Parser;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\ParserStart as ReferenceParser;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\ParserStart as GenerateParser;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Listener;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Parser;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\ParserStart as ReferenceParser;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Event\DocumentPreParsedEvent;

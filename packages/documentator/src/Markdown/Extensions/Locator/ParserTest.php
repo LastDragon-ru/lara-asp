@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Locator;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block as ReferenceNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Renderer as ReferenceRenderer;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\RendererWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block as ReferenceNode;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Renderer as ReferenceRenderer;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use League\CommonMark\Node\Node;
