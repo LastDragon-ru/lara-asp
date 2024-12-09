@@ -7,8 +7,8 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated\Block as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -24,14 +24,12 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\NodeIterator;
 use Override;
-
 use function is_array;
 use function json_decode;
 use function json_encode;
 use function ksort;
 use function rawurldecode;
 use function trim;
-
 use const JSON_THROW_ON_ERROR;
 
 /**

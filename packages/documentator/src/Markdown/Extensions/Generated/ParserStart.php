@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Generated;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Parser\Block\BlockStart;
