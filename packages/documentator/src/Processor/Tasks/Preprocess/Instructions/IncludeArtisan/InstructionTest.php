@@ -7,8 +7,8 @@ use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -22,7 +22,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use function sprintf;
 
 /**
@@ -36,7 +35,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command, $expected): void {
@@ -78,7 +77,7 @@ final class InstructionTest extends TestCase {
     public function testInvokeFailed(): void {
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
-        $node     = new class() extends Block {
+        $node     = new class() extends Node {
             #[Override]
             public function getDestination(): string {
                 return 'command to execute';
@@ -138,7 +137,7 @@ final class InstructionTest extends TestCase {
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
         $params   = new Parameters('...');
         $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = new class (Mockery::mock(ApplicationResolver::class)) extends Instruction {
             #[Override]
             public function getCommand(Context $context, string $target, Parameters $parameters): string {

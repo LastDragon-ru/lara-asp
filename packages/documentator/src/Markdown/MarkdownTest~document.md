@@ -1,0 +1,46 @@
+# Generated[^1]
+
+[//]: # (start: block)
+
+Text text text text text text text text text text text text text
+text text text text text text text text text text text text text
+text text text text text text text text text text text text.
+
+[//]: # (start: nested)
+
+Nested should be ignored.
+
+[//]: # (end: nested)
+
+[//]: # (end: block)
+
+> Quote
+> [//]: # (start: quote)
+> should work
+> [//]: # (end: quote)
+
+# References
+
+[simple]: https://example.com/
+
+[multiline]:
+https://example.com/
+(
+    example.com
+)
+
+> Quote
+>
+> [quote]:
+> https://example.com/
+
+# Tables
+
+| Header                   | Header ([link](https://example.com/))                       |
+|--------------------------|-------------------------------------------------------------|
+| Cell [link][quote] cell. | Cell                                                        |
+| Cell                     | Cell cell [link](https://example.com/) cell [link][simple]. |
+
+# Footnotes
+
+[^1]: Footnote text text text text

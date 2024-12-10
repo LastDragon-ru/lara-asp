@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -15,10 +15,8 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-
 use function json_decode;
 use function json_encode;
-
 use const JSON_THROW_ON_ERROR;
 
 /**
@@ -35,9 +33,9 @@ final class InstructionTest extends TestCase {
         $root        = new Directory($path->getDirectoryPath(), false);
         $file        = new File($path, false);
         $document    = $this->app()->make(Markdown::class)->parse($content, $path);
-        $instruction = (new Query())->where(Query::type(Block::class))->findOne($document->node);
+        $instruction = (new Query())->where(Query::type(Node::class))->findOne($document->node);
 
-        self::assertInstanceOf(Block::class, $instruction);
+        self::assertInstanceOf(Node::class, $instruction);
 
         // Parameters
         $target               = $instruction->getDestination();

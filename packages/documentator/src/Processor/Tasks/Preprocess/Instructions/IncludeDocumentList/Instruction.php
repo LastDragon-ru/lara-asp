@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Reference\Block;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
@@ -18,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Node\Node;
 use Override;
 
 use function array_filter;
@@ -118,7 +118,7 @@ class Instruction implements InstructionContract {
     /**
      * @return int<1,6>
      */
-    private function getLevel(Block $node, Parameters $parameters): int {
+    private function getLevel(Node $node, Parameters $parameters): int {
         $level = match ($parameters->level) {
             0       => $this->getNodeLevel($node),
             null    => $this->getNodeLevel($node) + 1,
@@ -130,7 +130,7 @@ class Instruction implements InstructionContract {
         return $level;
     }
 
-    private function getNodeLevel(Block $block): int {
+    private function getNodeLevel(Node $block): int {
         $level = 0;
 
         do {
