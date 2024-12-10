@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Core\Extension as CoreExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Renderer as ReferenceRenderer;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
@@ -37,6 +38,7 @@ final class ParserTest extends TestCase {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment()
             ->addExtension(new Extension())
+            ->addExtension(new CoreExtension())
             ->addRenderer(Link::class, new RendererWrapper(new LinkRenderer()))
             ->addRenderer(Image::class, new RendererWrapper(new ImageRenderer()))
             ->addRenderer(Footnote::class, new RendererWrapper(new FootnoteRenderer()))

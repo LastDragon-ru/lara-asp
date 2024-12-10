@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Listener;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Parser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\ParserStart as ReferenceParser;
@@ -44,8 +43,6 @@ class Extension implements ExtensionInterface {
             ->addEventListener(
                 DocumentPreParsedEvent::class,
                 static function (DocumentPreParsedEvent $event) use ($referenceParser): void {
-                    Input::set($event->getDocument(), $event->getMarkdown());
-
                     $referenceParser->setReferenceMap($event->getDocument()->getReferenceMap());
                 },
             )
