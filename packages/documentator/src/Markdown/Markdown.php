@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Extension as GeneratedExtension;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -22,7 +23,8 @@ class Markdown implements MarkdownContract {
 
     protected function initialize(): Environment {
         return (new GithubFlavoredMarkdownConverter())->getEnvironment()
-            ->addExtension(new Extension());
+            ->addExtension(new Extension())
+            ->addExtension(new GeneratedExtension());
     }
 
     #[Override]

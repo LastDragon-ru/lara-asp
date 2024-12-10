@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\ParserStart as GenerateParser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Listener;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Parser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\ParserStart as ReferenceParser;
@@ -39,7 +38,6 @@ class Extension implements ExtensionInterface {
         $environment
             ->addExtension(new FootnoteExtension())
             ->addBlockStartParser($referenceParser)
-            ->addBlockStartParser(new GenerateParser(), 100)
             ->addInlineParser(new Parser(new CloseBracketParser()), 100)
             ->addInlineParser(new Parser(new FootnoteRefParser()), 100)
             ->addInlineParser(new Parser(new BacktickParser()), 200)
