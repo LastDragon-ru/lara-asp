@@ -17,7 +17,7 @@ use function trim;
  * [//]: # (end: <id>)
  * ```
  */
-class Block extends AbstractBlock {
+class Node extends AbstractBlock {
     public function __construct(
         /**
          * @var non-empty-string

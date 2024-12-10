@@ -32,7 +32,7 @@ class ParserStart implements BlockStartParserInterface {
             return BlockStart::none();
         }
 
-        if (Utils::getParent($parserState->getActiveBlockParser()->getBlock(), Block::class) !== null) {
+        if (Utils::getParent($parserState->getActiveBlockParser()->getBlock(), Node::class) !== null) {
             return BlockStart::none();
         }
 

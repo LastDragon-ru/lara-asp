@@ -20,8 +20,8 @@ use function str_starts_with;
  * @internal
  */
 class ParserContinue implements BlockContinueParserInterface {
-    private Block $block;
-    private bool  $finished;
+    private Node $block;
+    private bool $finished;
     /**
      * @var list<string>
      */
@@ -32,7 +32,7 @@ class ParserContinue implements BlockContinueParserInterface {
      * @param non-empty-string $id
      */
     public function __construct(string $line, string $id, private int $padding) {
-        $this->block    = new Block($id);
+        $this->block    = new Node($id);
         $this->lines    = [$line];
         $this->finished = false;
     }
