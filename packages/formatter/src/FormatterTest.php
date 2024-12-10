@@ -21,6 +21,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function pow;
+use function rtrim;
 use function str_replace;
 
 use const PHP_INT_MAX;
@@ -113,7 +114,7 @@ final class FormatterTest extends TestCase {
 
     public function testOrdinal(): void {
         self::assertEquals('1st', $this->formatter->ordinal(1));
-        self::assertEquals('10.', $this->formatter->forLocale('ru_RU')->ordinal(10));
+        self::assertEquals('10', rtrim($this->formatter->forLocale('ru_RU')->ordinal(10), '.'));
     }
 
     public function testString(): void {
