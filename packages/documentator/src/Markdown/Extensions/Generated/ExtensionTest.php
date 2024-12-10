@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use League\CommonMark\Environment\Environment;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use League\CommonMark\Parser\MarkdownParser;
-use League\CommonMark\Xml\XmlRenderer;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -17,18 +18,23 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ParserContinue::class)]
 final class ExtensionTest extends TestCase {
     public function testParse(): void {
-        $converter   = new GithubFlavoredMarkdownConverter();
-        $environment = $converter->getEnvironment()
-            ->addExtension(new Extension())
-            ->addRenderer(Block::class, new RendererWrapper(new Renderer()));
+        $markdown = new class() extends Markdown {
+            #[Override]
+            protected function initialize(): Environment {
+                $converter   = new GithubFlavoredMarkdownConverter();
+                $environment = $converter->getEnvironment()
+                    ->addExtension(new Extension());
 
-        $parser   = new MarkdownParser($environment);
-        $document = $parser->parse(self::getTestData()->content('~document.md'));
-        $renderer = new XmlRenderer($environment);
+                return $environment;
+            }
+        };
 
-        self::assertXmlStringEqualsXmlString(
-            self::getTestData()->content('~expected.xml'),
-            $renderer->renderDocument($document)->getContent(),
+        $renderer = $this->app()->make(DocumentRenderer::class);
+        $document = $markdown->parse(self::getTestData()->content('~document.md'));
+
+        self::assertEquals(
+            self::getTestData()->content('~document.xml'),
+            $renderer->render($document),
         );
     }
 }

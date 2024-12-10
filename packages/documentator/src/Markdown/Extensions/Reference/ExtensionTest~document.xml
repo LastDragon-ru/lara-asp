@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<markdown>
+    <node name="document">
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
+        <data>
+            <item key="attributes">
+                <array length="0"/>
+            </item>
+        </data>
+        <node name="heading">
+            <attributes>
+                <attribute name="level">
+                    <int>1</int>
+                </attribute>
+            </attributes>
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
+            <node name="text">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <string><![CDATA[Simple]]></string>
+            </node>
+        </node>
+        <node name="html_block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
+            <string><![CDATA[<!-- markdownlint-disable -->]]></string>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node name="heading">
+            <attributes>
+                <attribute name="level">
+                    <int>1</int>
+                </attribute>
+            </attributes>
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
+            <node name="text">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <string><![CDATA[Multiline]]></string>
+            </node>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                    <int>0</int>
+                </item>
+            </data>
+        </node>
+        <node name="heading">
+            <attributes>
+                <attribute name="level">
+                    <int>1</int>
+                </attribute>
+            </attributes>
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
+            <node name="text">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <string><![CDATA[Inside Quote]]></string>
+            </node>
+        </node>
+        <node name="block_quote">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
+            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                        <int>2</int>
+                    </item>
+                </data>
+            </node>
+            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                        <int>2</int>
+                    </item>
+                </data>
+            </node>
+        </node>
+        <node name="block_quote">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
+            <node name="block_quote">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>4</int>
+                        </item>
+                    </data>
+                </node>
+                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>4</int>
+                        </item>
+                    </data>
+                </node>
+            </node>
+        </node>
+    </node>
+</markdown>

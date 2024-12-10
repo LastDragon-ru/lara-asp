@@ -7,12 +7,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block as GeneratedNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Renderer as GeneratedNodeRenderer;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block as ReferenceNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Extension;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Renderer as ReferenceNodeRenderer;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown as MarkdownImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
@@ -24,16 +19,12 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassCons
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassMethodLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassPropertyLink;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
-use League\CommonMark\Extension\CommonMark\Renderer\Inline\CodeRenderer as CodeNodeRenderer;
-use League\CommonMark\Extension\CommonMark\Renderer\Inline\LinkRenderer as LinkNodeRenderer;
-use League\CommonMark\GithubFlavoredMarkdownConverter;
+use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
-use League\CommonMark\Xml\XmlRenderer;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -73,23 +64,29 @@ final class TaskTest extends TestCase {
     }
 
     public function testParse(): void {
-        $converter   = new GithubFlavoredMarkdownConverter();
-        $environment = $converter->getEnvironment()
-            ->addExtension(new Extension())
-            ->addRenderer(LinkNode::class, new RendererWrapper(new LinkNodeRenderer()))
-            ->addRenderer(CodeNode::class, new RendererWrapper(new CodeNodeRenderer()))
-            ->addRenderer(ReferenceNode::class, new RendererWrapper(new ReferenceNodeRenderer()))
-            ->addRenderer(GeneratedNode::class, new RendererWrapper(new GeneratedNodeRenderer()));
-        $renderer    = new XmlRenderer($environment);
-        $render      = static function (Node $node) use ($renderer): string {
-            $document = new DocumentNode();
+        $markdown = new class() extends MarkdownImpl {
+            public function getEnvironment(): EnvironmentInterface {
+                return $this->environment;
+            }
+        };
+        $renderer = $this->app()->make(DocumentRenderer::class);
+        $render   = static function (Node $node) use ($markdown, $renderer): string {
+            return trim(
+                $renderer->render(
+                    new class ($markdown, $node) extends Document {
+                        public function __construct(MarkdownContract $markdown, Node $node) {
+                            $document = new DocumentNode();
 
-            $document->appendChild($node);
+                            $document->appendChild($node);
 
-            return trim((string) $renderer->renderDocument($document));
+                            parent::__construct($markdown, $document, null);
+                        }
+                    },
+                ),
+            );
         };
 
-        $document = $this->app()->make(MarkdownContract::class)->parse(
+        $document = $markdown->parse(
             <<<'MARKDOWN'
             Text `💀App\Deprecated` text `App\ClassA` text [App\ClassB](https://example.com/)
             text [`\App\ClassC`](https://example.com/) text [`Class`](./class.php "App\ClassD")
@@ -145,22 +142,180 @@ final class TaskTest extends TestCase {
                 'blocks' => [
                     <<<'XML'
                     <?xml version="1.0" encoding="UTF-8"?>
-                    <document xmlns="http://commonmark.org/xml/1.0">
-                        <generated id="code-links" startMarkerLocation="[{5,0,null}]" endMarkerLocation="[{7,0,null},{8,0,null}]" location="[{5,0,null},{6,0,null},{7,0,null},{8,0,null}]" blockPadding="0">
-                            <paragraph>
-                                <text>code-links section</text>
-                            </paragraph>
-                        </generated>
-                    </document>
+                    <markdown>
+                        <node name="document">
+                            <attributes>
+                                <attribute name="xmlns">
+                                    <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                </attribute>
+                            </attributes>
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                        <int>0</int>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>8</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>7</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>5</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>5</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </data>
+                                <node name="paragraph">
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="text">
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                        </data>
+                                        <string><![CDATA[code-links section]]></string>
+                                    </node>
+                                </node>
+                            </node>
+                        </node>
+                    </markdown>
                     XML,
                     <<<'XML'
                     <?xml version="1.0" encoding="UTF-8"?>
-                    <document xmlns="http://commonmark.org/xml/1.0">
-                        <generated id="code-links" startMarkerLocation="[{13,0,null}]" endMarkerLocation="[{16,0,null}]" location="[{13,0,null},{14,0,null},{15,0,null},{16,0,null}]" blockPadding="0">
-                            <reference label="class" destination="./class.php" title="App\ClassE" location="[{14,0,null}]" blockPadding="0" />
-                            <reference label="method" destination="./class.php" title="  App\ClassE::method()  " location="[{15,0,null},{16,0,null}]" blockPadding="0" />
-                        </generated>
-                    </document>
+                    <markdown>
+                        <node name="document">
+                            <attributes>
+                                <attribute name="xmlns">
+                                    <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                </attribute>
+                            </attributes>
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                        <int>0</int>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>16</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>16</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>13</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>13</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </data>
+                                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                            <int>0</int>
+                                        </item>
+                                    </data>
+                                </node>
+                                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                            <int>0</int>
+                                        </item>
+                                    </data>
+                                </node>
+                            </node>
+                        </node>
+                    </markdown>
                     XML,
                 ],
                 'links'  => [
@@ -170,9 +325,53 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <code location="[{1,5,17}]" offset="1">💀App\Deprecated</code>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="code">
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>1</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>17</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>1</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>1</int>
+                                            </item>
+                                        </data>
+                                        <string><![CDATA[💀App\Deprecated]]></string>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -182,9 +381,53 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <code location="[{1,28,12}]" offset="1">App\ClassA</code>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="code">
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>1</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>12</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>28</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>1</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>1</int>
+                                            </item>
+                                        </data>
+                                        <string><![CDATA[App\ClassA]]></string>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -194,11 +437,93 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="https://example.com/" title="" location="[{2,5,37}]" offset="15">
-                                    <code location="[{2,6,13}]" offset="1">\App\ClassC</code>
-                                </link>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="link">
+                                        <attributes>
+                                            <attribute name="destination">
+                                                <string><![CDATA[https://example.com/]]></string>
+                                            </attribute>
+                                            <attribute name="title">
+                                                <string><![CDATA[]]></string>
+                                            </attribute>
+                                        </attributes>
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>2</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>37</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>2</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>15</int>
+                                            </item>
+                                        </data>
+                                        <node name="code">
+                                            <data>
+                                                <item key="attributes">
+                                                    <array length="0"/>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                        <property name="endLine">
+                                                            <int>2</int>
+                                                        </property>
+                                                        <property name="internalPadding">
+                                                            <null/>
+                                                        </property>
+                                                        <property name="length">
+                                                            <int>13</int>
+                                                        </property>
+                                                        <property name="offset">
+                                                            <int>6</int>
+                                                        </property>
+                                                        <property name="startLine">
+                                                            <int>2</int>
+                                                        </property>
+                                                        <property name="startLinePadding">
+                                                            <int>0</int>
+                                                        </property>
+                                                    </object>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                    <int>1</int>
+                                                </item>
+                                            </data>
+                                            <string><![CDATA[\App\ClassC]]></string>
+                                        </node>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -208,11 +533,93 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="./class.php" title="App\ClassD" location="[{2,48,35}]" offset="9">
-                                    <code location="[{2,49,7}]" offset="1">Class</code>
-                                </link>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="link">
+                                        <attributes>
+                                            <attribute name="destination">
+                                                <string><![CDATA[./class.php]]></string>
+                                            </attribute>
+                                            <attribute name="title">
+                                                <string><![CDATA[App\ClassD]]></string>
+                                            </attribute>
+                                        </attributes>
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>2</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>35</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>48</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>2</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>9</int>
+                                            </item>
+                                        </data>
+                                        <node name="code">
+                                            <data>
+                                                <item key="attributes">
+                                                    <array length="0"/>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                        <property name="endLine">
+                                                            <int>2</int>
+                                                        </property>
+                                                        <property name="internalPadding">
+                                                            <null/>
+                                                        </property>
+                                                        <property name="length">
+                                                            <int>7</int>
+                                                        </property>
+                                                        <property name="offset">
+                                                            <int>49</int>
+                                                        </property>
+                                                        <property name="startLine">
+                                                            <int>2</int>
+                                                        </property>
+                                                        <property name="startLinePadding">
+                                                            <int>0</int>
+                                                        </property>
+                                                    </object>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                    <int>1</int>
+                                                </item>
+                                            </data>
+                                            <string><![CDATA[Class]]></string>
+                                        </node>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -222,19 +629,209 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="./class.php" title="App\ClassE" location="[{3,5,16}]" offset="9">
-                                    <code location="[{3,6,7}]" offset="1">Class</code>
-                                </link>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="link">
+                                        <attributes>
+                                            <attribute name="destination">
+                                                <string><![CDATA[./class.php]]></string>
+                                            </attribute>
+                                            <attribute name="title">
+                                                <string><![CDATA[App\ClassE]]></string>
+                                            </attribute>
+                                        </attributes>
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>3</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>16</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>3</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>9</int>
+                                            </item>
+                                            <item key="reference">
+                                                <object class="League\CommonMark\Reference\Reference">
+                                                    <property name="destination">
+                                                        <string><![CDATA[./class.php]]></string>
+                                                    </property>
+                                                    <property name="label">
+                                                        <string><![CDATA[class]]></string>
+                                                    </property>
+                                                    <property name="title">
+                                                        <string><![CDATA[App\ClassE]]></string>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </data>
+                                        <node name="code">
+                                            <data>
+                                                <item key="attributes">
+                                                    <array length="0"/>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                        <property name="endLine">
+                                                            <int>3</int>
+                                                        </property>
+                                                        <property name="internalPadding">
+                                                            <null/>
+                                                        </property>
+                                                        <property name="length">
+                                                            <int>7</int>
+                                                        </property>
+                                                        <property name="offset">
+                                                            <int>6</int>
+                                                        </property>
+                                                        <property name="startLine">
+                                                            <int>3</int>
+                                                        </property>
+                                                        <property name="startLinePadding">
+                                                            <int>0</int>
+                                                        </property>
+                                                    </object>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                    <int>1</int>
+                                                </item>
+                                            </data>
+                                            <string><![CDATA[Class]]></string>
+                                        </node>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="./class.php" title="App\ClassE" location="[{3,27,17}]" offset="10">
-                                    <code location="[{3,28,8}]" offset="1">💀Class</code>
-                                </link>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="link">
+                                        <attributes>
+                                            <attribute name="destination">
+                                                <string><![CDATA[./class.php]]></string>
+                                            </attribute>
+                                            <attribute name="title">
+                                                <string><![CDATA[App\ClassE]]></string>
+                                            </attribute>
+                                        </attributes>
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>3</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>17</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>27</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>3</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>10</int>
+                                            </item>
+                                            <item key="reference">
+                                                <object class="League\CommonMark\Reference\Reference">
+                                                    <property name="destination">
+                                                        <string><![CDATA[./class.php]]></string>
+                                                    </property>
+                                                    <property name="label">
+                                                        <string><![CDATA[class]]></string>
+                                                    </property>
+                                                    <property name="title">
+                                                        <string><![CDATA[App\ClassE]]></string>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </data>
+                                        <node name="code">
+                                            <data>
+                                                <item key="attributes">
+                                                    <array length="0"/>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                        <property name="endLine">
+                                                            <int>3</int>
+                                                        </property>
+                                                        <property name="internalPadding">
+                                                            <null/>
+                                                        </property>
+                                                        <property name="length">
+                                                            <int>8</int>
+                                                        </property>
+                                                        <property name="offset">
+                                                            <int>28</int>
+                                                        </property>
+                                                        <property name="startLine">
+                                                            <int>3</int>
+                                                        </property>
+                                                        <property name="startLinePadding">
+                                                            <int>0</int>
+                                                        </property>
+                                                    </object>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                    <int>1</int>
+                                                </item>
+                                            </data>
+                                            <string><![CDATA[💀Class]]></string>
+                                        </node>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -244,9 +841,53 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <code location="[{9,5,27}]" offset="1">💀App\Deprecated::method()</code>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="code">
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>9</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>27</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>9</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>1</int>
+                                            </item>
+                                        </data>
+                                        <string><![CDATA[💀App\Deprecated::method()]]></string>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -256,9 +897,53 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <code location="[{9,38,23}]" offset="1">App\ClassA::$property</code>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="code">
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>9</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>23</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>38</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>9</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>1</int>
+                                            </item>
+                                        </data>
+                                        <string><![CDATA[App\ClassA::$property]]></string>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -268,11 +953,93 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="./class.php" title="App\ClassD::Constant" location="[{10,5,55}]" offset="19">
-                                    <code location="[{10,6,17}]" offset="1">Class::Constant</code>
-                                </link>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="link">
+                                        <attributes>
+                                            <attribute name="destination">
+                                                <string><![CDATA[./class.php]]></string>
+                                            </attribute>
+                                            <attribute name="title">
+                                                <string><![CDATA[App\ClassD::Constant]]></string>
+                                            </attribute>
+                                        </attributes>
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>10</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>55</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>10</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>19</int>
+                                            </item>
+                                        </data>
+                                        <node name="code">
+                                            <data>
+                                                <item key="attributes">
+                                                    <array length="0"/>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                        <property name="endLine">
+                                                            <int>10</int>
+                                                        </property>
+                                                        <property name="internalPadding">
+                                                            <null/>
+                                                        </property>
+                                                        <property name="length">
+                                                            <int>17</int>
+                                                        </property>
+                                                        <property name="offset">
+                                                            <int>6</int>
+                                                        </property>
+                                                        <property name="startLine">
+                                                            <int>10</int>
+                                                        </property>
+                                                        <property name="startLinePadding">
+                                                            <int>0</int>
+                                                        </property>
+                                                    </object>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                    <int>1</int>
+                                                </item>
+                                            </data>
+                                            <string><![CDATA[Class::Constant]]></string>
+                                        </node>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],
@@ -282,11 +1049,106 @@ final class TaskTest extends TestCase {
                         'nodes'      => [
                             <<<'XML'
                             <?xml version="1.0" encoding="UTF-8"?>
-                            <document xmlns="http://commonmark.org/xml/1.0">
-                                <link destination="./class.php" title="  App\ClassE::method()  " location="[{11,5,27}]" offset="19">
-                                    <code location="[{11,6,17}]" offset="1">Class::method()</code>
-                                </link>
-                            </document>
+                            <markdown>
+                                <node name="document">
+                                    <attributes>
+                                        <attribute name="xmlns">
+                                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                                        </attribute>
+                                    </attributes>
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <node name="link">
+                                        <attributes>
+                                            <attribute name="destination">
+                                                <string><![CDATA[./class.php]]></string>
+                                            </attribute>
+                                            <attribute name="title">
+                                                <string><![CDATA[  App\ClassE::method()  ]]></string>
+                                            </attribute>
+                                        </attributes>
+                                        <data>
+                                            <item key="attributes">
+                                                <array length="0"/>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>11</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>27</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>11</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                <int>19</int>
+                                            </item>
+                                            <item key="reference">
+                                                <object class="League\CommonMark\Reference\Reference">
+                                                    <property name="destination">
+                                                        <string><![CDATA[./class.php]]></string>
+                                                    </property>
+                                                    <property name="label">
+                                                        <string><![CDATA[method]]></string>
+                                                    </property>
+                                                    <property name="title">
+                                                        <string><![CDATA[  App\ClassE::method()  ]]></string>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </data>
+                                        <node name="code">
+                                            <data>
+                                                <item key="attributes">
+                                                    <array length="0"/>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                        <property name="endLine">
+                                                            <int>11</int>
+                                                        </property>
+                                                        <property name="internalPadding">
+                                                            <null/>
+                                                        </property>
+                                                        <property name="length">
+                                                            <int>17</int>
+                                                        </property>
+                                                        <property name="offset">
+                                                            <int>6</int>
+                                                        </property>
+                                                        <property name="startLine">
+                                                            <int>11</int>
+                                                        </property>
+                                                        <property name="startLinePadding">
+                                                            <int>0</int>
+                                                        </property>
+                                                    </object>
+                                                </item>
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                    <int>1</int>
+                                                </item>
+                                            </data>
+                                            <string><![CDATA[Class::method()]]></string>
+                                        </node>
+                                    </node>
+                                </node>
+                            </markdown>
                             XML,
                         ],
                     ],

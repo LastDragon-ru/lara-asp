@@ -2,11 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use League\CommonMark\Environment\Environment;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use League\CommonMark\Parser\MarkdownParser;
-use League\CommonMark\Xml\XmlRenderer;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -16,20 +17,24 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Parser::class)]
 #[CoversClass(ParserStart::class)]
 #[CoversClass(ParserContinue::class)]
-#[CoversClass(Renderer::class)]
 final class ExtensionTest extends TestCase {
     public function testParse(): void {
-        $converter   = new GithubFlavoredMarkdownConverter();
-        $environment = $converter->getEnvironment()
-            ->addExtension(new Extension())
-            ->addRenderer(Block::class, new RendererWrapper(new Renderer()));
+        $markdown = new class() extends Markdown {
+            #[Override]
+            protected function initialize(): Environment {
+                $converter   = new GithubFlavoredMarkdownConverter();
+                $environment = $converter->getEnvironment()
+                    ->addExtension(new Extension());
 
-        $parser     = new MarkdownParser($environment);
-        $document   = $parser->parse(self::getTestData()->content('~document.md'));
-        $renderer   = new XmlRenderer($environment);
+                return $environment;
+            }
+        };
+
+        $renderer   = $this->app()->make(DocumentRenderer::class);
+        $document   = $markdown->parse(self::getTestData()->content('~document.md'));
         $references = [];
 
-        foreach ($document->getReferenceMap() as $label => $reference) {
+        foreach ($document->node->getReferenceMap() as $label => $reference) {
             $references[$label] = $reference->getLabel();
         }
 
@@ -49,9 +54,9 @@ final class ExtensionTest extends TestCase {
             ],
             $references,
         );
-        self::assertXmlStringEqualsXmlString(
-            self::getTestData()->content('~expected.xml'),
-            $renderer->renderDocument($document)->getContent(),
+        self::assertEquals(
+            self::getTestData()->content('~document.xml'),
+            $renderer->render($document),
         );
     }
 }
