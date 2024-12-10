@@ -1,5 +1,6 @@
 {
   "symbol-whitelist": [
+    "XMLWriter",
     "Composer\\ClassMapGenerator\\ClassMapGenerator",
     "Composer\\InstalledVersions",
     "Faker\\Factory",

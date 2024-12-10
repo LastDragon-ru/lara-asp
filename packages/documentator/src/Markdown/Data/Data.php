@@ -17,7 +17,7 @@ abstract readonly class Data {
         /**
          * @var T
          */
-        protected mixed $value,
+        public mixed $value,
     ) {
         // empty
     }
