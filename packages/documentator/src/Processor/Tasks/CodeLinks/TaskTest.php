@@ -154,7 +154,7 @@ final class TaskTest extends TestCase {
                                     <array length="0"/>
                                 </item>
                             </data>
-                            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block">
+                            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
                                 <data>
                                     <item key="attributes">
                                         <array length="0"/>
@@ -240,7 +240,7 @@ final class TaskTest extends TestCase {
                                     <array length="0"/>
                                 </item>
                             </data>
-                            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block">
+                            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
                                 <data>
                                     <item key="attributes">
                                         <array length="0"/>

@@ -230,7 +230,7 @@
                 </data>
             </node>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block">
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -385,7 +385,7 @@
                     <string><![CDATA[Quote]]></string>
                 </node>
             </node>
-            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block">
+            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
                 <data>
                     <item key="attributes">
                         <array length="0"/>

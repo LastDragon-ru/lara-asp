@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Block;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node;
 use League\CommonMark\Node\NodeIterator;
 use Override;
 
@@ -29,7 +29,7 @@ readonly class Unwrap implements Mutation {
         // Process
         foreach ($document->node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Generated?
-            if (!($node instanceof Block)) {
+            if (!($node instanceof Node)) {
                 continue;
             }
 
