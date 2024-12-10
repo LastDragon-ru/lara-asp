@@ -1,8 +1,7 @@
 <?php declare(strict_types = 1);
 
-namespace Builder;
+namespace LastDragon_ru\LaraASP\GraphQL\Builder;
 
-use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
