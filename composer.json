@@ -62,7 +62,7 @@
     "illuminate/translation": "^10.34.0|^11.0.0",
     "illuminate/validation": "^10.34.0|^11.0.0",
     "larastan/larastan": "^2.8.1",
-    "league/commonmark": "^2.5.1",
+    "league/commonmark": "^2.6.0",
     "league/config": "^1.1.1",
     "mockery/mockery": "^1.6.5",
     "nette/neon": "^3.4",

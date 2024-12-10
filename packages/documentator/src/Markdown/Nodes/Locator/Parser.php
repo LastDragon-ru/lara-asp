@@ -11,13 +11,13 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Location\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Nodes\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
-use League\CommonMark\Delimiter\DelimiterInterface;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Node\StringContainerInterface;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
 use League\CommonMark\Parser\Inline\InlineParserMatch;
 use League\CommonMark\Parser\InlineParserContext;
@@ -75,7 +75,7 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         $cursor = $inlineContext->getCursor();
         $origin = $cursor->getPosition() + 1;
         $offset = match (true) {
-            $this->parser instanceof CloseBracketParser => $this->getDelimiterOffset($inlineContext, ['[', '!']),
+            $this->parser instanceof CloseBracketParser => $this->getDelimiterOffset($inlineContext),
             default                                     => $cursor->getPosition(),
         };
 
@@ -200,20 +200,16 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
         $this->incomplete = new WeakMap();
     }
 
-    /**
-     * @param list<string> $characters
-     */
-    private function getDelimiterOffset(InlineParserContext $context, array $characters): int {
-        $delimiter = $context->getDelimiterStack()->searchByCharacter($characters);
-        $length    = 0;
+    private function getDelimiterOffset(InlineParserContext $context): int {
+        $offset  = 0;
+        $bracket = $context->getDelimiterStack()->getLastBracket();
+        $node    = $bracket?->getNode();
 
-        if ($delimiter instanceof DelimiterInterface && $delimiter->isActive()) {
-            // We do not use `$delimiter->getLength()` here because `$delimiter->getIndex()`
-            // seems incorrect for some delimiters e.g. for `![`.
-            $length = (int) $delimiter->getIndex() - mb_strlen($delimiter->getInlineNode()->getLiteral());
+        if ($bracket !== null && $node instanceof StringContainerInterface) {
+            $offset = $bracket->getPosition() - mb_strlen($node->getLiteral());
         }
 
-        return $length;
+        return $offset;
     }
 
     private function save(
