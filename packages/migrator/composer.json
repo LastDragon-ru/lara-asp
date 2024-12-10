@@ -53,7 +53,8 @@
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "docs"
     },
     "exclude-from-classmap": [
-      "docs/"
+      "docs/",
+      "src/Migrations/MigratorTest/raw/"
     ]
   },
   "extra": {

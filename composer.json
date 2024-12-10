@@ -136,6 +136,7 @@
       "packages/graphql-printer/docs/",
       "packages/graphql/docs/",
       "packages/migrator/docs/",
+      "packages/migrator/src/Migrations/MigratorTest/raw/",
       "packages/serializer/docs/",
       "packages/spa/docs/",
       "packages/testing/docs/"
