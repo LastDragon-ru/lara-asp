@@ -6,8 +6,10 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Core\Extension as CoreExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Extension as GeneratedExtension;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Extension as LocatorExtension;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Environment\EnvironmentInterface;
+use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;
 use League\CommonMark\Parser\MarkdownParserInterface;
@@ -25,8 +27,10 @@ class Markdown implements MarkdownContract {
     protected function initialize(): Environment {
         return (new GithubFlavoredMarkdownConverter())->getEnvironment()
             ->addExtension(new Extension())
+            ->addExtension(new FootnoteExtension())
             ->addExtension(new CoreExtension())
-            ->addExtension(new GeneratedExtension());
+            ->addExtension(new GeneratedExtension())
+            ->addExtension(new LocatorExtension());
     }
 
     #[Override]

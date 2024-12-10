@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Core\Extension as CoreExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Renderer as ReferenceRenderer;
@@ -14,6 +13,7 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\CodeRenderer;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\ImageRenderer;
 use League\CommonMark\Extension\CommonMark\Renderer\Inline\LinkRenderer;
+use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
 use League\CommonMark\Extension\Footnote\Renderer\FootnoteRefRenderer;
@@ -32,13 +32,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
+#[CoversClass(Extension::class)]
 #[CoversClass(Parser::class)]
-final class ParserTest extends TestCase {
+final class ExtensionTest extends TestCase {
     public function testParse(): void {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment()
-            ->addExtension(new Extension())
+            ->addExtension(new FootnoteExtension())
             ->addExtension(new CoreExtension())
+            ->addExtension(new Extension())
             ->addRenderer(Link::class, new RendererWrapper(new LinkRenderer()))
             ->addRenderer(Image::class, new RendererWrapper(new ImageRenderer()))
             ->addRenderer(Footnote::class, new RendererWrapper(new FootnoteRenderer()))

@@ -3,17 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Listener;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Parser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\ParserStart as ReferenceParser;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Event\DocumentPreParsedEvent;
-use League\CommonMark\Extension\CommonMark\Parser\Inline\BacktickParser;
-use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\ExtensionInterface;
-use League\CommonMark\Extension\Footnote\FootnoteExtension;
-use League\CommonMark\Extension\Footnote\Parser\FootnoteRefParser;
 use Override;
 
 /**
@@ -35,20 +28,12 @@ class Extension implements ExtensionInterface {
         $referenceParser = new ReferenceParser();
 
         $environment
-            ->addExtension(new FootnoteExtension())
             ->addBlockStartParser($referenceParser)
-            ->addInlineParser(new Parser(new CloseBracketParser()), 100)
-            ->addInlineParser(new Parser(new FootnoteRefParser()), 100)
-            ->addInlineParser(new Parser(new BacktickParser()), 200)
             ->addEventListener(
                 DocumentPreParsedEvent::class,
                 static function (DocumentPreParsedEvent $event) use ($referenceParser): void {
                     $referenceParser->setReferenceMap($event->getDocument()->getReferenceMap());
                 },
-            )
-            ->addEventListener(
-                DocumentParsedEvent::class,
-                new Listener(),
             );
     }
 }
