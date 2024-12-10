@@ -43,6 +43,7 @@
     "lastdragon-ru/lara-asp-serializer": "self.version"
   },
   "require-dev": {
+    "ext-xmlwriter": "*",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.5",
     "orchestra/testbench": "^9.0.0",
