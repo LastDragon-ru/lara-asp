@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\RendererWrapper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -13,11 +12,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
+#[CoversClass(Extension::class)]
 #[CoversClass(Parser::class)]
 #[CoversClass(ParserStart::class)]
 #[CoversClass(ParserContinue::class)]
 #[CoversClass(Renderer::class)]
-final class ParserTest extends TestCase {
+final class ExtensionTest extends TestCase {
     public function testParse(): void {
         $converter   = new GithubFlavoredMarkdownConverter();
         $environment = $converter->getEnvironment()
