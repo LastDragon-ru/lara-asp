@@ -7,7 +7,7 @@ use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -28,7 +28,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
