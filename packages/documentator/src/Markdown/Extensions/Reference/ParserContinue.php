@@ -14,7 +14,7 @@ use Override;
  * @internal
  */
 class ParserContinue implements BlockContinueParserInterface {
-    private Block  $block;
+    private Node   $block;
     private Parser $parser;
     private int    $padding;
     private bool   $finished;
@@ -22,7 +22,7 @@ class ParserContinue implements BlockContinueParserInterface {
     public function __construct(
         private readonly ?ReferenceMapInterface $referenceMap,
     ) {
-        $this->block    = new Block();
+        $this->block    = new Node();
         $this->parser   = new Parser();
         $this->padding  = 0;
         $this->finished = false;

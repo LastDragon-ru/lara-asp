@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
@@ -19,7 +19,7 @@ class Context {
         public readonly Directory $root,
         public readonly File $file,
         public readonly Document $document,
-        public readonly Block $node,
+        public readonly Node $node,
         private readonly Mutation $mutation,
     ) {
         // empty

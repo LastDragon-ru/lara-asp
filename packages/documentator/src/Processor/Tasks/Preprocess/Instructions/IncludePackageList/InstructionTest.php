@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
@@ -35,7 +35,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getDirectoryPath('packages');
         $params   = new Parameters('...', template: $template, order: $order);
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
 
@@ -56,7 +56,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getDirectoryPath('no readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
 
@@ -75,7 +75,7 @@ final class InstructionTest extends TestCase {
         $file     = new File($path, false);
         $target   = $root->getDirectoryPath('empty readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target, false), 'package');
         $expected = $fs->getFile($root, 'empty readme/package/README.md');

@@ -9,7 +9,7 @@ use Override;
 /**
  * @internal
  */
-class Block extends AbstractBlock implements ReferenceInterface {
+class Node extends AbstractBlock implements ReferenceInterface {
     private ?ReferenceInterface $reference = null;
 
     public function setReference(?ReferenceInterface $reference): static {

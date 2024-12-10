@@ -293,7 +293,7 @@ final class TaskTest extends TestCase {
                                         </object>
                                     </item>
                                 </data>
-                                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
                                     <data>
                                         <item key="attributes">
                                             <array length="0"/>
@@ -303,7 +303,7 @@ final class TaskTest extends TestCase {
                                         </item>
                                     </data>
                                 </node>
-                                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block">
+                                <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
                                     <data>
                                         <item key="attributes">
                                             <array length="0"/>

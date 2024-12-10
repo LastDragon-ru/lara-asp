@@ -6,7 +6,7 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Block;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -35,7 +35,7 @@ final class InstructionTest extends TestCase {
         $root     = new Directory($path->getDirectoryPath(), false);
         $file     = new File($path, false);
         $target   = $file->getName();
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Block(), new Nop());
+        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
