@@ -144,13 +144,8 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunFile(): void {
-        $task = new ProcessorTest__Task([
-            'c.txt' => [
-                'excluded.txt',
-            ],
-        ]);
-
-        $path   = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
+        $task   = new ProcessorTest__Task();
+        $path   = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $count  = 0;
         $events = [];
 
@@ -158,7 +153,7 @@ final class ProcessorTest extends TestCase {
             ->task($task)
             ->run(
                 $path,
-                ['excluded.txt', '**/**/excluded.txt'],
+                null,
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -167,8 +162,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'c.txt'        => Result::Success,
-                'excluded.txt' => Result::Skipped,
+                'excluded.txt' => Result::Success,
             ],
             $events,
         );
@@ -176,9 +170,9 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'c.txt',
+                    'excluded.txt',
                     [
-                        'excluded.txt' => 'excluded.txt',
+                        // empty
                     ],
                 ],
             ],
