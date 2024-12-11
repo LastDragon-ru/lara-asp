@@ -7,4 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 
 interface Markdown {
     public function parse(string $content, ?FilePath $path = null): Document;
+
+    public function render(Document $document): string;
 }

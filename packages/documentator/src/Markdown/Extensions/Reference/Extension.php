@@ -28,6 +28,7 @@ class Extension implements ExtensionInterface {
                 static function (DocumentPreParsedEvent $event) use ($referenceParser): void {
                     $referenceParser->setReferenceMap($event->getDocument()->getReferenceMap());
                 },
-            );
+            )
+            ->addRenderer(Node::class, new Renderer());
     }
 }

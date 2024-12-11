@@ -21,6 +21,7 @@ class Extension implements ExtensionInterface {
     #[Override]
     public function register(EnvironmentBuilderInterface $environment): void {
         $environment
-            ->addBlockStartParser(new ParserStart(), 100);
+            ->addBlockStartParser(new ParserStart(), 100)
+            ->addRenderer(Node::class, new Renderer());
     }
 }

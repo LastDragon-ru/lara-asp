@@ -14,14 +14,18 @@ use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;
 use League\CommonMark\Parser\MarkdownParserInterface;
+use League\CommonMark\Renderer\DocumentRendererInterface;
+use League\CommonMark\Renderer\HtmlRenderer;
 use Override;
 
 class Markdown implements MarkdownContract {
-    protected readonly EnvironmentInterface    $environment;
-    protected readonly MarkdownParserInterface $parser;
+    protected readonly EnvironmentInterface      $environment;
+    protected readonly MarkdownParserInterface   $parser;
+    protected readonly DocumentRendererInterface $renderer;
 
     public function __construct() {
         $this->environment = $this->initialize();
+        $this->renderer    = new HtmlRenderer($this->environment);
         $this->parser      = new MarkdownParser($this->environment);
     }
 
@@ -40,5 +44,10 @@ class Markdown implements MarkdownContract {
         $document = new Document($this, $node, $path);
 
         return $document;
+    }
+
+    #[Override]
+    public function render(Document $document): string {
+        return (string) $this->renderer->renderDocument($document->node);
     }
 }

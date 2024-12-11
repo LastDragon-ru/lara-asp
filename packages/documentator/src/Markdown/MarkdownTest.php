@@ -24,4 +24,15 @@ final class MarkdownTest extends TestCase {
             $renderer->render($document),
         );
     }
+
+    public function testRender(): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse(self::getTestData()->content('~document.md'));
+        $actual   = $markdown->render($document);
+
+        self::assertEquals(
+            self::getTestData()->content('~document.html'),
+            $actual,
+        );
+    }
 }
