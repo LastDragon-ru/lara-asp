@@ -64,9 +64,9 @@ final class ProcessorTest extends TestCase {
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
                 $root,
-                ['excluded.txt', '**/**/excluded.txt'],
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -153,7 +153,6 @@ final class ProcessorTest extends TestCase {
             ->task($task)
             ->run(
                 $path,
-                null,
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -226,9 +225,9 @@ final class ProcessorTest extends TestCase {
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
                 $root,
-                ['excluded.txt', '**/**/excluded.txt'],
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -310,9 +309,9 @@ final class ProcessorTest extends TestCase {
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($taskA)
             ->task($taskB)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
                 $root,
-                ['excluded.txt', '**/**/excluded.txt'],
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;

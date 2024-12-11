@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Symfony\Component\Finder\Glob;
 
 use function array_map;
+use function array_merge;
 use function microtime;
 
 /**
@@ -25,6 +26,10 @@ class Processor {
      * @var InstanceList<Task>
      */
     private InstanceList $tasks;
+    /**
+     * @var array<array-key, string>
+     */
+    private array $exclude = [];
 
     public function __construct(ContainerResolver $container) {
         $this->tasks = new InstanceList($container, $this->key(...));
@@ -57,12 +62,19 @@ class Processor {
     }
 
     /**
-     * @param array<array-key, string>|string|null                                $exclude glob(s) to exclude.
+     * @param array<array-key, string>|string $exclude glob(s) to exclude.
+     */
+    public function exclude(array|string $exclude): static {
+        $this->exclude = array_merge($this->exclude, (array) $exclude);
+
+        return $this;
+    }
+
+    /**
      * @param Closure(FilePath $path, Result $result, float $duration): void|null $listener
      */
     public function run(
         DirectoryPath|FilePath $path,
-        array|string|null $exclude = null,
         ?Closure $listener = null,
     ): float {
         $start = microtime(true);
@@ -75,7 +87,7 @@ class Processor {
             !$this->tasks->has('*')   => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
             default                   => null,
         };
-        $exclude = array_map(Glob::toRegex(...), (array) $exclude);
+        $exclude = array_map(Glob::toRegex(...), $this->exclude);
         $root    = new Directory($path->getDirectoryPath(), true);
         $fs      = new FileSystem();
 
