@@ -39,9 +39,8 @@ class FileSystem {
         }
 
         // Cached?
-        $pathObject = $root->getPath()->getFilePath($path);
-        $path       = (string) $pathObject;
-        $file       = ($this->cache[$path] ?? null)?->get();
+        $path = $root->getPath()->getFilePath($path);
+        $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
             return null;
@@ -52,9 +51,8 @@ class FileSystem {
         }
 
         // Create
-        if (is_file($path)) {
-            $file               = new File($pathObject);
-            $this->cache[$path] = WeakReference::create($file);
+        if (is_file((string) $path)) {
+            $file = $this->cache(new File($path));
         }
 
         return $file;
@@ -72,15 +70,9 @@ class FileSystem {
             // empty
         }
 
-        // Self?
-        if ($path === '.' || $path === '') {
-            return $root;
-        }
-
         // Cached?
-        $pathObject = $root->getPath()->getDirectoryPath($path);
-        $path       = (string) $pathObject;
-        $directory  = ($this->cache[$path] ?? null)?->get();
+        $path      = $root->getPath()->getDirectoryPath($path);
+        $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {
             return null;
@@ -91,11 +83,8 @@ class FileSystem {
         }
 
         // Create
-        if (is_dir($path)) {
-            $directory          = !$root->getPath()->isEqual($pathObject)
-                ? new Directory($pathObject)
-                : $root;
-            $this->cache[$path] = WeakReference::create($directory);
+        if (is_dir((string) $path)) {
+            $directory = $this->cache(new Directory($path));
         }
 
         return $directory;
@@ -200,5 +189,33 @@ class FileSystem {
 
         // Save
         return file_put_contents((string) $file->getPath(), $file->getContent()) !== false;
+    }
+
+    /**
+     * @template T of Directory|File
+     *
+     * @param T $object
+     *
+     * @return T
+     */
+    private function cache(Directory|File $object): Directory|File {
+        $this->cache[(string) $object] = WeakReference::create($object);
+
+        return $object;
+    }
+
+    private function cached(Path $path): Directory|File|null {
+        $key    = (string) $path;
+        $cached = null;
+
+        if (isset($this->cache[$key])) {
+            $cached = $this->cache[$key]->get();
+
+            if ($cached === null) {
+                unset($this->cache[$key]);
+            }
+        }
+
+        return $cached;
     }
 }

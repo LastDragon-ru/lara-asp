@@ -88,9 +88,10 @@ final class FileSystemTest extends TestCase {
         $writable  = new Directory($directory->getPath());
 
         // Self
-        self::assertSame($directory, $fs->getDirectory($directory, ''));
-        self::assertSame($directory, $fs->getDirectory($directory, '.'));
-        self::assertSame($directory, $fs->getDirectory($directory, $directory->getPath()));
+        self::assertSame(
+            $fs->getDirectory($directory, '.'),
+            $fs->getDirectory($directory, ''),
+        );
 
         // Readonly
         $readonly = $fs->getDirectory($directory, __DIR__);
