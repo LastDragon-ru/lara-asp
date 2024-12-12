@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Core\Path;
 
 use Override;
 
+use function str_starts_with;
+
 class DirectoryPath extends Path {
     #[Override]
     public function getParentPath(): self {
@@ -13,5 +15,13 @@ class DirectoryPath extends Path {
     #[Override]
     protected function getDirectory(): self {
         return $this;
+    }
+
+    public function isInside(Path $path): bool {
+        $path   = (string) $this->getPath($path);
+        $root   = (string) $this;
+        $inside = $path !== $root && str_starts_with($path, "{$root}/");
+
+        return $inside;
     }
 }
