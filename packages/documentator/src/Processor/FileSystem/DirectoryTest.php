@@ -17,7 +17,7 @@ use function sprintf;
 final class DirectoryTest extends TestCase {
     public function testConstruct(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $directory = new Directory($path, false);
+        $directory = new Directory($path);
 
         self::assertEquals($path, $directory->getPath());
         self::assertEquals((string) $path, (string) $directory->getPath());
@@ -27,14 +27,14 @@ final class DirectoryTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
 
-        new Directory(new DirectoryPath('/../path'), false);
+        new Directory(new DirectoryPath('/../path'));
     }
 
     public function testConstructNotAbsolute(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
-        new Directory(new DirectoryPath('../path'), false);
+        new Directory(new DirectoryPath('../path'));
     }
 
     public function testConstructNotDirectory(): void {
@@ -43,14 +43,14 @@ final class DirectoryTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage(sprintf('The `%s` is not a directory.', $path));
 
-        new Directory($path, false);
+        new Directory($path);
     }
 
     public function testIsInside(): void {
         $a         = (new FilePath(self::getTestData()->path('a/a.txt')));
         $b         = $a->getPath(new DirectoryPath('../../..'));
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), true);
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
 
         self::assertTrue($directory->isInside($a));
         self::assertFalse($directory->isInside($b));
@@ -60,9 +60,9 @@ final class DirectoryTest extends TestCase {
 
     public function testGetRelativePath(): void {
         $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
-        $parent    = new Directory($path->getDirectoryPath(), false);
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), true);
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $parent    = new Directory($path->getDirectoryPath());
+        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
 
         self::assertEquals('DirectoryTest/a', (string) $directory->getRelativePath($parent));
         self::assertEquals('DirectoryTest.php', (string) $directory->getRelativePath($file));

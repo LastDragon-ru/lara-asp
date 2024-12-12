@@ -33,7 +33,6 @@ final class PhpClassCommentTest extends TestCase {
         PHP;
         $file     = new File(
             (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
-            false,
         );
         $factory  = new PhpClassComment(new PhpClass());
         $metadata = $factory($file);
@@ -50,7 +49,7 @@ final class PhpClassCommentTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $factory  = new PhpClassComment(
             new class() extends PhpClass {
                 #[Override]

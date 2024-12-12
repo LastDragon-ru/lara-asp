@@ -33,8 +33,8 @@ final class InstructionTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source, array $data): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...', $data);
         $target   = self::getTestData()->path($source);
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
@@ -52,8 +52,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoData(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...', []);
         $target   = $file->getPath();
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
@@ -68,8 +68,8 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeVariablesUnused(): void {
         $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $params   = new Parameters('...', [
             'a' => 'A',
             'b' => 'B',
@@ -89,8 +89,8 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeVariablesMissed(): void {
         $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $params   = new Parameters('...', [
             'a' => 'A',
         ]);

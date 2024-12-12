@@ -30,8 +30,8 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $output): void {
         $path    = (new FilePath(__FILE__))->getNormalizedPath();
-        $root    = new Directory($path->getDirectoryPath(), false);
-        $file    = new File($path, false);
+        $root    = new Directory($path->getDirectoryPath());
+        $file    = new File($path);
         $params  = new Parameters('...');
         $target  = self::getTestData()->path('Example.md');
         $context = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
@@ -56,8 +56,8 @@ final class InstructionTest extends TestCase {
         self::assertFalse($this->app()->bound(Runner::class));
 
         $path     = (new FilePath(self::getTestData()->path('Example.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $params   = new Parameters('...');
         $target   = $file->getName();
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());

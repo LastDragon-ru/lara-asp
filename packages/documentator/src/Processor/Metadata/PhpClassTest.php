@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(PhpClass::class)]
 final class PhpClassTest extends TestCase {
     public function testInvoke(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $factory  = new PhpClass();
         $metadata = $factory($file);
 
@@ -21,7 +21,7 @@ final class PhpClassTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getFilePath('../../../README.md'), false);
+        $file     = new File((new FilePath(__FILE__))->getFilePath('../../../README.md'));
         $factory  = new PhpClass();
         $metadata = $factory($file);
 

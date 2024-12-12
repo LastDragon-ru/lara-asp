@@ -23,8 +23,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';

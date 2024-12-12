@@ -30,8 +30,8 @@ final class InstructionTest extends TestCase {
     public function testInvoke(string $expected, string $path, string $content): void {
         // Prepare
         $path        = (new FilePath(self::getTestData()->path($path)))->getNormalizedPath();
-        $root        = new Directory($path->getDirectoryPath(), false);
-        $file        = new File($path, false);
+        $root        = new Directory($path->getDirectoryPath());
+        $file        = new File($path);
         $document    = $this->app()->make(Markdown::class)->parse($content, $path);
         $instruction = (new Query())->where(Query::type(Node::class))->findOne($document->node);
 

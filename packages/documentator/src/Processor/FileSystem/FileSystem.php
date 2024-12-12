@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Closure;
 use Iterator;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 use SplFileInfo;
@@ -13,6 +14,7 @@ use WeakReference;
 use function file_put_contents;
 use function is_dir;
 use function is_file;
+use function mkdir;
 
 class FileSystem {
     /**
@@ -20,7 +22,9 @@ class FileSystem {
      */
     private array $cache = [];
 
-    public function __construct() {
+    public function __construct(
+        private readonly ?DirectoryPath $output = null,
+    ) {
         // empty
     }
 
@@ -49,8 +53,7 @@ class FileSystem {
 
         // Create
         if (is_file($path)) {
-            $writable           = $root->isWritable() && $root->isInside($pathObject);
-            $file               = new File($pathObject, $writable);
+            $file               = new File($pathObject);
             $this->cache[$path] = WeakReference::create($file);
         }
 
@@ -89,9 +92,8 @@ class FileSystem {
 
         // Create
         if (is_dir($path)) {
-            $writable           = $root->isWritable() && $root->isInside($pathObject);
             $directory          = !$root->getPath()->isEqual($pathObject)
-                ? new Directory($pathObject, $writable)
+                ? new Directory($pathObject)
                 : $root;
             $this->cache[$path] = WeakReference::create($directory);
         }
@@ -179,7 +181,24 @@ class FileSystem {
     }
 
     public function save(File $file): bool {
-        return !$file->isModified()
-            || ($file->isWritable() && file_put_contents((string) $file->getPath(), $file->getContent()) !== false);
+        // Modified?
+        if (!$file->isModified()) {
+            return true;
+        }
+
+        // Inside?
+        if ($this->output?->isInside($file->getPath()) !== true) {
+            return false;
+        }
+
+        // Directory?
+        $directory = (string) $file->getPath()->getDirectoryPath();
+
+        if (!is_dir($directory) && !mkdir($directory, recursive: true)) {
+            return false;
+        }
+
+        // Save
+        return file_put_contents((string) $file->getPath(), $file->getContent()) !== false;
     }
 }

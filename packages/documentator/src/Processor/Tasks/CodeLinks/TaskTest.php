@@ -47,8 +47,8 @@ final class TaskTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
         $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $file = new File($path, true);
-        $root = new Directory($path->getDirectoryPath(), true);
+        $file = new File($path);
+        $root = new Directory($path->getDirectoryPath());
         $task = $this->app()->make(Task::class);
 
         if (!is_callable($expected)) {

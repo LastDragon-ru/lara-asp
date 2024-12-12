@@ -26,6 +26,7 @@ class Processor {
      * @var InstanceList<Task>
      */
     private InstanceList $tasks;
+
     /**
      * @var array<array-key, string>
      */
@@ -71,25 +72,25 @@ class Processor {
     }
 
     /**
-     * @param Closure(FilePath $path, Result $result, float $duration): void|null $listener
+     * @param Closure(FilePath $input, Result $result, float $duration): void|null $listener
      */
     public function run(
-        DirectoryPath|FilePath $path,
+        DirectoryPath|FilePath $input,
         ?Closure $listener = null,
     ): float {
         $start = microtime(true);
         $depth = match (true) {
-            $path instanceof FilePath => 0,
-            default                   => null,
+            $input instanceof FilePath => 0,
+            default                    => null,
         };
         $extensions = match (true) {
-            $path instanceof FilePath => $path->getName(),
-            !$this->tasks->has('*')   => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
-            default                   => null,
+            $input instanceof FilePath => $input->getName(),
+            !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
+            default                    => null,
         };
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
-        $root    = new Directory($path->getDirectoryPath(), true);
-        $fs      = new FileSystem();
+        $root    = new Directory($input->getDirectoryPath());
+        $fs      = new FileSystem($root->getPath());
 
         try {
             $iterator = $fs->getFilesIterator($root, $extensions, $depth, $exclude);
@@ -99,7 +100,7 @@ class Processor {
         } catch (ProcessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new ProcessingFailed($path, $exception);
+            throw new ProcessingFailed($input, $exception);
         }
 
         return microtime(true) - $start;

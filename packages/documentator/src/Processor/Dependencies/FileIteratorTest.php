@@ -23,7 +23,7 @@ use function sprintf;
 final class FileIteratorTest extends TestCase {
     public function testToString(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $directory = new Directory($path, false);
+        $directory = new Directory($path);
 
         self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory')));
         self::assertEquals((string) $directory, (string) (new FileIterator($directory)));
@@ -33,12 +33,12 @@ final class FileIteratorTest extends TestCase {
     public function testInvoke(): void {
         $fs        = new FileSystem();
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $pattern   = '*.txt';
         $absolute  = new FileIterator($path, $pattern);
         $relative  = new FileIterator(basename((string) $path), $pattern);
-        $directory = new FileIterator(new Directory($path, false), $pattern);
+        $directory = new FileIterator(new Directory($path), $pattern);
         $formatter = static function (File $file) use ($path): string {
             return (string) $path->getRelativePath($file->getPath());
         };
@@ -59,8 +59,8 @@ final class FileIteratorTest extends TestCase {
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);

@@ -77,8 +77,8 @@ final class InstructionTest extends TestCase {
         }
 
         // Test
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...');
         $target   = '@test';
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
@@ -105,8 +105,8 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...');
         $target   = '@test';
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
@@ -124,8 +124,8 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver(null);
         });
 
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...');
         $target   = '@test';
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());

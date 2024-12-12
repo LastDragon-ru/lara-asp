@@ -36,7 +36,6 @@ final class PhpDocBlockTest extends TestCase {
         PHP;
         $file     = new File(
             (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
-            false,
         );
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
@@ -58,7 +57,7 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeEmpty(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
@@ -71,7 +70,7 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),

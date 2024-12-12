@@ -20,28 +20,26 @@ use function iterator_to_array;
 final class FileSystemTest extends TestCase {
     public function testGetFile(): void {
         $fs           = new FileSystem();
-        $directory    = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $directory    = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $readonly     = $fs->getFile($directory, __FILE__);
         $relative     = $fs->getFile($directory, basename(__FILE__));
         $notfound     = $fs->getFile($directory, 'not found');
-        $writable     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), true);
+        $writable     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $internal     = $fs->getFile($writable, self::getTestData()->path('c.html'));
         $external     = $fs->getFile($writable, '../Processor.php');
-        $file         = new File((new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(), false);
+        $file         = new File((new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath());
         $fromFile     = $fs->getFile($writable, $file);
         $splFile      = new SplFileInfo((string) $file);
         $fromSplFile  = $fs->getFile($writable, $splFile);
         $fromFilePath = $fs->getFile($writable, $file->getPath());
 
         self::assertNotNull($readonly);
-        self::assertFalse($readonly->isWritable());
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getNormalizedPath(),
             (string) $readonly,
         );
 
         self::assertNotNull($relative);
-        self::assertFalse($relative->isWritable());
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getNormalizedPath(),
             (string) $relative,
@@ -50,22 +48,18 @@ final class FileSystemTest extends TestCase {
         self::assertNull($notfound);
 
         self::assertNotNull($internal);
-        self::assertTrue($internal->isWritable());
         self::assertEquals(
             (string) (new FilePath(self::getTestData()->path('c.html')))->getNormalizedPath(),
             (string) $internal,
         );
 
         self::assertNotNull($external);
-        self::assertFalse($external->isWritable());
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getFilePath('../Processor.php'),
             (string) $external,
         );
 
         self::assertNotNull($fromFile);
-        self::assertFalse($file->isWritable());
-        self::assertTrue($fromFile->isWritable());
         self::assertEquals($file->getPath(), $fromFile->getPath());
         self::assertEquals(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
@@ -73,8 +67,6 @@ final class FileSystemTest extends TestCase {
         );
 
         self::assertNotNull($fromSplFile);
-        self::assertFalse($file->isWritable());
-        self::assertTrue($fromSplFile->isWritable());
         self::assertEquals($file->getPath(), $fromSplFile->getPath());
         self::assertEquals(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
@@ -82,8 +74,6 @@ final class FileSystemTest extends TestCase {
         );
 
         self::assertNotNull($fromFilePath);
-        self::assertFalse($file->isWritable());
-        self::assertTrue($fromFilePath->isWritable());
         self::assertEquals($file->getPath(), $fromFilePath->getPath());
         self::assertEquals(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
@@ -94,8 +84,8 @@ final class FileSystemTest extends TestCase {
     public function testGetDirectory(): void {
         // Prepare
         $fs        = new FileSystem();
-        $directory = new Directory((new DirectoryPath(__DIR__))->getParentPath(), false);
-        $writable  = new Directory($directory->getPath(), true);
+        $directory = new Directory((new DirectoryPath(__DIR__))->getParentPath());
+        $writable  = new Directory($directory->getPath());
 
         // Self
         self::assertSame($directory, $fs->getDirectory($directory, ''));
@@ -106,7 +96,6 @@ final class FileSystemTest extends TestCase {
         $readonly = $fs->getDirectory($directory, __DIR__);
 
         self::assertNotNull($readonly);
-        self::assertFalse($readonly->isWritable());
         self::assertEquals(
             (string) (new DirectoryPath(__DIR__))->getNormalizedPath(),
             (string) $readonly,
@@ -116,7 +105,6 @@ final class FileSystemTest extends TestCase {
         $relative = $fs->getDirectory($directory, basename(__DIR__));
 
         self::assertNotNull($relative);
-        self::assertFalse($relative->isWritable());
         self::assertEquals(
             (string) (new DirectoryPath(__DIR__))->getNormalizedPath(),
             (string) $relative,
@@ -132,14 +120,12 @@ final class FileSystemTest extends TestCase {
         $internal     = $fs->getDirectory($writable, $internalPath);
 
         self::assertNotNull($internal);
-        self::assertTrue($internal->isWritable());
         self::assertEquals($internalPath, (string) $internal);
 
         // External
         $external = $fs->getDirectory($writable, '../Testing');
 
         self::assertNotNull($external);
-        self::assertFalse($external->isWritable());
         self::assertEquals(
             (string) (new DirectoryPath(__DIR__))->getDirectoryPath('../../Testing'),
             (string) $external,
@@ -147,10 +133,9 @@ final class FileSystemTest extends TestCase {
 
         // From File
         $filePath = (new FilePath(self::getTestData()->path('c.html')))->getNormalizedPath();
-        $fromFile = $fs->getDirectory($writable, new File($filePath, true));
+        $fromFile = $fs->getDirectory($writable, new File($filePath));
 
         self::assertNotNull($fromFile);
-        self::assertTrue($fromFile->isWritable());
         self::assertEquals(
             (string) (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath(),
             (string) $fromFile,
@@ -161,7 +146,6 @@ final class FileSystemTest extends TestCase {
         $fromFilePath = $fs->getDirectory($writable, $filePath);
 
         self::assertNotNull($fromFilePath);
-        self::assertTrue($fromFilePath->isWritable());
         self::assertEquals(
             (string) (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath(),
             (string) $fromFilePath,
@@ -172,7 +156,6 @@ final class FileSystemTest extends TestCase {
         $fromSpl = $fs->getDirectory($writable, $spl);
 
         self::assertNotNull($fromSpl);
-        self::assertTrue($fromSpl->isWritable());
         self::assertEquals(
             (string) (new DirectoryPath($spl->getPathname()))->getNormalizedPath(),
             (string) $fromSpl,
@@ -180,12 +163,10 @@ final class FileSystemTest extends TestCase {
 
         // From Directory
         $directoryPath = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
-        $directory     = new Directory($directoryPath, false);
+        $directory     = new Directory($directoryPath);
         $fromDirectory = $fs->getDirectory($writable, $directory);
 
         self::assertNotNull($fromDirectory);
-        self::assertFalse($directory->isWritable());
-        self::assertTrue($fromDirectory->isWritable());
         self::assertEquals((string) $directory, (string) $fromDirectory);
 
         // From DirectoryPath
@@ -193,15 +174,13 @@ final class FileSystemTest extends TestCase {
         $fromDirectoryPath = $fs->getDirectory($writable, $directoryPath);
 
         self::assertNotNull($fromDirectoryPath);
-        self::assertTrue($writable->isWritable());
-        self::assertTrue($fromDirectoryPath->isWritable());
         self::assertEquals((string) $directoryPath, (string) $fromDirectoryPath);
     }
 
     public function testGetFilesIterator(): void {
         $fs        = new FileSystem();
         $root      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory = new Directory($root, false);
+        $directory = new Directory($root);
         $map       = static function (File $file) use ($directory): string {
             return (string) $directory->getRelativePath($file);
         };
@@ -259,7 +238,7 @@ final class FileSystemTest extends TestCase {
     public function testGetDirectoriesIterator(): void {
         $fs        = new FileSystem();
         $root      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory = new Directory($root, false);
+        $directory = new Directory($root);
         $map       = static function (Directory $dir) use ($directory): string {
             return (string) $directory->getRelativePath($dir);
         };
@@ -305,10 +284,10 @@ final class FileSystemTest extends TestCase {
         );
     }
 
-    public function testSave(): void {
-        $fs   = new FileSystem();
+    public function testSaveInsideRoot(): void {
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File($temp, true);
+        $file = new File($temp);
+        $fs   = new FileSystem($temp->getDirectoryPath());
 
         self::assertTrue($fs->save($file)); // because no changes
 
@@ -319,10 +298,10 @@ final class FileSystemTest extends TestCase {
         self::assertEquals(__METHOD__, file_get_contents((string) $temp));
     }
 
-    public function testSaveReadonly(): void {
-        $fs   = new FileSystem();
+    public function testSaveOutsideRoot(): void {
+        $fs   = new FileSystem(new DirectoryPath(__DIR__));
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File($temp, false);
+        $file = new File($temp);
 
         self::assertTrue($fs->save($file)); // because no changes
 
@@ -335,7 +314,7 @@ final class FileSystemTest extends TestCase {
 
     public function testCache(): void {
         $fs        = new FileSystem();
-        $dir       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $dir       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file      = $fs->getFile($dir, __FILE__);
         $directory = $fs->getDirectory($dir, __DIR__);
 

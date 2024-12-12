@@ -10,14 +10,12 @@ use Override;
 use Stringable;
 
 use function is_dir;
-use function is_writable;
 use function sprintf;
 use function str_starts_with;
 
 class Directory implements Stringable {
     public function __construct(
         private readonly DirectoryPath $path,
-        private readonly bool $writable,
     ) {
         if (!$this->path->isNormalized()) {
             throw new InvalidArgumentException(
@@ -53,10 +51,6 @@ class Directory implements Stringable {
 
     public function getName(): string {
         return $this->path->getName();
-    }
-
-    public function isWritable(): bool {
-        return $this->writable && is_writable((string) $this->path);
     }
 
     public function isInside(self|File|Path $path): bool {

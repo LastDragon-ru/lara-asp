@@ -32,8 +32,8 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $target   = $file->getName();
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
