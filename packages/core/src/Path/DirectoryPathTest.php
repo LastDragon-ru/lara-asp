@@ -41,4 +41,14 @@ final class DirectoryPathTest extends TestCase {
         self::assertEquals('/absolute/path/to', (string) $absolute->getParentPath());
         self::assertEquals('/absolute/path', (string) $absolute->getParentPath()->getParentPath());
     }
+
+    public function testIsInside(): void {
+        $path = new DirectoryPath('/path/to/directory');
+
+        self::assertFalse($path->isInside($path));
+        self::assertTrue($path->isInside(new FilePath('/path/to/directory/file.md')));
+        self::assertTrue($path->isInside(new FilePath('file.md')));
+        self::assertFalse($path->isInside(new FilePath('/path/to/directory/../file.md')));
+        self::assertFalse($path->isInside(new FilePath('/path/to/file.md')));
+    }
 }
