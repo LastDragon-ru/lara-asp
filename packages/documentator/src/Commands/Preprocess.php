@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
-use Closure;
 use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
@@ -12,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
@@ -127,19 +127,19 @@ class Preprocess extends Command {
     private function processor(): Processor {
         $processor = new Processor($this->container);
 
-        foreach ($this->tasks() as $task => $configurator) {
-            $processor->task($task, $configurator);
+        foreach ($this->tasks() as $task) {
+            $processor->task($task);
         }
 
         return $processor;
     }
 
     /**
-     * @return array<class-string<Task>, Closure(Task): void|null>
+     * @return list<InstanceFactory<covariant Task>|Task|class-string<covariant Task>>
      */
     protected function tasks(): array {
         return [
-            PreprocessTask::class => static function (PreprocessTask $task): void {
+            new InstanceFactory(PreprocessTask::class, static function (PreprocessTask $task): void {
                 $task->addInstruction(PreprocessIncludeFile::class);
                 $task->addInstruction(PreprocessIncludeExec::class);
                 $task->addInstruction(PreprocessIncludeExample::class);
@@ -149,8 +149,8 @@ class Preprocess extends Command {
                 $task->addInstruction(PreprocessIncludePackageList::class);
                 $task->addInstruction(PreprocessIncludeDocumentList::class);
                 $task->addInstruction(PreprocessIncludeGraphqlDirective::class);
-            },
-            CodeLinksTask::class  => null,
+            }),
+            CodeLinksTask::class,
         ];
     }
 

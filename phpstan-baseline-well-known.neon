@@ -83,11 +83,3 @@ parameters:
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"
             paths:
                 - packages/dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
-
-        # Not supported yet (`class-string-map`)
-        # https://github.com/phpstan/phpstan/discussions/11736
-        # https://github.com/phpstan/phpstan/issues/9521 (?)
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Commands\\\\Preprocess::tasks\\(\\) should return array<class-string<LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Task>, \\(Closure\\(LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Contracts\\\\Task\\): void\\)\\|null> but returns#"
-            paths:
-                - packages/documentator/src/Commands/Preprocess.php
