@@ -288,7 +288,7 @@ final class FileSystemTest extends TestCase {
     public function testSaveInsideRoot(): void {
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
         $file = new File($temp);
-        $fs   = new FileSystem($temp->getDirectoryPath());
+        $fs   = new FileSystem(new Directory($temp->getDirectoryPath()));
 
         self::assertTrue($fs->save($file)); // because no changes
 
@@ -300,7 +300,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testSaveOutsideRoot(): void {
-        $fs   = new FileSystem(new DirectoryPath(__DIR__));
+        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
         $file = new File($temp);
 

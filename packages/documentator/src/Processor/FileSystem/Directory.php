@@ -11,7 +11,6 @@ use Stringable;
 
 use function is_dir;
 use function sprintf;
-use function str_starts_with;
 
 class Directory implements Stringable {
     public function __construct(
@@ -54,12 +53,9 @@ class Directory implements Stringable {
     }
 
     public function isInside(self|File|Path $path): bool {
-        $path   = $path instanceof Path ? $path : $path->getPath();
-        $path   = (string) $this->path->getPath($path);
-        $root   = (string) $this->path;
-        $inside = $path !== $root && str_starts_with($path, "{$root}/");
-
-        return $inside;
+        return $this->path->isInside(
+            $path instanceof Path ? $path : $path->getPath(),
+        );
     }
 
     public function getFilePath(string $path): FilePath {

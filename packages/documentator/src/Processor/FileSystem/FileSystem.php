@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Closure;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 use SplFileInfo;
@@ -23,7 +22,7 @@ class FileSystem {
     private array $cache = [];
 
     public function __construct(
-        private readonly ?DirectoryPath $output = null,
+        private readonly ?Directory $output = null,
     ) {
         // empty
     }

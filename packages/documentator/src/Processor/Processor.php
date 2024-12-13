@@ -84,6 +84,7 @@ class Processor {
      */
     public function run(
         DirectoryPath|FilePath $input,
+        ?DirectoryPath $output = null,
         ?Closure $listener = null,
     ): float {
         $start = microtime(true);
@@ -97,12 +98,13 @@ class Processor {
             default                    => null,
         };
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
-        $root    = new Directory($input->getDirectoryPath());
-        $fs      = new FileSystem($root->getPath());
 
         try {
-            $iterator = $fs->getFilesIterator($root, $extensions, $depth, $exclude);
-            $executor = new Executor($fs, $root, $exclude, $this->tasks, $iterator, $listener);
+            $root     = new Directory($input->getDirectoryPath());
+            $output   = $output !== null ? new Directory($output->getNormalizedPath()) : $root;
+            $system   = new FileSystem($output);
+            $iterator = $system->getFilesIterator($root, $extensions, $depth, $exclude);
+            $executor = new Executor($system, $root, $exclude, $this->tasks, $iterator, $listener);
 
             $executor->run();
         } catch (ProcessorError $exception) {

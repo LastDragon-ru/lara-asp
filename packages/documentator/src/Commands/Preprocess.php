@@ -118,7 +118,7 @@ class Preprocess extends Command {
             $this->output->writeln($line, OutputInterface::OUTPUT_NORMAL | $resultVerbosity);
         };
 
-        $duration = $this->processor()->exclude($exclude)->run($path, $listener);
+        $duration = $this->processor()->exclude($exclude)->run($path, listener: $listener);
 
         $this->output->newLine();
         $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration($duration)})</>");
