@@ -107,17 +107,10 @@ class Executor {
             foreach ($tasks as $task) {
                 try {
                     // Run
+                    $result    = false;
                     $generator = $task($this->root, $file);
 
-                    // Postponed?
-                    if ($generator === null) {
-                        $paused   += $this->runIterator();
-                        $generator = $task($this->root, $file) ?? false;
-                    }
-
                     // Dependencies?
-                    $result = false;
-
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
                             $dependency = $generator->current();

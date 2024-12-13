@@ -22,19 +22,13 @@ interface Task {
      * or failed (`false`).
      *
      * The {@see Generator} means that the task has dependencies (= other files
-     * which should be processed before the task). Each returned value will be
+     * which should be processed before the current). Each returned value will be
      * resolved relative to the directory where the `$file` located, processed,
      * and then send back into the generator.
      *
-     * And, finally, the `null`. Special value that will postpone processing
-     * until all other files (and their dependencies) are processed. It may be
-     * useful, for example, if the task should collect information from all
-     * other files. Please note, the `null` can be returned only once, the
-     * second time will automatically mark the task as failed.
-     *
-     * @return Generator<mixed, Dependency<*>, mixed, bool>|bool|null
-     *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, bool>|bool|null`
+     * @return Generator<mixed, Dependency<*>, mixed, bool>|bool
+     *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, bool>|bool`
      *          but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */
-    public function __invoke(Directory $root, File $file): Generator|bool|null;
+    public function __invoke(Directory $root, File $file): Generator|bool;
 }
