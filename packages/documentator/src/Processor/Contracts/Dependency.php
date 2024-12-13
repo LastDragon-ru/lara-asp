@@ -20,5 +20,5 @@ interface Dependency extends Stringable {
      *
      * @return TValue
      */
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed;
+    public function __invoke(FileSystem $fs, File $file): mixed;
 }

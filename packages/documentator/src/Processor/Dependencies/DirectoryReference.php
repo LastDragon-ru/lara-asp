@@ -21,13 +21,14 @@ class DirectoryReference implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
+    public function __invoke(FileSystem $fs, File $file): mixed {
         // Already?
         if ($this->reference instanceof Directory) {
             return $this->reference;
         }
 
         // Create
+        $root     = $fs->input;
         $resolved = $fs->getDirectory($root, $file->getPath()->getDirectoryPath((string) $this));
 
         if ($resolved === null) {

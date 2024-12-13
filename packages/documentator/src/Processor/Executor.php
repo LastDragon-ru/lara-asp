@@ -114,7 +114,7 @@ class Executor {
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
                             $dependency = $generator->current();
-                            $resolved   = $dependency($this->fs, $this->root, $file);
+                            $resolved   = $dependency($this->fs, $file);
 
                             if ($resolved instanceof Traversable) {
                                 $resolved = new ExecutorTraversable($dependency, $resolved, $this->runDependency(...));

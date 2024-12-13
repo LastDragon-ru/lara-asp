@@ -26,11 +26,11 @@ readonly class Optional implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
+    public function __invoke(FileSystem $fs, File $file): mixed {
         $resolved = null;
 
         try {
-            $resolved = ($this->dependency)($fs, $root, $file);
+            $resolved = ($this->dependency)($fs, $file);
         } catch (DependencyNotFound) {
             $resolved = null;
         }

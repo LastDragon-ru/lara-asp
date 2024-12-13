@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
@@ -21,13 +20,14 @@ class FileReference implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
+    public function __invoke(FileSystem $fs, File $file): mixed {
         // Already?
         if ($this->reference instanceof File) {
             return $this->reference;
         }
 
         // Create
+        $root     = $fs->input;
         $resolved = $fs->getFile($root, $file->getPath()->getFilePath((string) $this));
 
         if ($resolved === null) {

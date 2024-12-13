@@ -36,11 +36,12 @@ class DirectoryIterator implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
+    public function __invoke(FileSystem $fs, File $file): mixed {
         // Directory
         $directory = $this->directory;
 
         if (!($directory instanceof Directory)) {
+            $root      = $fs->input;
             $directory = $fs->getDirectory($root, $file->getPath()->getDirectoryPath((string) $this));
 
             if ($directory === null) {

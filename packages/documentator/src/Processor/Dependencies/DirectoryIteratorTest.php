@@ -31,9 +31,8 @@ final class DirectoryIteratorTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem();
+        $fs        = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $absolute  = new DirectoryIterator($path);
         $relative  = new DirectoryIterator(basename((string) $path));
@@ -50,14 +49,13 @@ final class DirectoryIteratorTest extends TestCase {
             'b/b',
         ];
 
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs, $root, $file))));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs, $root, $file))));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs, $root, $file))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs, $file))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs, $file))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs, $file))));
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
         $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
@@ -67,12 +65,12 @@ final class DirectoryIteratorTest extends TestCase {
                 'Dependency `%s` of `%s` not found (root: `%s`).',
                 $path,
                 $file->getName(),
-                $root->getPath(),
+                $fs->input->getPath(),
             ),
         );
 
         iterator_to_array(
-            (new DirectoryIterator($path))($fs, $root, $file),
+            (new DirectoryIterator($path))($fs, $file),
         );
     }
 }

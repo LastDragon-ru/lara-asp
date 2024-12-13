@@ -19,12 +19,13 @@ class FileSystem {
     /**
      * @var array<string, WeakReference<Directory|File>>
      */
-    private array $cache = [];
+    private array             $cache = [];
+    public readonly Directory $input;
+    public readonly Directory $output;
 
-    public function __construct(
-        private readonly ?Directory $output = null,
-    ) {
-        // empty
+    public function __construct(Directory $input, ?Directory $output = null) {
+        $this->input  = $input;
+        $this->output = $output ?? $this->input;
     }
 
     public function getFile(Directory $root, SplFileInfo|File|FilePath|string $path): ?File {
@@ -175,7 +176,7 @@ class FileSystem {
         }
 
         // Inside?
-        if ($this->output?->isInside($file->getPath()) !== true) {
+        if ($this->output->isInside($file->getPath()) !== true) {
             return false;
         }
 

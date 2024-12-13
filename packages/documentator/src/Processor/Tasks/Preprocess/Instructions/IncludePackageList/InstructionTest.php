@@ -50,13 +50,12 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoReadme(): void {
-        $fs       = new FileSystem();
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
+        $fs       = new FileSystem(new Directory($path->getDirectoryPath()));
         $file     = new File($path);
-        $target   = $root->getDirectoryPath('no readme');
+        $target   = $fs->input->getDirectoryPath('no readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($fs->input, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target), 'package');
 
@@ -69,16 +68,15 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeEmptyReadme(): void {
-        $fs       = new FileSystem();
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
+        $fs       = new FileSystem(new Directory($path->getDirectoryPath()));
         $file     = new File($path);
-        $target   = $root->getDirectoryPath('empty readme');
+        $target   = $fs->input->getDirectoryPath('empty readme');
         $params   = new Parameters('...');
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($fs->input, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory(new Directory($target), 'package');
-        $expected = $fs->getFile($root, 'empty readme/package/README.md');
+        $expected = $fs->getFile($fs->input, 'empty readme/package/README.md');
 
         self::assertNotNull($package);
         self::assertNotNull($expected);

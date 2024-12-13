@@ -28,9 +28,8 @@ final class DirectoryReferenceTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem();
         $dir       = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $root      = new Directory($dir);
+        $fs        = new FileSystem(new Directory($dir));
         $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $another   = new Directory($dir);
         $dirpath   = new DirectoryReference($dir);
@@ -38,15 +37,14 @@ final class DirectoryReferenceTest extends TestCase {
         $relative  = new DirectoryReference('.');
         $reference = new DirectoryReference($another);
 
-        self::assertEquals($root, $absolute($fs, $root, $file));
-        self::assertEquals($root, $relative($fs, $root, $file));
-        self::assertEquals($root, $dirpath($fs, $root, $file));
-        self::assertSame($another, $reference($fs, $root, $file));
+        self::assertEquals($fs->input, $absolute($fs, $file));
+        self::assertEquals($fs->input, $relative($fs, $file));
+        self::assertEquals($fs->input, $dirpath($fs, $file));
+        self::assertSame($another, $reference($fs, $file));
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
         $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
@@ -56,10 +54,10 @@ final class DirectoryReferenceTest extends TestCase {
                 'Dependency `%s` of `%s` not found (root: `%s`).',
                 $path,
                 $file->getName(),
-                $root->getPath(),
+                $fs->input->getPath(),
             ),
         );
 
-        (new DirectoryReference($path))($fs, $root, $file);
+        (new DirectoryReference($path))($fs, $file);
     }
 }

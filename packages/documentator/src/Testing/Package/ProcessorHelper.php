@@ -55,10 +55,10 @@ class ProcessorHelper {
      * @return T
      */
     protected static function getResult(Directory $root, File $file, Generator $generator): mixed {
-        $fs = new FileSystem();
+        $fs = new FileSystem($root);
 
         while ($generator->valid()) {
-            $generator->send(($generator->current())($fs, $root, $file));
+            $generator->send(($generator->current())($fs, $file));
         }
 
         return $generator->getReturn();

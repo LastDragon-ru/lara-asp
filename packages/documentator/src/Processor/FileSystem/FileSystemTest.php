@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 
@@ -19,7 +20,7 @@ use function iterator_to_array;
 #[CoversClass(FileSystem::class)]
 final class FileSystemTest extends TestCase {
     public function testGetFile(): void {
-        $fs           = new FileSystem();
+        $fs           = new FileSystem(Mockery::mock(Directory::class));
         $directory    = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $readonly     = $fs->getFile($directory, __FILE__);
         $relative     = $fs->getFile($directory, basename(__FILE__));
@@ -83,7 +84,7 @@ final class FileSystemTest extends TestCase {
 
     public function testGetDirectory(): void {
         // Prepare
-        $fs        = new FileSystem();
+        $fs        = new FileSystem(Mockery::mock(Directory::class));
         $directory = new Directory((new DirectoryPath(__DIR__))->getParentPath());
         $writable  = new Directory($directory->getPath());
 
@@ -179,7 +180,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testGetFilesIterator(): void {
-        $fs        = new FileSystem();
+        $fs        = new FileSystem(Mockery::mock(Directory::class));
         $root      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $directory = new Directory($root);
         $map       = static function (File $file) use ($directory): string {
@@ -237,7 +238,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testGetDirectoriesIterator(): void {
-        $fs        = new FileSystem();
+        $fs        = new FileSystem(Mockery::mock(Directory::class));
         $root      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $directory = new Directory($root);
         $map       = static function (Directory $dir) use ($directory): string {
@@ -314,7 +315,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testCache(): void {
-        $fs        = new FileSystem();
+        $fs        = new FileSystem(Mockery::mock(Directory::class));
         $dir       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file      = $fs->getFile($dir, __FILE__);
         $directory = $fs->getDirectory($dir, __DIR__);
