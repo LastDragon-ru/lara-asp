@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Commands\Requirements;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Factory as ProcessorFactoryContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Factory as ProcessorFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory as LinkFactoryContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Factory as LinkFactory;
 use Override;
@@ -22,7 +20,6 @@ class PackageProvider extends ServiceProvider {
     public function register(): void {
         parent::register();
 
-        $this->app->scopedIf(ProcessorFactoryContract::class, ProcessorFactory::class);
         $this->app->scopedIf(LinkFactoryContract::class, LinkFactory::class);
         $this->app->scopedIf(MarkdownContract::class, Markdown::class);
     }

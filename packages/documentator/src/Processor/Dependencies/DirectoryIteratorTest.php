@@ -23,7 +23,7 @@ use function sprintf;
 final class DirectoryIteratorTest extends TestCase {
     public function testToString(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $directory = new Directory($path, false);
+        $directory = new Directory($path);
 
         self::assertEquals('path/to/directory', (string) (new DirectoryIterator('path/to/directory')));
         self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory)));
@@ -33,11 +33,11 @@ final class DirectoryIteratorTest extends TestCase {
     public function testInvoke(): void {
         $fs        = new FileSystem();
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $absolute  = new DirectoryIterator($path);
         $relative  = new DirectoryIterator(basename((string) $path));
-        $directory = new DirectoryIterator(new Directory($path, false));
+        $directory = new DirectoryIterator(new Directory($path));
         $formatter = static function (Directory $directory) use ($path): string {
             return (string) $path->getRelativePath($directory->getPath());
         };
@@ -57,8 +57,8 @@ final class DirectoryIteratorTest extends TestCase {
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);

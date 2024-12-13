@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -87,12 +88,20 @@ class Task implements TaskContract {
     }
 
     /**
-     * @template I of Instruction<*>
+     * @template P of Parameters
+     * @template I of Instruction<P>
      *
-     * @param I|class-string<I> $instruction
+     * @param InstanceFactory<covariant I>|I|class-string<I> $instruction
      */
-    public function addInstruction(Instruction|string $instruction): static {
-        $this->instructions->add($instruction); // @phpstan-ignore argument.type
+    public function addInstruction(InstanceFactory|Instruction|string $instruction): static {
+        if ($instruction instanceof InstanceFactory) {
+            $this->instructions->add(
+                $instruction->class,   // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
+                $instruction->factory, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
+            );
+        } else {
+            $this->instructions->add($instruction);
+        }
 
         return $this;
     }

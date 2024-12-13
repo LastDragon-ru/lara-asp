@@ -21,7 +21,7 @@ use function sprintf;
 final class FileReferenceTest extends TestCase {
     public function testToString(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new File($path, false);
+        $file = new File($path);
 
         self::assertEquals('path/to/file', (string) (new FileReference('path/to/file')));
         self::assertEquals((string) $file, (string) (new FileReference($file)));
@@ -30,10 +30,10 @@ final class FileReferenceTest extends TestCase {
 
     public function testInvoke(): void {
         $fs        = new FileSystem();
-        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
+        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $path      = (new FilePath(__FILE__))->getNormalizedPath();
-        $file      = new File($path, false);
-        $another   = new File($path, false);
+        $file      = new File($path);
+        $another   = new File($path);
         $absolute  = new FileReference(__FILE__);
         $relative  = new FileReference(basename(__FILE__));
         $filepath  = new FileReference($path);
@@ -47,8 +47,8 @@ final class FileReferenceTest extends TestCase {
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/file';
 
         self::expectException(DependencyNotFound::class);

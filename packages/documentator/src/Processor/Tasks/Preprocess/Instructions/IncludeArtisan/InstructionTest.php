@@ -30,8 +30,8 @@ use function sprintf;
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...');
         $expected = 'result';
         $command  = 'command to execute';
@@ -75,8 +75,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeFailed(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $node     = new class() extends Node {
             #[Override]
             public function getDestination(): string {
@@ -133,8 +133,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testGetCommand(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), false);
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $params   = new Parameters('...');
         $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());

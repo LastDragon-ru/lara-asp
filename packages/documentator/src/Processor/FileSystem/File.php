@@ -15,12 +15,11 @@ use Stringable;
 use function array_key_exists;
 use function file_get_contents;
 use function is_file;
-use function is_writable;
 use function sprintf;
 
 class File implements Stringable {
-    private ?string $content = null;
-    private bool $modified   = false;
+    private ?string $content  = null;
+    private bool    $modified = false;
 
     /**
      * @var array<class-string<Metadata<mixed>>, mixed>
@@ -29,7 +28,6 @@ class File implements Stringable {
 
     public function __construct(
         private readonly FilePath $path,
-        private readonly bool $writable,
     ) {
         if (!$this->path->isNormalized()) {
             throw new InvalidArgumentException(
@@ -69,10 +67,6 @@ class File implements Stringable {
 
     public function getExtension(): ?string {
         return $this->path->getExtension();
-    }
-
-    public function isWritable(): bool {
-        return $this->writable && is_writable((string) $this->path);
     }
 
     public function isModified(): bool {
@@ -122,7 +116,7 @@ class File implements Stringable {
      * @param T $path
      *
      * @return (T is Path ? new<T> : (T is Directory ? DirectoryPath : FilePath))
-    */
+     */
     public function getRelativePath(Directory|self|Path $path): Path {
         $path = $path instanceof Path ? $path : $path->getPath();
         $path = $this->path->getRelativePath($path);

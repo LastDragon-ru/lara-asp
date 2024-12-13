@@ -34,7 +34,6 @@ final class PhpClassMarkdownTest extends TestCase {
         PHP;
         $file     = new File(
             (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
-            false,
         );
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
@@ -55,7 +54,7 @@ final class PhpClassMarkdownTest extends TestCase {
     }
 
     public function testInvokeEmpty(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
             new PhpClassComment(new PhpClass()),
@@ -67,7 +66,7 @@ final class PhpClassMarkdownTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
+        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
             new class(new PhpClass()) extends PhpClassComment {

@@ -31,8 +31,8 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(string $expected, string $template, SortOrder $order): void {
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $target   = $root->getDirectoryPath('packages');
         $params   = new Parameters('...', template: $template, order: $order);
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
@@ -52,13 +52,13 @@ final class InstructionTest extends TestCase {
     public function testInvokeNoReadme(): void {
         $fs       = new FileSystem();
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $target   = $root->getDirectoryPath('no readme');
         $params   = new Parameters('...');
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory(new Directory($target, false), 'package');
+        $package  = $fs->getDirectory(new Directory($target), 'package');
 
         self::assertNotNull($package);
         self::expectExceptionObject(
@@ -71,13 +71,13 @@ final class InstructionTest extends TestCase {
     public function testInvokeEmptyReadme(): void {
         $fs       = new FileSystem();
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath(), false);
-        $file     = new File($path, false);
+        $root     = new Directory($path->getDirectoryPath());
+        $file     = new File($path);
         $target   = $root->getDirectoryPath('empty readme');
         $params   = new Parameters('...');
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory(new Directory($target, false), 'package');
+        $package  = $fs->getDirectory(new Directory($target), 'package');
         $expected = $fs->getFile($root, 'empty readme/package/README.md');
 
         self::assertNotNull($package);

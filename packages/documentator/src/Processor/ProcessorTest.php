@@ -64,9 +64,9 @@ final class ProcessorTest extends TestCase {
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
                 $root,
-                ['excluded.txt', '**/**/excluded.txt'],
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -144,13 +144,8 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunFile(): void {
-        $task = new ProcessorTest__Task([
-            'c.txt' => [
-                'excluded.txt',
-            ],
-        ]);
-
-        $path   = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
+        $task   = new ProcessorTest__Task();
+        $path   = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $count  = 0;
         $events = [];
 
@@ -158,7 +153,6 @@ final class ProcessorTest extends TestCase {
             ->task($task)
             ->run(
                 $path,
-                ['excluded.txt', '**/**/excluded.txt'],
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -167,8 +161,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'c.txt'        => Result::Success,
-                'excluded.txt' => Result::Skipped,
+                'excluded.txt' => Result::Success,
             ],
             $events,
         );
@@ -176,111 +169,13 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'c.txt',
+                    'excluded.txt',
                     [
-                        'excluded.txt' => 'excluded.txt',
+                        // empty
                     ],
                 ],
             ],
             $task->processed,
-        );
-    }
-
-    public function testRunPostpone(): void {
-        $task = new class() implements Task {
-            /**
-             * @var array<array-key, string>
-             */
-            public array $processed = [];
-            /**
-             * @var array<string, bool>
-             */
-            public array $postponed = [];
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getExtensions(): array {
-                return ['txt', 'htm', 'html'];
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function __invoke(Directory $root, File $file): ?bool {
-                // Postponed?
-                $path = (string) $root->getRelativePath($file);
-
-                if ($file->getExtension() === 'html' && !isset($this->postponed[$path])) {
-                    $this->postponed[$path] = true;
-
-                    return null;
-                }
-
-                // Process
-                $this->processed[] = $path;
-
-                return true;
-            }
-        };
-
-        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $count  = 0;
-        $events = [];
-
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
-            ->run(
-                $root,
-                ['excluded.txt', '**/**/excluded.txt'],
-                static function (FilePath $path, Result $result) use (&$count, &$events): void {
-                    $events[(string) $path] = $result;
-                    $count++;
-                },
-            );
-
-        self::assertEquals(
-            [
-                'b/a/ba.txt' => Result::Success,
-                'c.txt'      => Result::Success,
-                'b/b/bb.txt' => Result::Success,
-                'a/a.txt'    => Result::Success,
-                'a/a/aa.txt' => Result::Success,
-                'a/b/ab.txt' => Result::Success,
-                'b/b.txt'    => Result::Success,
-                'c.htm'      => Result::Success,
-                'c.html'     => Result::Success,
-                'b/b.html'   => Result::Success,
-                'a/a.html'   => Result::Success,
-            ],
-            $events,
-        );
-        self::assertCount($count, $events);
-        self::assertEquals(
-            [
-                'a/a.txt',
-                'a/a/aa.txt',
-                'a/b/ab.txt',
-                'b/a/ba.txt',
-                'b/b.txt',
-                'b/b/bb.txt',
-                'c.htm',
-                'c.txt',
-                'c.html',
-                'b/b.html',
-                'a/a.html',
-            ],
-            $task->processed,
-        );
-        self::assertEquals(
-            [
-                'c.html'   => true,
-                'b/b.html' => true,
-                'a/a.html' => true,
-            ],
-            $task->postponed,
         );
     }
 
@@ -316,9 +211,9 @@ final class ProcessorTest extends TestCase {
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($taskA)
             ->task($taskB)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
                 $root,
-                ['excluded.txt', '**/**/excluded.txt'],
                 static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;

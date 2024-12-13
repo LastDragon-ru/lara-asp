@@ -22,7 +22,7 @@ use function sprintf;
 final class FileTest extends TestCase {
     public function testConstruct(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new File($path, false);
+        $file = new File($path);
 
         self::assertEquals($path, $file->getPath());
         self::assertEquals("{$path}", (string) $file->getPath());
@@ -34,14 +34,14 @@ final class FileTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../file.txt` given.');
 
-        new File(new FilePath('/../file.txt'), false);
+        new File(new FilePath('/../file.txt'));
     }
 
     public function testConstructNotAbsolute(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be absolute, `../file.txt` given.');
 
-        new File(new FilePath('../file.txt'), false);
+        new File(new FilePath('../file.txt'));
     }
 
     public function testConstructNotFile(): void {
@@ -50,12 +50,12 @@ final class FileTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage(sprintf('The `%s` is not a file.', $path));
 
-        new File($path, false);
+        new File($path);
     }
 
     public function testGetContent(): void {
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File($temp, false);
+        $file = new File($temp);
         $path = (string) $file;
 
         self::assertEquals(__FILE__, $file->getContent());
@@ -66,7 +66,7 @@ final class FileTest extends TestCase {
 
     public function testSetContent(): void {
         $temp    = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file    = new File($temp, false);
+        $file    = new File($temp);
         $path    = (string) $file;
         $meta    = new class([1, 2]) implements Metadata {
             public function __construct(
@@ -96,9 +96,9 @@ final class FileTest extends TestCase {
 
     public function testGetRelativePath(): void {
         $path      = new FilePath('a/a.txt');
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath(), false);
-        $parent    = new Directory($file->getPath()->getParentPath()->getParentPath(), false);
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath(), true);
+        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $parent    = new Directory($file->getPath()->getParentPath()->getParentPath());
+        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
 
         self::assertEquals('..', (string) $file->getRelativePath($parent));
         self::assertEquals('FileTest.php', (string) $file->getRelativePath($file));
