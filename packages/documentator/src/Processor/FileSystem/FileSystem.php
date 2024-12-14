@@ -28,7 +28,10 @@ class FileSystem {
         $this->output = $output ?? $this->input;
     }
 
-    public function getFile(Directory $root, SplFileInfo|File|FilePath|string $path): ?File {
+    /**
+     * Relative path will be resolved based on {@see self::$input}.
+     */
+    public function getFile(SplFileInfo|File|FilePath|string $path): ?File {
         // Object?
         if ($path instanceof File || $path instanceof FilePath) {
             $path = (string) $path;
@@ -39,7 +42,7 @@ class FileSystem {
         }
 
         // Cached?
-        $path = $root->getPath()->getFilePath($path);
+        $path = $this->input->getPath()->getFilePath($path);
         $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
@@ -58,7 +61,10 @@ class FileSystem {
         return $file;
     }
 
-    public function getDirectory(Directory $root, SplFileInfo|Directory|File|Path|string $path): ?Directory {
+    /**
+     * Relative path will be resolved based on {@see self::$input}.
+     */
+    public function getDirectory(SplFileInfo|Directory|File|Path|string $path): ?Directory {
         // Object?
         if ($path instanceof SplFileInfo) {
             $path = $path->getPathname();
@@ -71,7 +77,7 @@ class FileSystem {
         }
 
         // Cached?
-        $path      = $root->getPath()->getDirectoryPath($path);
+        $path      = $this->input->getPath()->getDirectoryPath($path);
         $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {
@@ -98,12 +104,12 @@ class FileSystem {
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
-        Directory $root,
+        Directory $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($root, $this->getFile(...), $patterns, $depth, $exclude);
+        yield from $this->getIterator($directory, $this->getFile(...), $patterns, $depth, $exclude);
     }
 
     /**
@@ -114,18 +120,18 @@ class FileSystem {
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
-        Directory $root,
+        Directory $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($root, $this->getDirectory(...), $patterns, $depth, $exclude);
+        yield from $this->getIterator($directory, $this->getDirectory(...), $patterns, $depth, $exclude);
     }
 
     /**
      * @template T of object
      *
-     * @param Closure(Directory, SplFileInfo): ?T          $factory
+     * @param Closure(SplFileInfo): ?T                     $factory
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
@@ -133,7 +139,7 @@ class FileSystem {
      * @return Iterator<array-key, T>
      */
     protected function getIterator(
-        Directory $root,
+        Directory $directory,
         Closure $factory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
@@ -143,7 +149,7 @@ class FileSystem {
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
-            ->in((string) $root)
+            ->in((string) $directory)
             ->sortByName(true);
 
         if ($patterns !== null) {
@@ -159,7 +165,7 @@ class FileSystem {
         }
 
         foreach ($finder as $info) {
-            $item = $factory($root, $info);
+            $item = $factory($info);
 
             if ($item !== null) {
                 yield $item;

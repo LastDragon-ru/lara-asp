@@ -28,11 +28,10 @@ class DirectoryReference implements Dependency {
         }
 
         // Create
-        $root     = $fs->input;
-        $resolved = $fs->getDirectory($root, $file->getPath()->getDirectoryPath((string) $this));
+        $resolved = $fs->getDirectory($file->getPath()->getDirectoryPath((string) $this));
 
         if ($resolved === null) {
-            throw new DependencyNotFound($root, $file, $this);
+            throw new DependencyNotFound($fs->input, $file, $this);
         }
 
         return $resolved;

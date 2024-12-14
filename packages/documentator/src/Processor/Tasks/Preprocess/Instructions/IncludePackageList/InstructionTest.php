@@ -57,7 +57,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $context  = new Context($fs->input, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory(new Directory($target), 'package');
+        $package  = $fs->getDirectory($target->getDirectoryPath('package'));
 
         self::assertNotNull($package);
         self::expectExceptionObject(
@@ -75,8 +75,8 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('...');
         $context  = new Context($fs->input, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory(new Directory($target), 'package');
-        $expected = $fs->getFile($fs->input, 'empty readme/package/README.md');
+        $package  = $fs->getDirectory($target->getDirectoryPath('package'));
+        $expected = $fs->getFile('empty readme/package/README.md');
 
         self::assertNotNull($package);
         self::assertNotNull($expected);

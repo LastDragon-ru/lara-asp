@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 
@@ -20,19 +19,17 @@ use function iterator_to_array;
 #[CoversClass(FileSystem::class)]
 final class FileSystemTest extends TestCase {
     public function testGetFile(): void {
-        $fs           = new FileSystem(Mockery::mock(Directory::class));
-        $directory    = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $readonly     = $fs->getFile($directory, __FILE__);
-        $relative     = $fs->getFile($directory, basename(__FILE__));
-        $notfound     = $fs->getFile($directory, 'not found');
-        $writable     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $internal     = $fs->getFile($writable, self::getTestData()->path('c.html'));
-        $external     = $fs->getFile($writable, '../Processor.php');
+        $fs           = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
         $file         = new File((new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath());
-        $fromFile     = $fs->getFile($writable, $file);
+        $readonly     = $fs->getFile(__FILE__);
+        $relative     = $fs->getFile(basename(__FILE__));
+        $notfound     = $fs->getFile('not found');
+        $internal     = $fs->getFile(self::getTestData()->path('c.html'));
+        $external     = $fs->getFile('../Processor.php');
+        $fromFile     = $fs->getFile($file);
         $splFile      = new SplFileInfo((string) $file);
-        $fromSplFile  = $fs->getFile($writable, $splFile);
-        $fromFilePath = $fs->getFile($writable, $file->getPath());
+        $fromSplFile  = $fs->getFile($splFile);
+        $fromFilePath = $fs->getFile($file->getPath());
 
         self::assertNotNull($readonly);
         self::assertEquals(
@@ -84,18 +81,16 @@ final class FileSystemTest extends TestCase {
 
     public function testGetDirectory(): void {
         // Prepare
-        $fs        = new FileSystem(Mockery::mock(Directory::class));
-        $directory = new Directory((new DirectoryPath(__DIR__))->getParentPath());
-        $writable  = new Directory($directory->getPath());
+        $fs = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getParentPath()));
 
         // Self
         self::assertSame(
-            $fs->getDirectory($directory, '.'),
-            $fs->getDirectory($directory, ''),
+            $fs->getDirectory('.'),
+            $fs->getDirectory(''),
         );
 
         // Readonly
-        $readonly = $fs->getDirectory($directory, __DIR__);
+        $readonly = $fs->getDirectory(__DIR__);
 
         self::assertNotNull($readonly);
         self::assertEquals(
@@ -104,7 +99,7 @@ final class FileSystemTest extends TestCase {
         );
 
         // Relative
-        $relative = $fs->getDirectory($directory, basename(__DIR__));
+        $relative = $fs->getDirectory(basename(__DIR__));
 
         self::assertNotNull($relative);
         self::assertEquals(
@@ -113,19 +108,19 @@ final class FileSystemTest extends TestCase {
         );
 
         // Not directory
-        $notDirectory = $fs->getDirectory($directory, 'not directory');
+        $notDirectory = $fs->getDirectory('not directory');
 
         self::assertNull($notDirectory);
 
         // Internal
         $internalPath = self::getTestData()->path('a');
-        $internal     = $fs->getDirectory($writable, $internalPath);
+        $internal     = $fs->getDirectory($internalPath);
 
         self::assertNotNull($internal);
         self::assertEquals($internalPath, (string) $internal);
 
         // External
-        $external = $fs->getDirectory($writable, '../Testing');
+        $external = $fs->getDirectory('../Testing');
 
         self::assertNotNull($external);
         self::assertEquals(
@@ -135,7 +130,7 @@ final class FileSystemTest extends TestCase {
 
         // From File
         $filePath = (new FilePath(self::getTestData()->path('c.html')))->getNormalizedPath();
-        $fromFile = $fs->getDirectory($writable, new File($filePath));
+        $fromFile = $fs->getDirectory(new File($filePath));
 
         self::assertNotNull($fromFile);
         self::assertEquals(
@@ -145,7 +140,7 @@ final class FileSystemTest extends TestCase {
 
         // From FilePath
         $filePath     = (new FilePath(self::getTestData()->path('c.html')))->getNormalizedPath();
-        $fromFilePath = $fs->getDirectory($writable, $filePath);
+        $fromFilePath = $fs->getDirectory($filePath);
 
         self::assertNotNull($fromFilePath);
         self::assertEquals(
@@ -155,7 +150,7 @@ final class FileSystemTest extends TestCase {
 
         // From SplFileInfo
         $spl     = new SplFileInfo(self::getTestData()->path('b'));
-        $fromSpl = $fs->getDirectory($writable, $spl);
+        $fromSpl = $fs->getDirectory($spl);
 
         self::assertNotNull($fromSpl);
         self::assertEquals(
@@ -166,24 +161,24 @@ final class FileSystemTest extends TestCase {
         // From Directory
         $directoryPath = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
         $directory     = new Directory($directoryPath);
-        $fromDirectory = $fs->getDirectory($writable, $directory);
+        $fromDirectory = $fs->getDirectory($directory);
 
         self::assertNotNull($fromDirectory);
         self::assertEquals((string) $directory, (string) $fromDirectory);
 
         // From DirectoryPath
         $directoryPath     = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
-        $fromDirectoryPath = $fs->getDirectory($writable, $directoryPath);
+        $fromDirectoryPath = $fs->getDirectory($directoryPath);
 
         self::assertNotNull($fromDirectoryPath);
         self::assertEquals((string) $directoryPath, (string) $fromDirectoryPath);
     }
 
     public function testGetFilesIterator(): void {
-        $fs        = new FileSystem(Mockery::mock(Directory::class));
-        $root      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory = new Directory($root);
-        $map       = static function (File $file) use ($directory): string {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $directory  = new Directory($input);
+        $filesystem = new FileSystem($directory);
+        $map        = static function (File $file) use ($directory): string {
             return (string) $directory->getRelativePath($file);
         };
 
@@ -200,7 +195,7 @@ final class FileSystemTest extends TestCase {
                 'c.html',
                 'c.txt',
             ],
-            array_map($map, iterator_to_array($fs->getFilesIterator($directory))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory))),
         );
 
         self::assertEquals(
@@ -209,7 +204,7 @@ final class FileSystemTest extends TestCase {
                 'b/b.html',
                 'c.html',
             ],
-            array_map($map, iterator_to_array($fs->getFilesIterator($directory, '*.html'))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '*.html'))),
         );
 
         self::assertEquals(
@@ -217,14 +212,14 @@ final class FileSystemTest extends TestCase {
                 'c.html',
                 'c.txt',
             ],
-            array_map($map, iterator_to_array($fs->getFilesIterator($directory, depth: 0))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, depth: 0))),
         );
 
         self::assertEquals(
             [
                 'c.html',
             ],
-            array_map($map, iterator_to_array($fs->getFilesIterator($directory, '*.html', 0))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '*.html', 0))),
         );
 
         self::assertEquals(
@@ -233,15 +228,15 @@ final class FileSystemTest extends TestCase {
                 'b/b.html',
                 'c.html',
             ],
-            array_map($map, iterator_to_array($fs->getFilesIterator($directory, exclude: ['#.*?\.txt$#']))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, exclude: ['#.*?\.txt$#']))),
         );
     }
 
     public function testGetDirectoriesIterator(): void {
-        $fs        = new FileSystem(Mockery::mock(Directory::class));
-        $root      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory = new Directory($root);
-        $map       = static function (Directory $dir) use ($directory): string {
+        $root       = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $directory  = new Directory($root);
+        $filesystem = new FileSystem($directory);
+        $map        = static function (Directory $dir) use ($directory): string {
             return (string) $directory->getRelativePath($dir);
         };
 
@@ -254,7 +249,7 @@ final class FileSystemTest extends TestCase {
                 'b/a',
                 'b/b',
             ],
-            array_map($map, iterator_to_array($fs->getDirectoriesIterator($directory))),
+            array_map($map, iterator_to_array($filesystem->getDirectoriesIterator($directory))),
         );
 
         self::assertEquals(
@@ -262,7 +257,7 @@ final class FileSystemTest extends TestCase {
                 'a',
                 'b',
             ],
-            array_map($map, iterator_to_array($fs->getDirectoriesIterator($directory, depth: 0))),
+            array_map($map, iterator_to_array($filesystem->getDirectoriesIterator($directory, depth: 0))),
         );
 
         self::assertEquals(
@@ -272,7 +267,10 @@ final class FileSystemTest extends TestCase {
                 'b/a',
                 'b/b',
             ],
-            array_map($map, iterator_to_array($fs->getDirectoriesIterator($directory, exclude: '#^a/[^/]*?$#'))),
+            array_map(
+                $map,
+                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: '#^a/[^/]*?$#')),
+            ),
         );
 
         self::assertEquals(
@@ -282,7 +280,10 @@ final class FileSystemTest extends TestCase {
                 'b',
                 'b/b',
             ],
-            array_map($map, iterator_to_array($fs->getDirectoriesIterator($directory, exclude: '#^[^/]*?/a$#'))),
+            array_map(
+                $map,
+                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: '#^[^/]*?/a$#')),
+            ),
         );
     }
 
@@ -315,15 +316,14 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testCache(): void {
-        $fs        = new FileSystem(Mockery::mock(Directory::class));
-        $dir       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file      = $fs->getFile($dir, __FILE__);
-        $directory = $fs->getDirectory($dir, __DIR__);
+        $fs        = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $file      = $fs->getFile(__FILE__);
+        $directory = $fs->getDirectory(__DIR__);
 
         self::assertNotNull($file);
-        self::assertSame($file, $fs->getFile($dir, __FILE__));
+        self::assertSame($file, $fs->getFile(__FILE__));
 
         self::assertNotNull($directory);
-        self::assertSame($directory, $fs->getDirectory($dir, __DIR__));
+        self::assertSame($directory, $fs->getDirectory(__DIR__));
     }
 }
