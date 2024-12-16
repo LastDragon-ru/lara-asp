@@ -27,11 +27,10 @@ class FileReference implements Dependency {
         }
 
         // Create
-        $root     = $fs->input;
         $resolved = $fs->getFile($file->getPath()->getFilePath((string) $this));
 
         if ($resolved === null) {
-            throw new DependencyNotFound($root, $file, $this);
+            throw new DependencyNotFound($this);
         }
 
         return $resolved;

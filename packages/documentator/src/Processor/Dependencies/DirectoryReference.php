@@ -31,7 +31,7 @@ class DirectoryReference implements Dependency {
         $resolved = $fs->getDirectory($file->getPath()->getDirectoryPath((string) $this));
 
         if ($resolved === null) {
-            throw new DependencyNotFound($fs->input, $file, $this);
+            throw new DependencyNotFound($this);
         }
 
         return $resolved;

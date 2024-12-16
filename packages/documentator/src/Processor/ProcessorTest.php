@@ -315,7 +315,7 @@ final class ProcessorTest extends TestCase {
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(DependencyNotFound::class);
-        self::expectExceptionMessage("Dependency `404.html` of `a/a.txt` not found (root: `{$root}`).");
+        self::expectExceptionMessage('Dependency `404.html` not found.');
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)

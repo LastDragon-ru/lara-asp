@@ -31,7 +31,7 @@ final class DirectoryIteratorTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs        = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $absolute  = new DirectoryIterator($path);
@@ -55,17 +55,15 @@ final class DirectoryIteratorTest extends TestCase {
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage(
             sprintf(
-                'Dependency `%s` of `%s` not found (root: `%s`).',
+                'Dependency `%s` not found.',
                 $path,
-                $file->getName(),
-                $fs->input->getPath(),
             ),
         );
 

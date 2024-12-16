@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -29,7 +28,7 @@ final class FileReferenceTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs        = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $path      = (new FilePath(__FILE__))->getNormalizedPath();
         $file      = new File($path);
         $another   = new File($path);
@@ -45,17 +44,15 @@ final class FileReferenceTest extends TestCase {
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/file';
 
         self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage(
             sprintf(
-                'Dependency `%s` of `%s` not found (root: `%s`).',
+                'Dependency `%s` not found.',
                 $path,
-                $file->getName(),
-                $fs->input->getPath(),
             ),
         );
 

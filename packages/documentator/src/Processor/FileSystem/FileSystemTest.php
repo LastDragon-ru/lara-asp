@@ -19,7 +19,7 @@ use function iterator_to_array;
 #[CoversClass(FileSystem::class)]
 final class FileSystemTest extends TestCase {
     public function testGetFile(): void {
-        $fs           = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs           = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file         = new File((new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath());
         $readonly     = $fs->getFile(__FILE__);
         $relative     = $fs->getFile(basename(__FILE__));
@@ -81,7 +81,7 @@ final class FileSystemTest extends TestCase {
 
     public function testGetDirectory(): void {
         // Prepare
-        $fs = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getParentPath()));
+        $fs = new FileSystem((new DirectoryPath(__DIR__))->getParentPath());
 
         // Self
         self::assertSame(
@@ -177,7 +177,7 @@ final class FileSystemTest extends TestCase {
     public function testGetFilesIterator(): void {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $directory  = new Directory($input);
-        $filesystem = new FileSystem($directory);
+        $filesystem = new FileSystem($input);
         $map        = static function (File $file) use ($directory): string {
             return (string) $directory->getRelativePath($file);
         };
@@ -233,9 +233,9 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testGetDirectoriesIterator(): void {
-        $root       = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory  = new Directory($root);
-        $filesystem = new FileSystem($directory);
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $directory  = new Directory($input);
+        $filesystem = new FileSystem($input);
         $map        = static function (Directory $dir) use ($directory): string {
             return (string) $directory->getRelativePath($dir);
         };
@@ -290,7 +290,7 @@ final class FileSystemTest extends TestCase {
     public function testSaveInsideRoot(): void {
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
         $file = new File($temp);
-        $fs   = new FileSystem(new Directory($temp->getDirectoryPath()));
+        $fs   = new FileSystem($temp->getDirectoryPath());
 
         self::assertTrue($fs->save($file)); // because no changes
 
@@ -302,7 +302,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testSaveOutsideRoot(): void {
-        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
         $file = new File($temp);
 
@@ -316,7 +316,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testCache(): void {
-        $fs        = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs        = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file      = $fs->getFile(__FILE__);
         $directory = $fs->getDirectory(__DIR__);
 

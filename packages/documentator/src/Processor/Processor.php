@@ -101,8 +101,7 @@ class Processor {
 
         try {
             $root     = new Directory($input->getDirectoryPath());
-            $output   = $output !== null ? new Directory($output->getNormalizedPath()) : $root;
-            $system   = new FileSystem($root, $output);
+            $system   = new FileSystem($input->getDirectoryPath(), $output);
             $iterator = $system->getFilesIterator($root, $extensions, $depth, $exclude);
             $executor = new Executor($system, $root, $exclude, $this->tasks, $iterator, $listener);
 

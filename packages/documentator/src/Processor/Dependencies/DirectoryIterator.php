@@ -44,7 +44,7 @@ class DirectoryIterator implements Dependency {
             $directory = $fs->getDirectory($file->getPath()->getDirectoryPath((string) $this));
 
             if ($directory === null) {
-                throw new DependencyNotFound($fs->input, $file, $this);
+                throw new DependencyNotFound($this);
             }
         }
 

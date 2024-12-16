@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use Generator;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -55,7 +56,7 @@ class ProcessorHelper {
      * @return T
      */
     protected static function getResult(Directory $root, File $file, Generator $generator): mixed {
-        $fs = new FileSystem($root);
+        $fs = new FileSystem(new DirectoryPath((string) $root));
 
         while ($generator->valid()) {
             $generator->send(($generator->current())($fs, $file));

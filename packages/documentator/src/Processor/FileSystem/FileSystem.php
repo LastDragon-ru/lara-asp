@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Closure;
 use Iterator;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 use SplFileInfo;
@@ -19,11 +20,11 @@ class FileSystem {
     /**
      * @var array<string, WeakReference<Directory|File>>
      */
-    private array             $cache = [];
-    public readonly Directory $input;
-    public readonly Directory $output;
+    private array                 $cache = [];
+    public readonly DirectoryPath $input;
+    public readonly DirectoryPath $output;
 
-    public function __construct(Directory $input, ?Directory $output = null) {
+    public function __construct(DirectoryPath $input, ?DirectoryPath $output = null) {
         $this->input  = $input;
         $this->output = $output ?? $this->input;
     }
@@ -42,7 +43,7 @@ class FileSystem {
         }
 
         // Cached?
-        $path = $this->input->getPath()->getFilePath($path);
+        $path = $this->input->getFilePath($path);
         $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
@@ -77,7 +78,7 @@ class FileSystem {
         }
 
         // Cached?
-        $path      = $this->input->getPath()->getDirectoryPath($path);
+        $path      = $this->input->getDirectoryPath($path);
         $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {

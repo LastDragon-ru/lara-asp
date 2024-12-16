@@ -51,17 +51,17 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeNoReadme(): void {
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $fs       = new FileSystem(new Directory($path->getDirectoryPath()));
+        $fs       = new FileSystem($path->getDirectoryPath());
         $file     = new File($path);
         $target   = $fs->input->getDirectoryPath('no readme');
         $params   = new Parameters('...');
-        $context  = new Context($fs->input, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context(new Directory($fs->input), $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory($target->getDirectoryPath('package'));
 
         self::assertNotNull($package);
         self::expectExceptionObject(
-            new DependencyNotFound($context->root, $context->file, new FileReference('no readme/package/README.md')),
+            new DependencyNotFound(new FileReference($fs->input->getFilePath('no readme/package/README.md'))),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $target, $params);
@@ -69,11 +69,11 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeEmptyReadme(): void {
         $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $fs       = new FileSystem(new Directory($path->getDirectoryPath()));
+        $fs       = new FileSystem($path->getDirectoryPath());
         $file     = new File($path);
         $target   = $fs->input->getDirectoryPath('empty readme');
         $params   = new Parameters('...');
-        $context  = new Context($fs->input, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context(new Directory($fs->input), $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory($target->getDirectoryPath('package'));
         $expected = $fs->getFile('empty readme/package/README.md');

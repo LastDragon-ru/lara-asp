@@ -29,7 +29,7 @@ final class DirectoryReferenceTest extends TestCase {
 
     public function testInvoke(): void {
         $dir       = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $fs        = new FileSystem(new Directory($dir));
+        $fs        = new FileSystem($dir);
         $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $another   = new Directory($dir);
         $dirpath   = new DirectoryReference($dir);
@@ -37,24 +37,22 @@ final class DirectoryReferenceTest extends TestCase {
         $relative  = new DirectoryReference('.');
         $reference = new DirectoryReference($another);
 
-        self::assertEquals($fs->input, $absolute($fs, $file));
-        self::assertEquals($fs->input, $relative($fs, $file));
-        self::assertEquals($fs->input, $dirpath($fs, $file));
+        self::assertEquals($another, $absolute($fs, $file));
+        self::assertEquals($another, $relative($fs, $file));
+        self::assertEquals($another, $dirpath($fs, $file));
         self::assertSame($another, $reference($fs, $file));
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem(new Directory((new DirectoryPath(__DIR__))->getNormalizedPath()));
+        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
         self::expectException(DependencyNotFound::class);
         self::expectExceptionMessage(
             sprintf(
-                'Dependency `%s` of `%s` not found (root: `%s`).',
+                'Dependency `%s` not found.',
                 $path,
-                $file->getName(),
-                $fs->input->getPath(),
             ),
         );
 
