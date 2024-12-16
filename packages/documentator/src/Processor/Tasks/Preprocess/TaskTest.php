@@ -99,7 +99,6 @@ final class TaskTest extends TestCase {
 
                         return [
                             $token->instruction,
-                            $token->target,
                             $token->parameters,
                             $nodes,
                         ];
@@ -115,7 +114,6 @@ final class TaskTest extends TestCase {
                 0           => [
                     'bb30809c6ca4c80a' => [
                         $b,
-                        './path/to/file',
                         new TaskTest__Parameters('./path/to/file'),
                         [
                             new Location(7, 8, 0, null, 0),
@@ -127,7 +125,6 @@ final class TaskTest extends TestCase {
                     ],
                     'f5f55887ee415b3d' => [
                         $b,
-                        './path/to/file/parametrized',
                         new TaskTest__Parameters(
                             './path/to/file/parametrized',
                             'aa',
@@ -145,7 +142,6 @@ final class TaskTest extends TestCase {
                 PHP_INT_MAX => [
                     '4f76e5da6e5aabbc' => [
                         $a,
-                        './path/to/file "value"',
                         new TaskTest__ParametersEmpty('./path/to/file "value"'),
                         [
                             new Location(5, 6, 0, null, 0),
@@ -318,7 +314,7 @@ class TaskTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, Parameters $parameters): string {
         return '';
     }
 }
@@ -346,7 +342,7 @@ class TaskTest__TestInstruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, Parameters $parameters): string {
         return 'result('.json_encode($parameters, JSON_THROW_ON_ERROR).')';
     }
 }
@@ -380,7 +376,7 @@ class TaskTest__DocumentInstruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Document {
+    public function __invoke(Context $context, Parameters $parameters): Document {
         return $this->markdown->parse(
             <<<'MARKDOWN'
             Summary [text](../Document.md) summary [link][link] and summary[^1] and [self](#fragment) and [self][self].

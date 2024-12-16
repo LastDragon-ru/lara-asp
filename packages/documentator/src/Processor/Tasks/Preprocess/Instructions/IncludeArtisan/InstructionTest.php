@@ -32,9 +32,9 @@ final class InstructionTest extends TestCase {
     public function testInvoke(): void {
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
+        $params   = new Parameters('command to execute');
         $expected = 'result';
-        $command  = 'command to execute';
+        $command  = $params->target;
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -71,7 +71,7 @@ final class InstructionTest extends TestCase {
                 );
         });
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $params));
     }
 
     public function testInvokeFailed(): void {
@@ -83,8 +83,8 @@ final class InstructionTest extends TestCase {
                 return 'command to execute';
             }
         };
-        $params   = new Parameters('...');
-        $command  = $node->getDestination();
+        $params   = new Parameters($node->getDestination());
+        $command  = $params->target;
         $context  = new Context($root, $file, Mockery::mock(Document::class), $node, new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -129,14 +129,14 @@ final class InstructionTest extends TestCase {
             ),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $command, $params);
+        ProcessorHelper::runInstruction($instance, $context, $params);
     }
 
     public function testGetCommand(): void {
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
+        $params   = new Parameters('artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"');
+        $command  = $params->target;
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = new class (Mockery::mock(ApplicationResolver::class)) extends Instruction {
             #[Override]

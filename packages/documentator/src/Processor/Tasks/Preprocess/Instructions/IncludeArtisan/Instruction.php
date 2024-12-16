@@ -7,6 +7,7 @@ use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\InstructionFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandFailed;
@@ -57,13 +58,13 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, InstructionParameters $parameters): string {
         $verbosity = $this->setVerbosity(null);
 
         try {
             $app    = $this->application->getInstance();
             $kernel = $app->make(Kernel::class);
-            $input  = new StringInput($this->getCommand($context, $target, $parameters));
+            $input  = new StringInput($this->getCommand($context, $parameters->target, $parameters));
             $output = new BufferedOutput();
             $result = $kernel->handle($input, $output);
 

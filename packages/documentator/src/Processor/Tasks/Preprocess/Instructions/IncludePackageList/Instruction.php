@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageComposerJsonIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
@@ -68,10 +69,10 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
-        $directories = Cast::to(Iterator::class, yield new DirectoryIterator($target, null, 0));
+        $directories = Cast::to(Iterator::class, yield new DirectoryIterator($parameters->target, null, 0));
 
         foreach ($directories as $package) {
             // Prepare

@@ -52,11 +52,10 @@ final class InstructionTest extends TestCase {
 
         $root     = Mockery::mock(Directory::class);
         $file     = Mockery::mock(File::class);
-        $params   = new Parameters('...');
-        $target   = '@test';
+        $params   = new Parameters('@test');
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
 
         self::assertEquals(
             <<<MARKDOWN
@@ -79,8 +78,7 @@ final class InstructionTest extends TestCase {
         // Test
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = '@test';
+        $params   = new Parameters('@test');
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -88,7 +86,7 @@ final class InstructionTest extends TestCase {
             new DependencyIsMissing($context, PrinterContract::class),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        ProcessorHelper::runInstruction($instance, $context, $params);
     }
 
     public function testInvokeNoDirective(): void {
@@ -107,8 +105,7 @@ final class InstructionTest extends TestCase {
 
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = '@test';
+        $params   = new Parameters('@test');
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -116,7 +113,7 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        ProcessorHelper::runInstruction($instance, $context, $params);
     }
 
     public function testInvokeNoDirectiveResolver(): void {
@@ -126,8 +123,7 @@ final class InstructionTest extends TestCase {
 
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = '@test';
+        $params   = new Parameters('@test');
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -135,6 +131,6 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        ProcessorHelper::runInstruction($instance, $context, $params);
     }
 }

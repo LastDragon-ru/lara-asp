@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
@@ -41,14 +42,14 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, InstructionParameters $parameters): string {
         // Dependencies?
         if ($this->printer === null) {
             throw new DependencyIsMissing($context, Printer::class);
         }
 
         // Directive?
-        $directive  = mb_substr($target, 1);
+        $directive  = mb_substr($parameters->target, 1);
         $definition = $this->printer->getDirectiveResolver()?->getDefinition($directive);
 
         if ($definition === null) {

@@ -25,9 +25,9 @@ final class InstructionTest extends TestCase {
     public function testInvoke(): void {
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
+        $params   = new Parameters('command to execute');
         $expected = 'result';
-        $command  = 'command to execute';
+        $command  = $params->target;
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
@@ -40,7 +40,7 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $params));
 
         $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
             return $process->path === (string) $root->getPath()

@@ -192,8 +192,8 @@ class PreprocessTest__Instruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
-        return $target;
+    public function __invoke(Context $context, Parameters $parameters): string {
+        return $parameters->target;
     }
 }
 
@@ -220,8 +220,8 @@ class PreprocessTest__InstructionNoParameters implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
-        return $target;
+    public function __invoke(Context $context, Parameters $parameters): string {
+        return $parameters->target;
     }
 }
 

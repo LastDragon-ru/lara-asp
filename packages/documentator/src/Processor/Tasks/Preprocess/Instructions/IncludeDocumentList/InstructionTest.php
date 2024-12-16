@@ -50,7 +50,7 @@ final class InstructionTest extends TestCase {
         // Test
         $context  = new Context($root, $file, $document, $instruction, new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $parameters);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $parameters);
 
         self::assertEquals($expected, $actual);
     }

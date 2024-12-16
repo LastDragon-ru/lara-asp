@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data as TemplateData;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Document as TemplateDocument;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
@@ -60,11 +61,11 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         $self      = $context->file->getPath();
         $patterns  = array_filter((array) $parameters->include, static fn ($s) => $s !== '');
         $patterns  = $patterns === [] ? '*.md' : $patterns;
-        $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, $patterns, $parameters->depth));
+        $iterator  = Cast::to(Iterator::class, yield new FileIterator($parameters->target, $patterns, $parameters->depth));
         $documents = [];
 
         foreach ($iterator as $file) {

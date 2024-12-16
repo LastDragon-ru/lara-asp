@@ -141,7 +141,7 @@ class Task implements TaskContract {
                 // Run
                 try {
                     // Run
-                    $content = ($token->instruction)($token->context, $token->target, $token->parameters);
+                    $content = ($token->instruction)($token->context, $token->parameters);
 
                     if ($content instanceof Generator) {
                         yield from $content;
@@ -244,7 +244,6 @@ class Task implements TaskContract {
             $tokens[$priority][$hash] = new Token(
                 $instruction,
                 $context,
-                $target,
                 $parameters,
                 [
                     $node,

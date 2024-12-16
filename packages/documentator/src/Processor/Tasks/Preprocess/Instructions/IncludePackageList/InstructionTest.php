@@ -34,10 +34,10 @@ final class InstructionTest extends TestCase {
         $root     = new Directory($path->getDirectoryPath());
         $file     = new File($path);
         $target   = $root->getDirectoryPath('packages');
-        $params   = new Parameters('...', template: $template, order: $order);
+        $params   = new Parameters((string) $target, template: $template, order: $order);
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
 
         self::assertEquals(
             self::getTestData()->content($expected),
@@ -54,7 +54,7 @@ final class InstructionTest extends TestCase {
         $fs       = new FileSystem($path->getDirectoryPath());
         $file     = new File($path);
         $target   = $fs->input->getDirectoryPath('no readme');
-        $params   = new Parameters('...');
+        $params   = new Parameters((string) $target);
         $context  = new Context(new Directory($fs->input), $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory($target->getDirectoryPath('package'));
@@ -64,7 +64,7 @@ final class InstructionTest extends TestCase {
             new DependencyNotFound(new FileReference($fs->input->getFilePath('no readme/package/README.md'))),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        ProcessorHelper::runInstruction($instance, $context, $params);
     }
 
     public function testInvokeEmptyReadme(): void {
@@ -72,7 +72,7 @@ final class InstructionTest extends TestCase {
         $fs       = new FileSystem($path->getDirectoryPath());
         $file     = new File($path);
         $target   = $fs->input->getDirectoryPath('empty readme');
-        $params   = new Parameters('...');
+        $params   = new Parameters((string) $target);
         $context  = new Context(new Directory($fs->input), $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory($target->getDirectoryPath('package'));
@@ -84,7 +84,7 @@ final class InstructionTest extends TestCase {
             new PackageReadmeIsEmpty($context, $package, $expected),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        ProcessorHelper::runInstruction($instance, $context, $params);
     }
     //</editor-fold>
 

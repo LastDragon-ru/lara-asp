@@ -32,8 +32,8 @@ final class InstructionTest extends TestCase {
         $path    = (new FilePath(__FILE__))->getNormalizedPath();
         $root    = new Directory($path->getDirectoryPath());
         $file    = new File($path);
-        $params  = new Parameters('...');
-        $target  = self::getTestData()->path('Example.md');
+        $params  = new Parameters(self::getTestData()->path('Example.md'));
+        $target  = $params->target;
         $context = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
 
         $this->override(Runner::class, static function (MockInterface $mock) use ($target, $output): void {
@@ -47,7 +47,7 @@ final class InstructionTest extends TestCase {
         });
 
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
 
         self::assertEquals($expected, $actual);
     }
@@ -58,12 +58,11 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path('Example.md')))->getNormalizedPath();
         $root     = new Directory($path->getDirectoryPath());
         $file     = new File($path);
-        $params   = new Parameters('...');
-        $target   = $file->getName();
+        $params   = new Parameters($file->getName());
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $expected = trim($file->getContent());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
 
         self::assertEquals(
             <<<EXPECTED

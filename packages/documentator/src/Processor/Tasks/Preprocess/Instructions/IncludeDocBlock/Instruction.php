@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassMarkdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
 use Override;
 
@@ -47,9 +48,9 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, Document|string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         // Class?
-        $target   = Cast::to(File::class, yield new FileReference($target));
+        $target   = Cast::to(File::class, yield new FileReference($parameters->target));
         $document = $target->getMetadata($this->markdown);
 
         if ($document === null) {

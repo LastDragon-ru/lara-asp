@@ -34,7 +34,6 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
         $root     = new Directory($path->getDirectoryPath());
         $file     = new File($path);
-        $target   = $file->getName();
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -44,7 +43,7 @@ final class InstructionTest extends TestCase {
             $expected = trim(self::getTestData()->content($expected));
         }
 
-        $actual = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual = ProcessorHelper::runInstruction($instance, $context, $params);
 
         if ($params->summary && $params->description) {
             self::assertInstanceOf(Document::class, $actual);
@@ -66,34 +65,34 @@ final class InstructionTest extends TestCase {
             'default'          => [
                 'ValidExpected.txt',
                 'Valid.txt',
-                new Parameters('...'),
+                new Parameters('Valid.txt'),
             ],
             'with summary'     => [
                 'ValidWithSummaryExpected.txt',
                 'Valid.txt',
-                new Parameters('...', summary: true),
+                new Parameters('Valid.txt', summary: true),
             ],
             'only summary'     => [
                 'ValidOnlySummaryExpected.txt',
                 'Valid.txt',
-                new Parameters('...', summary: true, description: false),
+                new Parameters('Valid.txt', summary: true, description: false),
             ],
             'only description' => [
                 'ValidOnlyDescriptionExpected.txt',
                 'Valid.txt',
-                new Parameters('...', summary: false, description: true),
+                new Parameters('Valid.txt', summary: false, description: true),
             ],
             'no docblock'      => [
                 'NoDocBlockExpected.txt',
                 'NoDocBlock.txt',
-                new Parameters('...'),
+                new Parameters('NoDocBlock.txt'),
             ],
             'invalid'          => [
                 static function (self $test, Context $context): Exception {
                     return new TargetIsNotValidPhpFile($context);
                 },
                 'Invalid.txt',
-                new Parameters('...'),
+                new Parameters('Invalid.txt'),
             ],
         ];
     }

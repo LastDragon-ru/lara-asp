@@ -29,12 +29,11 @@ final class InstructionTest extends TestCase {
     public function testInvoke(string $expected, string $source): void {
         $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = self::getTestData()->path($source);
+        $params   = new Parameters(self::getTestData()->path($source));
         $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
 
         if (pathinfo($source, PATHINFO_EXTENSION) === 'md') {
             self::assertInstanceOf(Document::class, $actual);
