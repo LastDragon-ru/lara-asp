@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Inst
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Mockery;
 use Override;
@@ -402,7 +401,7 @@ class TaskTest__DocumentInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TaskTest__Parameters implements Parameters, Serializable {
+class TaskTest__Parameters implements Parameters {
     /**
      * @param array<string, string> $b
      */
@@ -419,7 +418,7 @@ class TaskTest__Parameters implements Parameters, Serializable {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TaskTest__ParametersEmpty implements Parameters, Serializable {
+class TaskTest__ParametersEmpty implements Parameters {
     public function __construct(
         public readonly string $target,
     ) {

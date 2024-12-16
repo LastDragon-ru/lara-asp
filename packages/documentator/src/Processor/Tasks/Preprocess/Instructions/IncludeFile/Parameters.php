@@ -2,10 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as ParametersContract;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 
-class Parameters implements ParametersContract, Serializable {
+class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * File path.

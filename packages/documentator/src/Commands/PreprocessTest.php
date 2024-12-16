@@ -6,9 +6,8 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,7 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Preprocess::class)]
 final class PreprocessTest extends TestCase {
     public function testGetProcessedHelpTaskPreprocessInstructions(): void {
-        $task = Mockery::mock(PreprocessTask::class);
+        $task = Mockery::mock(Task::class);
         $task->shouldAllowMockingProtectedMethods();
         $task
             ->shouldReceive('getInstructions')
@@ -27,13 +26,12 @@ final class PreprocessTest extends TestCase {
             ->andReturn([
                 PreprocessTest__Instruction::class,
                 PreprocessTest__InstructionNoParameters::class,
-                PreprocessTest__InstructionNotSerializable::class,
             ]);
 
         $container = $this->app()->make(ContainerResolver::class);
         $command   = new class($container) extends Preprocess {
             #[Override]
-            public function getProcessedHelpTaskPreprocessInstructions(PreprocessTask $task, int $level): string {
+            public function getProcessedHelpTaskPreprocessInstructions(Task $task, int $level): string {
                 return parent::getProcessedHelpTaskPreprocessInstructions($task, $level);
             }
         };
@@ -70,14 +68,6 @@ final class PreprocessTest extends TestCase {
 
               Target target target target target target target target target
               target target target target target target target target target.
-
-            ### `[test:instruction-not-serializable]: <target> <parameters>`
-
-            * `<target>` - Target target target target target.
-
-              Target target target target target target target target target
-              target target target target target target target target target.
-            * `<parameters>` - additional parameters
             MARKDOWN,
             $command->getProcessedHelpTaskPreprocessInstructions($task, 3),
         );
@@ -168,29 +158,6 @@ final class PreprocessTest extends TestCase {
             ),
         );
     }
-
-    public function testGetProcessedHelpTaskPreprocessParametersNotSerializable(): void {
-        $container = $this->app()->make(ContainerResolver::class);
-        $command   = new class($container) extends Preprocess {
-            #[Override]
-            public function getProcessedHelpTaskPreprocessParameters(
-                string $instruction,
-                string $target,
-                int $padding,
-            ): ?string {
-                return parent::getProcessedHelpTaskPreprocessParameters($instruction, $target, $padding);
-            }
-        };
-
-        self::assertEquals(
-            '',
-            $command->getProcessedHelpTaskPreprocessParameters(
-                PreprocessTest__InstructionNotSerializable::class,
-                'target',
-                4,
-            ),
-        );
-    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -261,36 +228,8 @@ class PreprocessTest__InstructionNoParameters implements Instruction {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
- *
- * @implements Instruction<PreprocessTest__ParametersNotSerializable>
  */
-class PreprocessTest__InstructionNotSerializable implements Instruction {
-    #[Override]
-    public static function getName(): string {
-        return 'test:instruction-not-serializable';
-    }
-
-    #[Override]
-    public static function getPriority(): ?int {
-        return null;
-    }
-
-    #[Override]
-    public static function getParameters(): string {
-        return PreprocessTest__ParametersNotSerializable::class;
-    }
-
-    #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
-        return $target;
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class PreprocessTest__Parameters implements Parameters, Serializable {
+class PreprocessTest__Parameters implements Parameters {
     public static bool $publicStaticProperty = true;
 
     /**
@@ -330,25 +269,7 @@ class PreprocessTest__Parameters implements Parameters, Serializable {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class PreprocessTest__ParametersEmpty implements Parameters, Serializable {
-    public function __construct(
-        /**
-         * Target target target target target.
-         *
-         * Target target target target target target target target target
-         * target target target target target target target target target.
-         */
-        public readonly string $target,
-    ) {
-        // empty
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class PreprocessTest__ParametersNotSerializable implements Parameters {
+class PreprocessTest__ParametersEmpty implements Parameters {
     public function __construct(
         /**
          * Target target target target target.
