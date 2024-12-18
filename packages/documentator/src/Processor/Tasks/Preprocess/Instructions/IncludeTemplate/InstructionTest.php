@@ -58,7 +58,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateDataMissed($context),
+            new TemplateDataMissed($context, $params),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);
@@ -78,7 +78,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateVariablesUnused($context, ['c', 'd']),
+            new TemplateVariablesUnused($context, $params, ['c', 'd']),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);
@@ -95,7 +95,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateVariablesMissed($context, ['b']),
+            new TemplateVariablesMissed($context, $params, ['b']),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);

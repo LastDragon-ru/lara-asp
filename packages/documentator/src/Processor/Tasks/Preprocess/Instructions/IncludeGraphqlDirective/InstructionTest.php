@@ -83,7 +83,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new DependencyIsMissing($context, PrinterContract::class),
+            new DependencyIsMissing($context, $params, PrinterContract::class),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);
@@ -110,7 +110,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TargetIsNotDirective($context),
+            new TargetIsNotDirective($context, $params),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);
@@ -128,7 +128,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TargetIsNotDirective($context),
+            new TargetIsNotDirective($context, $params),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);

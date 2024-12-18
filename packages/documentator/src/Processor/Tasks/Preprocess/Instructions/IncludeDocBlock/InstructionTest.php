@@ -27,7 +27,7 @@ final class InstructionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param Closure(self, Context): Exception|string $expected
+     * @param Closure(self, Context, Parameters): Exception|string $expected
      */
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
@@ -38,7 +38,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
-            self::expectExceptionObject($expected($this, $context));
+            self::expectExceptionObject($expected($this, $context, $params));
         } else {
             $expected = trim(self::getTestData()->content($expected));
         }
@@ -58,7 +58,7 @@ final class InstructionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Closure(self, Context): Exception|string, string, Parameters}>
+     * @return array<string, array{Closure(self, Context, Parameters): Exception|string, string, Parameters}>
      */
     public static function dataProviderProcess(): array {
         return [
@@ -88,8 +88,8 @@ final class InstructionTest extends TestCase {
                 new Parameters('NoDocBlock.txt'),
             ],
             'invalid'          => [
-                static function (self $test, Context $context): Exception {
-                    return new TargetIsNotValidPhpFile($context);
+                static function (self $test, Context $context, Parameters $parameters): Exception {
+                    return new TargetIsNotValidPhpFile($context, $parameters);
                 },
                 'Invalid.txt',
                 new Parameters('Invalid.txt'),

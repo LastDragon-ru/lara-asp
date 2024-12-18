@@ -45,7 +45,7 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, InstructionParameters $parameters): string {
         // Dependencies?
         if ($this->printer === null) {
-            throw new DependencyIsMissing($context, Printer::class);
+            throw new DependencyIsMissing($context, $parameters, Printer::class);
         }
 
         // Directive?
@@ -53,7 +53,7 @@ class Instruction implements InstructionContract {
         $definition = $this->printer->getDirectiveResolver()?->getDefinition($directive);
 
         if ($definition === null) {
-            throw new TargetIsNotDirective($context);
+            throw new TargetIsNotDirective($context, $parameters);
         }
 
         // Print

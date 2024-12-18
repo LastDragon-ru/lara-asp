@@ -83,7 +83,7 @@ class Instruction implements InstructionContract {
             $packageInfo = $packageFile->getMetadata($this->composer)->json ?? null;
 
             if ($packageInfo === null) {
-                throw new PackageComposerJsonIsMissing($context, $package);
+                throw new PackageComposerJsonIsMissing($context, $parameters, $package->getName());
             }
 
             // Readme
@@ -92,7 +92,7 @@ class Instruction implements InstructionContract {
             $content = $readme->getMetadata($this->markdown);
 
             if ($content === null || $content->isEmpty()) {
-                throw new PackageReadmeIsEmpty($context, $package, $readme);
+                throw new PackageReadmeIsEmpty($context, $parameters, $package->getName());
             }
 
             // Add

@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\InstructionFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Parameters;
 use Throwable;
 
 use function sprintf;
@@ -12,21 +12,18 @@ use function sprintf;
 class ExampleFailed extends InstructionFailed {
     public function __construct(
         Context $context,
-        private readonly File $example,
+        Parameters $parameters,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,
+            $parameters,
             sprintf(
-                'Example `%s` failed (in `%s`).',
-                $context->root->getRelativePath($this->example),
-                $context->root->getRelativePath($context->file),
+                'Example `%s` failed (`%s` line).',
+                $parameters->target,
+                $context->node->getStartLine() ?? 'unknown',
             ),
             $previous,
         );
-    }
-
-    public function getExample(): File {
-        return $this->example;
     }
 }

@@ -122,10 +122,10 @@ final class InstructionTest extends TestCase {
         self::expectException(ArtisanCommandFailed::class);
         self::expectExceptionMessage(
             sprintf(
-                'Artisan command `%s` exited with status code `%s` (in `%s`).',
+                'Artisan command `%s` exited with status code `%s` (`%s` line).',
                 $command,
                 Command::FAILURE,
-                $context->root->getRelativePath($context->file),
+                'unknown',
             ),
         );
 

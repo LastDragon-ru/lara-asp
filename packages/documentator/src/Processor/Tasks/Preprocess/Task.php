@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as Gen
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
@@ -19,6 +18,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -153,7 +153,7 @@ class Task implements TaskContract {
                     if ($content instanceof Document) {
                         $content = (string) $token->context->toInlinable($content);
                     }
-                } catch (ProcessorError $exception) {
+                } catch (PreprocessError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {
                     throw new PreprocessFailed($exception);

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use Throwable;
 
 use function sprintf;
@@ -13,20 +14,25 @@ class DependencyIsMissing extends InstructionFailed {
      */
     public function __construct(
         Context $context,
+        Parameters $parameters,
         private readonly string $class,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,
+            $parameters,
             sprintf(
-                'The dependency `%s` is missed (in `%s`).',
+                'Dependency `%s` is missed (`%s` line).',
                 $this->class,
-                $context->root->getRelativePath($context->file),
+                $context->node->getStartLine() ?? 'unknown',
             ),
             $previous,
         );
     }
 
+    /**
+     * @return class-string
+     */
     public function getClass(): string {
         return $this->class;
     }

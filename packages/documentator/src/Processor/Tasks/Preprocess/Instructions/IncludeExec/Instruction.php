@@ -53,7 +53,7 @@ class Instruction implements InstructionContract {
                     ->output(),
             );
         } catch (Exception $exception) {
-            throw new TargetExecFailed($context, $exception);
+            throw new TargetExecFailed($context, $parameters, $exception);
         }
     }
 }

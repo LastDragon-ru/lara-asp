@@ -54,7 +54,7 @@ class Instruction implements InstructionContract {
         $document = $target->getMetadata($this->markdown);
 
         if ($document === null) {
-            throw new TargetIsNotValidPhpFile($context);
+            throw new TargetIsNotValidPhpFile($context, $parameters);
         }
 
         // Parse

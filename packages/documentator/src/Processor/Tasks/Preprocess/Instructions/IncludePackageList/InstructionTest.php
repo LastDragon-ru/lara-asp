@@ -81,7 +81,7 @@ final class InstructionTest extends TestCase {
         self::assertNotNull($package);
         self::assertNotNull($expected);
         self::expectExceptionObject(
-            new PackageReadmeIsEmpty($context, $package, $expected),
+            new PackageReadmeIsEmpty($context, $params, $package->getName()),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);

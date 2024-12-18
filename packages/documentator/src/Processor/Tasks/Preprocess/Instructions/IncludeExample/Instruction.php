@@ -81,7 +81,7 @@ class Instruction implements InstructionContract {
             try {
                 $output = trim((string) ($this->runner)($target));
             } catch (Throwable $exception) {
-                throw new ExampleFailed($context, $target, $exception);
+                throw new ExampleFailed($context, $parameters, $exception);
             }
 
             // Markdown?

@@ -59,7 +59,7 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         // Data?
         if ($parameters->data === []) {
-            throw new TemplateDataMissed($context);
+            throw new TemplateDataMissed($context, $parameters);
         }
 
         // Replace
@@ -95,14 +95,14 @@ class Instruction implements InstructionContract {
         $unused = array_diff($vars, $used);
 
         if ($unused !== []) {
-            throw new TemplateVariablesUnused($context, array_values($unused));
+            throw new TemplateVariablesUnused($context, $parameters, array_values($unused));
         }
 
         // Missed?
         $missed = array_diff($known, $used);
 
         if ($missed !== []) {
-            throw new TemplateVariablesMissed($context, array_values($missed));
+            throw new TemplateVariablesMissed($context, $parameters, array_values($missed));
         }
 
         // Markdown?
