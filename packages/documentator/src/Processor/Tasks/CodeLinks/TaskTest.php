@@ -1175,10 +1175,8 @@ final class TaskTest extends TestCase {
                 'Invoke/InvokeNoGenerated.md',
             ],
             'Unknown'           => [
-                static function (self $test, Directory $root, File $file): Exception {
+                static function (): Exception {
                     return new CodeLinkUnresolved(
-                        $root,
-                        $file,
                         [
                             '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown',
                             '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::$property',

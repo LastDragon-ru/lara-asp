@@ -151,7 +151,7 @@ class Task implements TaskContract {
 
             sort($unresolved);
 
-            throw new CodeLinkUnresolved($root, $file, $unresolved);
+            throw new CodeLinkUnresolved($unresolved);
         }
 
         // Mutate
