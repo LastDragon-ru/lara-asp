@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -44,7 +44,7 @@ class FileIterator implements Dependency {
             $directory = $fs->getDirectory($file->getPath()->getDirectoryPath((string) $this));
 
             if ($directory === null) {
-                throw new DependencyNotFound($this);
+                throw new DependencyUnresolvable($this);
             }
         }
 

@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
@@ -30,7 +30,7 @@ class FileReference implements Dependency {
         $resolved = $fs->getFile($file->getPath()->getFilePath((string) $this));
 
         if ($resolved === null) {
-            throw new DependencyNotFound($this);
+            throw new DependencyUnresolvable($this);
         }
 
         return $resolved;

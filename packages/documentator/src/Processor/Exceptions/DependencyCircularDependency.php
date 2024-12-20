@@ -2,22 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
 
 use function array_map;
 use function implode;
 use function sprintf;
 
-class CircularDependency extends ProcessorError {
+class DependencyCircularDependency extends DependencyError {
     /**
      * @param list<File> $stack
      */
     public function __construct(
-        protected Directory $root,
+        protected readonly FileSystem $filesystem,
         protected readonly File $target,
-        protected readonly File $dependency,
         protected readonly array $stack,
         ?Throwable $previous = null,
     ) {
@@ -28,27 +27,20 @@ class CircularDependency extends ProcessorError {
 
                 %2$s
                 ! %1$s
-
-                (root: `%3$s`)
                 MESSAGE,
-                $this->root->getRelativePath($this->dependency),
-                '* '.implode("\n* ", array_map(fn ($f) => $this->root->getRelativePath($f), $this->stack)),
-                $this->root->getPath(),
+                $this->filesystem->getPathname($this->target),
+                '* '.implode("\n* ", array_map(fn ($f) => $this->filesystem->getPathname($f), $this->stack)),
             ),
             $previous,
         );
     }
 
-    public function getRoot(): Directory {
-        return $this->root;
+    public function getFilesystem(): FileSystem {
+        return $this->filesystem;
     }
 
     public function getTarget(): File {
         return $this->target;
-    }
-
-    public function getDependency(): File {
-        return $this->dependency;
     }
 
     /**

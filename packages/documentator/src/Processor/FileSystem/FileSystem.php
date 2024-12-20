@@ -29,6 +29,19 @@ class FileSystem {
         $this->output = $output ?? $this->input;
     }
 
+    public function getPathname(Directory|File $path): string {
+        $suffix = $path instanceof Directory ? '/' : '';
+        $path   = $path->getPath();
+        $name   = match (true) {
+            $this->input->isEqual($this->output) => "<> {$this->output->getRelativePath($path)}{$suffix}",
+            $this->input->isInside($path)        => ">> {$this->input->getRelativePath($path)}{$suffix}",
+            $this->output->isInside($path)       => "<< {$this->output->getRelativePath($path)}{$suffix}",
+            default                              => "!! {$path}{$suffix}",
+        };
+
+        return $name;
+    }
+
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -16,7 +16,7 @@ use Traversable;
  */
 interface Dependency extends Stringable {
     /**
-     * @throws DependencyNotFound
+     * @throws DependencyUnresolvable
      *
      * @return TValue
      */

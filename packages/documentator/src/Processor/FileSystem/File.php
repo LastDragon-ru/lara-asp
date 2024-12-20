@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use Override;
 use Stringable;
 
@@ -103,7 +103,7 @@ class File implements Stringable {
             try {
                 $this->metadata[$metadata::class] = $metadata($this);
             } catch (Exception $exception) {
-                throw new FileMetadataError($this, $metadata, $exception);
+                throw new FileMetadataUnresolvable($this, $metadata, $exception);
             }
         }
 

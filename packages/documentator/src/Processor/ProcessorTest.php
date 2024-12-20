@@ -9,8 +9,8 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -314,7 +314,7 @@ final class ProcessorTest extends TestCase {
         $task = new ProcessorTest__Task(['*' => ['404.html']]);
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
-        self::expectException(DependencyNotFound::class);
+        self::expectException(DependencyUnresolvable::class);
         self::expectExceptionMessage('Dependency `404.html` not found.');
 
         (new Processor($this->app()->make(ContainerResolver::class)))
@@ -331,18 +331,16 @@ final class ProcessorTest extends TestCase {
         ]);
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
-        self::expectException(CircularDependency::class);
+        self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
-            <<<MESSAGE
+            <<<'MESSAGE'
             Circular Dependency detected:
 
-            * a/a.txt
-            * b/b.txt
-            * b/a/ba.txt
-            * c.txt
-            ! a/a.txt
-
-            (root: `{$root}`)
+            * <> a/a.txt
+            * <> b/b.txt
+            * <> b/a/ba.txt
+            * <> c.txt
+            ! <> a/a.txt
             MESSAGE,
         );
 
@@ -357,15 +355,13 @@ final class ProcessorTest extends TestCase {
         ]);
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
-        self::expectException(CircularDependency::class);
+        self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
-            <<<MESSAGE
+            <<<'MESSAGE'
             Circular Dependency detected:
 
-            * c.txt
-            ! c.txt
-
-            (root: `{$root}`)
+            * <> c.txt
+            ! <> c.txt
             MESSAGE,
         );
 

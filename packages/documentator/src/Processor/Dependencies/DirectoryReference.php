@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -31,7 +31,7 @@ class DirectoryReference implements Dependency {
         $resolved = $fs->getDirectory($file->getPath()->getDirectoryPath((string) $this));
 
         if ($resolved === null) {
-            throw new DependencyNotFound($this);
+            throw new DependencyUnresolvable($this);
         }
 
         return $resolved;

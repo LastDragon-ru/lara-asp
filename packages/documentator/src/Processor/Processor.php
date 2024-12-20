@@ -109,7 +109,7 @@ class Processor {
         } catch (ProcessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new ProcessingFailed($input, $exception);
+            throw new ProcessingFailed($exception);
         }
 
         return microtime(true) - $start;

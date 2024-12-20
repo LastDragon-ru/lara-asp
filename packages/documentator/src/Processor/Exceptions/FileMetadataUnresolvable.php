@@ -9,7 +9,7 @@ use Throwable;
 /**
  * @internal
  */
-class FileMetadataError extends MetadataError {
+class FileMetadataUnresolvable extends MetadataError {
     public function __construct(
         protected readonly File $target,
         /**

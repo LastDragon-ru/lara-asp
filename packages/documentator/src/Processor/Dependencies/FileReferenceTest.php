@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -48,7 +48,7 @@ final class FileReferenceTest extends TestCase {
         $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/file';
 
-        self::expectException(DependencyNotFound::class);
+        self::expectException(DependencyUnresolvable::class);
         self::expectExceptionMessage(
             sprintf(
                 'Dependency `%s` not found.',

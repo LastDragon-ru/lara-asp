@@ -18,6 +18,41 @@ use function iterator_to_array;
  */
 #[CoversClass(FileSystem::class)]
 final class FileSystemTest extends TestCase {
+    public function testGetPathname(): void {
+        $aPath                 = (new DirectoryPath(self::getTestData()->path('a')))->getNormalizedPath();
+        $bPath                 = (new DirectoryPath(self::getTestData()->path('b')))->getNormalizedPath();
+        $fPath                 = (new FilePath(__FILE__))->getNormalizedPath();
+        $dPath                 = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $aFileSystem           = new FileSystem($aPath, $bPath);
+        $aFileSystemAFile      = $aFileSystem->getFile($aPath->getFilePath('a.txt'));
+        $aFileSystemADirectory = $aFileSystem->getDirectory($aPath->getDirectoryPath('a'));
+        $aFileSystemBFile      = $aFileSystem->getFile($bPath->getFilePath('b.txt'));
+        $aFileSystemBDirectory = $aFileSystem->getDirectory($bPath->getDirectoryPath('b'));
+        $aFileSystemFFile      = $aFileSystem->getFile($fPath);
+        $aFileSystemDDirectory = $aFileSystem->getDirectory($dPath);
+        $bFileSystem           = new FileSystem($aPath, $aPath);
+        $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
+        $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
+
+        self::assertNotNull($bFileSystemAFile);
+        self::assertEquals('<> a.txt', $bFileSystem->getPathname($bFileSystemAFile));
+        self::assertNotNull($aFileSystemAFile);
+        self::assertEquals('>> a.txt', $aFileSystem->getPathname($aFileSystemAFile));
+        self::assertNotNull($aFileSystemBFile);
+        self::assertEquals('<< b.txt', $aFileSystem->getPathname($aFileSystemBFile));
+        self::assertNotNull($aFileSystemFFile);
+        self::assertEquals("!! {$fPath}", $aFileSystem->getPathname($aFileSystemFFile));
+
+        self::assertNotNull($bFileSystemADirectory);
+        self::assertEquals('<> a/', $bFileSystem->getPathname($bFileSystemADirectory));
+        self::assertNotNull($aFileSystemADirectory);
+        self::assertEquals('>> a/', $aFileSystem->getPathname($aFileSystemADirectory));
+        self::assertNotNull($aFileSystemBDirectory);
+        self::assertEquals('<< b/', $aFileSystem->getPathname($aFileSystemBDirectory));
+        self::assertNotNull($aFileSystemDDirectory);
+        self::assertEquals("!! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
+    }
+
     public function testGetFile(): void {
         $fs           = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file         = new File((new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath());

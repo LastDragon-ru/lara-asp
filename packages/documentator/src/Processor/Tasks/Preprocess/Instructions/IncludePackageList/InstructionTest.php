@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -61,7 +61,7 @@ final class InstructionTest extends TestCase {
 
         self::assertNotNull($package);
         self::expectExceptionObject(
-            new DependencyNotFound(new FileReference($fs->input->getFilePath('no readme/package/README.md'))),
+            new DependencyUnresolvable(new FileReference($fs->input->getFilePath('no readme/package/README.md'))),
         );
 
         ProcessorHelper::runInstruction($instance, $context, $params);

@@ -3,32 +3,31 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
 
 use function sprintf;
 
-class FileTaskFailed extends ProcessorError {
+class TaskFailed extends ProcessorError {
     public function __construct(
-        protected readonly Directory $root,
+        protected readonly FileSystem $filesystem,
         protected readonly File $target,
         protected readonly Task $task,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'The `%s` task failed for `%s` file (root: `%s`).',
+                'The `%s` task failed for `%s` file.',
                 $this->task::class,
-                $this->root->getRelativePath($this->target),
-                $this->root->getPath(),
+                $this->filesystem->getPathname($this->target),
             ),
             $previous,
         );
     }
 
-    public function getRoot(): Directory {
-        return $this->root;
+    public function getFilesystem(): FileSystem {
+        return $this->filesystem;
     }
 
     public function getTarget(): File {

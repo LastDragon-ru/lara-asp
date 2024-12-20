@@ -9,12 +9,12 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileTaskFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -89,7 +89,7 @@ class Executor {
 
         // Circular?
         if (isset($this->stack[$path])) {
-            throw new CircularDependency($this->root, $file, $file, array_values($this->stack));
+            throw new DependencyCircularDependency($this->fs, $file, array_values($this->stack));
         }
 
         // Skipped?
@@ -135,11 +135,11 @@ class Executor {
                     }
 
                     if ($result !== true) {
-                        throw new FileTaskFailed($this->root, $file, $task);
+                        throw new TaskFailed($this->fs, $file, $task);
                     }
-                } catch (FileMetadataError $exception) {
-                    throw new FileMetadataFailed(
-                        $this->root,
+                } catch (FileMetadataUnresolvable $exception) {
+                    throw new MetadataUnresolvable(
+                        $this->fs,
                         $exception->getTarget(),
                         $exception->getMetadata(),
                         $exception->getPrevious(),
@@ -147,12 +147,12 @@ class Executor {
                 } catch (ProcessorError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {
-                    throw new FileTaskFailed($this->root, $file, $task, $exception);
+                    throw new TaskFailed($this->fs, $file, $task, $exception);
                 }
             }
 
             if (!$this->fs->save($file)) {
-                throw new FileSaveFailed($this->root, $file);
+                throw new FileSaveFailed($this->fs, $file);
             }
         } catch (Throwable $exception) {
             throw $exception;

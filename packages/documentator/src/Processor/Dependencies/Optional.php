@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -31,7 +31,7 @@ readonly class Optional implements Dependency {
 
         try {
             $resolved = ($this->dependency)($fs, $file);
-        } catch (DependencyNotFound) {
+        } catch (DependencyUnresolvable) {
             $resolved = null;
         }
 

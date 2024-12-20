@@ -7,7 +7,7 @@ use Throwable;
 
 use function sprintf;
 
-class DependencyNotFound extends ProcessorError {
+class DependencyUnresolvable extends DependencyError {
     public function __construct(
         /**
          * @var Dependency<*>
