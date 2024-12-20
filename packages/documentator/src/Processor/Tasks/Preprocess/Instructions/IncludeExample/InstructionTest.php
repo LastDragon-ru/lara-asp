@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
@@ -30,11 +29,11 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $output): void {
         $path    = (new FilePath(__FILE__))->getNormalizedPath();
-        $root    = new Directory($path->getDirectoryPath());
         $file    = new File($path);
+        $input   = $path->getDirectoryPath();
         $params  = new Parameters(self::getTestData()->path('Example.md'));
         $target  = $params->target;
-        $context = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
 
         $this->override(Runner::class, static function (MockInterface $mock) use ($target, $output): void {
             $mock
@@ -47,7 +46,7 @@ final class InstructionTest extends TestCase {
         });
 
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $input, $context, $params);
 
         self::assertEquals($expected, $actual);
     }
@@ -56,13 +55,13 @@ final class InstructionTest extends TestCase {
         self::assertFalse($this->app()->bound(Runner::class));
 
         $path     = (new FilePath(self::getTestData()->path('Example.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
         $file     = new File($path);
+        $input    = $path->getDirectoryPath();
         $params   = new Parameters($file->getName());
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $expected = trim($file->getContent());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $input, $context, $params);
 
         self::assertEquals(
             <<<EXPECTED

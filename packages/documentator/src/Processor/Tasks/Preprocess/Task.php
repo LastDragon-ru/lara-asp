@@ -237,7 +237,7 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($root, $file, $document, $node, $mutation);
+            $context    = new Context($file, $document, $node, $mutation);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 

@@ -21,7 +21,7 @@ class ProcessorHelper {
     public static function runTask(Task $task, Directory $root, File $file): mixed {
         $result = ($task)($root, $file);
         $result = $result instanceof Generator
-            ? self::getResult($root, $file, $result)
+            ? self::getResult($root->getPath(), $file, $result)
             : $result;
 
         return $result;
@@ -35,12 +35,13 @@ class ProcessorHelper {
      */
     public static function runInstruction(
         Instruction $instruction,
+        DirectoryPath $input,
         Context $context,
         Parameters $parameters,
     ): Document|string {
         $result = ($instruction)($context, $parameters);
         $result = $result instanceof Generator
-            ? self::getResult($context->root, $context->file, $result)
+            ? self::getResult($input, $context->file, $result)
             : $result;
 
         return $result;
@@ -53,8 +54,8 @@ class ProcessorHelper {
      *
      * @return T
      */
-    protected static function getResult(Directory $root, File $file, Generator $generator): mixed {
-        $fs = new FileSystem(new DirectoryPath((string) $root));
+    protected static function getResult(DirectoryPath $input, File $file, Generator $generator): mixed {
+        $fs = new FileSystem($input);
 
         while ($generator->valid()) {
             $generator->send(($generator->current())($fs));

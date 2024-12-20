@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
@@ -23,12 +22,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
     public function testInvoke(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $input    = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $params   = new Parameters('command to execute');
         $expected = 'result';
         $command  = $params->target;
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
@@ -40,10 +39,10 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $params));
+        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $input, $context, $params));
 
-        $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
-            return $process->path === (string) $root->getPath()
+        $factory->assertRan(static function (PendingProcess $process) use ($input, $command): bool {
+            return $process->path === (string) $input
                 && $process->command === $command;
         });
     }

@@ -11,12 +11,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 class Context {
     public function __construct(
-        public readonly Directory $root,
         public readonly File $file,
         public readonly Document $document,
         public readonly Node $node,

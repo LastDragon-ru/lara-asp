@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
@@ -27,13 +26,13 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
         $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $input    = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $params   = new Parameters(self::getTestData()->path($source));
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $params);
+        $actual   = ProcessorHelper::runInstruction($instance, $input, $context, $params);
 
         if (pathinfo($source, PATHINFO_EXTENSION) === 'md') {
             self::assertInstanceOf(Document::class, $actual);

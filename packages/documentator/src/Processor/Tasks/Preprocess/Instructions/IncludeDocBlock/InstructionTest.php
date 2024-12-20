@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
@@ -32,9 +31,9 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
         $file     = new File($path);
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $input    = $path->getDirectoryPath();
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
@@ -43,7 +42,7 @@ final class InstructionTest extends TestCase {
             $expected = trim(self::getTestData()->content($expected));
         }
 
-        $actual = ProcessorHelper::runInstruction($instance, $context, $params);
+        $actual = ProcessorHelper::runInstruction($instance, $input, $context, $params);
 
         if ($params->summary && $params->description) {
             self::assertInstanceOf(Document::class, $actual);

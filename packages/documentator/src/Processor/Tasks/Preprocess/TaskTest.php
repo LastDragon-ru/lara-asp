@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
@@ -186,13 +187,19 @@ final class TaskTest extends TestCase {
             ->andReturn(
                 $path,
             );
-
-        $root = Mockery::mock(Directory::class);
-        $root
+        $file
             ->shouldReceive('getRelativePath')
             ->once()
             ->andReturn(
                 new FilePath('path/to/file.md'),
+            );
+
+        $root = Mockery::mock(Directory::class);
+        $root
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn(
+                new DirectoryPath('path/to/file'),
             );
 
         $result = ProcessorHelper::runTask($task, $root, $file);
