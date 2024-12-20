@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -80,18 +79,17 @@ final class TaskTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function parse(Directory $root, File $file, Document $document): array {
-                return parent::parse($root, $file, $document);
+            public function parse(File $file, Document $document): array {
+                return parent::parse($file, $document);
             }
         };
 
         $task->addInstruction($a::class);
         $task->addInstruction($b);
 
-        $root     = Mockery::mock(Directory::class);
         $file     = Mockery::mock(File::class);
         $document = $this->app()->make(MarkdownContract::class)->parse(self::MARKDOWN);
-        $tokens   = $task->parse($root, $file, $document);
+        $tokens   = $task->parse($file, $document);
         $actual   = array_map(
             static function (array $tokens): array {
                 return array_map(
@@ -194,15 +192,8 @@ final class TaskTest extends TestCase {
                 new FilePath('path/to/file.md'),
             );
 
-        $root = Mockery::mock(Directory::class);
-        $root
-            ->shouldReceive('getPath')
-            ->once()
-            ->andReturn(
-                new DirectoryPath('path/to/file'),
-            );
-
-        $result = ProcessorHelper::runTask($task, $root, $file);
+        $input  = Mockery::mock(DirectoryPath::class);
+        $result = ProcessorHelper::runTask($task, $input, $file);
 
         self::assertTrue($result);
         self::assertEquals(

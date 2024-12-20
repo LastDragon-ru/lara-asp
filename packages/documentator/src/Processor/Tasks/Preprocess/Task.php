@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as Gen
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
@@ -118,7 +117,7 @@ class Task implements TaskContract {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(Directory $root, File $file): Generator {
+    public function __invoke(File $file): Generator {
         // Just in case
         yield from [];
 
@@ -130,7 +129,7 @@ class Task implements TaskContract {
         }
 
         // Process
-        $parsed  = $this->parse($root, $file, $document);
+        $parsed  = $this->parse($file, $document);
         $mutated = false;
 
         foreach ($parsed as $group) {
@@ -199,7 +198,7 @@ class Task implements TaskContract {
     /**
      * @return array<int, array<string, Token<*>>>
      */
-    protected function parse(Directory $root, File $file, Document $document): array {
+    protected function parse(File $file, Document $document): array {
         // Empty?
         if ($this->instructions->isEmpty()) {
             return [];

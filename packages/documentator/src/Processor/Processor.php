@@ -103,7 +103,7 @@ class Processor {
             $root     = new Directory($input->getDirectoryPath());
             $system   = new FileSystem($input->getDirectoryPath(), $output);
             $iterator = $system->getFilesIterator($root, $extensions, $depth, $exclude);
-            $executor = new Executor($system, $root, $exclude, $this->tasks, $iterator, $listener);
+            $executor = new Executor($system, $exclude, $this->tasks, $iterator, $listener);
 
             $executor->run();
         } catch (ProcessorError $exception) {

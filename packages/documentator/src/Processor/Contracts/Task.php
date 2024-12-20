@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
 use Generator;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 interface Task {
@@ -30,5 +29,5 @@ interface Task {
      *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, bool>|bool`
      *          but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */
-    public function __invoke(Directory $root, File $file): Generator|bool;
+    public function __invoke(File $file): Generator|bool;
 }

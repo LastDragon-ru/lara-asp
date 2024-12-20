@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use Stringable;
@@ -28,10 +27,10 @@ interface Link extends Stringable {
      *
      * @return list<FilePath>|FilePath|null
      */
-    public function getSource(Directory $root, File $file, Package $package): array|FilePath|null;
+    public function getSource(File $file, Package $package): array|FilePath|null;
 
     /**
      * Returns the url for the (first resolved) `$source` file.
      */
-    public function getTarget(Directory $root, File $file, File $source): ?LinkTarget;
+    public function getTarget(File $file, File $source): ?LinkTarget;
 }

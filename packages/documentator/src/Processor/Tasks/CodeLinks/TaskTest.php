@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown as MarkdownImpl;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
@@ -42,22 +41,22 @@ final class TaskTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param string|Closure(static, Directory, File): Exception $expected
+     * @param string|Closure(): Exception $expected
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
-        $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $file = new File($path);
-        $root = new Directory($path->getDirectoryPath());
-        $task = $this->app()->make(Task::class);
+        $path  = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
+        $file  = new File($path);
+        $task  = $this->app()->make(Task::class);
+        $input = $path->getDirectoryPath();
 
         if (!is_callable($expected)) {
             $expected = self::getTestData()->content($expected);
         } else {
-            self::expectExceptionObject($expected($this, $root, $file));
+            self::expectExceptionObject($expected());
         }
 
-        $actual = ProcessorHelper::runTask($task, $root, $file);
+        $actual = ProcessorHelper::runTask($task, $input, $file);
 
         self::assertTrue($actual);
         self::assertEquals($expected, $file->getContent());
@@ -1162,7 +1161,7 @@ final class TaskTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Closure(static, Directory, File): Exception|string, string}>
+     * @return array<string, array{Closure(): Exception|string, string}>
      */
     public static function dataProviderInvoke(): array {
         return [

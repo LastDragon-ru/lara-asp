@@ -16,7 +16,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
@@ -42,7 +41,7 @@ use function trim;
  * Searches class/method/property/etc names in `inline code` and wrap it into a
  * link to file.
  *
- * It expects that the `$root` directory is a composer project and will use
+ * It expects that the input directory is a composer project and will use
  * `psr-4` autoload rules to find class files. Classes which are not from the
  * composer will be completely ignored. If the file/class/method/etc doesn't
  * exist, the error will be thrown. To avoid the error, you can place `💀` mark
@@ -80,7 +79,7 @@ class Task implements TaskContract {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(Directory $root, File $file): Generator {
+    public function __invoke(File $file): Generator {
         // Composer?
         $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
         $composer = $composer?->getMetadata($this->composer);
@@ -104,7 +103,7 @@ class Task implements TaskContract {
         // Links
         foreach ($parsed['links'] as $token) {
             // External?
-            $paths = $token->link->getSource($root, $file, $composer);
+            $paths = $token->link->getSource($file, $composer);
 
             if ($paths === null) {
                 continue;
@@ -115,7 +114,6 @@ class Task implements TaskContract {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $path   = $root->getPath()->getPath($path);
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
                 if ($source !== null) {
@@ -132,7 +130,7 @@ class Task implements TaskContract {
             $target = null;
 
             if ($source !== null) {
-                $target = $token->link->getTarget($root, $file, $source);
+                $target = $token->link->getTarget($file, $source);
 
                 if ($target === null && !$token->deprecated) {
                     $unresolved[] = $token;

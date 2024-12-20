@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
@@ -28,13 +27,17 @@ use function sprintf;
 #[CoversClass(Executor::class)]
 final class ProcessorTest extends TestCase {
     public function testRun(): void {
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $count  = 0;
+        $events = [];
+
         $mock = Mockery::mock(Task::class);
         $mock
             ->shouldReceive('getExtensions')
             ->once()
             ->andReturns(['php']);
 
-        $taskA = new class() extends ProcessorTest__Task {
+        $taskA = new class($input) extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
@@ -43,7 +46,7 @@ final class ProcessorTest extends TestCase {
                 return ['htm'];
             }
         };
-        $taskB = new ProcessorTest__Task([
+        $taskB = new ProcessorTest__Task($input, [
             'a.txt'  => [
                 '../b/b/bb.txt',
                 '../c.txt',
@@ -57,17 +60,13 @@ final class ProcessorTest extends TestCase {
             ],
         ]);
 
-        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $count  = 0;
-        $events = [];
-
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
-                $root,
+                $input,
                 listener: static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -145,8 +144,8 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunFile(): void {
-        $task   = new ProcessorTest__Task();
         $path   = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $task   = new ProcessorTest__Task($path->getDirectoryPath());
         $count  = 0;
         $events = [];
 
@@ -181,7 +180,10 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunWildcard(): void {
-        $taskA = new class([
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $count  = 0;
+        $events = [];
+        $taskA  = new class($input, [
             'b.html' => [
                 '../../../../README.md',
                 '../a/excluded.txt',
@@ -195,7 +197,7 @@ final class ProcessorTest extends TestCase {
                 return ['html'];
             }
         };
-        $taskB = new class() extends ProcessorTest__Task {
+        $taskB  = new class($input) extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
@@ -205,16 +207,12 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $count  = 0;
-        $events = [];
-
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($taskA)
             ->task($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
-                $root,
+                $input,
                 listener: static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
@@ -312,28 +310,30 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunFileNotFound(): void {
-        $task = new ProcessorTest__Task(['*' => ['404.html']]);
-        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task($input, ['*' => ['404.html']]);
 
         self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage(sprintf(
-            'Dependency `%s` not found.',
-            $root->getFilePath('a/404.html'),
-        ));
+        self::expectExceptionMessage(
+            sprintf(
+                'Dependency `%s` not found.',
+                $input->getFilePath('a/404.html'),
+            ),
+        );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
-            ->run($root);
+            ->run($input);
     }
 
     public function testRunCircularDependency(): void {
-        $task = new ProcessorTest__Task([
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task($input, [
             'a.txt'  => ['../b/b.txt'],
             'b.txt'  => ['../b/a/ba.txt'],
             'ba.txt' => ['../../c.txt'],
             'c.txt'  => ['a/a.txt'],
         ]);
-        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
@@ -350,14 +350,14 @@ final class ProcessorTest extends TestCase {
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
-            ->run($root);
+            ->run($input);
     }
 
     public function testRunCircularDependencySelf(): void {
-        $task = new ProcessorTest__Task([
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task($input, [
             'c.txt' => ['c.txt'],
         ]);
-        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
@@ -371,7 +371,7 @@ final class ProcessorTest extends TestCase {
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
-            ->run($root);
+            ->run($input);
     }
 }
 
@@ -389,6 +389,7 @@ class ProcessorTest__Task implements Task {
     public array $processed = [];
 
     public function __construct(
+        private readonly DirectoryPath $root,
         /**
          * @var array<string, list<string>>
          */
@@ -409,7 +410,7 @@ class ProcessorTest__Task implements Task {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(Directory $root, File $file): Generator {
+    public function __invoke(File $file): Generator {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 
@@ -418,11 +419,11 @@ class ProcessorTest__Task implements Task {
         }
 
         $this->processed[] = [
-            (string) $root->getRelativePath($file),
+            (string) $this->root->getRelativePath($file->getPath()),
             array_map(
-                static function (mixed $file) use ($root): mixed {
+                function (mixed $file): mixed {
                     return (string) match (true) {
-                        $file instanceof File => $root->getRelativePath($file),
+                        $file instanceof File => $this->root->getRelativePath($file->getPath()),
                         default               => null,
                     };
                 },

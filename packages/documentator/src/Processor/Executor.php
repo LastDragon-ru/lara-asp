@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
@@ -40,7 +39,6 @@ class Executor {
 
     public function __construct(
         private readonly FileSystem $fs,
-        private readonly Directory $root,
         /**
          * @var array<array-key, string>
          */
@@ -108,7 +106,7 @@ class Executor {
                 try {
                     // Run
                     $result    = false;
-                    $generator = $task($this->root, $file);
+                    $generator = $task($file);
 
                     // Dependencies?
                     if ($generator instanceof Generator) {
@@ -202,7 +200,7 @@ class Executor {
             $file instanceof Dependency => new FilePath((string) $file),
             default                     => $file->getPath(),
         };
-        $path = $this->root->getRelativePath($path);
+        $path = $this->fs->input->getRelativePath($path);
 
         ($this->listener)($path, $result, $duration);
 
@@ -216,13 +214,12 @@ class Executor {
         }
 
         // Outside?
-        $path = $this->root->getRelativePath($file);
-
-        if (!$this->root->isInside($file)) {
+        if (!$this->fs->input->isInside($file->getPath())) {
             return true;
         }
 
         // Excluded?
+        $path     = $this->fs->input->getRelativePath($file->getPath());
         $excluded = false;
 
         foreach ($this->exclude as $regexp) {

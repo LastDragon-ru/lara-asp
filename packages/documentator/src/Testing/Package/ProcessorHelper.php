@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -18,10 +17,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
  * @internal
  */
 class ProcessorHelper {
-    public static function runTask(Task $task, Directory $root, File $file): mixed {
-        $result = ($task)($root, $file);
+    public static function runTask(Task $task, DirectoryPath $input, File $file): mixed {
+        $result = ($task)($file);
         $result = $result instanceof Generator
-            ? self::getResult($root->getPath(), $file, $result)
+            ? self::getResult($input, $file, $result)
             : $result;
 
         return $result;
