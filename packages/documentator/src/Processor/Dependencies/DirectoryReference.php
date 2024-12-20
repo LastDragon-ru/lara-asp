@@ -27,7 +27,7 @@ class DirectoryReference implements Dependency {
         }
 
         // Create
-        $resolved = $fs->getDirectory($fs->input->getDirectoryPath((string) $this));
+        $resolved = $fs->getDirectory($fs->input->getDirectoryPath((string) $this->reference));
 
         if ($resolved === null) {
             throw new DependencyUnresolvable($this);

@@ -78,7 +78,7 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getDirectory(SplFileInfo|Directory|File|Path|string $path): ?Directory {
+    public function getDirectory(SplFileInfo|Directory|DirectoryPath|File|FilePath|string $path): ?Directory {
         // Object?
         if ($path instanceof SplFileInfo) {
             $path = $path->getPathname();

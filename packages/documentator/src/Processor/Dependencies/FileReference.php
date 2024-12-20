@@ -27,7 +27,7 @@ class FileReference implements Dependency {
         }
 
         // Create
-        $resolved = $fs->getFile($fs->input->getFilePath((string) $this));
+        $resolved = $fs->getFile($fs->input->getFilePath((string) $this->reference));
 
         if ($resolved === null) {
             throw new DependencyUnresolvable($this);
