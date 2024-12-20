@@ -72,7 +72,8 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
-        $directories = Cast::to(Iterator::class, yield new DirectoryIterator($parameters->target, null, 0));
+        $directory   = $context->file->getPath()->getDirectoryPath($parameters->target);
+        $directories = Cast::to(Iterator::class, yield new DirectoryIterator($directory, null, 0));
 
         foreach ($directories as $package) {
             // Prepare

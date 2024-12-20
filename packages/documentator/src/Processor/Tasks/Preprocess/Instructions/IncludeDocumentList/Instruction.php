@@ -63,9 +63,10 @@ class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         $self      = $context->file->getPath();
+        $target    = $context->file->getPath()->getDirectoryPath($parameters->target);
         $patterns  = array_filter((array) $parameters->include, static fn ($s) => $s !== '');
         $patterns  = $patterns === [] ? '*.md' : $patterns;
-        $iterator  = Cast::to(Iterator::class, yield new FileIterator($parameters->target, $patterns, $parameters->depth));
+        $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, $patterns, $parameters->depth));
         $documents = [];
 
         foreach ($iterator as $file) {

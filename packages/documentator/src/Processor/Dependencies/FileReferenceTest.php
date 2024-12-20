@@ -37,15 +37,14 @@ final class FileReferenceTest extends TestCase {
         $filepath  = new FileReference($path);
         $reference = new FileReference($another);
 
-        self::assertEquals($file, $absolute($fs, $file));
-        self::assertEquals($file, $relative($fs, $file));
-        self::assertEquals($file, $filepath($fs, $file));
-        self::assertSame($another, $reference($fs, $file));
+        self::assertEquals($file, $absolute($fs));
+        self::assertEquals($file, $relative($fs));
+        self::assertEquals($file, $filepath($fs));
+        self::assertSame($another, $reference($fs));
     }
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/file';
 
         self::expectException(DependencyUnresolvable::class);
@@ -56,6 +55,6 @@ final class FileReferenceTest extends TestCase {
             ),
         );
 
-        (new FileReference($path))($fs, $file);
+        (new FileReference($path))($fs);
     }
 }

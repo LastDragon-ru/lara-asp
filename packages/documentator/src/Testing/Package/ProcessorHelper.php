@@ -57,7 +57,7 @@ class ProcessorHelper {
         $fs = new FileSystem(new DirectoryPath((string) $root));
 
         while ($generator->valid()) {
-            $generator->send(($generator->current())($fs, $file));
+            $generator->send(($generator->current())($fs));
         }
 
         return $generator->getReturn();

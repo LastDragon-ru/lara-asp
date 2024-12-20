@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Symfony\Component\Finder\Finder;
@@ -36,12 +35,12 @@ class DirectoryIterator implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, File $file): mixed {
+    public function __invoke(FileSystem $fs): mixed {
         // Directory
         $directory = $this->directory;
 
         if (!($directory instanceof Directory)) {
-            $directory = $fs->getDirectory($file->getPath()->getDirectoryPath((string) $this));
+            $directory = $fs->getDirectory($fs->input->getDirectoryPath((string) $this));
 
             if ($directory === null) {
                 throw new DependencyUnresolvable($this);

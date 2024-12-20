@@ -19,6 +19,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
+use function sprintf;
 
 /**
  * @internal
@@ -315,7 +316,10 @@ final class ProcessorTest extends TestCase {
         $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
         self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage('Dependency `404.html` not found.');
+        self::expectExceptionMessage(sprintf(
+            'Dependency `%s` not found.',
+            $root->getFilePath('a/404.html'),
+        ));
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
@@ -410,7 +414,7 @@ class ProcessorTest__Task implements Task {
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = yield new FileReference($dependency);
+            $resolved[$dependency] = yield new FileReference($file->getPath()->getFilePath($dependency));
         }
 
         $this->processed[] = [

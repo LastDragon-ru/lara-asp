@@ -67,8 +67,9 @@ class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $file    = Cast::to(File::class, yield new FileReference($parameters->target));
-        $content = $file->getContent();
+        $target  = $context->file->getPath()->getFilePath($parameters->target);
+        $target  = Cast::to(File::class, yield new FileReference($target));
+        $content = $target->getContent();
 
         do {
             $content = (string) preg_replace_callback(
@@ -106,8 +107,8 @@ class Instruction implements InstructionContract {
         }
 
         // Markdown?
-        if ($file->getExtension() === 'md') {
-            $content = $this->markdown->parse($content, $file->getPath());
+        if ($target->getExtension() === 'md') {
+            $content = $this->markdown->parse($content, $target->getPath());
         }
 
         // Return

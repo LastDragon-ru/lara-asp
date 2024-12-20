@@ -27,16 +27,15 @@ final class OptionalTest extends TestCase {
         $file       = new File((new FilePath(__FILE__))->getNormalizedPath());
         $fs         = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
 
-        self::assertEquals($file, $dependency($fs, $file));
-        self::assertEquals($file, $optional($fs, $file));
+        self::assertEquals($file, $dependency($fs));
+        self::assertEquals($file, $optional($fs));
     }
 
     public function testInvokeNotFound(): void {
         $dependency = new FileReference('path/to/file');
         $optional   = new Optional($dependency);
-        $file       = new File((new FilePath(__FILE__))->getNormalizedPath());
         $fs         = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
 
-        self::assertNull($optional($fs, $file));
+        self::assertNull($optional($fs));
     }
 }

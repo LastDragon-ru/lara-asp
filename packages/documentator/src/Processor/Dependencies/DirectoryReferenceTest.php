@@ -3,10 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -30,22 +28,20 @@ final class DirectoryReferenceTest extends TestCase {
     public function testInvoke(): void {
         $dir       = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $fs        = new FileSystem($dir);
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $another   = new Directory($dir);
         $dirpath   = new DirectoryReference($dir);
         $absolute  = new DirectoryReference(__DIR__);
         $relative  = new DirectoryReference('.');
         $reference = new DirectoryReference($another);
 
-        self::assertEquals($another, $absolute($fs, $file));
-        self::assertEquals($another, $relative($fs, $file));
-        self::assertEquals($another, $dirpath($fs, $file));
-        self::assertSame($another, $reference($fs, $file));
+        self::assertEquals($another, $absolute($fs));
+        self::assertEquals($another, $relative($fs));
+        self::assertEquals($another, $dirpath($fs));
+        self::assertSame($another, $reference($fs));
     }
 
     public function testInvokeNotFound(): void {
         $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
         $path = 'path/to/directory';
 
         self::expectException(DependencyUnresolvable::class);
@@ -56,6 +52,6 @@ final class DirectoryReferenceTest extends TestCase {
             ),
         );
 
-        (new DirectoryReference($path))($fs, $file);
+        (new DirectoryReference($path))($fs);
     }
 }

@@ -82,8 +82,7 @@ class Task implements TaskContract {
     #[Override]
     public function __invoke(Directory $root, File $file): Generator {
         // Composer?
-        $composer = $root->getFilePath('composer.json');
-        $composer = Cast::toNullable(File::class, yield new Optional(new FileReference($composer)));
+        $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
         $composer = $composer?->getMetadata($this->composer);
 
         if (!($composer instanceof Package)) {

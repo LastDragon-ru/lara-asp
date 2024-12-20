@@ -46,8 +46,9 @@ class Instruction implements InstructionContract {
      */
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
-        $file    = Cast::to(File::class, yield new FileReference($parameters->target));
-        $content = $file->getMetadata($this->markdown) ?? $file->getContent();
+        $target  = $context->file->getPath()->getFilePath($parameters->target);
+        $target  = Cast::to(File::class, yield new FileReference($target));
+        $content = $target->getMetadata($this->markdown) ?? $target->getContent();
 
         return $content;
     }
