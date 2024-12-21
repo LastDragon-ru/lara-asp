@@ -87,7 +87,7 @@ class Executor {
 
         // Circular?
         if (isset($this->stack[$path])) {
-            throw new DependencyCircularDependency($this->fs, $file, array_values($this->stack));
+            throw new DependencyCircularDependency($file, array_values($this->stack));
         }
 
         // Skipped?
@@ -133,11 +133,10 @@ class Executor {
                     }
 
                     if ($result !== true) {
-                        throw new TaskFailed($this->fs, $file, $task);
+                        throw new TaskFailed($file, $task);
                     }
                 } catch (FileMetadataUnresolvable $exception) {
                     throw new MetadataUnresolvable(
-                        $this->fs,
                         $exception->getTarget(),
                         $exception->getMetadata(),
                         $exception->getPrevious(),
@@ -145,12 +144,12 @@ class Executor {
                 } catch (ProcessorError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {
-                    throw new TaskFailed($this->fs, $file, $task, $exception);
+                    throw new TaskFailed($file, $task, $exception);
                 }
             }
 
             if (!$this->fs->save($file)) {
-                throw new FileSaveFailed($this->fs, $file);
+                throw new FileSaveFailed($file);
             }
         } catch (Throwable $exception) {
             throw $exception;
@@ -200,7 +199,6 @@ class Executor {
             $file instanceof Dependency => new FilePath((string) $file),
             default                     => $file->getPath(),
         };
-        $path = $this->fs->input->getRelativePath($path);
 
         ($this->listener)($path, $result, $duration);
 

@@ -3,10 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
 
-use function array_map;
 use function implode;
 use function sprintf;
 
@@ -15,7 +13,6 @@ class DependencyCircularDependency extends DependencyError {
      * @param list<File> $stack
      */
     public function __construct(
-        protected readonly FileSystem $filesystem,
         protected readonly File $target,
         protected readonly array $stack,
         ?Throwable $previous = null,
@@ -28,15 +25,11 @@ class DependencyCircularDependency extends DependencyError {
                 %2$s
                 ! %1$s
                 MESSAGE,
-                $this->filesystem->getPathname($this->target),
-                '* '.implode("\n* ", array_map(fn ($f) => $this->filesystem->getPathname($f), $this->stack)),
+                $this->target,
+                '* '.implode("\n* ", $this->stack),
             ),
             $previous,
         );
-    }
-
-    public function getFilesystem(): FileSystem {
-        return $this->filesystem;
     }
 
     public function getTarget(): File {

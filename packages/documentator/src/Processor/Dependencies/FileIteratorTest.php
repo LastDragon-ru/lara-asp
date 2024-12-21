@@ -3,8 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -35,15 +37,17 @@ final class FileIteratorTest extends TestCase {
         $absolute  = new FileIterator($path, $pattern);
         $relative  = new FileIterator(basename((string) $path), $pattern);
         $directory = new FileIterator(new Directory($path), $pattern);
-        $formatter = $fs->getPathname(...);
+        $formatter = static function (File|FilePath $item): string {
+            return (string) $item;
+        };
         $expected  = [
-            '<> FileIteratorTest/a/a.txt',
-            '<> FileIteratorTest/a/a/aa.txt',
-            '<> FileIteratorTest/a/b/ab.txt',
-            '<> FileIteratorTest/b/a/ba.txt',
-            '<> FileIteratorTest/b/b.txt',
-            '<> FileIteratorTest/b/b/bb.txt',
-            '<> FileIteratorTest/c.txt',
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/a.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/a/aa.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/b/ab.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/a/ba.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/b.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/b/bb.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/c.txt'),
         ];
 
         self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs))));

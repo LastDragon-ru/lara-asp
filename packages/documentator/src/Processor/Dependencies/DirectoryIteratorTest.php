@@ -34,15 +34,17 @@ final class DirectoryIteratorTest extends TestCase {
         $absolute  = new DirectoryIterator($path);
         $relative  = new DirectoryIterator(basename((string) $path));
         $directory = new DirectoryIterator(new Directory($path));
-        $formatter = $fs->getPathname(...);
-        $expected  = [
-            '<> DirectoryIteratorTest/a/',
-            '<> DirectoryIteratorTest/a/a/',
-            '<> DirectoryIteratorTest/a/b/',
-            '<> DirectoryIteratorTest/b/',
-            '<> DirectoryIteratorTest/b/a/',
-            '<> DirectoryIteratorTest/b/b/',
-        ];
+        $formatter = static function (Directory|DirectoryPath $item): string {
+            return (string) $item;
+        };
+        $expected  = array_map($formatter, [
+            $fs->input->getDirectoryPath('DirectoryIteratorTest/a'),
+            $fs->input->getDirectoryPath('DirectoryIteratorTest/a/a'),
+            $fs->input->getDirectoryPath('DirectoryIteratorTest/a/b'),
+            $fs->input->getDirectoryPath('DirectoryIteratorTest/b'),
+            $fs->input->getDirectoryPath('DirectoryIteratorTest/b/a'),
+            $fs->input->getDirectoryPath('DirectoryIteratorTest/b/b'),
+        ]);
 
         self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs))));
         self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs))));
