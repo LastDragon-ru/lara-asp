@@ -7,8 +7,6 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
-use Override;
-use Stringable;
 
 use function array_key_exists;
 use function file_get_contents;
@@ -18,7 +16,7 @@ use function sprintf;
 /**
  * @extends Item<FilePath>
  */
-class File extends Item implements Stringable {
+class File extends Item {
     private ?string $content  = null;
     private bool    $modified = false;
 
@@ -83,10 +81,5 @@ class File extends Item implements Stringable {
         }
 
         return $this->metadata[$metadata::class];
-    }
-
-    #[Override]
-    public function __toString(): string {
-        return (string) $this->path;
     }
 }

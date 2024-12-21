@@ -6,13 +6,15 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
+use Override;
+use Stringable;
 
 use function sprintf;
 
 /**
  * @template TPath of Path
  */
-abstract class Item {
+abstract class Item implements Stringable {
     public function __construct(
         /**
          * @var TPath
@@ -77,5 +79,10 @@ abstract class Item {
      */
     public function isEqual(self $object): bool {
         return ($this === $object) || ($this::class === $object::class && $this->path->isEqual($object->path));
+    }
+
+    #[Override]
+    public function __toString(): string {
+        return (string) $this->path;
     }
 }

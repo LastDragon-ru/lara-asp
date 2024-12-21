@@ -5,8 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
-use Override;
-use Stringable;
 
 use function is_dir;
 use function sprintf;
@@ -14,7 +12,7 @@ use function sprintf;
 /**
  * @extends Item<DirectoryPath>
  */
-class Directory extends Item implements Stringable {
+class Directory extends Item {
     public function __construct(DirectoryPath $path) {
         parent::__construct($path);
 
@@ -32,10 +30,5 @@ class Directory extends Item implements Stringable {
         return $this->path->isInside(
             $path instanceof Path ? $path : $path->path,
         );
-    }
-
-    #[Override]
-    public function __toString(): string {
-        return (string) $this->path;
     }
 }
