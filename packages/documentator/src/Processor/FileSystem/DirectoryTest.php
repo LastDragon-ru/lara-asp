@@ -19,22 +19,7 @@ final class DirectoryTest extends TestCase {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path);
 
-        self::assertEquals($path, $directory->getPath());
-        self::assertEquals((string) $path, (string) $directory->getPath());
-    }
-
-    public function testConstructNotNormalized(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be normalized, `/../path` given.');
-
-        new Directory(new DirectoryPath('/../path'));
-    }
-
-    public function testConstructNotAbsolute(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be absolute, `../path` given.');
-
-        new Directory(new DirectoryPath('../path'));
+        self::assertEquals($path->getName(), $directory->getName());
     }
 
     public function testConstructNotDirectory(): void {
@@ -56,16 +41,5 @@ final class DirectoryTest extends TestCase {
         self::assertFalse($directory->isInside($b));
         self::assertTrue($directory->isInside($file));
         self::assertFalse($directory->isInside($directory));
-    }
-
-    public function testGetRelativePath(): void {
-        $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $parent    = new Directory($path->getDirectoryPath());
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-
-        self::assertEquals('DirectoryTest/a', (string) $directory->getRelativePath($parent));
-        self::assertEquals('DirectoryTest.php', (string) $directory->getRelativePath($file));
-        self::assertEquals('DirectoryTest/a/a.txt', (string) $directory->getRelativePath($path));
     }
 }

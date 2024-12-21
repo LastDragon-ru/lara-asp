@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -24,24 +23,8 @@ final class FileTest extends TestCase {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
         $file = new File($path);
 
-        self::assertEquals($path, $file->getPath());
-        self::assertEquals("{$path}", (string) $file->getPath());
         self::assertEquals('php', $file->getExtension());
         self::assertEquals('FileTest.php', $file->getName());
-    }
-
-    public function testConstructNotNormalized(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be normalized, `/../file.txt` given.');
-
-        new File(new FilePath('/../file.txt'));
-    }
-
-    public function testConstructNotAbsolute(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be absolute, `../file.txt` given.');
-
-        new File(new FilePath('../file.txt'));
     }
 
     public function testConstructNotFile(): void {
@@ -92,17 +75,5 @@ final class FileTest extends TestCase {
         self::assertEquals(__DIR__, file_get_contents($path));
         self::assertEquals(__METHOD__, $file->getContent());
         self::assertNotEquals($current, $file->getMetadata($meta));
-    }
-
-    public function testGetRelativePath(): void {
-        $path      = new FilePath('a/a.txt');
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $parent    = new Directory($file->getPath()->getParentPath()->getParentPath());
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-
-        self::assertEquals('..', (string) $file->getRelativePath($parent));
-        self::assertEquals('FileTest.php', (string) $file->getRelativePath($file));
-        self::assertEquals('a/a.txt', (string) $file->getRelativePath($path));
-        self::assertEquals('', (string) $file->getRelativePath($directory));
     }
 }

@@ -82,13 +82,10 @@ class Instruction implements InstructionContract {
     }
 
     protected function getCommand(Context $context, string $target, Parameters $parameters): string {
-        $file   = $context->file->getPath();
-        $target = strtr($target, [
-            '{$directory}' => $file->getDirectoryPath(),
-            '{$file}'      => $file,
+        return strtr($target, [
+            '{$directory}' => $context->file->getDirectoryPath(),
+            '{$file}'      => $context->file->getPath(),
         ]);
-
-        return $target;
     }
 
     protected function setVerbosity(?int $verbosity): ?int {

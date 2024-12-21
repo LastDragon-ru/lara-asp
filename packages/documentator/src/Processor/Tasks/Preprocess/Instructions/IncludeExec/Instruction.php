@@ -47,7 +47,7 @@ class Instruction implements InstructionContract {
         try {
             return trim(
                 $this->factory->newPendingProcess()
-                    ->path((string) $context->file->getPath()->getDirectoryPath())
+                    ->path((string) $context->file->getDirectoryPath())
                     ->run($parameters->target)
                     ->throw()
                     ->output(),

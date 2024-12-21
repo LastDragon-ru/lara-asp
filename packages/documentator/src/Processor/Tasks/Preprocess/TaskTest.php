@@ -180,7 +180,7 @@ final class TaskTest extends TestCase {
                 },
             );
         $file
-            ->shouldReceive('getPath')
+            ->shouldReceive('getFilePath')
             ->once()
             ->andReturn(
                 $path,

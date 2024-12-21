@@ -415,7 +415,7 @@ class ProcessorTest__Task implements Task {
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = yield new FileReference($file->getPath()->getFilePath($dependency));
+            $resolved[$dependency] = yield new FileReference($file->getFilePath($dependency));
         }
 
         $this->processed[] = [

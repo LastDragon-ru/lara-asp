@@ -67,7 +67,7 @@ class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $target  = $context->file->getPath()->getFilePath($parameters->target);
+        $target  = $context->file->getFilePath($parameters->target);
         $target  = Cast::to(File::class, yield new FileReference($target));
         $content = $target->getContent();
 

@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Core\Path\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use Override;
@@ -17,7 +15,10 @@ use function file_get_contents;
 use function is_file;
 use function sprintf;
 
-class File implements Stringable {
+/**
+ * @extends Item<FilePath>
+ */
+class File extends Item implements Stringable {
     private ?string $content  = null;
     private bool    $modified = false;
 
@@ -26,26 +27,8 @@ class File implements Stringable {
      */
     private array $metadata = [];
 
-    public function __construct(
-        private readonly FilePath $path,
-    ) {
-        if (!$this->path->isNormalized()) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Path must be normalized, `%s` given.',
-                    $this->path,
-                ),
-            );
-        }
-
-        if (!$this->path->isAbsolute()) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Path must be absolute, `%s` given.',
-                    $this->path,
-                ),
-            );
-        }
+    public function __construct(FilePath $path) {
+        parent::__construct($path);
 
         if (!is_file((string) $this->path)) {
             throw new InvalidArgumentException(
@@ -55,14 +38,6 @@ class File implements Stringable {
                 ),
             );
         }
-    }
-
-    public function getPath(): FilePath {
-        return $this->path;
-    }
-
-    public function getName(): string {
-        return $this->path->getName();
     }
 
     public function getExtension(): ?string {
@@ -108,20 +83,6 @@ class File implements Stringable {
         }
 
         return $this->metadata[$metadata::class];
-    }
-
-    /**
-     * @template T of Directory|self|Path
-     *
-     * @param T $path
-     *
-     * @return (T is Path ? new<T> : (T is Directory ? DirectoryPath : FilePath))
-     */
-    public function getRelativePath(Directory|self|Path $path): Path {
-        $path = $path instanceof Path ? $path : $path->getPath();
-        $path = $this->path->getRelativePath($path);
-
-        return $path;
     }
 
     #[Override]

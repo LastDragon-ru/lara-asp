@@ -45,9 +45,9 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(SplFileInfo|File|FilePath|string $path): ?File {
+    public function getFile(SplFileInfo|FilePath|string $path): ?File {
         // Object?
-        if ($path instanceof File || $path instanceof FilePath) {
+        if ($path instanceof FilePath) {
             $path = (string) $path;
         } elseif ($path instanceof SplFileInfo) {
             $path = $path->getPathname();
@@ -78,12 +78,10 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getDirectory(SplFileInfo|Directory|DirectoryPath|File|FilePath|string $path): ?Directory {
+    public function getDirectory(SplFileInfo|DirectoryPath|FilePath|string $path): ?Directory {
         // Object?
         if ($path instanceof SplFileInfo) {
             $path = $path->getPathname();
-        } elseif ($path instanceof Directory || $path instanceof File) {
-            $path = (string) $path->getPath()->getDirectoryPath();
         } elseif ($path instanceof Path) {
             $path = (string) $path->getDirectoryPath();
         } else {
@@ -201,7 +199,7 @@ class FileSystem {
         }
 
         // Directory?
-        $directory = (string) $file->getPath()->getDirectoryPath();
+        $directory = (string) $file->getDirectoryPath();
 
         if (!is_dir($directory) && !mkdir($directory, recursive: true)) {
             return false;
