@@ -14,18 +14,13 @@ use Override;
  */
 class DirectoryReference implements Dependency {
     public function __construct(
-        protected readonly Directory|DirectoryPath|string $reference,
+        protected readonly DirectoryPath|string $reference,
     ) {
         // empty
     }
 
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
-        // Already?
-        if ($this->reference instanceof Directory) {
-            return $this->reference;
-        }
-
         // Create
         $resolved = $fs->getDirectory($fs->input->getDirectoryPath((string) $this->reference));
 
