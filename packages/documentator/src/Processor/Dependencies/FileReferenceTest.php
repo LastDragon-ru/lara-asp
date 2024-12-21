@@ -20,27 +20,22 @@ use function sprintf;
 final class FileReferenceTest extends TestCase {
     public function testToString(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new File($path);
 
         self::assertEquals('path/to/file', (string) (new FileReference('path/to/file')));
-        self::assertEquals((string) $file, (string) (new FileReference($file)));
         self::assertEquals((string) $path, (string) (new FileReference($path)));
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $path      = (new FilePath(__FILE__))->getNormalizedPath();
-        $file      = new File($path);
-        $another   = new File($path);
-        $absolute  = new FileReference(__FILE__);
-        $relative  = new FileReference(basename(__FILE__));
-        $filepath  = new FileReference($path);
-        $reference = new FileReference($another);
+        $fs       = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $path     = (new FilePath(__FILE__))->getNormalizedPath();
+        $file     = new File($path);
+        $absolute = new FileReference(__FILE__);
+        $relative = new FileReference(basename(__FILE__));
+        $filepath = new FileReference($path);
 
         self::assertEquals($file, $absolute($fs));
         self::assertEquals($file, $relative($fs));
         self::assertEquals($file, $filepath($fs));
-        self::assertSame($another, $reference($fs));
     }
 
     public function testInvokeNotFound(): void {
