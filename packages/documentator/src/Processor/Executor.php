@@ -195,12 +195,11 @@ class Executor {
 
         // Call
         $start = microtime(true);
-        $path  = match (true) {
-            $file instanceof Dependency => new FilePath((string) $file),
-            default                     => $file->getPath(),
-        };
+        $path  = $file->getPath();
 
-        ($this->listener)($path, $result, $duration);
+        if ($path instanceof FilePath) {
+            ($this->listener)($path, $result, $duration);
+        }
 
         return microtime(true) - $start;
     }

@@ -14,11 +14,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Optional::class)]
 final class OptionalTest extends TestCase {
-    public function testToString(): void {
+    public function testGetPath(): void {
         $dependency = new FileReference('path/to/file');
         $optional   = new Optional($dependency);
 
-        self::assertEquals((string) $dependency, (string) $optional);
+        self::assertEquals($dependency->getPath(), $optional->getPath());
     }
 
     public function testInvoke(): void {

@@ -9,6 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 
+use function is_string;
+
 /**
  * @implements Dependency<Directory>
  */
@@ -22,7 +24,7 @@ class DirectoryReference implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
         // Create
-        $resolved = $fs->getDirectory($fs->input->getDirectoryPath((string) $this->reference));
+        $resolved = $fs->getDirectory($fs->input->getPath($this->getPath()));
 
         if ($resolved === null) {
             throw new DependencyUnresolvable($this);
@@ -32,7 +34,10 @@ class DirectoryReference implements Dependency {
     }
 
     #[Override]
-    public function __toString(): string {
-        return (string) $this->reference;
+    public function getPath(): DirectoryPath {
+        return match (true) {
+            is_string($this->reference) => new DirectoryPath($this->reference),
+            default                     => $this->reference,
+        };
     }
 }

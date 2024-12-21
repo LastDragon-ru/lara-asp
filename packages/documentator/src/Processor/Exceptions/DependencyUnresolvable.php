@@ -18,7 +18,7 @@ class DependencyUnresolvable extends DependencyError {
         parent::__construct(
             sprintf(
                 'Dependency `%s` not found.',
-                $this->dependency,
+                $this->dependency->getPath(),
             ),
             $previous,
         );

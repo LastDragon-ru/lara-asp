@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Symfony\Component\Finder\Finder;
 
+use function is_string;
+
 /**
  * @see Finder
  * @implements Dependency<Iterator<mixed, Directory>>
@@ -40,7 +42,7 @@ class DirectoryIterator implements Dependency {
         $directory = $this->directory;
 
         if (!($directory instanceof Directory)) {
-            $directory = $fs->getDirectory($fs->input->getDirectoryPath((string) $directory));
+            $directory = $fs->getDirectory($fs->input->getPath($this->getPath()));
 
             if ($directory === null) {
                 throw new DependencyUnresolvable($this);
@@ -52,7 +54,11 @@ class DirectoryIterator implements Dependency {
     }
 
     #[Override]
-    public function __toString(): string {
-        return (string) $this->directory;
+    public function getPath(): DirectoryPath {
+        return match (true) {
+            $this->directory instanceof Directory => $this->directory->getPath(),
+            is_string($this->directory)           => new DirectoryPath($this->directory),
+            default                               => $this->directory,
+        };
     }
 }

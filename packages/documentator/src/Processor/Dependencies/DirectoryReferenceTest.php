@@ -16,11 +16,11 @@ use function sprintf;
  */
 #[CoversClass(DirectoryReference::class)]
 final class DirectoryReferenceTest extends TestCase {
-    public function testToString(): void {
+    public function testGetPath(): void {
         $path = (new DirectoryPath(__DIR__))->getNormalizedPath();
 
-        self::assertEquals('path/to/directory', (string) (new DirectoryReference('path/to/directory')));
-        self::assertEquals((string) $path, (string) (new DirectoryReference($path)));
+        self::assertEquals('path/to/directory', (string) (new DirectoryReference('path/to/directory'))->getPath());
+        self::assertEquals((string) $path, (string) (new DirectoryReference($path))->getPath());
     }
 
     public function testInvoke(): void {

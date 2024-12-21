@@ -18,11 +18,11 @@ use function sprintf;
  */
 #[CoversClass(FileReference::class)]
 final class FileReferenceTest extends TestCase {
-    public function testToString(): void {
+    public function testGetPath(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
 
-        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file')));
-        self::assertEquals((string) $path, (string) (new FileReference($path)));
+        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file'))->getPath());
+        self::assertEquals((string) $path, (string) (new FileReference($path))->getPath());
     }
 
     public function testInvoke(): void {

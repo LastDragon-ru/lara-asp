@@ -19,13 +19,13 @@ use function sprintf;
  */
 #[CoversClass(DirectoryIterator::class)]
 final class DirectoryIteratorTest extends TestCase {
-    public function testToString(): void {
+    public function testGetPath(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path);
 
-        self::assertEquals('path/to/directory', (string) (new DirectoryIterator('path/to/directory')));
-        self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory)));
-        self::assertEquals((string) $path, (string) (new DirectoryIterator($path)));
+        self::assertEquals('path/to/directory', (string) (new DirectoryIterator('path/to/directory'))->getPath());
+        self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory))->getPath());
+        self::assertEquals((string) $path, (string) (new DirectoryIterator($path))->getPath());
     }
 
     public function testInvoke(): void {

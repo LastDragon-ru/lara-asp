@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -39,7 +41,7 @@ readonly class Optional implements Dependency {
     }
 
     #[Override]
-    public function __toString(): string {
-        return (string) $this->dependency;
+    public function getPath(): DirectoryPath|FilePath {
+        return $this->dependency->getPath();
     }
 }

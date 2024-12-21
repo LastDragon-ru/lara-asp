@@ -21,13 +21,13 @@ use function sprintf;
  */
 #[CoversClass(FileIterator::class)]
 final class FileIteratorTest extends TestCase {
-    public function testToString(): void {
+    public function testGetPath(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path);
 
-        self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory')));
-        self::assertEquals((string) $directory, (string) (new FileIterator($directory)));
-        self::assertEquals((string) $path, (string) (new FileIterator($path)));
+        self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory'))->getPath());
+        self::assertEquals((string) $directory, (string) (new FileIterator($directory))->getPath());
+        self::assertEquals((string) $path, (string) (new FileIterator($path))->getPath());
     }
 
     public function testInvoke(): void {
