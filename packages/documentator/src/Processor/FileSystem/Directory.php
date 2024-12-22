@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 
 use function is_dir;
@@ -26,7 +27,7 @@ class Directory extends Item {
         }
     }
 
-    public function isInside(self|File|Path $path): bool {
+    public function isInside(self|DirectoryPath|FilePath|File $path): bool {
         return $this->path->isInside(
             $path instanceof Path ? $path : $path->path,
         );

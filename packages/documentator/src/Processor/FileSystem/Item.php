@@ -12,14 +12,14 @@ use Stringable;
 use function sprintf;
 
 /**
- * @template TPath of Path
+ * @template TPath of DirectoryPath|FilePath
  */
 abstract class Item implements Stringable {
     public function __construct(
         /**
          * @var TPath
          */
-        protected readonly Path $path,
+        protected readonly DirectoryPath|FilePath $path,
     ) {
         if (!$this->path->isNormalized()) {
             throw new InvalidArgumentException(
@@ -43,7 +43,7 @@ abstract class Item implements Stringable {
     /**
      * @return TPath
      */
-    public function getPath(): Path {
+    public function getPath(): DirectoryPath|FilePath {
         return $this->path;
     }
 
@@ -60,14 +60,13 @@ abstract class Item implements Stringable {
     }
 
     /**
-     * @template P of Path
-     * @template T of self<P>|Path
+     * @template P of DirectoryPath|FilePath
      *
-     * @param T $path
+     * @param self<P>|DirectoryPath|FilePath $path
      *
-     * @return (T is self<P> ? new<P> : new<T>)
+     * @return ($path is DirectoryPath ? DirectoryPath : ($path is FilePath ? FilePath : P))
      */
-    public function getRelativePath(self|Path $path): Path {
+    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath {
         $path = $path instanceof Path ? $path : $path->path;
         $path = $this->path->getRelativePath($path);
 
