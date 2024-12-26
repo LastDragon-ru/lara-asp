@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use SplFileInfo;
 
 use function array_map;
 use function basename;
@@ -27,8 +26,6 @@ final class FileSystemTest extends TestCase {
         $notfound     = $fs->getFile('not found');
         $internal     = $fs->getFile(self::getTestData()->path('c.html'));
         $external     = $fs->getFile('../Processor.php');
-        $splFile      = new SplFileInfo((string) $path);
-        $fromSplFile  = $fs->getFile($splFile);
         $fromFilePath = $fs->getFile($path);
 
         self::assertNotNull($readonly);
@@ -55,13 +52,6 @@ final class FileSystemTest extends TestCase {
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getFilePath('../Processor.php'),
             (string) $external,
-        );
-
-        self::assertNotNull($fromSplFile);
-        self::assertEquals($file->getPath(), $fromSplFile->getPath());
-        self::assertEquals(
-            (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
-            (string) $fromSplFile,
         );
 
         self::assertNotNull($fromFilePath);
@@ -129,16 +119,6 @@ final class FileSystemTest extends TestCase {
         self::assertEquals(
             (string) (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath(),
             (string) $fromFilePath,
-        );
-
-        // From SplFileInfo
-        $spl     = new SplFileInfo(self::getTestData()->path('b'));
-        $fromSpl = $fs->getDirectory($spl);
-
-        self::assertNotNull($fromSpl);
-        self::assertEquals(
-            (string) (new DirectoryPath($spl->getPathname()))->getNormalizedPath(),
-            (string) $fromSpl,
         );
 
         // From DirectoryPath

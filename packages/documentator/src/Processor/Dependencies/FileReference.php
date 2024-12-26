@@ -24,7 +24,7 @@ class FileReference implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
         // Create
-        $resolved = $fs->getFile($fs->input->getPath($this->getPath()));
+        $resolved = $fs->getFile($this->reference);
 
         if ($resolved === null) {
             throw new DependencyUnresolvable($this);

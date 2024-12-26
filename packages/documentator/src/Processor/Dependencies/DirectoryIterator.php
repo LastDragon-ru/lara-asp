@@ -42,7 +42,7 @@ class DirectoryIterator implements Dependency {
         $directory = $this->directory;
 
         if (!($directory instanceof Directory)) {
-            $directory = $fs->getDirectory($fs->input->getPath($this->getPath()));
+            $directory = $fs->getDirectory($directory);
 
             if ($directory === null) {
                 throw new DependencyUnresolvable($this);

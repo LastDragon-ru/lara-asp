@@ -6,8 +6,6 @@ use Closure;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Core\Path\Path;
-use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 use function file_put_contents;
@@ -31,18 +29,9 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(SplFileInfo|FilePath|string $path): ?File {
-        // Object?
-        if ($path instanceof FilePath) {
-            $path = (string) $path;
-        } elseif ($path instanceof SplFileInfo) {
-            $path = $path->getPathname();
-        } else {
-            // empty
-        }
-
+    public function getFile(FilePath|string $path): ?File {
         // Cached?
-        $path = $this->input->getFilePath($path);
+        $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
@@ -64,18 +53,10 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getDirectory(SplFileInfo|DirectoryPath|FilePath|string $path): ?Directory {
-        // Object?
-        if ($path instanceof SplFileInfo) {
-            $path = $path->getPathname();
-        } elseif ($path instanceof Path) {
-            $path = (string) $path->getDirectoryPath();
-        } else {
-            // empty
-        }
-
+    public function getDirectory(DirectoryPath|FilePath|string $path): ?Directory {
         // Cached?
-        $path      = $this->input->getDirectoryPath($path);
+        $path      = $path instanceof FilePath ? $path->getDirectoryPath() : $path;
+        $path      = $this->input->getDirectoryPath((string) $path);
         $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {
@@ -129,7 +110,7 @@ class FileSystem {
     /**
      * @template T of object
      *
-     * @param Closure(SplFileInfo): ?T                     $factory
+     * @param Closure(string): ?T                          $factory
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
@@ -163,7 +144,7 @@ class FileSystem {
         }
 
         foreach ($finder as $info) {
-            $item = $factory($info);
+            $item = $factory($info->getPathname());
 
             if ($item !== null) {
                 yield $item;
@@ -212,7 +193,7 @@ class FileSystem {
         return $object;
     }
 
-    protected function cached(Path $path): Directory|File|null {
+    protected function cached(DirectoryPath|FilePath $path): Directory|File|null {
         $cached = $this->cache[(string) $path] ?? null;
 
         return $cached;

@@ -24,7 +24,7 @@ class DirectoryReference implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
         // Create
-        $resolved = $fs->getDirectory($fs->input->getPath($this->getPath()));
+        $resolved = $fs->getDirectory($this->reference);
 
         if ($resolved === null) {
             throw new DependencyUnresolvable($this);
