@@ -151,6 +151,8 @@ class Executor {
             if (!$this->fs->save($file)) {
                 throw new FileSaveFailed($file);
             }
+
+            $this->fs->commit();
         } catch (Throwable $exception) {
             throw $exception;
         } finally {

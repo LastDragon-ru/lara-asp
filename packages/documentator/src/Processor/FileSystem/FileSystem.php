@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
-use WeakReference;
 
 use function file_put_contents;
 use function is_dir;
@@ -18,7 +17,7 @@ use function mkdir;
 
 class FileSystem {
     /**
-     * @var array<string, WeakReference<Directory|File>>
+     * @var array<string, Directory|File>
      */
     private array                 $cache = [];
     public readonly DirectoryPath $input;
@@ -174,6 +173,10 @@ class FileSystem {
         yield from [];
     }
 
+    public function commit(): void {
+        $this->cache = [];
+    }
+
     public function save(File $file): bool {
         // Modified?
         if (!$file->isModified()) {
@@ -203,23 +206,14 @@ class FileSystem {
      *
      * @return T
      */
-    private function cache(Directory|File $object): Directory|File {
-        $this->cache[(string) $object] = WeakReference::create($object);
+    protected function cache(Directory|File $object): Directory|File {
+        $this->cache[(string) $object] = $object;
 
         return $object;
     }
 
-    private function cached(Path $path): Directory|File|null {
-        $key    = (string) $path;
-        $cached = null;
-
-        if (isset($this->cache[$key])) {
-            $cached = $this->cache[$key]->get();
-
-            if ($cached === null) {
-                unset($this->cache[$key]);
-            }
-        }
+    protected function cached(Path $path): Directory|File|null {
+        $cached = $this->cache[(string) $path] ?? null;
 
         return $cached;
     }
