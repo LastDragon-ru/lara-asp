@@ -39,19 +39,11 @@ class DirectoryIterator implements Dependency {
 
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
-        // Directory
-        $directory = $this->directory;
-
-        if (!($directory instanceof Directory)) {
-            try {
-                $directory = $fs->getDirectory($directory);
-            } catch (DirectoryNotFound $exception) {
-                throw new DependencyUnresolvable($this, $exception);
-            }
+        try {
+            yield from $fs->getDirectoriesIterator($this->directory, $this->patterns, $this->depth, $this->exclude);
+        } catch (DirectoryNotFound $exception) {
+            throw new DependencyUnresolvable($this, $exception);
         }
-
-        // Resolve
-        return $fs->getDirectoriesIterator($directory, $this->patterns, $this->depth, $this->exclude);
     }
 
     #[Override]

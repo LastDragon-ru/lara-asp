@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Symfony\Component\Finder\Glob;
 
@@ -100,10 +99,9 @@ class Processor {
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
 
         try {
-            $root     = new Directory($input->getDirectoryPath());
-            $system   = new FileSystem($input->getDirectoryPath(), $output);
-            $iterator = $system->getFilesIterator($root, $extensions, $depth, $exclude);
-            $executor = new Executor($system, $exclude, $this->tasks, $iterator, $listener);
+            $filesystem = new FileSystem($input->getDirectoryPath(), $output);
+            $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
+            $executor   = new Executor($filesystem, $exclude, $this->tasks, $iterator, $listener);
 
             $executor->run();
         } catch (ProcessorError $exception) {

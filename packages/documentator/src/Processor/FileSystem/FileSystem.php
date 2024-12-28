@@ -88,7 +88,7 @@ class FileSystem {
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
-        Directory $directory,
+        Directory|DirectoryPath|string $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
@@ -110,7 +110,7 @@ class FileSystem {
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
-        Directory $directory,
+        Directory|DirectoryPath|string $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
@@ -130,12 +130,13 @@ class FileSystem {
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
      */
     protected function getFinder(
-        Directory $directory,
+        Directory|DirectoryPath|string $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Finder {
-        $finder = Finder::create()
+        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
+        $finder    = Finder::create()
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
