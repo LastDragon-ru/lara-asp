@@ -2,10 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Closure;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use Symfony\Component\Finder\Finder;
 
 use function file_put_contents;
@@ -29,13 +30,13 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(FilePath|string $path): ?File {
+    public function getFile(FilePath|string $path): File {
         // Cached?
         $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
-            return null;
+            throw new FileNotFound($path);
         }
 
         if ($file instanceof File) {
@@ -45,6 +46,8 @@ class FileSystem {
         // Create
         if (is_file((string) $path)) {
             $file = $this->cache(new File($path));
+        } else {
+            throw new FileNotFound($path);
         }
 
         return $file;
@@ -53,14 +56,14 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getDirectory(DirectoryPath|FilePath|string $path): ?Directory {
+    public function getDirectory(DirectoryPath|FilePath|string $path): Directory {
         // Cached?
         $path      = $path instanceof FilePath ? $path->getDirectoryPath() : $path;
         $path      = $this->input->getDirectoryPath((string) $path);
         $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {
-            return null;
+            throw new DirectoryNotFound($path);
         }
 
         if ($directory instanceof Directory) {
@@ -70,6 +73,8 @@ class FileSystem {
         // Create
         if (is_dir((string) $path)) {
             $directory = $this->cache(new Directory($path));
+        } else {
+            throw new DirectoryNotFound($path);
         }
 
         return $directory;
@@ -88,7 +93,13 @@ class FileSystem {
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($directory, $this->getFile(...), $patterns, $depth, $exclude);
+        $finder = $this->getFinder($directory, $patterns, $depth, $exclude);
+
+        foreach ($finder->files() as $info) {
+            yield $this->getFile($info->getPathname());
+        }
+
+        yield from [];
     }
 
     /**
@@ -104,26 +115,26 @@ class FileSystem {
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($directory, $this->getDirectory(...), $patterns, $depth, $exclude);
+        $finder = $this->getFinder($directory, $patterns, $depth, $exclude);
+
+        foreach ($finder->directories() as $info) {
+            yield $this->getDirectory($info->getPathname());
+        }
+
+        yield from [];
     }
 
     /**
-     * @template T of object
-     *
-     * @param Closure(string): ?T                          $factory
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
-     *
-     * @return Iterator<array-key, T>
      */
-    protected function getIterator(
+    protected function getFinder(
         Directory $directory,
-        Closure $factory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
-    ): Iterator {
+    ): Finder {
         $finder = Finder::create()
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
@@ -143,15 +154,7 @@ class FileSystem {
             $finder = $finder->notPath($exclude);
         }
 
-        foreach ($finder as $info) {
-            $item = $factory($info->getPathname());
-
-            if ($item !== null) {
-                yield $item;
-            }
-        }
-
-        yield from [];
+        return $finder;
     }
 
     public function commit(): void {

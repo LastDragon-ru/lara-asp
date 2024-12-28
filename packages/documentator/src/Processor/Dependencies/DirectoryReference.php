@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
@@ -23,14 +24,11 @@ class DirectoryReference implements Dependency {
 
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
-        // Create
-        $resolved = $fs->getDirectory($this->reference);
-
-        if ($resolved === null) {
-            throw new DependencyUnresolvable($this);
+        try {
+            return $fs->getDirectory($this->reference);
+        } catch (DirectoryNotFound $exception) {
+            throw new DependencyUnresolvable($this, $exception);
         }
-
-        return $resolved;
     }
 
     #[Override]

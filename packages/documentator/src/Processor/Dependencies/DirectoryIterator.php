@@ -6,6 +6,7 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
@@ -42,10 +43,10 @@ class DirectoryIterator implements Dependency {
         $directory = $this->directory;
 
         if (!($directory instanceof Directory)) {
-            $directory = $fs->getDirectory($directory);
-
-            if ($directory === null) {
-                throw new DependencyUnresolvable($this);
+            try {
+                $directory = $fs->getDirectory($directory);
+            } catch (DirectoryNotFound $exception) {
+                throw new DependencyUnresolvable($this, $exception);
             }
         }
 

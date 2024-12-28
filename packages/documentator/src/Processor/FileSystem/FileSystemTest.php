@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -23,43 +25,41 @@ final class FileSystemTest extends TestCase {
         $file         = new File($path);
         $readonly     = $fs->getFile(__FILE__);
         $relative     = $fs->getFile(basename(__FILE__));
-        $notfound     = $fs->getFile('not found');
         $internal     = $fs->getFile(self::getTestData()->path('c.html'));
         $external     = $fs->getFile('../Processor.php');
         $fromFilePath = $fs->getFile($path);
 
-        self::assertNotNull($readonly);
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getNormalizedPath(),
             (string) $readonly,
         );
 
-        self::assertNotNull($relative);
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getNormalizedPath(),
             (string) $relative,
         );
 
-        self::assertNull($notfound);
-
-        self::assertNotNull($internal);
         self::assertEquals(
             (string) (new FilePath(self::getTestData()->path('c.html')))->getNormalizedPath(),
             (string) $internal,
         );
 
-        self::assertNotNull($external);
         self::assertEquals(
             (string) (new FilePath(__FILE__))->getFilePath('../Processor.php'),
             (string) $external,
         );
 
-        self::assertNotNull($fromFilePath);
         self::assertEquals($file->getPath(), $fromFilePath->getPath());
         self::assertEquals(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
             (string) $fromFilePath,
         );
+    }
+
+    public function testGetFileNotFound(): void {
+        self::expectException(FileNotFound::class);
+
+        (new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath()))->getFile('not found');
     }
 
     public function testGetDirectory(): void {
@@ -75,7 +75,6 @@ final class FileSystemTest extends TestCase {
         // Readonly
         $readonly = $fs->getDirectory(__DIR__);
 
-        self::assertNotNull($readonly);
         self::assertEquals(
             (string) (new DirectoryPath(__DIR__))->getNormalizedPath(),
             (string) $readonly,
@@ -84,28 +83,20 @@ final class FileSystemTest extends TestCase {
         // Relative
         $relative = $fs->getDirectory(basename(__DIR__));
 
-        self::assertNotNull($relative);
         self::assertEquals(
             (string) (new DirectoryPath(__DIR__))->getNormalizedPath(),
             (string) $relative,
         );
 
-        // Not directory
-        $notDirectory = $fs->getDirectory('not directory');
-
-        self::assertNull($notDirectory);
-
         // Internal
         $internalPath = self::getTestData()->path('a');
         $internal     = $fs->getDirectory($internalPath);
 
-        self::assertNotNull($internal);
         self::assertEquals($internalPath, (string) $internal);
 
         // External
         $external = $fs->getDirectory('../Testing');
 
-        self::assertNotNull($external);
         self::assertEquals(
             (string) (new DirectoryPath(__DIR__))->getDirectoryPath('../../Testing'),
             (string) $external,
@@ -115,7 +106,6 @@ final class FileSystemTest extends TestCase {
         $filePath     = (new FilePath(self::getTestData()->path('c.html')))->getNormalizedPath();
         $fromFilePath = $fs->getDirectory($filePath);
 
-        self::assertNotNull($fromFilePath);
         self::assertEquals(
             (string) (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath(),
             (string) $fromFilePath,
@@ -125,8 +115,13 @@ final class FileSystemTest extends TestCase {
         $directoryPath     = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
         $fromDirectoryPath = $fs->getDirectory($directoryPath);
 
-        self::assertNotNull($fromDirectoryPath);
         self::assertEquals((string) $directoryPath, (string) $fromDirectoryPath);
+    }
+
+    public function testGetDirectoryNotFound(): void {
+        self::expectException(DirectoryNotFound::class);
+
+        (new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath()))->getDirectory('not found');
     }
 
     public function testGetFilesIterator(): void {
@@ -275,10 +270,8 @@ final class FileSystemTest extends TestCase {
         $file      = $fs->getFile(__FILE__);
         $directory = $fs->getDirectory(__DIR__);
 
-        self::assertNotNull($file);
         self::assertSame($file, $fs->getFile(__FILE__));
 
-        self::assertNotNull($directory);
         self::assertSame($directory, $fs->getDirectory(__DIR__));
     }
 }

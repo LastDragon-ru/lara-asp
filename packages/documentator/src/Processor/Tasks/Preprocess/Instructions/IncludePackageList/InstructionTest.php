@@ -56,9 +56,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters((string) $target);
         $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory($target->getDirectoryPath('package'));
 
-        self::assertNotNull($package);
         self::expectExceptionObject(
             new DependencyUnresolvable(new FileReference($fs->input->getFilePath('no readme/package/README.md'))),
         );
@@ -75,10 +73,7 @@ final class InstructionTest extends TestCase {
         $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory($target->getDirectoryPath('package'));
-        $expected = $fs->getFile('empty readme/package/README.md');
 
-        self::assertNotNull($package);
-        self::assertNotNull($expected);
         self::expectExceptionObject(
             new PackageReadmeIsEmpty($context, $params, $package->getName()),
         );
