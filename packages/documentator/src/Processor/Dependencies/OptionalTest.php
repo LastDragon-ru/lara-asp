@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,10 +21,10 @@ final class OptionalTest extends TestCase {
     }
 
     public function testInvoke(): void {
+        $fs         = $this->getFileSystem(__DIR__);
+        $file       = $fs->getFile(__FILE__);
         $dependency = new FileReference(__FILE__);
         $optional   = new Optional($dependency);
-        $file       = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $fs         = $this->getFileSystem(__DIR__);
 
         self::assertEquals($file, $dependency($fs));
         self::assertEquals($file, $optional($fs));

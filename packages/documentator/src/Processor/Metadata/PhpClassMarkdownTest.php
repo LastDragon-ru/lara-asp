@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -14,6 +14,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(PhpClassMarkdown::class)]
 final class PhpClassMarkdownTest extends TestCase {
+    use WithProcessor;
+
     public function testInvoke(): void {
         $content  = <<<'PHP'
         <?php declare(strict_types = 1);
@@ -32,9 +34,8 @@ final class PhpClassMarkdownTest extends TestCase {
             // empty
         }
         PHP;
-        $file     = new File(
-            (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
-        );
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(self::getTempFile($content)->getPathname());
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
             new PhpClassComment(new PhpClass()),
@@ -54,7 +55,8 @@ final class PhpClassMarkdownTest extends TestCase {
     }
 
     public function testInvokeEmpty(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
             new PhpClassComment(new PhpClass()),
@@ -66,7 +68,8 @@ final class PhpClassMarkdownTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
             new class(new PhpClass()) extends PhpClassComment {

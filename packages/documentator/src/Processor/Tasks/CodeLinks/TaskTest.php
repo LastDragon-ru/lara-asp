@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown as MarkdownImpl;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
@@ -48,7 +47,8 @@ final class TaskTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
         $path       = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $file       = new File($path);
+        $fs         = $this->getFileSystem($path->getDirectoryPath());
+        $file       = $fs->getFile($path);
         $task       = $this->app()->make(Task::class);
         $input      = $path->getDirectoryPath();
         $filesystem = $this->getFileSystem($input);

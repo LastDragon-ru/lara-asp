@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function sprintf;
@@ -15,6 +16,8 @@ use function sprintf;
  */
 #[CoversClass(Directory::class)]
 final class DirectoryTest extends TestCase {
+    use WithProcessor;
+
     public function testConstruct(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path);
@@ -34,8 +37,9 @@ final class DirectoryTest extends TestCase {
     public function testIsInside(): void {
         $a         = (new FilePath(self::getTestData()->path('a/a.txt')));
         $b         = $a->getPath(new DirectoryPath('../../..'));
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs        = $this->getFileSystem(__DIR__);
+        $file      = $fs->getFile(__FILE__);
+        $directory = $fs->getDirectory(__DIR__);
 
         self::assertTrue($directory->isInside($a));
         self::assertFalse($directory->isInside($b));

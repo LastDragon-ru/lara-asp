@@ -25,7 +25,7 @@ final class FileSystemTest extends TestCase {
     public function testGetFile(): void {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
-        $file         = new File($path);
+        $file         = $fs->getFile($path);
         $readonly     = $fs->getFile(__FILE__);
         $relative     = $fs->getFile(basename(__FILE__));
         $internal     = $fs->getFile(self::getTestData()->path('c.html'));
@@ -129,8 +129,8 @@ final class FileSystemTest extends TestCase {
 
     public function testGetFilesIterator(): void {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory  = new Directory($input);
         $filesystem = $this->getFileSystem($input);
+        $directory  = $filesystem->getDirectory($input);
         $map        = static function (File $file) use ($directory): string {
             return (string) $directory->getRelativePath($file);
         };
@@ -187,8 +187,8 @@ final class FileSystemTest extends TestCase {
 
     public function testGetDirectoriesIterator(): void {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $directory  = new Directory($input);
         $filesystem = $this->getFileSystem($input);
+        $directory  = $filesystem->getDirectory($input);
         $map        = static function (Directory $dir) use ($directory): string {
             return (string) $directory->getRelativePath($dir);
         };
@@ -242,8 +242,8 @@ final class FileSystemTest extends TestCase {
 
     public function testSaveInsideRoot(): void {
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File($temp);
         $fs   = $this->getFileSystem($temp->getDirectoryPath());
+        $file = $fs->getFile($temp);
 
         self::assertTrue($fs->save($file)); // because no changes
 
@@ -257,7 +257,7 @@ final class FileSystemTest extends TestCase {
     public function testSaveOutsideRoot(): void {
         $fs   = $this->getFileSystem(__DIR__);
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File($temp);
+        $file = $fs->getFile($temp);
 
         self::assertTrue($fs->save($file)); // because no changes
 

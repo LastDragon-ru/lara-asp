@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
@@ -24,8 +23,9 @@ final class FileIteratorTest extends TestCase {
     use WithProcessor;
 
     public function testGetPath(): void {
-        $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $directory = new Directory($path);
+        $filesystem = $this->getFileSystem(__DIR__);
+        $directory  = $filesystem->getDirectory(__DIR__);
+        $path       = $directory->getPath();
 
         self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory'))->getPath());
         self::assertEquals((string) $directory, (string) (new FileIterator($directory))->getPath());
@@ -38,7 +38,7 @@ final class FileIteratorTest extends TestCase {
         $pattern   = '*.txt';
         $absolute  = new FileIterator($path, $pattern);
         $relative  = new FileIterator(basename((string) $path), $pattern);
-        $directory = new FileIterator(new Directory($path), $pattern);
+        $directory = new FileIterator($fs->getDirectory($path), $pattern);
         $formatter = static function (File|FilePath $item): string {
             return (string) $item;
         };

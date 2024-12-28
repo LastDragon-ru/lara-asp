@@ -2,9 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -12,8 +11,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(PhpClass::class)]
 final class PhpClassTest extends TestCase {
+    use WithProcessor;
+
     public function testInvoke(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
         $factory  = new PhpClass();
         $metadata = $factory($file);
 
@@ -21,7 +23,8 @@ final class PhpClassTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getFilePath('../../../README.md'));
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile('../../../README.md');
         $factory  = new PhpClass();
         $metadata = $factory($file);
 

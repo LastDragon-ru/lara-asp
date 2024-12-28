@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -13,6 +14,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Directory::class)]
 final class ItemTest extends TestCase {
+    use WithProcessor;
+
     public function testConstructNotNormalized(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
@@ -32,8 +35,9 @@ final class ItemTest extends TestCase {
     }
 
     public function testGetRelativePath(): void {
+        $fs        = $this->getFileSystem(__DIR__);
+        $file      = $fs->getFile(__FILE__);
         $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $parent    = new class($path->getDirectoryPath()) extends Item {
             // empty
         };

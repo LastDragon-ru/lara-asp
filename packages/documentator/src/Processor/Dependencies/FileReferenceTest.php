@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -29,7 +28,7 @@ final class FileReferenceTest extends TestCase {
     public function testInvoke(): void {
         $fs       = $this->getFileSystem(__DIR__);
         $path     = (new FilePath(__FILE__))->getNormalizedPath();
-        $file     = new File($path);
+        $file     = $fs->getFile($path);
         $absolute = new FileReference(__FILE__);
         $relative = new FileReference(basename(__FILE__));
         $filepath = new FileReference($path);
