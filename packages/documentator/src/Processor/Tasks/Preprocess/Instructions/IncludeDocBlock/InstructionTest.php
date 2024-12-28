@@ -8,14 +8,14 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
 use function trim;
 
 /**
@@ -23,6 +23,8 @@ use function trim;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -31,8 +33,8 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
-        $file     = new File($path);
-        $input    = $path->getDirectoryPath();
+        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $file     = $fs->getFile($path);
         $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
@@ -42,7 +44,7 @@ final class InstructionTest extends TestCase {
             $expected = trim(self::getTestData()->content($expected));
         }
 
-        $actual = ProcessorHelper::runInstruction($instance, $input, $context, $params);
+        $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
 
         if ($params->summary && $params->description) {
             self::assertInstanceOf(Document::class, $actual);

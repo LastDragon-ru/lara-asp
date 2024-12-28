@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
@@ -19,8 +20,10 @@ use function iterator_to_array;
  */
 #[CoversClass(FileSystem::class)]
 final class FileSystemTest extends TestCase {
+    use WithProcessor;
+
     public function testGetFile(): void {
-        $fs           = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
         $file         = new File($path);
         $readonly     = $fs->getFile(__FILE__);
@@ -64,7 +67,7 @@ final class FileSystemTest extends TestCase {
 
     public function testGetDirectory(): void {
         // Prepare
-        $fs = new FileSystem((new DirectoryPath(__DIR__))->getParentPath());
+        $fs = $this->getFileSystem(__DIR__.'/..');
 
         // Self
         self::assertSame(
@@ -127,7 +130,7 @@ final class FileSystemTest extends TestCase {
     public function testGetFilesIterator(): void {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $directory  = new Directory($input);
-        $filesystem = new FileSystem($input);
+        $filesystem = $this->getFileSystem($input);
         $map        = static function (File $file) use ($directory): string {
             return (string) $directory->getRelativePath($file);
         };
@@ -185,7 +188,7 @@ final class FileSystemTest extends TestCase {
     public function testGetDirectoriesIterator(): void {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $directory  = new Directory($input);
-        $filesystem = new FileSystem($input);
+        $filesystem = $this->getFileSystem($input);
         $map        = static function (Directory $dir) use ($directory): string {
             return (string) $directory->getRelativePath($dir);
         };
@@ -240,7 +243,7 @@ final class FileSystemTest extends TestCase {
     public function testSaveInsideRoot(): void {
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
         $file = new File($temp);
-        $fs   = new FileSystem($temp->getDirectoryPath());
+        $fs   = $this->getFileSystem($temp->getDirectoryPath());
 
         self::assertTrue($fs->save($file)); // because no changes
 
@@ -252,7 +255,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testSaveOutsideRoot(): void {
-        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs   = $this->getFileSystem(__DIR__);
         $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
         $file = new File($temp);
 
@@ -266,7 +269,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testCache(): void {
-        $fs        = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs        = $this->getFileSystem(__DIR__);
         $file      = $fs->getFile(__FILE__);
         $directory = $fs->getDirectory(__DIR__);
 

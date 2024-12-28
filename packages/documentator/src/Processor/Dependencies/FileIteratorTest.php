@@ -7,8 +7,8 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
@@ -21,6 +21,8 @@ use function sprintf;
  */
 #[CoversClass(FileIterator::class)]
 final class FileIteratorTest extends TestCase {
+    use WithProcessor;
+
     public function testGetPath(): void {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path);
@@ -31,7 +33,7 @@ final class FileIteratorTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs        = $this->getFileSystem(__DIR__);
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $pattern   = '*.txt';
         $absolute  = new FileIterator($path, $pattern);
@@ -56,7 +58,7 @@ final class FileIteratorTest extends TestCase {
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs   = $this->getFileSystem(__DIR__);
         $path = 'path/to/directory';
 
         self::expectException(DependencyUnresolvable::class);

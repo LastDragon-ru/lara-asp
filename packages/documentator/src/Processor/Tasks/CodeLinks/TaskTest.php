@@ -19,8 +19,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassLink
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassMethodLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassPropertyLink;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
@@ -38,6 +38,8 @@ use function trim;
  */
 #[CoversClass(Task::class)]
 final class TaskTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -45,10 +47,11 @@ final class TaskTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
-        $path  = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $file  = new File($path);
-        $task  = $this->app()->make(Task::class);
-        $input = $path->getDirectoryPath();
+        $path       = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
+        $file       = new File($path);
+        $task       = $this->app()->make(Task::class);
+        $input      = $path->getDirectoryPath();
+        $filesystem = $this->getFileSystem($input);
 
         if (!is_callable($expected)) {
             $expected = self::getTestData()->content($expected);
@@ -56,7 +59,7 @@ final class TaskTest extends TestCase {
             self::expectExceptionObject($expected());
         }
 
-        $actual = ProcessorHelper::runTask($task, $input, $file);
+        $actual = $this->getProcessorResult($filesystem, ($task)($file));
 
         self::assertTrue($actual);
         self::assertEquals($expected, $file->getContent());

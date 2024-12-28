@@ -2,12 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
@@ -18,6 +17,8 @@ use function sprintf;
  */
 #[CoversClass(FileReference::class)]
 final class FileReferenceTest extends TestCase {
+    use WithProcessor;
+
     public function testGetPath(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
 
@@ -26,7 +27,7 @@ final class FileReferenceTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $fs       = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs       = $this->getFileSystem(__DIR__);
         $path     = (new FilePath(__FILE__))->getNormalizedPath();
         $file     = new File($path);
         $absolute = new FileReference(__FILE__);
@@ -39,7 +40,7 @@ final class FileReferenceTest extends TestCase {
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs   = $this->getFileSystem(__DIR__);
         $path = 'path/to/file';
 
         self::expectException(DependencyUnresolvable::class);

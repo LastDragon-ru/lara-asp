@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
@@ -13,8 +12,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Mockery;
 use Override;
@@ -31,6 +30,8 @@ use const PHP_INT_MAX;
  */
 #[CoversClass(Task::class)]
 final class TaskTest extends TestCase {
+    use WithProcessor;
+
     private const MARKDOWN = <<<'MARKDOWN'
         Bla bla bla [processable]: ./path/to/file should be ignored.
 
@@ -192,8 +193,8 @@ final class TaskTest extends TestCase {
                 new FilePath('path/to/file.md'),
             );
 
-        $input  = Mockery::mock(DirectoryPath::class);
-        $result = ProcessorHelper::runTask($task, $input, $file);
+        $filesystem = $this->getFileSystem(__DIR__);
+        $result     = $this->getProcessorResult($filesystem, ($task)($file));
 
         self::assertTrue($result);
         self::assertEquals(

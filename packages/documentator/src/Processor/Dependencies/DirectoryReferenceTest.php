@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function sprintf;
@@ -16,6 +16,8 @@ use function sprintf;
  */
 #[CoversClass(DirectoryReference::class)]
 final class DirectoryReferenceTest extends TestCase {
+    use WithProcessor;
+
     public function testGetPath(): void {
         $path = (new DirectoryPath(__DIR__))->getNormalizedPath();
 
@@ -24,10 +26,9 @@ final class DirectoryReferenceTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $dir      = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $fs       = new FileSystem($dir);
-        $another  = new Directory($dir);
-        $dirpath  = new DirectoryReference($dir);
+        $fs       = $this->getFileSystem(__DIR__);
+        $another  = new Directory($fs->input);
+        $dirpath  = new DirectoryReference($fs->input);
         $absolute = new DirectoryReference(__DIR__);
         $relative = new DirectoryReference('.');
 
@@ -37,7 +38,7 @@ final class DirectoryReferenceTest extends TestCase {
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath());
+        $fs   = $this->getFileSystem(__DIR__);
         $path = 'path/to/directory';
 
         self::expectException(DependencyUnresolvable::class);
