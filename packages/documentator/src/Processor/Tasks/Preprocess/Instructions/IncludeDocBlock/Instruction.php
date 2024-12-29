@@ -23,9 +23,7 @@ use Override;
  * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
-    public function __construct(
-        protected readonly PhpClassMarkdown $markdown,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -52,7 +50,7 @@ class Instruction implements InstructionContract {
         // Class?
         $target   = $context->file->getFilePath($parameters->target);
         $target   = Cast::to(File::class, yield new FileReference($target));
-        $document = $target->getMetadata($this->markdown);
+        $document = $target->getMetadata(PhpClassMarkdown::class);
 
         if ($document === null) {
             throw new TargetIsNotValidPhpFile($context, $parameters);

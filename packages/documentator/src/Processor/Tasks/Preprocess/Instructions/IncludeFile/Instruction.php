@@ -20,9 +20,7 @@ use Override;
  * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
-    public function __construct(
-        protected readonly Markdown $markdown,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -48,7 +46,7 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         $target  = $context->file->getFilePath($parameters->target);
         $target  = Cast::to(File::class, yield new FileReference($target));
-        $content = $target->getMetadata($this->markdown) ?? $target->getContent();
+        $content = $target->getMetadata(Markdown::class) ?? $target->getContent();
 
         return $content;
     }

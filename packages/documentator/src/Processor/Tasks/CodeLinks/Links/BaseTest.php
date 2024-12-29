@@ -30,8 +30,7 @@ final class BaseTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderGetTitle')]
     public function testGetTitle(?string $expected, string $value): void {
-        $meta = Mockery::mock(PhpClassComment::class);
-        $link = new class($meta, $value) extends Base {
+        $link = new class($value) extends Base {
             /**
              * @inheritDoc
              */
@@ -77,7 +76,6 @@ final class BaseTest extends TestCase {
             ->twice()
             ->andReturn(true, false);
 
-        $meta = Mockery::mock(PhpClassComment::class);
         $data = new class ($class, $comment) {
             public function __construct(
                 public readonly ClassLike $class,
@@ -90,7 +88,7 @@ final class BaseTest extends TestCase {
         $source = Mockery::mock(File::class);
         $source
             ->shouldReceive('getMetadata')
-            ->with($meta)
+            ->with(PhpClassComment::class)
             ->twice()
             ->andReturn($data);
 
@@ -126,7 +124,7 @@ final class BaseTest extends TestCase {
             ->once()
             ->andReturn($doc);
 
-        $link = Mockery::mock(Base::class, [$meta, '\\App\\A']);
+        $link = Mockery::mock(Base::class, ['\\App\\A']);
         $link->shouldAllowMockingProtectedMethods();
         $link->makePartial();
         $link
@@ -146,17 +144,16 @@ final class BaseTest extends TestCase {
     }
 
     public function testGetTargetNoMetadata(): void {
-        $meta = Mockery::mock(PhpClassComment::class);
         $file = Mockery::mock(File::class);
 
         $source = Mockery::mock(File::class);
         $source
             ->shouldReceive('getMetadata')
-            ->with($meta)
+            ->with(PhpClassComment::class)
             ->once()
             ->andReturn(null);
 
-        $link = Mockery::mock(Base::class, [$meta, $this::class]);
+        $link = Mockery::mock(Base::class, [$this::class]);
         $link->shouldAllowMockingProtectedMethods();
         $link->makePartial();
         $link
@@ -173,7 +170,6 @@ final class BaseTest extends TestCase {
             ->value(new Name('App\\A'));
 
         $file = Mockery::mock(File::class);
-        $meta = Mockery::mock(PhpClassComment::class);
         $data = new class ($class) {
             public function __construct(
                 public readonly ClassLike $class,
@@ -185,11 +181,11 @@ final class BaseTest extends TestCase {
         $source = Mockery::mock(File::class);
         $source
             ->shouldReceive('getMetadata')
-            ->with($meta)
+            ->with(PhpClassComment::class)
             ->once()
             ->andReturn($data);
 
-        $link = Mockery::mock(Base::class, [$meta, $this::class]);
+        $link = Mockery::mock(Base::class, [$this::class]);
         $link->shouldAllowMockingProtectedMethods();
         $link->makePartial();
         $link
@@ -245,7 +241,7 @@ class BaseTest_BaseLink extends Base {
         string $class,
         public readonly ?string $title = null,
     ) {
-        parent::__construct(Mockery::mock(PhpClassComment::class), $class);
+        parent::__construct($class);
     }
 
     #[Override]

@@ -2,13 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 
-use function array_key_exists;
 use function file_get_contents;
 use function is_file;
 use function sprintf;
@@ -20,12 +17,10 @@ class File extends Item {
     private ?string $content  = null;
     private bool    $modified = false;
 
-    /**
-     * @var array<class-string<Metadata<mixed>>, mixed>
-     */
-    private array $metadata = [];
-
-    public function __construct(FilePath $path) {
+    public function __construct(
+        protected readonly MetadataResolver $metadata,
+        FilePath $path,
+    ) {
         parent::__construct($path);
 
         if (!is_file((string) $this->path)) {
@@ -58,7 +53,10 @@ class File extends Item {
         if ($this->content !== $content) {
             $this->content  = $content;
             $this->modified = true;
-            $this->metadata = [];
+
+            if ($this->metadata instanceof MetadataStorage) {
+                $this->metadata->reset($this);
+            }
         }
 
         return $this;
@@ -67,19 +65,11 @@ class File extends Item {
     /**
      * @template T
      *
-     * @param Metadata<T> $metadata
+     * @param class-string<Metadata<T>> $metadata
      *
      * @return T
      */
-    public function getMetadata(Metadata $metadata): mixed {
-        if (!array_key_exists($metadata::class, $this->metadata)) {
-            try {
-                $this->metadata[$metadata::class] = $metadata($this);
-            } catch (Exception $exception) {
-                throw new FileMetadataUnresolvable($this, $metadata, $exception);
-            }
-        }
-
-        return $this->metadata[$metadata::class];
+    public function getMetadata(string $metadata): mixed {
+        return $this->metadata->get($this, $metadata);
     }
 }

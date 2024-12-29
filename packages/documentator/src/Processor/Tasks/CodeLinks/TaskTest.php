@@ -8,9 +8,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown as MarkdownImpl;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassConstantLink;
@@ -108,12 +105,8 @@ final class TaskTest extends TestCase {
             [//]: # (end: code-links)
             MARKDOWN,
         );
-        $comment  = $this->app()->make(PhpClassComment::class);
         $task     = new class(
             $this->app()->make(LinkFactory::class),
-            $this->app()->make(Markdown::class),
-            $this->app()->make(Composer::class),
-            $comment,
         ) extends Task {
             /**
              * @inheritDoc
@@ -322,7 +315,7 @@ final class TaskTest extends TestCase {
                 ],
                 'links'  => [
                     [
-                        'link'       => new ClassLink($comment, '\\App\\Deprecated'),
+                        'link'       => new ClassLink('\\App\\Deprecated'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -378,7 +371,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassA'),
+                        'link'       => new ClassLink('\\App\\ClassA'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -434,7 +427,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassC'),
+                        'link'       => new ClassLink('\\App\\ClassC'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -530,7 +523,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassD'),
+                        'link'       => new ClassLink('\\App\\ClassD'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -626,7 +619,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassE'),
+                        'link'       => new ClassLink('\\App\\ClassE'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -838,7 +831,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassMethodLink($comment, '\\App\\Deprecated', 'method'),
+                        'link'       => new ClassMethodLink('\\App\\Deprecated', 'method'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -894,7 +887,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassPropertyLink($comment, '\\App\\ClassA', 'property'),
+                        'link'       => new ClassPropertyLink('\\App\\ClassA', 'property'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -950,7 +943,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassConstantLink($comment, '\\App\\ClassD', 'Constant'),
+                        'link'       => new ClassConstantLink('\\App\\ClassD', 'Constant'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -1046,7 +1039,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassMethodLink($comment, '\\App\\ClassE', 'method'),
+                        'link'       => new ClassMethodLink('\\App\\ClassE', 'method'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'

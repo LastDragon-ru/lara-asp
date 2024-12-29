@@ -19,7 +19,6 @@ use function mb_substr;
 
 abstract class Base implements Link {
     public function __construct(
-        protected readonly PhpClassComment $comment,
         public readonly string $class,
     ) {
         // empty
@@ -71,7 +70,7 @@ abstract class Base implements Link {
     #[Override]
     public function getTarget(File $file, File $source): ?LinkTarget {
         // Class?
-        $comment = $source->getMetadata($this->comment);
+        $comment = $source->getMetadata(PhpClassComment::class);
 
         if ($comment === null) {
             return null;

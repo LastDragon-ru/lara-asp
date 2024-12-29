@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use Generator;
+use Illuminate\Contracts\Foundation\Application;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -12,8 +14,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
  * @internal
  */
 trait WithProcessor {
+    abstract protected function app(): Application;
+
     protected function getFileSystem(DirectoryPath|string $input): FileSystem {
         return new FileSystem(
+            $this->app()->make(ContainerResolver::class),
             ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath(),
         );
     }

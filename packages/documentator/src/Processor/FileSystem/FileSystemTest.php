@@ -62,7 +62,7 @@ final class FileSystemTest extends TestCase {
     public function testGetFileNotFound(): void {
         self::expectException(FileNotFound::class);
 
-        (new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath()))->getFile('not found');
+        $this->getFileSystem(__DIR__)->getFile('not found');
     }
 
     public function testGetDirectory(): void {
@@ -124,7 +124,7 @@ final class FileSystemTest extends TestCase {
     public function testGetDirectoryNotFound(): void {
         self::expectException(DirectoryNotFound::class);
 
-        (new FileSystem((new DirectoryPath(__DIR__))->getNormalizedPath()))->getDirectory('not found');
+        $this->getFileSystem(__DIR__)->getDirectory('not found');
     }
 
     public function testGetFilesIterator(): void {

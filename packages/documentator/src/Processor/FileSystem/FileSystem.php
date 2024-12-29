@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Iterator;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
@@ -18,13 +19,19 @@ class FileSystem {
     /**
      * @var array<string, Directory|File>
      */
-    private array                 $cache = [];
-    public readonly DirectoryPath $input;
-    public readonly DirectoryPath $output;
+    private array                    $cache = [];
+    private readonly MetadataStorage $metadata;
+    public readonly DirectoryPath    $input;
+    public readonly DirectoryPath    $output;
 
-    public function __construct(DirectoryPath $input, ?DirectoryPath $output = null) {
-        $this->input  = $input;
-        $this->output = $output ?? $this->input;
+    public function __construct(
+        ContainerResolver $container,
+        DirectoryPath $input,
+        ?DirectoryPath $output = null,
+    ) {
+        $this->input    = $input;
+        $this->output   = $output ?? $this->input;
+        $this->metadata = new MetadataStorage($container);
     }
 
     /**
@@ -45,7 +52,7 @@ class FileSystem {
 
         // Create
         if (is_file((string) $path)) {
-            $file = $this->cache(new File($path));
+            $file = $this->cache(new File($this->metadata, $path));
         } else {
             throw new FileNotFound($path);
         }

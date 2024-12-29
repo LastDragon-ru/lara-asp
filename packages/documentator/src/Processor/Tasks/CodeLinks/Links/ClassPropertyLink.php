@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use Override;
 use PhpParser\Node;
@@ -11,11 +10,10 @@ use PhpParser\Node\Stmt\ClassLike;
 
 class ClassPropertyLink extends Base implements Link {
     public function __construct(
-        PhpClassComment $comment,
         string $class,
         public string $property,
     ) {
-        parent::__construct($comment, $class);
+        parent::__construct($class);
     }
 
     #[Override]

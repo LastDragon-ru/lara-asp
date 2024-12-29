@@ -35,7 +35,7 @@ final class PhpClassCommentTest extends TestCase {
         PHP;
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(self::getTempFile($content)->getPathname());
-        $factory  = new PhpClassComment(new PhpClass());
+        $factory  = new PhpClassComment();
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -50,9 +50,12 @@ final class PhpClassCommentTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(self::getTempFile()->getPathname());
-        $factory  = new PhpClassComment(
+        $fs      = $this->getFileSystem(__DIR__);
+        $file    = $fs->getFile(self::getTempFile()->getPathname());
+        $factory = new PhpClassComment();
+
+        $this->override(
+            PhpClass::class,
             new class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {
@@ -60,6 +63,7 @@ final class PhpClassCommentTest extends TestCase {
                 }
             },
         );
+
         $metadata = $factory($file);
 
         self::assertNull($metadata);

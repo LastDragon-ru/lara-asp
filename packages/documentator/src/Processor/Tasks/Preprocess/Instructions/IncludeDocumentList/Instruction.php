@@ -37,7 +37,6 @@ class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
         protected readonly Sorter $sorter,
-        protected readonly Markdown $markdown,
     ) {
         // empty
     }
@@ -78,7 +77,7 @@ class Instruction implements InstructionContract {
             }
 
             // Empty?
-            $document = $file->getMetadata($this->markdown);
+            $document = $file->getMetadata(Markdown::class);
 
             if ($document === null || $document->isEmpty()) {
                 continue;

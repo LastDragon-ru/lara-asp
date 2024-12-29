@@ -19,7 +19,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -60,9 +59,6 @@ class Task implements TaskContract {
 
     public function __construct(
         protected readonly LinkFactory $factory,
-        protected readonly Markdown $markdown,
-        protected readonly Composer $composer,
-        protected readonly PhpClassComment $comment,
     ) {
         // empty
     }
@@ -82,14 +78,14 @@ class Task implements TaskContract {
     public function __invoke(File $file): Generator {
         // Composer?
         $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
-        $composer = $composer?->getMetadata($this->composer);
+        $composer = $composer?->getMetadata(Composer::class);
 
         if (!($composer instanceof Package)) {
             return true;
         }
 
         // Markdown?
-        $document = $file->getMetadata($this->markdown);
+        $document = $file->getMetadata(Markdown::class);
 
         if ($document === null || $document->isEmpty()) {
             return true;

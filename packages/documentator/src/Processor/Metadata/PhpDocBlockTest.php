@@ -41,7 +41,6 @@ final class PhpDocBlockTest extends TestCase {
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
-            new PhpClass(),
         );
         $metadata = $factory($file);
 
@@ -63,7 +62,6 @@ final class PhpDocBlockTest extends TestCase {
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
-            new PhpClass(),
         );
         $metadata = $factory($file);
 
@@ -72,11 +70,15 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
-        $factory  = new PhpDocBlock(
+        $fs      = $this->getFileSystem(__DIR__);
+        $file    = $fs->getFile(__FILE__);
+        $factory = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
+        );
+
+        $this->override(
+            PhpClass::class,
             new class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {
@@ -84,6 +86,7 @@ final class PhpDocBlockTest extends TestCase {
                 }
             },
         );
+
         $metadata = $factory($file);
 
         self::assertNull($metadata);

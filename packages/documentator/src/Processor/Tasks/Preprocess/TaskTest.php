@@ -74,7 +74,6 @@ final class TaskTest extends TestCase {
         $task = new class(
             $this->app()->make(ContainerResolver::class),
             $this->app()->make(Serializer::class),
-            $this->app()->make(Markdown::class),
         ) extends Task {
             /**
              * @inheritDoc
@@ -173,7 +172,7 @@ final class TaskTest extends TestCase {
             );
         $file
             ->shouldReceive('getMetadata')
-            ->with(Mockery::type(Markdown::class))
+            ->with(Markdown::class)
             ->once()
             ->andReturnUsing(
                 function () use ($path): Document {

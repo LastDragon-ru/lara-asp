@@ -31,7 +31,9 @@ class Processor {
      */
     private array $exclude = [];
 
-    public function __construct(ContainerResolver $container) {
+    public function __construct(
+        protected readonly ContainerResolver $container,
+    ) {
         $this->tasks = new InstanceList($container, $this->key(...));
     }
 
@@ -99,7 +101,7 @@ class Processor {
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
 
         try {
-            $filesystem = new FileSystem($input->getDirectoryPath(), $output);
+            $filesystem = new FileSystem($this->container, $input->getDirectoryPath(), $output);
             $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
             $executor   = new Executor($filesystem, $exclude, $this->tasks, $iterator, $listener);
 

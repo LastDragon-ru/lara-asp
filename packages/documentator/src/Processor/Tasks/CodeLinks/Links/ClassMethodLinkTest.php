@@ -3,9 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PhpParser\Node;
@@ -19,24 +20,24 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ClassMethodLink::class)]
 final class ClassMethodLinkTest extends TestCase {
     public function testToString(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class::method()', (string) new ClassMethodLink($comment, 'Class', 'method'));
-        self::assertEquals('App\\Class::method()', (string) new ClassMethodLink($comment, 'App\\Class', 'method'));
-        self::assertEquals('\\App\\Class::method()', (string) new ClassMethodLink($comment, '\\App\\Class', 'method'));
+        self::assertEquals('Class::method()', (string) new ClassMethodLink('Class', 'method'));
+        self::assertEquals('App\\Class::method()', (string) new ClassMethodLink('App\\Class', 'method'));
+        self::assertEquals('\\App\\Class::method()', (string) new ClassMethodLink('\\App\\Class', 'method'));
     }
 
     public function testGetTitle(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class::method()', (new ClassMethodLink($comment, 'Class', 'method'))->getTitle());
-        self::assertEquals('Class::method()', (new ClassMethodLink($comment, 'App\\Class', 'method'))->getTitle());
-        self::assertEquals('Class::method()', (new ClassMethodLink($comment, '\\App\\Class', 'method'))->getTitle());
+        self::assertEquals('Class::method()', (new ClassMethodLink('Class', 'method'))->getTitle());
+        self::assertEquals('Class::method()', (new ClassMethodLink('App\\Class', 'method'))->getTitle());
+        self::assertEquals('Class::method()', (new ClassMethodLink('\\App\\Class', 'method'))->getTitle());
     }
 
     public function testGetTargetNode(): void {
-        $file = Mockery::mock(File::class);
+        $storage = $this->app()->make(MetadataStorage::class);
+        $file    = Mockery::mock(File::class, MockProperties::class);
         $file->makePartial();
+        $file
+            ->shouldUseProperty('metadata')
+            ->value($storage);
         $file
             ->shouldReceive('getContent')
             ->once()
@@ -52,15 +53,14 @@ final class ClassMethodLinkTest extends TestCase {
                 PHP,
             );
 
-        $comment = Mockery::mock(PhpClassComment::class);
-        $link    = new class ($comment, 'A', 'method') extends ClassMethodLink {
+        $link = new class ('A', 'method') extends ClassMethodLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
                 return parent::getTargetNode($class);
             }
         };
 
-        $class = $file->getMetadata($this->app()->make(PhpClass::class));
+        $class = $file->getMetadata(PhpClass::class);
 
         self::assertNotNull($class);
 

@@ -12,15 +12,15 @@ class MetadataUnresolvable extends MetadataError {
     public function __construct(
         protected readonly File $target,
         /**
-         * @var Metadata<*>
+         * @var class-string<Metadata<*>>
          */
-        protected readonly Metadata $metadata,
+        protected readonly string $metadata,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
                 'Failed to resolve `%s` metadata for `%s` file.',
-                $this->metadata::class,
+                $this->metadata,
                 $this->target,
             ),
             $previous,
@@ -32,9 +32,9 @@ class MetadataUnresolvable extends MetadataError {
     }
 
     /**
-     * @return Metadata<*>
+     * @return class-string<Metadata<*>>
      */
-    public function getMetadata(): Metadata {
+    public function getMetadata(): string {
         return $this->metadata;
     }
 }

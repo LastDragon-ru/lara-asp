@@ -67,7 +67,6 @@ class Task implements TaskContract {
     public function __construct(
         ContainerResolver $container,
         protected readonly Serializer $serializer,
-        protected readonly Markdown $markdown,
     ) {
         $this->instructions = new InstanceList($container, $this->key(...));
     }
@@ -122,7 +121,7 @@ class Task implements TaskContract {
         yield from [];
 
         // Markdown?
-        $document = $file->getMetadata($this->markdown);
+        $document = $file->getMetadata(Markdown::class);
 
         if ($document === null) {
             return false;

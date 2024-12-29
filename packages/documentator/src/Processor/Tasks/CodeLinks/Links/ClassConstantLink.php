@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use Override;
 use PhpParser\Node;
@@ -12,11 +11,10 @@ use PhpParser\Node\Stmt\EnumCase;
 
 class ClassConstantLink extends Base implements Link {
     public function __construct(
-        PhpClassComment $comment,
         string $class,
         public readonly string $constant,
     ) {
-        parent::__construct($comment, $class);
+        parent::__construct($class);
     }
 
     #[Override]

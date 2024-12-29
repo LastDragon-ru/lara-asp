@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;
@@ -16,24 +15,19 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ClassLink::class)]
 final class ClassLinkTest extends TestCase {
     public function testToString(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class', (string) new ClassLink($comment, 'Class'));
-        self::assertEquals('App\\Class', (string) new ClassLink($comment, 'App\\Class'));
-        self::assertEquals('\\App\\Class', (string) new ClassLink($comment, '\\App\\Class'));
+        self::assertEquals('Class', (string) new ClassLink('Class'));
+        self::assertEquals('App\\Class', (string) new ClassLink('App\\Class'));
+        self::assertEquals('\\App\\Class', (string) new ClassLink('\\App\\Class'));
     }
 
     public function testGetTitle(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class', (new ClassLink($comment, 'Class'))->getTitle());
-        self::assertEquals('Class', (new ClassLink($comment, 'App\\Class'))->getTitle());
-        self::assertEquals('Class', (new ClassLink($comment, '\\App\\Class'))->getTitle());
+        self::assertEquals('Class', (new ClassLink('Class'))->getTitle());
+        self::assertEquals('Class', (new ClassLink('App\\Class'))->getTitle());
+        self::assertEquals('Class', (new ClassLink('\\App\\Class'))->getTitle());
     }
 
     public function testGetTargetNode(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-        $link    = new class ($comment, 'A') extends ClassLink {
+        $link = new class ('A') extends ClassLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
                 return parent::getTargetNode($class);

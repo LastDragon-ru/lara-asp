@@ -38,7 +38,6 @@ final class PhpClassMarkdownTest extends TestCase {
         $file     = $fs->getFile(self::getTempFile($content)->getPathname());
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
-            new PhpClassComment(new PhpClass()),
         );
         $metadata = $factory($file);
 
@@ -59,7 +58,6 @@ final class PhpClassMarkdownTest extends TestCase {
         $file     = $fs->getFile(__FILE__);
         $factory  = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
-            new PhpClassComment(new PhpClass()),
         );
         $metadata = $factory($file);
 
@@ -68,17 +66,22 @@ final class PhpClassMarkdownTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
-        $factory  = new PhpClassMarkdown(
+        $fs      = $this->getFileSystem(__DIR__);
+        $file    = $fs->getFile(__FILE__);
+        $factory = new PhpClassMarkdown(
             $this->app()->make(PhpDocumentFactory::class),
-            new class(new PhpClass()) extends PhpClassComment {
+        );
+
+        $this->override(
+            PhpClassComment::class,
+            new class() extends PhpClassComment {
                 #[Override]
                 public function __invoke(File $file): mixed {
                     return null;
                 }
             },
         );
+
         $metadata = $factory($file);
 
         self::assertNull($metadata);

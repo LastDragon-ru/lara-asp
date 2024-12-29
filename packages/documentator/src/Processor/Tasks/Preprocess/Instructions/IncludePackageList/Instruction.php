@@ -44,8 +44,6 @@ class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
         protected readonly Sorter $sorter,
-        protected readonly Markdown $markdown,
-        protected readonly Composer $composer,
     ) {
         // empty
     }
@@ -81,7 +79,7 @@ class Instruction implements InstructionContract {
 
             // Package?
             $packageFile = Cast::to(File::class, yield new FileReference($package->getFilePath('composer.json')));
-            $packageInfo = $packageFile->getMetadata($this->composer)->json ?? null;
+            $packageInfo = $packageFile->getMetadata(Composer::class)->json ?? null;
 
             if ($packageInfo === null) {
                 throw new PackageComposerJsonIsMissing($context, $parameters, $package->getName());
@@ -90,7 +88,7 @@ class Instruction implements InstructionContract {
             // Readme
             $readme  = $package->getFilePath(Cast::toString($packageInfo->readme ?? 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
-            $content = $readme->getMetadata($this->markdown);
+            $content = $readme->getMetadata(Markdown::class);
 
             if ($content === null || $content->isEmpty()) {
                 throw new PackageReadmeIsEmpty($context, $parameters, $package->getName());

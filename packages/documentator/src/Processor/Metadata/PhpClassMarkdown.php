@@ -14,7 +14,6 @@ use Override;
 class PhpClassMarkdown implements Metadata {
     public function __construct(
         protected readonly PhpDocumentFactory $factory,
-        protected readonly PhpClassComment $comment,
     ) {
         // empty
     }
@@ -25,7 +24,7 @@ class PhpClassMarkdown implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         // Comment?
-        $comment = $file->getMetadata($this->comment);
+        $comment = $file->getMetadata(PhpClassComment::class);
 
         if ($comment === null) {
             return null;
