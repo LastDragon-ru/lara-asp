@@ -84,11 +84,11 @@ trait Override {
 
         // Mock
         /** @var TMock|T $mock */
-        $mock = is_callable($factory) || $factory === null
+        $mock = (is_callable($factory) && !($factory instanceof $class)) || $factory === null
             ? Mockery::mock($class)
             : $factory;
 
-        if (is_callable($factory)) {
+        if (is_callable($factory) && !($factory instanceof $class)) {
             $mock = $factory($mock, $this) ?? $mock;
         } elseif (is_string($factory)) {
             $mock = $this->app()->make($factory);
