@@ -100,9 +100,10 @@ class Processor {
             default                    => null,
         };
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
+        $input   = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
 
         try {
-            $filesystem = new FileSystem(new MetadataStorage($this->container), $input->getDirectoryPath(), $output);
+            $filesystem = new FileSystem(new MetadataStorage($this->container), $input, $output ?? $input);
             $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
             $executor   = new Executor($filesystem, $exclude, $this->tasks, $iterator, $listener);
 

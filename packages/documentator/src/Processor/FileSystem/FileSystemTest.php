@@ -250,7 +250,7 @@ final class FileSystemTest extends TestCase {
         $file       = Mockery::mock(File::class);
         $content    = 'content';
         $metadata   = Mockery::mock(MetadataStorage::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -292,7 +292,7 @@ final class FileSystemTest extends TestCase {
         $file       = Mockery::mock(File::class);
         $content    = 'content';
         $metadata   = Mockery::mock(MetadataStorage::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -336,7 +336,7 @@ final class FileSystemTest extends TestCase {
         $file       = Mockery::mock(File::class);
         $content    = 'content';
         $metadata   = Mockery::mock(MetadataStorage::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -384,7 +384,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->getFilePath('file.md');
         $content    = 'content';
         $metadata   = Mockery::mock(MetadataStorage::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem

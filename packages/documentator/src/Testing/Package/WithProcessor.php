@@ -18,10 +18,12 @@ trait WithProcessor {
     abstract protected function app(): Application;
 
     protected function getFileSystem(DirectoryPath|string $input): FileSystem {
-        return new FileSystem(
-            new MetadataStorage($this->app()->make(ContainerResolver::class)),
-            ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath(),
-        );
+        $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
+        $output     = $input;
+        $metadata   = new MetadataStorage($this->app()->make(ContainerResolver::class));
+        $filesystem = new FileSystem($metadata, $input, $output);
+
+        return $filesystem;
     }
 
     /**

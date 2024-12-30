@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
+use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
@@ -17,6 +18,7 @@ use Symfony\Component\Finder\Finder;
 
 use function is_dir;
 use function is_file;
+use function sprintf;
 
 class FileSystem {
     /**
@@ -37,10 +39,28 @@ class FileSystem {
     public function __construct(
         MetadataStorage $metadata,
         DirectoryPath $input,
-        ?DirectoryPath $output = null,
+        DirectoryPath $output,
     ) {
+        if (!$input->isAbsolute()) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The `$input` path must be absolute, `%s` given.',
+                    $input,
+                ),
+            );
+        }
+
+        if (!$output->isAbsolute()) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The `$output` path must be absolute, `%s` given.',
+                    $input,
+                ),
+            );
+        }
+
         $this->input      = $input;
-        $this->output     = $output ?? $this->input;
+        $this->output     = $output;
         $this->metadata   = $metadata;
         $this->filesystem = new SymfonyFilesystem();
     }
