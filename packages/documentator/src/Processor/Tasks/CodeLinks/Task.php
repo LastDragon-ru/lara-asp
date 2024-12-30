@@ -27,6 +27,7 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use Override;
 use WeakMap;
+
 use function array_map;
 use function array_pop;
 use function array_values;
