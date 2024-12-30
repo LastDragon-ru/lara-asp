@@ -12,9 +12,9 @@ use Stringable;
 /**
  * @implements Dependency<File>
  */
-readonly class Write implements Dependency {
+readonly class FileCreate implements Dependency {
     public function __construct(
-        protected File|FilePath|string $file,
+        protected FilePath|string $file,
         protected Stringable|string $content,
     ) {
         // empty
@@ -29,7 +29,6 @@ readonly class Write implements Dependency {
     public function getPath(): FilePath {
         return match (true) {
             $this->file instanceof FilePath => $this->file,
-            $this->file instanceof File     => $this->file->getPath(),
             default                         => new FilePath($this->file),
         };
     }

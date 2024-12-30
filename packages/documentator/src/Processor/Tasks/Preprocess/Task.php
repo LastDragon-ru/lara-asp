@@ -11,7 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as Gen
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Write;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
@@ -188,7 +188,7 @@ class Task implements TaskContract {
 
         // Mutate
         if ($mutated) {
-            yield new Write($file, $document);
+            yield new FileSave($file, $document);
         }
 
         // Return
