@@ -3,9 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PhpParser\Node;
@@ -23,32 +25,33 @@ use function array_map;
 #[CoversClass(ClassPropertyLink::class)]
 final class ClassPropertyLinkTest extends TestCase {
     public function testToString(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class::$property', (string) new ClassPropertyLink($comment, 'Class', 'property'));
-        self::assertEquals('App\\Class::$property', (string) new ClassPropertyLink($comment, 'App\\Class', 'property'));
+        self::assertEquals('Class::$property', (string) new ClassPropertyLink('Class', 'property'));
+        self::assertEquals('App\\Class::$property', (string) new ClassPropertyLink('App\\Class', 'property'));
         self::assertEquals(
             '\\App\\Class::$property',
-            (string) new ClassPropertyLink($comment, '\\App\\Class', 'property'),
+            (string) new ClassPropertyLink('\\App\\Class', 'property'),
         );
     }
 
     public function testGetTitle(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class::$property', (new ClassPropertyLink($comment, 'Class', 'property'))->getTitle());
-        self::assertEquals('Class::$property', (new ClassPropertyLink($comment, 'App\\Class', 'property'))->getTitle());
+        self::assertEquals('Class::$property', (new ClassPropertyLink('Class', 'property'))->getTitle());
+        self::assertEquals('Class::$property', (new ClassPropertyLink('App\\Class', 'property'))->getTitle());
         self::assertEquals(
             'Class::$property',
-            (new ClassPropertyLink($comment, '\\App\\Class', 'property'))->getTitle(),
+            (new ClassPropertyLink('\\App\\Class', 'property'))->getTitle(),
         );
     }
 
     public function testGetTargetNode(): void {
-        $file = Mockery::mock(File::class);
+        $storage = $this->app()->make(MetadataStorage::class);
+        $file    = Mockery::mock(File::class, MockProperties::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getContent')
+            ->shouldUseProperty('metadata')
+            ->value($storage);
+        $file
+            ->shouldReceive('getMetadata')
+            ->with(Content::class)
             ->once()
             ->andReturn(
                 <<<'PHP'
@@ -60,15 +63,14 @@ final class ClassPropertyLinkTest extends TestCase {
                 PHP,
             );
 
-        $comment = Mockery::mock(PhpClassComment::class);
-        $link    = new class ($comment, 'A', 'property') extends ClassPropertyLink {
+        $link = new class ('A', 'property') extends ClassPropertyLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
                 return parent::getTargetNode($class);
             }
         };
 
-        $class = $file->getMetadata($this->app()->make(PhpClass::class));
+        $class = $file->getMetadata(PhpClass::class);
 
         self::assertNotNull($class);
 
@@ -85,10 +87,15 @@ final class ClassPropertyLinkTest extends TestCase {
     }
 
     public function testGetTargetNodePromoted(): void {
-        $file = Mockery::mock(File::class);
+        $storage = $this->app()->make(MetadataStorage::class);
+        $file    = Mockery::mock(File::class, MockProperties::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getContent')
+            ->shouldUseProperty('metadata')
+            ->value($storage);
+        $file
+            ->shouldReceive('getMetadata')
+            ->with(Content::class)
             ->once()
             ->andReturn(
                 <<<'PHP'
@@ -104,15 +111,14 @@ final class ClassPropertyLinkTest extends TestCase {
                 PHP,
             );
 
-        $comment = Mockery::mock(PhpClassComment::class);
-        $link    = new class ($comment, 'A', 'property') extends ClassPropertyLink {
+        $link = new class ('A', 'property') extends ClassPropertyLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
                 return parent::getTargetNode($class);
             }
         };
 
-        $class = $file->getMetadata($this->app()->make(PhpClass::class));
+        $class = $file->getMetadata(PhpClass::class);
 
         self::assertNotNull($class);
 

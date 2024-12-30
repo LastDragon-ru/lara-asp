@@ -13,9 +13,7 @@ use PhpParser\Node\Stmt\ClassLike;
  * @implements Metadata<?object{class: ClassLike, context: NameContext, comment: PhpDoc}>
  */
 class PhpClassComment implements Metadata {
-    public function __construct(
-        protected readonly PhpClass $class,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -24,7 +22,7 @@ class PhpClassComment implements Metadata {
      */
     #[Override]
     public function __invoke(File $file): mixed {
-        $class   = $file->getMetadata($this->class);
+        $class   = $file->getMetadata(PhpClass::class);
         $comment = $class !== null
             ? new class ($class->class, $class->context, new PhpDoc($class->class->getDocComment()?->getText())) {
                 public function __construct(

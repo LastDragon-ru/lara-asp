@@ -2,13 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
@@ -19,48 +16,40 @@ use function sprintf;
  */
 #[CoversClass(FileReference::class)]
 final class FileReferenceTest extends TestCase {
-    public function testToString(): void {
-        $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new File($path);
+    use WithProcessor;
 
-        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file')));
-        self::assertEquals((string) $file, (string) (new FileReference($file)));
-        self::assertEquals((string) $path, (string) (new FileReference($path)));
+    public function testGetPath(): void {
+        $path = (new FilePath(__FILE__))->getNormalizedPath();
+
+        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file'))->getPath());
+        self::assertEquals((string) $path, (string) (new FileReference($path))->getPath());
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem();
-        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $path      = (new FilePath(__FILE__))->getNormalizedPath();
-        $file      = new File($path);
-        $another   = new File($path);
-        $absolute  = new FileReference(__FILE__);
-        $relative  = new FileReference(basename(__FILE__));
-        $filepath  = new FileReference($path);
-        $reference = new FileReference($another);
+        $fs       = $this->getFileSystem(__DIR__);
+        $path     = (new FilePath(__FILE__))->getNormalizedPath();
+        $file     = $fs->getFile($path);
+        $absolute = new FileReference(__FILE__);
+        $relative = new FileReference(basename(__FILE__));
+        $filepath = new FileReference($path);
 
-        self::assertEquals($file, $absolute($fs, $root, $file));
-        self::assertEquals($file, $relative($fs, $root, $file));
-        self::assertEquals($file, $filepath($fs, $root, $file));
-        self::assertSame($another, $reference($fs, $root, $file));
+        self::assertEquals($file, $absolute($fs));
+        self::assertEquals($file, $relative($fs));
+        self::assertEquals($file, $filepath($fs));
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs   = $this->getFileSystem(__DIR__);
         $path = 'path/to/file';
 
-        self::expectException(DependencyNotFound::class);
+        self::expectException(DependencyUnresolvable::class);
         self::expectExceptionMessage(
             sprintf(
-                'Dependency `%s` of `%s` not found (root: `%s`).',
+                'Dependency `%s` not found.',
                 $path,
-                $file->getName(),
-                $root->getPath(),
             ),
         );
 
-        (new FileReference($path))($fs, $root, $file);
+        (new FileReference($path))($fs);
     }
 }

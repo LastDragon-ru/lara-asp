@@ -18,11 +18,10 @@ class Token {
          */
         public readonly Instruction $instruction,
         public readonly Context $context,
-        public readonly string $target,
         /**
          * @var TParameters
          */
-        public readonly mixed $parameters,
+        public readonly Parameters $parameters,
         /**
          * @var non-empty-list<Node>
          */

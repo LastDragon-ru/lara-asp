@@ -8,11 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown as MarkdownImpl;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassConstantLink;
@@ -20,8 +16,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassLink
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassMethodLink;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassPropertyLink;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
@@ -39,28 +35,30 @@ use function trim;
  */
 #[CoversClass(Task::class)]
 final class TaskTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param string|Closure(static, Directory, File): Exception $expected
+     * @param string|Closure(): Exception $expected
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
         $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $file = new File($path);
-        $root = new Directory($path->getDirectoryPath());
+        $fs   = $this->getFileSystem($path->getDirectoryPath());
+        $file = $fs->getFile($path);
         $task = $this->app()->make(Task::class);
 
         if (!is_callable($expected)) {
             $expected = self::getTestData()->content($expected);
         } else {
-            self::expectExceptionObject($expected($this, $root, $file));
+            self::expectExceptionObject($expected());
         }
 
-        $actual = ProcessorHelper::runTask($task, $root, $file);
+        $actual = $this->getProcessorResult($fs, ($task)($file));
 
         self::assertTrue($actual);
-        self::assertEquals($expected, $file->getContent());
+        self::assertEquals($expected, $file->getMetadata(Content::class));
     }
 
     public function testParse(): void {
@@ -106,12 +104,8 @@ final class TaskTest extends TestCase {
             [//]: # (end: code-links)
             MARKDOWN,
         );
-        $comment  = $this->app()->make(PhpClassComment::class);
         $task     = new class(
             $this->app()->make(LinkFactory::class),
-            $this->app()->make(Markdown::class),
-            $this->app()->make(Composer::class),
-            $comment,
         ) extends Task {
             /**
              * @inheritDoc
@@ -320,7 +314,7 @@ final class TaskTest extends TestCase {
                 ],
                 'links'  => [
                     [
-                        'link'       => new ClassLink($comment, '\\App\\Deprecated'),
+                        'link'       => new ClassLink('\\App\\Deprecated'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -376,7 +370,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassA'),
+                        'link'       => new ClassLink('\\App\\ClassA'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -432,7 +426,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassC'),
+                        'link'       => new ClassLink('\\App\\ClassC'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -528,7 +522,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassD'),
+                        'link'       => new ClassLink('\\App\\ClassD'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -624,7 +618,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassLink($comment, '\\App\\ClassE'),
+                        'link'       => new ClassLink('\\App\\ClassE'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -836,7 +830,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassMethodLink($comment, '\\App\\Deprecated', 'method'),
+                        'link'       => new ClassMethodLink('\\App\\Deprecated', 'method'),
                         'deprecated' => true,
                         'nodes'      => [
                             <<<'XML'
@@ -892,7 +886,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassPropertyLink($comment, '\\App\\ClassA', 'property'),
+                        'link'       => new ClassPropertyLink('\\App\\ClassA', 'property'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -948,7 +942,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassConstantLink($comment, '\\App\\ClassD', 'Constant'),
+                        'link'       => new ClassConstantLink('\\App\\ClassD', 'Constant'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -1044,7 +1038,7 @@ final class TaskTest extends TestCase {
                         ],
                     ],
                     [
-                        'link'       => new ClassMethodLink($comment, '\\App\\ClassE', 'method'),
+                        'link'       => new ClassMethodLink('\\App\\ClassE', 'method'),
                         'deprecated' => false,
                         'nodes'      => [
                             <<<'XML'
@@ -1162,7 +1156,7 @@ final class TaskTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Closure(static, Directory, File): Exception|string, string}>
+     * @return array<string, array{Closure(): Exception|string, string}>
      */
     public static function dataProviderInvoke(): array {
         return [
@@ -1175,10 +1169,8 @@ final class TaskTest extends TestCase {
                 'Invoke/InvokeNoGenerated.md',
             ],
             'Unknown'           => [
-                static function (self $test, Directory $root, File $file): Exception {
+                static function (): Exception {
                     return new CodeLinkUnresolved(
-                        $root,
-                        $file,
                         [
                             '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown',
                             '\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\Invoke\Unknown::$property',

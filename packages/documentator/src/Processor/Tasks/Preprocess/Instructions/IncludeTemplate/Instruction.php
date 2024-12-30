@@ -9,8 +9,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
@@ -55,10 +57,10 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, Document|string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         // Data?
         if ($parameters->data === []) {
-            throw new TemplateDataMissed($context);
+            throw new TemplateDataMissed($context, $parameters);
         }
 
         // Replace
@@ -66,8 +68,9 @@ class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $file    = Cast::to(File::class, yield new FileReference($target));
-        $content = $file->getContent();
+        $target  = $context->file->getFilePath($parameters->target);
+        $target  = Cast::to(File::class, yield new FileReference($target));
+        $content = $target->getMetadata(Content::class);
 
         do {
             $content = (string) preg_replace_callback(
@@ -94,19 +97,19 @@ class Instruction implements InstructionContract {
         $unused = array_diff($vars, $used);
 
         if ($unused !== []) {
-            throw new TemplateVariablesUnused($context, array_values($unused));
+            throw new TemplateVariablesUnused($context, $parameters, array_values($unused));
         }
 
         // Missed?
         $missed = array_diff($known, $used);
 
         if ($missed !== []) {
-            throw new TemplateVariablesMissed($context, array_values($missed));
+            throw new TemplateVariablesMissed($context, $parameters, array_values($missed));
         }
 
         // Markdown?
-        if ($file->getExtension() === 'md') {
-            $content = $this->markdown->parse($content, $file->getPath());
+        if ($target->getExtension() === 'md') {
+            $content = $this->markdown->parse($content, $target->getPath());
         }
 
         // Return

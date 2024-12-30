@@ -11,26 +11,28 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as Gen
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\NodeIterator;
 use Override;
+
 use function is_array;
 use function json_decode;
 use function json_encode;
 use function ksort;
 use function rawurldecode;
 use function trim;
+
 use const JSON_THROW_ON_ERROR;
 
 /**
@@ -68,7 +70,6 @@ class Task implements TaskContract {
     public function __construct(
         ContainerResolver $container,
         protected readonly Serializer $serializer,
-        protected readonly Markdown $markdown,
     ) {
         $this->instructions = new InstanceList($container, $this->key(...));
     }
@@ -118,19 +119,19 @@ class Task implements TaskContract {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(Directory $root, File $file): Generator {
+    public function __invoke(File $file): Generator {
         // Just in case
         yield from [];
 
         // Markdown?
-        $document = $file->getMetadata($this->markdown);
+        $document = $file->getMetadata(Markdown::class);
 
         if ($document === null) {
             return false;
         }
 
         // Process
-        $parsed  = $this->parse($root, $file, $document);
+        $parsed  = $this->parse($file, $document);
         $mutated = false;
 
         foreach ($parsed as $group) {
@@ -141,7 +142,7 @@ class Task implements TaskContract {
                 // Run
                 try {
                     // Run
-                    $content = ($token->instruction)($token->context, $token->target, $token->parameters);
+                    $content = ($token->instruction)($token->context, $token->parameters);
 
                     if ($content instanceof Generator) {
                         yield from $content;
@@ -153,7 +154,7 @@ class Task implements TaskContract {
                     if ($content instanceof Document) {
                         $content = (string) $token->context->toInlinable($content);
                     }
-                } catch (ProcessorError $exception) {
+                } catch (PreprocessError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {
                     throw new PreprocessFailed($exception);
@@ -189,7 +190,7 @@ class Task implements TaskContract {
 
         // Mutate
         if ($mutated) {
-            $file->setContent((string) $document);
+            yield new FileSave($file, $document);
         }
 
         // Return
@@ -199,7 +200,7 @@ class Task implements TaskContract {
     /**
      * @return array<int, array<string, Token<*>>>
      */
-    protected function parse(Directory $root, File $file, Document $document): array {
+    protected function parse(File $file, Document $document): array {
         // Empty?
         if ($this->instructions->isEmpty()) {
             return [];
@@ -237,14 +238,13 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($root, $file, $document, $node, $mutation);
+            $context    = new Context($file, $document, $node, $mutation);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
             $tokens[$priority][$hash] = new Token(
                 $instruction,
                 $context,
-                $target,
                 $parameters,
                 [
                     $node,

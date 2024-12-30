@@ -2,23 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
 use function pathinfo;
+
 use const PATHINFO_EXTENSION;
 
 /**
@@ -26,6 +25,8 @@ use const PATHINFO_EXTENSION;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -33,14 +34,13 @@ final class InstructionTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source, array $data): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...', $data);
-        $target   = self::getTestData()->path($source);
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters(self::getTestData()->path($source), $data);
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
         if (pathinfo($source, PATHINFO_EXTENSION) === 'md') {
             self::assertInstanceOf(Document::class, $actual);
@@ -52,57 +52,54 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeNoData(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...', []);
-        $target   = $file->getPath();
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters((string) $file, []);
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateDataMissed($context),
+            new TemplateDataMissed($context, $params),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
 
     public function testInvokeVariablesUnused(): void {
         $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
-        $file     = new File($path);
-        $params   = new Parameters('...', [
+        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $file     = $fs->getFile($path);
+        $params   = new Parameters((string) $file, [
             'a' => 'A',
             'b' => 'B',
             'c' => 'C',
             'd' => 'D',
         ]);
-        $target   = $file->getPath();
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateVariablesUnused($context, ['c', 'd']),
+            new TemplateVariablesUnused($context, $params, ['c', 'd']),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
 
     public function testInvokeVariablesMissed(): void {
         $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
-        $file     = new File($path);
-        $params   = new Parameters('...', [
+        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $file     = $fs->getFile($path);
+        $params   = new Parameters((string) $file, [
             'a' => 'A',
         ]);
-        $target   = $file->getPath();
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TemplateVariablesMissed($context, ['b']),
+            new TemplateVariablesMissed($context, $params, ['b']),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
     // </editor-fold>
 

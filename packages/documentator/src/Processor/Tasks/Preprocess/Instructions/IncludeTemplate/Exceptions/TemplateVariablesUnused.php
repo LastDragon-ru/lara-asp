@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\InstructionFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Parameters;
 use Throwable;
 
 use function implode;
@@ -15,15 +16,18 @@ class TemplateVariablesUnused extends InstructionFailed {
      */
     public function __construct(
         Context $context,
+        Parameters $parameters,
         private readonly array $variables,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,
+            $parameters,
             sprintf(
-                'Variables `%s` are not used in `%s`.',
+                'Variables `%s` are not used in `%s` (`%s` line).',
                 '`'.implode('`, `', $this->variables).'`',
-                $context->root->getRelativePath($context->file),
+                $parameters->target,
+                $context->node->getStartLine() ?? 'unknown',
             ),
             $previous,
         );

@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -16,6 +16,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(PhpDocBlock::class)]
 final class PhpDocBlockTest extends TestCase {
+    use WithProcessor;
+
     public function testInvoke(): void {
         $content  = <<<'PHP'
         <?php declare(strict_types = 1);
@@ -34,13 +36,11 @@ final class PhpDocBlockTest extends TestCase {
             // empty
         }
         PHP;
-        $file     = new File(
-            (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
-        );
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(self::getTempFile($content)->getPathname());
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
-            new PhpClass(),
         );
         $metadata = $factory($file);
 
@@ -57,11 +57,11 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeEmpty(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
         $factory  = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
-            new PhpClass(),
         );
         $metadata = $factory($file);
 
@@ -70,10 +70,15 @@ final class PhpDocBlockTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $factory  = new PhpDocBlock(
+        $fs      = $this->getFileSystem(__DIR__);
+        $file    = $fs->getFile(__FILE__);
+        $factory = new PhpDocBlock(
             $this->app()->make(Markdown::class),
             $this->app()->make(LinkFactory::class),
+        );
+
+        $this->override(
+            PhpClass::class,
             new class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {
@@ -81,6 +86,7 @@ final class PhpDocBlockTest extends TestCase {
                 }
             },
         );
+
         $metadata = $factory($file);
 
         self::assertNull($metadata);

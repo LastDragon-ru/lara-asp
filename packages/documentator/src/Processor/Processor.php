@@ -10,8 +10,8 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 use Symfony\Component\Finder\Glob;
 
 use function array_map;
@@ -32,7 +32,9 @@ class Processor {
      */
     private array $exclude = [];
 
-    public function __construct(ContainerResolver $container) {
+    public function __construct(
+        protected readonly ContainerResolver $container,
+    ) {
         $this->tasks = new InstanceList($container, $this->key(...));
     }
 
@@ -84,6 +86,7 @@ class Processor {
      */
     public function run(
         DirectoryPath|FilePath $input,
+        ?DirectoryPath $output = null,
         ?Closure $listener = null,
     ): float {
         $start = microtime(true);
@@ -97,18 +100,18 @@ class Processor {
             default                    => null,
         };
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
-        $root    = new Directory($input->getDirectoryPath());
-        $fs      = new FileSystem($root->getPath());
+        $input   = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
 
         try {
-            $iterator = $fs->getFilesIterator($root, $extensions, $depth, $exclude);
-            $executor = new Executor($fs, $root, $exclude, $this->tasks, $iterator, $listener);
+            $filesystem = new FileSystem(new MetadataStorage($this->container), $input, $output ?? $input);
+            $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
+            $executor   = new Executor($filesystem, $exclude, $this->tasks, $iterator, $listener);
 
             $executor->run();
         } catch (ProcessorError $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new ProcessingFailed($input, $exception);
+            throw new ProcessingFailed($exception);
         }
 
         return microtime(true) - $start;

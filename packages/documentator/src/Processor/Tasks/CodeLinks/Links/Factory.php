@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use Closure;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use Override;
@@ -15,9 +14,7 @@ use function trim;
 use const PREG_UNMATCHED_AS_NULL;
 
 class Factory implements LinkFactory {
-    public function __construct(
-        protected readonly PhpClassComment $comment,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -51,10 +48,10 @@ class Factory implements LinkFactory {
             if ($class !== null) {
                 $class     = '\\'.ltrim($class, '\\');
                 $reference = match (true) {
-                    isset($matches['property']) => new ClassPropertyLink($this->comment, $class, $matches['property']),
-                    isset($matches['method'])   => new ClassMethodLink($this->comment, $class, $matches['method']),
-                    isset($matches['const'])    => new ClassConstantLink($this->comment, $class, $matches['const']),
-                    default                     => new ClassLink($this->comment, $class),
+                    isset($matches['property']) => new ClassPropertyLink($class, $matches['property']),
+                    isset($matches['method'])   => new ClassMethodLink($class, $matches['method']),
+                    isset($matches['const'])    => new ClassConstantLink($class, $matches['const']),
+                    default                     => new ClassLink($class),
                 };
             }
         }

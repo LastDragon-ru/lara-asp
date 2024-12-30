@@ -2,22 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Throwable;
 
-use function array_map;
 use function implode;
 use function sprintf;
 
-class CircularDependency extends ProcessorError {
+class DependencyCircularDependency extends DependencyError {
     /**
      * @param list<File> $stack
      */
     public function __construct(
-        protected Directory $root,
         protected readonly File $target,
-        protected readonly File $dependency,
         protected readonly array $stack,
         ?Throwable $previous = null,
     ) {
@@ -28,27 +24,16 @@ class CircularDependency extends ProcessorError {
 
                 %2$s
                 ! %1$s
-
-                (root: `%3$s`)
                 MESSAGE,
-                $this->root->getRelativePath($this->dependency),
-                '* '.implode("\n* ", array_map(fn ($f) => $this->root->getRelativePath($f), $this->stack)),
-                $this->root->getPath(),
+                $this->target,
+                '* '.implode("\n* ", $this->stack),
             ),
             $previous,
         );
     }
 
-    public function getRoot(): Directory {
-        return $this->root;
-    }
-
     public function getTarget(): File {
         return $this->target;
-    }
-
-    public function getDependency(): File {
-        return $this->dependency;
     }
 
     /**

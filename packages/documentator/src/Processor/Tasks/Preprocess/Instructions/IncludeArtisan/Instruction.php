@@ -7,7 +7,7 @@ use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\InstructionFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandFailed;
 use Override;
@@ -57,38 +57,35 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, InstructionParameters $parameters): string {
         $verbosity = $this->setVerbosity(null);
 
         try {
             $app    = $this->application->getInstance();
             $kernel = $app->make(Kernel::class);
-            $input  = new StringInput($this->getCommand($context, $target, $parameters));
+            $input  = new StringInput($this->getCommand($context, $parameters->target, $parameters));
             $output = new BufferedOutput();
             $result = $kernel->handle($input, $output);
 
             if ($result !== Command::SUCCESS) {
-                throw new ArtisanCommandFailed($context, $result);
+                throw new ArtisanCommandFailed($context, $parameters, $result);
             }
 
             return trim($output->fetch());
-        } catch (InstructionFailed $exception) {
+        } catch (ArtisanCommandFailed $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            throw new ArtisanCommandError($context, $exception);
+            throw new ArtisanCommandError($context, $parameters, $exception);
         } finally {
             $this->setVerbosity($verbosity);
         }
     }
 
     protected function getCommand(Context $context, string $target, Parameters $parameters): string {
-        $file   = $context->file->getPath();
-        $target = strtr($target, [
-            '{$directory}' => $file->getDirectoryPath(),
-            '{$file}'      => $file,
+        return strtr($target, [
+            '{$directory}' => $context->file->getDirectoryPath(),
+            '{$file}'      => $context->file->getPath(),
         ]);
-
-        return $target;
     }
 
     protected function setVerbosity(?int $verbosity): ?int {

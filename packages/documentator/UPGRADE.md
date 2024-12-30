@@ -57,7 +57,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] [`Task::__invoke()`][code-links/ac42b74d053a366b] should yield a [`Dependency`][code-links/f4718f92376c3c25] instead of file.
 
-* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by [`DependencyNotFound`][code-links/b5c6ff41fa24071c].
+* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound`.
 
 * [ ] Use [`PackageProvider`][code-links/bddbc83c8cbd0c67] instead of [`💀Provider`][code-links/a76f14008cba70b9].
 
@@ -88,11 +88,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
 
-[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L18-L39
+[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L18-L33
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"
-
-[code-links/b5c6ff41fa24071c]: src/Processor/Exceptions/DependencyNotFound.php
-    "\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound"
 
 [code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction"

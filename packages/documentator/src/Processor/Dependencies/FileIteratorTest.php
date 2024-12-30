@@ -4,11 +4,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
@@ -21,60 +20,57 @@ use function sprintf;
  */
 #[CoversClass(FileIterator::class)]
 final class FileIteratorTest extends TestCase {
-    public function testToString(): void {
-        $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $directory = new Directory($path);
+    use WithProcessor;
 
-        self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory')));
-        self::assertEquals((string) $directory, (string) (new FileIterator($directory)));
-        self::assertEquals((string) $path, (string) (new FileIterator($path)));
+    public function testGetPath(): void {
+        $filesystem = $this->getFileSystem(__DIR__);
+        $directory  = $filesystem->getDirectory(__DIR__);
+        $path       = $directory->getPath();
+
+        self::assertEquals('path/to/directory', (string) (new FileIterator('path/to/directory'))->getPath());
+        self::assertEquals((string) $directory, (string) (new FileIterator($directory))->getPath());
+        self::assertEquals((string) $path, (string) (new FileIterator($path))->getPath());
     }
 
     public function testInvoke(): void {
-        $fs        = new FileSystem();
+        $fs        = $this->getFileSystem(__DIR__);
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $root      = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
         $pattern   = '*.txt';
         $absolute  = new FileIterator($path, $pattern);
         $relative  = new FileIterator(basename((string) $path), $pattern);
-        $directory = new FileIterator(new Directory($path), $pattern);
-        $formatter = static function (File $file) use ($path): string {
-            return (string) $path->getRelativePath($file->getPath());
+        $directory = new FileIterator($fs->getDirectory($path), $pattern);
+        $formatter = static function (File|FilePath $item): string {
+            return (string) $item;
         };
         $expected  = [
-            'a/a.txt',
-            'a/a/aa.txt',
-            'a/b/ab.txt',
-            'b/a/ba.txt',
-            'b/b.txt',
-            'b/b/bb.txt',
-            'c.txt',
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/a.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/a/aa.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/b/ab.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/a/ba.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/b.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/b/bb.txt'),
+            (string) $fs->input->getDirectoryPath('FileIteratorTest/c.txt'),
         ];
 
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs, $root, $file))));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs, $root, $file))));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs, $root, $file))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs))));
     }
 
     public function testInvokeNotFound(): void {
-        $fs   = new FileSystem();
-        $root = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs   = $this->getFileSystem(__DIR__);
         $path = 'path/to/directory';
 
-        self::expectException(DependencyNotFound::class);
+        self::expectException(DependencyUnresolvable::class);
         self::expectExceptionMessage(
             sprintf(
-                'Dependency `%s` of `%s` not found (root: `%s`).',
+                'Dependency `%s` not found.',
                 $path,
-                $file->getName(),
-                $root->getPath(),
             ),
         );
 
         iterator_to_array(
-            (new FileIterator($path))($fs, $root, $file),
+            (new FileIterator($path))($fs),
         );
     }
 }

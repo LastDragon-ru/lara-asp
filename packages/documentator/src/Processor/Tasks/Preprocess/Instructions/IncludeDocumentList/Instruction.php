@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data as TemplateData;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Document as TemplateDocument;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
@@ -36,7 +37,6 @@ class Instruction implements InstructionContract {
     public function __construct(
         protected readonly PackageViewer $viewer,
         protected readonly Sorter $sorter,
-        protected readonly Markdown $markdown,
     ) {
         // empty
     }
@@ -60,8 +60,8 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
-        $self      = $context->file->getPath();
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
+        $target    = $context->file->getDirectoryPath($parameters->target);
         $patterns  = array_filter((array) $parameters->include, static fn ($s) => $s !== '');
         $patterns  = $patterns === [] ? '*.md' : $patterns;
         $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, $patterns, $parameters->depth));
@@ -72,12 +72,12 @@ class Instruction implements InstructionContract {
             $file = Cast::to(File::class, $file);
 
             // Same?
-            if ($self->isEqual($file->getPath())) {
+            if ($context->file->isEqual($file)) {
                 continue;
             }
 
             // Empty?
-            $document = $file->getMetadata($this->markdown);
+            $document = $file->getMetadata(Markdown::class);
 
             if ($document === null || $document->isEmpty()) {
                 continue;

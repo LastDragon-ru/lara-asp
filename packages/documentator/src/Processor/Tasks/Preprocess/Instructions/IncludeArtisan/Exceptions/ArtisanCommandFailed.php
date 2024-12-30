@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\InstructionFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Parameters;
 use Throwable;
 
 use function sprintf;
@@ -11,16 +12,18 @@ use function sprintf;
 class ArtisanCommandFailed extends InstructionFailed {
     public function __construct(
         Context $context,
+        Parameters $parameters,
         private readonly int $result,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             $context,
+            $parameters,
             sprintf(
-                'Artisan command `%s` exited with status code `%s` (in `%s`).',
-                $context->node->getDestination(),
+                'Artisan command `%s` exited with status code `%s` (`%s` line).',
+                $parameters->target,
                 $this->result,
-                $context->root->getRelativePath($context->file),
+                $context->node->getStartLine() ?? 'unknown',
             ),
             $previous,
         );

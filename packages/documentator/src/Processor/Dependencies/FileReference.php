@@ -4,41 +4,38 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
+
+use function is_string;
 
 /**
  * @implements Dependency<File>
  */
 class FileReference implements Dependency {
     public function __construct(
-        protected readonly File|FilePath|string $reference,
+        protected readonly FilePath|string $reference,
     ) {
         // empty
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
-        // Already?
-        if ($this->reference instanceof File) {
-            return $this->reference;
+    public function __invoke(FileSystem $fs): mixed {
+        try {
+            return $fs->getFile($this->reference);
+        } catch (FileNotFound $exception) {
+            throw new DependencyUnresolvable($this, $exception);
         }
-
-        // Create
-        $resolved = $fs->getFile($root, $file->getPath()->getFilePath((string) $this));
-
-        if ($resolved === null) {
-            throw new DependencyNotFound($root, $file, $this);
-        }
-
-        return $resolved;
     }
 
     #[Override]
-    public function __toString(): string {
-        return (string) $this->reference;
+    public function getPath(): FilePath {
+        return match (true) {
+            is_string($this->reference) => new FilePath($this->reference),
+            default                     => $this->reference,
+        };
     }
 }

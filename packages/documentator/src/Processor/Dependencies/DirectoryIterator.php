@@ -5,12 +5,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Symfony\Component\Finder\Finder;
+
+use function is_string;
 
 /**
  * @see Finder
@@ -36,24 +38,20 @@ class DirectoryIterator implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
-        // Directory
-        $directory = $this->directory;
-
-        if (!($directory instanceof Directory)) {
-            $directory = $fs->getDirectory($root, $file->getPath()->getDirectoryPath((string) $this));
-
-            if ($directory === null) {
-                throw new DependencyNotFound($root, $file, $this);
-            }
+    public function __invoke(FileSystem $fs): mixed {
+        try {
+            yield from $fs->getDirectoriesIterator($this->directory, $this->patterns, $this->depth, $this->exclude);
+        } catch (DirectoryNotFound $exception) {
+            throw new DependencyUnresolvable($this, $exception);
         }
-
-        // Resolve
-        return $fs->getDirectoriesIterator($directory, $this->patterns, $this->depth, $this->exclude);
     }
 
     #[Override]
-    public function __toString(): string {
-        return (string) $this->directory;
+    public function getPath(): DirectoryPath {
+        return match (true) {
+            $this->directory instanceof Directory => $this->directory->getPath(),
+            is_string($this->directory)           => new DirectoryPath($this->directory),
+            default                               => $this->directory,
+        };
     }
 }

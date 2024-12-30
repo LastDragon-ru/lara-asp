@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
@@ -31,13 +30,12 @@ final class BaseTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderGetTitle')]
     public function testGetTitle(?string $expected, string $value): void {
-        $meta = Mockery::mock(PhpClassComment::class);
-        $link = new class($meta, $value) extends Base {
+        $link = new class($value) extends Base {
             /**
              * @inheritDoc
              */
             #[Override]
-            public function getSource(Directory $root, File $file, Package $package): array|FilePath|null {
+            public function getSource(File $file, Package $package): array|FilePath|null {
                 return null;
             }
 
@@ -78,8 +76,6 @@ final class BaseTest extends TestCase {
             ->twice()
             ->andReturn(true, false);
 
-        $root = Mockery::mock(Directory::class);
-        $meta = Mockery::mock(PhpClassComment::class);
         $data = new class ($class, $comment) {
             public function __construct(
                 public readonly ClassLike $class,
@@ -92,7 +88,7 @@ final class BaseTest extends TestCase {
         $source = Mockery::mock(File::class);
         $source
             ->shouldReceive('getMetadata')
-            ->with($meta)
+            ->with(PhpClassComment::class)
             ->twice()
             ->andReturn($data);
 
@@ -128,7 +124,7 @@ final class BaseTest extends TestCase {
             ->once()
             ->andReturn($doc);
 
-        $link = Mockery::mock(Base::class, [$meta, '\\App\\A']);
+        $link = Mockery::mock(Base::class, ['\\App\\A']);
         $link->shouldAllowMockingProtectedMethods();
         $link->makePartial();
         $link
@@ -138,35 +134,33 @@ final class BaseTest extends TestCase {
 
         self::assertEquals(
             new LinkTarget(new FilePath('relative/path/to/class/a.php'), true, null, null),
-            $link->getTarget($root, $file, $source),
+            $link->getTarget($file, $source),
         );
 
         self::assertEquals(
             new LinkTarget(new FilePath('relative/path/to/class/a.php'), true, 234, 321),
-            $link->getTarget($root, $file, $source),
+            $link->getTarget($file, $source),
         );
     }
 
     public function testGetTargetNoMetadata(): void {
-        $meta = Mockery::mock(PhpClassComment::class);
-        $root = Mockery::mock(Directory::class);
         $file = Mockery::mock(File::class);
 
         $source = Mockery::mock(File::class);
         $source
             ->shouldReceive('getMetadata')
-            ->with($meta)
+            ->with(PhpClassComment::class)
             ->once()
             ->andReturn(null);
 
-        $link = Mockery::mock(Base::class, [$meta, $this::class]);
+        $link = Mockery::mock(Base::class, [$this::class]);
         $link->shouldAllowMockingProtectedMethods();
         $link->makePartial();
         $link
             ->shouldReceive('getTargetNode')
             ->never();
 
-        self::assertNull($link->getTarget($root, $file, $source));
+        self::assertNull($link->getTarget($file, $source));
     }
 
     public function testGetTargetClassNotMatch(): void {
@@ -175,9 +169,7 @@ final class BaseTest extends TestCase {
             ->shouldUseProperty('namespacedName')
             ->value(new Name('App\\A'));
 
-        $root = Mockery::mock(Directory::class);
         $file = Mockery::mock(File::class);
-        $meta = Mockery::mock(PhpClassComment::class);
         $data = new class ($class) {
             public function __construct(
                 public readonly ClassLike $class,
@@ -189,18 +181,18 @@ final class BaseTest extends TestCase {
         $source = Mockery::mock(File::class);
         $source
             ->shouldReceive('getMetadata')
-            ->with($meta)
+            ->with(PhpClassComment::class)
             ->once()
             ->andReturn($data);
 
-        $link = Mockery::mock(Base::class, [$meta, $this::class]);
+        $link = Mockery::mock(Base::class, [$this::class]);
         $link->shouldAllowMockingProtectedMethods();
         $link->makePartial();
         $link
             ->shouldReceive('getTargetNode')
             ->never();
 
-        self::assertNull($link->getTarget($root, $file, $source));
+        self::assertNull($link->getTarget($file, $source));
     }
     // </editor-fold>
 
@@ -249,7 +241,7 @@ class BaseTest_BaseLink extends Base {
         string $class,
         public readonly ?string $title = null,
     ) {
-        parent::__construct(Mockery::mock(PhpClassComment::class), $class);
+        parent::__construct($class);
     }
 
     #[Override]
@@ -299,12 +291,12 @@ class BaseTest_Link implements Link {
      * @inheritDoc
      */
     #[Override]
-    public function getSource(Directory $root, File $file, Package $package): array|FilePath|null {
+    public function getSource(File $file, Package $package): array|FilePath|null {
         return null;
     }
 
     #[Override]
-    public function getTarget(Directory $root, File $file, File $source): ?LinkTarget {
+    public function getTarget(File $file, File $source): ?LinkTarget {
         return null;
     }
 }

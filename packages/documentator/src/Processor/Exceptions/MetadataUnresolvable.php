@@ -3,35 +3,28 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Throwable;
 
 use function sprintf;
 
-class FileMetadataFailed extends MetadataError {
+class MetadataUnresolvable extends MetadataError {
     public function __construct(
-        protected Directory $root,
         protected readonly File $target,
         /**
-         * @var Metadata<*>
+         * @var class-string<Metadata<*>>
          */
-        protected readonly Metadata $metadata,
+        protected readonly string $metadata,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to retrieve `%s` metadata for `%s` file (root: `%s`).',
-                $this->metadata::class,
-                $this->root->getRelativePath($this->target),
-                $this->root->getPath(),
+                'Failed to resolve `%s` metadata for `%s` file.',
+                $this->metadata,
+                $this->target,
             ),
             $previous,
         );
-    }
-
-    public function getRoot(): Directory {
-        return $this->root;
     }
 
     public function getTarget(): File {
@@ -39,9 +32,9 @@ class FileMetadataFailed extends MetadataError {
     }
 
     /**
-     * @return Metadata<*>
+     * @return class-string<Metadata<*>>
      */
-    public function getMetadata(): Metadata {
+    public function getMetadata(): string {
         return $this->metadata;
     }
 }

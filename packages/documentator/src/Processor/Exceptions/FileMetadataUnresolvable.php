@@ -9,16 +9,16 @@ use Throwable;
 /**
  * @internal
  */
-class FileMetadataError extends MetadataError {
+class FileMetadataUnresolvable extends FileSystemError {
     public function __construct(
         protected readonly File $target,
         /**
-         * @var Metadata<*>
+         * @var class-string<Metadata<*>>
          */
-        protected readonly Metadata $metadata,
+        protected readonly string $metadata,
         Throwable $previous,
     ) {
-        parent::__construct('', $previous);
+        parent::__construct('@internal', $previous);
     }
 
     public function getTarget(): File {
@@ -26,9 +26,9 @@ class FileMetadataError extends MetadataError {
     }
 
     /**
-     * @return Metadata<*>
+     * @return class-string<Metadata<*>>
      */
-    public function getMetadata(): Metadata {
+    public function getMetadata(): string {
         return $this->metadata;
     }
 }

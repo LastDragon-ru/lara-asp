@@ -4,17 +4,20 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\InstructionFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Parameters;
 use Throwable;
 
 use function sprintf;
 
 class TemplateDataMissed extends InstructionFailed {
-    public function __construct(Context $context, ?Throwable $previous = null) {
+    public function __construct(Context $context, Parameters $parameters, ?Throwable $previous = null) {
         parent::__construct(
             $context,
+            $parameters,
             sprintf(
-                'The `data` is required for `%s`.',
-                $context->root->getRelativePath($context->file),
+                'The `data` is required for `%s` (`%s` line).',
+                $parameters->target,
+                $context->node->getStartLine() ?? 'unknown',
             ),
             $previous,
         );

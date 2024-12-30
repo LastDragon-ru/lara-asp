@@ -2,8 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -26,12 +28,12 @@ readonly class Optional implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs, Directory $root, File $file): mixed {
+    public function __invoke(FileSystem $fs): mixed {
         $resolved = null;
 
         try {
-            $resolved = ($this->dependency)($fs, $root, $file);
-        } catch (DependencyNotFound) {
+            $resolved = ($this->dependency)($fs);
+        } catch (DependencyUnresolvable) {
             $resolved = null;
         }
 
@@ -39,7 +41,7 @@ readonly class Optional implements Dependency {
     }
 
     #[Override]
-    public function __toString(): string {
-        return (string) $this->dependency;
+    public function getPath(): DirectoryPath|FilePath {
+        return $this->dependency->getPath();
     }
 }

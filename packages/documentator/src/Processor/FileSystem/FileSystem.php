@@ -2,48 +2,87 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Closure;
+use Exception;
+use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Core\Path\Path;
-use SplFileInfo;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
-use WeakReference;
 
-use function file_put_contents;
 use function is_dir;
 use function is_file;
-use function mkdir;
+use function sprintf;
 
 class FileSystem {
     /**
-     * @var array<string, WeakReference<Directory|File>>
+     * @var array<string, Directory|File>
      */
     private array $cache = [];
+    /**
+     * @var array<int, array<string, string>>
+     */
+    private array $changes = [];
+    private int   $level   = 0;
+
+    private readonly SymfonyFilesystem $filesystem;
+    private readonly MetadataStorage   $metadata;
+    public readonly DirectoryPath      $input;
+    public readonly DirectoryPath      $output;
 
     public function __construct(
-        private readonly ?DirectoryPath $output = null,
+        MetadataStorage $metadata,
+        DirectoryPath $input,
+        DirectoryPath $output,
     ) {
-        // empty
-    }
-
-    public function getFile(Directory $root, SplFileInfo|File|FilePath|string $path): ?File {
-        // Object?
-        if ($path instanceof File || $path instanceof FilePath) {
-            $path = (string) $path;
-        } elseif ($path instanceof SplFileInfo) {
-            $path = $path->getPathname();
-        } else {
-            // empty
+        if (!$input->isAbsolute()) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The `$input` path must be absolute, `%s` given.',
+                    $input,
+                ),
+            );
         }
 
+        if (!$output->isAbsolute()) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The `$output` path must be absolute, `%s` given.',
+                    $input,
+                ),
+            );
+        }
+
+        $this->input      = $input;
+        $this->output     = $output;
+        $this->metadata   = $metadata;
+        $this->filesystem = new SymfonyFilesystem();
+    }
+
+    protected function isFile(FilePath|string $path): bool {
+        $path = $this->input->getFilePath((string) $path);
+        $file = $this->cached($path);
+        $is   = $file instanceof File || is_file((string) $path);
+
+        return $is;
+    }
+
+    /**
+     * Relative path will be resolved based on {@see self::$input}.
+     */
+    public function getFile(FilePath|string $path): File {
         // Cached?
-        $path = $root->getPath()->getFilePath($path);
+        $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
-            return null;
+            throw new FileNotFound($path);
         }
 
         if ($file instanceof File) {
@@ -52,30 +91,25 @@ class FileSystem {
 
         // Create
         if (is_file((string) $path)) {
-            $file = $this->cache(new File($path));
+            $file = $this->cache(new File($this->metadata, $path));
+        } else {
+            throw new FileNotFound($path);
         }
 
         return $file;
     }
 
-    public function getDirectory(Directory $root, SplFileInfo|Directory|File|Path|string $path): ?Directory {
-        // Object?
-        if ($path instanceof SplFileInfo) {
-            $path = $path->getPathname();
-        } elseif ($path instanceof Directory || $path instanceof File) {
-            $path = (string) $path->getPath()->getDirectoryPath();
-        } elseif ($path instanceof Path) {
-            $path = (string) $path->getDirectoryPath();
-        } else {
-            // empty
-        }
-
+    /**
+     * Relative path will be resolved based on {@see self::$input}.
+     */
+    public function getDirectory(DirectoryPath|FilePath|string $path): Directory {
         // Cached?
-        $path      = $root->getPath()->getDirectoryPath($path);
+        $path      = $path instanceof FilePath ? $path->getDirectoryPath() : $path;
+        $path      = $this->input->getDirectoryPath((string) $path);
         $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {
-            return null;
+            throw new DirectoryNotFound($path);
         }
 
         if ($directory instanceof Directory) {
@@ -85,12 +119,16 @@ class FileSystem {
         // Create
         if (is_dir((string) $path)) {
             $directory = $this->cache(new Directory($path));
+        } else {
+            throw new DirectoryNotFound($path);
         }
 
         return $directory;
     }
 
     /**
+     * Relative path will be resolved based on {@see self::$input}.
+     *
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
@@ -98,15 +136,23 @@ class FileSystem {
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
-        Directory $root,
+        Directory|DirectoryPath|string $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($root, $this->getFile(...), $patterns, $depth, $exclude);
+        $finder = $this->getFinder($directory, $patterns, $depth, $exclude);
+
+        foreach ($finder->files() as $info) {
+            yield $this->getFile($info->getPathname());
+        }
+
+        yield from [];
     }
 
     /**
+     * Relative path will be resolved based on {@see self::$input}.
+     *
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
@@ -114,36 +160,37 @@ class FileSystem {
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
-        Directory $root,
+        Directory|DirectoryPath|string $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
     ): Iterator {
-        yield from $this->getIterator($root, $this->getDirectory(...), $patterns, $depth, $exclude);
+        $finder = $this->getFinder($directory, $patterns, $depth, $exclude);
+
+        foreach ($finder->directories() as $info) {
+            yield $this->getDirectory($info->getPathname());
+        }
+
+        yield from [];
     }
 
     /**
-     * @template T of object
-     *
-     * @param Closure(Directory, SplFileInfo): ?T          $factory
      * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
      * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
      * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
-     *
-     * @return Iterator<array-key, T>
      */
-    protected function getIterator(
-        Directory $root,
-        Closure $factory,
+    protected function getFinder(
+        Directory|DirectoryPath|string $directory,
         array|string|null $patterns = null,
         array|string|int|null $depth = null,
         array|string|null $exclude = null,
-    ): Iterator {
-        $finder = Finder::create()
+    ): Finder {
+        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
+        $finder    = Finder::create()
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
-            ->in((string) $root)
+            ->in((string) $directory)
             ->sortByName(true);
 
         if ($patterns !== null) {
@@ -158,37 +205,95 @@ class FileSystem {
             $finder = $finder->notPath($exclude);
         }
 
-        foreach ($finder as $info) {
-            $item = $factory($root, $info);
+        return $finder;
+    }
 
-            if ($item !== null) {
-                yield $item;
+    /**
+     * If `$file` exists, it will be saved only after {@see self::commit()},
+     * if not, it will be created immediately. Relative path will be resolved
+     * based on {@see self::$output}.
+     */
+    public function write(File|FilePath|string $path, string $content): File {
+        // Prepare
+        $file = null;
+
+        if ($path instanceof File) {
+            $file = $path;
+            $path = $path->getPath();
+        } else {
+            $file = $this->isFile($path) ? $this->getFile($path) : null;
+            $path = $path instanceof FilePath ? $path : new FilePath($path);
+        }
+
+        // Relative?
+        $path = $this->output->getPath($path);
+
+        // Writable?
+        if (!$this->output->isInside($path)) {
+            throw new FileNotWritable($path);
+        }
+
+        // File?
+        $created = false;
+
+        if ($file === null) {
+            try {
+                $this->save($path, $content);
+            } catch (Exception $exception) {
+                throw new FileCreateFailed($path, $exception);
+            }
+
+            $file    = $this->getFile($path);
+            $created = true;
+        }
+
+        // Changed?
+        if (!$this->metadata->has($file, Content::class) || $this->metadata->get($file, Content::class) !== $content) {
+            $this->metadata->reset($file);
+            $this->metadata->set($file, Content::class, $content);
+
+            if (!$created) {
+                $this->change($file, $content);
             }
         }
 
-        yield from [];
+        // Return
+        return $file;
     }
 
-    public function save(File $file): bool {
-        // Modified?
-        if (!$file->isModified()) {
-            return true;
+    public function begin(): void {
+        $this->level++;
+        $this->changes[$this->level] = [];
+    }
+
+    public function commit(): void {
+        // Commit
+        foreach ($this->changes[$this->level] ?? [] as $path => $content) {
+            try {
+                $this->save($path, $content);
+            } catch (Exception $exception) {
+                throw new FileSaveFailed($path, $exception);
+            }
         }
 
-        // Inside?
-        if ($this->output?->isInside($file->getPath()) !== true) {
-            return false;
+        unset($this->changes[$this->level]);
+
+        // Decrease
+        $this->level--;
+
+        // Cleanup
+        if ($this->level === 0) {
+            $this->changes = [];
+            $this->cache   = [];
         }
+    }
 
-        // Directory?
-        $directory = (string) $file->getPath()->getDirectoryPath();
+    protected function change(File $path, string $content): void {
+        $this->changes[$this->level][(string) $path] = $content;
+    }
 
-        if (!is_dir($directory) && !mkdir($directory, recursive: true)) {
-            return false;
-        }
-
-        // Save
-        return file_put_contents((string) $file->getPath(), $file->getContent()) !== false;
+    protected function save(FilePath|string $path, string $content): void {
+        $this->filesystem->dumpFile((string) $path, $content);
     }
 
     /**
@@ -198,23 +303,14 @@ class FileSystem {
      *
      * @return T
      */
-    private function cache(Directory|File $object): Directory|File {
-        $this->cache[(string) $object] = WeakReference::create($object);
+    protected function cache(Directory|File $object): Directory|File {
+        $this->cache[(string) $object] = $object;
 
         return $object;
     }
 
-    private function cached(Path $path): Directory|File|null {
-        $key    = (string) $path;
-        $cached = null;
-
-        if (isset($this->cache[$key])) {
-            $cached = $this->cache[$key]->get();
-
-            if ($cached === null) {
-                unset($this->cache[$key]);
-            }
-        }
+    protected function cached(DirectoryPath|FilePath $path): Directory|File|null {
+        $cached = $this->cache[(string) $path] ?? null;
 
         return $cached;
     }

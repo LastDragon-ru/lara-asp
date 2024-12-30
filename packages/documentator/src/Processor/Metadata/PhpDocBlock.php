@@ -32,7 +32,6 @@ class PhpDocBlock implements Metadata {
     public function __construct(
         protected readonly Markdown $markdown,
         protected readonly LinkFactory $factory,
-        protected readonly PhpClass $class,
     ) {
         // empty
     }
@@ -43,7 +42,7 @@ class PhpDocBlock implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         // Class?
-        $class = $file->getMetadata($this->class);
+        $class = $file->getMetadata(PhpClass::class);
 
         if ($class === null) {
             return null;

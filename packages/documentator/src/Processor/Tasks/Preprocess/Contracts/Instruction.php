@@ -40,5 +40,5 @@ interface Instruction {
      *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, Document|string>|Document|string`
      *           but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator|Document|string;
+    public function __invoke(Context $context, Parameters $parameters): Generator|Document|string;
 }

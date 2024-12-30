@@ -2,50 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Exception;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Core\Path\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
-use Override;
-use Stringable;
 
-use function array_key_exists;
-use function file_get_contents;
 use function is_file;
 use function sprintf;
 
-class File implements Stringable {
-    private ?string $content  = null;
-    private bool    $modified = false;
-
-    /**
-     * @var array<class-string<Metadata<mixed>>, mixed>
-     */
-    private array $metadata = [];
-
+/**
+ * @extends Entry<FilePath>
+ */
+class File extends Entry {
     public function __construct(
-        private readonly FilePath $path,
+        protected readonly MetadataResolver $metadata,
+        FilePath $path,
     ) {
-        if (!$this->path->isNormalized()) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Path must be normalized, `%s` given.',
-                    $this->path,
-                ),
-            );
-        }
-
-        if (!$this->path->isAbsolute()) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Path must be absolute, `%s` given.',
-                    $this->path,
-                ),
-            );
-        }
+        parent::__construct($path);
 
         if (!is_file((string) $this->path)) {
             throw new InvalidArgumentException(
@@ -57,75 +29,18 @@ class File implements Stringable {
         }
     }
 
-    public function getPath(): FilePath {
-        return $this->path;
-    }
-
-    public function getName(): string {
-        return $this->path->getName();
-    }
-
     public function getExtension(): ?string {
         return $this->path->getExtension();
-    }
-
-    public function isModified(): bool {
-        return $this->modified;
-    }
-
-    public function getContent(): string {
-        if ($this->content === null) {
-            $this->content = (string) file_get_contents((string) $this->path);
-        }
-
-        return $this->content;
-    }
-
-    public function setContent(string $content): static {
-        if ($this->content !== $content) {
-            $this->content  = $content;
-            $this->modified = true;
-            $this->metadata = [];
-        }
-
-        return $this;
     }
 
     /**
      * @template T
      *
-     * @param Metadata<T> $metadata
+     * @param class-string<Metadata<T>> $metadata
      *
      * @return T
      */
-    public function getMetadata(Metadata $metadata): mixed {
-        if (!array_key_exists($metadata::class, $this->metadata)) {
-            try {
-                $this->metadata[$metadata::class] = $metadata($this);
-            } catch (Exception $exception) {
-                throw new FileMetadataError($this, $metadata, $exception);
-            }
-        }
-
-        return $this->metadata[$metadata::class];
-    }
-
-    /**
-     * @template T of Directory|self|Path
-     *
-     * @param T $path
-     *
-     * @return (T is Path ? new<T> : (T is Directory ? DirectoryPath : FilePath))
-     */
-    public function getRelativePath(Directory|self|Path $path): Path {
-        $path = $path instanceof Path ? $path : $path->getPath();
-        $path = $this->path->getRelativePath($path);
-
-        return $path;
-    }
-
-    #[Override]
-    public function __toString(): string {
-        return (string) $this->path;
+    public function getMetadata(string $metadata): mixed {
+        return $this->metadata->get($this, $metadata);
     }
 }

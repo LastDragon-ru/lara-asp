@@ -2,33 +2,26 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use Throwable;
 
 use function sprintf;
 
-class FileSaveFailed extends ProcessorError {
+class FileSaveFailed extends FileSystemError {
     public function __construct(
-        protected Directory $root,
-        protected readonly File $target,
+        protected readonly FilePath|string $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to save `%s` file (root: `%s`).',
-                $this->root->getRelativePath($this->target),
-                $this->root->getPath(),
+                'Failed to save `%s` file.',
+                $this->target,
             ),
             $previous,
         );
     }
 
-    public function getRoot(): Directory {
-        return $this->root;
-    }
-
-    public function getTarget(): File {
+    public function getTarget(): FilePath|string {
         return $this->target;
     }
 }

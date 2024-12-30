@@ -4,17 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandFailed;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use Mockery\MockInterface;
 use Override;
@@ -29,13 +25,15 @@ use function sprintf;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     public function testInvoke(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('command to execute');
         $expected = 'result';
-        $command  = 'command to execute';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $command  = $params->target;
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command, $expected): void {
@@ -71,21 +69,21 @@ final class InstructionTest extends TestCase {
                 );
         });
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
+        self::assertEquals($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
     }
 
     public function testInvokeFailed(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
         $node     = new class() extends Node {
             #[Override]
             public function getDestination(): string {
                 return 'command to execute';
             }
         };
-        $params   = new Parameters('...');
-        $command  = $node->getDestination();
-        $context  = new Context($root, $file, Mockery::mock(Document::class), $node, new Nop());
+        $params   = new Parameters($node->getDestination());
+        $command  = $params->target;
+        $context  = new Context($file, Mockery::mock(Document::class), $node, new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command): void {
@@ -122,22 +120,22 @@ final class InstructionTest extends TestCase {
         self::expectException(ArtisanCommandFailed::class);
         self::expectExceptionMessage(
             sprintf(
-                'Artisan command `%s` exited with status code `%s` (in `%s`).',
+                'Artisan command `%s` exited with status code `%s` (`%s` line).',
                 $command,
                 Command::FAILURE,
-                $context->root->getRelativePath($context->file),
+                'unknown',
             ),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $command, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
 
     public function testGetCommand(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $command  = 'artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"');
+        $command  = $params->target;
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = new class (Mockery::mock(ApplicationResolver::class)) extends Instruction {
             #[Override]
             public function getCommand(Context $context, string $target, Parameters $parameters): string {
@@ -148,7 +146,7 @@ final class InstructionTest extends TestCase {
         self::assertEquals(
             sprintf(
                 'artisan:command $directory %1$s "%1$s" $file %2$s "%2$s"',
-                $file->getPath()->getDirectoryPath(),
+                $file->getDirectoryPath(),
                 $file->getPath(),
             ),
             $instance->getCommand($context, $command, $params),

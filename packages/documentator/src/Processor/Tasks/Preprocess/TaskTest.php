@@ -8,15 +8,16 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,6 +33,8 @@ use const PHP_INT_MAX;
  */
 #[CoversClass(Task::class)]
 final class TaskTest extends TestCase {
+    use WithProcessor;
+
     private const MARKDOWN = <<<'MARKDOWN'
         Bla bla bla [processable]: ./path/to/file should be ignored.
 
@@ -74,24 +77,22 @@ final class TaskTest extends TestCase {
         $task = new class(
             $this->app()->make(ContainerResolver::class),
             $this->app()->make(Serializer::class),
-            $this->app()->make(Markdown::class),
         ) extends Task {
             /**
              * @inheritDoc
              */
             #[Override]
-            public function parse(Directory $root, File $file, Document $document): array {
-                return parent::parse($root, $file, $document);
+            public function parse(File $file, Document $document): array {
+                return parent::parse($file, $document);
             }
         };
 
         $task->addInstruction($a::class);
         $task->addInstruction($b);
 
-        $root     = Mockery::mock(Directory::class);
         $file     = Mockery::mock(File::class);
         $document = $this->app()->make(MarkdownContract::class)->parse(self::MARKDOWN);
-        $tokens   = $task->parse($root, $file, $document);
+        $tokens   = $task->parse($file, $document);
         $actual   = array_map(
             static function (array $tokens): array {
                 return array_map(
@@ -100,7 +101,6 @@ final class TaskTest extends TestCase {
 
                         return [
                             $token->instruction,
-                            $token->target,
                             $token->parameters,
                             $nodes,
                         ];
@@ -116,7 +116,6 @@ final class TaskTest extends TestCase {
                 0           => [
                     'bb30809c6ca4c80a' => [
                         $b,
-                        './path/to/file',
                         new TaskTest__Parameters('./path/to/file'),
                         [
                             new Location(7, 8, 0, null, 0),
@@ -128,7 +127,6 @@ final class TaskTest extends TestCase {
                     ],
                     'f5f55887ee415b3d' => [
                         $b,
-                        './path/to/file/parametrized',
                         new TaskTest__Parameters(
                             './path/to/file/parametrized',
                             'aa',
@@ -146,7 +144,6 @@ final class TaskTest extends TestCase {
                 PHP_INT_MAX => [
                     '4f76e5da6e5aabbc' => [
                         $a,
-                        './path/to/file "value"',
                         new TaskTest__ParametersEmpty('./path/to/file "value"'),
                         [
                             new Location(5, 6, 0, null, 0),
@@ -159,48 +156,36 @@ final class TaskTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $task   = $this->app()->make(Task::class)
+        $task = $this->app()->make(Task::class)
             ->addInstruction(TaskTest__EmptyInstruction::class)
             ->addInstruction(TaskTest__TestInstruction::class)
             ->addInstruction(TaskTest__DocumentInstruction::class);
-        $actual = null;
-        $path   = new FilePath('path/to/file.md');
-        $file   = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('setContent')
-            ->once()
-            ->andReturnUsing(
-                static function (string $content) use ($file, &$actual): File {
-                    $actual = $content;
 
-                    return $file;
-                },
-            );
+        $metadata = $this->app()->make(MetadataStorage::class);
+        $path     = new FilePath('path/to/file.md');
+        $file     = Mockery::mock(File::class, MockProperties::class);
+        $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
-            ->with(Mockery::type(Markdown::class))
-            ->once()
-            ->andReturnUsing(
-                function () use ($path): Document {
-                    return $this->app()->make(MarkdownContract::class)->parse(static::MARKDOWN, $path);
-                },
-            );
+            ->shouldUseProperty('path')
+            ->value($path);
         $file
-            ->shouldReceive('getPath')
-            ->once()
-            ->andReturn(
-                $path,
-            );
+            ->shouldUseProperty('metadata')
+            ->value($metadata);
 
-        $root = Mockery::mock(Directory::class);
-        $root
-            ->shouldReceive('getRelativePath')
-            ->once()
-            ->andReturn(
-                new FilePath('path/to/file.md'),
-            );
+        $metadata->set($file, Content::class, static::MARKDOWN);
 
-        $result = ProcessorHelper::runTask($task, $root, $file);
+        $actual     = '';
+        $filesystem = Mockery::mock(FileSystem::class);
+        $filesystem
+            ->shouldReceive('write')
+            ->once()
+            ->andReturnUsing(static function (mixed $path, string $content) use ($file, &$actual): File {
+                $actual = $content;
+
+                return $file;
+            });
+
+        $result = $this->getProcessorResult($filesystem, ($task)($file));
 
         self::assertTrue($result);
         self::assertEquals(
@@ -319,7 +304,7 @@ class TaskTest__EmptyInstruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, Parameters $parameters): string {
         return '';
     }
 }
@@ -347,7 +332,7 @@ class TaskTest__TestInstruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, Parameters $parameters): string {
         return 'result('.json_encode($parameters, JSON_THROW_ON_ERROR).')';
     }
 }
@@ -381,7 +366,7 @@ class TaskTest__DocumentInstruction implements Instruction {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Document {
+    public function __invoke(Context $context, Parameters $parameters): Document {
         return $this->markdown->parse(
             <<<'MARKDOWN'
             Summary [text](../Document.md) summary [link][link] and summary[^1] and [self](#fragment) and [self][self].
@@ -402,7 +387,7 @@ class TaskTest__DocumentInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TaskTest__Parameters implements Parameters, Serializable {
+class TaskTest__Parameters implements Parameters {
     /**
      * @param array<string, string> $b
      */
@@ -419,7 +404,7 @@ class TaskTest__Parameters implements Parameters, Serializable {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TaskTest__ParametersEmpty implements Parameters, Serializable {
+class TaskTest__ParametersEmpty implements Parameters {
     public function __construct(
         public readonly string $target,
     ) {

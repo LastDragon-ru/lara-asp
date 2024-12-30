@@ -3,16 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use Override;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function array_shift;
-use function file_get_contents;
-use function file_put_contents;
 use function sprintf;
 
 /**
@@ -22,26 +18,10 @@ use function sprintf;
 final class FileTest extends TestCase {
     public function testConstruct(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new File($path);
+        $file = new File(Mockery::mock(MetadataResolver::class), $path);
 
-        self::assertEquals($path, $file->getPath());
-        self::assertEquals("{$path}", (string) $file->getPath());
         self::assertEquals('php', $file->getExtension());
         self::assertEquals('FileTest.php', $file->getName());
-    }
-
-    public function testConstructNotNormalized(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be normalized, `/../file.txt` given.');
-
-        new File(new FilePath('/../file.txt'));
-    }
-
-    public function testConstructNotAbsolute(): void {
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be absolute, `../file.txt` given.');
-
-        new File(new FilePath('../file.txt'));
     }
 
     public function testConstructNotFile(): void {
@@ -50,59 +30,20 @@ final class FileTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage(sprintf('The `%s` is not a file.', $path));
 
-        new File($path);
+        new File(Mockery::mock(MetadataResolver::class), $path);
     }
 
-    public function testGetContent(): void {
-        $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File($temp);
-        $path = (string) $file;
+    public function testGetMetadata(): void {
+        $metadata = Mockery::mock(MetadataResolver::class);
+        $path     = (new FilePath(__FILE__))->getNormalizedPath();
+        $file     = new File($metadata, $path);
 
-        self::assertEquals(__FILE__, $file->getContent());
-        self::assertNotFalse(file_put_contents($path, __DIR__));
-        self::assertEquals(__DIR__, file_get_contents($path));
-        self::assertEquals(__FILE__, $file->getContent());
-    }
+        $metadata
+            ->shouldReceive('get')
+            ->with($file, Metadata::class)
+            ->once()
+            ->andReturn(123);
 
-    public function testSetContent(): void {
-        $temp    = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file    = new File($temp);
-        $path    = (string) $file;
-        $meta    = new class([1, 2]) implements Metadata {
-            public function __construct(
-                /**
-                 * @var list<int>
-                 */
-                private array $value,
-            ) {
-                // empty
-            }
-
-            #[Override]
-            public function __invoke(File $file): mixed {
-                return array_shift($this->value);
-            }
-        };
-        $current = $file->getMetadata($meta);
-
-        self::assertEquals(__FILE__, $file->getContent());
-        self::assertSame($current, $file->getMetadata($meta));
-        self::assertNotFalse(file_put_contents($path, __DIR__));
-        self::assertSame($file, $file->setContent(__METHOD__));
-        self::assertEquals(__DIR__, file_get_contents($path));
-        self::assertEquals(__METHOD__, $file->getContent());
-        self::assertNotEquals($current, $file->getMetadata($meta));
-    }
-
-    public function testGetRelativePath(): void {
-        $path      = new FilePath('a/a.txt');
-        $file      = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $parent    = new Directory($file->getPath()->getParentPath()->getParentPath());
-        $directory = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-
-        self::assertEquals('..', (string) $file->getRelativePath($parent));
-        self::assertEquals('FileTest.php', (string) $file->getRelativePath($file));
-        self::assertEquals('a/a.txt', (string) $file->getRelativePath($path));
-        self::assertEquals('', (string) $file->getRelativePath($directory));
+        self::assertEquals(123, $file->getMetadata(Metadata::class));
     }
 }

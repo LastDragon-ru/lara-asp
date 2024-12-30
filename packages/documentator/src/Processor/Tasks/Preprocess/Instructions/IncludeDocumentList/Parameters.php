@@ -2,13 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as ParametersContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Symfony\Component\Finder\Finder;
 
-class Parameters implements ParametersContract, Serializable {
+class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * Directory path.

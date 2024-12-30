@@ -4,18 +4,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use ArrayAccess;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
@@ -27,6 +23,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testInvoke(): void {
@@ -50,13 +48,12 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $root     = Mockery::mock(Directory::class);
-        $file     = Mockery::mock(File::class);
-        $params   = new Parameters('...');
-        $target   = '@test';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('@test');
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
         self::assertEquals(
             <<<MARKDOWN
@@ -77,18 +74,17 @@ final class InstructionTest extends TestCase {
         }
 
         // Test
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = '@test';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('@test');
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new DependencyIsMissing($context, PrinterContract::class),
+            new DependencyIsMissing($context, $params, PrinterContract::class),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
 
     public function testInvokeNoDirective(): void {
@@ -105,18 +101,17 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver($resolver);
         });
 
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = '@test';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('@test');
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TargetIsNotDirective($context),
+            new TargetIsNotDirective($context, $params),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
 
     public function testInvokeNoDirectiveResolver(): void {
@@ -124,17 +119,16 @@ final class InstructionTest extends TestCase {
             return (new Printer())->setDirectiveResolver(null);
         });
 
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
-        $target   = '@test';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('@test');
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new TargetIsNotDirective($context),
+            new TargetIsNotDirective($context, $params),
         );
 
-        ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $this->getProcessorResult($fs, ($instance)($context, $params));
     }
 }

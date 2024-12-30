@@ -11,7 +11,7 @@ use Override;
 /**
  * @implements Metadata<?Package>
  */
-class Composer implements Metadata {
+readonly class Composer implements Metadata {
     public function __construct(
         protected ComposerJsonFactory $factory,
     ) {
@@ -21,7 +21,7 @@ class Composer implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         return $file->getExtension() === 'json'
-            ? new Package($this->factory->createFromJson($file->getContent()))
+            ? new Package($this->factory->createFromJson($file->getMetadata(Content::class)))
             : null;
     }
 }

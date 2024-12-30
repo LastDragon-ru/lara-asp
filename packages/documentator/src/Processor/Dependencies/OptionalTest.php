@@ -2,12 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -15,31 +11,30 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Optional::class)]
 final class OptionalTest extends TestCase {
-    public function testToString(): void {
+    use WithProcessor;
+
+    public function testGetPath(): void {
         $dependency = new FileReference('path/to/file');
         $optional   = new Optional($dependency);
 
-        self::assertEquals((string) $dependency, (string) $optional);
+        self::assertEquals($dependency->getPath(), $optional->getPath());
     }
 
     public function testInvoke(): void {
+        $fs         = $this->getFileSystem(__DIR__);
+        $file       = $fs->getFile(__FILE__);
         $dependency = new FileReference(__FILE__);
         $optional   = new Optional($dependency);
-        $file       = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $root       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $fs         = new FileSystem();
 
-        self::assertEquals($file, $dependency($fs, $root, $file));
-        self::assertEquals($file, $optional($fs, $root, $file));
+        self::assertEquals($file, $dependency($fs));
+        self::assertEquals($file, $optional($fs));
     }
 
     public function testInvokeNotFound(): void {
         $dependency = new FileReference('path/to/file');
         $optional   = new Optional($dependency);
-        $file       = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $root       = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $fs         = new FileSystem();
+        $fs         = $this->getFileSystem(__DIR__);
 
-        self::assertNull($optional($fs, $root, $file));
+        self::assertNull($optional($fs));
     }
 }

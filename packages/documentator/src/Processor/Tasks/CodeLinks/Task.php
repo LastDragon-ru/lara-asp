@@ -15,12 +15,11 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -28,6 +27,7 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Code as CodeNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use Override;
 use WeakMap;
+
 use function array_map;
 use function array_pop;
 use function array_values;
@@ -42,7 +42,7 @@ use function trim;
  * Searches class/method/property/etc names in `inline code` and wrap it into a
  * link to file.
  *
- * It expects that the `$root` directory is a composer project and will use
+ * It expects that the input directory is a composer project and will use
  * `psr-4` autoload rules to find class files. Classes which are not from the
  * composer will be completely ignored. If the file/class/method/etc doesn't
  * exist, the error will be thrown. To avoid the error, you can place `💀` mark
@@ -61,9 +61,6 @@ class Task implements TaskContract {
 
     public function __construct(
         protected readonly LinkFactory $factory,
-        protected readonly Markdown $markdown,
-        protected readonly Composer $composer,
-        protected readonly PhpClassComment $comment,
     ) {
         // empty
     }
@@ -80,18 +77,20 @@ class Task implements TaskContract {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(Directory $root, File $file): Generator {
+    public function __invoke(File $file): Generator {
+        // Just in case
+        yield from [];
+
         // Composer?
-        $composer = $root->getFilePath('composer.json');
-        $composer = Cast::toNullable(File::class, yield new Optional(new FileReference($composer)));
-        $composer = $composer?->getMetadata($this->composer);
+        $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
+        $composer = $composer?->getMetadata(Composer::class);
 
         if (!($composer instanceof Package)) {
             return true;
         }
 
         // Markdown?
-        $document = $file->getMetadata($this->markdown);
+        $document = $file->getMetadata(Markdown::class);
 
         if ($document === null || $document->isEmpty()) {
             return true;
@@ -105,7 +104,7 @@ class Task implements TaskContract {
         // Links
         foreach ($parsed['links'] as $token) {
             // External?
-            $paths = $token->link->getSource($root, $file, $composer);
+            $paths = $token->link->getSource($file, $composer);
 
             if ($paths === null) {
                 continue;
@@ -116,7 +115,6 @@ class Task implements TaskContract {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $path   = $root->getPath()->getPath($path);
                 $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
 
                 if ($source !== null) {
@@ -133,7 +131,7 @@ class Task implements TaskContract {
             $target = null;
 
             if ($source !== null) {
-                $target = $token->link->getTarget($root, $file, $source);
+                $target = $token->link->getTarget($file, $source);
 
                 if ($target === null && !$token->deprecated) {
                     $unresolved[] = $token;
@@ -151,16 +149,14 @@ class Task implements TaskContract {
 
             sort($unresolved);
 
-            throw new CodeLinkUnresolved($root, $file, $unresolved);
+            throw new CodeLinkUnresolved($unresolved);
         }
 
         // Mutate
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            $file->setContent(
-                (string) $document->mutate(new Changeset($changes)),
-            );
+            yield new FileSave($file, $document->mutate(new Changeset($changes)));
         }
 
         // Done

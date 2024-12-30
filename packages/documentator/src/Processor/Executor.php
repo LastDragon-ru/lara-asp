@@ -9,13 +9,11 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataError;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileTaskFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
@@ -40,7 +38,6 @@ class Executor {
 
     public function __construct(
         private readonly FileSystem $fs,
-        private readonly Directory $root,
         /**
          * @var array<array-key, string>
          */
@@ -89,7 +86,7 @@ class Executor {
 
         // Circular?
         if (isset($this->stack[$path])) {
-            throw new CircularDependency($this->root, $file, $file, array_values($this->stack));
+            throw new DependencyCircularDependency($file, array_values($this->stack));
         }
 
         // Skipped?
@@ -104,17 +101,19 @@ class Executor {
         $this->stack[$path] = $file;
 
         try {
+            $this->fs->begin();
+
             foreach ($tasks as $task) {
                 try {
                     // Run
                     $result    = false;
-                    $generator = $task($this->root, $file);
+                    $generator = $task($file);
 
                     // Dependencies?
                     if ($generator instanceof Generator) {
                         while ($generator->valid()) {
                             $dependency = $generator->current();
-                            $resolved   = $dependency($this->fs, $this->root, $file);
+                            $resolved   = $dependency($this->fs);
 
                             if ($resolved instanceof Traversable) {
                                 $resolved = new ExecutorTraversable($dependency, $resolved, $this->runDependency(...));
@@ -135,11 +134,10 @@ class Executor {
                     }
 
                     if ($result !== true) {
-                        throw new FileTaskFailed($this->root, $file, $task);
+                        throw new TaskFailed($file, $task);
                     }
-                } catch (FileMetadataError $exception) {
-                    throw new FileMetadataFailed(
-                        $this->root,
+                } catch (FileMetadataUnresolvable $exception) {
+                    throw new MetadataUnresolvable(
                         $exception->getTarget(),
                         $exception->getMetadata(),
                         $exception->getPrevious(),
@@ -147,13 +145,11 @@ class Executor {
                 } catch (ProcessorError $exception) {
                     throw $exception;
                 } catch (Exception $exception) {
-                    throw new FileTaskFailed($this->root, $file, $task, $exception);
+                    throw new TaskFailed($file, $task, $exception);
                 }
             }
 
-            if (!$this->fs->save($file)) {
-                throw new FileSaveFailed($this->root, $file);
-            }
+            $this->fs->commit();
         } catch (Throwable $exception) {
             throw $exception;
         } finally {
@@ -198,13 +194,11 @@ class Executor {
 
         // Call
         $start = microtime(true);
-        $path  = match (true) {
-            $file instanceof Dependency => new FilePath((string) $file),
-            default                     => $file->getPath(),
-        };
-        $path = $this->root->getRelativePath($path);
+        $path  = $file->getPath();
 
-        ($this->listener)($path, $result, $duration);
+        if ($path instanceof FilePath) {
+            ($this->listener)($path, $result, $duration);
+        }
 
         return microtime(true) - $start;
     }
@@ -216,13 +210,12 @@ class Executor {
         }
 
         // Outside?
-        $path = $this->root->getRelativePath($file);
-
-        if (!$this->root->isInside($file)) {
+        if (!$this->fs->input->isInside($file->getPath())) {
             return true;
         }
 
         // Excluded?
+        $path     = $this->fs->input->getRelativePath($file->getPath());
         $excluded = false;
 
         foreach ($this->exclude as $regexp) {

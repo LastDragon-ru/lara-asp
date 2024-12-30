@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Process\Factory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Exceptions\TargetExecFailed;
 use Override;
 
@@ -42,17 +43,17 @@ class Instruction implements InstructionContract {
     }
 
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): string {
+    public function __invoke(Context $context, InstructionParameters $parameters): string {
         try {
             return trim(
                 $this->factory->newPendingProcess()
-                    ->path((string) $context->file->getPath()->getDirectoryPath())
-                    ->run($target)
+                    ->path((string) $context->file->getDirectoryPath())
+                    ->run($parameters->target)
                     ->throw()
                     ->output(),
             );
         } catch (Exception $exception) {
-            throw new TargetExecFailed($context, $exception);
+            throw new TargetExecFailed($context, $parameters, $exception);
         }
     }
 }

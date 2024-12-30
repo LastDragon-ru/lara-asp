@@ -8,8 +8,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Exceptions\ExampleFailed;
 use Override;
@@ -63,11 +65,12 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         // Content
+        $target   = $context->file->getFilePath($parameters->target);
         $target   = Cast::to(File::class, yield new FileReference($target));
         $language = $this->getLanguage($context, $target, $parameters);
-        $content  = trim($target->getContent());
+        $content  = trim($target->getMetadata(Content::class));
         $content  = <<<CODE
             ```{$language}
             $content
@@ -80,7 +83,7 @@ class Instruction implements InstructionContract {
             try {
                 $output = trim((string) ($this->runner)($target));
             } catch (Throwable $exception) {
-                throw new ExampleFailed($context, $target, $exception);
+                throw new ExampleFailed($context, $parameters, $exception);
             }
 
             // Markdown?

@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassMarkdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
 use Override;
 
@@ -22,9 +23,7 @@ use Override;
  * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
-    public function __construct(
-        protected readonly PhpClassMarkdown $markdown,
-    ) {
+    public function __construct() {
         // empty
     }
 
@@ -47,13 +46,14 @@ class Instruction implements InstructionContract {
      * @return Generator<mixed, Dependency<*>, mixed, Document|string>
      */
     #[Override]
-    public function __invoke(Context $context, string $target, mixed $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         // Class?
+        $target   = $context->file->getFilePath($parameters->target);
         $target   = Cast::to(File::class, yield new FileReference($target));
-        $document = $target->getMetadata($this->markdown);
+        $document = $target->getMetadata(PhpClassMarkdown::class);
 
         if ($document === null) {
-            throw new TargetIsNotValidPhpFile($context);
+            throw new TargetIsNotValidPhpFile($context, $parameters);
         }
 
         // Parse

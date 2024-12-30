@@ -3,9 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PhpParser\Node;
@@ -22,32 +24,33 @@ use function array_map;
 #[CoversClass(ClassConstantLink::class)]
 final class ClassConstantLinkTest extends TestCase {
     public function testToString(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class::Constant', (string) new ClassConstantLink($comment, 'Class', 'Constant'));
-        self::assertEquals('App\\Class::Constant', (string) new ClassConstantLink($comment, 'App\\Class', 'Constant'));
+        self::assertEquals('Class::Constant', (string) new ClassConstantLink('Class', 'Constant'));
+        self::assertEquals('App\\Class::Constant', (string) new ClassConstantLink('App\\Class', 'Constant'));
         self::assertEquals(
             '\\App\\Class::Constant',
-            (string) new ClassConstantLink($comment, '\\App\\Class', 'Constant'),
+            (string) new ClassConstantLink('\\App\\Class', 'Constant'),
         );
     }
 
     public function testGetTitle(): void {
-        $comment = Mockery::mock(PhpClassComment::class);
-
-        self::assertEquals('Class::Constant', (new ClassConstantLink($comment, 'Class', 'Constant'))->getTitle());
-        self::assertEquals('Class::Constant', (new ClassConstantLink($comment, 'App\\Class', 'Constant'))->getTitle());
+        self::assertEquals('Class::Constant', (new ClassConstantLink('Class', 'Constant'))->getTitle());
+        self::assertEquals('Class::Constant', (new ClassConstantLink('App\\Class', 'Constant'))->getTitle());
         self::assertEquals(
             'Class::Constant',
-            (new ClassConstantLink($comment, '\\App\\Class', 'Constant'))->getTitle(),
+            (new ClassConstantLink('\\App\\Class', 'Constant'))->getTitle(),
         );
     }
 
     public function testGetTargetNodeClassConstant(): void {
-        $file = Mockery::mock(File::class);
+        $storage = $this->app()->make(MetadataStorage::class);
+        $file    = Mockery::mock(File::class, MockProperties::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getContent')
+            ->shouldUseProperty('metadata')
+            ->value($storage);
+        $file
+            ->shouldReceive('getMetadata')
+            ->with(Content::class)
             ->once()
             ->andReturn(
                 <<<'PHP'
@@ -59,15 +62,14 @@ final class ClassConstantLinkTest extends TestCase {
                 PHP,
             );
 
-        $comment = Mockery::mock(PhpClassComment::class);
-        $link    = new class ($comment, 'A', 'Constant') extends ClassConstantLink {
+        $link = new class ('A', 'Constant') extends ClassConstantLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
                 return parent::getTargetNode($class);
             }
         };
 
-        $class = $file->getMetadata($this->app()->make(PhpClass::class));
+        $class = $file->getMetadata(PhpClass::class);
 
         self::assertNotNull($class);
 
@@ -84,10 +86,15 @@ final class ClassConstantLinkTest extends TestCase {
     }
 
     public function testGetTargetNodeEnum(): void {
-        $file = Mockery::mock(File::class);
+        $storage = $this->app()->make(MetadataStorage::class);
+        $file    = Mockery::mock(File::class, MockProperties::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getContent')
+            ->shouldUseProperty('metadata')
+            ->value($storage);
+        $file
+            ->shouldReceive('getMetadata')
+            ->with(Content::class)
             ->once()
             ->andReturn(
                 <<<'PHP'
@@ -99,15 +106,14 @@ final class ClassConstantLinkTest extends TestCase {
                 PHP,
             );
 
-        $comment = Mockery::mock(PhpClassComment::class);
-        $link    = new class ($comment, 'A', 'A') extends ClassConstantLink {
+        $link = new class ('A', 'A') extends ClassConstantLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
                 return parent::getTargetNode($class);
             }
         };
 
-        $class = $file->getMetadata($this->app()->make(PhpClass::class));
+        $class = $file->getMetadata(PhpClass::class);
 
         self::assertNotNull($class);
 

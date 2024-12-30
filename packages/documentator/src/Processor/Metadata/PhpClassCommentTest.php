@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -13,6 +13,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(PhpDocBlock::class)]
 final class PhpClassCommentTest extends TestCase {
+    use WithProcessor;
+
     public function testInvoke(): void {
         $content  = <<<'PHP'
         <?php declare(strict_types = 1);
@@ -31,10 +33,9 @@ final class PhpClassCommentTest extends TestCase {
             // empty
         }
         PHP;
-        $file     = new File(
-            (new FilePath(self::getTempFile($content)->getPathname()))->getNormalizedPath(),
-        );
-        $factory  = new PhpClassComment(new PhpClass());
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(self::getTempFile($content)->getPathname());
+        $factory  = new PhpClassComment();
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
@@ -49,8 +50,12 @@ final class PhpClassCommentTest extends TestCase {
     }
 
     public function testInvokeNotPhp(): void {
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $factory  = new PhpClassComment(
+        $fs      = $this->getFileSystem(__DIR__);
+        $file    = $fs->getFile(self::getTempFile()->getPathname());
+        $factory = new PhpClassComment();
+
+        $this->override(
+            PhpClass::class,
             new class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {
@@ -58,6 +63,7 @@ final class PhpClassCommentTest extends TestCase {
                 }
             },
         );
+
         $metadata = $factory($file);
 
         self::assertNull($metadata);

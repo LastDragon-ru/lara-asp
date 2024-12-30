@@ -11,9 +11,9 @@ use Override;
 /**
  * @implements Metadata<?Document>
  */
-class Markdown implements Metadata {
+readonly class Markdown implements Metadata {
     public function __construct(
-        protected readonly MarkdownContract $markdown,
+        protected MarkdownContract $markdown,
     ) {
         // empty
     }
@@ -21,7 +21,7 @@ class Markdown implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         return $file->getExtension() === 'md'
-            ? $this->markdown->parse($file->getContent(), $file->getPath())
+            ? $this->markdown->parse($file->getMetadata(Content::class), $file->getPath())
             : null;
     }
 }

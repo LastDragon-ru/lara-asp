@@ -8,15 +8,14 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
 use function trim;
 
 /**
@@ -24,27 +23,28 @@ use function trim;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param Closure(self, Context): Exception|string $expected
+     * @param Closure(self, Context, Parameters): Exception|string $expected
      */
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
-        $root     = new Directory($path->getDirectoryPath());
-        $file     = new File($path);
-        $target   = $file->getName();
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $file     = $fs->getFile($path);
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
-            self::expectExceptionObject($expected($this, $context));
+            self::expectExceptionObject($expected($this, $context, $params));
         } else {
             $expected = trim(self::getTestData()->content($expected));
         }
 
-        $actual = ProcessorHelper::runInstruction($instance, $context, $target, $params);
+        $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
 
         if ($params->summary && $params->description) {
             self::assertInstanceOf(Document::class, $actual);
@@ -59,41 +59,41 @@ final class InstructionTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Closure(self, Context): Exception|string, string, Parameters}>
+     * @return array<string, array{Closure(self, Context, Parameters): Exception|string, string, Parameters}>
      */
     public static function dataProviderProcess(): array {
         return [
             'default'          => [
                 'ValidExpected.txt',
                 'Valid.txt',
-                new Parameters('...'),
+                new Parameters('Valid.txt'),
             ],
             'with summary'     => [
                 'ValidWithSummaryExpected.txt',
                 'Valid.txt',
-                new Parameters('...', summary: true),
+                new Parameters('Valid.txt', summary: true),
             ],
             'only summary'     => [
                 'ValidOnlySummaryExpected.txt',
                 'Valid.txt',
-                new Parameters('...', summary: true, description: false),
+                new Parameters('Valid.txt', summary: true, description: false),
             ],
             'only description' => [
                 'ValidOnlyDescriptionExpected.txt',
                 'Valid.txt',
-                new Parameters('...', summary: false, description: true),
+                new Parameters('Valid.txt', summary: false, description: true),
             ],
             'no docblock'      => [
                 'NoDocBlockExpected.txt',
                 'NoDocBlock.txt',
-                new Parameters('...'),
+                new Parameters('NoDocBlock.txt'),
             ],
             'invalid'          => [
-                static function (self $test, Context $context): Exception {
-                    return new TargetIsNotValidPhpFile($context);
+                static function (self $test, Context $context, Parameters $parameters): Exception {
+                    return new TargetIsNotValidPhpFile($context, $parameters);
                 },
                 'Invalid.txt',
-                new Parameters('...'),
+                new Parameters('Invalid.txt'),
             ],
         ];
     }

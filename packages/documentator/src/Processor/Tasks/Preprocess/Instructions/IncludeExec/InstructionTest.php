@@ -4,16 +4,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -22,13 +18,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     public function testInvoke(): void {
-        $root     = new Directory((new DirectoryPath(__DIR__))->getNormalizedPath());
-        $file     = new File((new FilePath(__FILE__))->getNormalizedPath());
-        $params   = new Parameters('...');
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile(__FILE__);
+        $params   = new Parameters('command to execute');
         $expected = 'result';
-        $command  = 'command to execute';
-        $context  = new Context($root, $file, Mockery::mock(Document::class), new Node(), new Nop());
+        $command  = $params->target;
+        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
@@ -40,10 +38,10 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, ProcessorHelper::runInstruction($instance, $context, $command, $params));
+        self::assertEquals($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
 
-        $factory->assertRan(static function (PendingProcess $process) use ($root, $command): bool {
-            return $process->path === (string) $root->getPath()
+        $factory->assertRan(static function (PendingProcess $process) use ($fs, $command): bool {
+            return $process->path === (string) $fs->input
                 && $process->command === $command;
         });
     }

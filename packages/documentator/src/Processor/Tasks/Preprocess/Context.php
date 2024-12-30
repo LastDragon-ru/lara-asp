@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
@@ -11,12 +10,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 class Context {
     public function __construct(
-        public readonly Directory $root,
         public readonly File $file,
         public readonly Document $document,
         public readonly Node $node,
@@ -52,8 +49,7 @@ class Context {
     }
 
     private function getMutation(Document $document): Mutation {
-        $path = $this->file->getPath();
-        $path = $path->getPath(new FilePath($document->path?->getName() ?? ''));
+        $path = $this->file->getFilePath($document->path?->getName() ?? '');
 
         return new Composite(
             new Move($path),

@@ -6,17 +6,17 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\ProcessorHelper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
 use function json_decode;
 use function json_encode;
+
 use const JSON_THROW_ON_ERROR;
 
 /**
@@ -24,14 +24,16 @@ use const JSON_THROW_ON_ERROR;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $path, string $content): void {
         // Prepare
         $path        = (new FilePath(self::getTestData()->path($path)))->getNormalizedPath();
-        $root        = new Directory($path->getDirectoryPath());
-        $file        = new File($path);
+        $fs          = $this->getFileSystem($path->getDirectoryPath());
+        $file        = $fs->getFile($path);
         $document    = $this->app()->make(Markdown::class)->parse($content, $path);
         $instruction = (new Query())->where(Query::type(Node::class))->findOne($document->node);
 
@@ -48,9 +50,9 @@ final class InstructionTest extends TestCase {
         $parameters           = $this->app()->make(Serializer::class)->deserialize(Parameters::class, $parameters);
 
         // Test
-        $context  = new Context($root, $file, $document, $instruction, new Nop());
+        $context  = new Context($file, $document, $instruction, new Nop());
         $instance = $this->app()->make(Instruction::class);
-        $actual   = ProcessorHelper::runInstruction($instance, $context, $target, $parameters);
+        $actual   = $this->getProcessorResult($fs, ($instance)($context, $parameters));
 
         self::assertEquals($expected, $actual);
     }

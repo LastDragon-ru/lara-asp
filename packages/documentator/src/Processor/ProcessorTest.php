@@ -9,9 +9,8 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CircularDependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
@@ -19,6 +18,7 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
+use function sprintf;
 
 /**
  * @internal
@@ -27,6 +27,10 @@ use function array_map;
 #[CoversClass(Executor::class)]
 final class ProcessorTest extends TestCase {
     public function testRun(): void {
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $count  = 0;
+        $events = [];
+
         $mock = Mockery::mock(Task::class);
         $mock
             ->shouldReceive('getExtensions')
@@ -56,18 +60,14 @@ final class ProcessorTest extends TestCase {
             ],
         ]);
 
-        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $count  = 0;
-        $events = [];
-
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($mock)
             ->task($taskA)
             ->task($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
-                $root,
-                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                $input,
+                listener: static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
                 },
@@ -75,17 +75,17 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'b/a/ba.txt'         => Result::Success,
-                'c.txt'              => Result::Success,
-                'b/b/bb.txt'         => Result::Success,
-                'a/a.txt'            => Result::Success,
-                'a/a/aa.txt'         => Result::Success,
-                'a/b/ab.txt'         => Result::Success,
-                'b/b.txt'            => Result::Success,
-                'c.htm'              => Result::Success,
-                'c.html'             => Result::Skipped,
-                'a/excluded.txt'     => Result::Skipped,
-                '../../../README.md' => Result::Skipped,
+                (string) $input->getFilePath('b/a/ba.txt')         => Result::Success,
+                (string) $input->getFilePath('c.txt')              => Result::Success,
+                (string) $input->getFilePath('b/b/bb.txt')         => Result::Success,
+                (string) $input->getFilePath('a/a.txt')            => Result::Success,
+                (string) $input->getFilePath('a/a/aa.txt')         => Result::Success,
+                (string) $input->getFilePath('a/b/ab.txt')         => Result::Success,
+                (string) $input->getFilePath('b/b.txt')            => Result::Success,
+                (string) $input->getFilePath('c.htm')              => Result::Success,
+                (string) $input->getFilePath('c.html')             => Result::Skipped,
+                (string) $input->getFilePath('a/excluded.txt')     => Result::Skipped,
+                (string) $input->getFilePath('../../../README.md') => Result::Skipped,
             ],
             $events,
         );
@@ -93,7 +93,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'c.htm',
+                    (string) $input->getFilePath('c.htm'),
                     [],
                 ],
             ],
@@ -102,40 +102,40 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'b/a/ba.txt',
+                    (string) $input->getFilePath('b/a/ba.txt'),
                     [],
                 ],
                 [
-                    'c.txt',
+                    (string) $input->getFilePath('c.txt'),
                     [],
                 ],
                 [
-                    'b/b/bb.txt',
+                    (string) $input->getFilePath('b/b/bb.txt'),
                     [
-                        '../../b/a/ba.txt'         => 'b/a/ba.txt',
-                        '../../c.txt'              => 'c.txt',
-                        '../../../../../README.md' => '../../../README.md',
+                        '../../b/a/ba.txt'         => (string) $input->getFilePath('b/a/ba.txt'),
+                        '../../c.txt'              => (string) $input->getFilePath('c.txt'),
+                        '../../../../../README.md' => (string) $input->getFilePath('../../../README.md'),
                     ],
                 ],
                 [
-                    'a/a.txt',
+                    (string) $input->getFilePath('a/a.txt'),
                     [
-                        '../b/b/bb.txt' => 'b/b/bb.txt',
-                        '../c.txt'      => 'c.txt',
-                        '../c.html'     => 'c.html',
-                        'excluded.txt'  => 'a/excluded.txt',
+                        '../b/b/bb.txt' => (string) $input->getFilePath('b/b/bb.txt'),
+                        '../c.txt'      => (string) $input->getFilePath('c.txt'),
+                        '../c.html'     => (string) $input->getFilePath('c.html'),
+                        'excluded.txt'  => (string) $input->getFilePath('a/excluded.txt'),
                     ],
                 ],
                 [
-                    'a/a/aa.txt',
+                    (string) $input->getFilePath('a/a/aa.txt'),
                     [],
                 ],
                 [
-                    'a/b/ab.txt',
+                    (string) $input->getFilePath('a/b/ab.txt'),
                     [],
                 ],
                 [
-                    'b/b.txt',
+                    (string) $input->getFilePath('b/b.txt'),
                     [],
                 ],
             ],
@@ -145,15 +145,15 @@ final class ProcessorTest extends TestCase {
 
     public function testRunFile(): void {
         $task   = new ProcessorTest__Task();
-        $path   = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $count  = 0;
         $events = [];
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
             ->run(
-                $path,
-                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                $input,
+                listener: static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
                 },
@@ -161,7 +161,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'excluded.txt' => Result::Success,
+                (string) $input->getFilePath('excluded.txt') => Result::Success,
             ],
             $events,
         );
@@ -169,7 +169,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'excluded.txt',
+                    (string) $input->getFilePath('excluded.txt'),
                     [
                         // empty
                     ],
@@ -180,7 +180,10 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunWildcard(): void {
-        $taskA = new class([
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $count  = 0;
+        $events = [];
+        $taskA  = new class([
             'b.html' => [
                 '../../../../README.md',
                 '../a/excluded.txt',
@@ -194,7 +197,7 @@ final class ProcessorTest extends TestCase {
                 return ['html'];
             }
         };
-        $taskB = new class() extends ProcessorTest__Task {
+        $taskB  = new class() extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
@@ -204,17 +207,13 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        $root   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $count  = 0;
-        $events = [];
-
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($taskA)
             ->task($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->run(
-                $root,
-                static function (FilePath $path, Result $result) use (&$count, &$events): void {
+                $input,
+                listener: static function (FilePath $path, Result $result) use (&$count, &$events): void {
                     $events[(string) $path] = $result;
                     $count++;
                 },
@@ -222,19 +221,19 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                'b/a/ba.txt'         => Result::Success,
-                'c.txt'              => Result::Success,
-                'b/b/bb.txt'         => Result::Success,
-                'a/a.txt'            => Result::Success,
-                'a/a/aa.txt'         => Result::Success,
-                'a/b/ab.txt'         => Result::Success,
-                'b/b.txt'            => Result::Success,
-                'c.htm'              => Result::Success,
-                'c.html'             => Result::Success,
-                'a/excluded.txt'     => Result::Skipped,
-                '../../../README.md' => Result::Skipped,
-                'a/a.html'           => Result::Success,
-                'b/b.html'           => Result::Success,
+                (string) $input->getFilePath('b/a/ba.txt')         => Result::Success,
+                (string) $input->getFilePath('c.txt')              => Result::Success,
+                (string) $input->getFilePath('b/b/bb.txt')         => Result::Success,
+                (string) $input->getFilePath('a/a.txt')            => Result::Success,
+                (string) $input->getFilePath('a/a/aa.txt')         => Result::Success,
+                (string) $input->getFilePath('a/b/ab.txt')         => Result::Success,
+                (string) $input->getFilePath('b/b.txt')            => Result::Success,
+                (string) $input->getFilePath('c.htm')              => Result::Success,
+                (string) $input->getFilePath('c.html')             => Result::Success,
+                (string) $input->getFilePath('a/excluded.txt')     => Result::Skipped,
+                (string) $input->getFilePath('../../../README.md') => Result::Skipped,
+                (string) $input->getFilePath('a/a.html')           => Result::Success,
+                (string) $input->getFilePath('b/b.html')           => Result::Success,
             ],
             $events,
         );
@@ -242,18 +241,18 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'a/a.html',
+                    (string) $input->getFilePath('a/a.html'),
                     [],
                 ],
                 [
-                    'b/b.html',
+                    (string) $input->getFilePath('b/b.html'),
                     [
-                        '../../../../README.md' => '../../../README.md',
-                        '../a/excluded.txt'     => 'a/excluded.txt',
+                        '../../../../README.md' => (string) $input->getFilePath('../../../README.md'),
+                        '../a/excluded.txt'     => (string) $input->getFilePath('a/excluded.txt'),
                     ],
                 ],
                 [
-                    'c.html',
+                    (string) $input->getFilePath('c.html'),
                     [],
                 ],
             ],
@@ -262,47 +261,47 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    'a/a.html',
+                    (string) $input->getFilePath('a/a.html'),
                     [],
                 ],
                 [
-                    'a/a.txt',
+                    (string) $input->getFilePath('a/a.txt'),
                     [],
                 ],
                 [
-                    'a/a/aa.txt',
+                    (string) $input->getFilePath('a/a/aa.txt'),
                     [],
                 ],
                 [
-                    'a/b/ab.txt',
+                    (string) $input->getFilePath('a/b/ab.txt'),
                     [],
                 ],
                 [
-                    'b/a/ba.txt',
+                    (string) $input->getFilePath('b/a/ba.txt'),
                     [],
                 ],
                 [
-                    'b/b.html',
+                    (string) $input->getFilePath('b/b.html'),
                     [],
                 ],
                 [
-                    'b/b.txt',
+                    (string) $input->getFilePath('b/b.txt'),
                     [],
                 ],
                 [
-                    'b/b/bb.txt',
+                    (string) $input->getFilePath('b/b/bb.txt'),
                     [],
                 ],
                 [
-                    'c.htm',
+                    (string) $input->getFilePath('c.htm'),
                     [],
                 ],
                 [
-                    'c.html',
+                    (string) $input->getFilePath('c.html'),
                     [],
                 ],
                 [
-                    'c.txt',
+                    (string) $input->getFilePath('c.txt'),
                     [],
                 ],
             ],
@@ -311,67 +310,68 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunFileNotFound(): void {
-        $task = new ProcessorTest__Task(['*' => ['404.html']]);
-        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task(['*' => ['404.html']]);
 
-        self::expectException(DependencyNotFound::class);
-        self::expectExceptionMessage("Dependency `404.html` of `a/a.txt` not found (root: `{$root}`).");
+        self::expectException(DependencyUnresolvable::class);
+        self::expectExceptionMessage(
+            sprintf(
+                'Dependency `%s` not found.',
+                $input->getFilePath('a/404.html'),
+            ),
+        );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
-            ->run($root);
+            ->run($input);
     }
 
     public function testRunCircularDependency(): void {
-        $task = new ProcessorTest__Task([
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task([
             'a.txt'  => ['../b/b.txt'],
             'b.txt'  => ['../b/a/ba.txt'],
             'ba.txt' => ['../../c.txt'],
             'c.txt'  => ['a/a.txt'],
         ]);
-        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
-        self::expectException(CircularDependency::class);
+        self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
             <<<MESSAGE
             Circular Dependency detected:
 
-            * a/a.txt
-            * b/b.txt
-            * b/a/ba.txt
-            * c.txt
-            ! a/a.txt
-
-            (root: `{$root}`)
+            * {$input}/a/a.txt
+            * {$input}/b/b.txt
+            * {$input}/b/a/ba.txt
+            * {$input}/c.txt
+            ! {$input}/a/a.txt
             MESSAGE,
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
-            ->run($root);
+            ->run($input);
     }
 
     public function testRunCircularDependencySelf(): void {
-        $task = new ProcessorTest__Task([
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task([
             'c.txt' => ['c.txt'],
         ]);
-        $root = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
 
-        self::expectException(CircularDependency::class);
+        self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
             <<<MESSAGE
             Circular Dependency detected:
 
-            * c.txt
-            ! c.txt
-
-            (root: `{$root}`)
+            * {$input}/c.txt
+            ! {$input}/c.txt
             MESSAGE,
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)
-            ->run($root);
+            ->run($input);
     }
 }
 
@@ -409,20 +409,20 @@ class ProcessorTest__Task implements Task {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(Directory $root, File $file): Generator {
+    public function __invoke(File $file): Generator {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = yield new FileReference($dependency);
+            $resolved[$dependency] = yield new FileReference($file->getFilePath($dependency));
         }
 
         $this->processed[] = [
-            (string) $root->getRelativePath($file),
+            (string) $file,
             array_map(
-                static function (mixed $file) use ($root): mixed {
+                static function (mixed $file): string {
                     return (string) match (true) {
-                        $file instanceof File => $root->getRelativePath($file),
+                        $file instanceof File => (string) $file,
                         default               => null,
                     };
                 },
