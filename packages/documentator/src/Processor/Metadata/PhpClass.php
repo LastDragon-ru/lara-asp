@@ -28,7 +28,7 @@ class PhpClass implements Metadata {
     #[Override]
     public function __invoke(File $file): mixed {
         $class    = null;
-        $content  = $file->getContent();
+        $content  = $file->getMetadata(Content::class);
         $resolver = new NameResolver();
 
         try {

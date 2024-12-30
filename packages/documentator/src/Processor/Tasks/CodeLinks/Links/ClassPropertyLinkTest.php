@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
@@ -49,7 +50,8 @@ final class ClassPropertyLinkTest extends TestCase {
             ->shouldUseProperty('metadata')
             ->value($storage);
         $file
-            ->shouldReceive('getContent')
+            ->shouldReceive('getMetadata')
+            ->with(Content::class)
             ->once()
             ->andReturn(
                 <<<'PHP'
@@ -92,7 +94,8 @@ final class ClassPropertyLinkTest extends TestCase {
             ->shouldUseProperty('metadata')
             ->value($storage);
         $file
-            ->shouldReceive('getContent')
+            ->shouldReceive('getMetadata')
+            ->with(Content::class)
             ->once()
             ->andReturn(
                 <<<'PHP'

@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 
 /**
  * @phpstan-require-extends TestCase
@@ -18,7 +19,7 @@ trait WithProcessor {
 
     protected function getFileSystem(DirectoryPath|string $input): FileSystem {
         return new FileSystem(
-            $this->app()->make(ContainerResolver::class),
+            new MetadataStorage($this->app()->make(ContainerResolver::class)),
             ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath(),
         );
     }

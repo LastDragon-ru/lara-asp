@@ -18,7 +18,7 @@ class FileMetadataUnresolvable extends FileSystemError {
         protected readonly string $metadata,
         Throwable $previous,
     ) {
-        parent::__construct('', $previous);
+        parent::__construct('@internal', $previous);
     }
 
     public function getTarget(): File {

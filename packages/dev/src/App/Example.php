@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\ConfigurationResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LogicException;
@@ -59,7 +60,7 @@ final class Example implements Runner {
     #[Override]
     public function __invoke(File $file): ?string {
         // Runnable?
-        if ($file->getExtension() !== 'php' || !str_contains($file->getContent(), 'Example::')) {
+        if ($file->getExtension() !== 'php' || !str_contains($file->getMetadata(Content::class), 'Example::')) {
             return null;
         }
 
@@ -136,7 +137,7 @@ final class Example implements Runner {
         }
 
         // Extract first arg
-        $lines  = Text::getLines(self::$file?->getContent() ?? '');
+        $lines  = Text::getLines(self::$file?->getMetadata(Content::class) ?? '');
         $code   = implode("\n", array_slice($lines, $context['line'] - 1));
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         $stmts  = (array) $parser->parse("<?php\n{$code}", new Collecting());

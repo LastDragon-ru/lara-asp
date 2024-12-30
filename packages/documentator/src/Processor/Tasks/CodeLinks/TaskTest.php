@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown as MarkdownImpl;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\ClassConstantLink;
@@ -43,12 +44,10 @@ final class TaskTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
-        $path       = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $fs         = $this->getFileSystem($path->getDirectoryPath());
-        $file       = $fs->getFile($path);
-        $task       = $this->app()->make(Task::class);
-        $input      = $path->getDirectoryPath();
-        $filesystem = $this->getFileSystem($input);
+        $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
+        $fs   = $this->getFileSystem($path->getDirectoryPath());
+        $file = $fs->getFile($path);
+        $task = $this->app()->make(Task::class);
 
         if (!is_callable($expected)) {
             $expected = self::getTestData()->content($expected);
@@ -56,10 +55,10 @@ final class TaskTest extends TestCase {
             self::expectExceptionObject($expected());
         }
 
-        $actual = $this->getProcessorResult($filesystem, ($task)($file));
+        $actual = $this->getProcessorResult($fs, ($task)($file));
 
         self::assertTrue($actual);
-        self::assertEquals($expected, $file->getContent());
+        self::assertEquals($expected, $file->getMetadata(Content::class));
     }
 
     public function testParse(): void {

@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Write;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
@@ -76,6 +77,9 @@ class Task implements TaskContract {
      */
     #[Override]
     public function __invoke(File $file): Generator {
+        // Just in case
+        yield from [];
+
         // Composer?
         $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
         $composer = $composer?->getMetadata(Composer::class);
@@ -151,9 +155,7 @@ class Task implements TaskContract {
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            $file->setContent(
-                (string) $document->mutate(new Changeset($changes)),
-            );
+            yield new Write($file, $document->mutate(new Changeset($changes)));
         }
 
         // Done

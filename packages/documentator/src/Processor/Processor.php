@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 use Symfony\Component\Finder\Glob;
 
 use function array_map;
@@ -101,7 +102,7 @@ class Processor {
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
 
         try {
-            $filesystem = new FileSystem($this->container, $input->getDirectoryPath(), $output);
+            $filesystem = new FileSystem(new MetadataStorage($this->container), $input->getDirectoryPath(), $output);
             $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
             $executor   = new Executor($filesystem, $exclude, $this->tasks, $iterator, $listener);
 

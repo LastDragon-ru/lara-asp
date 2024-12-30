@@ -9,12 +9,15 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownCo
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -153,47 +156,36 @@ final class TaskTest extends TestCase {
     }
 
     public function testInvoke(): void {
-        $task   = $this->app()->make(Task::class)
+        $task = $this->app()->make(Task::class)
             ->addInstruction(TaskTest__EmptyInstruction::class)
             ->addInstruction(TaskTest__TestInstruction::class)
             ->addInstruction(TaskTest__DocumentInstruction::class);
-        $actual = null;
-        $path   = new FilePath('path/to/file.md');
-        $file   = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('setContent')
-            ->once()
-            ->andReturnUsing(
-                static function (string $content) use ($file, &$actual): File {
-                    $actual = $content;
 
-                    return $file;
-                },
-            );
+        $metadata = $this->app()->make(MetadataStorage::class);
+        $path     = new FilePath('path/to/file.md');
+        $file     = Mockery::mock(File::class, MockProperties::class);
+        $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
-            ->with(Markdown::class)
-            ->once()
-            ->andReturnUsing(
-                function () use ($path): Document {
-                    return $this->app()->make(MarkdownContract::class)->parse(static::MARKDOWN, $path);
-                },
-            );
+            ->shouldUseProperty('path')
+            ->value($path);
         $file
-            ->shouldReceive('getFilePath')
-            ->once()
-            ->andReturn(
-                $path,
-            );
-        $file
-            ->shouldReceive('getRelativePath')
-            ->once()
-            ->andReturn(
-                new FilePath('path/to/file.md'),
-            );
+            ->shouldUseProperty('metadata')
+            ->value($metadata);
 
-        $filesystem = $this->getFileSystem(__DIR__);
-        $result     = $this->getProcessorResult($filesystem, ($task)($file));
+        $metadata->set($file, Content::class, static::MARKDOWN);
+
+        $actual     = '';
+        $filesystem = Mockery::mock(FileSystem::class);
+        $filesystem
+            ->shouldReceive('write')
+            ->once()
+            ->andReturnUsing(static function (mixed $path, string $content) use ($file, &$actual): File {
+                $actual = $content;
+
+                return $file;
+            });
+
+        $result = $this->getProcessorResult($filesystem, ($task)($file));
 
         self::assertTrue($result);
         self::assertEquals(

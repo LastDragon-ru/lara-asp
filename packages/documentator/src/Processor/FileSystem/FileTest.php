@@ -4,12 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function file_get_contents;
-use function file_put_contents;
 use function sprintf;
 
 /**
@@ -34,26 +33,17 @@ final class FileTest extends TestCase {
         new File(Mockery::mock(MetadataResolver::class), $path);
     }
 
-    public function testGetContent(): void {
-        $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File(Mockery::mock(MetadataResolver::class), $temp);
-        $path = (string) $file;
+    public function testGetMetadata(): void {
+        $metadata = Mockery::mock(MetadataResolver::class);
+        $path     = (new FilePath(__FILE__))->getNormalizedPath();
+        $file     = new File($metadata, $path);
 
-        self::assertEquals(__FILE__, $file->getContent());
-        self::assertNotFalse(file_put_contents($path, __DIR__));
-        self::assertEquals(__DIR__, file_get_contents($path));
-        self::assertEquals(__FILE__, $file->getContent());
-    }
+        $metadata
+            ->shouldReceive('get')
+            ->with($file, Metadata::class)
+            ->once()
+            ->andReturn(123);
 
-    public function testSetContent(): void {
-        $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = new File(Mockery::mock(MetadataResolver::class), $temp);
-        $path = (string) $file;
-
-        self::assertEquals(__FILE__, $file->getContent());
-        self::assertNotFalse(file_put_contents($path, __DIR__));
-        self::assertSame($file, $file->setContent(__METHOD__));
-        self::assertEquals(__DIR__, file_get_contents($path));
-        self::assertEquals(__METHOD__, $file->getContent());
+        self::assertEquals(123, $file->getMetadata(Metadata::class));
     }
 }

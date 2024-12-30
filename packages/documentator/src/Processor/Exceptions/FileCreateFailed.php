@@ -7,14 +7,14 @@ use Throwable;
 
 use function sprintf;
 
-class FileSaveFailed extends FileSystemError {
+class FileCreateFailed extends FileSystemError {
     public function __construct(
         protected readonly FilePath|string $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to save `%s` file.',
+                'Failed to create `%s` file.',
                 $this->target,
             ),
             $previous,

@@ -2,17 +2,21 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
+use Exception;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
 use function basename;
-use function file_get_contents;
 use function iterator_to_array;
 
 /**
@@ -240,32 +244,174 @@ final class FileSystemTest extends TestCase {
         );
     }
 
-    public function testSaveInsideRoot(): void {
-        $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $fs   = $this->getFileSystem($temp->getDirectoryPath());
-        $file = $fs->getFile($temp);
+    public function testWriteFile(): void {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path       = $input->getFilePath('file.md');
+        $file       = Mockery::mock(File::class);
+        $content    = 'content';
+        $metadata   = Mockery::mock(MetadataStorage::class);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+        $filesystem
+            ->shouldReceive('save')
+            ->never();
+        $filesystem
+            ->shouldReceive('change')
+            ->with($file, $content)
+            ->once()
+            ->andReturns();
 
-        self::assertTrue($fs->save($file)); // because no changes
+        $metadata
+            ->shouldReceive('reset')
+            ->with($file)
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('has')
+            ->with($file, Content::class)
+            ->once()
+            ->andReturn(false);
+        $metadata
+            ->shouldReceive('set')
+            ->with($file, Content::class, $content)
+            ->once()
+            ->andReturns();
 
-        self::assertSame($file, $file->setContent(__METHOD__));
+        $file
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn($path);
 
-        self::assertTrue($fs->save($file));
-
-        self::assertEquals(__METHOD__, file_get_contents((string) $temp));
+        $filesystem->write($file, $content);
     }
 
-    public function testSaveOutsideRoot(): void {
-        $fs   = $this->getFileSystem(__DIR__);
-        $temp = (new FilePath(self::getTempFile(__FILE__)->getPathname()))->getNormalizedPath();
-        $file = $fs->getFile($temp);
+    public function testWriteFileNoChanges(): void {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path       = $input->getFilePath('file.md');
+        $file       = Mockery::mock(File::class);
+        $content    = 'content';
+        $metadata   = Mockery::mock(MetadataStorage::class);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+        $filesystem
+            ->shouldReceive('save')
+            ->never();
+        $filesystem
+            ->shouldReceive('change')
+            ->with($file, $content)
+            ->never();
 
-        self::assertTrue($fs->save($file)); // because no changes
+        $metadata
+            ->shouldReceive('reset')
+            ->with($file)
+            ->never();
+        $metadata
+            ->shouldReceive('has')
+            ->with($file, Content::class)
+            ->once()
+            ->andReturn(true);
+        $metadata
+            ->shouldReceive('get')
+            ->with($file, Content::class)
+            ->once()
+            ->andReturn($content);
+        $metadata
+            ->shouldReceive('set')
+            ->with($file, Content::class, $content)
+            ->never();
 
-        self::assertSame($file, $file->setContent(__METHOD__));
+        $file
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn($path);
 
-        self::assertFalse($fs->save($file));
+        $filesystem->write($file, $content);
+    }
 
-        self::assertEquals(__FILE__, file_get_contents((string) $temp));
+    public function testWriteCreate(): void {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path       = $input->getFilePath('file.md');
+        $file       = Mockery::mock(File::class);
+        $content    = 'content';
+        $metadata   = Mockery::mock(MetadataStorage::class);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+        $filesystem
+            ->shouldReceive('isFile')
+            ->with($path)
+            ->once()
+            ->andReturn(false);
+        $filesystem
+            ->shouldReceive('getFile')
+            ->with($path)
+            ->once()
+            ->andReturn($file);
+        $filesystem
+            ->shouldReceive('save')
+            ->with($path, $content)
+            ->once()
+            ->andReturns();
+        $filesystem
+            ->shouldReceive('change')
+            ->never();
+
+        $metadata
+            ->shouldReceive('reset')
+            ->with($file)
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('has')
+            ->with($file, Content::class)
+            ->once()
+            ->andReturn(false);
+        $metadata
+            ->shouldReceive('set')
+            ->with($file, Content::class, $content)
+            ->once()
+            ->andReturns();
+
+        $filesystem->write($path, $content);
+    }
+
+    public function testWriteCreateFailed(): void {
+        self::expectException(FileCreateFailed::class);
+
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path       = $input->getFilePath('file.md');
+        $content    = 'content';
+        $metadata   = Mockery::mock(MetadataStorage::class);
+        $filesystem = Mockery::mock(FileSystem::class, [$metadata, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+        $filesystem
+            ->shouldReceive('isFile')
+            ->with($path)
+            ->once()
+            ->andReturn(false);
+        $filesystem
+            ->shouldReceive('save')
+            ->with($path, $content)
+            ->once()
+            ->andThrow(Exception::class);
+        $filesystem
+            ->shouldReceive('change')
+            ->never();
+
+        $filesystem->write($path, $content);
+    }
+
+    public function testWriteOutsideOutput(): void {
+        self::expectException(FileNotWritable::class);
+
+        $path = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $fs   = $this->getFileSystem($path);
+        $file = $fs->getFile(__FILE__);
+
+        $fs->write($file, 'outside output');
     }
 
     public function testCache(): void {
