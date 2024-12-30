@@ -24,9 +24,10 @@ class FileSystem {
      */
     private array $cache = [];
     /**
-     * @var array<string, string>
+     * @var array<int, array<string, string>>
      */
     private array $changes = [];
+    private int   $level   = 0;
 
     private readonly SymfonyFilesystem $filesystem;
     private readonly MetadataStorage   $metadata;
@@ -240,8 +241,14 @@ class FileSystem {
         return $file;
     }
 
+    public function begin(): void {
+        $this->level++;
+        $this->changes[$this->level] = [];
+    }
+
     public function commit(): void {
-        foreach ($this->changes as $path => $content) {
+        // Commit
+        foreach ($this->changes[$this->level] ?? [] as $path => $content) {
             try {
                 $this->save($path, $content);
             } catch (Exception $exception) {
@@ -249,11 +256,20 @@ class FileSystem {
             }
         }
 
-        $this->changes = [];
+        unset($this->changes[$this->level]);
+
+        // Decrease
+        $this->level--;
+
+        // Cleanup
+        if ($this->level === 0) {
+            $this->changes = [];
+            $this->cache   = [];
+        }
     }
 
     protected function change(File $path, string $content): void {
-        $this->changes[(string) $path] = $content;
+        $this->changes[$this->level][(string) $path] = $content;
     }
 
     protected function save(FilePath|string $path, string $content): void {

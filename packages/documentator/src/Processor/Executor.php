@@ -101,6 +101,8 @@ class Executor {
         $this->stack[$path] = $file;
 
         try {
+            $this->fs->begin();
+
             foreach ($tasks as $task) {
                 try {
                     // Run
