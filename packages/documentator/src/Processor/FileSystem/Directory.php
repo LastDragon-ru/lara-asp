@@ -11,9 +11,9 @@ use function is_dir;
 use function sprintf;
 
 /**
- * @extends Item<DirectoryPath>
+ * @extends Entry<DirectoryPath>
  */
-class Directory extends Item {
+class Directory extends Entry {
     public function __construct(DirectoryPath $path) {
         parent::__construct($path);
 

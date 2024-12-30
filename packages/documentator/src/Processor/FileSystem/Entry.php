@@ -14,7 +14,7 @@ use function sprintf;
 /**
  * @template TPath of DirectoryPath|FilePath
  */
-abstract class Item implements Stringable {
+abstract class Entry implements Stringable {
     public function __construct(
         /**
          * @var TPath
@@ -74,7 +74,7 @@ abstract class Item implements Stringable {
     }
 
     /**
-     * @param Item<*> $object
+     * @param Entry<*> $object
      */
     public function isEqual(self $object): bool {
         return ($this === $object) || ($this::class === $object::class && $this->path->isEqual($object->path));

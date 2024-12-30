@@ -13,14 +13,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Directory::class)]
-final class ItemTest extends TestCase {
+final class EntryTest extends TestCase {
     use WithProcessor;
 
     public function testConstructNotNormalized(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
 
-        new class(new DirectoryPath('/../path')) extends Item {
+        new class(new DirectoryPath('/../path')) extends Entry {
             // empty
         };
     }
@@ -29,7 +29,7 @@ final class ItemTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
-        new class((new DirectoryPath('../path'))->getNormalizedPath()) extends Item {
+        new class((new DirectoryPath('../path'))->getNormalizedPath()) extends Entry {
             // empty
         };
     }
@@ -38,24 +38,24 @@ final class ItemTest extends TestCase {
         $fs        = $this->getFileSystem(__DIR__);
         $file      = $fs->getFile(__FILE__);
         $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $parent    = new class($path->getDirectoryPath()) extends Item {
+        $parent    = new class($path->getDirectoryPath()) extends Entry {
             // empty
         };
-        $directory = new class((new DirectoryPath(__DIR__))->getNormalizedPath()) extends Item {
+        $directory = new class((new DirectoryPath(__DIR__))->getNormalizedPath()) extends Entry {
             // empty
         };
 
-        self::assertEquals('ItemTest/a', (string) $directory->getRelativePath($parent));
-        self::assertEquals('ItemTest.php', (string) $directory->getRelativePath($file));
-        self::assertEquals('ItemTest/a/a.txt', (string) $directory->getRelativePath($path));
+        self::assertEquals('EntryTest/a', (string) $directory->getRelativePath($parent));
+        self::assertEquals('EntryTest.php', (string) $directory->getRelativePath($file));
+        self::assertEquals('EntryTest/a/a.txt', (string) $directory->getRelativePath($path));
     }
 
     public function testIsEqual(): void {
         $path = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $a    = new class($path) extends Item {
+        $a    = new class($path) extends Entry {
             // empty
         };
-        $b    = new class($path) extends Item {
+        $b    = new class($path) extends Entry {
             // empty
         };
 

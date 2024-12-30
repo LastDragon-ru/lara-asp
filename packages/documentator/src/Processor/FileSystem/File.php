@@ -10,9 +10,9 @@ use function is_file;
 use function sprintf;
 
 /**
- * @extends Item<FilePath>
+ * @extends Entry<FilePath>
  */
-class File extends Item {
+class File extends Entry {
     public function __construct(
         protected readonly MetadataResolver $metadata,
         FilePath $path,
