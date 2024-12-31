@@ -28,7 +28,7 @@ final class DirectoryPathTest extends TestCase {
 
         self::assertEquals('/directory', (string) $absolute);
 
-        self::assertEquals('/path/to', (string) $null);
+        self::assertEquals('/path', (string) $null);
     }
 
     public function testGetParentPath(): void {
@@ -40,6 +40,9 @@ final class DirectoryPathTest extends TestCase {
 
         self::assertEquals('/absolute/path/to', (string) $absolute->getParentPath());
         self::assertEquals('/absolute/path', (string) $absolute->getParentPath()->getParentPath());
+
+        self::assertEquals((string) $relative->getDirectoryPath(), (string) $relative->getParentPath());
+        self::assertEquals((string) $absolute->getDirectoryPath(), (string) $absolute->getParentPath());
     }
 
     public function testIsInside(): void {

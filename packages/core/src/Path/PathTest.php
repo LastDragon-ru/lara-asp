@@ -127,7 +127,7 @@ final class PathTest extends TestCase {
         self::assertEquals('relative/path/to/directory', (string) $relative);
 
         self::assertEquals('/directory', (string) $absolute);
-        self::assertEquals('/path/to', (string) $null);
+        self::assertEquals('/path', (string) $null);
     }
 
     public function testIsEqual(): void {

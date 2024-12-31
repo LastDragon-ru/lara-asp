@@ -53,7 +53,7 @@ abstract class Path implements Stringable {
 
     public function getDirectoryPath(?string $path = null): DirectoryPath {
         return $path === null
-            ? $this->getDirectory()->getNormalizedPath()
+            ? $this->getParentPath()->getNormalizedPath()
             : $this->getPath(new DirectoryPath($path));
     }
 
