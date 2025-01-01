@@ -143,7 +143,7 @@ Includes the `<target>` as a template.
 Searches class/method/property/etc names in `inline code` and wrap it into a
 link to file.
 
-It expects that the `$root` directory is a composer project and will use
+It expects that the input directory is a composer project and will use
 `psr-4` autoload rules to find class files. Classes which are not from the
 composer will be completely ignored. If the file/class/method/etc doesn't
 exist, the error will be thrown. To avoid the error, you can place `💀` mark

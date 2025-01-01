@@ -88,7 +88,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
 
-[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L18-L33
+[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L17-L32
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"
 
 [code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php
