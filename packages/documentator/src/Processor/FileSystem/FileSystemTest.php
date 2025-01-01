@@ -423,4 +423,39 @@ final class FileSystemTest extends TestCase {
 
         self::assertSame($directory, $fs->getDirectory(__DIR__));
     }
+
+    public function testGetPathname(): void {
+        $aPath                 = (new DirectoryPath(self::getTestData()->path('a')))->getNormalizedPath();
+        $bPath                 = (new DirectoryPath(self::getTestData()->path('b')))->getNormalizedPath();
+        $fPath                 = (new FilePath(__FILE__))->getNormalizedPath();
+        $dPath                 = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $aFileSystem           = $this->getFileSystem($aPath, $bPath);
+        $aFileSystemAFile      = $aFileSystem->getFile($aPath->getFilePath('a.txt'));
+        $aFileSystemADirectory = $aFileSystem->getDirectory($aPath->getDirectoryPath('a'));
+        $aFileSystemBFile      = $aFileSystem->getFile($bPath->getFilePath('b.txt'));
+        $aFileSystemBDirectory = $aFileSystem->getDirectory($bPath->getDirectoryPath('b'));
+        $aFileSystemFFile      = $aFileSystem->getFile($fPath);
+        $aFileSystemDDirectory = $aFileSystem->getDirectory($dPath);
+        $bFileSystem           = $this->getFileSystem($aPath, $aPath);
+        $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
+        $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
+
+        self::assertEquals('↔ a.txt', $bFileSystem->getPathname($bFileSystemAFile));
+        self::assertEquals('↔ a.txt', $bFileSystem->getPathname($bFileSystemAFile->getPath()));
+        self::assertEquals('→ a.txt', $aFileSystem->getPathname($aFileSystemAFile));
+        self::assertEquals('→ a.txt', $aFileSystem->getPathname($aFileSystemAFile->getPath()));
+        self::assertEquals('← b.txt', $aFileSystem->getPathname($aFileSystemBFile));
+        self::assertEquals('← b.txt', $aFileSystem->getPathname($aFileSystemBFile->getPath()));
+        self::assertEquals("! {$fPath}", $aFileSystem->getPathname($aFileSystemFFile));
+        self::assertEquals("! {$fPath}", $aFileSystem->getPathname($aFileSystemFFile->getPath()));
+
+        self::assertEquals('↔ a/', $bFileSystem->getPathname($bFileSystemADirectory));
+        self::assertEquals('↔ a/', $bFileSystem->getPathname($bFileSystemADirectory->getPath()));
+        self::assertEquals('→ a/', $aFileSystem->getPathname($aFileSystemADirectory));
+        self::assertEquals('→ a/', $aFileSystem->getPathname($aFileSystemADirectory->getPath()));
+        self::assertEquals('← b/', $aFileSystem->getPathname($aFileSystemBDirectory));
+        self::assertEquals('← b/', $aFileSystem->getPathname($aFileSystemBDirectory->getPath()));
+        self::assertEquals("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
+        self::assertEquals("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory->getPath()));
+    }
 }
