@@ -12,8 +12,8 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\ConsoleWriter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
-use LastDragon_ru\LaraASP\Documentator\Processor\Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
@@ -36,8 +36,6 @@ use Override;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Terminal;
 use UnitEnum;
 
 use function array_map;
@@ -48,7 +46,6 @@ use function is_a;
 use function is_scalar;
 use function ksort;
 use function max;
-use function mb_strlen;
 use function min;
 use function rtrim;
 use function str_repeat;
@@ -96,32 +93,17 @@ class Preprocess extends Command {
     }
 
     public function __invoke(Formatter $formatter): void {
-        $cwd      = getcwd();
-        $path     = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
-        $width    = min((new Terminal())->getWidth(), 150);
-        $exclude  = array_map(strval(...), (array) $this->option('exclude'));
-        $listener = function (FilePath $path, Result $result, float $duration) use ($formatter, $width): void {
-            [$resultMessage, $resultColor, $resultVerbosity] = match ($result) {
-                Result::Failed  => ['FAIL', 'red', OutputInterface::VERBOSITY_NORMAL],
-                Result::Success => ['DONE', 'green', OutputInterface::VERBOSITY_NORMAL],
-                Result::Skipped => ['SKIP', 'gray', OutputInterface::VERBOSITY_VERBOSE],
-                Result::Missed  => ['MISS', 'yellow', OutputInterface::VERBOSITY_VERBOSE],
-            };
+        $cwd     = getcwd();
+        $path    = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
+        $exclude = array_map(strval(...), (array) $this->option('exclude'));
 
-            $duration = $formatter->duration($duration);
-            $length   = $width - (mb_strlen((string) $path) + mb_strlen($duration) + mb_strlen($resultMessage) + 5);
-            $line     = $path
-                .' '.($length > 0 ? '<fg=gray>'.str_repeat('.', $length).'</>' : '')
-                .' '."<fg=gray>{$duration}</>"
-                .' '."<fg={$resultColor};options=bold>{$resultMessage}</>";
-
-            $this->output->writeln($line, OutputInterface::OUTPUT_NORMAL | $resultVerbosity);
-        };
-
-        $duration = $this->processor()->exclude($exclude)->run($path, listener: $listener);
+        $this->processor()
+            ->listen((new ConsoleWriter())(...))
+            ->exclude($exclude)
+            ->run($path);
 
         $this->output->newLine();
-        $this->output->writeln("<fg=green;options=bold>DONE ({$formatter->duration($duration)})</>");
+        $this->output->writeln('<fg=green;options=bold>DONE</>');
     }
 
     private function processor(): Processor {

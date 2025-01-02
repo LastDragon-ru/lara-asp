@@ -2,25 +2,34 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
-use Closure;
 use Exception;
 use Generator;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileProcessed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileProcessedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Throwable;
 use Traversable;
 
 use function array_values;
-use function microtime;
 
 /**
  * @internal
@@ -47,160 +56,184 @@ class Executor {
          */
         private readonly InstanceList $tasks,
         /**
+         * @var Dispatcher<Event>
+         */
+        private readonly Dispatcher $dispatcher,
+        /**
          * @var Iterator<array-key, File>
          */
         private readonly Iterator $iterator,
-        /**
-         * @var Closure(FilePath, Result, float): void|null
-         */
-        private readonly ?Closure $listener = null,
     ) {
         // empty
     }
 
     public function run(): void {
-        $this->runIterator();
-    }
-
-    private function runIterator(): float {
-        $time = 0;
-
         while ($this->iterator->valid()) {
             $file = $this->iterator->current();
 
             $this->iterator->next();
 
-            $time += $this->runFile($file);
+            $this->file($file);
         }
-
-        return $time;
     }
 
-    private function runFile(File $file): float {
+    private function file(File $file): void {
         // Processed?
         $path = (string) $file;
 
         if (isset($this->processed[$path])) {
-            return 0;
+            return;
         }
+
+        // Event
+        $pathname = $this->fs->getPathname($file);
+
+        $this->dispatcher->notify(new FileStarted($pathname));
 
         // Circular?
         if (isset($this->stack[$path])) {
+            $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Failed));
+
             throw new DependencyCircularDependency($file, array_values($this->stack));
         }
 
         // Skipped?
         if ($this->isSkipped($file)) {
-            return $this->dispatch($file, Result::Skipped, 0);
+            $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Skipped));
+
+            return;
         }
 
         // Process
         $tasks              = $this->tasks->get($file->getExtension(), '*');
-        $start              = microtime(true);
-        $paused             = 0;
         $this->stack[$path] = $file;
 
         try {
             $this->fs->begin();
 
             foreach ($tasks as $task) {
-                try {
-                    // Run
-                    $result    = false;
-                    $generator = $task($file);
-
-                    // Dependencies?
-                    if ($generator instanceof Generator) {
-                        while ($generator->valid()) {
-                            $dependency = $generator->current();
-                            $resolved   = $dependency($this->fs);
-
-                            if ($resolved instanceof Traversable) {
-                                $resolved = new ExecutorTraversable($dependency, $resolved, $this->runDependency(...));
-                            } else {
-                                $paused += $this->runDependency($dependency, $resolved);
-                            }
-
-                            $generator->send($resolved);
-
-                            if ($resolved instanceof ExecutorTraversable) {
-                                $paused += $resolved->getDuration();
-                            }
-                        }
-
-                        $result = $generator->getReturn();
-                    } else {
-                        $result = $generator;
-                    }
-
-                    if ($result !== true) {
-                        throw new TaskFailed($file, $task);
-                    }
-                } catch (FileMetadataUnresolvable $exception) {
-                    throw new MetadataUnresolvable(
-                        $exception->getTarget(),
-                        $exception->getMetadata(),
-                        $exception->getPrevious(),
-                    );
-                } catch (ProcessorError $exception) {
-                    throw $exception;
-                } catch (Exception $exception) {
-                    throw new TaskFailed($file, $task, $exception);
-                }
+                $this->task($file, $task);
             }
 
             $this->fs->commit();
         } catch (Throwable $exception) {
+            $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Failed));
+
             throw $exception;
         } finally {
-            $result                 = isset($exception) ? Result::Failed : Result::Success;
-            $duration               = microtime(true) - $start - $paused;
-            $duration              -= $this->dispatch($file, $result, $duration);
             $this->processed[$path] = true;
         }
 
+        // Event
+        $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Success));
+
         // Reset
         unset($this->stack[$path]);
+    }
 
-        // Return
-        return $duration;
+    private function task(File $file, Task $task): void {
+        $this->dispatcher->notify(new TaskStarted($task::class));
+
+        try {
+            try {
+                // Run
+                $result    = false;
+                $generator = $task($file);
+
+                // Dependencies?
+                if ($generator instanceof Generator) {
+                    while ($generator->valid()) {
+                        $dependency = $generator->current();
+                        $resolved   = $this->resolve($dependency);
+
+                        $generator->send($resolved);
+                    }
+
+                    $result = $generator->getReturn();
+                } else {
+                    $result = $generator;
+                }
+
+                if ($result !== true) {
+                    throw new TaskFailed($file, $task);
+                }
+            } catch (FileMetadataUnresolvable $exception) {
+                throw new MetadataUnresolvable(
+                    $exception->getTarget(),
+                    $exception->getMetadata(),
+                    $exception->getPrevious(),
+                );
+            } catch (ProcessorError $exception) {
+                throw $exception;
+            } catch (Exception $exception) {
+                throw new TaskFailed($file, $task, $exception);
+            }
+
+            $this->dispatcher->notify(new TaskFinished(TaskFinishedResult::Success));
+        } catch (Exception $exception) {
+            $this->dispatcher->notify(new TaskFinished(TaskFinishedResult::Failed));
+
+            throw $exception;
+        }
     }
 
     /**
      * @param Dependency<*> $dependency
+     *
+     * @return Traversable<mixed, Directory|File>|Directory|File|null
      */
-    private function runDependency(Dependency $dependency, mixed $resolved): float {
-        $duration = 0;
+    private function resolve(Dependency $dependency): Traversable|Directory|File|null {
+        try {
+            $resolved = $dependency($this->fs);
+            $resolved = $this->dependency($dependency, $resolved);
+            $resolved = $resolved instanceof Traversable
+                ? new ExecutorTraversable($dependency, $resolved, $this->dependency(...))
+                : $resolved;
+        } catch (Exception $exception) {
+            $this->dispatcher->notify(
+                new DependencyResolved(
+                    $dependency::class,
+                    $this->fs->getPathname($dependency->getPath()),
+                    $exception instanceof DependencyUnresolvable
+                        ? DependencyResolvedResult::Missed
+                        : DependencyResolvedResult::Failed,
+                ),
+            );
 
-        if ($resolved instanceof File) {
-            $duration += $this->runFile($resolved);
-        } elseif ($resolved === null) {
-            $duration += $this->dispatch($dependency, Result::Missed, 0);
-        } else {
-            // empty
+            throw $exception;
         }
 
-        return $duration;
+        return $resolved;
     }
 
     /**
-     * @param Dependency<*>|File $file
+     * @template T
+     *
+     * @param Dependency<*> $dependency
+     * @param T $resolved
+     *
+     * @return T
      */
-    private function dispatch(Dependency|File $file, Result $result, float $duration): float {
-        // Listener?
-        if ($this->listener === null) {
-            return 0;
+    private function dependency(Dependency $dependency, mixed $resolved): mixed {
+        // Event
+        $path   = $resolved instanceof File || $resolved instanceof Directory
+            ? $resolved
+            : $dependency->getPath();
+        $result = $resolved !== null
+            ? DependencyResolvedResult::Success
+            : DependencyResolvedResult::Null;
+
+        $this->dispatcher->notify(
+            new DependencyResolved($dependency::class, $this->fs->getPathname($path), $result),
+        );
+
+        // Process
+        if ($resolved instanceof File) {
+            $this->file($resolved);
         }
 
-        // Call
-        $start = microtime(true);
-        $path  = $file->getPath();
-
-        if ($path instanceof FilePath) {
-            ($this->listener)($path, $result, $duration);
-        }
-
-        return microtime(true) - $start;
+        // Return
+        return $resolved;
     }
 
     private function isSkipped(File $file): bool {
