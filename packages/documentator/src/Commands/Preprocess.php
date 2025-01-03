@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
-use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\ConsoleWriter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Writer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -98,12 +98,9 @@ class Preprocess extends Command {
         $exclude = array_map(strval(...), (array) $this->option('exclude'));
 
         $this->processor()
-            ->listen((new ConsoleWriter())(...))
+            ->listen((new Writer($this->output, $formatter))(...))
             ->exclude($exclude)
             ->run($path);
-
-        $this->output->newLine();
-        $this->output->writeln('<fg=green;options=bold>DONE</>');
     }
 
     private function processor(): Processor {
