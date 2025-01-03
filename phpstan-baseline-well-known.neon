@@ -39,7 +39,7 @@ parameters:
         # https://github.com/nunomaduro/larastan/issues/483
         # https://github.com/nunomaduro/larastan/pull/917
         -
-            message: "#^Dynamic call to static method Symfony\\\\Component\\\\HttpFoundation\\\\Response::getContent\\(\\)\\.$#"
+            message: "#^Dynamic call to static method Illuminate\\\\Http\\\\Response::getContent\\(\\)\\.$#"
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 
