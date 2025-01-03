@@ -101,7 +101,7 @@
     "illuminate/config": "^11.0.8",
     "laravel/scout": "^10.8.0",
     "orchestra/testbench": "^9.0.0",
-    "phpstan/phpstan": "1.12.11",
+    "phpstan/phpstan": "1.12.14",
     "phpstan/phpstan-mockery": "^1.1",
     "phpstan/phpstan-phpunit": "^1.3",
     "phpstan/phpstan-strict-rules": "^1.5",
