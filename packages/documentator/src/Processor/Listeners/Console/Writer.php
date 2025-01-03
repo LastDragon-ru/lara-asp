@@ -6,8 +6,8 @@ use Illuminate\Console\OutputStyle;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileProcessed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileProcessedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
@@ -56,7 +56,7 @@ class Writer {
             $this->processingFinished($event);
         } elseif ($event instanceof FileStarted) {
             $this->fileStarted($event);
-        } elseif ($event instanceof FileProcessed) {
+        } elseif ($event instanceof FileFinished) {
             $this->fileFinished($event);
         } elseif ($event instanceof TaskStarted) {
             $this->taskStarted($event);
@@ -109,7 +109,7 @@ class Writer {
         $this->files++;
     }
 
-    protected function fileFinished(FileProcessed $event): void {
+    protected function fileFinished(FileFinished $event): void {
         // File?
         $file = array_pop($this->stack);
 
@@ -190,7 +190,7 @@ class Writer {
         int $level,
         string $message,
         ?float $time,
-        ProcessingFinishedResult|FileProcessedResult|TaskFinishedResult|DependencyResolvedResult $result,
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
     ): void {
         if (!$this->isLevelVisible($level) || !$this->isResultVisible($result)) {
             return;
@@ -220,14 +220,14 @@ class Writer {
     }
 
     protected function result(
-        ProcessingFinishedResult|FileProcessedResult|TaskFinishedResult|DependencyResolvedResult $enum,
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $enum,
     ): string {
         return match ($enum) {
             ProcessingFinishedResult::Success => '<fg=green;options=bold>DONE</>',
             ProcessingFinishedResult::Failed  => '<fg=red;options=bold>FAIL</>',
-            FileProcessedResult::Success      => '<fg=green>DONE</>',
-            FileProcessedResult::Failed       => '<fg=red>FAIL</>',
-            FileProcessedResult::Skipped      => '<fg=gray>SKIP</>',
+            FileFinishedResult::Success       => '<fg=green>DONE</>',
+            FileFinishedResult::Failed        => '<fg=red>FAIL</>',
+            FileFinishedResult::Skipped       => '<fg=gray>SKIP</>',
             TaskFinishedResult::Success       => '<fg=green>DONE</>',
             TaskFinishedResult::Failed        => '<fg=red>FAIL</>',
             DependencyResolvedResult::Success => '<fg=green>DONE</>',
@@ -248,11 +248,11 @@ class Writer {
     }
 
     protected function isResultVisible(
-        ProcessingFinishedResult|FileProcessedResult|TaskFinishedResult|DependencyResolvedResult $enum,
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $enum,
     ): bool {
         return match ($enum) {
-            FileProcessedResult::Skipped => $this->output->isDebug(),
-            default                      => true,
+            FileFinishedResult::Skipped => $this->output->isDebug(),
+            default                     => true,
         };
     }
 }

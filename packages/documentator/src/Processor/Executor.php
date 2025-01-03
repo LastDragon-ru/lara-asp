@@ -11,8 +11,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileProcessed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileProcessedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
@@ -92,14 +92,14 @@ class Executor {
 
         // Circular?
         if (isset($this->stack[$path])) {
-            $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Failed));
+            $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
             throw new DependencyCircularDependency($file, array_values($this->stack));
         }
 
         // Skipped?
         if ($this->isSkipped($file)) {
-            $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Skipped));
+            $this->dispatcher->notify(new FileFinished(FileFinishedResult::Skipped));
 
             $this->processed[$path] = true;
 
@@ -119,7 +119,7 @@ class Executor {
 
             $this->fs->commit();
         } catch (Throwable $exception) {
-            $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Failed));
+            $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
             throw $exception;
         } finally {
@@ -127,7 +127,7 @@ class Executor {
         }
 
         // Event
-        $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Success));
+        $this->dispatcher->notify(new FileFinished(FileFinishedResult::Success));
 
         // Reset
         unset($this->stack[$path]);
