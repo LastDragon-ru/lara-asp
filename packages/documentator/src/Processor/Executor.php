@@ -101,6 +101,8 @@ class Executor {
         if ($this->isSkipped($file)) {
             $this->dispatcher->notify(new FileProcessed(FileProcessedResult::Skipped));
 
+            $this->processed[$path] = true;
+
             return;
         }
 
