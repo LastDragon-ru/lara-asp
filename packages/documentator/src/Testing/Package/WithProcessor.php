@@ -17,9 +17,14 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 trait WithProcessor {
     abstract protected function app(): Application;
 
-    protected function getFileSystem(DirectoryPath|string $input): FileSystem {
+    protected function getFileSystem(
+        DirectoryPath|string $input,
+        DirectoryPath|string|null $output = null,
+    ): FileSystem {
         $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
-        $output     = $input;
+        $output     = $output !== null
+            ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
+            : $input;
         $metadata   = new MetadataStorage($this->app()->make(ContainerResolver::class));
         $filesystem = new FileSystem($metadata, $input, $output);
 

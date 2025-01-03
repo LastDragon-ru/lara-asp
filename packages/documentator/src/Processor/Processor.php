@@ -5,9 +5,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -16,7 +21,6 @@ use Symfony\Component\Finder\Glob;
 
 use function array_map;
 use function array_merge;
-use function microtime;
 
 /**
  * Perform one or more task on the file.
@@ -28,6 +32,11 @@ class Processor {
     private InstanceList $tasks;
 
     /**
+     * @var Dispatcher<Event>
+     */
+    protected readonly Dispatcher $dispatcher;
+
+    /**
      * @var array<array-key, string>
      */
     private array $exclude = [];
@@ -35,7 +44,8 @@ class Processor {
     public function __construct(
         protected readonly ContainerResolver $container,
     ) {
-        $this->tasks = new InstanceList($container, $this->key(...));
+        $this->tasks      = new InstanceList($container, $this->key(...));
+        $this->dispatcher = new Dispatcher();
     }
 
     /**
@@ -82,14 +92,15 @@ class Processor {
     }
 
     /**
-     * @param Closure(FilePath $input, Result $result, float $duration): void|null $listener
+     * @param Closure(Event): void $listener
      */
-    public function run(
-        DirectoryPath|FilePath $input,
-        ?DirectoryPath $output = null,
-        ?Closure $listener = null,
-    ): float {
-        $start = microtime(true);
+    public function listen(Closure $listener): static {
+        $this->dispatcher->attach($listener);
+
+        return $this;
+    }
+
+    public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
         $depth = match (true) {
             $input instanceof FilePath => 0,
             default                    => null,
@@ -99,21 +110,30 @@ class Processor {
             !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
             default                    => null,
         };
-        $exclude = array_map(Glob::toRegex(...), $this->exclude);
-        $input   = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
+        $exclude  = array_map(Glob::toRegex(...), $this->exclude);
+        $input    = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
+        $output ??= $input;
+
+        $this->dispatcher->notify(new ProcessingStarted());
 
         try {
-            $filesystem = new FileSystem(new MetadataStorage($this->container), $input, $output ?? $input);
-            $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
-            $executor   = new Executor($filesystem, $exclude, $this->tasks, $iterator, $listener);
+            try {
+                $filesystem = new FileSystem(new MetadataStorage($this->container), $input, $output);
+                $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
+                $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 
-            $executor->run();
-        } catch (ProcessorError $exception) {
-            throw $exception;
+                $executor->run();
+            } catch (ProcessorError $exception) {
+                throw $exception;
+            } catch (Exception $exception) {
+                throw new ProcessingFailed($exception);
+            }
+
+            $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Success));
         } catch (Exception $exception) {
-            throw new ProcessingFailed($exception);
-        }
+            $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Failed));
 
-        return microtime(true) - $start;
+            throw $exception;
+        }
     }
 }

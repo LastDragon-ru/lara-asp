@@ -20,11 +20,9 @@ use Traversable;
  * @implements IteratorAggregate<TKey, TValue>
  */
 class ExecutorTraversable implements IteratorAggregate {
-    private float $duration = 0;
-
     public function __construct(
         /**
-         * @var Dependency<Traversable<TKey, TValue>>
+         * @var Dependency<*>
          */
         private readonly Dependency $dependency,
         /**
@@ -32,15 +30,11 @@ class ExecutorTraversable implements IteratorAggregate {
          */
         private readonly Traversable $resolved,
         /**
-         * @var Closure(Dependency<Traversable<TKey, TValue>>, TValue): float
+         * @var Closure(Dependency<*>, TValue): mixed
          */
         private readonly Closure $handler,
     ) {
         // empty
-    }
-
-    public function getDuration(): float {
-        return $this->duration;
     }
 
     /**
@@ -48,10 +42,8 @@ class ExecutorTraversable implements IteratorAggregate {
      */
     #[Override]
     public function getIterator(): Generator {
-        $this->duration = 0;
-
         foreach ($this->resolved as $key => $value) {
-            $this->duration += ($this->handler)($this->dependency, $value);
+            ($this->handler)($this->dependency, $value);
 
             yield $key => $value;
         }

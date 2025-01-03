@@ -65,6 +65,22 @@ class FileSystem {
         $this->filesystem = new SymfonyFilesystem();
     }
 
+    /**
+     * @return non-empty-string
+     */
+    public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
+        $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
+        $path   = $path instanceof Entry ? $path->getPath() : $path;
+        $name   = match (true) {
+            $this->input->isEqual($this->output) => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
+            $this->input->isInside($path)        => Mark::Input->value.' '.$this->input->getRelativePath($path).$suffix,
+            $this->output->isInside($path)       => Mark::Output->value.' '.$this->output->getRelativePath($path).$suffix,
+            default                              => Mark::External->value.' '.$path.$suffix,
+        };
+
+        return $name;
+    }
+
     protected function isFile(FilePath|string $path): bool {
         $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
