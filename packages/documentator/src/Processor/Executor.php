@@ -191,14 +191,22 @@ class Executor {
             $resolved = $resolved instanceof Traversable
                 ? new ExecutorTraversable($dependency, $resolved, $this->dependency(...))
                 : $resolved;
+        } catch (DependencyUnresolvable $exception) {
+            $this->dispatcher->notify(
+                new DependencyResolved(
+                    $exception->getDependency()::class,
+                    $this->fs->getPathname($exception->getDependency()->getPath()),
+                    DependencyResolvedResult::Missed,
+                ),
+            );
+
+            throw $exception;
         } catch (Exception $exception) {
             $this->dispatcher->notify(
                 new DependencyResolved(
                     $dependency::class,
                     $this->fs->getPathname($dependency->getPath()),
-                    $exception instanceof DependencyUnresolvable
-                        ? DependencyResolvedResult::Missed
-                        : DependencyResolvedResult::Failed,
+                    DependencyResolvedResult::Failed,
                 ),
             );
 
