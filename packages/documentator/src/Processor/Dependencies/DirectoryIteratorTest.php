@@ -12,7 +12,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use function array_map;
 use function basename;
 use function iterator_to_array;
-use function sprintf;
 
 /**
  * @internal
@@ -26,9 +25,12 @@ final class DirectoryIteratorTest extends TestCase {
         $directory  = $filesystem->getDirectory(__DIR__);
         $path       = $directory->getPath();
 
-        self::assertEquals('path/to/directory', (string) (new DirectoryIterator('path/to/directory'))->getPath());
-        self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory))->getPath());
-        self::assertEquals((string) $path, (string) (new DirectoryIterator($path))->getPath());
+        self::assertEquals(
+            'path/to/directory',
+            (string) (new DirectoryIterator('path/to/directory'))->getPath($filesystem),
+        );
+        self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory))->getPath($filesystem));
+        self::assertEquals((string) $path, (string) (new DirectoryIterator($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {
@@ -59,12 +61,7 @@ final class DirectoryIteratorTest extends TestCase {
         $path = 'path/to/directory';
 
         self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage(
-            sprintf(
-                'Dependency `%s` not found.',
-                $path,
-            ),
-        );
+        self::expectExceptionMessage('Dependency not found.');
 
         iterator_to_array(
             (new DirectoryIterator($path))($fs),

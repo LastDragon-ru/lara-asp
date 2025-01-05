@@ -10,6 +10,8 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function dirname;
+
 /**
  * @internal
  */
@@ -18,10 +20,14 @@ final class FileCreateTest extends TestCase {
     use WithProcessor;
 
     public function testGetPath(): void {
-        $path = (new FilePath(__FILE__))->getNormalizedPath();
+        $filesystem = $this->getFileSystem(dirname(__DIR__), __DIR__);
+        $path       = (new FilePath(__FILE__))->getNormalizedPath();
 
-        self::assertEquals('path/to/file', (string) (new FileCreate('path/to/file', ''))->getPath());
-        self::assertEquals((string) $path, (string) (new FileCreate($path, ''))->getPath());
+        self::assertEquals(
+            (string) $filesystem->output->getFilePath('path/to/file'),
+            (string) (new FileCreate('path/to/file', ''))->getPath($filesystem),
+        );
+        self::assertEquals((string) $path, (string) (new FileCreate($path, ''))->getPath($filesystem));
     }
 
     public function testInvoke(): void {

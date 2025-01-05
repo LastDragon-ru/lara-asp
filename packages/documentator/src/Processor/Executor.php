@@ -195,7 +195,7 @@ class Executor {
             $this->dispatcher->notify(
                 new DependencyResolved(
                     $exception->getDependency()::class,
-                    $this->fs->getPathname($exception->getDependency()->getPath()),
+                    $this->fs->getPathname($exception->getDependency()->getPath($this->fs)),
                     DependencyResolvedResult::Missed,
                 ),
             );
@@ -205,7 +205,7 @@ class Executor {
             $this->dispatcher->notify(
                 new DependencyResolved(
                     $dependency::class,
-                    $this->fs->getPathname($dependency->getPath()),
+                    $this->fs->getPathname($dependency->getPath($this->fs)),
                     DependencyResolvedResult::Failed,
                 ),
             );
@@ -228,7 +228,7 @@ class Executor {
         // Event
         $path   = $resolved instanceof File || $resolved instanceof Directory
             ? $resolved
-            : $dependency->getPath();
+            : $dependency->getPath($this->fs);
         $result = $resolved !== null
             ? DependencyResolvedResult::Success
             : DependencyResolvedResult::Null;

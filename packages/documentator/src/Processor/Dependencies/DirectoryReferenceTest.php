@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function sprintf;
-
 /**
  * @internal
  */
@@ -18,10 +16,14 @@ final class DirectoryReferenceTest extends TestCase {
     use WithProcessor;
 
     public function testGetPath(): void {
-        $path = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $filesystem = $this->getFileSystem(__DIR__);
+        $path       = (new DirectoryPath(__DIR__))->getNormalizedPath();
 
-        self::assertEquals('path/to/directory', (string) (new DirectoryReference('path/to/directory'))->getPath());
-        self::assertEquals((string) $path, (string) (new DirectoryReference($path))->getPath());
+        self::assertEquals(
+            'path/to/directory',
+            (string) (new DirectoryReference('path/to/directory'))->getPath($filesystem),
+        );
+        self::assertEquals((string) $path, (string) (new DirectoryReference($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {
@@ -41,12 +43,7 @@ final class DirectoryReferenceTest extends TestCase {
         $path = 'path/to/directory';
 
         self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage(
-            sprintf(
-                'Dependency `%s` not found.',
-                $path,
-            ),
-        );
+        self::expectExceptionMessage('Dependency not found.');
 
         (new DirectoryReference($path))($fs);
     }

@@ -41,7 +41,7 @@ readonly class Optional implements Dependency {
     }
 
     #[Override]
-    public function getPath(): DirectoryPath|FilePath {
-        return $this->dependency->getPath();
+    public function getPath(FileSystem $fs): Directory|DirectoryPath|File|FilePath {
+        return $this->dependency->getPath($fs);
     }
 }

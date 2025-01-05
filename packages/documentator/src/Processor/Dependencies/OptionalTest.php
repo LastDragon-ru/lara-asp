@@ -14,10 +14,11 @@ final class OptionalTest extends TestCase {
     use WithProcessor;
 
     public function testGetPath(): void {
+        $filesystem = $this->getFileSystem(__DIR__);
         $dependency = new FileReference('path/to/file');
         $optional   = new Optional($dependency);
 
-        self::assertEquals($dependency->getPath(), $optional->getPath());
+        self::assertEquals($dependency->getPath($filesystem), $optional->getPath($filesystem));
     }
 
     public function testInvoke(): void {
