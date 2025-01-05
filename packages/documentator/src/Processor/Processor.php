@@ -118,7 +118,7 @@ class Processor {
 
         try {
             try {
-                $filesystem = new FileSystem(new MetadataStorage($this->container), $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, new MetadataStorage($this->container), $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 

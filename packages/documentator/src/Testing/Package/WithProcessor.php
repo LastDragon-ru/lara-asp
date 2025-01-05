@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 use Generator;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -26,7 +27,8 @@ trait WithProcessor {
             ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
             : $input;
         $metadata   = new MetadataStorage($this->app()->make(ContainerResolver::class));
-        $filesystem = new FileSystem($metadata, $input, $output);
+        $dispatcher = new Dispatcher();
+        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output); // @phpstan-ignore argument.type
 
         return $filesystem;
     }
