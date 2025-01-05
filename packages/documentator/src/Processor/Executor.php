@@ -194,7 +194,6 @@ class Executor {
         } catch (DependencyUnresolvable $exception) {
             $this->dispatcher->notify(
                 new DependencyResolved(
-                    $exception->getDependency()::class,
                     $this->fs->getPathname($exception->getDependency()->getPath($this->fs)),
                     DependencyResolvedResult::Missed,
                 ),
@@ -204,7 +203,6 @@ class Executor {
         } catch (Exception $exception) {
             $this->dispatcher->notify(
                 new DependencyResolved(
-                    $dependency::class,
                     $this->fs->getPathname($dependency->getPath($this->fs)),
                     DependencyResolvedResult::Failed,
                 ),
@@ -234,7 +232,7 @@ class Executor {
             : DependencyResolvedResult::Null;
 
         $this->dispatcher->notify(
-            new DependencyResolved($dependency::class, $this->fs->getPathname($path), $result),
+            new DependencyResolved($this->fs->getPathname($path), $result),
         );
 
         // Process
