@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;

@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -31,9 +30,6 @@ class Processor {
      */
     private InstanceList $tasks;
 
-    /**
-     * @var Dispatcher<Event>
-     */
     protected readonly Dispatcher $dispatcher;
 
     /**

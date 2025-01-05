@@ -5,10 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use Exception;
 use InvalidArgumentException;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
@@ -38,9 +37,6 @@ class FileSystem {
     private readonly SymfonyFilesystem $filesystem;
 
     public function __construct(
-        /**
-         * @var Dispatcher<Event>
-         */
         private readonly Dispatcher $dispatcher,
         private readonly MetadataStorage $metadata,
         public readonly DirectoryPath $input,

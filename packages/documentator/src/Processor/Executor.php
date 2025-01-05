@@ -5,12 +5,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Exception;
 use Generator;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
@@ -55,9 +53,6 @@ class Executor {
          * @var InstanceList<Task>
          */
         private readonly InstanceList $tasks,
-        /**
-         * @var Dispatcher<Event>
-         */
         private readonly Dispatcher $dispatcher,
         /**
          * @var Iterator<array-key, File>

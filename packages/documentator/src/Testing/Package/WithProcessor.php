@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 use Generator;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 
@@ -28,7 +28,7 @@ trait WithProcessor {
             : $input;
         $metadata   = new MetadataStorage($this->app()->make(ContainerResolver::class));
         $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output); // @phpstan-ignore argument.type
+        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output);
 
         return $filesystem;
     }
