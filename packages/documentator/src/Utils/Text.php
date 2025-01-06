@@ -24,6 +24,10 @@ class Text {
         return hash('xxh3', $text);
     }
 
+    public static function setEol(string $text, ?string $eol = null): string {
+        return preg_replace('/\R/u', $eol ?? "\n", $text) ?? $text;
+    }
+
     /**
      * @param int<0, max> $level
      */

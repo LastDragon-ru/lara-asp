@@ -59,6 +59,11 @@ final class TextTest extends TestCase {
         self::assertEquals('File name second', Text::getPathTitle('path/to/File name.second.txt'));
         self::assertEquals('File name', Text::getPathTitle('path/to/File     name'));
     }
+
+    public function testSetEol(): void {
+        self::assertEquals("a\nb\nc\n", Text::setEol("a\r\nb\r\nc\r\n"));
+        self::assertEquals("a\rb\rc\r", Text::setEol("a\r\nb\r\nc\r\n", "\r"));
+    }
     //</editor-fold>
 
     // <editor-fold desc="DataProviders">
