@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
-use Illuminate\Support\Arr;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
@@ -30,7 +29,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use function array_values;
+use function array_walk_recursive;
+use function assert;
 
 /**
  * @internal
@@ -108,7 +108,7 @@ final class WriterTest extends TestCase {
      * @return array<string, array{string, OutputInterface::VERBOSITY_*, list<Event>}>
      */
     public static function dataProviderInvoke(): array {
-        $events = array_values(Arr::flatten([
+        $tree = [
             new ProcessingStarted(),
             [
                 new FileStarted('↔ a/a.txt'),
@@ -211,7 +211,15 @@ final class WriterTest extends TestCase {
                 new FileFinished(FileFinishedResult::Success),
             ],
             new ProcessingFinished(ProcessingFinishedResult::Success),
-        ]));
+        ];
+
+        $events = [];
+
+        array_walk_recursive($tree, static function (mixed $item) use (&$events): void {
+            assert($item instanceof Event); // for phpstan
+
+            $events[] = $item;
+        });
 
         return [
             'No files'    => [
