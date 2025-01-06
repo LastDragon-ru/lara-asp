@@ -4,9 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
 class File {
     public function __construct(
-        public readonly string $title,
+        public readonly string $path,
         public readonly float $start,
         public float $paused = 0,
+        /**
+         * @var list<Change>
+         */
+        public array $changes = [],
         /**
          * @var list<Item>
          */

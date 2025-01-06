@@ -11,6 +11,10 @@ readonly class Item {
         public ?float $time,
         public TaskFinishedResult|DependencyResolvedResult $result,
         /**
+         * @var list<Change>
+         */
+        public array $changes = [],
+        /**
          * @var list<Item>
          */
         public array $children = [],

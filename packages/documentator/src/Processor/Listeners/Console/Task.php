@@ -8,6 +8,10 @@ class Task {
         public readonly float $start,
         public float $paused = 0,
         /**
+         * @var list<Change>
+         */
+        public array $changes = [],
+        /**
          * @var list<Item>
          */
         public array $children = [],
