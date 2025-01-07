@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Dev\PhpStan\Larastan;
 
 use Composer\InstalledVersions;
 use Exception;
+use Larastan\Larastan\Methods\Extension as MethodsExtension;
 use Larastan\Larastan\ReturnTypes\ApplicationMakeDynamicReturnTypeExtension;
 use Larastan\Larastan\ReturnTypes\AppMakeDynamicReturnTypeExtension;
 use Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension;
@@ -100,6 +101,7 @@ class Extension {
             AppMakeDynamicReturnTypeExtension::class                    => true,
             ContainerArrayAccessDynamicMethodReturnTypeExtension::class => true,
             ContainerMakeDynamicReturnTypeExtension::class              => true,
+            MethodsExtension::class                                     => true,
         ];
 
         foreach ($extension['services'] ?? [] as $index => $service) {

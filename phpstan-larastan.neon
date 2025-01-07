@@ -95,11 +95,6 @@ services:
             - phpstan.broker.methodsClassReflectionExtension
 
     -
-        class: Larastan\Larastan\Methods\Extension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
-
-    -
         class: Larastan\Larastan\Methods\ModelFactoryMethodsClassReflectionExtension
         tags:
             - phpstan.broker.methodsClassReflectionExtension

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Dev\App;
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
@@ -84,7 +85,9 @@ final class Example implements Runner {
                 $result = "<markdown>{$output}</markdown>";
             }
         } finally {
-            self::$app->forgetScopedInstances();
+            if (self::$app instanceof Container) {
+                self::$app->forgetScopedInstances();
+            }
 
             self::$app    = null;
             self::$file   = null;
