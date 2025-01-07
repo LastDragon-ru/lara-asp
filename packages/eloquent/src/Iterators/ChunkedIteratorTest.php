@@ -47,7 +47,7 @@ final class ChunkedIteratorTest extends TestCase {
         self::assertSame(1, count($log) - $count);
         self::assertSame(count($expected), $iterator->getIndex());
         self::assertSame(count($expected), $iterator->getOffset());
-        self::assertSame(3, count($iterator));
+        self::assertCount(3, $iterator);
 
         $spyBefore
             ->shouldHaveBeenCalled()

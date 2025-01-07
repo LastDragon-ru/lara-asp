@@ -72,7 +72,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
 
         self::assertSame(count($expected), $iterator->getIndex());
         self::assertSame(count($expected), $iterator->getOffset());
-        self::assertSame(4, count($iterator));
+        self::assertCount(4, $iterator);
 
         $spyBefore
             ->shouldHaveBeenCalled()
