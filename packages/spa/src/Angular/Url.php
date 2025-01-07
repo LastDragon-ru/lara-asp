@@ -9,14 +9,14 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use function array_diff_key;
 use function array_fill_keys;
 use function array_keys;
-use function array_map;
+use function array_walk_recursive;
 use function explode;
 use function http_build_query;
 use function implode;
-use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
+use function is_string;
 use function mb_substr;
 use function parse_url;
 use function preg_replace;
@@ -66,10 +66,10 @@ class Url {
 
         // Replace params
         $url        = Utils::uriFor($this->getTemplate());
-        $parameters = (array) $this->serialize($parameters);
+        $parameters = $this->serialize($parameters);
 
         foreach ($params as $param) {
-            if (isset($parameters[$param])) {
+            if (isset($parameters[$param]) && is_string($parameters[$param])) {
                 $url = $url->withPath(str_replace(":{$param}", $parameters[$param], $url->getPath()));
             }
 
@@ -109,14 +109,14 @@ class Url {
     }
 
     /**
-     * @return string|array<array-key, string|array<array-key, mixed>>
+     * @param array<string, mixed> $value
+     *
+     * @return array<string, mixed>
      */
-    private function serialize(mixed $value): string|array {
-        if (is_array($value)) {
-            $value = array_map($this->serialize(...), $value);
-        } else {
-            $value = $this->value($value);
-        }
+    private function serialize(array $value): array {
+        array_walk_recursive($value, function (&$item): void {
+            $item = $this->value($item);
+        });
 
         return $value;
     }
@@ -125,7 +125,7 @@ class Url {
         if ($value === null) {
             $value = '';
         } elseif (is_float($value)) {
-            $value = str_replace(',', '.', (string) $value);
+            $value = (string) $value;
         } elseif (is_bool($value)) {
             $value = (string) ((int) $value);
         } elseif (is_int($value)) {
