@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function basename;
-use function sprintf;
 
 /**
  * @internal
@@ -19,10 +18,11 @@ final class FileReferenceTest extends TestCase {
     use WithProcessor;
 
     public function testGetPath(): void {
-        $path = (new FilePath(__FILE__))->getNormalizedPath();
+        $filesystem = $this->getFileSystem(__DIR__);
+        $path       = (new FilePath(__FILE__))->getNormalizedPath();
 
-        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file'))->getPath());
-        self::assertEquals((string) $path, (string) (new FileReference($path))->getPath());
+        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file'))->getPath($filesystem));
+        self::assertEquals((string) $path, (string) (new FileReference($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {
@@ -43,12 +43,7 @@ final class FileReferenceTest extends TestCase {
         $path = 'path/to/file';
 
         self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage(
-            sprintf(
-                'Dependency `%s` not found.',
-                $path,
-            ),
-        );
+        self::expectExceptionMessage('Dependency not found.');
 
         (new FileReference($path))($fs);
     }

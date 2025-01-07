@@ -48,11 +48,9 @@ class FileIterator implements Dependency {
     }
 
     #[Override]
-    public function getPath(): DirectoryPath {
-        return match (true) {
-            $this->directory instanceof Directory => $this->directory->getPath(),
-            is_string($this->directory)           => new DirectoryPath($this->directory),
-            default                               => $this->directory,
-        };
+    public function getPath(FileSystem $fs): Directory|DirectoryPath {
+        return is_string($this->directory)
+            ? new DirectoryPath($this->directory)
+            : $this->directory;
     }
 }

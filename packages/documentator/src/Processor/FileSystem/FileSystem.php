@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
@@ -32,14 +35,12 @@ class FileSystem {
     private int   $level   = 0;
 
     private readonly SymfonyFilesystem $filesystem;
-    private readonly MetadataStorage   $metadata;
-    public readonly DirectoryPath      $input;
-    public readonly DirectoryPath      $output;
 
     public function __construct(
-        MetadataStorage $metadata,
-        DirectoryPath $input,
-        DirectoryPath $output,
+        private readonly Dispatcher $dispatcher,
+        private readonly MetadataStorage $metadata,
+        public readonly DirectoryPath $input,
+        public readonly DirectoryPath $output,
     ) {
         if (!$input->isAbsolute()) {
             throw new InvalidArgumentException(
@@ -59,9 +60,6 @@ class FileSystem {
             );
         }
 
-        $this->input      = $input;
-        $this->output     = $output;
-        $this->metadata   = $metadata;
         $this->filesystem = new SymfonyFilesystem();
     }
 
@@ -264,13 +262,28 @@ class FileSystem {
         }
 
         // Changed?
-        if (!$this->metadata->has($file, Content::class) || $this->metadata->get($file, Content::class) !== $content) {
+        $updated = !$this->metadata->has($file, Content::class)
+            || $this->metadata->get($file, Content::class) !== $content;
+
+        if ($updated) {
             $this->metadata->reset($file);
             $this->metadata->set($file, Content::class, $content);
 
             if (!$created) {
                 $this->change($file, $content);
             }
+        }
+
+        // Event
+        if ($updated || $created) {
+            $this->dispatcher->notify(
+                new FileSystemModified(
+                    $this->getPathname($file),
+                    $created
+                        ? FileSystemModifiedType::Created
+                        : FileSystemModifiedType::Updated,
+                ),
+            );
         }
 
         // Return

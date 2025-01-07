@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-readonly class DependencyResolved implements Event {
+readonly class FileSystemModified implements Event {
     public function __construct(
         /**
          * @var non-empty-string
          */
         public string $path,
-        public DependencyResolvedResult $result,
+        public FileSystemModifiedType $type,
     ) {
         // empty
     }

@@ -5,12 +5,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Exception;
 use Generator;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
@@ -55,9 +53,6 @@ class Executor {
          * @var InstanceList<Task>
          */
         private readonly InstanceList $tasks,
-        /**
-         * @var Dispatcher<Event>
-         */
         private readonly Dispatcher $dispatcher,
         /**
          * @var Iterator<array-key, File>
@@ -191,14 +186,20 @@ class Executor {
             $resolved = $resolved instanceof Traversable
                 ? new ExecutorTraversable($dependency, $resolved, $this->dependency(...))
                 : $resolved;
+        } catch (DependencyUnresolvable $exception) {
+            $this->dispatcher->notify(
+                new DependencyResolved(
+                    $this->fs->getPathname($exception->getDependency()->getPath($this->fs)),
+                    DependencyResolvedResult::Missed,
+                ),
+            );
+
+            throw $exception;
         } catch (Exception $exception) {
             $this->dispatcher->notify(
                 new DependencyResolved(
-                    $dependency::class,
-                    $this->fs->getPathname($dependency->getPath()),
-                    $exception instanceof DependencyUnresolvable
-                        ? DependencyResolvedResult::Missed
-                        : DependencyResolvedResult::Failed,
+                    $this->fs->getPathname($dependency->getPath($this->fs)),
+                    DependencyResolvedResult::Failed,
                 ),
             );
 
@@ -220,13 +221,13 @@ class Executor {
         // Event
         $path   = $resolved instanceof File || $resolved instanceof Directory
             ? $resolved
-            : $dependency->getPath();
+            : $dependency->getPath($this->fs);
         $result = $resolved !== null
             ? DependencyResolvedResult::Success
             : DependencyResolvedResult::Null;
 
         $this->dispatcher->notify(
-            new DependencyResolved($dependency::class, $this->fs->getPathname($path), $result),
+            new DependencyResolved($this->fs->getPathname($path), $result),
         );
 
         // Process

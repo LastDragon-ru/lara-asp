@@ -11,7 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Traversable;
 
 /**
- * Task dependency (= another file).
+ * Task dependency (= another file or directory).
  *
  * @template TValue of Traversable<mixed, Directory|File>|Directory|File|null
  */
@@ -23,5 +23,8 @@ interface Dependency {
      */
     public function __invoke(FileSystem $fs): mixed;
 
-    public function getPath(): DirectoryPath|FilePath;
+    /**
+     * Used only for events. Relative path will be resolved based on {@see FileSystem::$input}.
+     */
+    public function getPath(FileSystem $fs): Directory|DirectoryPath|File|FilePath;
 }

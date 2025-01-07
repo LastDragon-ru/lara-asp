@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
+use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
@@ -57,7 +58,10 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
-            new DependencyUnresolvable(new FileReference($fs->input->getFilePath('no readme/package/README.md'))),
+            new DependencyUnresolvable(
+                new FileReference($fs->input->getFilePath('no readme/package/README.md')),
+                new Exception(),
+            ),
         );
 
         $this->getProcessorResult($fs, ($instance)($context, $params));

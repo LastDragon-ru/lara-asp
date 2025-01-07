@@ -9,6 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Stringable;
 
+use function is_string;
+
 /**
  * @implements Dependency<File>
  */
@@ -26,10 +28,9 @@ readonly class FileCreate implements Dependency {
     }
 
     #[Override]
-    public function getPath(): FilePath {
-        return match (true) {
-            $this->file instanceof FilePath => $this->file,
-            default                         => new FilePath($this->file),
-        };
+    public function getPath(FileSystem $fs): FilePath {
+        return $fs->output->getPath(
+            is_string($this->file) ? new FilePath($this->file) : $this->file,
+        );
     }
 }

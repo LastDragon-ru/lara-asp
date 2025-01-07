@@ -30,7 +30,6 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
-use function sprintf;
 
 /**
  * @internal
@@ -90,29 +89,29 @@ final class ProcessorTest extends TestCase {
                 new ProcessingStarted(),
                 new FileStarted('↔ a/a.txt'),
                 new TaskStarted($taskB::class),
-                new DependencyResolved(FileReference::class, '↔ b/b/bb.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ b/b/bb.txt', DependencyResolvedResult::Success),
                 new FileStarted('↔ b/b/bb.txt'),
                 new TaskStarted($taskB::class),
-                new DependencyResolved(FileReference::class, '↔ b/a/ba.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ b/a/ba.txt', DependencyResolvedResult::Success),
                 new FileStarted('↔ b/a/ba.txt'),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved(FileReference::class, '↔ c.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ c.txt', DependencyResolvedResult::Success),
                 new FileStarted('↔ c.txt'),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved(FileReference::class, '↔ ../../../README.md', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ ../../../README.md', DependencyResolvedResult::Success),
                 new FileStarted('↔ ../../../README.md'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved(FileReference::class, '↔ c.txt', DependencyResolvedResult::Success),
-                new DependencyResolved(FileReference::class, '↔ c.html', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ c.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ c.html', DependencyResolvedResult::Success),
                 new FileStarted('↔ c.html'),
                 new FileFinished(FileFinishedResult::Skipped),
-                new DependencyResolved(FileReference::class, '↔ a/excluded.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ a/excluded.txt', DependencyResolvedResult::Success),
                 new FileStarted('↔ a/excluded.txt'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new TaskFinished(TaskFinishedResult::Success),
@@ -297,10 +296,10 @@ final class ProcessorTest extends TestCase {
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ b/b.html'),
                 new TaskStarted($taskA::class),
-                new DependencyResolved(FileReference::class, '↔ ../../../README.md', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ ../../../README.md', DependencyResolvedResult::Success),
                 new FileStarted('↔ ../../../README.md'),
                 new FileFinished(FileFinishedResult::Skipped),
-                new DependencyResolved(FileReference::class, '↔ a/excluded.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ a/excluded.txt', DependencyResolvedResult::Success),
                 new FileStarted('↔ a/excluded.txt'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new TaskFinished(TaskFinishedResult::Success),
@@ -409,12 +408,7 @@ final class ProcessorTest extends TestCase {
         $task  = new ProcessorTest__Task(['*' => ['404.html']]);
 
         self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage(
-            sprintf(
-                'Dependency `%s` not found.',
-                $input->getFilePath('a/404.html'),
-            ),
-        );
+        self::expectExceptionMessage('Dependency not found.');
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->task($task)

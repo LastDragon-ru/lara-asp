@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -28,7 +27,7 @@ readonly class FileSave implements Dependency {
     }
 
     #[Override]
-    public function getPath(): FilePath {
-        return $this->file->getPath();
+    public function getPath(FileSystem $fs): File {
+        return $this->file;
     }
 }

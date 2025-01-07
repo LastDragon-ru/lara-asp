@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -31,9 +30,6 @@ class Processor {
      */
     private InstanceList $tasks;
 
-    /**
-     * @var Dispatcher<Event>
-     */
     protected readonly Dispatcher $dispatcher;
 
     /**
@@ -118,7 +114,7 @@ class Processor {
 
         try {
             try {
-                $filesystem = new FileSystem(new MetadataStorage($this->container), $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, new MetadataStorage($this->container), $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 

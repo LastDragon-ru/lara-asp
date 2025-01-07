@@ -32,10 +32,9 @@ class FileReference implements Dependency {
     }
 
     #[Override]
-    public function getPath(): FilePath {
-        return match (true) {
-            is_string($this->reference) => new FilePath($this->reference),
-            default                     => $this->reference,
-        };
+    public function getPath(FileSystem $fs): FilePath {
+        return is_string($this->reference)
+            ? new FilePath($this->reference)
+            : $this->reference;
     }
 }

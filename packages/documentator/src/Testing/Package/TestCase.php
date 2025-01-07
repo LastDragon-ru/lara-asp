@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
 use LastDragon_ru\LaraASP\Documentator\PackageProvider;
+use LastDragon_ru\LaraASP\Formatter\PackageProvider as FormatterProvider;
 use LastDragon_ru\LaraASP\Serializer\PackageProvider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
 use Override;
@@ -23,6 +24,7 @@ abstract class TestCase extends PackageTestCase {
             PackageProvider::class,
             CoreProvider::class,
             SerializerProvider::class,
+            FormatterProvider::class,
         ]);
     }
 }

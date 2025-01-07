@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
-use Illuminate\Console\OutputStyle;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
@@ -16,12 +17,24 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 use UnexpectedValueException;
 
+use function array_filter;
+use function array_intersect_key;
 use function array_key_last;
+use function array_keys;
+use function array_map;
+use function array_merge;
 use function array_pop;
+use function array_sum;
+use function array_unique;
+use function array_values;
+use function count;
 use function end;
+use function implode;
+use function ksort;
 use function mb_strlen;
 use function memory_get_peak_usage;
 use function memory_get_usage;
@@ -29,21 +42,30 @@ use function microtime;
 use function min;
 use function str_repeat;
 use function strip_tags;
-use function trim;
+
+use const SORT_REGULAR;
 
 class Writer {
     /**
      * @var list<File|Task>
      */
-    private array $stack       = [];
-    private int   $width       = 150;
-    private int   $files       = 0;
-    private float $start       = 0;
-    private int   $startMemory = 0;
-    private int   $peakMemory  = 0;
+    private array $stack = [];
+
+    /**
+     * @var list<Change>
+     */
+    private array $changes = [];
+
+    private int   $width          = 150;
+    private float $start          = 0;
+    private int   $startMemory    = 0;
+    private int   $peakMemory     = 0;
+    private int   $filesCreated   = 0;
+    private int   $filesUpdated   = 0;
+    private int   $filesProcessed = 0;
 
     public function __construct(
-        protected readonly OutputStyle $output,
+        protected readonly OutputInterface $output,
         protected readonly Formatter $formatter,
     ) {
         // empty
@@ -64,18 +86,23 @@ class Writer {
             $this->taskFinished($event);
         } elseif ($event instanceof DependencyResolved) {
             $this->dependency($event);
+        } elseif ($event instanceof FileSystemModified) {
+            $this->filesystem($event);
         } else {
             // empty
         }
     }
 
     protected function processingStarted(ProcessingStarted $event): void {
-        $this->width       = min((new Terminal())->getWidth(), 150);
-        $this->files       = 0;
-        $this->stack       = [];
-        $this->start       = microtime(true);
-        $this->peakMemory  = memory_get_peak_usage(true);
-        $this->startMemory = memory_get_usage(true);
+        $this->width          = $this->getTerminalWidth();
+        $this->stack          = [];
+        $this->changes        = [];
+        $this->start          = microtime(true);
+        $this->peakMemory     = memory_get_peak_usage(true);
+        $this->startMemory    = memory_get_usage(true);
+        $this->filesCreated   = 0;
+        $this->filesUpdated   = 0;
+        $this->filesProcessed = 0;
     }
 
     protected function processingFinished(ProcessingFinished $event): void {
@@ -83,30 +110,34 @@ class Writer {
         $time    = microtime(true) - $this->start;
         $peak    = memory_get_peak_usage(true);
         $memory  = $peak > $this->peakMemory ? $peak - $this->startMemory : 0;
-        $message = "Files: {$this->formatter->integer($this->files)}, Time: {$this->formatter->duration($time)}";
+        $message = "Files: {$this->formatter->integer($this->filesProcessed)}"
+            .", Updated: {$this->message($this->formatter->integer($this->filesUpdated), FileSystemModifiedType::Updated)}"
+            .", Created: {$this->message($this->formatter->integer($this->filesCreated), FileSystemModifiedType::Created)}"
+            .", Memory: {$this->formatter->filesize($memory)}";
 
-        if ($memory > 0) {
-            $message .= ", Memory: {$this->formatter->filesize($memory)}";
+        if ($this->filesProcessed > 0) {
+            $this->output->writeln('');
         }
 
-        $this->output->newLine();
-
-        $this->line(0, $message, null, $event->result);
-
-        $this->output->newLine();
+        $this->line(0, $message, $time, $event->result, []);
 
         // Reset
         // (should we throw error if any of the stacks are not empty?)
-        $this->width       = 0;
-        $this->start       = 0;
-        $this->stack       = [];
-        $this->peakMemory  = 0;
-        $this->startMemory = 0;
+        $this->width          = 0;
+        $this->start          = 0;
+        $this->stack          = [];
+        $this->changes        = [];
+        $this->peakMemory     = 0;
+        $this->startMemory    = 0;
+        $this->filesCreated   = 0;
+        $this->filesUpdated   = 0;
+        $this->filesProcessed = 0;
     }
 
     protected function fileStarted(FileStarted $event): void {
-        $this->stack[] = new File($event->path, microtime(true));
-        $this->files++;
+        $this->stack[] = new File($event->path, microtime(true), changes: $this->changes($event->path));
+
+        $this->filesProcessed++;
     }
 
     protected function fileFinished(FileFinished $event): void {
@@ -126,9 +157,40 @@ class Writer {
         }
 
         // Message
-        $this->line(0, $file->title, $time, $event->result);
+        $this->line(0, $file->path, $time, $event->result, $file->changes);
 
         $this->children(1, $file->children);
+
+        // Stats
+        $created = false;
+        $updated = false;
+
+        foreach ($file->changes as $change) {
+            if ($file->path !== $change->path) {
+                continue;
+            }
+
+            if ($change->type === FileSystemModifiedType::Created) {
+                $created = true;
+            } else {
+                $updated = true;
+            }
+
+            if ($created && $updated) {
+                break;
+            }
+        }
+
+        if ($created) {
+            $this->filesCreated++;
+        } elseif ($updated) {
+            $this->filesUpdated++;
+        } else {
+            // skip
+        }
+
+        // Clear
+        $this->changes = [];
     }
 
     protected function taskStarted(TaskStarted $event): void {
@@ -152,12 +214,17 @@ class Writer {
 
         // Save
         $file->paused    += $task->paused;
+        $file->changes    = array_values(array_unique(array_merge($file->changes, $task->changes), SORT_REGULAR));
         $file->children[] = new Item(
             $task->title,
             microtime(true) - $task->start - $task->paused,
             $event->result,
+            $task->changes,
             $task->children,
         );
+
+        // Clear
+        $this->changes = [];
     }
 
     protected function dependency(DependencyResolved $event): void {
@@ -169,71 +236,140 @@ class Writer {
         }
 
         // Save
-        $task->children[] = new Item($event->path, null, $event->result);
+        $task->children[] = new Item($event->path, null, $event->result, $this->changes);
+        $task->changes    = array_values(array_unique(array_merge($task->changes, $this->changes), SORT_REGULAR));
+
+        // Clear
+        $this->changes = [];
+    }
+
+    protected function filesystem(FileSystemModified $event): void {
+        $this->changes[] = new Change($event->path, $event->type);
     }
 
     /**
-     * @param list<Item> $children
+     * @param list<Change> $changes
      */
-    protected function children(int $level, array $children): void {
-        if (!$this->isLevelVisible($level)) {
-            return;
-        }
-
-        foreach ($children as $child) {
-            $this->line($level, $child->title, $child->time, $child->result);
-            $this->children($level + 1, $child->children);
-        }
-    }
-
     protected function line(
         int $level,
-        string $message,
+        string $path,
         ?float $time,
         ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
+        array $changes,
     ): void {
-        if (!$this->isLevelVisible($level) || !$this->isResultVisible($result)) {
+        if ($changes === [] && (!$this->isLevelVisible($level) || !$this->isResultVisible($result))) {
             return;
         }
 
-        $prefix   = str_repeat('    ', $level);
-        $suffix   = $this->result($result);
-        $message  = trim($message);
-        $duration = $this->formatter->duration($time);
-        $spacer   = $this->width
-            - $this->length($prefix)
-            - $this->length($message)
-            - $this->length($duration)
-            - $this->length($suffix)
-            - 5;
-        $line     = $prefix
-            .$message
-            .' '.($spacer > 0 ? '<fg=gray>'.str_repeat('.', $spacer).'</>' : '')
-            .' '."<fg=gray>{$duration}</>"
-            .' '.$suffix;
+        $flag     = null;
+        $flags    = $this->flags($changes, $path, $flag);
+        $template = [
+            'prefix'   => str_repeat('    ', $level),
+            'message'  => $this->message($path, $flag),
+            'spacer'   => '',
+            'flags'    => $flags,
+            'duration' => $time !== null ? "<fg=gray>{$this->formatter->duration($time)}</>" : '',
+            'suffix'   => $this->message($this->result($result), $result),
+        ];
+        $length   = array_map($this->length(...), $template);
+        $filled   = array_filter($length, static fn ($value) => $value > 0);
+        $spacer   = $this->width - array_sum($length) - count($filled) - 2;
 
-        $this->output->writeln($line);
+        if ($spacer > 0) {
+            $template['spacer'] = '<fg=gray>'.str_repeat('.', $spacer).'</>';
+            $filled['spacer']   = '';
+        }
+
+        $template = array_intersect_key($template, $filled);
+        $template = implode(' ', $template);
+
+        $this->output->writeln($template);
+    }
+
+    /**
+     * @param list<Change> $changes
+     */
+    protected function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): string {
+        // Collect
+        $flag  = null;
+        $flags = [];
+
+        foreach ($changes as $change) {
+            // Type
+            $result         = $this->message($this->result($change->type), $change->type);
+            $flags[$result] = ($flags[$result] ?? 0) + 1;
+
+            // Path
+            if ($path === $change->path) {
+                $flag = $flag === null || $flag === $change->type ? $change->type : Flag::Mixed;
+            }
+        }
+
+        // Only one flag for $path?
+        if ($flag !== null && $flag !== Flag::Mixed && count($flags) === 1) {
+            return '';
+        }
+
+        // Sort
+        ksort($flags);
+
+        // Return
+        return implode('', array_keys($flags));
     }
 
     protected function length(string $message): int {
         return mb_strlen(strip_tags($message));
     }
 
-    protected function result(
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $enum,
+    protected function message(
+        string $message,
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult|FileSystemModifiedType|Flag|null $status = null,
     ): string {
-        return match ($enum) {
-            ProcessingFinishedResult::Success => '<fg=green;options=bold>DONE</>',
-            ProcessingFinishedResult::Failed  => '<fg=red;options=bold>FAIL</>',
-            FileFinishedResult::Success       => '<fg=green>DONE</>',
-            FileFinishedResult::Failed        => '<fg=red>FAIL</>',
-            FileFinishedResult::Skipped       => '<fg=gray>SKIP</>',
-            TaskFinishedResult::Success       => '<fg=green>DONE</>',
-            TaskFinishedResult::Failed        => '<fg=red>FAIL</>',
-            DependencyResolvedResult::Success => '<fg=green>DONE</>',
-            DependencyResolvedResult::Failed  => '<fg=red>FAIL</>',
-            DependencyResolvedResult::Missed  => '<fg=yellow>MISS</>',
-            DependencyResolvedResult::Null    => '<fg=gray>NULL</>',
+        $style   = $this->style($status);
+        $message = $style !== null ? "<{$style}>{$message}</>" : $message;
+
+        return $message;
+    }
+
+    protected function style(
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult|FileSystemModifiedType|Flag|null $result,
+    ): ?string {
+        return match ($result) {
+            ProcessingFinishedResult::Success => 'fg=green;options=bold',
+            ProcessingFinishedResult::Failed  => 'fg=red;options=bold',
+            FileFinishedResult::Success       => 'fg=green',
+            FileFinishedResult::Failed        => 'fg=red',
+            FileFinishedResult::Skipped       => 'fg=gray',
+            TaskFinishedResult::Success       => 'fg=green',
+            TaskFinishedResult::Failed        => 'fg=red',
+            DependencyResolvedResult::Success => 'fg=green',
+            DependencyResolvedResult::Failed  => 'fg=red',
+            DependencyResolvedResult::Missed  => 'fg=yellow',
+            DependencyResolvedResult::Null    => 'fg=gray',
+            FileSystemModifiedType::Created   => 'fg=green',
+            FileSystemModifiedType::Updated   => 'fg=yellow',
+            Flag::Mixed                       => 'options=underscore',
+            null                              => null,
+        };
+    }
+
+    protected function result(
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult|FileSystemModifiedType $result,
+    ): string {
+        return match ($result) {
+            ProcessingFinishedResult::Success => 'DONE',
+            ProcessingFinishedResult::Failed  => 'FAIL',
+            FileFinishedResult::Success       => 'DONE',
+            FileFinishedResult::Failed        => 'FAIL',
+            FileFinishedResult::Skipped       => 'SKIP',
+            TaskFinishedResult::Success       => 'DONE',
+            TaskFinishedResult::Failed        => 'FAIL',
+            DependencyResolvedResult::Success => 'DONE',
+            DependencyResolvedResult::Failed  => 'FAIL',
+            DependencyResolvedResult::Missed  => 'MISS',
+            DependencyResolvedResult::Null    => 'NULL',
+            FileSystemModifiedType::Created   => 'C',
+            FileSystemModifiedType::Updated   => 'U',
         };
     }
 
@@ -248,11 +384,46 @@ class Writer {
     }
 
     protected function isResultVisible(
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $enum,
+        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
     ): bool {
-        return match ($enum) {
+        return match ($result) {
             FileFinishedResult::Skipped => $this->output->isDebug(),
             default                     => true,
         };
+    }
+
+    protected function getTerminalWidth(): int {
+        return min((new Terminal())->getWidth(), 150);
+    }
+
+    /**
+     * @param list<Item> $children
+     */
+    private function children(int $level, array $children): void {
+        if (!$this->isLevelVisible($level)) {
+            return;
+        }
+
+        foreach ($children as $child) {
+            $this->line($level, $child->title, $child->time, $child->result, $child->changes);
+            $this->children($level + 1, $child->children);
+        }
+    }
+
+    /**
+     * @return list<Change>
+     */
+    private function changes(string $path): array {
+        $changes = [];
+
+        foreach ($this->stack as $item) {
+            foreach ($item->changes as $change) {
+                if ($change->path === $path) {
+                    $changes[] = $change;
+                }
+            }
+        }
+
+        return array_values(array_unique($changes, SORT_REGULAR));
     }
 }
