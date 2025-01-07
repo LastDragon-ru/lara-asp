@@ -9,8 +9,8 @@ parameters:
     scanDirectories:
         - vendor/larastan/larastan
 
-    # The level 9 is the highest level
-    level: max
+    # The level 10 is the highest level
+    level: 9
 
     # Settings
     phpVersion: 80300

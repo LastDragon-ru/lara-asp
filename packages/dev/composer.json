@@ -21,12 +21,12 @@
     "php": "^8.3",
     "illuminate/contracts": "^11.0.8",
     "illuminate/support": "^11.0.8",
-    "larastan/larastan": "^2.8.1",
+    "larastan/larastan": "^3.0.2",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
     "nikic/php-parser": "^5.0",
     "nette/neon": "^3.4.1",
-    "phpstan/phpstan": "^1.10",
+    "phpstan/phpstan": "^2.1.0",
     "symfony/var-dumper": "^7.0.0"
   },
   "require-dev": {
