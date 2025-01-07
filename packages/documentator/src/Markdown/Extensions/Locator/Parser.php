@@ -34,9 +34,11 @@ use function mb_substr_count;
 use function reset;
 
 /**
+ * todo(documentator): [league/commonmark] [update] Check {@see Environment::injectEnvironmentAndConfigurationIfNeeded()}.
+ */
+
+/**
  * Inline parser that saves location of the parsed node (= last parsed node).
- *
- * @update(league/commonmark): Check {@see Environment::injectEnvironmentAndConfigurationIfNeeded()}.
  *
  * @internal
  *
