@@ -55,13 +55,13 @@ final class ProtocolTest extends TestCase {
 
         self::assertSame(Protocol::Scheme, $actual->scheme());
         self::assertSame($host, $actual->host());
-        self::assertEquals(null, $actual->port());
+        self::assertNull($actual->port());
         self::assertSame($host, $actual->authority());
-        self::assertEquals(null, $actual->user());
-        self::assertEquals(null, $actual->pass());
+        self::assertNull($actual->user());
+        self::assertNull($actual->pass());
         self::assertSame($path, $actual->path());
         self::assertSame(http_build_query($params), $actual->query());
-        self::assertEquals(null, $actual->fragment());
+        self::assertNull($actual->fragment());
     }
     // </editor-fold>
 

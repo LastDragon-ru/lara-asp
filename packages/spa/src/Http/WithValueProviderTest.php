@@ -127,7 +127,7 @@ final class WithValueProviderTest extends TestCase {
             'resolver_chained'  => ['b' => 2],
         ], $request->validated());
 
-        self::assertEquals(null, $request->validated('rule_nullable'));
+        self::assertNull($request->validated('rule_nullable'));
         self::assertEquals(['a' => 1], $request->validated('resolver'));
         self::assertEquals(['a' => 4], $request->validated('array.1.resolver'));
         self::assertEquals(

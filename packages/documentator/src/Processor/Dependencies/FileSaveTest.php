@@ -33,6 +33,6 @@ final class FileSaveTest extends TestCase {
             ->once()
             ->andReturn($file);
 
-        self::assertEquals(null, (new FileSave($file, $content))($fs));
+        (new FileSave($file, $content))($fs);
     }
 }
