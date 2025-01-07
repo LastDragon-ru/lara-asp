@@ -12,7 +12,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Handler;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Operator;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LogicException;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
@@ -28,7 +27,6 @@ use function sprintf;
 /**
  * @mixin TestCase
  *
- * @phpstan-import-type BuilderFactory from BuilderDataProvider
  * @internal
  */
 trait OperatorTests {
@@ -38,12 +36,14 @@ trait OperatorTests {
      * PHPStorm or PHPUnit issue). Anyway, this approach requires less
      * copy-pasting.
      *
-     * @param class-string<Handler>               $directive
-     * @param array<array-key, mixed>|Exception   $expected
-     * @param Closure(static): object             $builderFactory
-     * @param Closure(static): Argument           $argumentFactory
-     * @param Closure(static): Context|null       $contextFactory
-     * @param Closure(object, Field): string|null $resolver
+     * @template T of object
+     *
+     * @param class-string<Handler>                                                                    $directive
+     * @param (array{query: string, bindings: array<array-key, mixed>}&array<string, mixed>)|Exception $expected
+     * @param Closure(static): T                                                                       $builderFactory
+     * @param Closure(static): Argument                                                                $argumentFactory
+     * @param Closure(static): Context|null                                                            $contextFactory
+     * @param Closure(T, Field): string|null                                                           $resolver
      */
     private function testOperator(
         string $directive,
@@ -80,13 +80,9 @@ trait OperatorTests {
 
         if (is_array($expected)) {
             if ($builder instanceof EloquentBuilder) {
-                self::assertArrayHasKey('query', $expected);
-                self::assertArrayHasKey('bindings', $expected);
                 self::assertInstanceOf(EloquentBuilder::class, $actual);
                 self::assertDatabaseQueryEquals($expected, $actual);
             } elseif ($builder instanceof QueryBuilder) {
-                self::assertArrayHasKey('query', $expected);
-                self::assertArrayHasKey('bindings', $expected);
                 self::assertInstanceOf(QueryBuilder::class, $actual);
                 self::assertDatabaseQueryEquals($expected, $actual);
             } elseif ($builder instanceof ScoutBuilder) {
