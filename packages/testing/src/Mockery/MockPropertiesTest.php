@@ -26,7 +26,7 @@ final class MockPropertiesTest extends TestCase {
                 new MockPropertiesTest_Value('abc'),
             );
 
-        self::assertEquals('abc', $mock->getValue());
+        self::assertSame('abc', $mock->getValue());
     }
 
     public function testShouldUsePropertyValueIsMock(): void {
@@ -42,7 +42,7 @@ final class MockPropertiesTest extends TestCase {
                     ->getMock(),
             );
 
-        self::assertEquals('abc', $mock->getValue());
+        self::assertSame('abc', $mock->getValue());
     }
 
     public function testShouldUsePropertyUnused(): void {
@@ -102,7 +102,7 @@ final class MockPropertiesTest extends TestCase {
                 new MockPropertiesTest_Value('public'),
             );
 
-        self::assertEquals('public', $mock->getValue());
+        self::assertSame('public', $mock->getValue());
     }
 
     public function testShouldUseProtectedProperty(): void {
@@ -114,7 +114,7 @@ final class MockPropertiesTest extends TestCase {
                 new MockPropertiesTest_Value('protected'),
             );
 
-        self::assertEquals('protected', $mock->getValue());
+        self::assertSame('protected', $mock->getValue());
     }
 
     public function testShouldUsePrivateProperty(): void {
@@ -145,7 +145,7 @@ final class MockPropertiesTest extends TestCase {
                 new MockPropertiesTest_Value('readonly'),
             );
 
-        self::assertEquals('readonly', $mock->getValue());
+        self::assertSame('readonly', $mock->getValue());
     }
 }
 

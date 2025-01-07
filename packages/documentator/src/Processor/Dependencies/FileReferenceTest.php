@@ -21,8 +21,8 @@ final class FileReferenceTest extends TestCase {
         $filesystem = $this->getFileSystem(__DIR__);
         $path       = (new FilePath(__FILE__))->getNormalizedPath();
 
-        self::assertEquals('path/to/file', (string) (new FileReference('path/to/file'))->getPath($filesystem));
-        self::assertEquals((string) $path, (string) (new FileReference($path))->getPath($filesystem));
+        self::assertSame('path/to/file', (string) (new FileReference('path/to/file'))->getPath($filesystem));
+        self::assertSame((string) $path, (string) (new FileReference($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {

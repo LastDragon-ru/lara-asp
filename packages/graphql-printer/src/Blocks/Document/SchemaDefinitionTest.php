@@ -44,7 +44,7 @@ final class SchemaDefinitionTest extends TestCase {
             Parser::schemaDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

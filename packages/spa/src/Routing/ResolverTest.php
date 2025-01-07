@@ -45,7 +45,7 @@ final class ResolverTest extends TestCase {
         $c = $resolver->get(456);
 
         self::assertNotNull($a);
-        self::assertEquals(123, $a->id);
+        self::assertSame(123, $a->id);
         self::assertSame($a, $b);
         self::assertNotSame($a, $c);
     }

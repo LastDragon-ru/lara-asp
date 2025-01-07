@@ -14,9 +14,9 @@ final class DirectoryPathTest extends TestCase {
         $relative = (new DirectoryPath('relative/path/to/directory'))->getFilePath('file.b');
         $absolute = (new DirectoryPath('/path/to/directory'))->getFilePath('/file.b');
 
-        self::assertEquals('relative/path/to/directory/file.b', (string) $relative);
+        self::assertSame('relative/path/to/directory/file.b', (string) $relative);
 
-        self::assertEquals('/file.b', (string) $absolute);
+        self::assertSame('/file.b', (string) $absolute);
     }
 
     public function testGetDirectoryPath(): void {
@@ -24,25 +24,25 @@ final class DirectoryPathTest extends TestCase {
         $absolute = (new DirectoryPath('/path/to'))->getDirectoryPath('/directory');
         $null     = (new DirectoryPath('/path/to'))->getDirectoryPath();
 
-        self::assertEquals('relative/path/to/directory', (string) $relative);
+        self::assertSame('relative/path/to/directory', (string) $relative);
 
-        self::assertEquals('/directory', (string) $absolute);
+        self::assertSame('/directory', (string) $absolute);
 
-        self::assertEquals('/path', (string) $null);
+        self::assertSame('/path', (string) $null);
     }
 
     public function testGetParentPath(): void {
         $relative = new DirectoryPath('relative/path/to/file');
         $absolute = new DirectoryPath('/absolute/path/to/file');
 
-        self::assertEquals('relative/path/to', (string) $relative->getParentPath());
-        self::assertEquals('relative/path', (string) $relative->getParentPath()->getParentPath());
+        self::assertSame('relative/path/to', (string) $relative->getParentPath());
+        self::assertSame('relative/path', (string) $relative->getParentPath()->getParentPath());
 
-        self::assertEquals('/absolute/path/to', (string) $absolute->getParentPath());
-        self::assertEquals('/absolute/path', (string) $absolute->getParentPath()->getParentPath());
+        self::assertSame('/absolute/path/to', (string) $absolute->getParentPath());
+        self::assertSame('/absolute/path', (string) $absolute->getParentPath()->getParentPath());
 
-        self::assertEquals((string) $relative->getDirectoryPath(), (string) $relative->getParentPath());
-        self::assertEquals((string) $absolute->getDirectoryPath(), (string) $absolute->getParentPath());
+        self::assertSame((string) $relative->getDirectoryPath(), (string) $relative->getParentPath());
+        self::assertSame((string) $absolute->getDirectoryPath(), (string) $absolute->getParentPath());
     }
 
     public function testIsInside(): void {

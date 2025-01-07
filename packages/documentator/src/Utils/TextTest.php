@@ -22,8 +22,8 @@ final class TextTest extends TestCase {
         $actualCuts = 0;
         $actualText = Text::setPadding($text, $level, $padding, $actualCuts);
 
-        self::assertEquals($expected[0], $actualText);
-        self::assertEquals($expected[1], $actualCuts);
+        self::assertSame($expected[0], $actualText);
+        self::assertSame($expected[1], $actualCuts);
     }
 
     public function testGetLines(): void {
@@ -54,15 +54,15 @@ final class TextTest extends TestCase {
     }
 
     public function testGetPathTitle(): void {
-        self::assertEquals('file', Text::getPathTitle('path/to/file.txt'));
-        self::assertEquals('file Name', Text::getPathTitle('path/to/fileName.txt'));
-        self::assertEquals('File name second', Text::getPathTitle('path/to/File name.second.txt'));
-        self::assertEquals('File name', Text::getPathTitle('path/to/File     name'));
+        self::assertSame('file', Text::getPathTitle('path/to/file.txt'));
+        self::assertSame('file Name', Text::getPathTitle('path/to/fileName.txt'));
+        self::assertSame('File name second', Text::getPathTitle('path/to/File name.second.txt'));
+        self::assertSame('File name', Text::getPathTitle('path/to/File     name'));
     }
 
     public function testSetEol(): void {
-        self::assertEquals("a\nb\nc\n", Text::setEol("a\r\nb\r\nc\r\n"));
-        self::assertEquals("a\rb\rc\r", Text::setEol("a\r\nb\r\nc\r\n", "\r"));
+        self::assertSame("a\nb\nc\n", Text::setEol("a\r\nb\r\nc\r\n"));
+        self::assertSame("a\rb\rc\r", Text::setEol("a\r\nb\r\nc\r\n", "\r"));
     }
     //</editor-fold>
 

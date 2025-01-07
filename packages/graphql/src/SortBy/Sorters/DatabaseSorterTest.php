@@ -112,23 +112,23 @@ final class DatabaseSorterTest extends TestCase {
             }
         };
 
-        self::assertEquals('lara_asp_graphql__sort_by__0', $sorter->getAlias($builder));
-        self::assertEquals('lara_asp_graphql__sort_by__0', $sorter->getAlias($builder->toBase()));
+        self::assertSame('lara_asp_graphql__sort_by__0', $sorter->getAlias($builder));
+        self::assertSame('lara_asp_graphql__sort_by__0', $sorter->getAlias($builder->toBase()));
 
         $builder->orderBy('name');
 
-        self::assertEquals('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder));
-        self::assertEquals('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder->toBase()));
+        self::assertSame('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder));
+        self::assertSame('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder->toBase()));
 
         $builder->union($builder);
 
-        self::assertEquals('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder));
-        self::assertEquals('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder->toBase()));
+        self::assertSame('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder));
+        self::assertSame('lara_asp_graphql__sort_by__1', $sorter->getAlias($builder->toBase()));
 
         $builder->orderBy('id');
 
-        self::assertEquals('lara_asp_graphql__sort_by__2', $sorter->getAlias($builder));
-        self::assertEquals('lara_asp_graphql__sort_by__2', $sorter->getAlias($builder->toBase()));
+        self::assertSame('lara_asp_graphql__sort_by__2', $sorter->getAlias($builder));
+        self::assertSame('lara_asp_graphql__sort_by__2', $sorter->getAlias($builder->toBase()));
     }
     //</editor-fold>
 

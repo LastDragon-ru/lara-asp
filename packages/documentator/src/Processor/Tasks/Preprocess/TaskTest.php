@@ -189,7 +189,7 @@ final class TaskTest extends TestCase {
         $result = $this->getProcessorResult($filesystem, ($task)($file));
 
         self::assertTrue($result);
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
 

@@ -23,7 +23,7 @@ final class RenumberTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = (string) $document->mutate(new Renumber($level));
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

@@ -52,7 +52,7 @@ final class InstructionTest extends TestCase {
             self::assertIsString($actual);
         }
 
-        self::assertEquals($expected, trim((string) $actual));
+        self::assertSame($expected, trim((string) $actual));
     }
     //</editor-fold>
 

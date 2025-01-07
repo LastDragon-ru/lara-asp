@@ -40,7 +40,7 @@ final class MimeTypeTest extends TestCase {
             'example/example' => ['example'],
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             'has Content-Type header that is equal to \'example/text\' or starts with "example/text;" or '.
             'has Content-Type header that is equal to \'example/example\' or starts with "example/example;"',
             $constraint->toString(),

@@ -38,7 +38,7 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertEquals($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
+        self::assertSame($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
 
         $factory->assertRan(static function (PendingProcess $process) use ($fs, $command): bool {
             return $process->path === (string) $fs->input

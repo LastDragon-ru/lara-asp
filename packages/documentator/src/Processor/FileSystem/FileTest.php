@@ -20,8 +20,8 @@ final class FileTest extends TestCase {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
         $file = new File(Mockery::mock(MetadataResolver::class), $path);
 
-        self::assertEquals('php', $file->getExtension());
-        self::assertEquals('FileTest.php', $file->getName());
+        self::assertSame('php', $file->getExtension());
+        self::assertSame('FileTest.php', $file->getName());
     }
 
     public function testConstructNotFile(): void {
@@ -44,6 +44,6 @@ final class FileTest extends TestCase {
             ->once()
             ->andReturn(123);
 
-        self::assertEquals(123, $file->getMetadata(Metadata::class));
+        self::assertSame(123, $file->getMetadata(Metadata::class));
     }
 }

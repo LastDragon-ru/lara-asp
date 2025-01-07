@@ -19,7 +19,7 @@ final class DurationFormatTest extends TestCase {
         $formatter = new DurationFormat([new DurationOptions($format)]);
         $actual    = $formatter($duration);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

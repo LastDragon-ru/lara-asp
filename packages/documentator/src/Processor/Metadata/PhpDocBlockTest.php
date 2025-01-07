@@ -45,7 +45,7 @@ final class PhpDocBlockTest extends TestCase {
         $metadata = $factory($file);
 
         self::assertNotNull($metadata);
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             Description.
 

@@ -32,7 +32,7 @@ final class XmlMatchesSchemaTest extends TestCase {
             self::assertFalse($result);
             self::assertStringContainsString($expected, $constraint->additionalFailureDescription($xml));
         } else {
-            self::assertEquals($expected, $result);
+            self::assertSame($expected, $result);
         }
     }
     // </editor-fold>

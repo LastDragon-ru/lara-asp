@@ -20,7 +20,7 @@ final class BoolRuleTest extends TestCase {
         $factory   = $this->app()->make(Factory::class);
         $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
-        self::assertEquals($expected, !$validator->fails());
+        self::assertSame($expected, !$validator->fails());
 
         if ($expected === false) {
             self::assertEquals(
@@ -39,7 +39,7 @@ final class BoolRuleTest extends TestCase {
         $rule   = $this->app()->make(BoolRule::class);
         $actual = $rule->isValid('attribute', $value);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

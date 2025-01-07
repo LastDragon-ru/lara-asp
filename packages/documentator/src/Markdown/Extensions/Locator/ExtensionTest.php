@@ -35,7 +35,7 @@ final class ExtensionTest extends TestCase {
         $renderer = $this->app()->make(DocumentRenderer::class);
         $document = $markdown->parse(self::getTestData()->content('~document.md'));
 
-        self::assertEquals(
+        self::assertSame(
             self::getTestData()->content('~document.xml'),
             $renderer->render($document),
         );

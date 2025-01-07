@@ -16,6 +16,6 @@ final class ErrorResponseTest extends TestCase {
         $response   = Factory::make($this->getJson(__FUNCTION__));
         $constraint = new ErrorResponse(new NotFound());
 
-        self::assertEquals(true, $constraint->evaluate($response, '', true));
+        self::assertTrue($constraint->evaluate($response, '', true));
     }
 }

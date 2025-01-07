@@ -22,15 +22,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ClassMethodLink::class)]
 final class ClassMethodLinkTest extends TestCase {
     public function testToString(): void {
-        self::assertEquals('Class::method()', (string) new ClassMethodLink('Class', 'method'));
-        self::assertEquals('App\\Class::method()', (string) new ClassMethodLink('App\\Class', 'method'));
-        self::assertEquals('\\App\\Class::method()', (string) new ClassMethodLink('\\App\\Class', 'method'));
+        self::assertSame('Class::method()', (string) new ClassMethodLink('Class', 'method'));
+        self::assertSame('App\\Class::method()', (string) new ClassMethodLink('App\\Class', 'method'));
+        self::assertSame('\\App\\Class::method()', (string) new ClassMethodLink('\\App\\Class', 'method'));
     }
 
     public function testGetTitle(): void {
-        self::assertEquals('Class::method()', (new ClassMethodLink('Class', 'method'))->getTitle());
-        self::assertEquals('Class::method()', (new ClassMethodLink('App\\Class', 'method'))->getTitle());
-        self::assertEquals('Class::method()', (new ClassMethodLink('\\App\\Class', 'method'))->getTitle());
+        self::assertSame('Class::method()', (new ClassMethodLink('Class', 'method'))->getTitle());
+        self::assertSame('Class::method()', (new ClassMethodLink('App\\Class', 'method'))->getTitle());
+        self::assertSame('Class::method()', (new ClassMethodLink('\\App\\Class', 'method'))->getTitle());
     }
 
     public function testGetTargetNode(): void {
@@ -70,6 +70,6 @@ final class ClassMethodLinkTest extends TestCase {
         $actual = $link->getTargetNode($class->class);
 
         self::assertInstanceOf(ClassMethod::class, $actual);
-        self::assertEquals('method', $actual->name->name);
+        self::assertSame('method', $actual->name->name);
     }
 }

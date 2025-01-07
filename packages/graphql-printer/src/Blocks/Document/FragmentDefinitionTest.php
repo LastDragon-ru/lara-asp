@@ -38,7 +38,7 @@ final class FragmentDefinitionTest extends TestCase {
             Parser::fragmentDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**

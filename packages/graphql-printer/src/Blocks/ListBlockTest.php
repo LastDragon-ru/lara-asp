@@ -52,7 +52,7 @@ final class ListBlockTest extends TestCase {
             $multilineSeparator,
         );
 
-        self::assertEquals($expected, $list->serialize($collector, $level, $used));
+        self::assertSame($expected, $list->serialize($collector, $level, $used));
     }
 
     public function testStatistics(): void {

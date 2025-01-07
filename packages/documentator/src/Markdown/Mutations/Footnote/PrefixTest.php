@@ -40,7 +40,7 @@ final class PrefixTest extends TestCase {
         $document = $markdown->parse($content, new FilePath(__FILE__));
         $actual   = (string) $document->mutate(new Prefix('prefix'));
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Header[^prefix-1]
 

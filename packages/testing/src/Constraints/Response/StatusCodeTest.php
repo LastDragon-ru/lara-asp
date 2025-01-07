@@ -31,6 +31,6 @@ final class StatusCodeTest extends TestCase {
     public function testToString(): void {
         $constraint = new StatusCode(200);
 
-        self::assertEquals('has Status Code is equal to 200', $constraint->toString());
+        self::assertSame('has Status Code is equal to 200', $constraint->toString());
     }
 }

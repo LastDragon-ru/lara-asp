@@ -48,7 +48,7 @@ final class InstructionTest extends TestCase {
             self::assertIsString($actual);
         }
 
-        self::assertEquals($expected, (string) $actual);
+        self::assertSame($expected, (string) $actual);
     }
 
     public function testInvokeNoData(): void {

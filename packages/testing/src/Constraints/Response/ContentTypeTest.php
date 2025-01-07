@@ -33,7 +33,7 @@ final class ContentTypeTest extends TestCase {
     public function testToString(): void {
         $constraint = new ContentType('example/text');
 
-        self::assertEquals(
+        self::assertSame(
             'has Content-Type header that is equal to \'example/text\' or starts with "example/text;"',
             $constraint->toString(),
         );

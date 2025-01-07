@@ -24,7 +24,7 @@ final class IntrospectionPrinterTest extends TestCase {
         $schema   = new Schema([]);
         $actual   = $printer->print($schema, $level);
 
-        self::assertEquals($expected, (string) $actual);
+        self::assertSame($expected, (string) $actual);
     }
     // </editor-fold>
 

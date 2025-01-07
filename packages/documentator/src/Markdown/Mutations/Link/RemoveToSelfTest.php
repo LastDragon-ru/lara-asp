@@ -52,7 +52,7 @@ final class RemoveToSelfTest extends TestCase {
         $document = $markdown->parse($content, new FilePath('path/to/file.md'));
         $actual   = (string) $document->mutate(new RemoveToSelf());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Header
 

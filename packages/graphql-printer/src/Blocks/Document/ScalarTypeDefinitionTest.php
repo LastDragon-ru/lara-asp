@@ -37,7 +37,7 @@ final class ScalarTypeDefinitionTest extends TestCase {
             Parser::scalarTypeDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

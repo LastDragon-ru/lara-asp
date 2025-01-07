@@ -56,10 +56,10 @@ final class ValueTest extends TestCase {
             $parsed = Parser::valueLiteral($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         if ($parsed !== null && !$settings->isNormalizeArguments() && $settings->getTypeFilter() === null) {
-            self::assertEquals(
+            self::assertSame(
                 Printer::doPrint($node),
                 Printer::doPrint($parsed),
             );

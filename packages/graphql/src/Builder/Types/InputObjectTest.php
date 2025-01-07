@@ -59,7 +59,7 @@ final class InputObjectTest extends TestCase {
             $this->app()->make(PackageConfig::class),
         );
 
-        self::assertEquals($expected, $input->isFieldDirectiveAllowed($manipulator, $field, $context, $directive));
+        self::assertSame($expected, $input->isFieldDirectiveAllowed($manipulator, $field, $context, $directive));
     }
     // </editor-fold>
 

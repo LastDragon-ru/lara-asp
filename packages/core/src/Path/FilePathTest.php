@@ -14,17 +14,17 @@ final class FilePathTest extends TestCase {
         $relative = (new FilePath('relative/path/to/file.a'))->getFilePath('file.b');
         $absolute = (new FilePath('/path/to/file.a'))->getFilePath('/file.b');
 
-        self::assertEquals('relative/path/to/file.b', (string) $relative);
+        self::assertSame('relative/path/to/file.b', (string) $relative);
 
-        self::assertEquals('/file.b', (string) $absolute);
+        self::assertSame('/file.b', (string) $absolute);
     }
 
     public function testGetParentPath(): void {
         $relative = (new FilePath('relative/path/to/file.a'))->getParentPath();
         $absolute = (new FilePath('/path/to/file.a'))->getParentPath();
 
-        self::assertEquals('relative/path/to', (string) $relative);
-        self::assertEquals('/path/to', (string) $absolute);
+        self::assertSame('relative/path/to', (string) $relative);
+        self::assertSame('/path/to', (string) $absolute);
     }
 
     public function testGetDirectoryPath(): void {
@@ -32,15 +32,15 @@ final class FilePathTest extends TestCase {
         $absolute = (new FilePath('/path/to/file.a'))->getDirectoryPath('/directory');
         $null     = (new FilePath('/path/to/file.a'))->getDirectoryPath();
 
-        self::assertEquals('relative/path/to/directory', (string) $relative);
+        self::assertSame('relative/path/to/directory', (string) $relative);
 
-        self::assertEquals('/directory', (string) $absolute);
+        self::assertSame('/directory', (string) $absolute);
 
-        self::assertEquals('/path/to', (string) $null);
+        self::assertSame('/path/to', (string) $null);
     }
 
     public function testGetExtension(): void {
-        self::assertEquals('txt', (new FilePath('relative/path/to/file.txt'))->getExtension());
+        self::assertSame('txt', (new FilePath('relative/path/to/file.txt'))->getExtension());
         self::assertNull((new FilePath('relative/path/to/file'))->getExtension());
     }
 }

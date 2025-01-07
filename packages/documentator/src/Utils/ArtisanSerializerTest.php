@@ -24,7 +24,7 @@ final class ArtisanSerializerTest extends TestCase {
         $argument = reset($parsed);
 
         self::assertInstanceOf(InputArgument::class, $argument);
-        self::assertEquals($signature, (new ArtisanSerializer())->getArgumentSignature($argument));
+        self::assertSame($signature, (new ArtisanSerializer())->getArgumentSignature($argument));
     }
 
     #[DataProvider('dataProviderGetOptionSignature')]
@@ -33,7 +33,7 @@ final class ArtisanSerializerTest extends TestCase {
         $option = reset($parsed);
 
         self::assertInstanceOf(InputOption::class, $option);
-        self::assertEquals($signature, (new ArtisanSerializer())->getOptionSignature($option));
+        self::assertSame($signature, (new ArtisanSerializer())->getOptionSignature($option));
     }
     // </editor-fold>
 

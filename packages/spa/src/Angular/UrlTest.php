@@ -22,7 +22,7 @@ final class UrlTest extends TestCase {
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
 
-        self::assertEquals($template, $url->getTemplate());
+        self::assertSame($template, $url->getTemplate());
         self::assertEquals($expected, $url->getParameters());
     }
 

@@ -52,7 +52,7 @@ final class InstructionsRemoveTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = (string) $document->mutate(new InstructionsRemove($instructions));
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Header
 

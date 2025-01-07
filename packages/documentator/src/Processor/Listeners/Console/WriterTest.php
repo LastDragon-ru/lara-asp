@@ -68,7 +68,7 @@ final class WriterTest extends TestCase {
             $writer($event);
         }
 
-        self::assertEquals(
+        self::assertSame(
             self::getTestData()->content($expected),
             Text::setEol($output->fetch()),
         );

@@ -38,7 +38,7 @@ final class InterfaceTypeExtensionTest extends TestCase {
             Parser::interfaceTypeExtension($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

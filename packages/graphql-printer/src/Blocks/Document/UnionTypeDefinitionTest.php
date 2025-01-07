@@ -39,7 +39,7 @@ final class UnionTypeDefinitionTest extends TestCase {
             Parser::unionTypeDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

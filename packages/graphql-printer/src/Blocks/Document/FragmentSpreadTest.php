@@ -43,7 +43,7 @@ final class FragmentSpreadTest extends TestCase {
             Parser::fragment($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**

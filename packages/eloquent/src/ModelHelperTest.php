@@ -54,7 +54,7 @@ final class ModelHelperTest extends TestCase {
         $actual   = (new ModelHelper($model()))->isRelation($name);
         $expected = !($expected instanceof Exception);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -64,7 +64,7 @@ final class ModelHelperTest extends TestCase {
     public function testIsSoftDeletable(bool $expected, Closure $model): void {
         $actual = (new ModelHelper($model()))->isSoftDeletable();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

@@ -20,7 +20,7 @@ final class FileSaveTest extends TestCase {
         $fs   = $this->getFileSystem(__DIR__);
         $file = $fs->getFile(__FILE__);
 
-        self::assertEquals((string) $file, (string) (new FileSave($file, ''))->getPath($fs));
+        self::assertSame((string) $file, (string) (new FileSave($file, ''))->getPath($fs));
     }
 
     public function testInvoke(): void {

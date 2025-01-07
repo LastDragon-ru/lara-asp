@@ -38,7 +38,7 @@ final class VariableDefinitionTest extends TestCase {
             Parser::variableDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

@@ -52,7 +52,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testInvokeNoRun(): void {
@@ -67,7 +67,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
-        self::assertEquals(
+        self::assertSame(
             <<<EXPECTED
             ```md
             {$expected}

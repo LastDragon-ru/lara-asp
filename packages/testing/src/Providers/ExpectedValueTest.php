@@ -11,6 +11,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ExpectedValue::class)]
 final class ExpectedValueTest extends TestCase {
     public function testGetValue(): void {
-        self::assertEquals(1, (new ExpectedValue(1))->getValue());
+        self::assertSame(1, (new ExpectedValue(1))->getValue());
     }
 }

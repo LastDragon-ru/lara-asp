@@ -35,7 +35,7 @@ final class MakeInlinableTest extends TestCase {
         $document = $markdown->parse($content, new FilePath(__FILE__));
         $actual   = (string) $document->mutate(new MakeInlinable('prefix'));
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Footnotes must be prefixed[^prefix-1]
 

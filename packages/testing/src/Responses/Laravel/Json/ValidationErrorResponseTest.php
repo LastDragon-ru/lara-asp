@@ -32,7 +32,7 @@ final class ValidationErrorResponseTest extends TestCase {
         $response   = ResponseFactory::make($this->getJson(__FUNCTION__));
         $constraint = new ValidationErrorResponse($errors);
 
-        self::assertEquals($expected, $constraint->evaluate($response, '', true));
+        self::assertSame($expected, $constraint->evaluate($response, '', true));
     }
     // </editor-fold>
 

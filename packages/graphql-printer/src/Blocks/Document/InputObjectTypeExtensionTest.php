@@ -39,7 +39,7 @@ final class InputObjectTypeExtensionTest extends TestCase {
             Parser::inputObjectTypeExtension($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

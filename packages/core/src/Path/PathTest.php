@@ -17,14 +17,14 @@ final class PathTest extends TestCase {
         $path   = '/a/b/c';
         $object = new PathTest_Path($path);
 
-        self::assertEquals($path, (string) $object);
+        self::assertSame($path, (string) $object);
     }
 
     public function testGetName(): void {
         $path   = '/a/b/c';
         $object = new PathTest_Path($path);
 
-        self::assertEquals(basename($path), $object->getName());
+        self::assertSame(basename($path), $object->getName());
     }
 
     public function testGetPathToAbsolute(): void {
@@ -33,10 +33,10 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/absolute/path'))->getPath($to);
 
         self::assertNotSame($to, $relative);
-        self::assertEquals('/to/absolute/path', (string) $relative);
+        self::assertSame('/to/absolute/path', (string) $relative);
 
         self::assertNotSame($to, $absolute);
-        self::assertEquals('/to/absolute/path', (string) $absolute);
+        self::assertSame('/to/absolute/path', (string) $absolute);
     }
 
     public function testGetPathToRelative(): void {
@@ -44,27 +44,27 @@ final class PathTest extends TestCase {
         $fromAbsolute = new PathTest_Path('/absolute/path');
         $to           = new PathTest_Path('to/../relative/./path');
 
-        self::assertEquals('/absolute/path/relative/path', (string) $fromAbsolute->getPath($to));
-        self::assertEquals('relative/path/relative/path', (string) $fromRelative->getPath($to));
+        self::assertSame('/absolute/path/relative/path', (string) $fromAbsolute->getPath($to));
+        self::assertSame('relative/path/relative/path', (string) $fromRelative->getPath($to));
     }
 
     public function testGetNormalizedPath(): void {
-        self::assertEquals('/any/path', (string) (new PathTest_Path('/any/path'))->getNormalizedPath());
-        self::assertEquals('any/path', (string) (new PathTest_Path('any/path'))->getNormalizedPath());
-        self::assertEquals('any/path', (string) (new PathTest_Path('./any/path'))->getNormalizedPath());
-        self::assertEquals('any/path', (string) (new PathTest_Path('././any/path'))->getNormalizedPath());
-        self::assertEquals('../any/path', (string) (new PathTest_Path('./../any/path'))->getNormalizedPath());
-        self::assertEquals('path', (string) (new PathTest_Path('./any/../path'))->getNormalizedPath());
-        self::assertEquals('', (string) (new PathTest_Path('./'))->getNormalizedPath());
-        self::assertEquals('', (string) (new PathTest_Path('.'))->getNormalizedPath());
-        self::assertEquals('..', (string) (new PathTest_Path('../'))->getNormalizedPath());
-        self::assertEquals('..', (string) (new PathTest_Path('..'))->getNormalizedPath());
-        self::assertEquals('path', (string) (new PathTest_Path('./any/../path/.'))->getNormalizedPath());
-        self::assertEquals('/', (string) (new PathTest_Path('/..'))->getNormalizedPath());
-        self::assertEquals('../any/path', (string) (new PathTest_Path('.\\..\\any\\path'))->getNormalizedPath());
-        self::assertEquals('any/path', (string) (new PathTest_Path('any\\path'))->getNormalizedPath());
-        self::assertEquals('/any/path', (string) (new PathTest_Path('/any/path/'))->getNormalizedPath());
-        self::assertEquals('any/path', (string) (new PathTest_Path('any/path/'))->getNormalizedPath());
+        self::assertSame('/any/path', (string) (new PathTest_Path('/any/path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new PathTest_Path('any/path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new PathTest_Path('./any/path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new PathTest_Path('././any/path'))->getNormalizedPath());
+        self::assertSame('../any/path', (string) (new PathTest_Path('./../any/path'))->getNormalizedPath());
+        self::assertSame('path', (string) (new PathTest_Path('./any/../path'))->getNormalizedPath());
+        self::assertSame('', (string) (new PathTest_Path('./'))->getNormalizedPath());
+        self::assertSame('', (string) (new PathTest_Path('.'))->getNormalizedPath());
+        self::assertSame('..', (string) (new PathTest_Path('../'))->getNormalizedPath());
+        self::assertSame('..', (string) (new PathTest_Path('..'))->getNormalizedPath());
+        self::assertSame('path', (string) (new PathTest_Path('./any/../path/.'))->getNormalizedPath());
+        self::assertSame('/', (string) (new PathTest_Path('/..'))->getNormalizedPath());
+        self::assertSame('../any/path', (string) (new PathTest_Path('.\\..\\any\\path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new PathTest_Path('any\\path'))->getNormalizedPath());
+        self::assertSame('/any/path', (string) (new PathTest_Path('/any/path/'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new PathTest_Path('any/path/'))->getNormalizedPath());
     }
 
     public function testIsNormalized(): void {
@@ -76,19 +76,19 @@ final class PathTest extends TestCase {
     }
 
     public function testGetRelativePath(): void {
-        self::assertEquals(
+        self::assertSame(
             '../to/file',
             (string) (new PathTest_Path('/any/path'))->getRelativePath(new PathTest_Path('/any/path/../to/file')),
         );
-        self::assertEquals(
+        self::assertSame(
             '',
             (string) (new PathTest_Path('/any/path'))->getRelativePath(new PathTest_Path('/any/path')),
         );
-        self::assertEquals(
+        self::assertSame(
             'to/file',
             (string) (new PathTest_Path('/absolute/path'))->getRelativePath(new PathTest_Path('to/./file')),
         );
-        self::assertEquals(
+        self::assertSame(
             basename(__FILE__),
             (string) (new PathTest_Path(__DIR__))->getRelativePath(new PathTest_Path(__FILE__)),
         );
@@ -114,9 +114,9 @@ final class PathTest extends TestCase {
         $relative = (new PathTest_Path('relative/path/to'))->getFilePath('file');
         $absolute = (new PathTest_Path('/path/to'))->getFilePath('/file');
 
-        self::assertEquals('relative/path/to/file', (string) $relative);
+        self::assertSame('relative/path/to/file', (string) $relative);
 
-        self::assertEquals('/file', (string) $absolute);
+        self::assertSame('/file', (string) $absolute);
     }
 
     public function testGetDirectoryPath(): void {
@@ -124,10 +124,10 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/path/to'))->getDirectoryPath('/directory');
         $null     = (new PathTest_Path('/path/to'))->getDirectoryPath();
 
-        self::assertEquals('relative/path/to/directory', (string) $relative);
+        self::assertSame('relative/path/to/directory', (string) $relative);
 
-        self::assertEquals('/directory', (string) $absolute);
-        self::assertEquals('/path', (string) $null);
+        self::assertSame('/directory', (string) $absolute);
+        self::assertSame('/path', (string) $null);
     }
 
     public function testIsEqual(): void {
