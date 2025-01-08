@@ -36,8 +36,18 @@ parameters:
 			path: packages/graphql/src/Stream/Directives/Directive.php
 
 		-
-			message: "#^Parameter \\#2 \\$factory of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Testing\\\\TestCase\\:\\:override\\(\\) contains unresolvable type\\.$#"
+			message: "#^Call to protected method getArgKey\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
 			count: 1
+			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+
+		-
+			message: "#^Call to protected method getResolver\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+			count: 4
+			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+
+		-
+			message: "#^Call to protected method getResolverQuery\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+			count: 2
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
 
 		-

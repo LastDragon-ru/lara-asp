@@ -59,7 +59,8 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Bodies\JsonBody;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\ContentTypes\JsonContentType;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSetFactory;
@@ -332,7 +333,7 @@ final class DirectiveTest extends TestCase {
         self::expectException(BuilderUnknown::class);
         self::expectExceptionMessage('Impossible to determine builder type for `type Query { field }`.');
 
-        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->makePartial();
         $directive
             ->shouldUseProperty('config')
@@ -487,7 +488,7 @@ final class DirectiveTest extends TestCase {
         $manipulatorFactory = $this->app()->make(ManipulatorFactory::class);
         $manipulator        = $manipulatorFactory->create(Mockery::mock(DocumentAST::class));
         $source             = $sourceFactory($manipulator);
-        $directive          = Mockery::mock(Directive::class, MockProperties::class);
+        $directive          = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -752,7 +753,7 @@ final class DirectiveTest extends TestCase {
 
         $manipulator = $this->app()->make(ManipulatorFactory::class)->create(Mockery::mock(DocumentAST::class));
         $source      = $sourceFactory($manipulator);
-        $directive   = Mockery::mock(Directive::class, MockProperties::class);
+        $directive   = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -783,7 +784,7 @@ final class DirectiveTest extends TestCase {
             Mockery::mock(AstManipulator::class)->makePartial(),
             new ObjectType(['name' => 'Car', 'fields' => []]),
         );
-        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -865,7 +866,7 @@ final class DirectiveTest extends TestCase {
             new ObjectType(['name' => 'Car', 'fields' => []]),
         );
         $source    = $object->getField($field);
-        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive->hydrate(
@@ -989,7 +990,7 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -1108,7 +1109,7 @@ final class DirectiveTest extends TestCase {
         $manipulator = $this->app()->make(ManipulatorFactory::class)->create(Mockery::mock(DocumentAST::class));
         $source      = $sourceFactory($manipulator);
         $field       = $source->getField();
-        $directive   = Mockery::mock(Directive::class, MockProperties::class);
+        $directive   = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
 
@@ -1173,7 +1174,7 @@ final class DirectiveTest extends TestCase {
         $value     = Mockery::mock(FieldValue::class);
         $context   = Mockery::mock(GraphQLContext::class);
         $builder   = Mockery::mock(EloquentBuilder::class);
-        $directive = Mockery::mock(Directive::class, MockProperties::class);
+        $directive = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -1280,7 +1281,7 @@ final class DirectiveTest extends TestCase {
         $info->fieldDefinition = new FieldDefinition(['name' => 'field', 'type' => Type::string()]);
         $value                 = Mockery::mock(FieldValue::class);
         $context               = Mockery::mock(GraphQLContext::class);
-        $directive             = Mockery::mock(Directive::class, MockProperties::class);
+        $directive             = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
@@ -1322,7 +1323,7 @@ final class DirectiveTest extends TestCase {
         $value                 = Mockery::mock(FieldValue::class);
         $context               = Mockery::mock(GraphQLContext::class);
         $factory               = Mockery::mock(StreamFactory::class)->makePartial();
-        $directive             = Mockery::mock(Directive::class, MockProperties::class);
+        $directive             = Mockery::mock(Directive::class, new WithProperties(), PropertiesMock::class);
         $directive->shouldAllowMockingProtectedMethods();
         $directive->makePartial();
         $directive
