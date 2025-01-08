@@ -26,7 +26,9 @@ use function count;
  * * Property can be mocked only once.
  * * Objects without methods will be marked as unused.
  *
+ * @see https://github.com/mockery/mockery/issues/1438
  * @see https://github.com/mockery/mockery/issues/1142
+ * @see https://github.com/phpstan/phpstan-mockery/issues/78
  *
  * @experimental
  *
