@@ -10,7 +10,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Override;
 use PhpParser\Comment\Doc;
@@ -59,7 +60,7 @@ final class BaseTest extends TestCase {
     }
 
     public function testGetTarget(): void {
-        $class = Mockery::mock(ClassLike::class, MockProperties::class);
+        $class = Mockery::mock(ClassLike::class, new WithProperties(), PropertiesMock::class);
         $class
             ->shouldUseProperty('namespacedName')
             ->value(new Name('App\\A'));
@@ -164,7 +165,7 @@ final class BaseTest extends TestCase {
     }
 
     public function testGetTargetClassNotMatch(): void {
-        $class = Mockery::mock(ClassLike::class, MockProperties::class);
+        $class = Mockery::mock(ClassLike::class, new WithProperties(), PropertiesMock::class);
         $class
             ->shouldUseProperty('namespacedName')
             ->value(new Name('App\\A'));

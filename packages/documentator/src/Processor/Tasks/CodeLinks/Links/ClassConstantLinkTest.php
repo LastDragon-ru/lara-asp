@@ -7,7 +7,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Override;
 use PhpParser\Node;
@@ -43,7 +44,7 @@ final class ClassConstantLinkTest extends TestCase {
 
     public function testGetTargetNodeClassConstant(): void {
         $storage = $this->app()->make(MetadataStorage::class);
-        $file    = Mockery::mock(File::class, MockProperties::class);
+        $file    = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
             ->shouldUseProperty('metadata')
@@ -87,7 +88,7 @@ final class ClassConstantLinkTest extends TestCase {
 
     public function testGetTargetNodeEnum(): void {
         $storage = $this->app()->make(MetadataStorage::class);
-        $file    = Mockery::mock(File::class, MockProperties::class);
+        $file    = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
             ->shouldUseProperty('metadata')

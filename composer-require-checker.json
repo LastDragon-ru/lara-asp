@@ -31,6 +31,8 @@
     "LastDragon_ru\\LaraASP\\Testing\\Database\\Eloquent\\Factories\\Factory",
     "LastDragon_ru\\LaraASP\\Testing\\Database\\QueryLog\\WithQueryLog",
     "LastDragon_ru\\LaraASP\\Testing\\Mockery\\MockProperties",
+    "LastDragon_ru\\LaraASP\\Testing\\Mockery\\PropertiesMock",
+    "LastDragon_ru\\LaraASP\\Testing\\Mockery\\WithProperties",
     "LastDragon_ru\\LaraASP\\Testing\\Providers\\ArrayDataProvider",
     "LastDragon_ru\\LaraASP\\Testing\\Providers\\CompositeDataProvider",
     "LastDragon_ru\\LaraASP\\Testing\\Providers\\DataProvider",

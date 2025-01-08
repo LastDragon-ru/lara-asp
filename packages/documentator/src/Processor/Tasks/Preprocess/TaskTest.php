@@ -17,7 +17,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -163,7 +164,7 @@ final class TaskTest extends TestCase {
 
         $metadata = $this->app()->make(MetadataStorage::class);
         $path     = new FilePath('path/to/file.md');
-        $file     = Mockery::mock(File::class, MockProperties::class);
+        $file     = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
             ->shouldUseProperty('path')

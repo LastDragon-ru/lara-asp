@@ -13,7 +13,8 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -34,7 +35,7 @@ final class OffsetTest extends TestCase {
         }
 
         $encrypter = $this->app()->make(Encrypter::class);
-        $scalar    = Mockery::mock(Offset::class, MockProperties::class);
+        $scalar    = Mockery::mock(Offset::class, new WithProperties(), PropertiesMock::class);
         $scalar->makePartial();
 
         if (is_string($expected)) {
@@ -63,7 +64,7 @@ final class OffsetTest extends TestCase {
         }
 
         $encrypter = $this->app()->make(Encrypter::class);
-        $scalar    = Mockery::mock(Offset::class, MockProperties::class);
+        $scalar    = Mockery::mock(Offset::class, new WithProperties(), PropertiesMock::class);
         $scalar->makePartial();
 
         if (is_string($value)) {
@@ -92,7 +93,7 @@ final class OffsetTest extends TestCase {
         }
 
         $encrypter = $this->app()->make(Encrypter::class);
-        $scalar    = Mockery::mock(Offset::class, MockProperties::class);
+        $scalar    = Mockery::mock(Offset::class, new WithProperties(), PropertiesMock::class);
         $scalar->makePartial();
 
         if ($value instanceof StringValueNode) {

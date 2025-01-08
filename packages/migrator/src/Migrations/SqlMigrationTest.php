@@ -6,7 +6,8 @@ use Illuminate\Database\Connection;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -47,7 +48,7 @@ final class SqlMigrationTest extends TestCase {
             );
 
         // No file, No Connection
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -65,7 +66,7 @@ final class SqlMigrationTest extends TestCase {
         // With file, No Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
         $directory = new DirectoryPath(__DIR__);
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -91,7 +92,7 @@ final class SqlMigrationTest extends TestCase {
         // With file, With Driver
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
         $directory = new DirectoryPath(__DIR__);
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -118,7 +119,7 @@ final class SqlMigrationTest extends TestCase {
         // With file, With Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
         $directory = new DirectoryPath(__DIR__);
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -171,7 +172,7 @@ final class SqlMigrationTest extends TestCase {
             );
 
         // No file, No Connection
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -189,7 +190,7 @@ final class SqlMigrationTest extends TestCase {
         // With file, No Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
         $directory = new DirectoryPath(__DIR__);
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -215,7 +216,7 @@ final class SqlMigrationTest extends TestCase {
         // With file, With Driver
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
         $directory = new DirectoryPath(__DIR__);
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration
@@ -242,7 +243,7 @@ final class SqlMigrationTest extends TestCase {
         // With file, With Connection
         $file      = pathinfo(__FILE__, PATHINFO_FILENAME);
         $directory = new DirectoryPath(__DIR__);
-        $migration = Mockery::mock(SqlMigration::class, MockProperties::class);
+        $migration = Mockery::mock(SqlMigration::class, new WithProperties(), PropertiesMock::class);
         $migration->shouldAllowMockingProtectedMethods();
         $migration->makePartial();
         $migration

@@ -819,7 +819,7 @@ Enjoy 😸
 
 > [!IMPORTANT]
 >
-> Working prototype for [How to mock protected properties? (#1142)](https://github.com/mockery/mockery/issues/1142). Please note that implementation relies on Reflection and internal Mockery methods/properties.
+> Working prototype for [How to mock protected properties? (#1142)](https://github.com/mockery/mockery/issues/1142). Please note that implementation relies on Reflection and internal Mockery methods/properties. Also, PHP supports [Property Hooks](https://www.php.net/manual/en/language.oop5.property-hooks.php) since v8.4 so it highly recommended using them instead of regular properties (when Mockery will [support it](https://github.com/mockery/mockery/issues/1438) of course).
 
 [include:docblock]: ./src/Mockery/MockProperties.php ({"summary": false})
 [//]: # (start: preprocess/dac69ae7f0bce03d)
@@ -848,7 +848,8 @@ Limitations/Notes:
 
 namespace LastDragon_ru\LaraASP\Testing\Docs\Examples\MockProperties;
 
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 
 class A {
@@ -869,7 +870,7 @@ class B {
     }
 }
 
-$mock = Mockery::mock(A::class, MockProperties::class);
+$mock = Mockery::mock(A::class, new WithProperties(), PropertiesMock::class);
 $mock
     ->shouldUseProperty('b')
     ->value(
