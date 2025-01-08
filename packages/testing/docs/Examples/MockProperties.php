@@ -5,7 +5,8 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Docs\Examples\MockProperties;
 
-use LastDragon_ru\LaraASP\Testing\Mockery\MockProperties;
+use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
+use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 
 class A {
@@ -26,7 +27,7 @@ class B {
     }
 }
 
-$mock = Mockery::mock(A::class, MockProperties::class);
+$mock = Mockery::mock(A::class, new WithProperties(), PropertiesMock::class);
 $mock
     ->shouldUseProperty('b')
     ->value(
