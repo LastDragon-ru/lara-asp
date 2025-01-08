@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Utils;
 use Illuminate\Translation\Translator;
 
 use function array_merge;
+use function assert;
 
 /**
  * @internal

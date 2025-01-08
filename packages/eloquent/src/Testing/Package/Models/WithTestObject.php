@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
 
+use Illuminate\Database\Schema\Blueprint;
 use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
@@ -26,7 +27,7 @@ trait WithTestObject {
                 return;
             }
 
-            $schema->create($table, static function ($table): void {
+            $schema->create($table, static function (Blueprint $table): void {
                 $table->increments('id');
                 $table->string('value', 40)->nullable();
             });

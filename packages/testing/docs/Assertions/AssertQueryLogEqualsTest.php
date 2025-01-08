@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Docs\Assertions;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use LastDragon_ru\LaraASP\Testing\Concerns\DatabaseQueryComparator;
@@ -32,7 +33,7 @@ final class AssertQueryLogEqualsTest extends TestCase {
      * Assertion test.
      */
     public function testAssertion(): void {
-        Schema::create('test_table', static function ($table): void {
+        Schema::create('test_table', static function (Blueprint $table): void {
             $table->string('a')->nullable();
             $table->string('b')->nullable();
             $table->string('c')->nullable();
