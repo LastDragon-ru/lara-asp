@@ -32,7 +32,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.2|^8.3",
+    "php": "^8.3",
     "ext-bcmath": "*",
     "ext-dom": "*",
     "ext-filter": "*",
@@ -65,7 +65,7 @@
     "league/commonmark": "^2.6.0",
     "league/config": "^1.1.1",
     "mockery/mockery": "^1.6.5",
-    "nette/neon": "^3.4",
+    "nette/neon": "^3.4.1",
     "nikic/php-parser": "^5.0",
     "nuwave/lighthouse": "^6.36.0",
     "opis/json-schema": "^2.3.0",
@@ -83,7 +83,6 @@
     "symfony/http-foundation": "^7.0.0",
     "symfony/http-kernel": "^7.0.0",
     "symfony/mime": "^7.0.0",
-    "symfony/polyfill-php83": "^1.28",
     "symfony/property-access": "^7.0.0",
     "symfony/property-info": "^7.0.0",
     "symfony/psr-http-message-bridge": "^7.0.0",

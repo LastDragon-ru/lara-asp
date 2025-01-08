@@ -18,7 +18,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.2|^8.3",
+    "php": "^8.3",
     "ext-mbstring": "*",
     "illuminate/collections": "^11.0.8",
     "illuminate/contracts": "^11.0.8",
@@ -31,8 +31,7 @@
     "guzzlehttp/psr7": "^2.4.5",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/deprecation-contracts": "^3.0.0",
-    "symfony/http-kernel": "^7.0.0",
-    "symfony/polyfill-php83": "^1.28"
+    "symfony/http-kernel": "^7.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.5.0|^11.0.0",

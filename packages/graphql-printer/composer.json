@@ -17,10 +17,9 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.2|^8.3",
+    "php": "^8.3",
     "ext-mbstring": "*",
-    "webonyx/graphql-php": "^15.4.0",
-    "symfony/polyfill-php83": "^1.28"
+    "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
     "composer/class-map-generator": "^1.0",

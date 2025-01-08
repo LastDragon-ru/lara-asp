@@ -17,12 +17,11 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.2|^8.3",
+    "php": "^8.3",
     "illuminate/collections": "^11.0.8",
     "illuminate/database": "^11.0.8",
     "illuminate/support": "^11.0.8",
-    "lastdragon-ru/lara-asp-core": "self.version",
-    "symfony/polyfill-php83": "^1.28"
+    "lastdragon-ru/lara-asp-core": "self.version"
   },
   "require-dev": {
     "ext-pdo_sqlite": "*",
