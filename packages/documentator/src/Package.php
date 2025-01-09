@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Documentator;
 
 final class Package {
-    public const Name = 'lara-asp-documentator';
+    public const string Name = 'lara-asp-documentator';
 }

@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\GraphQL;
 
 final class Package {
-    public const Name = 'lara-asp-graphql';
+    public const string Name = 'lara-asp-graphql';
 }

@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @property int    $installed
  */
 class CarEngine extends Model {
-    public const Id = '8754db24-28ce-4b14-9c7e-657ea91c0593';
+    public const string Id = '8754db24-28ce-4b14-9c7e-657ea91c0593';
 
     /**
      * @param array<string, mixed> $attributes

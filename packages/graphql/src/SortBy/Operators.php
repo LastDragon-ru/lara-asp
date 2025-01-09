@@ -17,10 +17,10 @@ use Override;
 use function array_merge;
 
 class Operators extends BuilderOperators {
-    private const Prefix   = Directive::Name.'Operators';
-    public const  Extra    = self::Prefix.'Extra';
-    public const  Object   = self::Prefix.'Object';
-    public const  Disabled = self::Prefix.'Disabled';
+    private const string Prefix   = Directive::Name.'Operators';
+    public const  string Extra    = self::Prefix.'Extra';
+    public const  string Object   = self::Prefix.'Object';
+    public const  string Disabled = self::Prefix.'Disabled';
 
     /**
      * @inheritDoc

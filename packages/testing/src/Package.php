@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Testing;
 
 final class Package {
-    public const Name = 'lara-asp-testing';
+    public const string Name = 'lara-asp-testing';
 }

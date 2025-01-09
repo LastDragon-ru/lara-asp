@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Serializer;
 
 final class Package {
-    public const Name = 'lara-asp-serializer';
+    public const string Name = 'lara-asp-serializer';
 }

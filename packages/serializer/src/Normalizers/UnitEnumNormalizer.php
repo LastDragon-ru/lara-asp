@@ -23,8 +23,8 @@ use function sprintf;
 class UnitEnumNormalizer implements NormalizerInterface, DenormalizerInterface {
     use WithDefaultContext;
 
-    final public const ContextAllowInvalidValues        = self::class.'@allowInvalidValues';
-    final public const ContextAllowInvalidValuesDefault = false;
+    final public const string ContextAllowInvalidValues        = self::class.'@allowInvalidValues';
+    final public const bool   ContextAllowInvalidValuesDefault = false;
 
     /**
      * @var array<class-string<UnitEnum>, array<string, UnitEnum>>

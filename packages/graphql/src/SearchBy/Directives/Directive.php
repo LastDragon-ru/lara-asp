@@ -29,7 +29,7 @@ use Override;
 use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
-    final public const Name = 'SearchBy';
+    final public const string Name = 'SearchBy';
 
     public function __construct(
         ManipulatorFactory $manipulatorFactory,

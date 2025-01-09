@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Dev;
 
 final class Package {
-    public const Name = 'lara-asp-dev';
+    public const string Name = 'lara-asp-dev';
 }

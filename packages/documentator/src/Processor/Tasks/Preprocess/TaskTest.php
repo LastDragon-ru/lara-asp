@@ -36,7 +36,7 @@ use const PHP_INT_MAX;
 final class TaskTest extends TestCase {
     use WithProcessor;
 
-    private const MARKDOWN = <<<'MARKDOWN'
+    private const string MARKDOWN = <<<'MARKDOWN'
         Bla bla bla [processable]: ./path/to/file should be ignored.
 
         [unknown]: ./path/to/file (should not be parsed)

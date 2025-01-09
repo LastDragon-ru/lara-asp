@@ -36,8 +36,8 @@ use const PREG_UNMATCHED_AS_NULL;
  * @implements InstructionContract<Parameters>
  */
 class Instruction implements InstructionContract {
-    public const    Limit          = 50;
-    protected const MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
+    public const    int Limit             = 50;
+    protected const string MarkdownRegexp = '/^\<(?P<tag>markdown)\>(?P<markdown>.*?)\<\/(?P=tag)\>$/msu';
 
     public function __construct(
         protected readonly Markdown $markdown,

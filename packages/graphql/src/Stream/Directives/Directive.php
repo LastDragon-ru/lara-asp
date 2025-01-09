@@ -91,13 +91,13 @@ use const JSON_THROW_ON_ERROR;
 class Directive extends BaseDirective implements FieldResolver, FieldManipulator, BuilderInfoProvider {
     use WithSource;
 
-    final public const Name          = 'Stream';
-    final public const Settings      = Package::Name.'.stream';
-    final public const ArgSearchable = 'searchable';
-    final public const ArgSortable   = 'sortable';
-    final public const ArgBuilder    = 'builder';
-    final public const ArgLimit      = 'limit';
-    final public const ArgKey        = 'key';
+    final public const string Name          = 'Stream';
+    final public const string Settings      = Package::Name.'.stream';
+    final public const string ArgSearchable = 'searchable';
+    final public const string ArgSortable   = 'sortable';
+    final public const string ArgBuilder    = 'builder';
+    final public const string ArgLimit      = 'limit';
+    final public const string ArgKey        = 'key';
 
     /**
      * @param StreamFactory<object> $streamFactory

@@ -27,12 +27,12 @@ class ConfigMerger {
     /**
      * Array that has this mark may contains any keys/values.
      */
-    public const Strict = '__strict';
+    public const string Strict = '__strict';
 
     /**
      * Array that has this mark will be replaced completely.
      */
-    public const Replace = '__replace';
+    public const string Replace = '__replace';
 
     private bool $strict = true;
 

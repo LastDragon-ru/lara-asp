@@ -24,7 +24,7 @@ use function is_dir;
     description: 'Saves help for each command in the `namespace` into a separate file in the `target` directory.',
 )]
 class Commands extends Command {
-    public const Name = Package::Name.':commands';
+    public const string Name = Package::Name.':commands';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint

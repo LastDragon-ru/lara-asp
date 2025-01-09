@@ -20,7 +20,7 @@ use function array_merge;
  * @property DateTimeInterface|null $deleted_at
  */
 class Car extends Model {
-    public const Id = 'b56ce2b1-8af9-4751-8fad-8485930c9c40';
+    public const string Id = 'b56ce2b1-8af9-4751-8fad-8485930c9c40';
 
     /**
      * @param array<string, mixed> $attributes

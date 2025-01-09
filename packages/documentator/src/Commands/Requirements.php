@@ -50,8 +50,8 @@ use function usort;
     description: 'Generates a table with the required versions of PHP/Laravel/etc in Markdown format.',
 )]
 class Requirements extends Command {
-    public const  Name = Package::Name.':requirements';
-    private const HEAD = 'HEAD';
+    public const  string Name = Package::Name.':requirements';
+    private const string HEAD = 'HEAD';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint

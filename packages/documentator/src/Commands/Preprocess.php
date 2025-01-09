@@ -62,8 +62,8 @@ use function var_export;
     description: 'Perform one or more task on the file.',
 )]
 class Preprocess extends Command {
-    public const  Name              = Package::Name.':preprocess';
-    private const DeprecationMarker = '💀';
+    public const  string Name              = Package::Name.':preprocess';
+    private const string DeprecationMarker = '💀';
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint

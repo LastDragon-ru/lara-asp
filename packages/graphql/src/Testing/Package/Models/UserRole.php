@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Pivot;
  * @property string $role_id
  */
 class UserRole extends Pivot {
-    public const Id = '42180990-a4ef-48f0-9c2c-3158595f9da7';
+    public const string Id = '42180990-a4ef-48f0-9c2c-3158595f9da7';
 
     /**
      * @param array<string, mixed> $attributes
