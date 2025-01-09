@@ -11,7 +11,7 @@ Various internal tools and helpers to develop the package itself.
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 6.2.0`   |
-|  | `^8.2` |   `HEAD ⋯ 6.2.0`   |
+|  | `^8.2` |   `7.1.0 ⋯ 6.2.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 6.2.0`   |
 |  PHPStan  | `^1.10` |   `HEAD ⋯ 6.2.0`   |
 

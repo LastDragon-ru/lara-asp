@@ -11,7 +11,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
-|  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
+|  | `^8.2` |   `7.1.0 ⋯ 2.0.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
@@ -852,9 +852,9 @@ use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 
-class A {
+readonly class A {
     public function __construct(
-        protected readonly B $b,
+        protected B $b,
     ) {
         // empty
     }

@@ -11,7 +11,7 @@ This package provides various utilities for documentation generation such as Mar
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
-|  | `^8.2` |   `HEAD ⋯ 5.0.0-beta.1`   |
+|  | `^8.2` |   `7.1.0 ⋯ 5.0.0-beta.1`   |
 |  | `^8.1` |   `6.4.2 ⋯ 5.0.0-beta.1`   |
 |  Laravel  | `^11.0.8` |  `HEAD`   |
 |  | `^11.0.0` |   `7.1.0 ⋯ 6.2.0`   |

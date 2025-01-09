@@ -33,6 +33,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [//]: # (start: preprocess/c45228918cc92f69)
 [//]: # (warning: Generated automatically. Do not edit.)
 
+* [ ] PHP 8.2 is not supported anymore. Migrate to the newer version.
 * [ ] Laravel v10 is not supported anymore. Migrate to the newer version.
 
 [//]: # (end: preprocess/c45228918cc92f69)

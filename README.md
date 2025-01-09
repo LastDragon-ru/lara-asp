@@ -11,7 +11,7 @@ The set provides best practices to make development more fun and classes/service
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
 |  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
-|  | `^8.2` |   `HEAD ⋯ 2.0.0`   |
+|  | `^8.2` |   `7.1.0 ⋯ 2.0.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
