@@ -14,7 +14,6 @@ use Symfony\Component\Finder\Glob;
 // General
 $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
-    ->ignoreErrorsOnPackage('symfony/polyfill-php83', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreUnknownClasses([
