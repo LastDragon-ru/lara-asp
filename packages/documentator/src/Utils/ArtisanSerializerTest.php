@@ -20,7 +20,10 @@ final class ArtisanSerializerTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderGetArgumentSignature')]
     public function testGetArgumentSignature(string $signature): void {
-        $parsed   = Parser::parse("command {{$signature}}")[1] ?? [];
+        $parsed = Parser::parse("command {{$signature}}")[1] ?? [];
+
+        self::assertIsArray($parsed);
+
         $argument = reset($parsed);
 
         self::assertInstanceOf(InputArgument::class, $argument);
@@ -30,6 +33,9 @@ final class ArtisanSerializerTest extends TestCase {
     #[DataProvider('dataProviderGetOptionSignature')]
     public function testGetOptionSignature(string $signature): void {
         $parsed = Parser::parse("command {{$signature}}")[2] ?? [];
+
+        self::assertIsArray($parsed);
+
         $option = reset($parsed);
 
         self::assertInstanceOf(InputOption::class, $option);

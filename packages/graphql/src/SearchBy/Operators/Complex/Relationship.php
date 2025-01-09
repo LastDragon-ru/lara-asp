@@ -22,6 +22,9 @@ use Nuwave\Lighthouse\Execution\Arguments\ArgumentSet;
 use Override;
 
 use function is_a;
+use function is_array;
+use function is_int;
+use function is_string;
 use function reset;
 
 class Relationship extends Operator {
@@ -113,8 +116,12 @@ class Relationship extends Operator {
             $query    = $builder->getQuery()->newQuery();
             $query    = $this->field->call($handler, $query, new Field(), $hasCount, $context);
             $where    = reset($query->wheres);
-            $count    = $where['value'] ?? $count;
-            $operator = $where['operator'] ?? $operator;
+            $count    = is_array($where) && isset($where['value']) && is_int($where['value'])
+                ? $where['value']
+                : $count;
+            $operator = is_array($where) && isset($where['operator']) && is_string($where['operator'])
+                ? $where['operator']
+                : $operator;
         } elseif ($notExists) {
             $count    = 1;
             $operator = '<';

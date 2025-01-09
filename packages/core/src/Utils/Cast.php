@@ -93,7 +93,7 @@ class Cast {
     }
 
     /**
-     * @return iterable<array-key, mixed>
+     * @return iterable<mixed, mixed>
      */
     public static function toIterable(mixed $value): iterable {
         assert(is_iterable($value));

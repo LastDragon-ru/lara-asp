@@ -135,7 +135,7 @@ final class DatabaseSorterTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array<array-key, mixed>>
+     * @return array<mixed, array<array-key, mixed>>
      */
     public static function dataProviderSortByColumn(): array {
         $eloquentBuilderFactory = static function (): EloquentBuilder {

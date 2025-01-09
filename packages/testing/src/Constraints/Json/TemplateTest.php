@@ -18,7 +18,7 @@ final class TemplateTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param array<string,string> $parameters
+     * @param array<string, string> $parameters
      */
     #[DataProvider('dataProviderBuild')]
     public function testBuild(Exception|string $expected, string $content, array $parameters): void {

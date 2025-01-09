@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
 use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -42,6 +43,6 @@ class SqlMigration extends BaseCommand {
 
         $this->components->info(sprintf('SQL Migration [%s] created successfully.', $file));
 
-        return static::SUCCESS;
+        return Command::SUCCESS;
     }
 }

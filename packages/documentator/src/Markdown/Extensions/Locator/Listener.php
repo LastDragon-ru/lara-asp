@@ -19,11 +19,10 @@ use League\CommonMark\Extension\Table\TableSection;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\NodeIterator;
 use Override;
-use Traversable;
 
 use function array_slice;
 use function count;
-use function iterator_to_array;
+use function iterator_count;
 use function ltrim;
 use function mb_strlen;
 use function mb_substr;
@@ -82,7 +81,7 @@ class Listener implements EnvironmentAwareInterface {
 
         // Fix
         $previous = Cast::toNullable(TableSection::class, $section->previous());
-        $rows     = count($this->toArray($section->children()));
+        $rows     = iterator_count($section->children());
         $start    = null;
         $end      = null;
 
@@ -140,9 +139,9 @@ class Listener implements EnvironmentAwareInterface {
         $cells    = array_slice($cells, 1, -1);                                 // First&Last characters are `|`, skip
         $index    = 0;
         $offset   = 1;
-        $children = $this->toArray($row->children());
+        $children = $row->children();
 
-        if (count($children) !== count($cells)) {
+        if (iterator_count($children) !== count($cells)) {
             return;
         }
 
@@ -197,18 +196,5 @@ class Listener implements EnvironmentAwareInterface {
         } while ($index < $end && $trimmed === '');
 
         Padding::set($footnote, $padding);
-    }
-
-    /**
-     * @template T
-     *
-     * @param iterable<array-key, T> $iterable
-     *
-     * @return array<array-key, T>
-     */
-    private function toArray(iterable $iterable): array {
-        return $iterable instanceof Traversable
-            ? iterator_to_array($iterable)
-            : $iterable;
     }
 }

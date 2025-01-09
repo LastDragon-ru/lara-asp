@@ -28,7 +28,7 @@ final class SpaControllerTest extends TestCase {
     // =========================================================================
     /**
      * @param array<array-key, mixed> $headers
-     * @param array<array-key, mixed> $settings
+     * @param array<string, mixed>    $settings
      */
     #[DataProvider('dataProviderSettings')]
     public function testSettings(

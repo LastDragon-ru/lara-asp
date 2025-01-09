@@ -51,6 +51,10 @@ trait RawSqlHelper {
             throw new RuntimeException('The database driver in use does not support SchemaState.');
         }
 
-        return $connection->getSchemaState();
+        $state = $connection->getSchemaState();
+
+        assert($state instanceof SchemaState);
+
+        return $state;
     }
 }

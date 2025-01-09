@@ -10,6 +10,7 @@ use WeakMap;
 
 use function array_column;
 use function is_array;
+use function is_string;
 use function mb_strtolower;
 
 class SeederService {
@@ -39,7 +40,7 @@ class SeederService {
         $skipped = $this->getMigrationsTable();
 
         foreach ($tables as $table) {
-            if ($skipped === mb_strtolower($table)) {
+            if (!is_string($table) || $skipped === mb_strtolower($table)) {
                 continue;
             }
 

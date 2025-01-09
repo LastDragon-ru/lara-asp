@@ -74,6 +74,32 @@ parameters:
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 
+        # ArrayAccess&array gives mixed
+        # https://github.com/phpstan/phpstan/issues/12125
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator::getTypeDefinition\\(\\) should return \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|GraphQL\\\\Type\\\\Definition\\\\Type but returns mixed\\.$#"
+            paths:
+                - packages/graphql/src/Utils/AstManipulator.php
+
+        # Closure parameters cannot be inferred from return type yet
+        # https://github.com/phpstan/phpstan/issues/11317
+        -
+            message: '#^Parameter \#3 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getBuilder\(\) expects array<string, mixed>, array given\.$#'
+            paths:
+                - packages/graphql/src/Stream/Directives/Directive.php
+        -
+            message: '#^Parameter \#2 \$builder of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Exceptions\\BuilderUnsupported constructor expects class-string, mixed given\.$#'
+            paths:
+                - packages/graphql/src/Stream/Directives/Directive.php
+        -
+            message: '#^Parameter \#5 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getFieldValue\(\) expects array<string, mixed>, array given\.$#'
+            paths:
+                - packages/graphql/src/Stream/Directives/Directive.php
+        -
+            message: '#^Parameter \#4 \$args of method Nuwave\\Lighthouse\\Execution\\ResolveInfo::enhanceBuilder\(\) expects array<string, mixed>, array given\.$#'
+            paths:
+                - packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php
+
         # (dev) Required for tests
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"

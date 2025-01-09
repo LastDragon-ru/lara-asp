@@ -63,15 +63,19 @@ class Extension {
      */
     private static function updateBootstrapFiles(FilePath $path, array $extension): array {
         // Valid?
-        if (!isset($extension['parameters']) || !is_array($extension['parameters'])) {
-            throw new Exception('The `$extension[\'parameters\']` expected to be an array.');
+        if (
+            !isset($extension['parameters'])
+            || !is_array($extension['parameters'])
+            || !isset($extension['parameters']['bootstrapFiles'])
+            || !is_array($extension['parameters']['bootstrapFiles'])
+        ) {
+            throw new Exception('The `$extension[\'parameters\'][\'bootstrapFiles\'])` expected to be an array.');
         }
 
         // Update
         $source = self::getLarastanPath();
-        $files  = (array) ($extension['parameters']['bootstrapFiles'] ?? []);
 
-        foreach ($files as $index => $file) {
+        foreach ($extension['parameters']['bootstrapFiles'] as $index => $file) {
             if (!is_string($file)) {
                 throw new Exception(
                     sprintf(
@@ -95,6 +99,11 @@ class Extension {
      * @return array<array-key, mixed>
      */
     private static function updateServices(FilePath $path, array $extension): array {
+        // Valid?
+        if (!isset($extension['services']) || !is_array($extension['services'])) {
+            throw new Exception('The `$extension[\'services\'])` expected to be an array.');
+        }
+
         // Remove
         $disabled = [
             ApplicationMakeDynamicReturnTypeExtension::class            => true,
@@ -104,8 +113,8 @@ class Extension {
             MethodsExtension::class                                     => true,
         ];
 
-        foreach ($extension['services'] ?? [] as $index => $service) {
-            $class = $service['class'] ?? '';
+        foreach ($extension['services'] as $index => $service) {
+            $class = is_array($service) && isset($service['class']) ? $service['class'] : '';
 
             if (isset($disabled[$class])) {
                 unset($extension['services'][$index]);

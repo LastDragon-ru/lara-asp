@@ -12,7 +12,7 @@ use Override;
  */
 trait SaveOrThrow {
     /**
-     * @param array<array-key, mixed> $options
+     * @param array<string, mixed> $options
      */
     #[Override]
     public function save(array $options = []): bool {

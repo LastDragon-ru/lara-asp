@@ -7,6 +7,8 @@ use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Support\ServiceProvider;
 
+use function assert;
+
 /**
  * @phpstan-require-extends ServiceProvider
  */
@@ -35,6 +37,8 @@ trait WithRoutes {
             $path      = $this->getPath('../defaults/routes.php');
             $routes    = require $path;
             $registrar = $this->app->make(Registrar::class);
+
+            assert($routes instanceof Closure);
 
             $registrar->group($settings['attributes'], $routes);
         });

@@ -6,6 +6,7 @@ use BadMethodCallException;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use LogicException;
 use Mockery;
+use Mockery\Mock;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionException;
 
@@ -15,6 +16,7 @@ use function sprintf;
  * @internal
  */
 #[CoversClass(WithProperties::class)]
+#[CoversClass(MockProperties::class)]
 final class WithPropertiesTest extends TestCase {
     public function testShouldUsePropertyValueIsObject(): void {
         $mock = Mockery::mock(WithPropertiesTest_ObjectProtected::class, new WithProperties(), PropertiesMock::class);
@@ -229,4 +231,12 @@ class WithPropertiesTest_Value {
     public function getValue(): string {
         return $this->value;
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class WithPropertiesTest_Mock extends Mock {
+    use MockProperties;
 }

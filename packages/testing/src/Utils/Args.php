@@ -194,6 +194,10 @@ class Args {
             throw new InvalidArgumentDatabaseQuery('$query', $query);
         }
 
+        if (!is_array($bindings)) {
+            throw new InvalidArgumentDatabaseQuery('$bindings', $query);
+        }
+
         return new Query($sql, $bindings);
     }
 
@@ -201,8 +205,8 @@ class Args {
      * @return array<string, mixed>
      */
     public static function getScoutQuery(mixed $query): array {
-        $actual  = [];
-        $default = [
+        $actual    = [];
+        $default   = [
             'model'         => [],
             'query'         => '',
             'callback'      => null,
@@ -215,13 +219,22 @@ class Args {
             'options'       => [],
             'whereNotIns'   => [],
         ];
+        $converted = [];
 
         if ($query instanceof ScoutBuilder) {
-            $actual = (array) json_decode(json_encode($query, JSON_THROW_ON_ERROR), true, JSON_THROW_ON_ERROR);
+            $converted = (array) json_decode(json_encode($query, JSON_THROW_ON_ERROR), true, JSON_THROW_ON_ERROR);
         } elseif (is_array($query)) {
-            $actual = $query;
+            $converted = $query;
         } else {
             throw new InvalidArgumentScoutQuery('$query', $query);
+        }
+
+        foreach ($converted as $key => $value) {
+            if (!is_string($key)) {
+                throw new InvalidArgumentScoutQuery('$query', $query);
+            }
+
+            $actual[$key] = $value;
         }
 
         return $actual + $default;

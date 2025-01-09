@@ -6,6 +6,7 @@ use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\ConfigurationResolver;
 
+use function is_array;
 use function is_callable;
 use function var_export;
 
@@ -28,7 +29,7 @@ trait WithConfig {
      */
     public function setConfig(callable|array|null $settings): void {
         $repository = $this->app()->make(Repository::class);
-        $settings   = is_callable($settings) ? $settings($this, $repository) : $settings;
+        $settings   = is_callable($settings) && !is_array($settings) ? $settings($this, $repository) : $settings;
 
         if ($settings !== null) {
             $repository->set($settings);

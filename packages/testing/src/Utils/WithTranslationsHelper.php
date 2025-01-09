@@ -18,6 +18,15 @@ abstract class WithTranslationsHelper extends Translator {
         // We need to load the locale first
         $translator->load('*', '*', $locale);
 
+        assert(
+            isset($translator->loaded['*'])
+            && is_array($translator->loaded['*'])
+            && isset($translator->loaded['*']['*'])
+            && is_array($translator->loaded['*']['*'])
+            && isset($translator->loaded['*']['*'][$locale])
+            && is_array($translator->loaded['*']['*'][$locale])
+        );
+
         // Laravel may use translations from JSON files, they have a bigger
         // priority than normal translations. This is why we override them
         // and not normal translations.

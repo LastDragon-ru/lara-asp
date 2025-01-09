@@ -10,6 +10,7 @@ use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
+use GraphQL\Language\AST\TypeSystemExtensionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
@@ -19,6 +20,7 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
@@ -27,6 +29,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Override;
 
+use function is_iterable;
 use function is_string;
 use function mb_strlen;
 use function mb_strrpos;
@@ -269,7 +272,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $directives = new Directives(
             $this->getContext(),
             $this->getDefinitionDirectives(),
-            $definition->deprecationReason ?? null,
+            Cast::toStringNullable($definition->deprecationReason ?? null),
         );
 
         return $directives;
@@ -328,32 +331,47 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
      */
     protected function getDefinitionDirectives(): NodeList {
         // Prepare
+        /** @var NodeList<DirectiveNode> $directives */
         $directives = new NodeList([]);
         $definition = $this->getDefinition();
 
-        // Unfortunately directives exists only in AST :(
+        // Unfortunately, directives exist only in AST :(
         // https://github.com/webonyx/graphql-php/issues/588
         $astNode = null;
 
         if ($definition instanceof Node) {
             $astNode = $definition;
-        } elseif (property_exists($definition, 'astNode')) {
+        } elseif (property_exists($definition, 'astNode') && $definition->astNode instanceof Node) {
             $astNode = $definition->astNode;
         } else {
             // empty
         }
 
-        if ($astNode) {
-            $directives = $directives->merge($astNode->directives ?? []);
+        if ($astNode !== null && property_exists($astNode, 'directives') && is_iterable($astNode->directives)) {
+            foreach ($astNode->directives as $directive) {
+                if ($directive instanceof DirectiveNode) {
+                    $directives[] = $directive;
+                }
+            }
         }
 
         // Extensions nodes can also add directives
-        $astExtensionNodes = property_exists($definition, 'extensionASTNodes')
+        $astExtensionNodes = property_exists($definition, 'extensionASTNodes') && is_iterable($definition->extensionASTNodes)
             ? $definition->extensionASTNodes
             : [];
 
         foreach ($astExtensionNodes as $astExtensionNode) {
-            $directives = $directives->merge($astExtensionNode->directives ?? []);
+            if (
+                $astExtensionNode instanceof TypeSystemExtensionNode
+                && property_exists($astExtensionNode, 'directives')
+                && is_iterable($astExtensionNode->directives)
+            ) {
+                foreach ($astExtensionNode->directives as $directive) {
+                    if ($directive instanceof DirectiveNode) {
+                        $directives[] = $directive;
+                    }
+                }
+            }
         }
 
         // Return
