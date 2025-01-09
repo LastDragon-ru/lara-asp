@@ -40,10 +40,10 @@ use function sprintf;
 class DateTimeNormalizer implements NormalizerInterface, DenormalizerInterface {
     use WithDefaultContext;
 
-    final public const ContextFormat          = self::class.'@format';
-    final public const ContextFormatDefault   = DateTimeInterface::RFC3339_EXTENDED;
-    final public const ContextFallback        = self::class.'@fallback';
-    final public const ContextFallbackDefault = false;
+    final public const string ContextFormat        = self::class.'@format';
+    final public const string ContextFormatDefault = DateTimeInterface::RFC3339_EXTENDED;
+    final public const string ContextFallback      = self::class.'@fallback';
+    final public const bool ContextFallbackDefault = false;
 
     /**
      * @param array<string, mixed> $defaultContext

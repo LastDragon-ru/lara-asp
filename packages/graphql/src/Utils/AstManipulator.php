@@ -74,7 +74,7 @@ use function trim;
 use const JSON_THROW_ON_ERROR;
 
 class AstManipulator {
-    public const Placeholder = '_';
+    public const string Placeholder = '_';
 
     public function __construct(
         private DirectiveLocator $directiveLocator,

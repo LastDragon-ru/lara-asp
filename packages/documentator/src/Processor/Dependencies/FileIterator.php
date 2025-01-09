@@ -19,21 +19,21 @@ use function is_string;
  * @see Finder
  * @implements Dependency<Iterator<mixed, File>>
  */
-class FileIterator implements Dependency {
+readonly class FileIterator implements Dependency {
     public function __construct(
-        protected readonly Directory|DirectoryPath|string $directory,
+        protected Directory|DirectoryPath|string $directory,
         /**
          * @var array<array-key, string>|string|null {@see Finder::name()}
          */
-        protected readonly array|string|null $patterns = null,
+        protected array|string|null $patterns = null,
         /**
          * @var array<array-key, string|int>|string|int|null {@see Finder::depth()}
          */
-        protected readonly array|string|int|null $depth = null,
+        protected array|string|int|null $depth = null,
         /**
          * @var array<array-key, string>|string|null {@see Finder::notPath()}
          */
-        protected readonly array|string|null $exclude = null,
+        protected array|string|null $exclude = null,
     ) {
         // empty
     }

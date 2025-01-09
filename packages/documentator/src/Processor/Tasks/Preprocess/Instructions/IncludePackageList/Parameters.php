@@ -8,20 +8,20 @@ use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 /**
  * @deprecated %{VERSION}
  */
-class Parameters implements InstructionParameters {
+readonly class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * Directory path.
          */
-        public readonly string $target,
+        public string $target,
         /**
          * Blade template.
          */
-        public readonly string $template = 'default',
+        public string $template = 'default',
         /**
          * Sort order.
          */
-        public readonly SortOrder $order = SortOrder::Asc,
+        public SortOrder $order = SortOrder::Asc,
     ) {
         // empty
     }

@@ -18,14 +18,13 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.2|^8.3",
+    "php": "^8.3",
     "illuminate/console": "^11.0.8",
     "illuminate/container": "^11.0.8",
     "illuminate/contracts": "^11.0.8",
     "illuminate/support": "^11.0.8",
     "symfony/deprecation-contracts": "^3.0.0",
-    "symfony/filesystem": "^7.0.0",
-    "symfony/polyfill-php83": "^1.28"
+    "symfony/filesystem": "^7.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.5.0|^11.0.0",

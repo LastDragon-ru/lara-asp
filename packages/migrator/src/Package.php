@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Migrator;
 
 final class Package {
-    public const Name = 'lara-asp-migrator';
+    public const string Name = 'lara-asp-migrator';
 }

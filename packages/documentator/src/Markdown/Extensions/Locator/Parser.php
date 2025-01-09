@@ -139,11 +139,11 @@ class Parser implements InlineParserInterface, EnvironmentAwareInterface, Config
             $origin                  += mb_substr_count(mb_substr($line, 0, $origin), '|');
             $offset                  += mb_substr_count(mb_substr($line, 0, $offset), '|');
             $length                  += mb_substr_count(mb_substr($line, $offset, $length), '|');
-            $this->incomplete[$child] = new class($origin - $offset, $offset, $length) {
+            $this->incomplete[$child] = new readonly class($origin - $offset, $offset, $length) {
                 public function __construct(
-                    public readonly int $origin,
-                    public readonly int $offset,
-                    public readonly int $length,
+                    public int $origin,
+                    public int $offset,
+                    public int $length,
                 ) {
                     // empty
                 }

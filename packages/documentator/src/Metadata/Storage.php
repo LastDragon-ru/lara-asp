@@ -27,8 +27,8 @@ use const JSON_UNESCAPED_UNICODE;
  * @internal
  */
 class Storage {
-    private const Format  = 'json';
-    private const Options = JSON_UNESCAPED_SLASHES
+    private const string Format = 'json';
+    private const int Options   = JSON_UNESCAPED_SLASHES
         | JSON_UNESCAPED_UNICODE
         | JSON_UNESCAPED_LINE_TERMINATORS
         | JSON_BIGINT_AS_STRING

@@ -56,8 +56,8 @@ use function trim;
  * * `\App\Class::Constant`
  */
 class Task implements TaskContract {
-    protected const BlockMarker       = 'code-links';
-    protected const DeprecationMarker = '💀';
+    protected const string BlockMarker       = 'code-links';
+    protected const string DeprecationMarker = '💀';
 
     public function __construct(
         protected readonly LinkFactory $factory,

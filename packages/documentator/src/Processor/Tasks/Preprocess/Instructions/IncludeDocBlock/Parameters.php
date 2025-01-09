@@ -4,20 +4,20 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 
-class Parameters implements InstructionParameters {
+readonly class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * File path.
          */
-        public readonly string $target,
+        public string $target,
         /**
          * Include the class summary?
          */
-        public readonly bool $summary = true,
+        public bool $summary = true,
         /**
          * Include the class description?
          */
-        public readonly bool $description = true,
+        public bool $description = true,
     ) {
         // empty
     }

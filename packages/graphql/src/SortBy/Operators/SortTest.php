@@ -277,9 +277,9 @@ final class SortTest extends TestCase {
         };
         $getSorterFactory = static function (bool $nullsSortable): Closure {
             return static function () use ($nullsSortable): Sorter {
-                return new class($nullsSortable) implements Sorter {
+                return new readonly class($nullsSortable) implements Sorter {
                     public function __construct(
-                        private readonly bool $nullsSortable,
+                        private bool $nullsSortable,
                     ) {
                         // empty
                     }

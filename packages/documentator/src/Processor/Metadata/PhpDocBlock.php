@@ -28,10 +28,10 @@ trigger_deprecation(Package::Name, '7.0.0', 'Please use `%s` instead.', PhpClass
  *
  * @implements Metadata<?Document>
  */
-class PhpDocBlock implements Metadata {
+readonly class PhpDocBlock implements Metadata {
     public function __construct(
-        protected readonly Markdown $markdown,
-        protected readonly LinkFactory $factory,
+        protected Markdown $markdown,
+        protected LinkFactory $factory,
     ) {
         // empty
     }

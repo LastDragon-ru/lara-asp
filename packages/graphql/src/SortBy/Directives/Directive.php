@@ -26,7 +26,7 @@ use Override;
 use function str_starts_with;
 
 class Directive extends HandlerDirective implements ArgManipulator, ArgBuilderDirective, ScoutBuilderDirective {
-    final public const Name = 'SortBy';
+    final public const string Name = 'SortBy';
 
     public function __construct(
         ManipulatorFactory $manipulatorFactory,

@@ -43,8 +43,8 @@ use const STR_PAD_LEFT;
  *
  * @implements Format<DurationOptions, DateInterval|float|int|null>
  */
-class DurationFormat implements Format {
-    protected readonly string $pattern;
+readonly class DurationFormat implements Format {
+    protected string $pattern;
 
     /**
      * @param list<DurationOptions|null> $options

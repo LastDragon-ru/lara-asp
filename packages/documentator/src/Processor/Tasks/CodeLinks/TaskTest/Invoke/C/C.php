@@ -7,7 +7,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\
  * @deprecated for tests
  */
 class C {
-    protected const C = 'C';
+    protected const string C = 'C';
 
     public function __construct(
         public string $property,

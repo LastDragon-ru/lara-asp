@@ -77,10 +77,10 @@ final class BaseTest extends TestCase {
             ->twice()
             ->andReturn(true, false);
 
-        $data = new class ($class, $comment) {
+        $data = new readonly class ($class, $comment) {
             public function __construct(
-                public readonly ClassLike $class,
-                public readonly PhpDoc $comment,
+                public ClassLike $class,
+                public PhpDoc $comment,
             ) {
                 // empty
             }
@@ -171,9 +171,9 @@ final class BaseTest extends TestCase {
             ->value(new Name('App\\A'));
 
         $file = Mockery::mock(File::class);
-        $data = new class ($class) {
+        $data = new readonly class ($class) {
             public function __construct(
-                public readonly ClassLike $class,
+                public ClassLike $class,
             ) {
                 // empty
             }
@@ -265,10 +265,10 @@ class BaseTest_BaseLink extends Base {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class BaseTest_Link implements Link {
+readonly class BaseTest_Link implements Link {
     public function __construct(
-        public readonly string $class,
-        public readonly ?string $title = null,
+        public string $class,
+        public ?string $title = null,
     ) {
         // empty
     }

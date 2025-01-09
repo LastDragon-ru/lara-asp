@@ -25,9 +25,9 @@ use const PHP_OS_FAMILY;
 use const PHP_QUERY_RFC3986;
 
 class Protocol {
-    public const    Scheme      = Package::Name;
-    protected const HostUnix    = 'unix.path';
-    protected const HostWindows = 'windows.path';
+    public const    string Scheme      = Package::Name;
+    protected const string HostUnix    = 'unix.path';
+    protected const string HostWindows = 'windows.path';
 
     /**
      * @param array<string,string> $parameters

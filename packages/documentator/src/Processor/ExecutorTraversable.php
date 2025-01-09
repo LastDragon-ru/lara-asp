@@ -19,20 +19,20 @@ use Traversable;
  *
  * @implements IteratorAggregate<TKey, TValue>
  */
-class ExecutorTraversable implements IteratorAggregate {
+readonly class ExecutorTraversable implements IteratorAggregate {
     public function __construct(
         /**
          * @var Dependency<*>
          */
-        private readonly Dependency $dependency,
+        private Dependency $dependency,
         /**
          * @var Traversable<TKey, TValue>
          */
-        private readonly Traversable $resolved,
+        private Traversable $resolved,
         /**
          * @var Closure(Dependency<*>, TValue): mixed
          */
-        private readonly Closure $handler,
+        private Closure $handler,
     ) {
         // empty
     }

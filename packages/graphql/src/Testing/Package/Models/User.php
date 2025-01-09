@@ -22,7 +22,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @property DateTimeInterface|null $deleted_at
  */
 class User extends Model {
-    public const Id = 'b56ce2b1-8af9-4751-8fad-8485930c9c40';
+    public const string Id = 'b56ce2b1-8af9-4751-8fad-8485930c9c40';
 
     /**
      * @param array<string, mixed> $attributes

@@ -49,6 +49,7 @@
     "Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration",
     "Orchestra\\Testbench\\TestCase",
     "PHPStan\\Analyser\\Scope",
+    "PHPStan\\Node\\ClassConstantsNode",
     "PHPStan\\Node\\InClassNode",
     "PHPStan\\Reflection\\ClassReflection",
     "PHPStan\\Reflection\\MethodReflection",

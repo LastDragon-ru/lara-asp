@@ -12,7 +12,7 @@ class Version {
     /**
      * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
      */
-    public const SEMVER = <<<'SEMVER'
+    public const string SEMVER = <<<'SEMVER'
         /^
             (?P<major>0|[1-9]\d*)
             \.

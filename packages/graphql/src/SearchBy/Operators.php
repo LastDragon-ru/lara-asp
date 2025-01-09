@@ -45,18 +45,18 @@ use Override;
 use function array_merge;
 
 class Operators extends BuilderOperators {
-    private const Prefix   = Directive::Name.'Operators';
-    public const  ID       = self::Prefix.Type::ID;
-    public const  Int      = self::Prefix.Type::INT;
-    public const  Float    = self::Prefix.Type::FLOAT;
-    public const  String   = self::Prefix.Type::STRING;
-    public const  Boolean  = self::Prefix.Type::BOOLEAN;
-    public const  Null     = self::Prefix.'Null';
-    public const  Extra    = self::Prefix.'Extra';
-    public const  Number   = self::Prefix.'Number';
-    public const  Enum     = self::Prefix.'Enum';
-    public const  Object   = self::Prefix.'Object';
-    public const  Disabled = self::Prefix.'Disabled';
+    private const string Prefix   = Directive::Name.'Operators';
+    public const  string ID       = self::Prefix.Type::ID;
+    public const  string Int      = self::Prefix.Type::INT;
+    public const  string Float    = self::Prefix.Type::FLOAT;
+    public const  string String   = self::Prefix.Type::STRING;
+    public const  string Boolean  = self::Prefix.Type::BOOLEAN;
+    public const  string Null     = self::Prefix.'Null';
+    public const  string Extra    = self::Prefix.'Extra';
+    public const  string Number   = self::Prefix.'Number';
+    public const  string Enum     = self::Prefix.'Enum';
+    public const  string Object   = self::Prefix.'Object';
+    public const  string Disabled = self::Prefix.'Disabled';
 
     /**
      * @inheritDoc

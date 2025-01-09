@@ -15,6 +15,7 @@ use function is_int;
 use function sprintf;
 
 /**
+ * @see https://github.com/mockery/mockery/issues/1317
  * @phpstan-type SchedulableSettings array{
  *      cron: string,
  *      enabled?: bool,

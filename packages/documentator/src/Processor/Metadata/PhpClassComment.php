@@ -24,11 +24,11 @@ class PhpClassComment implements Metadata {
     public function __invoke(File $file): mixed {
         $class   = $file->getMetadata(PhpClass::class);
         $comment = $class !== null
-            ? new class ($class->class, $class->context, new PhpDoc($class->class->getDocComment()?->getText())) {
+            ? new readonly class ($class->class, $class->context, new PhpDoc($class->class->getDocComment()?->getText())) {
                 public function __construct(
-                    public readonly ClassLike $class,
-                    public readonly NameContext $context,
-                    public readonly PhpDoc $comment,
+                    public ClassLike $class,
+                    public NameContext $context,
+                    public PhpDoc $comment,
                 ) {
                     // empty
                 }

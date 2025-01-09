@@ -20,21 +20,21 @@ use function sprintf;
 class Formatter {
     use Macroable;
 
-    public const String     = 'string';
-    public const Integer    = 'integer';
-    public const Scientific = 'scientific';
-    public const Spellout   = 'spellout';
-    public const Ordinal    = 'ordinal';
-    public const Decimal    = 'decimal';
-    public const Percent    = 'percent';
-    public const Time       = 'time';
-    public const Date       = 'date';
-    public const DateTime   = 'datetime';
-    public const Filesize   = 'filesize';
-    public const Disksize   = 'disksize';
-    public const Secret     = 'secret';
-    public const Currency   = 'currency';
-    public const Duration   = 'duration';
+    public const string String     = 'string';
+    public const string Integer    = 'integer';
+    public const string Scientific = 'scientific';
+    public const string Spellout   = 'spellout';
+    public const string Ordinal    = 'ordinal';
+    public const string Decimal    = 'decimal';
+    public const string Percent    = 'percent';
+    public const string Time       = 'time';
+    public const string Date       = 'date';
+    public const string DateTime   = 'datetime';
+    public const string Filesize   = 'filesize';
+    public const string Disksize   = 'disksize';
+    public const string Secret     = 'secret';
+    public const string Currency   = 'currency';
+    public const string Duration   = 'duration';
 
     /**
      * @var array<string, Format<*, mixed>>

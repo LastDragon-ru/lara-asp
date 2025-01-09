@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Scalars;
 
 use Override;
 
-class JsonString implements JsonStringable {
+readonly class JsonString implements JsonStringable {
     public function __construct(
-        private readonly string $json,
+        private string $json,
     ) {
         // empty
     }

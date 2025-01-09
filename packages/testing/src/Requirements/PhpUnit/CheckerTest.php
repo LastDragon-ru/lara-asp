@@ -77,10 +77,10 @@ final class CheckerTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
-class CheckerTest_Requirement implements Requirement {
+readonly class CheckerTest_Requirement implements Requirement {
     public function __construct(
-        private readonly string $reason,
-        private readonly bool $satisfied,
+        private string $reason,
+        private bool $satisfied,
     ) {
         // empty
     }

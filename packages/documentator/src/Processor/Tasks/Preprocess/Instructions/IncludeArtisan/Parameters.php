@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 
-class Parameters implements InstructionParameters {
+readonly class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * Artisan command. The following special variables supported:
@@ -12,7 +12,7 @@ class Parameters implements InstructionParameters {
          * * `{$directory}` - path of the directory where the file is located.
          * * `{$file}` - path of the file.
          */
-        public readonly string $target,
+        public string $target,
     ) {
         // empty
     }

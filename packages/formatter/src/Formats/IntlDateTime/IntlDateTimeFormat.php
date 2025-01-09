@@ -17,8 +17,8 @@ use function is_null;
  *
  * @implements Format<IntlDateTimeOptions, DateTimeInterface|null>
  */
-class IntlDateTimeFormat implements Format {
-    protected readonly IntlDateFormatter $formatter;
+readonly class IntlDateTimeFormat implements Format {
+    protected IntlDateFormatter $formatter;
 
     /**
      * @param list<IntlDateTimeOptions|null> $options

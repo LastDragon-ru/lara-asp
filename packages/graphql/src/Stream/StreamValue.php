@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream;
 
 use LastDragon_ru\LaraASP\GraphQL\Stream\Contracts\Stream;
 
-class StreamValue {
+readonly class StreamValue {
     public function __construct(
-        public readonly Stream $stream,
+        public Stream $stream,
     ) {
         // empty
     }

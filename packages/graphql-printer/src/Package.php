@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\GraphQLPrinter;
 
 final class Package {
-    public const Name = 'lara-asp-graphql-printer';
+    public const string Name = 'lara-asp-graphql-printer';
 }

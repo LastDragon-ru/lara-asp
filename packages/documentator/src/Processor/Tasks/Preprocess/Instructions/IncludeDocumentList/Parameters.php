@@ -7,12 +7,12 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use Symfony\Component\Finder\Finder;
 
-class Parameters implements InstructionParameters {
+readonly class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * Directory path.
          */
-        public readonly string $target,
+        public string $target,
         /**
          * [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
          * (eg the `0` means no nested directories, the `null` removes limits).
@@ -21,18 +21,18 @@ class Parameters implements InstructionParameters {
          *
          * @var array<array-key, string|int>|string|int|null
          */
-        public readonly array|string|int|null $depth = 0,
+        public array|string|int|null $depth = 0,
         /**
          * Blade template. The documents passed in the `$data` ({@see Data})
          * variable. Also, be careful with leading whitespaces.
          *
          * @see Data
          */
-        public readonly string $template = 'default',
+        public string $template = 'default',
         /**
          * Sort order.
          */
-        public readonly SortOrder $order = SortOrder::Asc,
+        public SortOrder $order = SortOrder::Asc,
         /**
          * Headings level. Possible values are
          *
@@ -40,7 +40,7 @@ class Parameters implements InstructionParameters {
          * * `int`: explicit level (`1-6`)
          * * `0`: `<current level>`
          */
-        public readonly ?int $level = null,
+        public ?int $level = null,
         /**
          * [Rules which filenames must match](https://symfony.com/doc/current/components/finder.html#path)
          * (only Markdown documents will be listed).
@@ -49,7 +49,7 @@ class Parameters implements InstructionParameters {
          *
          * @var array<array-key, string>|string|null
          */
-        public readonly array|string|null $include = null,
+        public array|string|null $include = null,
     ) {
         // empty
     }

@@ -19,9 +19,9 @@ use function trim;
  *
  * @implements InstructionContract<Parameters>
  */
-class Instruction implements InstructionContract {
+readonly class Instruction implements InstructionContract {
     public function __construct(
-        protected readonly ?Printer $printer = null,
+        protected ?Printer $printer = null,
     ) {
         // empty
     }

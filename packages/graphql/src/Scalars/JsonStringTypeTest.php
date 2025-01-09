@@ -85,9 +85,9 @@ final class JsonStringTypeTest extends TestCase {
             ],
             JsonStringable::class         => [
                 null,
-                new class('{"a": 123, "b": {"c": 45}}') implements JsonStringable {
+                new readonly class('{"a": 123, "b": {"c": 45}}') implements JsonStringable {
                     public function __construct(
-                        private readonly string $json,
+                        private string $json,
                     ) {
                         // empty
                     }

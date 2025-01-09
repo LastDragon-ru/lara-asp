@@ -13,6 +13,8 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 use Override;
 
 /**
+ * @see https://github.com/mockery/mockery/issues/1317
+ *
  * @implements Sorter<ScoutBuilder<Model>>
  */
 class ScoutSorter implements Sorter {

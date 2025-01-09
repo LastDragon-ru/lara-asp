@@ -6,9 +6,9 @@ use Closure;
 use Collator;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 
-class Sorter {
+readonly class Sorter {
     public function __construct(
-        protected readonly ApplicationResolver $app,
+        protected ApplicationResolver $app,
     ) {
         // empty
     }

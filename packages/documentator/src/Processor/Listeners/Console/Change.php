@@ -4,10 +4,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 
-class Change {
+readonly class Change {
     public function __construct(
-        public readonly string $path,
-        public readonly FileSystemModifiedType $type,
+        public string $path,
+        public FileSystemModifiedType $type,
     ) {
         // empty
     }

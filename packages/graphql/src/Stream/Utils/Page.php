@@ -11,31 +11,31 @@ use function max;
  * at the beginning and/or at the end. So you need to slice the result to get
  * the expected items.
  */
-class Page {
+readonly class Page {
     /**
      * @var int<1, max>
      */
-    public readonly int $pageNumber;
+    public int $pageNumber;
 
     /**
      * @var int<1, max>
      */
-    public readonly int $pageSize;
+    public int $pageSize;
 
     /**
      * @var int<0, max>
      */
-    public readonly int $start;
+    public int $start;
 
     /**
      * @var int<0, max>
      */
-    public readonly int $end;
+    public int $end;
 
     /**
      * @var int<1, max>
      */
-    public readonly int $length;
+    public int $length;
 
     /**
      * @param int<1, max> $limit

@@ -47,7 +47,7 @@ final class EditorTest extends TestCase {
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
         ];
-        $editor  = new class($lines, 1) extends Editor {
+        $editor  = new readonly class($lines, 1) extends Editor {
             /**
              * @return list<string>
              */
@@ -85,7 +85,7 @@ final class EditorTest extends TestCase {
     }
 
     public function testPrepare(): void {
-        $editor   = new class(['L1', 'L2']) extends Editor {
+        $editor   = new readonly class(['L1', 'L2']) extends Editor {
             /**
              * @inheritDoc
              */
@@ -109,7 +109,7 @@ final class EditorTest extends TestCase {
     }
 
     public function testRemoveOverlaps(): void {
-        $editor   = new class([]) extends Editor {
+        $editor   = new readonly class([]) extends Editor {
             /**
              * @inheritDoc
              */
@@ -147,7 +147,7 @@ final class EditorTest extends TestCase {
     }
 
     public function testExpand(): void {
-        $editor   = new class([]) extends Editor {
+        $editor   = new readonly class([]) extends Editor {
             /**
              * @inheritDoc
              */

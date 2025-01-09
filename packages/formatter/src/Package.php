@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Formatter;
 
 final class Package {
-    public const Name = 'lara-asp-formatter';
+    public const string Name = 'lara-asp-formatter';
 }

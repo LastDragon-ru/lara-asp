@@ -8,11 +8,11 @@ use DateInterval;
  * @internal
  */
 class Duration {
-    final public const SecondsInMinute = 60;
-    final public const SecondsInHour   = 60 * self::SecondsInMinute;
-    final public const SecondsInDay    = 24 * self::SecondsInHour;
-    final public const SecondsInMonth  = 30 * self::SecondsInDay;
-    final public const SecondsInYear   = 365 * self::SecondsInDay;
+    final public const int SecondsInMinute = 60;
+    final public const int SecondsInHour   = 60 * self::SecondsInMinute;
+    final public const int SecondsInDay    = 24 * self::SecondsInHour;
+    final public const int SecondsInMonth  = 30 * self::SecondsInDay;
+    final public const int SecondsInYear   = 365 * self::SecondsInDay;
 
     public static function getTimestamp(DateInterval|float|int|null $interval): float {
         return match (true) {

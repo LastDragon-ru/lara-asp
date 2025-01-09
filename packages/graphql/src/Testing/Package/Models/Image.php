@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @property DateTimeInterface|null $deleted_at
  */
 class Image extends Model {
-    public const Id = 'e3d1c188-6a25-4994-94f7-98e0a44d0607';
+    public const string Id = 'e3d1c188-6a25-4994-94f7-98e0a44d0607';
 
     /**
      * @param array<string, mixed> $attributes

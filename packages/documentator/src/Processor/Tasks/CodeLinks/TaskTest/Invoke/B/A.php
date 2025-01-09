@@ -9,7 +9,7 @@ class A {
     /**
      * @deprecated for test
      */
-    protected const A = 'BA';
+    protected const string A = 'BA';
 
     public function __construct(
         public string $property,

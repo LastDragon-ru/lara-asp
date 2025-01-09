@@ -30,8 +30,8 @@ use function strtr;
  * @implements FieldArgumentDirective<int<1, max>>
  */
 class Limit extends BaseDirective implements ArgManipulator, FieldArgumentDirective {
-    final public const ArgDefault = 'default';
-    final public const ArgMax     = 'max';
+    final public const string ArgDefault = 'default';
+    final public const string ArgMax     = 'max';
 
     public function __construct(
         protected readonly PackageConfig $config,

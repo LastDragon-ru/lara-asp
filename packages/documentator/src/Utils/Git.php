@@ -10,9 +10,9 @@ use function array_values;
 use function explode;
 use function trim;
 
-class Git {
+readonly class Git {
     public function __construct(
-        protected readonly Factory $factory,
+        protected Factory $factory,
     ) {
         // empty
     }

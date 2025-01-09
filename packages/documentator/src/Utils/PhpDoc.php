@@ -15,6 +15,7 @@ use function implode;
 use function trim;
 
 /**
+ * @see https://github.com/mockery/mockery/issues/1317
  * @internal
  */
 class PhpDoc {

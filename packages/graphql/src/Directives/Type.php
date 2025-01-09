@@ -24,7 +24,7 @@ use function is_a;
  * @phpstan-import-type ScalarConfig from ScalarType
  */
 class Type extends BaseDirective implements TypeResolver {
-    final protected const ArgClass = 'class';
+    final protected const string ArgClass = 'class';
 
     public function __construct(
         protected readonly ContainerResolver $container,

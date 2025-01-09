@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 
 /**
+ * @see https://github.com/mockery/mockery/issues/1317
  * @internal
  */
 class ManipulatorFactory {

@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @property string $name
  */
 class Tag extends Model {
-    public const Id = 'c0e75510-d91e-49b6-85e5-0146dfb3a630';
+    public const string Id = 'c0e75510-d91e-49b6-85e5-0146dfb3a630';
 
     /**
      * @param array<string, mixed> $attributes

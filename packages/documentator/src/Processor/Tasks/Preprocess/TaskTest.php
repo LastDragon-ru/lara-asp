@@ -36,7 +36,7 @@ use const PHP_INT_MAX;
 final class TaskTest extends TestCase {
     use WithProcessor;
 
-    private const MARKDOWN = <<<'MARKDOWN'
+    private const string MARKDOWN = <<<'MARKDOWN'
         Bla bla bla [processable]: ./path/to/file should be ignored.
 
         [unknown]: ./path/to/file (should not be parsed)
@@ -288,7 +288,7 @@ final class TaskTest extends TestCase {
  *
  * @implements Instruction<TaskTest__ParametersEmpty>
  */
-class TaskTest__EmptyInstruction implements Instruction {
+readonly class TaskTest__EmptyInstruction implements Instruction {
     #[Override]
     public static function getName(): string {
         return 'test:empty';
@@ -316,7 +316,7 @@ class TaskTest__EmptyInstruction implements Instruction {
  *
  * @implements Instruction<TaskTest__Parameters>
  */
-class TaskTest__TestInstruction implements Instruction {
+readonly class TaskTest__TestInstruction implements Instruction {
     #[Override]
     public static function getName(): string {
         return 'test:instruction';
@@ -344,9 +344,9 @@ class TaskTest__TestInstruction implements Instruction {
  *
  * @implements Instruction<TaskTest__ParametersEmpty>
  */
-class TaskTest__DocumentInstruction implements Instruction {
+readonly class TaskTest__DocumentInstruction implements Instruction {
     public function __construct(
-        protected readonly MarkdownContract $markdown,
+        protected MarkdownContract $markdown,
     ) {
         // empty
     }
@@ -388,14 +388,14 @@ class TaskTest__DocumentInstruction implements Instruction {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TaskTest__Parameters implements Parameters {
+readonly class TaskTest__Parameters implements Parameters {
     /**
      * @param array<string, string> $b
      */
     public function __construct(
-        public readonly string $target,
-        public readonly string $a = 'a',
-        public readonly array $b = [],
+        public string $target,
+        public string $a = 'a',
+        public array $b = [],
     ) {
         // empty
     }
@@ -405,9 +405,9 @@ class TaskTest__Parameters implements Parameters {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class TaskTest__ParametersEmpty implements Parameters {
+readonly class TaskTest__ParametersEmpty implements Parameters {
     public function __construct(
-        public readonly string $target,
+        public string $target,
     ) {
         // empty
     }

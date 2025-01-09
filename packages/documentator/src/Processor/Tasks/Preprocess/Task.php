@@ -60,7 +60,7 @@ use const JSON_THROW_ON_ERROR;
  * * Nested `<instruction>` not supported.
  */
 class Task implements TaskContract {
-    protected const BlockMarker = 'preprocess';
+    protected const string BlockMarker = 'preprocess';
 
     /**
      * @var InstanceList<Instruction<Parameters>>

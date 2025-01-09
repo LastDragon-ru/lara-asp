@@ -15,7 +15,7 @@ use Override;
  *
  * @extends IntlFormat<?IntlNumberOptions, DateInterval|float|int|null>
  */
-class IntlDurationFormat extends IntlFormat {
+readonly class IntlDurationFormat extends IntlFormat {
     /**
      * @param list<IntlNumberOptions|null> $options
      */

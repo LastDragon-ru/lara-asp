@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @property DateTimeInterface|null $deleted_at
  */
 class Role extends Model {
-    public const Id = '524e3f62-d642-46ff-aaec-280dabdeb4ae';
+    public const string Id = '524e3f62-d642-46ff-aaec-280dabdeb4ae';
 
     /**
      * @param array<string, mixed> $attributes

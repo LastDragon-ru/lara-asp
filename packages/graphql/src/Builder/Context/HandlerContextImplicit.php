@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 
-class HandlerContextImplicit {
+readonly class HandlerContextImplicit {
     public function __construct(
-        public readonly bool $value,
+        public bool $value,
     ) {
         // empty
     }

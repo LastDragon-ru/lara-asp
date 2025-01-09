@@ -18,9 +18,9 @@ use function is_string;
 /**
  * @internal
  */
-class CommandMatcher implements ScheduleMatcher {
+readonly class CommandMatcher implements ScheduleMatcher {
     public function __construct(
-        protected readonly Container $container,
+        protected Container $container,
     ) {
         // empty
     }

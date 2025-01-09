@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\SortBy\Operators;
 
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Enums\Nulls;
 
-class SortContextNulls {
+readonly class SortContextNulls {
     public function __construct(
-        public readonly ?Nulls $value,
+        public ?Nulls $value,
     ) {
         // empty
     }

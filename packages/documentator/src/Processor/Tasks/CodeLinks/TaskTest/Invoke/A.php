@@ -6,7 +6,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\TaskTest\
  * @internal
  */
 class A {
-    protected const A = 'A';
+    protected const string A = 'A';
 
     public function __construct(
         public string $property,

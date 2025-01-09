@@ -11,7 +11,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
  * @property string $name
  */
 class Organization extends Model {
-    public const Id = '9c450f2a-8600-4e1e-8b76-3743f0f0e642';
+    public const string Id = '9c450f2a-8600-4e1e-8b76-3743f0f0e642';
 
     /**
      * @param array<string, mixed> $attributes

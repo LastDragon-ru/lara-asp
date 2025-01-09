@@ -3,5 +3,5 @@
 namespace LastDragon_ru\LaraASP\Core;
 
 final class Package {
-    public const Name = 'lara-asp-core';
+    public const string Name = 'lara-asp-core';
 }
