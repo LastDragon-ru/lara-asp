@@ -211,6 +211,7 @@ class MockPropertiesTest_ObjectPublic extends MockPropertiesTest_ObjectProtected
 }
 
 /**
+ * @see https://github.com/mockery/mockery/issues/1317
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
@@ -227,6 +228,7 @@ class MockPropertiesTest_ObjectReadonly {
 }
 
 /**
+ * @see https://github.com/mockery/mockery/issues/1317
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */

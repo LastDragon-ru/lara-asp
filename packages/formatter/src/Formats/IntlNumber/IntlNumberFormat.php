@@ -10,7 +10,7 @@ use Override;
  * @see NumberFormatter
  * @extends IntlFormat<IntlNumberOptions, float|int|null>
  */
-class IntlNumberFormat extends IntlFormat {
+readonly class IntlNumberFormat extends IntlFormat {
     #[Override]
     public function __invoke(mixed $value): string {
         $formatted = $this->formatter->format($value ?? 0);

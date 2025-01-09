@@ -14,8 +14,8 @@ use function str_replace;
 /**
  * @implements Format<SecretOptions, string|null>
  */
-class SecretFormat implements Format {
-    protected readonly int $visible;
+readonly class SecretFormat implements Format {
+    protected int $visible;
 
     /**
      * @param list<SecretOptions|null> $options

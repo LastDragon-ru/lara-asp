@@ -23,7 +23,7 @@ use function sprintf;
  * @internal
  * @implements RuleContract<ClassConstantsNode>
  */
-class Rule implements RuleContract {
+readonly class Rule implements RuleContract {
     public function __construct() {
         // empty
     }

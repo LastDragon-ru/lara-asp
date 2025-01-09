@@ -27,16 +27,16 @@ use const PATHINFO_FILENAME;
  * @internal
  * @implements RuleContract<InClassNode>
  */
-class Rule implements RuleContract {
+readonly class Rule implements RuleContract {
     public function __construct(
         /**
          * @var array<array-key, class-string>
          */
-        protected readonly array $classes,
+        protected array $classes,
         /**
          * @var array<array-key, class-string>
          */
-        protected readonly array $ignored = [],
+        protected array $ignored = [],
     ) {
         // empty
     }

@@ -12,12 +12,12 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
-class Context {
+readonly class Context {
     public function __construct(
-        public readonly File $file,
-        public readonly Document $document,
-        public readonly Node $node,
-        private readonly Mutation $mutation,
+        public File $file,
+        public Document $document,
+        public Node $node,
+        private Mutation $mutation,
     ) {
         // empty
     }

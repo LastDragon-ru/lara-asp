@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\BuilderInfo;
 
-class HandlerContextBuilderInfo {
+readonly class HandlerContextBuilderInfo {
     public function __construct(
-        public readonly BuilderInfo $value,
+        public BuilderInfo $value,
     ) {
         // empty
     }

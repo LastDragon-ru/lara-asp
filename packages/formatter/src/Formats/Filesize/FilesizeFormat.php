@@ -18,19 +18,19 @@ use function sprintf;
 /**
  * @implements Format<FilesizeOptions, numeric-string|float|int|null>
  */
-class FilesizeFormat implements Format {
-    protected readonly int $base;
+readonly class FilesizeFormat implements Format {
+    protected int $base;
     /**
      * @var non-empty-list<non-empty-list<string>>
      */
-    protected readonly array $units;
+    protected array $units;
 
     /**
      * @param list<FilesizeOptions|null> $options
      */
     public function __construct(
         protected PackageTranslator $translator,
-        protected readonly Formatter $formatter,
+        protected Formatter $formatter,
         array $options = [],
     ) {
         // Collect options

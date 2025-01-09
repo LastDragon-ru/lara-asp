@@ -40,10 +40,10 @@ trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', Inc
  *
  * @implements InstructionContract<Parameters>
  */
-class Instruction implements InstructionContract {
+readonly class Instruction implements InstructionContract {
     public function __construct(
-        protected readonly PackageViewer $viewer,
-        protected readonly Sorter $sorter,
+        protected PackageViewer $viewer,
+        protected Sorter $sorter,
     ) {
         // empty
     }

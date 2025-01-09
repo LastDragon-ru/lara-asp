@@ -269,7 +269,7 @@ class PreprocessTest__Parameters implements Parameters {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class PreprocessTest__ParametersEmpty implements Parameters {
+readonly class PreprocessTest__ParametersEmpty implements Parameters {
     public function __construct(
         /**
          * Target target target target target.
@@ -277,7 +277,7 @@ class PreprocessTest__ParametersEmpty implements Parameters {
          * Target target target target target target target target target
          * target target target target target target target target target.
          */
-        public readonly string $target,
+        public string $target,
     ) {
         // empty
     }

@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\Serializer\Casts;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 
-class Serialized {
+readonly class Serialized {
     public function __construct(
-        protected readonly Serializer $serializer,
+        protected Serializer $serializer,
     ) {
         // empty
     }

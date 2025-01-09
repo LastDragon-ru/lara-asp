@@ -31,9 +31,9 @@ use const PREG_UNMATCHED_AS_NULL;
  *
  * @implements InstructionContract<Parameters>
  */
-class Instruction implements InstructionContract {
+readonly class Instruction implements InstructionContract {
     public function __construct(
-        protected readonly Markdown $markdown,
+        protected Markdown $markdown,
     ) {
         // empty
     }

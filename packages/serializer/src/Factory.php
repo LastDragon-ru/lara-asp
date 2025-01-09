@@ -34,6 +34,9 @@ use const JSON_UNESCAPED_LINE_TERMINATORS;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
+/**
+ * @see https://github.com/mockery/mockery/issues/1317
+ */
 class Factory {
     public function __construct(
         protected readonly ContainerResolver $container,

@@ -14,9 +14,9 @@ use function implode;
 /**
  * @internal
  */
-final class BuilderFieldResolver implements BuilderFieldResolverContract {
+final readonly class BuilderFieldResolver implements BuilderFieldResolverContract {
     public function __construct(
-        private readonly ?ScoutFieldResolver $resolver = null,
+        private ?ScoutFieldResolver $resolver = null,
     ) {
         // empty
     }

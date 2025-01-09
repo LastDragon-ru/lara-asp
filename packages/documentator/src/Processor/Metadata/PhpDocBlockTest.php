@@ -79,7 +79,7 @@ final class PhpDocBlockTest extends TestCase {
 
         $this->override(
             PhpClass::class,
-            new class() extends PhpClass {
+            new readonly class() extends PhpClass {
                 #[Override]
                 public function __invoke(File $file): mixed {
                     return null;

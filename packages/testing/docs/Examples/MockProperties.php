@@ -9,9 +9,9 @@ use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 
-class A {
+readonly class A {
     public function __construct(
-        protected readonly B $b,
+        protected B $b,
     ) {
         // empty
     }

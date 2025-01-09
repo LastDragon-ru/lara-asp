@@ -12,9 +12,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class ContextTest extends TestCase {
     public function testContext(): void {
         $context = new Context();
-        $class   = (new class('origin') {
+        $class   = (new readonly class('origin') {
             public function __construct(
-                public readonly string $value,
+                public string $value,
             ) {
                 // empty
             }

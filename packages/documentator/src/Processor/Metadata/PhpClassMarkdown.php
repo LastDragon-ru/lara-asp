@@ -11,9 +11,9 @@ use Override;
 /**
  * @implements Metadata<?Document>
  */
-class PhpClassMarkdown implements Metadata {
+readonly class PhpClassMarkdown implements Metadata {
     public function __construct(
-        protected readonly PhpDocumentFactory $factory,
+        protected PhpDocumentFactory $factory,
     ) {
         // empty
     }

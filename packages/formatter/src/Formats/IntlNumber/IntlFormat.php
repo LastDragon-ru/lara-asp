@@ -19,8 +19,8 @@ use function sprintf;
  *
  * @implements Format<TOptions, TValue>
  */
-abstract class IntlFormat implements Format {
-    protected readonly NumberFormatter $formatter;
+abstract readonly class IntlFormat implements Format {
+    protected NumberFormatter $formatter;
 
     /**
      * @param list<TOptions|null> $options

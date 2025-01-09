@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 
 use LastDragon_ru\LaraASP\GraphQL\Builder\Operators;
 
-class HandlerContextOperators {
+readonly class HandlerContextOperators {
     public function __construct(
-        public readonly Operators $value,
+        public Operators $value,
     ) {
         // empty
     }

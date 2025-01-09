@@ -592,10 +592,10 @@ enum ProviderTest__BackedEnum: int {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ProviderTest__Partial implements Serializable, Partial {
+readonly class ProviderTest__Partial implements Serializable, Partial {
     public function __construct(
-        public readonly int $a,
-        public readonly int $b,
+        public int $a,
+        public int $b,
     ) {
         // empty
     }

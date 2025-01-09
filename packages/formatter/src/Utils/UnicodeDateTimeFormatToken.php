@@ -5,10 +5,10 @@ namespace LastDragon_ru\LaraASP\Formatter\Utils;
 /**
  * @internal
  */
-class UnicodeDateTimeFormatToken {
+readonly class UnicodeDateTimeFormatToken {
     public function __construct(
-        public readonly string $pattern,
-        public readonly string $value,
+        public string $pattern,
+        public string $value,
     ) {
         // empty
     }

@@ -11,7 +11,7 @@ use function trim;
 /**
  * @implements Format<null, Stringable|string|null>
  */
-class StringFormat implements Format {
+readonly class StringFormat implements Format {
     public function __construct() {
         // empty
     }

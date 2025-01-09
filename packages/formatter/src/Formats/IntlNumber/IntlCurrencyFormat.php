@@ -14,11 +14,11 @@ use function is_array;
  * @see NumberFormatter
  * @extends IntlFormat<?IntlCurrencyOptions, array{float|int|null, ?non-empty-string}|float|int|null>
  */
-class IntlCurrencyFormat extends IntlFormat {
+readonly class IntlCurrencyFormat extends IntlFormat {
     /**
      * @var non-empty-string|null
      */
-    protected readonly ?string $currency;
+    protected ?string $currency;
 
     /**
      * @param list<IntlCurrencyOptions|null> $options

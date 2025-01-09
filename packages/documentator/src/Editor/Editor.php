@@ -21,22 +21,19 @@ use function usort;
 
 use const PHP_INT_MAX;
 
-/**
- * @readonly Waiting for no PHP 8.2 (https://github.com/LastDragon-ru/lara-asp/issues/190)
- */
-class Editor implements Stringable {
+readonly class Editor implements Stringable {
     /**
      * @var list<string>
      */
-    protected readonly array $lines;
+    protected array $lines;
 
     /**
      * @param list<string>|string $content
      */
     final public function __construct(
         array|string $content,
-        protected readonly int $startLine = 0,
-        protected readonly string $endOfLine = "\n",
+        protected int $startLine = 0,
+        protected string $endOfLine = "\n",
     ) {
         $this->lines = is_string($content) ? Text::getLines($content) : $content;
     }

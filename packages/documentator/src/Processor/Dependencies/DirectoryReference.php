@@ -15,9 +15,9 @@ use function is_string;
 /**
  * @implements Dependency<Directory>
  */
-class DirectoryReference implements Dependency {
+readonly class DirectoryReference implements Dependency {
     public function __construct(
-        protected readonly DirectoryPath|string $reference,
+        protected DirectoryPath|string $reference,
     ) {
         // empty
     }

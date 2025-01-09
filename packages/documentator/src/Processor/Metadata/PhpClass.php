@@ -17,7 +17,7 @@ use PhpParser\ParserFactory;
 /**
  * @implements Metadata<?object{class: ClassLike, context: NameContext}>
  */
-class PhpClass implements Metadata {
+readonly class PhpClass implements Metadata {
     public function __construct() {
         // empty
     }
@@ -42,10 +42,10 @@ class PhpClass implements Metadata {
         }
 
         return $class instanceof ClassLike
-            ? new class ($class, $resolver->getNameContext()) {
+            ? new readonly class ($class, $resolver->getNameContext()) {
                 public function __construct(
-                    public readonly ClassLike $class,
-                    public readonly NameContext $context,
+                    public ClassLike $class,
+                    public NameContext $context,
                 ) {
                     // empty
                 }

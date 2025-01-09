@@ -25,9 +25,9 @@ use const PREG_SPLIT_NO_EMPTY;
  *
  * @implements IteratorAggregate<int, UnicodeDateTimeFormatToken>
  */
-class UnicodeDateTimeFormatParser implements IteratorAggregate {
+readonly class UnicodeDateTimeFormatParser implements IteratorAggregate {
     public function __construct(
-        protected readonly string $pattern,
+        protected string $pattern,
     ) {
         // empty
     }
