@@ -215,7 +215,7 @@
       "jq --indent 2 '.' composer.json > composer.tmp && mv composer.tmp composer.json"
     ],
     "phpstan": [
-      "./vendor/bin/phpstan analyse -v"
+      "./vendor/bin/phpstan analyse"
     ],
     "phpunit": [
       "./vendor/bin/phpunit"
