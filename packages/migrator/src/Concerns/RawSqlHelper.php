@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
 use ReflectionClass;
 use RuntimeException;
 
+use function assert;
 use function basename;
 use function dirname;
 use function file_get_contents;

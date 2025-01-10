@@ -9,6 +9,7 @@ use function array_reduce;
 use function array_reverse;
 use function array_slice;
 use function assert;
+use function is_array;
 use function reset;
 
 /**

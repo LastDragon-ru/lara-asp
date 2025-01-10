@@ -27,7 +27,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function array_map;
 use function array_walk_recursive;
-use function is_callable;
 use function trim;
 
 /**
