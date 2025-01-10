@@ -30,6 +30,7 @@ $root = Path::realpath(dirname(__FILE__).'/composer.json') === $path;
 
 if ($root) {
     $config
+        ->ignoreErrorsOnPackage('larastan/larastan', [ErrorType::UNUSED_DEPENDENCY])
         ->ignoreErrorsOnPackage('phpstan/phpstan-mockery', [ErrorType::UNUSED_DEPENDENCY])
         ->ignoreErrorsOnPackage('phpstan/phpstan-phpunit', [ErrorType::UNUSED_DEPENDENCY])
         ->ignoreErrorsOnPackage('phpstan/phpstan-strict-rules', [ErrorType::UNUSED_DEPENDENCY])
