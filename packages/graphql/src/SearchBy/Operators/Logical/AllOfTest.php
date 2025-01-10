@@ -53,7 +53,7 @@ final class AllOfTest extends TestCase {
         ?Closure $contextFactory,
         ?Closure $resolver,
     ): void {
-        $this->testOperator(
+        $this->testDatabaseOperator(
             Directive::class,
             $expected,
             $builderFactory,
@@ -87,7 +87,7 @@ final class AllOfTest extends TestCase {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 
-        $this->testOperator(
+        $this->testScoutOperator(
             Directive::class,
             $expected,
             $builderFactory,

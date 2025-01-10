@@ -66,7 +66,7 @@ final class ContainsTest extends TestCase {
             return $builder;
         };
 
-        $this->testOperator(
+        $this->testDatabaseOperator(
             Directive::class,
             $expected,
             $builderFactory,

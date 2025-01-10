@@ -53,7 +53,7 @@ final class NotInTest extends TestCase {
         ?Closure $contextFactory,
         ?Closure $resolver,
     ): void {
-        $this->testOperator(
+        $this->testDatabaseOperator(
             Directive::class,
             $expected,
             $builderFactory,
@@ -102,7 +102,7 @@ final class NotInTest extends TestCase {
         }
 
         // Test
-        $this->testOperator(
+        $this->testScoutOperator(
             Directive::class,
             $expected,
             $builderFactory,
