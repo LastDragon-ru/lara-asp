@@ -88,7 +88,7 @@ class Protocol {
         // https://github.com/opis/uri/issues/1
         $params = HeaderUtils::parseQuery((string) $uri->query());
         $schema = Args::content($file);
-        $schema = (new Template($schema))->build($params);
+        $schema = (new Template($schema))->build($params); // @phpstan-ignore argument.type (params always are `array<string, string>`)
 
         // Return
         return $schema;

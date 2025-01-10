@@ -60,10 +60,13 @@ class ConfigMerger {
      * @see ConfigMerger::Replace
      * @see ConfigMerger::Strict
      *
-     * @param array<array-key, mixed> $target
-     * @param array<array-key, mixed> $configs
+     * @template A of array-key
+     * @template B of array-key
      *
-     * @return array<array-key, mixed>
+     * @param array<A, mixed> $target
+     * @param array<B, mixed> $configs
+     *
+     * @return array<A|B, mixed>
      */
     public function merge(array $target, array ...$configs): array {
         // Enable strict mode (just for case)
@@ -78,7 +81,7 @@ class ConfigMerger {
         $this->cleanup($target, true);
 
         // Return
-        return $target;
+        return $target; // @phpstan-ignore return.type (class is deprecated, so the way is not very important)
     }
 
     /**
