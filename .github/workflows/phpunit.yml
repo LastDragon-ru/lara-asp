@@ -149,6 +149,15 @@ jobs:
             composer require --no-interaction --no-progress --ansi --no-update "${PKG}:${{ matrix.laravel }}"
           done <<< "${PACKAGES}"
 
+      # PHPStan dev packages may prevent installing the lowest version of the Laravel
+      - name: Remove PHPStan packages
+        shell: bash
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "phpstan/*"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "larastan/larastan"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "spaze/phpstan-disallowed-calls"
+
       - name: Remove optional packages
         if: ${{ matrix.optional != 'null' }}
         shell: bash
