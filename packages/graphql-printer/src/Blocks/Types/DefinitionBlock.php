@@ -20,7 +20,6 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\Directives;
@@ -272,7 +271,9 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $directives = new Directives(
             $this->getContext(),
             $this->getDefinitionDirectives(),
-            Cast::toStringNullable($definition->deprecationReason ?? null),
+            property_exists($definition, 'deprecationReason') && is_string($definition->deprecationReason)
+                ? $definition->deprecationReason
+                : null,
         );
 
         return $directives;
