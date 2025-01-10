@@ -28,6 +28,11 @@ class Extension {
      * of the original file).
      */
     public static function dump(): void {
+        // Larastan?
+        if (!self::hasLarastan()) {
+            return;
+        }
+
         // Prepare
         $origin = self::getLarastanPath()->getFilePath('extension.neon');
         $target = self::getRootPath()->getFilePath('phpstan-larastan.neon');
@@ -139,6 +144,10 @@ class Extension {
 
     private static function getRootPath(): DirectoryPath {
         return new DirectoryPath((string) getcwd());
+    }
+
+    private static function hasLarastan(): bool {
+        return InstalledVersions::isInstalled('larastan/larastan');
     }
 
     private static function getLarastanPath(): DirectoryPath {
