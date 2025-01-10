@@ -22,7 +22,6 @@
     "illuminate/container": "^11.0.8",
     "illuminate/contracts": "^11.0.8",
     "illuminate/support": "^11.0.8",
-    "larastan/larastan": "^3.0.2",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
     "nikic/php-parser": "^5.0",

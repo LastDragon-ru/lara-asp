@@ -4,11 +4,6 @@ namespace LastDragon_ru\LaraASP\Dev\PhpStan\Larastan;
 
 use Composer\InstalledVersions;
 use Exception;
-use Larastan\Larastan\Methods\Extension as MethodsExtension;
-use Larastan\Larastan\ReturnTypes\ApplicationMakeDynamicReturnTypeExtension;
-use Larastan\Larastan\ReturnTypes\AppMakeDynamicReturnTypeExtension;
-use Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension;
-use Larastan\Larastan\ReturnTypes\ContainerMakeDynamicReturnTypeExtension;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use Nette\Neon\Neon;
@@ -106,11 +101,11 @@ class Extension {
 
         // Remove
         $disabled = [
-            ApplicationMakeDynamicReturnTypeExtension::class            => true,
-            AppMakeDynamicReturnTypeExtension::class                    => true,
-            ContainerArrayAccessDynamicMethodReturnTypeExtension::class => true,
-            ContainerMakeDynamicReturnTypeExtension::class              => true,
-            MethodsExtension::class                                     => true,
+            'Larastan\\Larastan\\ReturnTypes\\ApplicationMakeDynamicReturnTypeExtension'            => true,
+            'Larastan\\Larastan\\ReturnTypes\\AppMakeDynamicReturnTypeExtension'                    => true,
+            'Larastan\\Larastan\\ReturnTypes\\ContainerArrayAccessDynamicMethodReturnTypeExtension' => true,
+            'Larastan\\Larastan\\ReturnTypes\\ContainerMakeDynamicReturnTypeExtension'              => true,
+            'Larastan\\Larastan\\Methods\\Extension'                                                => true,
         ];
 
         foreach ($extension['services'] as $index => $service) {
