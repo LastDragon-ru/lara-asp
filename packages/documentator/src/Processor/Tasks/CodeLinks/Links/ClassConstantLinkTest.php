@@ -25,18 +25,18 @@ use function array_map;
 #[CoversClass(ClassConstantLink::class)]
 final class ClassConstantLinkTest extends TestCase {
     public function testToString(): void {
-        self::assertEquals('Class::Constant', (string) new ClassConstantLink('Class', 'Constant'));
-        self::assertEquals('App\\Class::Constant', (string) new ClassConstantLink('App\\Class', 'Constant'));
-        self::assertEquals(
+        self::assertSame('Class::Constant', (string) new ClassConstantLink('Class', 'Constant'));
+        self::assertSame('App\\Class::Constant', (string) new ClassConstantLink('App\\Class', 'Constant'));
+        self::assertSame(
             '\\App\\Class::Constant',
             (string) new ClassConstantLink('\\App\\Class', 'Constant'),
         );
     }
 
     public function testGetTitle(): void {
-        self::assertEquals('Class::Constant', (new ClassConstantLink('Class', 'Constant'))->getTitle());
-        self::assertEquals('Class::Constant', (new ClassConstantLink('App\\Class', 'Constant'))->getTitle());
-        self::assertEquals(
+        self::assertSame('Class::Constant', (new ClassConstantLink('Class', 'Constant'))->getTitle());
+        self::assertSame('Class::Constant', (new ClassConstantLink('App\\Class', 'Constant'))->getTitle());
+        self::assertSame(
             'Class::Constant',
             (new ClassConstantLink('\\App\\Class', 'Constant'))->getTitle(),
         );
@@ -121,6 +121,6 @@ final class ClassConstantLinkTest extends TestCase {
         $actual = $link->getTargetNode($class->class);
 
         self::assertInstanceOf(EnumCase::class, $actual);
-        self::assertEquals('A', (string) $actual->name);
+        self::assertSame('A', (string) $actual->name);
     }
 }

@@ -65,7 +65,7 @@ final class SchemaDirectiveTest extends TestCase {
 
         $type = $document->types[$type] ?? null;
 
-        self::assertNotNull($type);
+        self::assertInstanceOf(Node::class, $type);
         self::assertFalse(isset($document->types['SchemaDirective']));
         self::assertFalse(isset($document->typeExtensions['SchemaDirective']));
 

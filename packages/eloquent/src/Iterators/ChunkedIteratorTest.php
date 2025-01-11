@@ -44,10 +44,10 @@ final class ChunkedIteratorTest extends TestCase {
         $actual = iterator_to_array($iterator);
 
         self::assertEquals($expected, $actual);
-        self::assertEquals(1, count($log) - $count);
-        self::assertEquals(count($expected), $iterator->getIndex());
-        self::assertEquals(count($expected), $iterator->getOffset());
-        self::assertEquals(3, count($iterator));
+        self::assertSame(1, count($log) - $count);
+        self::assertSame(count($expected), $iterator->getIndex());
+        self::assertSame(count($expected), $iterator->getOffset());
+        self::assertCount(3, $iterator);
 
         $spyBefore
             ->shouldHaveBeenCalled()
@@ -68,7 +68,7 @@ final class ChunkedIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
-        self::assertEquals(3, $count);
+        self::assertSame(3, $count);
         self::assertCount(2, $actual);
         self::assertEquals($expected, $actual);
     }
@@ -84,7 +84,7 @@ final class ChunkedIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
-        self::assertEquals(3, $count);
+        self::assertSame(3, $count);
         self::assertCount(2, $actual);
         self::assertEquals($expected, $actual);
     }
@@ -104,7 +104,7 @@ final class ChunkedIteratorTest extends TestCase {
         $expected = (clone $query)->get()->all();
 
         self::assertCount(4, $actual);
-        self::assertEquals(4, $count);
+        self::assertSame(4, $count);
         self::assertEquals($expected, $actual);
     }
 
@@ -123,7 +123,7 @@ final class ChunkedIteratorTest extends TestCase {
         $expected = (clone $query)->get()->all();
 
         self::assertCount(3, $actual);
-        self::assertEquals(3, $count);
+        self::assertSame(3, $count);
         self::assertEquals($expected, $actual);
     }
 }

@@ -33,7 +33,7 @@ final class ExtensionTest extends TestCase {
         $lines    = Lines::optional()->get($document->node);
 
         self::assertIsArray($lines);
-        self::assertEquals(
+        self::assertSame(
             self::getTestData()->content('~document.xml'),
             $renderer->render($document),
         );

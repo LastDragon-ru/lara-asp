@@ -122,7 +122,7 @@ trait GraphQLAssertions {
             // empty
         }
 
-        self::assertEquals($output, (string) $actual, $message);
+        self::assertSame($output, (string) $actual, $message);
 
         return $actual;
     }

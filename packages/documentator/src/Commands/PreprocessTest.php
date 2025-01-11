@@ -38,7 +38,7 @@ final class PreprocessTest extends TestCase {
 
         $command->setLaravel($this->app());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             ### `[test:instruction]: <target> <parameters>`
 
@@ -88,7 +88,7 @@ final class PreprocessTest extends TestCase {
 
         $command->setLaravel($this->app());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             Target target target target target.
 
@@ -118,7 +118,7 @@ final class PreprocessTest extends TestCase {
 
         $command->setLaravel($this->app());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
                 * `publicPromotedPropertyWithDefaultValue`: `int` = `321` - Summary.
 

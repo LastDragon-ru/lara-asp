@@ -35,8 +35,8 @@ final class StringValueTest extends TestCase {
         $parsed    = Parser::valueLiteral($actual);
 
         self::assertInstanceOf(StringValueNode::class, $parsed);
-        self::assertEquals($expected, $actual);
-        self::assertEquals($string, $parsed->value);
+        self::assertSame($expected, $actual);
+        self::assertSame($string, $parsed->value);
     }
     // </editor-fold>
 

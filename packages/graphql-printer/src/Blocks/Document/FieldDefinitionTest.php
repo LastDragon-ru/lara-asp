@@ -39,7 +39,7 @@ final class FieldDefinitionTest extends TestCase {
 
         Parser::fieldDefinition($actual);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

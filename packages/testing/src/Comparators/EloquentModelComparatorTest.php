@@ -19,7 +19,7 @@ final class EloquentModelComparatorTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderAccepts')]
     public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
-        self::assertEquals($equals, (new EloquentModelComparator())->accepts($expected, $actual));
+        self::assertSame($equals, (new EloquentModelComparator())->accepts($expected, $actual));
     }
 
     #[DataProvider('dataProviderAssertEquals')]

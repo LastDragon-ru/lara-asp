@@ -9,6 +9,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
 
 use function array_slice;
 use function implode;
@@ -64,8 +65,10 @@ class PhpDoc {
         }
 
         // Parse
-        $lexer  = new Lexer();
-        $parser = new PhpDocParser(new TypeParser(new ConstExprParser()), new ConstExprParser());
+        $config = new ParserConfig(['lines' => true]);
+        $lexer  = new Lexer($config);
+        $expr   = new ConstExprParser($config);
+        $parser = new PhpDocParser($config, new TypeParser($config, $expr), $expr);
         $tokens = new TokenIterator($lexer->tokenize($comment));
         $node   = $parser->parse($tokens);
 

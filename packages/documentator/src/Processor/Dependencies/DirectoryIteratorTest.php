@@ -25,12 +25,12 @@ final class DirectoryIteratorTest extends TestCase {
         $directory  = $filesystem->getDirectory(__DIR__);
         $path       = $directory->getPath();
 
-        self::assertEquals(
+        self::assertSame(
             'path/to/directory',
             (string) (new DirectoryIterator('path/to/directory'))->getPath($filesystem),
         );
-        self::assertEquals((string) $directory, (string) (new DirectoryIterator($directory))->getPath($filesystem));
-        self::assertEquals((string) $path, (string) (new DirectoryIterator($path))->getPath($filesystem));
+        self::assertSame((string) $directory, (string) (new DirectoryIterator($directory))->getPath($filesystem));
+        self::assertSame((string) $path, (string) (new DirectoryIterator($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {

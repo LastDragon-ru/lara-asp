@@ -24,7 +24,7 @@ final class SqlHelperTest extends TestCase {
             }
         };
 
-        self::assertEquals($expected, $instance->getSqlPath($path, ...$types));
+        self::assertSame($expected, $instance->getSqlPath($path, ...$types));
     }
     //</editor-fold>
 

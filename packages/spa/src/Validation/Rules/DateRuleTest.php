@@ -23,7 +23,7 @@ final class DateRuleTest extends TestCase {
         $factory   = $this->app()->make(Factory::class);
         $validator = $factory->make(['value' => $value], ['value' => $rule]);
 
-        self::assertEquals($expected, !$validator->fails());
+        self::assertSame($expected, !$validator->fails());
 
         if ($expected === false) {
             self::assertEquals(
@@ -42,7 +42,7 @@ final class DateRuleTest extends TestCase {
         $rule   = $this->app()->make(DateRule::class);
         $actual = $rule->isValid('attribute', $value);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     #[DataProvider('dataProviderGetValue')]

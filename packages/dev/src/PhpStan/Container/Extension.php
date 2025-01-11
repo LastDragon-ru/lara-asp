@@ -59,15 +59,17 @@ final class Extension implements DynamicMethodReturnTypeExtension {
         return match (true) {
             $methodReflection->getName() === 'call' => match (true) {
                 $argType->isCallable()->yes() => ParametersAcceptorSelector
-                    ::selectSingle(
+                    ::selectFromArgs(
+                        $scope,
+                        $methodCall->getArgs(),
                         $argType->getCallableParametersAcceptors($scope),
                     )
                     ->getReturnType(),
                 default                       => null,
             },
             default                                 => match (true) {
-                $argType->isClassStringType()->yes() => $argType->getClassStringObjectType(),
-                default                              => null,
+                $argType->isClassString()->yes() => $argType->getClassStringObjectType(),
+                default                          => null,
             },
         };
     }

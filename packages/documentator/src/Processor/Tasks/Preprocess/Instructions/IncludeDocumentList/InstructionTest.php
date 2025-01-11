@@ -54,7 +54,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $parameters));
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
     // <editor-fold desc="DataProviders">

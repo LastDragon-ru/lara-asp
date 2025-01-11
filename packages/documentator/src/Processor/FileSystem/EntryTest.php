@@ -45,9 +45,9 @@ final class EntryTest extends TestCase {
             // empty
         };
 
-        self::assertEquals('EntryTest/a', (string) $directory->getRelativePath($parent));
-        self::assertEquals('EntryTest.php', (string) $directory->getRelativePath($file));
-        self::assertEquals('EntryTest/a/a.txt', (string) $directory->getRelativePath($path));
+        self::assertSame('EntryTest/a', (string) $directory->getRelativePath($parent));
+        self::assertSame('EntryTest.php', (string) $directory->getRelativePath($file));
+        self::assertSame('EntryTest/a/a.txt', (string) $directory->getRelativePath($path));
     }
 
     public function testIsEqual(): void {

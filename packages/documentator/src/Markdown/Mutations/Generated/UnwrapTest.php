@@ -53,7 +53,7 @@ final class UnwrapTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = (string) $document->mutate(new Unwrap());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Header
 

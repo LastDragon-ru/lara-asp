@@ -8,6 +8,7 @@ use Illuminate\Validation\InvokableValidationRule;
 use Illuminate\Validation\Validator;
 
 use function data_get;
+use function is_iterable;
 use function is_null;
 
 trait WithValueProvider {
@@ -29,13 +30,15 @@ trait WithValueProvider {
             $attribute = (string) $attribute;
             $provider  = null;
 
-            foreach ($rules as $rule) {
-                if ($rule instanceof InvokableValidationRule) {
-                    $rule = $rule->invokable();
-                }
+            if (is_iterable($rules)) {
+                foreach ($rules as $rule) {
+                    if ($rule instanceof InvokableValidationRule) {
+                        $rule = $rule->invokable();
+                    }
 
-                if ($rule instanceof ValueProvider) {
-                    $provider = $rule;
+                    if ($rule instanceof ValueProvider) {
+                        $provider = $rule;
+                    }
                 }
             }
 

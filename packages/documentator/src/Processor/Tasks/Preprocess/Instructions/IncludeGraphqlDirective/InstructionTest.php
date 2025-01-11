@@ -55,7 +55,7 @@ final class InstructionTest extends TestCase {
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
-        self::assertEquals(
+        self::assertSame(
             <<<MARKDOWN
             ```graphql
             {$directive}

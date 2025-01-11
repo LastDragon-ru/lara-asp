@@ -7,9 +7,6 @@ parameters:
         - abort
         - dd
 
-    excludePaths:
-        - *.blade.php
-
     mixinExcludeClasses:
         - Eloquent
 
@@ -17,7 +14,7 @@ parameters:
         - vendor/larastan/larastan/bootstrap.php
 
     checkOctaneCompatibility: false
-    noEnvCallsOutsideOfConfig: false
+    noEnvCallsOutsideOfConfig: true
     noModelMake: true
     noUnnecessaryCollectionCall: true
     noUnnecessaryCollectionCallOnly: []
@@ -28,9 +25,8 @@ parameters:
     disableSchemaScan: false
     viewDirectories: []
     checkModelProperties: false
-    checkPhpDocMissingReturn: false
     checkUnusedViews: false
-    checkModelAppends: false
+    checkModelAppends: true
 
 parametersSchema:
     checkOctaneCompatibility: bool()
@@ -99,11 +95,6 @@ services:
             - phpstan.broker.methodsClassReflectionExtension
 
     -
-        class: Larastan\Larastan\Methods\Extension
-        tags:
-            - phpstan.broker.methodsClassReflectionExtension
-
-    -
         class: Larastan\Larastan\Methods\ModelFactoryMethodsClassReflectionExtension
         tags:
             - phpstan.broker.methodsClassReflectionExtension
@@ -137,16 +128,6 @@ services:
         class: Larastan\Larastan\Properties\HigherOrderCollectionProxyPropertyExtension
         tags:
             - phpstan.broker.propertiesClassReflectionExtension
-
-    -
-        class: Larastan\Larastan\Types\RelationDynamicMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
-    -
-        class: Larastan\Larastan\Types\ModelRelationsDynamicMethodReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
 
     -
         class: Larastan\Larastan\ReturnTypes\HigherOrderTapProxyExtension
@@ -215,6 +196,11 @@ services:
 
     -
         class: Larastan\Larastan\ReturnTypes\EloquentBuilderExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+
+    -
+        class: Larastan\Larastan\ReturnTypes\RelationFindExtension
         tags:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
@@ -402,11 +388,6 @@ services:
 
         arguments:
             active: %checkModelProperties%
-
-    -
-        class: Larastan\Larastan\Types\RelationParserHelper
-        arguments:
-            parser: @currentPhpVersionSimpleDirectParser
 
     -
         class: Larastan\Larastan\Properties\MigrationHelper

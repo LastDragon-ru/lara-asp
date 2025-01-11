@@ -98,8 +98,8 @@ final class BlockTest extends TestCase {
             ->shouldReceive('content')
             ->never();
 
-        self::assertEquals($content, $block->serialize($collector, $level, $used));
-        self::assertEquals($content, $block->serialize($collector, $level, $used));
+        self::assertSame($content, $block->serialize($collector, $level, $used));
+        self::assertSame($content, $block->serialize($collector, $level, $used));
     }
     // </editor-fold>
 

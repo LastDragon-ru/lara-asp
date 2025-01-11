@@ -34,7 +34,7 @@ final class EnumValueDefinitionTest extends TestCase {
 
         Parser::enumValueDefinition($actual);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

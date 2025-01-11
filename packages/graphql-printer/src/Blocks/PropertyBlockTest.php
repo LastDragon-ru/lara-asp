@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function mb_strlen;
-
 /**
  * @internal
  */
@@ -57,7 +55,6 @@ final class PropertyBlockTest extends TestCase {
         $expected  = "{$name}{$separator}{$space}{$content}";
         $actual    = $property->serialize($collector, $level, $used);
 
-        self::assertEquals($expected, $actual);
-        self::assertEquals(mb_strlen($expected), mb_strlen($actual));
+        self::assertSame($expected, $actual);
     }
 }

@@ -21,7 +21,7 @@ class Template {
     }
 
     /**
-     * @param array<string,string> $parameters
+     * @param array<string, string> $parameters
      */
     public function build(array $parameters): string {
         $result  = $this->content;

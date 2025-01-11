@@ -1264,8 +1264,8 @@ final class DirectiveTest extends TestCase {
         };
 
         self::assertInstanceOf(Stream::class, $stream);
-        self::assertEquals('carKey', $helper->getInternalKey($stream));
-        self::assertEquals(10, $helper->getInternalLimit($stream));
+        self::assertSame('carKey', $helper->getInternalKey($stream));
+        self::assertSame(10, $helper->getInternalLimit($stream));
         self::assertSame($builder, $helper->getInternalBuilder($stream));
         self::assertEquals(
             new StreamOffset('field', 0, null),
@@ -1432,7 +1432,7 @@ final class DirectiveTest extends TestCase {
             [],
         );
 
-        self::assertEquals('default-b', $value);
+        self::assertSame('default-b', $value);
     }
 
     public function testGetFieldValueNoAttribute(): void {

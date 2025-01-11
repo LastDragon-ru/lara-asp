@@ -38,7 +38,7 @@ final class InputObjectTypeDefinitionTest extends TestCase {
             Parser::inputObjectTypeDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

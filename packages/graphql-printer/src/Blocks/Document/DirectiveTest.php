@@ -46,7 +46,7 @@ final class DirectiveTest extends TestCase {
             Parser::directive($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

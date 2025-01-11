@@ -39,7 +39,7 @@ final class RemoveTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = (string) $document->mutate(new Remove());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Header
 

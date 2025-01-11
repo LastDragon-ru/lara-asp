@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Migrator\Traits\SqlHelper;
 use ReflectionClass;
 use RuntimeException;
 
+use function assert;
 use function basename;
 use function dirname;
 use function file_get_contents;
@@ -51,6 +52,10 @@ trait RawSqlHelper {
             throw new RuntimeException('The database driver in use does not support SchemaState.');
         }
 
-        return $connection->getSchemaState();
+        $state = $connection->getSchemaState();
+
+        assert($state instanceof SchemaState);
+
+        return $state;
     }
 }

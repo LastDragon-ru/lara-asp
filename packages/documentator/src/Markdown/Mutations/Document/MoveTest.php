@@ -22,7 +22,7 @@ final class MoveTest extends TestCase {
         $document = $markdown->parse($content, $path);
         $actual   = (string) $document->mutate(new Move(new FilePath($target)));
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     //</editor-fold>
 

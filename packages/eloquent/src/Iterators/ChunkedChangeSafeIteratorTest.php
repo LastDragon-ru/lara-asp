@@ -64,15 +64,15 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
         $expected = (clone $query)->reorder($key)->get()->all();
 
         self::assertEquals($expected, $actual);
-        self::assertEquals(4, $count);
+        self::assertSame(4, $count);
         // 1 - first chunk
         // 2 - create #4
         // 3 - second chunk
         // 4 - third chunk (because second chunk returned value)
 
-        self::assertEquals(count($expected), $iterator->getIndex());
-        self::assertEquals(count($expected), $iterator->getOffset());
-        self::assertEquals(4, count($iterator));
+        self::assertSame(count($expected), $iterator->getIndex());
+        self::assertSame(count($expected), $iterator->getOffset());
+        self::assertCount(4, $iterator);
 
         $spyBefore
             ->shouldHaveBeenCalled()
@@ -94,7 +94,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
-        self::assertEquals(3, $count);
+        self::assertSame(3, $count);
         self::assertCount(2, $actual);
         self::assertEquals($expected, $actual);
     }
@@ -111,7 +111,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
-        self::assertEquals(3, $count);
+        self::assertSame(3, $count);
         self::assertCount(2, $actual);
         self::assertEquals($expected, $actual);
     }
@@ -139,7 +139,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
             }
         };
 
-        self::assertEquals($expected, $iterator->getDefaultColumn($factory()));
+        self::assertSame($expected, $iterator->getDefaultColumn($factory()));
     }
     // </editor-fold>
 

@@ -19,11 +19,11 @@ final class DirectoryReferenceTest extends TestCase {
         $filesystem = $this->getFileSystem(__DIR__);
         $path       = (new DirectoryPath(__DIR__))->getNormalizedPath();
 
-        self::assertEquals(
+        self::assertSame(
             'path/to/directory',
             (string) (new DirectoryReference('path/to/directory'))->getPath($filesystem),
         );
-        self::assertEquals((string) $path, (string) (new DirectoryReference($path))->getPath($filesystem));
+        self::assertSame((string) $path, (string) (new DirectoryReference($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {

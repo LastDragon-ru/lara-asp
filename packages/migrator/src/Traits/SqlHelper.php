@@ -53,10 +53,14 @@ trait SqlHelper {
     }
 
     private function getSchemaState(Connection $connection): SchemaState {
-        if (!method_exists($connection, 'getSchemaState')) {
+        $state = method_exists($connection, 'getSchemaState')
+            ? $connection->getSchemaState()
+            : null;
+
+        if (!$state instanceof SchemaState) {
             throw new SchemaStateUnsupported($connection);
         }
 
-        return $connection->getSchemaState();
+        return $state;
     }
 }

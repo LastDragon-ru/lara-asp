@@ -121,7 +121,7 @@ final class SeederServiceTest extends TestCase {
             }
         };
 
-        self::assertEquals($expected, $service->getMigrationsTable());
+        self::assertSame($expected, $service->getMigrationsTable());
     }
 
     public function testGetMigrationsTableString(): void {
@@ -145,6 +145,6 @@ final class SeederServiceTest extends TestCase {
             }
         };
 
-        self::assertEquals($expected, $service->getMigrationsTable());
+        self::assertSame($expected, $service->getMigrationsTable());
     }
 }

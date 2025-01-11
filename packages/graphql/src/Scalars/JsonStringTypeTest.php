@@ -31,7 +31,7 @@ final class JsonStringTypeTest extends TestCase {
         $actual = $scalar->serialize($value);
 
         if ($value instanceof JsonStringable) {
-            self::assertEquals((string) $value, $actual);
+            self::assertSame((string) $value, $actual);
         } else {
             self::assertEquals($value, $actual);
         }
@@ -47,7 +47,7 @@ final class JsonStringTypeTest extends TestCase {
         $actual = $scalar->parseValue($value);
 
         self::assertIsString($value);
-        self::assertEquals($value, $actual);
+        self::assertSame($value, $actual);
     }
 
     #[DataProvider('dataProviderParseLiteral')]
@@ -60,7 +60,7 @@ final class JsonStringTypeTest extends TestCase {
         $actual = $scalar->parseLiteral($value);
 
         self::assertInstanceOf(StringValueNode::class, $value);
-        self::assertEquals($value->value, $actual);
+        self::assertSame($value->value, $actual);
     }
     // </editor-fold>
 

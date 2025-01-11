@@ -25,7 +25,7 @@ final class DocumentTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = $document->getTitle();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     #[DataProvider('dataProviderGetSummary')]
@@ -34,7 +34,7 @@ final class DocumentTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = $document->getSummary();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     #[DataProvider('dataProviderGetBody')]
@@ -43,7 +43,7 @@ final class DocumentTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = $document->getBody();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     #[DataProvider('dataProviderIsEmpty')]
@@ -52,7 +52,7 @@ final class DocumentTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = $document->isEmpty();
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testMutate(): void {
@@ -80,7 +80,7 @@ final class DocumentTest extends TestCase {
         $document = $markdown->parse($content)->mutate($mutation ?? new Nop());
         $actual   = (string) $document;
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
     // </editor-fold>
 

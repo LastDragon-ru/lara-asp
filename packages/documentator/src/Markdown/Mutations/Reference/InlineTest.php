@@ -42,7 +42,7 @@ final class InlineTest extends TestCase {
         $document = $markdown->parse($content);
         $actual   = (string) $document->mutate(new Inline());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Header
 

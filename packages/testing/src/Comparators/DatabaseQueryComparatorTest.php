@@ -20,7 +20,7 @@ final class DatabaseQueryComparatorTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderAccepts')]
     public function testAccepts(bool $equals, mixed $expected, mixed $actual): void {
-        self::assertEquals($equals, (new DatabaseQueryComparator())->accepts($expected, $actual));
+        self::assertSame($equals, (new DatabaseQueryComparator())->accepts($expected, $actual));
     }
 
     #[DataProvider('dataProviderAssertEquals')]
@@ -73,7 +73,7 @@ final class DatabaseQueryComparatorTest extends TestCase {
                 AND laravel_reserved_1.c > 10
             SQL;
 
-        self::assertEquals($expected, $comparator->normalize($query)->getQuery());
+        self::assertSame($expected, $comparator->normalize($query)->getQuery());
     }
     // </editor-fold>
 

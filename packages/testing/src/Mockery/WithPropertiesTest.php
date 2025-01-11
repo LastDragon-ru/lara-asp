@@ -6,6 +6,7 @@ use BadMethodCallException;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use LogicException;
 use Mockery;
+use Mockery\Mock;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionException;
 
@@ -15,6 +16,7 @@ use function sprintf;
  * @internal
  */
 #[CoversClass(WithProperties::class)]
+#[CoversClass(MockProperties::class)]
 final class WithPropertiesTest extends TestCase {
     public function testShouldUsePropertyValueIsObject(): void {
         $mock = Mockery::mock(WithPropertiesTest_ObjectProtected::class, new WithProperties(), PropertiesMock::class);
@@ -25,7 +27,7 @@ final class WithPropertiesTest extends TestCase {
                 new WithPropertiesTest_Value('abc'),
             );
 
-        self::assertEquals('abc', $mock->getValue());
+        self::assertSame('abc', $mock->getValue());
     }
 
     public function testShouldUsePropertyValueIsMock(): void {
@@ -41,7 +43,7 @@ final class WithPropertiesTest extends TestCase {
                     ->getMock(),
             );
 
-        self::assertEquals('abc', $mock->getValue());
+        self::assertSame('abc', $mock->getValue());
     }
 
     public function testShouldUsePropertyUnused(): void {
@@ -101,7 +103,7 @@ final class WithPropertiesTest extends TestCase {
                 new WithPropertiesTest_Value('public'),
             );
 
-        self::assertEquals('public', $mock->getValue());
+        self::assertSame('public', $mock->getValue());
     }
 
     public function testShouldUseProtectedProperty(): void {
@@ -113,7 +115,7 @@ final class WithPropertiesTest extends TestCase {
                 new WithPropertiesTest_Value('protected'),
             );
 
-        self::assertEquals('protected', $mock->getValue());
+        self::assertSame('protected', $mock->getValue());
     }
 
     public function testShouldUsePrivateProperty(): void {
@@ -144,7 +146,7 @@ final class WithPropertiesTest extends TestCase {
                 new WithPropertiesTest_Value('readonly'),
             );
 
-        self::assertEquals('readonly', $mock->getValue());
+        self::assertSame('readonly', $mock->getValue());
     }
 }
 
@@ -229,4 +231,12 @@ class WithPropertiesTest_Value {
     public function getValue(): string {
         return $this->value;
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class WithPropertiesTest_Mock extends Mock {
+    use MockProperties;
 }

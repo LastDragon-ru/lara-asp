@@ -36,7 +36,7 @@ final class TypeTest extends TestCase {
         $type     = $registry->get($name);
 
         self::assertInstanceOf(PhpEnumType::class, $type);
-        self::assertEquals($name, $type->name());
+        self::assertSame($name, $type->name());
         self::assertEquals($class, PhpEnumTypeHelper::getEnumClass($type));
     }
 
@@ -55,7 +55,7 @@ final class TypeTest extends TestCase {
         $type     = $registry->get($name);
 
         self::assertInstanceOf($class, $type);
-        self::assertEquals($name, $type->name());
+        self::assertSame($name, $type->name());
         self::assertEquals($class, $type::class);
     }
 
@@ -78,8 +78,8 @@ final class TypeTest extends TestCase {
         $type     = $registry->get($name);
 
         self::assertInstanceOf($class, $type);
-        self::assertEquals($name, $type->name());
-        self::assertEquals($desc, $type->description());
+        self::assertSame($name, $type->name());
+        self::assertSame($desc, $type->description());
         self::assertEquals($class, $type::class);
     }
 

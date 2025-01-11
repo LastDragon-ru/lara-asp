@@ -11,11 +11,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(Version::class)]
 final class VersionTest extends TestCase {
     public function testCompare(): void {
-        self::assertEquals(0, Version::compare('1.2.3', '1.2.3'));
-        self::assertEquals(0, Version::compare('v1.2.3', '1.2.3'));
-        self::assertEquals(-1, Version::compare('1.0.0-beta.0', '1.0.0-beta.1'));
-        self::assertEquals(1, Version::compare('1.2.3', '1.2.3-rc.0'));
-        self::assertEquals(1, Version::compare('dev-main', '1.2.3'));
+        self::assertSame(0, Version::compare('1.2.3', '1.2.3'));
+        self::assertSame(0, Version::compare('v1.2.3', '1.2.3'));
+        self::assertSame(-1, Version::compare('1.0.0-beta.0', '1.0.0-beta.1'));
+        self::assertSame(1, Version::compare('1.2.3', '1.2.3-rc.0'));
+        self::assertSame(1, Version::compare('dev-main', '1.2.3'));
     }
 
     public function testIsVersion(): void {
@@ -33,8 +33,8 @@ final class VersionTest extends TestCase {
     }
 
     public function testNormalize(): void {
-        self::assertEquals('1.2.3', Version::normalize('1.2.3'));
-        self::assertEquals('1.2.3', Version::normalize('v1.2.3'));
-        self::assertEquals('9999999-dev', Version::normalize('dev-main'));
+        self::assertSame('1.2.3', Version::normalize('1.2.3'));
+        self::assertSame('1.2.3', Version::normalize('v1.2.3'));
+        self::assertSame('9999999-dev', Version::normalize('dev-main'));
     }
 }

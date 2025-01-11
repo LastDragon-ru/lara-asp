@@ -35,7 +35,7 @@ final class PaginatedCollectionTest extends TestCase {
             $actual  = false;
         }
 
-        self::assertEquals($expected, $actual, $message);
+        self::assertSame($expected, $actual, $message);
     }
     // </editor-fold>
 

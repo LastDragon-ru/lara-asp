@@ -38,7 +38,7 @@ final class MarkdownTest extends TestCase {
                 MARKDOWN,
             ),
         );
-        self::assertEquals(
+        self::assertSame(
             'Header',
             Markdown::getTitle(
                 <<<'MARKDOWN'
@@ -49,7 +49,7 @@ final class MarkdownTest extends TestCase {
                 MARKDOWN,
             ),
         );
-        self::assertEquals(
+        self::assertSame(
             'Header',
             Markdown::getTitle(
                 <<<'MARKDOWN'
@@ -96,7 +96,7 @@ final class MarkdownTest extends TestCase {
                 MARKDOWN,
             ),
         );
-        self::assertEquals(
+        self::assertSame(
             'fsdfsdfsdf',
             Markdown::getSummary(
                 <<<'MARKDOWN'
@@ -106,7 +106,7 @@ final class MarkdownTest extends TestCase {
                 MARKDOWN,
             ),
         );
-        self::assertEquals(
+        self::assertSame(
             <<<'TEXT'
             fsdfsdfsdf
             fsdfsdfsdf
@@ -121,7 +121,7 @@ final class MarkdownTest extends TestCase {
                 MARKDOWN,
             ),
         );
-        self::assertEquals(
+        self::assertSame(
             <<<'TEXT'
             fsdfsdfsdf
             fsdfsdfsdf
@@ -142,7 +142,7 @@ final class MarkdownTest extends TestCase {
     }
 
     public function testSetPadding(): void {
-        self::assertEquals(
+        self::assertSame(
             <<<'TEXT'
                 # Header
 
@@ -169,7 +169,7 @@ final class MarkdownTest extends TestCase {
                 4,
             ),
         );
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
                     # Header
 

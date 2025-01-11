@@ -102,7 +102,7 @@ final class SerializedAttributeTest extends TestCase {
         $model->value = $value;
 
         self::assertEquals($value, $model->value);
-        self::assertEquals('{"property":"value"}', $model->getAttributes()['value'] ?? null);
+        self::assertSame('{"property":"value"}', $model->getAttributes()['value'] ?? null);
     }
 }
 

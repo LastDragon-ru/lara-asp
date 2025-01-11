@@ -62,7 +62,7 @@ final class FactoryTest extends TestCase {
             ->once()
             ->andReturnUsing(
                 static function (array $encoders, array $normalizers, array $context, string $format): Serializer {
-                    self::assertEquals('format from config', $format);
+                    self::assertSame('format from config', $format);
                     self::assertEquals(
                         [
                             'encoder option from config'                  => 'encoder',

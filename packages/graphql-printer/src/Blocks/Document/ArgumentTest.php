@@ -40,7 +40,7 @@ final class ArgumentTest extends TestCase {
             Parser::argument($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

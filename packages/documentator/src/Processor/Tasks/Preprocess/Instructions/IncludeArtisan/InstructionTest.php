@@ -69,7 +69,7 @@ final class InstructionTest extends TestCase {
                 );
         });
 
-        self::assertEquals($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
+        self::assertSame($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
     }
 
     public function testInvokeFailed(): void {

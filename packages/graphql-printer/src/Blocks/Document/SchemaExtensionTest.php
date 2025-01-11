@@ -40,7 +40,7 @@ final class SchemaExtensionTest extends TestCase {
             Parser::schemaTypeExtension($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

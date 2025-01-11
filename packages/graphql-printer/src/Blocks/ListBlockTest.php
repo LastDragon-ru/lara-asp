@@ -52,7 +52,7 @@ final class ListBlockTest extends TestCase {
             $multilineSeparator,
         );
 
-        self::assertEquals($expected, $list->serialize($collector, $level, $used));
+        self::assertSame($expected, $list->serialize($collector, $level, $used));
     }
 
     public function testStatistics(): void {
@@ -80,7 +80,7 @@ final class ListBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string,array<array-key, mixed>>
+     * @return array<array-key, array<array-key, mixed>>
      */
     public static function dataProviderSerialize(): array {
         $settings = new TestSettings();

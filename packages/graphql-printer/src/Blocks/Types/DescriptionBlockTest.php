@@ -32,7 +32,7 @@ final class DescriptionBlockTest extends TestCase {
         $context   = new Context($settings, null, null);
         $actual    = (new DescriptionBlock($context, $description))->serialize($collector, $level, $used);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
 
         if ($expected !== '') {
             Parser::valueLiteral($actual);

@@ -22,12 +22,12 @@ final class UrlTest extends TestCase {
     public function testConstruct(array $expected, string $template): void {
         $url = new Url($template);
 
-        self::assertEquals($template, $url->getTemplate());
+        self::assertSame($template, $url->getTemplate());
         self::assertEquals($expected, $url->getParameters());
     }
 
     /**
-     * @param array<array-key, mixed> $parameters
+     * @param array<string, mixed> $parameters
      */
     #[DataProvider('dataProviderBuild')]
     public function testBuild(string|Exception $expected, string $template, array $parameters): void {
@@ -42,7 +42,7 @@ final class UrlTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<array-key, mixed>
+     * @return array<string, array{array<array-key, mixed>, string}>
      */
     public static function dataProviderConstruct(): array {
         return [
@@ -54,7 +54,7 @@ final class UrlTest extends TestCase {
     }
 
     /**
-     * @return array<array-key, mixed>
+     * @return array<string, array{string|Exception, string, array<array-key, mixed>}>
      */
     public static function dataProviderBuild(): array {
         return [

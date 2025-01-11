@@ -51,7 +51,7 @@ final class EqualTest extends TestCase {
         ?Closure $contextFactory,
         ?Closure $resolver,
     ): void {
-        $this->testOperator(
+        $this->testDatabaseOperator(
             Directive::class,
             $expected,
             $builderFactory,
@@ -85,7 +85,7 @@ final class EqualTest extends TestCase {
             $this->override(FieldResolver::class, $fieldResolver);
         }
 
-        $this->testOperator(
+        $this->testScoutOperator(
             Directive::class,
             $expected,
             $builderFactory,

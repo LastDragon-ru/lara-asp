@@ -19,7 +19,7 @@ final class MarkdownTest extends TestCase {
         $lines    = Lines::optional()->get($document->node);
 
         self::assertIsArray($lines);
-        self::assertEquals(
+        self::assertSame(
             self::getTestData()->content('~document.xml'),
             $renderer->render($document),
         );
@@ -30,7 +30,7 @@ final class MarkdownTest extends TestCase {
         $document = $markdown->parse(self::getTestData()->content('~document.md'));
         $actual   = $markdown->render($document);
 
-        self::assertEquals(
+        self::assertSame(
             self::getTestData()->content('~document.html'),
             $actual,
         );

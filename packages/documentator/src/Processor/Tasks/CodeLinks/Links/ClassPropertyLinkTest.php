@@ -26,18 +26,18 @@ use function array_map;
 #[CoversClass(ClassPropertyLink::class)]
 final class ClassPropertyLinkTest extends TestCase {
     public function testToString(): void {
-        self::assertEquals('Class::$property', (string) new ClassPropertyLink('Class', 'property'));
-        self::assertEquals('App\\Class::$property', (string) new ClassPropertyLink('App\\Class', 'property'));
-        self::assertEquals(
+        self::assertSame('Class::$property', (string) new ClassPropertyLink('Class', 'property'));
+        self::assertSame('App\\Class::$property', (string) new ClassPropertyLink('App\\Class', 'property'));
+        self::assertSame(
             '\\App\\Class::$property',
             (string) new ClassPropertyLink('\\App\\Class', 'property'),
         );
     }
 
     public function testGetTitle(): void {
-        self::assertEquals('Class::$property', (new ClassPropertyLink('Class', 'property'))->getTitle());
-        self::assertEquals('Class::$property', (new ClassPropertyLink('App\\Class', 'property'))->getTitle());
-        self::assertEquals(
+        self::assertSame('Class::$property', (new ClassPropertyLink('Class', 'property'))->getTitle());
+        self::assertSame('Class::$property', (new ClassPropertyLink('App\\Class', 'property'))->getTitle());
+        self::assertSame(
             'Class::$property',
             (new ClassPropertyLink('\\App\\Class', 'property'))->getTitle(),
         );
@@ -127,6 +127,6 @@ final class ClassPropertyLinkTest extends TestCase {
 
         self::assertInstanceOf(Param::class, $actual);
         self::assertInstanceOf(Variable::class, $actual->var);
-        self::assertEquals('property', $actual->var->name);
+        self::assertSame('property', $actual->var->name);
     }
 }

@@ -22,11 +22,11 @@ final class UnitEnumNormalizerTest extends TestCase {
         $enumBB     = UnitEnumNormalizerTest__EnumB::B;
         $enumBC     = UnitEnumNormalizerTest__EnumB::C;
 
-        self::assertEquals($enumAA->name, $normalizer->normalize($enumAA));
-        self::assertEquals($enumAB->name, $normalizer->normalize($enumAB));
-        self::assertEquals($enumBB->name, $normalizer->normalize($enumAB));
-        self::assertEquals($enumBB->name, $normalizer->normalize($enumBB));
-        self::assertEquals($enumBC->name, $normalizer->normalize($enumBC));
+        self::assertSame($enumAA->name, $normalizer->normalize($enumAA));
+        self::assertSame($enumAB->name, $normalizer->normalize($enumAB));
+        self::assertSame($enumBB->name, $normalizer->normalize($enumAB));
+        self::assertSame($enumBB->name, $normalizer->normalize($enumBB));
+        self::assertSame($enumBC->name, $normalizer->normalize($enumBC));
     }
 
     public function testNormalizeNotEnum(): void {

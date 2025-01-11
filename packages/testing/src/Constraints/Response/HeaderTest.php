@@ -45,12 +45,12 @@ final class HeaderTest extends TestCase {
     public function testToString(): void {
         $constraint = new Header('Content-Type');
 
-        self::assertEquals('has Content-Type header', $constraint->toString());
+        self::assertSame('has Content-Type header', $constraint->toString());
     }
 
     public function testToStringConstraints(): void {
         $constraint = new Header('Content-Type', [new IsEqual('example/text')]);
 
-        self::assertEquals("has Content-Type header that is equal to 'example/text'", $constraint->toString());
+        self::assertSame("has Content-Type header that is equal to 'example/text'", $constraint->toString());
     }
 }

@@ -64,6 +64,6 @@ final class ViewerTest extends TestCase {
             ->once()
             ->andReturn($template);
 
-        self::assertEquals($content, $viewer->render($view, $data));
+        self::assertSame($content, $viewer->render($view, $data));
     }
 }

@@ -39,7 +39,7 @@ final class UnionTypeExtensionTest extends TestCase {
             Parser::unionTypeExtension($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

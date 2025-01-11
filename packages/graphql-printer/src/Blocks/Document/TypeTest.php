@@ -44,7 +44,7 @@ final class TypeTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new Type($context, $type))->serialize($collector, $level, $used);
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

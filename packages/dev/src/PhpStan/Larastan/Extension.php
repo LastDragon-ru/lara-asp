@@ -4,10 +4,6 @@ namespace LastDragon_ru\LaraASP\Dev\PhpStan\Larastan;
 
 use Composer\InstalledVersions;
 use Exception;
-use Larastan\Larastan\ReturnTypes\ApplicationMakeDynamicReturnTypeExtension;
-use Larastan\Larastan\ReturnTypes\AppMakeDynamicReturnTypeExtension;
-use Larastan\Larastan\ReturnTypes\ContainerArrayAccessDynamicMethodReturnTypeExtension;
-use Larastan\Larastan\ReturnTypes\ContainerMakeDynamicReturnTypeExtension;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use Nette\Neon\Neon;
@@ -32,6 +28,11 @@ class Extension {
      * of the original file).
      */
     public static function dump(): void {
+        // Larastan?
+        if (!self::hasLarastan()) {
+            return;
+        }
+
         // Prepare
         $origin = self::getLarastanPath()->getFilePath('extension.neon');
         $target = self::getRootPath()->getFilePath('phpstan-larastan.neon');
@@ -62,15 +63,19 @@ class Extension {
      */
     private static function updateBootstrapFiles(FilePath $path, array $extension): array {
         // Valid?
-        if (!isset($extension['parameters']) || !is_array($extension['parameters'])) {
-            throw new Exception('The `$extension[\'parameters\']` expected to be an array.');
+        if (
+            !isset($extension['parameters'])
+            || !is_array($extension['parameters'])
+            || !isset($extension['parameters']['bootstrapFiles'])
+            || !is_array($extension['parameters']['bootstrapFiles'])
+        ) {
+            throw new Exception('The `$extension[\'parameters\'][\'bootstrapFiles\'])` expected to be an array.');
         }
 
         // Update
         $source = self::getLarastanPath();
-        $files  = (array) ($extension['parameters']['bootstrapFiles'] ?? []);
 
-        foreach ($files as $index => $file) {
+        foreach ($extension['parameters']['bootstrapFiles'] as $index => $file) {
             if (!is_string($file)) {
                 throw new Exception(
                     sprintf(
@@ -94,16 +99,22 @@ class Extension {
      * @return array<array-key, mixed>
      */
     private static function updateServices(FilePath $path, array $extension): array {
+        // Valid?
+        if (!isset($extension['services']) || !is_array($extension['services'])) {
+            throw new Exception('The `$extension[\'services\'])` expected to be an array.');
+        }
+
         // Remove
         $disabled = [
-            ApplicationMakeDynamicReturnTypeExtension::class            => true,
-            AppMakeDynamicReturnTypeExtension::class                    => true,
-            ContainerArrayAccessDynamicMethodReturnTypeExtension::class => true,
-            ContainerMakeDynamicReturnTypeExtension::class              => true,
+            'Larastan\\Larastan\\ReturnTypes\\ApplicationMakeDynamicReturnTypeExtension'            => true,
+            'Larastan\\Larastan\\ReturnTypes\\AppMakeDynamicReturnTypeExtension'                    => true,
+            'Larastan\\Larastan\\ReturnTypes\\ContainerArrayAccessDynamicMethodReturnTypeExtension' => true,
+            'Larastan\\Larastan\\ReturnTypes\\ContainerMakeDynamicReturnTypeExtension'              => true,
+            'Larastan\\Larastan\\Methods\\Extension'                                                => true,
         ];
 
-        foreach ($extension['services'] ?? [] as $index => $service) {
-            $class = $service['class'] ?? '';
+        foreach ($extension['services'] as $index => $service) {
+            $class = is_array($service) && isset($service['class']) ? $service['class'] : '';
 
             if (isset($disabled[$class])) {
                 unset($extension['services'][$index]);
@@ -133,6 +144,10 @@ class Extension {
 
     private static function getRootPath(): DirectoryPath {
         return new DirectoryPath((string) getcwd());
+    }
+
+    private static function hasLarastan(): bool {
+        return InstalledVersions::isInstalled('larastan/larastan');
     }
 
     private static function getLarastanPath(): DirectoryPath {

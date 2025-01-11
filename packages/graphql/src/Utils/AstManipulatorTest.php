@@ -402,7 +402,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         self::assertInstanceOf(InputValueDefinitionNode::class, $nodeArgument);
-        self::assertEquals('b', $nodeArgument->name->value);
+        self::assertSame('b', $nodeArgument->name->value);
 
         $fieldArgument = $manipulator->findArgument(
             $field,
@@ -412,7 +412,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         self::assertInstanceOf(Argument::class, $fieldArgument);
-        self::assertEquals('b', $fieldArgument->name);
+        self::assertSame('b', $fieldArgument->name);
 
         $directiveArgument = $manipulator->findArgument(
             Parser::directive('@aDirective(a: "a", b: "b")'),
@@ -422,7 +422,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         self::assertInstanceOf(ArgumentNode::class, $directiveArgument);
-        self::assertEquals('b', $directiveArgument->name->value);
+        self::assertSame('b', $directiveArgument->name->value);
     }
 
     /**
@@ -461,7 +461,7 @@ final class AstManipulatorTest extends TestCase {
         bool $expected,
         Node|Argument|EnumValueDefinition|FieldDefinition|InputObjectField $node,
     ): void {
-        self::assertEquals($expected, $this->getManipulator()->isDeprecated($node));
+        self::assertSame($expected, $this->getManipulator()->isDeprecated($node));
     }
 
     /**
@@ -563,7 +563,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         self::assertInstanceOf(FieldDefinitionNode::class, $nodeField);
-        self::assertEquals('a', $nodeField->name->value);
+        self::assertSame('a', $nodeField->name->value);
 
         $typeField = $manipulator->findField(
             $type,
@@ -573,7 +573,7 @@ final class AstManipulatorTest extends TestCase {
         );
 
         self::assertInstanceOf(FieldDefinition::class, $typeField);
-        self::assertEquals('c', $typeField->name);
+        self::assertSame('c', $typeField->name);
     }
 
     #[DataProvider('dataProviderGetOriginType')]

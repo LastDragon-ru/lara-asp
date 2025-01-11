@@ -17,7 +17,7 @@ final class DurationTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderGetTimestamp')]
     public function testGetTimestamp(float $expected, DateInterval|float|int|null $interval): void {
-        self::assertEquals($expected, Duration::getTimestamp($interval));
+        self::assertSame($expected, Duration::getTimestamp($interval));
     }
     // </editor-fold>
 

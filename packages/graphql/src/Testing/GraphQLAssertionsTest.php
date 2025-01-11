@@ -130,7 +130,7 @@ final class GraphQLAssertionsTest extends TestCase {
         }
 
         self::assertFalse($valid);
-        self::assertEquals(
+        self::assertSame(
             <<<'STRING'
             The schema is not valid.
 
@@ -184,7 +184,7 @@ final class GraphQLAssertionsTest extends TestCase {
         //      - `@a(a)` type was changed but not detected
         //      - `Int was removed` false positive
 
-        self::assertEquals(
+        self::assertSame(
             <<<'STRING'
             The breaking changes found!
 
@@ -247,7 +247,7 @@ final class GraphQLAssertionsTest extends TestCase {
         // todo(graphql-php): Strange breaking changes:
         //      - `@a(a)` default value was changed but not detected
 
-        self::assertEquals(
+        self::assertSame(
             <<<'STRING'
             The dangerous changes found!
 

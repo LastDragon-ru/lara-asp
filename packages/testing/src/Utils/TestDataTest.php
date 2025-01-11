@@ -17,15 +17,15 @@ final class TestDataTest extends TestCase {
         $data = new TestData($this::class);
         $file = str_replace('\\', '/', dirname(__FILE__).'/TestDataTest');
 
-        self::assertEquals("{$file}/", $data->path(''));
-        self::assertEquals("{$file}.php", $data->path('.php'));
-        self::assertEquals("{$file}.file.php", $data->path('.file.php'));
-        self::assertEquals("{$file}~.php", $data->path('~.php'));
-        self::assertEquals("{$file}~file.php", $data->path('~file.php'));
-        self::assertEquals("{$file}/php", $data->path('php'));
-        self::assertEquals("{$file}/file.php", $data->path('file.php'));
-        self::assertEquals("{$file}/path/to/file.php", $data->path('path/to/file.php'));
-        self::assertEquals("{$file}/./path/to/file.php", $data->path('./path/to/file.php'));
-        self::assertEquals("{$file}/../path/to/file.php", $data->path('../path/to/file.php'));
+        self::assertSame("{$file}/", $data->path(''));
+        self::assertSame("{$file}.php", $data->path('.php'));
+        self::assertSame("{$file}.file.php", $data->path('.file.php'));
+        self::assertSame("{$file}~.php", $data->path('~.php'));
+        self::assertSame("{$file}~file.php", $data->path('~file.php'));
+        self::assertSame("{$file}/php", $data->path('php'));
+        self::assertSame("{$file}/file.php", $data->path('file.php'));
+        self::assertSame("{$file}/path/to/file.php", $data->path('path/to/file.php'));
+        self::assertSame("{$file}/./path/to/file.php", $data->path('./path/to/file.php'));
+        self::assertSame("{$file}/../path/to/file.php", $data->path('../path/to/file.php'));
     }
 }

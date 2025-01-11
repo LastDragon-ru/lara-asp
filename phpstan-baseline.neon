@@ -1,131 +1,175 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:once\\(\\)\\.$#"
+			message: '#^Cannot call method handleRequest\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: dev/public/index.php
+
+		-
+			message: '#^Call to an undefined method Mockery\\LegacyMockInterface\:\:once\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$offset of method LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Iterators\\\\IteratorImpl\\<TItem of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:setOffset\\(\\) expects int\\|string\\|null, mixed given\\.$#"
+			message: '#^Cannot call method with\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: packages/core/src/Observer/DispatcherTest.php
+
+		-
+			message: '#^Parameter \#1 \$offset of method LastDragon_ru\\LaraASP\\Eloquent\\Iterators\\IteratorImpl\<TItem of Illuminate\\Database\\Eloquent\\Model\>\:\:setOffset\(\) expects int\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
 
 		-
-			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:times\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mockery\\LegacyMockInterface\:\:times\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
 
 		-
-			message: "#^Call to an undefined method Mockery\\\\LegacyMockInterface\\:\\:once\\(\\)\\.$#"
+			message: '#^Call to an undefined method Mockery\\LegacyMockInterface\:\:once\(\)\.$#'
+			identifier: method.notFound
 			count: 2
 			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
 
 		-
-			message: "#^Variable \\$currency on left side of \\?\\?\\= always exists and is always null\\.$#"
+			message: '#^Variable \$currency on left side of \?\?\= always exists and is always null\.$#'
+			identifier: nullCoalesce.variable
 			count: 1
 			path: packages/formatter/src/Formats/IntlNumber/IntlCurrencyFormat.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Formatter\\\\Formatter\\:\\:getDefaultTimezone\\(\\) should return DateTimeZone\\|IntlTimeZone\\|string\\|null but returns mixed\\.$#"
+			message: '#^Method LastDragon_ru\\LaraASP\\Formatter\\Formatter\:\:getDefaultTimezone\(\) should return DateTimeZone\|IntlTimeZone\|string\|null but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: "#^Method class@anonymous/packages/graphql/src/Stream/Directives/Directive\\.php\\:471\\:\\:enhanceEloquentBuilder\\(\\) return type with generic class Laravel\\\\Scout\\\\Builder does not specify its types\\: TModel$#"
+			message: '#^Method Nuwave\\Lighthouse\\Scout\\ScoutEnhancer@anonymous/packages/graphql/src/Stream/Directives/Directive\.php\:471\:\:enhanceEloquentBuilder\(\) return type with generic class Laravel\\Scout\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
 			count: 1
 			path: packages/graphql/src/Stream/Directives/Directive.php
 
 		-
-			message: "#^Call to protected method getArgKey\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+			message: '#^Call to protected method getArgKey\(\) of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive\.$#'
+			identifier: method.protected
 			count: 1
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
-			message: "#^Call to protected method getResolver\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+			message: '#^Call to protected method getResolver\(\) of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive\.$#'
+			identifier: method.protected
 			count: 4
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
-			message: "#^Call to protected method getResolverQuery\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
+			message: '#^Call to protected method getResolverQuery\(\) of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive\.$#'
+			identifier: method.protected
 			count: 2
 			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\:\\:getCollection\\(\\) should return Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\>\\.$#"
+			message: '#^Method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Streams\\Database\:\:getCollection\(\) should return Illuminate\\Support\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\|stdClass\> but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Support\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\|stdClass\>\.$#'
+			identifier: return.type
 			count: 1
 			path: packages/graphql/src/Stream/Streams/Database.php
 
 		-
-			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\:\\:\\$collection \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\>\\|null\\) does not accept Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\.$#"
+			message: '#^Property LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Streams\\Database\:\:\$collection \(Illuminate\\Support\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\|stdClass\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: packages/graphql/src/Stream/Streams/Database.php
 
 		-
-			message: "#^Property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Streams\\\\Database\\:\\:\\$collection \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\>\\|null\\) is never assigned Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\|stdClass\\> so it can be removed from the property type\\.$#"
+			message: '#^Property LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Streams\\Database\:\:\$collection \(Illuminate\\Support\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\|stdClass\>\|null\) is never assigned Illuminate\\Support\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\|stdClass\> so it can be removed from the property type\.$#'
+			identifier: property.unusedType
 			count: 1
 			path: packages/graphql/src/Stream/Streams/Database.php
 
 		-
-			message: "#^Static property LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Testing\\\\Package\\\\Directives\\\\ExposeBuilderDirective\\:\\:\\$result \\(Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model, covariant Illuminate\\\\Database\\\\Eloquent\\\\Model, mixed\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Laravel\\\\Scout\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|null\\) does not accept Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\Relation\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Query\\\\Builder\\|Laravel\\\\Scout\\\\Builder\\.$#"
+			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php
 
 		-
-			message: "#^Callable callable\\(\\)\\: \\(object\\|null\\) invoked with 1 parameter, 0 required\\.$#"
+			message: '#^Callable callable\(\)\: \(object\|null\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
 			count: 3
 			path: packages/serializer/src/Casts/SerializedAttributeTest.php
 
 		-
-			message: "#^Parameter \\#3 \\$path of method LastDragon_ru\\\\LaraASP\\\\Spa\\\\Http\\\\Resources\\\\Resource\\:\\:mapResourceValue\\(\\) expects array\\<string\\>, array given\\.$#"
+			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: packages/serializer/src/Metadata/MetadataFactory.php
+
+		-
+			message: '#^Parameter \#3 \$path of method LastDragon_ru\\LaraASP\\Spa\\Http\\Resources\\Resource\:\:mapResourceValue\(\) expects array\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/spa/src/Http/Resources/Resource.php
 
 		-
-			message: "#^Cannot access property \\$id on mixed\\.$#"
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
 			count: 1
 			path: packages/spa/src/Routing/ResolverTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$timezone of method DateTime\\:\\:setTimezone\\(\\) expects DateTimeZone, mixed given\\.$#"
+			message: '#^Parameter \#1 \$timezone of method DateTime\:\:setTimezone\(\) expects DateTimeZone, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/spa/src/Validation/Rules/DateTimeRule.php
 
 		-
-			message: "#^Parameter \\#1 \\$query of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Comparators\\\\DatabaseQueryComparator\\:\\:normalize\\(\\) expects LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\QueryLog\\\\Query, mixed given\\.$#"
+			message: '#^Parameter \#1 \$query of method LastDragon_ru\\LaraASP\\Testing\\Comparators\\DatabaseQueryComparator\:\:normalize\(\) expects LastDragon_ru\\LaraASP\\Testing\\Database\\QueryLog\\Query, mixed given\.$#'
+			identifier: argument.type
 			count: 2
 			path: packages/testing/src/Comparators/DatabaseQueryComparator.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) expects array\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#1 \$json of static method LastDragon_ru\\LaraASP\\Testing\\Utils\\Args\:\:getJson\(\) expects array\<mixed\>\|bool\|float\|int\|JsonSerializable\|SplFileInfo\|stdClass\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/testing/src/Constraints/Json/JsonFragmentMatchesSchema.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) expects array\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#1 \$json of static method LastDragon_ru\\LaraASP\\Testing\\Utils\\Args\:\:getJson\(\) expects array\<mixed\>\|bool\|float\|int\|JsonSerializable\|SplFileInfo\|stdClass\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 2
 			path: packages/testing/src/Constraints/Json/JsonMatchesFragment.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) expects array\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#1 \$json of static method LastDragon_ru\\LaraASP\\Testing\\Utils\\Args\:\:getJson\(\) expects array\<mixed\>\|bool\|float\|int\|JsonSerializable\|SplFileInfo\|stdClass\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/testing/src/Constraints/Json/JsonMatchesSchema.php
 
 		-
-			message: "#^Parameter \\#1 \\$instances \\(Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\) of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\:\\:callAfterCreating\\(\\) should be contravariant with parameter \\$instances \\(Illuminate\\\\Support\\\\Collection\\) of method Illuminate\\\\Database\\\\Eloquent\\\\Factories\\\\Factory\\<TModel of Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:callAfterCreating\\(\\)$#"
+			message: '#^Parameter \#1 \$instances \(Illuminate\\Support\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\>\) of method LastDragon_ru\\LaraASP\\Testing\\Database\\Eloquent\\Factories\\Factory\:\:callAfterCreating\(\) should be contravariant with parameter \$instances \(Illuminate\\Support\\Collection\) of method Illuminate\\Database\\Eloquent\\Factories\\Factory\<TModel of Illuminate\\Database\\Eloquent\\Model\>\:\:callAfterCreating\(\)$#'
+			identifier: method.childParameterType
 			count: 1
 			path: packages/testing/src/Database/Eloquent/Factories/Factory.php
 
 		-
-			message: "#^Parameter \\#2 \\$json of static method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\Assert\\:\\:assertJsonMatchesSchema\\(\\) expects array\\<string\\>\\|bool\\|float\\|int\\|JsonSerializable\\|SplFileInfo\\|stdClass\\|string\\|null, mixed given\\.$#"
+			message: '#^Parameter \#2 \$json of static method LastDragon_ru\\LaraASP\\Testing\\Mixins\\Assert\:\:assertJsonMatchesSchema\(\) expects array\<string\>\|bool\|float\|int\|JsonSerializable\|SplFileInfo\|stdClass\|string\|null, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/testing/src/Mixins/TestResponseMixin.php
 
 		-
-			message: "#^Parameter \\#1 \\$items of method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Providers\\\\BaseDataProvider\\:\\:replaceExpectedValues\\(\\) expects array\\<array\\>, array\\<T\\> given\\.$#"
+			message: '#^Parameter \#1 \$items of method LastDragon_ru\\LaraASP\\Testing\\Providers\\BaseDataProvider\:\:replaceExpectedValues\(\) expects array\<array\<mixed\>\>, array\<T\> given\.$#'
+			identifier: argument.type
 			count: 1
 			path: packages/testing/src/Providers/TraversableDataProvider.php
 
 		-
-			message: "#^Method LastDragon_ru\\\\LaraASP\\\\Testing\\\\Utils\\\\Args\\:\\:getJson\\(\\) should return array\\|bool\\|float\\|int\\|stdClass\\|string\\|null but returns mixed\\.$#"
+			message: '#^Method LastDragon_ru\\LaraASP\\Testing\\Utils\\Args\:\:getJson\(\) should return array\<mixed\>\|bool\|float\|int\|stdClass\|string\|null but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: packages/testing/src/Utils/Args.php

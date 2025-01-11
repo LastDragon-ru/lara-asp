@@ -42,7 +42,7 @@ final class MakeSplittableTest extends TestCase {
         $document = $markdown->parse($content, new FilePath(__FILE__));
         $actual   = (string) $document->mutate(new MakeSplittable());
 
-        self::assertEquals(
+        self::assertSame(
             <<<'MARKDOWN'
             # Footnotes must be removed
 

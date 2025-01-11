@@ -23,11 +23,11 @@ final class FileCreateTest extends TestCase {
         $filesystem = $this->getFileSystem(dirname(__DIR__), __DIR__);
         $path       = (new FilePath(__FILE__))->getNormalizedPath();
 
-        self::assertEquals(
+        self::assertSame(
             (string) $filesystem->output->getFilePath('path/to/file'),
             (string) (new FileCreate('path/to/file', ''))->getPath($filesystem),
         );
-        self::assertEquals((string) $path, (string) (new FileCreate($path, ''))->getPath($filesystem));
+        self::assertSame((string) $path, (string) (new FileCreate($path, ''))->getPath($filesystem));
     }
 
     public function testInvoke(): void {

@@ -193,8 +193,8 @@ final class EditorTest extends TestCase {
         );
 
         self::assertNull($editor->getText(new Location(25, 25, 0)));
-        self::assertEquals('f g', $editor->getText(new Location(2, 2, 2, 3)));
-        self::assertEquals(
+        self::assertSame('f g', $editor->getText(new Location(2, 2, 2, 3)));
+        self::assertSame(
             <<<'TEXT'
             k l
             m n o p
@@ -203,7 +203,7 @@ final class EditorTest extends TestCase {
             TEXT,
             $editor->getText(new Location(3, 6, 4, 5)),
         );
-        self::assertEquals(
+        self::assertSame(
             <<<'TEXT'
             f g
             TEXT,

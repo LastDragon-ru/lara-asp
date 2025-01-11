@@ -22,7 +22,7 @@ final class DirectoryTest extends TestCase {
         $path      = (new DirectoryPath(__DIR__))->getNormalizedPath();
         $directory = new Directory($path);
 
-        self::assertEquals($path->getName(), $directory->getName());
+        self::assertSame($path->getName(), $directory->getName());
     }
 
     public function testConstructNotDirectory(): void {

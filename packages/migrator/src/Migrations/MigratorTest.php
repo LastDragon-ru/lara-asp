@@ -80,7 +80,7 @@ final class MigratorTest extends TestCase {
             'pretend' => true,
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             $this->prepare(self::getTestData()->content($expectedUp)),
             $this->prepare($output->fetch()),
         );
@@ -90,7 +90,7 @@ final class MigratorTest extends TestCase {
             'pretend' => true,
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             $this->prepare(self::getTestData()->content($expectedDown)),
             $this->prepare($output->fetch()),
         );
@@ -145,7 +145,7 @@ final class MigratorTest extends TestCase {
             'pretend' => true,
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             $this->prepare(self::getTestData()->content($expectedUp)),
             $this->prepare($output->fetch()),
         );
@@ -155,7 +155,7 @@ final class MigratorTest extends TestCase {
             'pretend' => true,
         ]);
 
-        self::assertEquals(
+        self::assertSame(
             $this->prepare(self::getTestData()->content($expectedDown)),
             $this->prepare($output->fetch()),
         );

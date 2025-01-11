@@ -44,7 +44,7 @@ final class GreaterThanTest extends TestCase {
         ?Closure $contextFactory,
         ?Closure $resolver,
     ): void {
-        $this->testOperator(
+        $this->testDatabaseOperator(
             Directive::class,
             $expected,
             $builderFactory,

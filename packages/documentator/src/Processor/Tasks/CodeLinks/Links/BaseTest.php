@@ -51,12 +51,12 @@ final class BaseTest extends TestCase {
             }
         };
 
-        self::assertEquals($expected, $link->getTitle());
+        self::assertSame($expected, $link->getTitle());
     }
 
     #[DataProvider('dataProviderIsSimilar')]
     public function testIsSimilar(bool $expected, Link $a, Link $b): void {
-        self::assertEquals($expected, $a->isSimilar($b));
+        self::assertSame($expected, $a->isSimilar($b));
     }
 
     public function testGetTarget(): void {

@@ -11,13 +11,9 @@ parameters:
 
         # Larastan doesn't support phpstan/phpstan-strict-rules
         # https://github.com/phpstan/phpstan-strict-rules/issues/140
-        - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesConfiguration\\:\\:(configurationIsCached|routesAreCached|langPath)\\(\\)\\.$#"
-        - "#^Dynamic call to static method Illuminate\\\\Contracts\\\\Foundation\\\\CachesRoutes\\:\\:routesAreCached\\(\\)\\.$#"
-        - "#^Dynamic call to static method Illuminate\\\\Validation\\\\Factory\\:\\:(validate)\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Testing\\\\TestResponse\\<[^>]+\\>\\:\\:assert[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Model(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
         - "#^Dynamic call to static method Illuminate\\\\Database\\\\Eloquent\\\\Builder(\\<[^>]+\\>)?\\:\\:[^(]+\\(\\)\\.$#"
-        - "#^Dynamic call to static method Illuminate\\\\Container\\\\Container::forgetScopedInstances\\(\\)\\.$#"
 
         # Sometimes it is needed...
         # https://github.com/phpstan/phpstan/issues/3296
@@ -77,6 +73,39 @@ parameters:
             message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse\\<Symfony\\\\Component\\\\HttpFoundation\\\\Response\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
+
+        # ArrayAccess&array gives mixed
+        # https://github.com/phpstan/phpstan/issues/12125
+        -
+            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator::getTypeDefinition\\(\\) should return \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|GraphQL\\\\Type\\\\Definition\\\\Type but returns mixed\\.$#"
+            paths:
+                - packages/graphql/src/Utils/AstManipulator.php
+
+        # Closure parameters cannot be inferred from return type yet
+        # https://github.com/phpstan/phpstan/issues/11317
+        -
+            message: '#^Parameter \#3 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getBuilder\(\) expects array<string, mixed>, array given\.$#'
+            paths:
+                - packages/graphql/src/Stream/Directives/Directive.php
+        -
+            message: '#^Parameter \#2 \$builder of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Exceptions\\BuilderUnsupported constructor expects class-string, mixed given\.$#'
+            paths:
+                - packages/graphql/src/Stream/Directives/Directive.php
+        -
+            message: '#^Parameter \#5 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getFieldValue\(\) expects array<string, mixed>, array given\.$#'
+            paths:
+                - packages/graphql/src/Stream/Directives/Directive.php
+        -
+            message: '#^Parameter \#4 \$args of method Nuwave\\Lighthouse\\Execution\\ResolveInfo::enhanceBuilder\(\) expects array<string, mixed>, array given\.$#'
+            paths:
+                - packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php
+
+        # Would be nice to have a way add types for console command arguments
+        # https://github.com/symfony/symfony/issues/58406
+        -
+            message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\): mixed\)\|null, Closure\(bool\|float\|int\|resource\|string\|null\): string given\.$#'
+            paths:
+                - packages/documentator/src/Commands/Preprocess.php
 
         # (dev) Required for tests
         -

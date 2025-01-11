@@ -26,13 +26,14 @@ final class ValidationErrorResponseTest extends TestCase {
         $this->app()->make(Registrar::class)
             ->get(__FUNCTION__, function (Request $request) use ($rules) {
                 return $this->app()->make(ValidatorFactory::class)
-                    ->validate($request->all(), $rules);
+                    ->make($request->all(), $rules)
+                    ->validate();
             });
 
         $response   = ResponseFactory::make($this->getJson(__FUNCTION__));
         $constraint = new ValidationErrorResponse($errors);
 
-        self::assertEquals($expected, $constraint->evaluate($response, '', true));
+        self::assertSame($expected, $constraint->evaluate($response, '', true));
     }
     // </editor-fold>
 

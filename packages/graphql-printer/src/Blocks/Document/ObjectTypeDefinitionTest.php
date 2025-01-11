@@ -38,7 +38,7 @@ final class ObjectTypeDefinitionTest extends TestCase {
             Parser::objectTypeDefinition($actual);
         }
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function testStatistics(): void {

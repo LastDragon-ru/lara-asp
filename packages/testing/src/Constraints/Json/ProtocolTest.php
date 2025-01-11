@@ -53,15 +53,15 @@ final class ProtocolTest extends TestCase {
         $params = ['a' => 'a', 'b' => 'b'];
         $actual = Protocol::getUri($file, $params);
 
-        self::assertEquals(Protocol::Scheme, $actual->scheme());
-        self::assertEquals($host, $actual->host());
-        self::assertEquals(null, $actual->port());
-        self::assertEquals($host, $actual->authority());
-        self::assertEquals(null, $actual->user());
-        self::assertEquals(null, $actual->pass());
-        self::assertEquals($path, $actual->path());
-        self::assertEquals(http_build_query($params), $actual->query());
-        self::assertEquals(null, $actual->fragment());
+        self::assertSame(Protocol::Scheme, $actual->scheme());
+        self::assertSame($host, $actual->host());
+        self::assertNull($actual->port());
+        self::assertSame($host, $actual->authority());
+        self::assertNull($actual->user());
+        self::assertNull($actual->pass());
+        self::assertSame($path, $actual->path());
+        self::assertSame(http_build_query($params), $actual->query());
+        self::assertNull($actual->fragment());
     }
     // </editor-fold>
 

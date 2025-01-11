@@ -27,7 +27,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function array_map;
 use function array_walk_recursive;
-use function is_callable;
 use function trim;
 
 /**
@@ -49,10 +48,10 @@ final class TaskTest extends TestCase {
         $file = $fs->getFile($path);
         $task = $this->app()->make(Task::class);
 
-        if (!is_callable($expected)) {
-            $expected = self::getTestData()->content($expected);
-        } else {
+        if ($expected instanceof Closure) {
             self::expectExceptionObject($expected());
+        } else {
+            $expected = self::getTestData()->content($expected);
         }
 
         $actual = $this->getProcessorResult($fs, ($task)($file));

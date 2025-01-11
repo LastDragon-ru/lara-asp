@@ -54,7 +54,7 @@ final class ExtensionTest extends TestCase {
             ],
             $references,
         );
-        self::assertEquals(
+        self::assertSame(
             self::getTestData()->content('~document.xml'),
             $renderer->render($document),
         );
