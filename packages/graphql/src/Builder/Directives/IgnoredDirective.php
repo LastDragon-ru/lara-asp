@@ -7,7 +7,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Override;
 
-use function array_merge;
 use function array_unique;
 use function implode;
 
@@ -33,24 +32,13 @@ abstract class IgnoredDirective extends BaseDirective {
      * @return non-empty-list<string>
      */
     protected static function locations(): array {
-        return array_merge(static::getDirectiveLocations(), [
+        return [
             DirectiveLocation::FIELD_DEFINITION,
             DirectiveLocation::INPUT_FIELD_DEFINITION,
             DirectiveLocation::OBJECT,
             DirectiveLocation::INPUT_OBJECT,
             DirectiveLocation::ENUM,
             DirectiveLocation::SCALAR,
-        ]);
-    }
-
-    /**
-     * @deprecated 6.0.0 Use {@see self::locations()} instead.
-     *
-     * @return list<string>
-     */
-    protected static function getDirectiveLocations(): array {
-        return [
-            // empty
         ];
     }
 }
