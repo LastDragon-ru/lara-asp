@@ -92,7 +92,6 @@
   },
   "require-dev": {
     "ext-xmlwriter": "*",
-    "ext-pdo_sqlite": "*",
     "bamarni/composer-bin-plugin": "^1.8",
     "composer/class-map-generator": "^1.0",
     "fakerphp/faker": "^1.21.0",
@@ -165,6 +164,9 @@
           "laravel/scout"
         ],
         "required-extensions": {
+          "*": [
+            "ext-pdo_sqlite"
+          ],
           "illuminate/console": [
             "ext-mbstring"
           ],
