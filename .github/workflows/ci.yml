@@ -57,14 +57,6 @@ jobs:
         run: |
           composer run-script composer-dependency-analyser
 
-      - name: Install composer-require-checker
-        uses: ./.github/actions/tool
-        with:
-          tool: composer-require-checker
-      - name: Check packages
-        run: |
-          composer run-script composer-require-checker
-
       - name: Install composer-unused
         uses: ./.github/actions/tool
         with:
@@ -124,14 +116,6 @@ jobs:
       - name: Check dependencies
         run: |
           composer run-script composer-dependency-analyser -- --composer-json="${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
-
-      - name: Install composer-require-checker
-        uses: ./.github/actions/tool
-        with:
-          tool: composer-require-checker
-      - name: Check packages
-        run: |
-          composer run-script composer-require-checker -- "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json"
 
       - name: Install composer-unused
         uses: ./.github/actions/tool

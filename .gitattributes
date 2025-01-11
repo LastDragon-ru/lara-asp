@@ -12,7 +12,6 @@
 /.markdownlint-cli2.yaml                            export-ignore
 /composer.lock                                      export-ignore
 /composer-dependency-analyser.php                   export-ignore
-/composer-require-checker.json                      export-ignore
 /docker-compose.yaml                                export-ignore
 /Dockerfile                                         export-ignore
 /metadata.json                                      export-ignore
