@@ -12,7 +12,6 @@ use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeProvider;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeSource;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\ExtendOperatorsDirective;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Directives\OperatorsDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator;
 use Mockery;
@@ -35,7 +34,6 @@ final class OperatorsTest extends TestCase {
         $directives = $this->app()->make(DirectiveLocator::class);
 
         $directives->setResolved('ignored', OperatorsTest__Ignored::class);
-        $directives->setResolved('operators', OperatorsTest__OperatorsDirective::class);
         $directives->setResolved('extendOperators', OperatorsTest__ExtendOperatorsDirective::class);
         $directives->setResolved('aOperator', OperatorsTest__OperatorA::class);
         $directives->setResolved('bOperator', OperatorsTest__OperatorB::class);
@@ -58,7 +56,7 @@ final class OperatorsTest extends TestCase {
             @ignored
 
             scalar SchemaTypeD
-            @operators(type: "TypeD")
+            @extendOperators(type: "TypeD")
             @disabledOperator
             @externalOperator
 
@@ -68,7 +66,7 @@ final class OperatorsTest extends TestCase {
             @externalOperator
 
             scalar SchemaTypeInfiniteLoop
-            @operators(type: "InfiniteLoop")
+            @extendOperators(type: "InfiniteLoop")
             @aOperator
 
             type Query {
@@ -246,16 +244,6 @@ interface OperatorsTest__Disabled {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 interface OperatorsTest__Scope extends Scope {
-    // empty
-}
-
-/**
- * @deprecated   5.6.0
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- *
- */
-class OperatorsTest__OperatorsDirective extends OperatorsDirective implements OperatorsTest__Scope {
     // empty
 }
 

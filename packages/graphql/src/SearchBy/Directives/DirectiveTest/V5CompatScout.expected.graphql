@@ -6,6 +6,17 @@ on
     | ARGUMENT_DEFINITION
 
 """
+Extends the list of operators by the operators from the specified
+`type` or from the config if `null`.
+"""
+directive @searchByExtendOperators(
+    type: String
+)
+on
+    | ENUM
+    | SCALAR
+
+"""
 Marks that field/definition should be excluded.
 """
 directive @searchByIgnored
@@ -53,18 +64,6 @@ directive @searchByOperatorLessThanOrEqual
 on
     | ENUM
     | INPUT_FIELD_DEFINITION
-    | SCALAR
-
-"""
-Extends the list of operators by the operators from the specified `type`.
-
-The directive is deprecated!
-"""
-directive @searchByOperators(
-    type: String!
-)
-on
-    | ENUM
     | SCALAR
 
 enum EnumA {
@@ -918,7 +917,7 @@ scalar ScalarCustom
 @scalar(
     class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
 )
-@searchByOperators(
+@searchByExtendOperators(
     type: "Boolean"
 )
 @searchByOperatorLessThan
