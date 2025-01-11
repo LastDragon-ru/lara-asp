@@ -83,7 +83,7 @@
     "symfony/http-kernel": "^7.0.0",
     "symfony/mime": "^7.0.0",
     "symfony/property-access": "^7.0.0",
-    "symfony/property-info": "^7.0.0",
+    "symfony/property-info": "^7.1.10",
     "symfony/psr-http-message-bridge": "^7.0.0",
     "symfony/serializer": "^7.0.0",
     "symfony/var-dumper": "^7.0.0",
