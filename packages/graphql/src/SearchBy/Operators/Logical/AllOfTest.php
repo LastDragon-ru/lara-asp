@@ -6,7 +6,6 @@ use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
@@ -20,7 +19,6 @@ use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -70,7 +68,6 @@ final class AllOfTest extends TestCase {
      * @param Closure(static): Argument            $argumentFactory
      * @param Closure(static): Context|null        $contextFactory
      * @param Closure(object, Field): string|null  $resolver
-     * @param Closure():FieldResolver|null         $fieldResolver
      */
     #[DataProvider('dataProviderCallScout')]
     #[RequiresLaravelScout]
@@ -81,12 +78,7 @@ final class AllOfTest extends TestCase {
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
-        ?Closure $fieldResolver,
     ): void {
-        if ($fieldResolver !== null) {
-            $this->override(FieldResolver::class, $fieldResolver);
-        }
-
         $this->testScoutOperator(
             Directive::class,
             $expected,
@@ -288,7 +280,7 @@ final class AllOfTest extends TestCase {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([
-                'field'                 => [
+                'field'    => [
                     [
                         'wheres'   => [
                             'path.to.field.a' => 'aaa',
@@ -304,33 +296,7 @@ final class AllOfTest extends TestCase {
                     null,
                     null,
                 ],
-                'resolver (deprecated)' => [
-                    [
-                        'wheres'   => [
-                            'properties/path/to/field/a' => 'aaa',
-                            'properties/path/to/field/b' => 'bbb',
-                        ],
-                        'whereIns' => [
-                            'properties/path/to/field/b' => [1, 2, 3],
-                        ],
-                    ],
-                    new Field('path', 'to', 'field', 'operator name should be ignored'),
-                    $factory,
-                    null,
-                    null,
-                    static function (): FieldResolver {
-                        return new class() implements FieldResolver {
-                            /**
-                             * @inheritDoc
-                             */
-                            #[Override]
-                            public function getField(Model $model, Field $field): string {
-                                return 'properties/'.implode('/', $field->getPath());
-                            }
-                        };
-                    },
-                ],
-                'resolver'              => [
+                'resolver' => [
                     [
                         'wheres'   => [
                             'path__to__field__a' => 'aaa',

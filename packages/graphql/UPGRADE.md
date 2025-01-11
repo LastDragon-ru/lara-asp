@@ -44,6 +44,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/c45228918cc92f69)
 
+* [ ] If you are still using `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use [`BuilderFieldResolver`][code-links/372c362d9f824e7f] instead.
+
+* [ ] If you are still using `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Property`, use [`Field`][code-links/2cd9d43238896ed8] instead.
+
 # Upgrade from v6
 
 ## General
@@ -187,7 +191,7 @@ This section is actual only if you are extending the package. Please review and 
   ];
   ```
 
-* [ ] If you are using [`💀FieldResolver`][code-links/c4fffbfe6bcac46f], use [`BuilderFieldResolver`][code-links/372c362d9f824e7f] instead. 🤝
+* [ ] If you are using `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver`, use [`BuilderFieldResolver`][code-links/372c362d9f824e7f] instead. 🤝
 
 * [ ] Added the root type that will contain only extra operators and newly added `field` operator. The new query syntax is:
 
@@ -251,7 +255,7 @@ This section is actual only if you are extending the package. Please review and 
 
 * [ ] `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeUnknown` removed
 
-* [ ] [`💀Property`][code-links/7c84e0ec8e3ddcb3] => [`Field`][code-links/2cd9d43238896ed8]
+* [ ] `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Property` => [`Field`][code-links/2cd9d43238896ed8]
 
 * [ ] [`Manipulator`][code-links/3027be4084984b5a]
 
@@ -319,9 +323,6 @@ This section is actual only if you are extending the package. Please review and 
 [code-links/3972e727bec7c972]: src/Builder/Contracts/Scope.php
     "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scope"
 
-[code-links/c4fffbfe6bcac46f]: src/Builder/Contracts/Scout/FieldResolver.php
-    "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver"
-
 [code-links/3c9ddc100b69df14]: src/Builder/Contracts/TypeDefinition.php
     "\LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\TypeDefinition"
 
@@ -348,9 +349,6 @@ This section is actual only if you are extending the package. Please review and 
 
 [code-links/786d31a251fa3c1e]: src/Builder/Operators.php
     "\LastDragon_ru\LaraASP\GraphQL\Builder\Operators"
-
-[code-links/7c84e0ec8e3ddcb3]: src/Builder/Property.php
-    "\LastDragon_ru\LaraASP\GraphQL\Builder\Property"
 
 [code-links/e0d23d0df71d20ae]: src/Builder/Traits/HandlerOperator.php
     "\LastDragon_ru\LaraASP\GraphQL\Builder\Traits\HandlerOperator"
