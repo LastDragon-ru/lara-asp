@@ -168,12 +168,6 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
-directive @searchByOperatorRelation
-on
-    | FIELD_DEFINITION
-    | INPUT_FIELD_DEFINITION
-    | SCALAR
-
 directive @searchByOperatorRelationship
 on
     | FIELD_DEFINITION
@@ -274,7 +268,7 @@ input SearchByConditionUser {
     Relationship condition.
     """
     parent: SearchByRelationshipUser
-    @searchByOperatorRelation
+    @searchByOperatorRelationship
 }
 
 """
@@ -690,5 +684,5 @@ type User {
     name: String!
 
     parent: User
-    @searchByOperatorRelation
+    @searchByOperatorRelationship
 }

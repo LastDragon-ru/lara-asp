@@ -50,6 +50,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Directive `@searchByOperators` removed, the `@searchByExtendOperators` should be used instead.
 
+* [ ] Directive `@searchByOperatorRelation` removed, the `@searchByOperatorRelationship` should be used instead.
+
 # Upgrade from v6
 
 ## General
