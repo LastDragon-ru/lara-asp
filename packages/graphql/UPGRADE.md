@@ -48,6 +48,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] If you are still using `💀\LastDragon_ru\LaraASP\GraphQL\Builder\Property`, use [`Field`][code-links/2cd9d43238896ed8] instead.
 
+* [ ] Directive `@searchByOperators` removed, the `@searchByExtendOperators` should be used instead.
+
 # Upgrade from v6
 
 ## General
