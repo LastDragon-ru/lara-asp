@@ -209,7 +209,6 @@
     "validate:dependencies": [
       "@monorepo-builder",
       "@composer-dependency-analyser",
-      "@composer-require-checker",
       "@composer-unused"
     ],
     "merge:dependencies": [
@@ -230,9 +229,6 @@
     ],
     "composer-unused": [
       "./vendor-bin/composer-unused/vendor/bin/composer-unused unused --output-format=default"
-    ],
-    "composer-require-checker": [
-      "./vendor-bin/composer-require-checker/vendor/bin/composer-require-checker check"
     ],
     "composer-dependency-analyser": [
       "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose --show-all-usages"
