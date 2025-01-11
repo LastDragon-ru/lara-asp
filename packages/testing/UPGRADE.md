@@ -54,7 +54,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   * [`ScheduleAssertions`][code-links/5bf3a6e818e8ec48]
   * [`Override`][code-links/a5e57679c3a947a6]
   * [`WithQueryLog`][code-links/e6637d2e31bd9516]
-  * [`💀RefreshDatabaseIfEmpty`][code-links/1e9b6004b06c7c68]
+  * `💀\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty`
   * [`WithTranslations`][code-links/733eb8fbc4b211a5]
 
   ```php
@@ -88,9 +88,6 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/e6637d2e31bd9516]: src/Database/QueryLog/WithQueryLog.php
     "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog"
-
-[code-links/1e9b6004b06c7c68]: src/Database/RefreshDatabaseIfEmpty.php
-    "\LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty"
 
 [code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php
     "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"

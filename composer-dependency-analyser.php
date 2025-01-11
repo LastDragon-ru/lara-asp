@@ -1,8 +1,5 @@
 <?php declare(strict_types = 1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\RefreshDatabaseState;
-use Illuminate\Foundation\Testing\TestCase;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 use ShipMonk\ComposerDependencyAnalyser\Config\Configuration;
 use ShipMonk\ComposerDependencyAnalyser\Config\ErrorType;
@@ -16,9 +13,6 @@ $config = (new Configuration())
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreUnknownClasses([
-        RefreshDatabase::class,
-        RefreshDatabaseState::class,
-        TestCase::class,
         TestbenchTestCase::class,
     ]);
 
