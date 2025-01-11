@@ -135,36 +135,6 @@ Makes comparison of scalars strict.
 
 ## PHPUnit `TestCase`
 
-### [`RefreshDatabaseIfEmpty`](./src/Database/RefreshDatabaseIfEmpty.php) 💀
-
-[include:docblock]: ./src/Database/RefreshDatabaseIfEmpty.php
-[//]: # (start: preprocess/94562f6acfa81b98)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-The trait is very similar to standard `\Illuminate\Foundation\Testing\RefreshDatabase` but there is one
-difference: it will refresh the database only if it is empty. This is very
-useful for local testing and allow significantly reduce bootstrap time.
-
-[//]: # (end: preprocess/94562f6acfa81b98)
-
-```php
-<?php declare(strict_types = 1);
-
-namespace Tests;
-
-use LastDragon_ru\LaraASP\Testing\Database\RefreshDatabaseIfEmpty;
-use LastDragon_ru\LaraASP\Testing\TestCase as BaseTestCase;
-
-abstract class TestCase extends BaseTestCase {
-    use CreatesApplication;
-    use RefreshDatabaseIfEmpty;
-
-    protected function shouldSeed() {
-        return true;
-    }
-}
-```
-
 ### [`WithTempDirectory`](./src/Utils/WithTempDirectory.php)
 
 [include:docblock]: ./src/Utils/WithTempDirectory.php
@@ -250,9 +220,9 @@ Disable models events during make/create.
 
 | Name                                                                        | Description                                                    |
 |-----------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`assertThat()`](./docs/Assertions/AssertThatResponse.md)                   | Asserts that response satisfies given constraint.              |
-| [`assertContentType()`](./docs/Assertions/AssertThatResponse.md)            | Asserts that a response has a specified content type.          |
-| [`assertStatusCode()`](./docs/Assertions/AssertThatResponse.md)             | Asserts that a response has a specified status code.           |
+| [`assertThat()`](./docs/Assertions/AssertPsrResponse.md)                    | Asserts that response satisfies given constraint.              |
+| [`assertContentType()`](./docs/Assertions/AssertPsrResponse.md)             | Asserts that a response has a specified content type.          |
+| [`assertStatusCode()`](./docs/Assertions/AssertPsrResponse.md)              | Asserts that a response has a specified status code.           |
 | [`assertJsonMatchesSchema()`](./docs/Assertions/AssertJsonMatchesSchema.md) | Asserts that a response contains JSON that matches the schema. |
 | [`assertXmlMatchesSchema()`](./docs/Assertions/AssertXmlMatchesSchema.md)   | Asserts that a response contains XML that matches the schema.  |
 
@@ -297,12 +267,6 @@ Asserts that Schedule contains task.
 Asserts that Scout Query equals Scout Query.
 
 [Read more](<docs/Assertions/AssertScoutQueryEquals.md>).
-
-## [`assertThatResponse` 💀](<docs/Assertions/AssertThatResponse.md>)
-
-Asserts that PSR Response satisfies given constraint (we have a lot of built-in [constraints](src/Constraints/Response) and [responses](src/Responses), but, of course, you can create a custom).
-
-[Read more](<docs/Assertions/AssertThatResponse.md>).
 
 ## [`assertXmlMatchesSchema`](<docs/Assertions/AssertXmlMatchesSchema.md>)
 
