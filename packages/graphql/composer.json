@@ -35,7 +35,6 @@
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
-    "ext-pdo_sqlite": "*",
     "illuminate/cache": "^11.0.8",
     "laravel/scout": "^10.8.0",
     "mockery/mockery": "^1.6.5",
@@ -68,6 +67,9 @@
     "lara-asp": {
       "ci": {
         "required-extensions": {
+          "*": [
+            "ext-pdo_sqlite"
+          ],
           "league/flysystem": [
             "ext-fileinfo"
           ]

@@ -36,7 +36,7 @@ jobs:
           composer remove --no-interaction --no-progress --ansi --no-update "orchestra/testbench"
           composer remove --no-interaction --no-progress --ansi --no-update --dev "orchestra/testbench"
 
-          # (because it used only to run phpstan)
+          # (because it used only to run phpstan and will give false-positive)
           composer remove --no-interaction --no-progress --ansi --no-update --dev "phpstan/phpstan"
       - name: Install dependencies
         uses: ramsey/composer-install@v3

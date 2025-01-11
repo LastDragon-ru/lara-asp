@@ -35,7 +35,6 @@
     "symfony/finder": "^7.0.0"
   },
   "require-dev": {
-    "ext-pdo_sqlite": "*",
     "illuminate/config": "^11.0.8",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.5",
@@ -65,6 +64,9 @@
     "lara-asp": {
       "ci": {
         "required-extensions": {
+          "*": [
+            "ext-pdo_sqlite"
+          ],
           "league/flysystem": [
             "ext-fileinfo"
           ]

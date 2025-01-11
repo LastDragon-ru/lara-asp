@@ -36,6 +36,24 @@ if ($root) {
         ->ignoreErrorsOnPackage('spaze/phpstan-disallowed-calls', [ErrorType::UNUSED_DEPENDENCY]);
 } else {
     $config->disableReportingUnmatchedIgnores();
+
+    // fixme: Hotfix for https://github.com/shipmonk-rnd/composer-dependency-analyser/issues/216
+    $config->ignoreErrorsOnPaths(
+        [
+            'packages/graphql-printer/src/Blocks/Document/Value.php',
+            'packages/graphql-printer/src/Blocks/Document/InputValueDefinition.php',
+            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
+            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
+            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
+            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
+            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
+            'packages/graphql-printer/src/Blocks/Document/VariableDefinition.php',
+            'packages/graphql-printer/src/Blocks/Document/Argument.php',
+        ],
+        [
+            ErrorType::SHADOW_DEPENDENCY,
+        ],
+    );
 }
 
 // Configure paths
