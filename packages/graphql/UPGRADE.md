@@ -54,6 +54,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] `@searchBy`/`@sortBy` doesn't provide implementations to restore old v5 query syntax anymore (without `field` in the root type).
 
+* [ ] Deprecated enums fields are removed (`SortByTypeDirection { asc, desc }`, `SearchByTypeFlag { yes }`, `SortByTypeFlag { yes }`).
+
 # Upgrade from v6
 
 ## General

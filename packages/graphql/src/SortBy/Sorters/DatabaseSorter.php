@@ -157,11 +157,11 @@ abstract class DatabaseSorter implements Sorter {
             $grammar instanceof MySqlGrammar,
             $grammar instanceof SQLiteGrammar,
             $grammar instanceof SqlServerGrammar
-                => $direction === Direction::Asc || $direction === Direction::asc
+                => $direction === Direction::Asc
                     ? Nulls::First
                     : Nulls::Last,
             $grammar instanceof PostgresGrammar
-                => $direction === Direction::Asc || $direction === Direction::asc
+                => $direction === Direction::Asc
                     ? Nulls::Last
                     : Nulls::First,
             default

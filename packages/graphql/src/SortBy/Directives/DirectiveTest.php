@@ -580,10 +580,10 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field'      => [
-                                'id' => 'asc',
+                                'id' => 'Asc',
                             ],
                             'nullsFirst' => [
-                                'id' => 'desc',
+                                'id' => 'Desc',
                             ],
                         ],
                     ],
@@ -594,8 +594,8 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field' => [
-                                'id'    => 'asc',
-                                'value' => 'desc',
+                                'id'    => 'Asc',
+                                'value' => 'Desc',
                             ],
                         ],
                     ],
@@ -633,16 +633,16 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field' => [
-                                'id' => 'asc',
+                                'id' => 'Asc',
                             ],
                         ],
                         [
                             'field' => [
-                                'value' => 'desc',
+                                'value' => 'Desc',
                             ],
                         ],
                         [
-                            'random' => 'yes',
+                            'random' => 'Yes',
                         ],
                     ],
                     static function (TestCase $test): void {
@@ -673,12 +673,12 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field' => [
-                                'id' => 'asc',
+                                'id' => 'Asc',
                             ],
                         ],
                         [
                             'field' => [
-                                'value' => 'desc',
+                                'value' => 'Desc',
                             ],
                         ],
                     ],
@@ -708,12 +708,12 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'nullsFirst' => [
-                                'id' => 'desc',
+                                'id' => 'Desc',
                             ],
                         ],
                         [
                             'field' => [
-                                'value' => 'asc',
+                                'value' => 'Asc',
                             ],
                         ],
                     ],
@@ -785,8 +785,8 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field' => [
-                                'a' => 'asc',
-                                'b' => 'desc',
+                                'a' => 'Asc',
+                                'b' => 'Desc',
                             ],
                         ],
                     ],
@@ -821,19 +821,19 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field' => [
-                                'a' => 'asc',
+                                'a' => 'Asc',
                             ],
                         ],
                         [
                             'field' => [
                                 'c' => [
-                                    'a' => 'desc',
+                                    'a' => 'Desc',
                                 ],
                             ],
                         ],
                         [
                             'field' => [
-                                'b' => 'desc',
+                                'b' => 'Desc',
                             ],
                         ],
                     ],
@@ -860,19 +860,19 @@ final class DirectiveTest extends TestCase {
                     [
                         [
                             'field' => [
-                                'a' => 'asc',
+                                'a' => 'Asc',
                             ],
                         ],
                         [
                             'field' => [
                                 'c' => [
-                                    'a' => 'desc',
+                                    'a' => 'Desc',
                                 ],
                             ],
                         ],
                         [
                             'field' => [
-                                'b' => 'desc',
+                                'b' => 'Desc',
                             ],
                         ],
                     ],

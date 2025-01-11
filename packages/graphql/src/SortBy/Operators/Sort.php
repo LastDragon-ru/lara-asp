@@ -105,13 +105,8 @@ class Sort extends Operator {
         }
 
         // Default
-        $nulls     = null;
-        $config    = $this->config->getInstance()->sortBy->nulls;
-        $direction = match ($direction) {
-            Direction::asc  => Direction::Asc,
-            Direction::desc => Direction::Desc,
-            default         => $direction,
-        };
+        $nulls  = null;
+        $config = $this->config->getInstance()->sortBy->nulls;
 
         if (is_array($config) && isset($config[$direction->value])) {
             $config = $config[$direction->value];

@@ -303,35 +303,35 @@ final class SortTest extends TestCase {
         };
 
         return [
-            'default'                                    => [
+            'default'                            => [
                 null,
                 null,
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::Asc,
             ],
-            'nulls are not sortable'                     => [
+            'nulls are not sortable'             => [
                 null,
                 new SortByConfig(nulls: Nulls::First),
                 $getSorterFactory(false),
                 $contextFactory,
                 Direction::Asc,
             ],
-            'nulls are sortable (asc)'                   => [
+            'nulls are sortable (asc)'           => [
                 Nulls::Last,
                 new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::Asc,
             ],
-            'nulls are sortable (desc)'                  => [
+            'nulls are sortable (desc)'          => [
                 Nulls::Last,
                 new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
                 $contextFactory,
                 Direction::Desc,
             ],
-            'nulls are sortable (separate)'              => [
+            'nulls are sortable (separate)'      => [
                 Nulls::First,
                 new SortByConfig(nulls: [
                     Direction::Asc->value  => Nulls::Last,
@@ -341,31 +341,7 @@ final class SortTest extends TestCase {
                 $contextFactory,
                 Direction::Desc,
             ],
-            '(deprecated) nulls are sortable (asc)'      => [
-                Nulls::Last,
-                new SortByConfig(nulls: Nulls::Last),
-                $getSorterFactory(true),
-                $contextFactory,
-                Direction::asc,
-            ],
-            '(deprecated) nulls are sortable (desc)'     => [
-                Nulls::Last,
-                new SortByConfig(nulls: Nulls::Last),
-                $getSorterFactory(true),
-                $contextFactory,
-                Direction::desc,
-            ],
-            '(deprecated) nulls are sortable (separate)' => [
-                Nulls::First,
-                new SortByConfig(nulls: [
-                    Direction::Asc->value  => Nulls::Last,
-                    Direction::Desc->value => Nulls::First,
-                ]),
-                $getSorterFactory(true),
-                $contextFactory,
-                Direction::desc,
-            ],
-            'nulls are sortable (Context null)'          => [
+            'nulls are sortable (Context null)'  => [
                 null,
                 new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
@@ -376,7 +352,7 @@ final class SortTest extends TestCase {
                 },
                 Direction::Desc,
             ],
-            'nulls are sortable (Context first)'         => [
+            'nulls are sortable (Context first)' => [
                 Nulls::First,
                 new SortByConfig(nulls: Nulls::Last),
                 $getSorterFactory(true),
