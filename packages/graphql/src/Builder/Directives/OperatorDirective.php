@@ -49,21 +49,10 @@ abstract class OperatorDirective extends BaseDirective implements Operator {
      * @return list<string>
      */
     protected static function locations(): array {
-        return array_merge(static::getLocations(), [
+        return [
             // Locations are required to be able to add operators inside the schema
             DirectiveLocation::SCALAR,
             DirectiveLocation::ENUM,
-        ]);
-    }
-
-    /**
-     * @deprecated 6.0.0 Use {@see self::locations()} instead.
-     *
-     * @return list<string>
-     */
-    protected static function getLocations(): array {
-        return [
-            // empty
         ];
     }
 
