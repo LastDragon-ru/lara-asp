@@ -52,6 +52,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Directive `@searchByOperatorRelation` removed, the `@searchByOperatorRelationship` should be used instead.
 
+* [ ] `@searchBy`/`@sortBy` doesn't provide implementations to restore old v5 query syntax anymore (without `field` in the root type).
+
 # Upgrade from v6
 
 ## General
