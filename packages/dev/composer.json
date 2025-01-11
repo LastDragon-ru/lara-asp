@@ -24,7 +24,7 @@
     "illuminate/support": "^11.0.8",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
-    "nikic/php-parser": "^5.0",
+    "nikic/php-parser": "^5.4.0",
     "nette/neon": "^3.4.1",
     "phpstan/phpstan": "^2.1.1",
     "symfony/var-dumper": "^7.0.0"
