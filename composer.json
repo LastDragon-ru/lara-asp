@@ -208,8 +208,7 @@
     ],
     "validate:dependencies": [
       "@monorepo-builder",
-      "@composer-dependency-analyser",
-      "@composer-unused"
+      "@composer-dependency-analyser"
     ],
     "merge:dependencies": [
       "./vendor-bin/monorepo-builder/vendor/bin/monorepo-builder merge",
@@ -226,9 +225,6 @@
     ],
     "markdownlint": [
       "npm run markdownlint"
-    ],
-    "composer-unused": [
-      "./vendor-bin/composer-unused/vendor/bin/composer-unused unused --output-format=default"
     ],
     "composer-dependency-analyser": [
       "vendor-bin/composer-dependency-analyser/vendor/bin/composer-dependency-analyser --verbose --show-all-usages"
