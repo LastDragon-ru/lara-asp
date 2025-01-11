@@ -1745,7 +1745,7 @@ final class DirectiveTest extends TestCase {
                 null,
                 [
                     [
-                        'field' => ['value' => 'asc'],
+                        'field' => ['value' => 'Asc'],
                     ],
                 ],
                 25,

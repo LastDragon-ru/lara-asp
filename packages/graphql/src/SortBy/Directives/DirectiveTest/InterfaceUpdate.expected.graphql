@@ -20,16 +20,6 @@ Sort direction.
 enum SortByTypeDirection {
     Asc
     Desc
-
-    asc
-    @deprecated(
-        reason: "Please use `Asc` instead."
-    )
-
-    desc
-    @deprecated(
-        reason: "Please use `Desc` instead."
-    )
 }
 
 """

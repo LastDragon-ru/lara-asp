@@ -37,8 +37,8 @@ class ScoutSorter implements Sorter {
 
         $field   = $this->resolver->getField($builder, $field);
         $builder = match ($direction) {
-            Direction::Asc, Direction::asc   => $builder->orderBy($field, 'asc'),
-            Direction::Desc, Direction::desc => $builder->orderBy($field, 'desc'),
+            Direction::Asc  => $builder->orderBy($field, 'asc'),
+            Direction::Desc => $builder->orderBy($field, 'desc'),
         };
 
         return $builder;
