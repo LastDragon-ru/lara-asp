@@ -14,11 +14,9 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\BuilderFieldResolver;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\Client\ConditionTooManyFields;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Exceptions\TypeDefinitionImpossibleToCreateType;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\Config\Config;
 use LastDragon_ru\LaraASP\GraphQL\PackageConfig;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Contracts\Ignored;
@@ -421,7 +419,6 @@ final class DirectiveTest extends TestCase {
      * @param array<string, mixed>|Exception               $expected
      * @param Closure(static): ScoutBuilder<EloquentModel> $builderFactory
      * @param Closure(object, Field): string|null          $resolver
-     * @param Closure():FieldResolver|null                 $fieldResolver
      */
     #[DataProvider('dataProviderHandleScoutBuilder')]
     #[RequiresLaravelScout]
@@ -430,7 +427,6 @@ final class DirectiveTest extends TestCase {
         Closure $builderFactory,
         mixed $value,
         ?Closure $resolver,
-        ?Closure $fieldResolver,
     ): void {
         $builder   = $builderFactory($this);
         $directive = $this->getExposeBuilderDirective($builder);
@@ -449,10 +445,6 @@ final class DirectiveTest extends TestCase {
                         ->andReturnUsing($resolver);
                 },
             );
-        }
-
-        if ($fieldResolver !== null) {
-            $this->override(FieldResolver::class, $fieldResolver);
         }
 
         $this->useGraphQLSchema(
@@ -496,7 +488,6 @@ final class DirectiveTest extends TestCase {
      * @param array<string, mixed>|Exception               $expected
      * @param Closure(static): ScoutBuilder<EloquentModel> $builderFactory
      * @param Closure(object, Field): string|null          $resolver
-     * @param Closure():FieldResolver|null                 $fieldResolver
      */
     #[DataProvider('dataProviderHandleScoutBuilderV5Compat')]
     #[RequiresLaravelScout]
@@ -505,7 +496,6 @@ final class DirectiveTest extends TestCase {
         Closure $builderFactory,
         mixed $value,
         ?Closure $resolver,
-        ?Closure $fieldResolver,
     ): void {
         $this->app()->bind(Root::class, V5::class);
         $this->app()->bind(Clause::class, V5::class);
@@ -527,10 +517,6 @@ final class DirectiveTest extends TestCase {
                         ->andReturnUsing($resolver);
                 },
             );
-        }
-
-        if ($fieldResolver !== null) {
-            $this->override(FieldResolver::class, $fieldResolver);
         }
 
         $this->useGraphQLSchema(
@@ -1270,58 +1256,6 @@ final class DirectiveTest extends TestCase {
                     null,
                     null,
                 ],
-                'resolver (deprecated)'    => [
-                    [
-                        'orders' => [
-                            [
-                                'column'    => 'properties/a',
-                                'direction' => 'asc',
-                            ],
-                            [
-                                'column'    => 'properties/c/a',
-                                'direction' => 'desc',
-                            ],
-                            [
-                                'column'    => 'properties/renamed.field',
-                                'direction' => 'desc',
-                            ],
-                        ],
-                    ],
-                    [
-                        [
-                            'field' => [
-                                'a' => 'asc',
-                            ],
-                        ],
-                        [
-                            'field' => [
-                                'c' => [
-                                    'a' => 'desc',
-                                ],
-                            ],
-                        ],
-                        [
-                            'field' => [
-                                'b' => 'desc',
-                            ],
-                        ],
-                    ],
-                    null,
-                    static function (): FieldResolver {
-                        return new class() implements FieldResolver {
-                            /**
-                             * @inheritDoc
-                             */
-                            #[Override]
-                            public function getField(
-                                EloquentModel $model,
-                                Property $property,
-                            ): string {
-                                return 'properties/'.implode('/', $property->getPath());
-                            }
-                        };
-                    },
-                ],
                 'resolver'                 => [
                     [
                         'orders' => [
@@ -1449,52 +1383,6 @@ final class DirectiveTest extends TestCase {
                     ],
                     null,
                     null,
-                ],
-                'resolver (deprecated)'  => [
-                    [
-                        'orders' => [
-                            [
-                                'column'    => 'properties/a',
-                                'direction' => 'asc',
-                            ],
-                            [
-                                'column'    => 'properties/c/a',
-                                'direction' => 'desc',
-                            ],
-                            [
-                                'column'    => 'properties/renamed.field',
-                                'direction' => 'desc',
-                            ],
-                        ],
-                    ],
-                    [
-                        [
-                            'a' => 'asc',
-                        ],
-                        [
-                            'c' => [
-                                'a' => 'desc',
-                            ],
-                        ],
-                        [
-                            'b' => 'desc',
-                        ],
-                    ],
-                    null,
-                    static function (): FieldResolver {
-                        return new class() implements FieldResolver {
-                            /**
-                             * @inheritDoc
-                             */
-                            #[Override]
-                            public function getField(
-                                EloquentModel $model,
-                                Property $property,
-                            ): string {
-                                return 'properties/'.implode('/', $property->getPath());
-                            }
-                        };
-                    },
                 ],
                 'resolver'               => [
                     [

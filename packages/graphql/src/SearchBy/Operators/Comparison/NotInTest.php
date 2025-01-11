@@ -7,9 +7,7 @@ use Composer\InstalledVersions;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Contracts\Scout\FieldResolver;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Field;
-use LastDragon_ru\LaraASP\GraphQL\Builder\Property;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Directives\Directive;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\BuilderDataProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\DataProviders\ScoutBuilderDataProvider;
@@ -70,7 +68,6 @@ final class NotInTest extends TestCase {
      * @param Closure(static): Argument            $argumentFactory
      * @param Closure(static): Context|null        $contextFactory
      * @param Closure(object, Field): string|null  $resolver
-     * @param Closure():FieldResolver|null         $fieldResolver
      */
     #[DataProvider('dataProviderCallScout')]
     #[RequiresLaravelScout]
@@ -81,13 +78,7 @@ final class NotInTest extends TestCase {
         Closure $argumentFactory,
         ?Closure $contextFactory,
         ?Closure $resolver,
-        ?Closure $fieldResolver,
     ): void {
-        // Prepare
-        if ($fieldResolver !== null) {
-            $this->override(FieldResolver::class, $fieldResolver);
-        }
-
         // Supported?
         $operator = $this->app()->make(NotInTest_Operator::class);
 
@@ -172,7 +163,7 @@ final class NotInTest extends TestCase {
         return (new CompositeDataProvider(
             new ScoutBuilderDataProvider(),
             new ArrayDataProvider([
-                'field'                 => [
+                'field'    => [
                     [
                         'whereNotIns' => [
                             'path.to.field' => [1, 2, 3],
@@ -186,31 +177,7 @@ final class NotInTest extends TestCase {
                     null,
                     null,
                 ],
-                'resolver (deprecated)' => [
-                    [
-                        'whereNotIns' => [
-                            'properties/path/to/property' => [1, 2, 3],
-                        ],
-                    ],
-                    new Property('path', 'to', 'property', 'operator name should be ignored'),
-                    static function (self $test): Argument {
-                        return $test->getGraphQLArgument('[Int!]!', [1, 2, 3]);
-                    },
-                    null,
-                    null,
-                    static function (): FieldResolver {
-                        return new class() implements FieldResolver {
-                            /**
-                             * @inheritDoc
-                             */
-                            #[Override]
-                            public function getField(Model $model, Property $property): string {
-                                return 'properties/'.implode('/', $property->getPath());
-                            }
-                        };
-                    },
-                ],
-                'resolver'              => [
+                'resolver' => [
                     [
                         'whereNotIns' => [
                             'path__to__field' => [1, 2, 3],
