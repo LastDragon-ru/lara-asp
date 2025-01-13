@@ -7,10 +7,10 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use Override;
 
+use function mb_rtrim;
+use function mb_trim;
 use function preg_replace;
-use function rtrim;
 use function str_replace;
-use function trim;
 
 /**
  * @internal
@@ -40,7 +40,7 @@ class DescriptionBlock extends StringValue {
         if ($this->isNormalized()) {
             $eol    = $this->eol();
             $string = str_replace(["\r\n", "\n\r", "\n", "\r"], $eol, $string);
-            $string = rtrim(trim($string, $eol));
+            $string = mb_rtrim(mb_trim($string, $eol));
             $string = (string) preg_replace('/\R{2,}/u', "{$eol}{$eol}", $string);
             $string = (string) preg_replace('/^(.*?)\h+$/mu', '$1', $string);
         }

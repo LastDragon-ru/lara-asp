@@ -18,9 +18,9 @@ use function implode;
 use function in_array;
 use function is_null;
 use function mb_strtolower;
+use function mb_trim;
 use function str_ends_with;
 use function str_starts_with;
-use function trim;
 
 use const PHP_EOL;
 
@@ -110,7 +110,7 @@ class Response extends Constraint {
         }
 
         $description = array_map(static function (string $text): string {
-            return trim($text, PHP_EOL);
+            return mb_trim($text, PHP_EOL);
         }, $description);
         $description = array_unique($description);
         $description = array_filter($description, static fn ($line) => $line !== '');

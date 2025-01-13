@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
 use function file_get_contents;
 use function file_put_contents;
 use function is_file;
-use function trim;
+use function mb_trim;
 use function uksort;
 use function usort;
 
@@ -61,7 +61,7 @@ class Storage {
         $metadata = $this->normalize($metadata);
         $context  = (new JsonEncoderContextBuilder())->withEncodeOptions(self::Options)->toArray();
         $content  = $this->serializer->serialize($metadata, self::Format, $context);
-        $result   = file_put_contents($this->getPath(), trim($content)."\n") !== false;
+        $result   = file_put_contents($this->getPath(), mb_trim($content)."\n") !== false;
 
         return $result;
     }

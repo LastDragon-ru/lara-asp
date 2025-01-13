@@ -36,7 +36,7 @@ use SplFileInfo;
 use function assert;
 use function implode;
 use function ksort;
-use function trim;
+use function mb_trim;
 
 /**
  * @phpstan-import-type Change from BreakingChangesFinder
@@ -267,7 +267,7 @@ trait GraphQLAssertions {
             $message .= "{$type}:\n\n* ".implode('* ', $descriptions)."\n\n";
         }
 
-        return trim($message);
+        return mb_trim($message);
     }
     // </editor-fold>
 }

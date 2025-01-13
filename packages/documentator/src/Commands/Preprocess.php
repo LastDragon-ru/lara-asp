@@ -46,12 +46,12 @@ use function is_a;
 use function is_scalar;
 use function ksort;
 use function max;
+use function mb_rtrim;
+use function mb_trim;
 use function min;
-use function rtrim;
 use function str_repeat;
 use function strtr;
 use function strval;
-use function trim;
 use function var_export;
 
 /**
@@ -137,7 +137,7 @@ class Preprocess extends Command {
     public function getProcessedHelp(): string {
         try {
             return strtr(parent::getProcessedHelp(), [
-                '%tasks%' => trim($this->getProcessedHelpTasks(3)),
+                '%tasks%' => mb_trim($this->getProcessedHelpTasks(3)),
             ]);
         } finally {
             $this->phpDocumentFactory = null;
@@ -151,11 +151,11 @@ class Preprocess extends Command {
         $processor = $this->processor();
 
         foreach ($processor->tasks() as $index => $task) {
-            $description = trim($this->getProcessedHelpTaskDescription($task, $level + 1));
+            $description = mb_trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
             $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';
             $deprecated  = $this->getDeprecatedMark(new ReflectionClass($task));
-            $title       = trim((string) $this->getProcessedHelpTaskTitle($task));
+            $title       = mb_trim((string) $this->getProcessedHelpTaskTitle($task));
             $title       = $title !== '' ? $title : "Task №{$index}";
             $help       .= <<<MARKDOWN
                 {$heading} {$title} ({$extensions}){$deprecated}
@@ -196,7 +196,7 @@ class Preprocess extends Command {
             $class      = new ReflectionClass($instruction);
             $name       = $instruction::getName();
             $desc       = $this->getDocBlock($class, null, $level + 1);
-            $target     = trim(
+            $target     = mb_trim(
                 (string) $this->getProcessedHelpTaskPreprocessInstructionTarget($instruction, 'target', 2),
             );
             $target     = $target !== '' ? $target : '_No description provided_.';
@@ -204,7 +204,7 @@ class Preprocess extends Command {
             $deprecated = $this->getDeprecatedMark($class);
 
             if ($params !== null) {
-                $help[$name] = rtrim(
+                $help[$name] = mb_rtrim(
                     <<<HELP
                     {$heading} `[{$name}]: <target> <parameters>`{$deprecated}
 
@@ -216,7 +216,7 @@ class Preprocess extends Command {
                     HELP,
                 );
             } else {
-                $help[$name] = rtrim(
+                $help[$name] = mb_rtrim(
                     <<<HELP
                     {$heading} `[{$name}]: <target>`{$deprecated}
 
@@ -313,10 +313,10 @@ class Preprocess extends Command {
             }
 
             // Add
-            $definition                    = $this->getDeprecatedMark($property).$definition;
-            $description                   = trim($this->getDocBlock($property, $padding));
-            $description                   = $description !== '' ? $description : '_No description provided_.';
-            $parameters[trim($definition)] = $description;
+            $definition                       = $this->getDeprecatedMark($property).$definition;
+            $description                      = mb_trim($this->getDocBlock($property, $padding));
+            $description                      = $description !== '' ? $description : '_No description provided_.';
+            $parameters[mb_trim($definition)] = $description;
         }
 
         // Empty?
@@ -335,7 +335,7 @@ class Preprocess extends Command {
         }
 
         $list = Text::setPadding($list, $padding);
-        $list = rtrim($list);
+        $list = mb_rtrim($list);
 
         // Return
         return $list;
@@ -379,7 +379,7 @@ class Preprocess extends Command {
         }
 
         // Return
-        return trim($help);
+        return mb_trim($help);
     }
 
     /**

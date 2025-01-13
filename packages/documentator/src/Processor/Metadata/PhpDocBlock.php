@@ -13,9 +13,9 @@ use Override;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 
+use function mb_trim;
 use function preg_replace_callback;
 use function trigger_deprecation;
-use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -51,7 +51,7 @@ readonly class PhpDocBlock implements Metadata {
         // Prepare
         $content = (new PhpDoc($class->class->getDocComment()?->getText()))->getText();
         $content = $this->preprocess($class->context, $content);
-        $content = trim($content);
+        $content = mb_trim($content);
 
         // Create
         return $this->markdown->parse($content, $file->getPath());

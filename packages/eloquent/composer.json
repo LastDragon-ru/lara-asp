@@ -18,10 +18,12 @@
   },
   "require": {
     "php": "^8.3|^8.4",
+    "ext-mbstring": "*",
     "illuminate/collections": "^11.0.8",
     "illuminate/database": "^11.0.8",
     "illuminate/support": "^11.0.8",
-    "lastdragon-ru/lara-asp-core": "self.version"
+    "lastdragon-ru/lara-asp-core": "self.version",
+    "symfony/polyfill-php84": "^1.31"
   },
   "require-dev": {
     "illuminate/contracts": "^11.0.8",

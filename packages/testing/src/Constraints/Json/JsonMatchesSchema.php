@@ -10,7 +10,7 @@ use Opis\JsonSchema\Validator;
 use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 
-use function ltrim;
+use function mb_ltrim;
 use function preg_replace;
 
 use const PHP_EOL;
@@ -66,7 +66,7 @@ class JsonMatchesSchema extends Constraint {
                 $formatted    = (new ErrorFormatter())->format($error);
                 $padding      = '    ';
                 $description .= PHP_EOL.$padding.'Errors: ';
-                $description .= ltrim((string) preg_replace('/^/m', $padding, $this->prettify($formatted)));
+                $description .= mb_ltrim((string) preg_replace('/^/m', $padding, $this->prettify($formatted)));
                 $description .= PHP_EOL;
             }
         }

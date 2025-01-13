@@ -14,8 +14,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+use function mb_trim;
 use function sprintf;
-use function trim;
 
 #[AsCommand(
     name       : Package::Name.':sql-migration',
@@ -35,7 +35,7 @@ class SqlMigration extends BaseCommand {
     }
 
     public function __invoke(SqlMigrationCreator $creator): int {
-        $name = Str::snake(trim(Cast::toString($this->input->getArgument('name'))));
+        $name = Str::snake(mb_trim(Cast::toString($this->input->getArgument('name'))));
         $path = Cast::toStringNullable($this->input->getOption('path')) ?? $this->getMigrationPath();
         $path = (new DirectoryPath($this->laravel->basePath()))->getFilePath($path);
         $path = (string) $path;

@@ -16,7 +16,7 @@ use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function trim;
+use function mb_trim;
 
 /**
  * @internal
@@ -41,7 +41,7 @@ final class InstructionTest extends TestCase {
         if ($expected instanceof Closure) {
             self::expectExceptionObject($expected($this, $context, $params));
         } else {
-            $expected = trim(self::getTestData()->content($expected));
+            $expected = mb_trim(self::getTestData()->content($expected));
         }
 
         $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
@@ -52,7 +52,7 @@ final class InstructionTest extends TestCase {
             self::assertIsString($actual);
         }
 
-        self::assertSame($expected, trim((string) $actual));
+        self::assertSame($expected, mb_trim((string) $actual));
     }
     //</editor-fold>
 

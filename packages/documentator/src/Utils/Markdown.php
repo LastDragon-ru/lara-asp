@@ -15,16 +15,16 @@ use League\CommonMark\Parser\MarkdownParser;
 
 use function array_slice;
 use function implode;
-use function ltrim;
+use function mb_ltrim;
 use function mb_strlen;
 use function mb_substr;
+use function mb_trim;
 use function min;
 use function preg_split;
 use function str_ends_with;
 use function str_repeat;
 use function str_starts_with;
 use function trigger_deprecation;
-use function trim;
 
 use const PHP_INT_MAX;
 
@@ -41,7 +41,7 @@ class Markdown {
      */
     public static function getTitle(string $string): ?string {
         $title = static::getText($string, static::getTitleNode($string));
-        $title = $title !== null ? ltrim($title, '# ') : null;
+        $title = $title !== null ? mb_ltrim($title, '# ') : null;
         $title = $title !== '' ? $title : null;
 
         return $title;
@@ -70,7 +70,7 @@ class Markdown {
         $cut    = PHP_INT_MAX;
 
         foreach ($lines as $line) {
-            $trimmed = ltrim($line);
+            $trimmed = mb_ltrim($line);
             $padding = mb_strlen($line) - mb_strlen($trimmed);
             $cut     = min($cut, $padding);
         }
@@ -112,7 +112,7 @@ class Markdown {
         $lines = preg_split('/\R/u', $string);
         $lines = $lines !== false ? $lines : [];
         $lines = array_slice($lines, $start - 1, $end - $start + 1);
-        $text  = trim(implode("\n", $lines));
+        $text  = mb_trim(implode("\n", $lines));
 
         return $text;
     }

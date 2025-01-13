@@ -30,8 +30,8 @@ use function is_array;
 use function json_decode;
 use function json_encode;
 use function ksort;
+use function mb_trim;
 use function rawurldecode;
-use function trim;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -173,7 +173,7 @@ class Task implements TaskContract {
                         $location = Location::get($next);
                     } else {
                         $location    = Location::get($node);
-                        $instruction = trim((string) $document->getText($location));
+                        $instruction = mb_trim((string) $document->getText($location));
                         $text        = "{$instruction}\n{$text}";
                     }
 

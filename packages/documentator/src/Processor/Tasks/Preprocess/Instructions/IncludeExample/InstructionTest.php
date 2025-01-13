@@ -18,8 +18,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function file_get_contents;
 use function implode;
+use function mb_trim;
 use function range;
-use function trim;
 
 /**
  * @internal
@@ -63,7 +63,7 @@ final class InstructionTest extends TestCase {
         $file     = $fs->getFile($path);
         $params   = new Parameters($file->getName());
         $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
-        $expected = trim((string) file_get_contents((string) $path));
+        $expected = mb_trim((string) file_get_contents((string) $path));
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 

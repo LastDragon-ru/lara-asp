@@ -13,7 +13,7 @@ use function array_map;
 use function explode;
 use function http_build_query;
 use function implode;
-use function ltrim;
+use function mb_ltrim;
 use function parse_url;
 use function preg_match;
 use function rawurldecode;
@@ -48,7 +48,7 @@ class Protocol {
         // Build
         $scheme = static::Scheme;
         $query  = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
-        $path   = implode('/', array_map(rawurlencode(...), explode('/', ltrim($path, '/'))));
+        $path   = implode('/', array_map(rawurlencode(...), explode('/', mb_ltrim($path, '/'))));
         $uri    = new Uri((array) parse_url("{$scheme}://{$host}/{$path}?{$query}"));
 
         // Return
@@ -70,8 +70,8 @@ class Protocol {
 
         if ($uri->host() === self::HostWindows) {
             // For Windows it can be `/C:/path`, so we need to remove the slash
-            if (preg_match('/^\/[a-z]\:/i', $path) > 0) {
-                $path = ltrim($path, '/');
+            if (preg_match('/^\/[a-z]\:/iu', $path) > 0) {
+                $path = mb_ltrim($path, '/');
             }
         }
 

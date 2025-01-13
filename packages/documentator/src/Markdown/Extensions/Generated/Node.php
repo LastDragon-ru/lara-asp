@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
 
 use League\CommonMark\Node\Block\AbstractBlock;
 
-use function trim;
+use function mb_trim;
 
 /**
  * Represents the generated text inside document.
@@ -35,7 +35,7 @@ class Node extends AbstractBlock {
         $suffix  = <<<RESULT
             [//]: # (end: {$id})
             RESULT;
-        $content = trim($content);
+        $content = mb_trim($content);
         $content = match (true) {
             $content !== '' => <<<RESULT
                 {$prefix}

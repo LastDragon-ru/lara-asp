@@ -34,9 +34,9 @@ use function array_values;
 use function implode;
 use function is_array;
 use function ksort;
+use function mb_trim;
 use function sort;
 use function str_starts_with;
-use function trim;
 
 /**
  * Searches class/method/property/etc names in `inline code` and wrap it into a
@@ -286,7 +286,7 @@ class Task implements TaskContract {
             } elseif ($node instanceof CodeNode) {
                 $parent = $node->parent();
                 $target = $node;
-                $link   = $this->factory->create(trim($node->getLiteral(), "`{$mark}"));
+                $link   = $this->factory->create(mb_trim($node->getLiteral(), "`{$mark}"));
 
                 if ($parent instanceof LinkNode) {
                     $target = $parent;
@@ -298,7 +298,7 @@ class Task implements TaskContract {
                 }
 
                 $key        = (string) $link;
-                $deprecated = str_starts_with(trim($node->getLiteral(), '`'), $mark);
+                $deprecated = str_starts_with(mb_trim($node->getLiteral(), '`'), $mark);
 
                 if (isset($links[$key])) {
                     $links[$key]->deprecated = $links[$key]->deprecated || $deprecated;

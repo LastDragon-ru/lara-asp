@@ -23,7 +23,7 @@ use Override;
 use function array_slice;
 use function count;
 use function iterator_count;
-use function ltrim;
+use function mb_ltrim;
 use function mb_strlen;
 use function mb_substr;
 use function preg_split;
@@ -149,7 +149,7 @@ class Listener implements EnvironmentAwareInterface {
             $cell    = Cast::to(TableCell::class, $cell);
             $content = $cells[$index];
             $length  = mb_strlen($content);
-            $trimmed = $length - mb_strlen(ltrim($content));
+            $trimmed = $length - mb_strlen(mb_ltrim($content));
 
             $cell->setStartLine($line);
             $cell->setEndLine($line);
@@ -191,7 +191,7 @@ class Listener implements EnvironmentAwareInterface {
         do {
             $line    = (string) Utils::getLine($document, $index++);
             $line    = mb_substr($line, $initial);
-            $trimmed = ltrim($line);
+            $trimmed = mb_ltrim($line);
             $padding = mb_strlen($line) - mb_strlen($trimmed);
         } while ($index < $end && $trimmed === '');
 

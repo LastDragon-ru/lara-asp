@@ -9,7 +9,7 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\AbstractDumper;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 
-use function trim;
+use function mb_trim;
 
 class Dumper {
     private readonly VarCloner      $cloner;
@@ -49,7 +49,7 @@ class Dumper {
     }
 
     public function raw(Stringable|string $value, ?string $expression, string $type): void {
-        $dump          = trim((string) $value);
+        $dump          = mb_trim((string) $value);
         $dump          = ($expression !== null ? "The `{$expression}` is:\n\n" : '')."```{$type}\n{$dump}\n```\n";
         $this->dumps[] = $dump;
     }

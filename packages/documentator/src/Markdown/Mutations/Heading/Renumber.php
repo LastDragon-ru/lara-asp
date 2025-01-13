@@ -12,10 +12,10 @@ use Override;
 use function mb_strlen;
 use function mb_strpos;
 use function mb_substr;
+use function mb_trim;
 use function min;
 use function str_repeat;
 use function str_starts_with;
-use function trim;
 
 /**
  * Updates all ATX headings levels.
@@ -50,9 +50,9 @@ class Renumber implements Mutation {
         foreach ($headings as [$heading, $location, $text]) {
             $level  = min(6, $heading->getLevel() + $diff);
             $prefix = mb_substr($text, 0, (int) mb_strpos($text, '#'));
-            $eols   = mb_strlen($text) - mb_strlen(trim($text, "\n"));
+            $eols   = mb_strlen($text) - mb_strlen(mb_trim($text, "\n"));
             $text   = mb_substr($text, mb_strlen($prefix));
-            $text   = $prefix.str_repeat('#', $level).' '.trim(trim($text, '#')).str_repeat("\n", $eols);
+            $text   = $prefix.str_repeat('#', $level).' '.mb_trim(mb_trim($text, '#')).str_repeat("\n", $eols);
 
             yield [$location, $text];
         }
@@ -74,7 +74,7 @@ class Renumber implements Mutation {
             $location = LocationData::get($node);
             $line     = $document->getText($location);
 
-            if ($line === null || !str_starts_with(trim($line), '#')) {
+            if ($line === null || !str_starts_with(mb_trim($line), '#')) {
                 continue;
             }
 

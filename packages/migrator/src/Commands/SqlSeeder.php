@@ -9,7 +9,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 
 use function basename;
 use function dirname;
-use function trim;
+use function mb_trim;
 
 #[AsCommand(
     name       : Package::Name.':sql-seeder',
@@ -33,7 +33,7 @@ class SqlSeeder extends GeneratorCommand {
     }
 
     protected function resolveStubPath(string $stub): string {
-        $custom = $this->laravel->basePath(trim($stub, '/'));
+        $custom = $this->laravel->basePath(mb_trim($stub, '/'));
         $path   = !$this->files->exists($custom)
             ? __DIR__.'/../../'.$stub
             : $custom;

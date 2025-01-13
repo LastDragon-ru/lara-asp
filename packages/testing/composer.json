@@ -43,6 +43,7 @@
     "symfony/filesystem": "^7.0.0",
     "symfony/http-foundation": "^7.0.0",
     "symfony/mime": "^7.0.0",
+    "symfony/polyfill-php84": "^1.31",
     "symfony/psr-http-message-bridge": "^7.0.0"
   },
   "require-dev": {

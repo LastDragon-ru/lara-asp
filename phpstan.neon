@@ -42,6 +42,31 @@ parameters:
             allowIn:
                 - packages/dev/src/App/*
                 - packages/*/docs/*
+    disallowedFunctionCalls:
+        -
+            function: 'strlen()'
+            message: 'use mb_strlen() instead'
+        -
+            function: 'substr()'
+            message: 'use mb_substr() instead'
+        -
+            function: 'trim()'
+            message: 'use mb_trim() instead'
+        -
+            function: 'ltrim()'
+            message: 'use mb_ltrim() instead'
+        -
+            function: 'rtrim()'
+            message: 'use mb_rtrim() instead'
+        -
+            function: 'str_pad()'
+            message: 'use mb_str_pad() instead'
+        -
+            function: 'lcfirst()'
+            message: 'use mb_lcfirst() instead'
+        -
+            function: 'ucfirst()'
+            message: 'use mb_ucfirst() instead'
 
 includes:
     # Vendor

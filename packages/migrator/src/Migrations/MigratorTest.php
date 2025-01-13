@@ -18,9 +18,9 @@ use function explode;
 use function implode;
 use function json_decode;
 use function json_encode;
-use function rtrim;
+use function mb_rtrim;
+use function mb_trim;
 use function str_replace;
-use function trim;
 
 /**
  * @internal
@@ -162,6 +162,6 @@ final class MigratorTest extends TestCase {
     }
 
     private function prepare(string $content): string {
-        return trim(implode("\n", array_map(rtrim(...), explode("\n", str_replace("\r\n", "\n", $content)))));
+        return mb_trim(implode("\n", array_map(mb_rtrim(...), explode("\n", str_replace("\r\n", "\n", $content)))));
     }
 }

@@ -19,6 +19,7 @@
   },
   "require": {
     "php": "^8.3|^8.4",
+    "ext-mbstring": "*",
     "illuminate/container": "^11.0.8",
     "illuminate/contracts": "^11.0.8",
     "illuminate/support": "^11.0.8",
@@ -27,6 +28,7 @@
     "nikic/php-parser": "^5.4.0",
     "nette/neon": "^3.4.1",
     "phpstan/phpstan": "^2.1.1",
+    "symfony/polyfill-php84": "^1.31",
     "symfony/var-dumper": "^7.0.0"
   },
   "require-dev": {

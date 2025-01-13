@@ -17,10 +17,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use Override;
 use Throwable;
 
+use function mb_trim;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace_callback;
-use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -70,7 +70,7 @@ class Instruction implements InstructionContract {
         $target   = $context->file->getFilePath($parameters->target);
         $target   = Cast::to(File::class, yield new FileReference($target));
         $language = $this->getLanguage($context, $target, $parameters);
-        $content  = trim($target->getMetadata(Content::class));
+        $content  = mb_trim($target->getMetadata(Content::class));
         $content  = <<<CODE
             ```{$language}
             $content
@@ -81,7 +81,7 @@ class Instruction implements InstructionContract {
         if ($this->runner !== null) {
             // Run
             try {
-                $output = trim((string) ($this->runner)($target));
+                $output = mb_trim((string) ($this->runner)($target));
             } catch (Throwable $exception) {
                 throw new ExampleFailed($context, $parameters, $exception);
             }
@@ -100,7 +100,7 @@ class Instruction implements InstructionContract {
                 );
                 $output = $this->markdown->parse($output, $target->getPath());
                 $output = $context->toInlinable($output);
-                $output = trim((string) $output);
+                $output = mb_trim((string) $output);
             }
 
             // Format
@@ -142,7 +142,7 @@ class Instruction implements InstructionContract {
         }
 
         // Return
-        return trim($content);
+        return mb_trim($content);
     }
 
     protected function getLanguage(Context $context, File $target, Parameters $parameters): ?string {

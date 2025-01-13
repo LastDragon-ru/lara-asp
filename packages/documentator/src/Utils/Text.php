@@ -4,17 +4,17 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use function hash;
 use function implode;
+use function mb_rtrim;
 use function mb_strlen;
 use function mb_substr;
+use function mb_trim;
 use function min;
 use function pathinfo;
 use function preg_replace;
 use function preg_split;
-use function rtrim;
 use function str_repeat;
 use function str_replace;
 use function str_starts_with;
-use function trim;
 
 use const PATHINFO_FILENAME;
 use const PHP_INT_MAX;
@@ -32,7 +32,7 @@ class Text {
      * @param int<0, max> $level
      */
     public static function setPadding(string $text, int $level, string $padding = ' ', int &$cuts = 0): string {
-        $trimmed = rtrim($padding);
+        $trimmed = mb_rtrim($padding);
         $prefix  = str_repeat($padding, $level);
         $length  = mb_strlen($padding);
         $lines   = static::getLines($text);
@@ -58,7 +58,7 @@ class Text {
         }
 
         foreach ($lines as $i => $line) {
-            $lines[$i] = rtrim($prefix.mb_substr($line, $cut));
+            $lines[$i] = mb_rtrim($prefix.mb_substr($line, $cut));
         }
 
         $text = implode("\n", $lines);
@@ -82,7 +82,7 @@ class Text {
         $title = str_replace(['_', '.'], ' ', $title);
         $title = (string) preg_replace('/(\p{Ll})(\p{Lu})/u', '$1 $2', $title);
         $title = (string) preg_replace('/\s+/u', ' ', $title);
-        $title = trim($title);
+        $title = mb_trim($title);
 
         return $title;
     }

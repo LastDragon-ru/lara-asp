@@ -10,7 +10,7 @@ use SplFileInfo;
 
 use function basename;
 use function dirname;
-use function ltrim;
+use function mb_ltrim;
 use function sprintf;
 use function str_replace;
 use function str_starts_with;
@@ -40,7 +40,7 @@ class TestData {
         $path = str_replace('\\', '/', $path);
         $path = (str_starts_with($path, '.') && !str_starts_with($path, './') && !str_starts_with($path, '../')) || str_starts_with($path, '~')
             ? $path
-            : '/'.ltrim($path, '/');
+            : '/'.mb_ltrim($path, '/');
         $path = "{$dir}/{$name}{$path}";
 
         return $path;

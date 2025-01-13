@@ -68,8 +68,8 @@ use function is_string;
 use function json_encode;
 use function mb_strlen;
 use function mb_substr;
+use function mb_trim;
 use function sprintf;
-use function trim;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -520,7 +520,7 @@ class AstManipulator {
             // empty
         }
 
-        return trim("{$prefix} {$name}");
+        return mb_trim("{$prefix} {$name}");
     }
 
     /**

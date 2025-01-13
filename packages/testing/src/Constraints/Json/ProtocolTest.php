@@ -14,7 +14,7 @@ use function explode;
 use function http_build_query;
 use function implode;
 use function json_decode;
-use function ltrim;
+use function mb_ltrim;
 use function rawurlencode;
 use function str_replace;
 
@@ -49,7 +49,7 @@ final class ProtocolTest extends TestCase {
         $file   = new SplFileInfo(__FILE__);
         $host   = PHP_OS_FAMILY === 'Windows' ? 'windows.path' : 'unix.path';
         $path   = str_replace('\\', '/', $file->getPathname());
-        $path   = implode('/', array_map(rawurlencode(...), explode('/', '/'.ltrim($path, '/'))));
+        $path   = implode('/', array_map(rawurlencode(...), explode('/', '/'.mb_ltrim($path, '/'))));
         $params = ['a' => 'a', 'b' => 'b'];
         $actual = Protocol::getUri($file, $params);
 

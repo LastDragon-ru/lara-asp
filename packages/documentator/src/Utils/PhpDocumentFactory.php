@@ -13,8 +13,8 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 
 use function file_get_contents;
+use function mb_trim;
 use function preg_replace_callback;
-use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -39,7 +39,7 @@ class PhpDocumentFactory {
 
         if ($path !== null) {
             $context ??= $this->getContext((string) $path);
-            $text      = trim(
+            $text      = mb_trim(
                 (string) preg_replace_callback(
                     pattern : '/\{@(?:see|link)\s+(?P<reference>[^}\s]+)\s?}/imu',
                     callback: function (array $matches) use ($context): string {
