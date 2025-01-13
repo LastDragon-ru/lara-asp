@@ -10,6 +10,7 @@ use Symfony\Component\Finder\Glob;
 // General
 $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
+    ->ignoreErrorsOnPackage('symfony/polyfill-php84', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreUnknownClasses([
@@ -67,14 +68,14 @@ $files = Finder::create()
 $parse = static function (string $line): string {
     // Simplified parser
     // https://git-scm.com/docs/gitattributes
-    $line = trim($line);
+    $line = mb_trim($line);
 
     if (str_starts_with($line, '#')) {
         $line = '';
     }
 
     if (str_ends_with($line, ' export-ignore')) {
-        $line = trim(explode(' ', $line, 2)[0] ?? '');
+        $line = mb_trim(explode(' ', $line, 2)[0] ?? '');
     } else {
         $line = '';
     }
@@ -92,7 +93,7 @@ $parse = static function (string $line): string {
 
     // Convert
     if ($line) {
-        $line = ltrim($line, '/');
+        $line = mb_ltrim($line, '/');
         $line = Glob::toRegex($line);
     }
 

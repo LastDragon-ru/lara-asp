@@ -16,8 +16,8 @@ use SplFileInfo;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_use_internal_errors;
+use function mb_trim;
 use function strtolower;
-use function trim;
 
 use const LIBXML_ERR_ERROR;
 use const LIBXML_ERR_FATAL;
@@ -93,7 +93,7 @@ class XmlMatchesSchema extends Constraint {
 
         foreach ($this->errors as $error) {
             $padding      = '    ';
-            $description .= PHP_EOL.$padding.trim("{$levels[$error->level]} #{$error->code}: {$error->message}");
+            $description .= PHP_EOL.$padding.mb_trim("{$levels[$error->level]} #{$error->code}: {$error->message}");
             $description .= PHP_EOL."{$padding}{$error->file}:{$error->line}";
             $description .= PHP_EOL;
         }

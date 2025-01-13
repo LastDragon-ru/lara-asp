@@ -10,7 +10,8 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
+|  PHP  | `^8.4` |  `HEAD`   |
+|  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `7.1.0 ⋯ 2.0.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |

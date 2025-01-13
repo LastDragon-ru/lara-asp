@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Core\Provider;
 use ReflectionClass;
 
 use function dirname;
-use function ltrim;
+use function mb_ltrim;
 
 trait Helper {
     /**
@@ -18,7 +18,7 @@ trait Helper {
      */
     protected function getPath(string $path): string {
         $class = new ReflectionClass(self::class);
-        $path  = dirname((string) $class->getFileName()).'/'.ltrim($path, '/');
+        $path  = dirname((string) $class->getFileName()).'/'.mb_ltrim($path, '/');
 
         return $path;
     }

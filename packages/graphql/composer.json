@@ -18,7 +18,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.3",
+    "php": "^8.3|^8.4",
     "ext-filter": "*",
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
@@ -31,6 +31,7 @@
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
     "lastdragon-ru/lara-asp-serializer": "self.version",
+    "symfony/polyfill-php84": "^1.31",
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {

@@ -16,10 +16,10 @@ use function array_reduce;
 use function floor;
 use function is_float;
 use function iterator_to_array;
+use function mb_str_pad;
 use function mb_strlen;
 use function pow;
 use function round;
-use function str_pad;
 
 use const STR_PAD_LEFT;
 
@@ -144,7 +144,7 @@ readonly class DurationFormat implements Format {
         }
 
         // Width?
-        $value = str_pad((string) $value, $length, '0', STR_PAD_LEFT);
+        $value = mb_str_pad((string) $value, $length, '0', STR_PAD_LEFT);
 
         // Return
         return $value;

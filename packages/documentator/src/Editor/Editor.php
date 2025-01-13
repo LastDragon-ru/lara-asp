@@ -15,8 +15,8 @@ use function array_values;
 use function count;
 use function implode;
 use function is_string;
+use function mb_rtrim;
 use function mb_substr;
-use function rtrim;
 use function usort;
 
 use const PHP_INT_MAX;
@@ -103,17 +103,17 @@ readonly class Editor implements Stringable {
 
                 for ($t = 0; $t < $count; $t++) {
                     $insert[] = match (true) {
-                        $t === 0          => rtrim($prefix.$text[$t]),
-                        $t === $count - 1 => rtrim($padding.$text[$t].$suffix),
-                        default           => rtrim($padding.$text[$t]),
+                        $t === 0          => mb_rtrim($prefix.$text[$t]),
+                        $t === $count - 1 => mb_rtrim($padding.$text[$t].$suffix),
+                        default           => mb_rtrim($padding.$text[$t]),
                     };
                 }
 
                 array_splice($lines, $number, 1, $insert);
             } elseif ($count === 1) {
-                $lines[$number] = rtrim($prefix.$text[0].$suffix);
+                $lines[$number] = mb_rtrim($prefix.$text[0].$suffix);
             } elseif (($prefix !== '' && $prefix !== $padding) || $suffix !== '') {
-                $lines[$number] = rtrim($prefix.$suffix);
+                $lines[$number] = mb_rtrim($prefix.$suffix);
             } else {
                 unset($lines[$number]);
             }

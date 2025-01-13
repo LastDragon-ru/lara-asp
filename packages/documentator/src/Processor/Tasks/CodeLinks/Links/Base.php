@@ -13,7 +13,7 @@ use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 
-use function ltrim;
+use function mb_ltrim;
 use function mb_strrpos;
 use function mb_substr;
 
@@ -76,7 +76,7 @@ abstract class Base implements Link {
             return null;
         }
 
-        if ((string) $comment->class->namespacedName !== ltrim($this->class, '\\')) {
+        if ((string) $comment->class->namespacedName !== mb_ltrim($this->class, '\\')) {
             return null;
         }
 
@@ -113,7 +113,7 @@ abstract class Base implements Link {
     }
 
     private function un(string $class): string {
-        $class    = ltrim($class, '\\');
+        $class    = mb_ltrim($class, '\\');
         $position = mb_strrpos($class, '\\');
 
         if ($position !== false) {

@@ -7,9 +7,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use Override;
 
-use function ltrim;
+use function mb_ltrim;
+use function mb_trim;
 use function preg_match;
-use function trim;
 
 use const PREG_UNMATCHED_AS_NULL;
 
@@ -37,7 +37,7 @@ class Factory implements LinkFactory {
             /imx
             REGEXP;
         $matches    = [];
-        $string     = trim($string);
+        $string     = mb_trim($string);
 
         if (preg_match($regexp, $string, $matches, PREG_UNMATCHED_AS_NULL) > 0) {
             $class = $matches['class'];
@@ -46,7 +46,7 @@ class Factory implements LinkFactory {
                 : $class;
 
             if ($class !== null) {
-                $class     = '\\'.ltrim($class, '\\');
+                $class     = '\\'.mb_ltrim($class, '\\');
                 $reference = match (true) {
                     isset($matches['property']) => new ClassPropertyLink($class, $matches['property']),
                     isset($matches['method'])   => new ClassMethodLink($class, $matches['method']),

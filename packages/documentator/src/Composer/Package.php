@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use function array_key_exists;
 use function array_unique;
 use function array_values;
-use function ltrim;
+use function mb_ltrim;
 use function mb_strlen;
 use function mb_substr;
 use function str_starts_with;
@@ -59,7 +59,7 @@ class Package {
     }
 
     public function normalize(string $class): string {
-        return '\\'.ltrim($class, '\\');
+        return '\\'.mb_ltrim($class, '\\');
     }
 
     /**

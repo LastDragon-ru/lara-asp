@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function array_map;
 use function array_walk_recursive;
-use function trim;
+use function mb_trim;
 
 /**
  * @internal
@@ -68,7 +68,7 @@ final class TaskTest extends TestCase {
         };
         $renderer = $this->app()->make(DocumentRenderer::class);
         $render   = static function (Node $node) use ($markdown, $renderer): string {
-            return trim(
+            return mb_trim(
                 $renderer->render(
                     new class ($markdown, $node) extends Document {
                         public function __construct(MarkdownContract $markdown, Node $node) {

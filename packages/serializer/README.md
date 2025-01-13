@@ -10,7 +10,8 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
+|  PHP  | `^8.4` |  `HEAD`   |
+|  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `7.1.0 ⋯ 5.0.0-beta.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 5.0.0-beta.0`   |
 |  Laravel  | `^11.0.8` |  `HEAD`   |

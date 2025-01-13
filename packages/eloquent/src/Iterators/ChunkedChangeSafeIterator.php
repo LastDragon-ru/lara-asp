@@ -10,7 +10,7 @@ use Override;
 
 use function end;
 use function explode;
-use function trim;
+use function mb_trim;
 
 /**
  * The iterator that grabs rows by chunk and safe for changing/deleting rows
@@ -90,7 +90,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     protected function column(Model|null $item): mixed {
         $value  = null;
         $column = explode('.', $this->getColumn());
-        $column = trim(end($column), '`"[]');
+        $column = mb_trim(end($column), '`"[]');
 
         if ($item !== null) {
             $value = $item->getAttribute($column);

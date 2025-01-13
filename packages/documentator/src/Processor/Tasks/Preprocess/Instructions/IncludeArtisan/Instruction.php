@@ -16,9 +16,9 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use function getenv;
+use function mb_trim;
 use function putenv;
 use function strtr;
-use function trim;
 
 /**
  * Executes the `<target>` as Artisan command and returns result.
@@ -71,7 +71,7 @@ class Instruction implements InstructionContract {
                 throw new ArtisanCommandFailed($context, $parameters, $result);
             }
 
-            return trim($output->fetch());
+            return mb_trim($output->fetch());
         } catch (ArtisanCommandFailed $exception) {
             throw $exception;
         } catch (Exception $exception) {

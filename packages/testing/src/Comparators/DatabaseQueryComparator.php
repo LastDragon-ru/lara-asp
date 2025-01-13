@@ -13,10 +13,10 @@ use function array_column;
 use function array_flip;
 use function array_unique;
 use function array_values;
+use function mb_strlen;
 use function natsort;
 use function preg_match_all;
 use function str_replace;
-use function strlen;
 use function uksort;
 
 use const PREG_SET_ORDER;
@@ -94,7 +94,7 @@ class DatabaseQueryComparator extends ObjectComparator {
             $matches = array_flip($matches);
 
             uksort($matches, static function (string|int $a, string|int $b): int {
-                return strlen("{$b}") <=> strlen("{$a}");
+                return mb_strlen("{$b}") <=> mb_strlen("{$a}");
             });
 
             foreach ($matches as $match => $index) {

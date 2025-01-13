@@ -18,15 +18,15 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Node;
 use Override;
 
-use function ltrim;
+use function mb_ltrim;
+use function mb_rtrim;
 use function mb_strlen;
 use function mb_substr;
+use function mb_trim;
 use function parse_url;
 use function preg_match;
 use function preg_quote;
 use function rawurldecode;
-use function rtrim;
-use function trim;
 
 use const PHP_URL_PATH;
 
@@ -76,16 +76,16 @@ readonly class Move implements Mutation {
             if ($node instanceof Link || $node instanceof Image) {
                 $offset       = Offset::get($node);
                 $location     = $location->withOffset($offset);
-                $origin       = trim((string) $document->getText($location));
+                $origin       = mb_trim((string) $document->getText($location));
                 $titleValue   = (string) $node->getTitle();
-                $titleWrapper = mb_substr(rtrim(mb_substr($origin, 0, -1)), -1, 1);
+                $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);
                 $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
                 $targetValue  = $this->target($document, $docPath, $newPath, $node->getUrl());
-                $targetWrap   = mb_substr(ltrim(ltrim($origin, '(')), 0, 1) === '<';
+                $targetWrap   = mb_substr(mb_ltrim(mb_ltrim($origin, '(')), 0, 1) === '<';
                 $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
                 $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
             } elseif ($node instanceof ReferenceNode) {
-                $origin       = trim((string) $document->getText($location));
+                $origin       = mb_trim((string) $document->getText($location));
                 $label        = $node->getLabel();
                 $titleValue   = $node->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);
@@ -93,7 +93,7 @@ readonly class Move implements Mutation {
                 $targetValue  = $this->target($document, $docPath, $newPath, $node->getDestination());
                 $targetWrap   = (bool) preg_match('/^\['.preg_quote($node->getLabel(), '/').']:\s+</u', $origin);
                 $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
-                $text         = trim("[{$label}]: {$target} {$title}");
+                $text         = mb_trim("[{$label}]: {$target} {$title}");
 
                 if ($location->startLine !== $location->endLine) {
                     $padding = $location->internalPadding ?? $location->startLinePadding;

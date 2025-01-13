@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use function array_filter;
 use function array_values;
 use function explode;
-use function trim;
+use function mb_trim;
 
 readonly class Git {
     public function __construct(
@@ -50,7 +50,7 @@ readonly class Git {
         $process = $this->factory->newPendingProcess();
         $process = $root !== null ? $process->path((string) $root) : $process->command('');
         $output  = $process->run($command)->throw()->output();
-        $output  = trim($output);
+        $output  = mb_trim($output);
 
         return $output;
     }

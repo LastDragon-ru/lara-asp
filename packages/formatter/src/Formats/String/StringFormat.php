@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Formatter\Contracts\Format;
 use Override;
 use Stringable;
 
-use function trim;
+use function mb_trim;
 
 /**
  * @implements Format<null, Stringable|string|null>
@@ -18,6 +18,6 @@ readonly class StringFormat implements Format {
 
     #[Override]
     public function __invoke(mixed $value): string {
-        return trim((string) $value);
+        return mb_trim((string) $value);
     }
 }

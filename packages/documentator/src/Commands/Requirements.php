@@ -35,13 +35,13 @@ use function file_get_contents;
 use function getcwd;
 use function mb_strlen;
 use function mb_substr;
+use function mb_trim;
 use function preg_match;
 use function preg_quote;
 use function range;
 use function reset;
 use function str_starts_with;
 use function strtr;
-use function trim;
 use function uksort;
 use function usort;
 
@@ -188,7 +188,7 @@ class Requirements extends Command {
             'packages'     => $packages,
             'requirements' => $requirements,
         ]);
-        $output = trim($output);
+        $output = mb_trim($output);
 
         $this->output->writeln($output);
     }
@@ -272,7 +272,7 @@ class Requirements extends Command {
 
             // Add
             $required                   = explode('|', Cast::toString($constraint));
-            $required                   = array_map(trim(...), $required);
+            $required                   = array_map(mb_trim(...), $required);
             $required                   = array_filter($required, static fn ($string) => $string !== '');
             $required                   = array_values($required);
             $requirement                = Cast::toString($requirement);

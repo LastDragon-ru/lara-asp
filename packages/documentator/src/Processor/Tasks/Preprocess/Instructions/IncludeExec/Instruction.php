@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Exceptions\TargetExecFailed;
 use Override;
 
-use function trim;
+use function mb_trim;
 
 /**
  * Executes the `<target>` and returns result.
@@ -45,7 +45,7 @@ readonly class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): string {
         try {
-            return trim(
+            return mb_trim(
                 $this->factory->newPendingProcess()
                     ->path((string) $context->file->getDirectoryPath())
                     ->run($parameters->target)

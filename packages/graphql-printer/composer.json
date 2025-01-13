@@ -17,8 +17,9 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.3",
+    "php": "^8.3|^8.4",
     "ext-mbstring": "*",
+    "symfony/polyfill-php84": "^1.31",
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {

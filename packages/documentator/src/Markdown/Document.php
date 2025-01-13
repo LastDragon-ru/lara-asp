@@ -25,10 +25,10 @@ use function array_values;
 use function count;
 use function implode;
 use function is_int;
-use function ltrim;
+use function mb_ltrim;
+use function mb_trim;
 use function str_ends_with;
 use function str_starts_with;
-use function trim;
 
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
@@ -57,7 +57,7 @@ class Document implements Stringable {
         if ($this->title === null) {
             $title       = $this->getFirstNode(Heading::class, static fn ($n) => $n->getLevel() === 1);
             $title       = $this->getBlockText($title) ?? '';
-            $title       = trim(ltrim("{$title}", '#'));
+            $title       = mb_trim(mb_ltrim("{$title}", '#'));
             $this->title = $title;
         }
 
@@ -71,7 +71,7 @@ class Document implements Stringable {
         if ($this->summary === null) {
             $summary       = $this->getSummaryNode();
             $summary       = $this->getBlockText($summary);
-            $summary       = trim("{$summary}");
+            $summary       = mb_trim("{$summary}");
             $this->summary = $summary;
         }
 
@@ -88,7 +88,7 @@ class Document implements Stringable {
         $body    = $start !== null && is_int($end)
             ? $this->getText(new Location($start + 1, $end))
             : null;
-        $body    = trim((string) $body);
+        $body    = mb_trim((string) $body);
         $body    = $body !== '' ? $body : null;
 
         return $body;
@@ -106,7 +106,7 @@ class Document implements Stringable {
 
         foreach ($mutations as $mutation) {
             $changes  = $mutation($document);
-            $content  = trim((string) $document->getEditor()->mutate($changes))."\n";
+            $content  = mb_trim((string) $document->getEditor()->mutate($changes))."\n";
             $document = $this->markdown->parse($content, $document->path);
         }
 

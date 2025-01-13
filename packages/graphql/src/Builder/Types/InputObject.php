@@ -37,7 +37,7 @@ use Override;
 
 use function count;
 use function is_a;
-use function trim;
+use function mb_trim;
 
 abstract class InputObject implements TypeDefinition {
     public function __construct(
@@ -388,7 +388,7 @@ abstract class InputObject implements TypeDefinition {
         }
 
         if ($description !== null) {
-            $description = trim($description);
+            $description = mb_trim($description);
             $description = $description !== '' ? $description : null;
         }
 

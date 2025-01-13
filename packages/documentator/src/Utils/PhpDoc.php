@@ -13,7 +13,7 @@ use PHPStan\PhpDocParser\ParserConfig;
 
 use function array_slice;
 use function implode;
-use function trim;
+use function mb_trim;
 
 /**
  * @see https://github.com/mockery/mockery/issues/1317
@@ -60,7 +60,7 @@ class PhpDoc {
 
     private function parse(?string $comment): ?PhpDocNode {
         // Empty?
-        if ($comment === null || trim($comment) === '') {
+        if ($comment === null || mb_trim($comment) === '') {
             return null;
         }
 
@@ -84,7 +84,7 @@ class PhpDoc {
 
         foreach (($node->children ?? []) as $child) {
             if ($child instanceof PhpDocTextNode) {
-                if (trim($child->text) !== '') {
+                if (mb_trim($child->text) !== '') {
                     $nodes[] = $child->text;
                 }
             } else {

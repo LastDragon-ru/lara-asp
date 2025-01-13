@@ -20,8 +20,8 @@ use NumberFormatter;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function mb_rtrim;
 use function pow;
-use function rtrim;
 use function str_replace;
 
 use const PHP_INT_MAX;
@@ -114,7 +114,7 @@ final class FormatterTest extends TestCase {
 
     public function testOrdinal(): void {
         self::assertSame('1st', $this->formatter->ordinal(1));
-        self::assertSame('10', rtrim($this->formatter->forLocale('ru_RU')->ordinal(10), '.'));
+        self::assertSame('10', mb_rtrim($this->formatter->forLocale('ru_RU')->ordinal(10), '.'));
     }
 
     public function testString(): void {

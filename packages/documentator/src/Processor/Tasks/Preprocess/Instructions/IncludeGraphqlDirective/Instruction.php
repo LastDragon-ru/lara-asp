@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 use Override;
 
 use function mb_substr;
-use function trim;
+use function mb_trim;
 
 /**
  * Includes the definition of the directive as a Markdown code block.
@@ -61,7 +61,7 @@ readonly class Instruction implements InstructionContract {
 
         try {
             $settings = ImmutableSettings::createFrom($origin)->setPrintDirectives(false);
-            $exported = trim((string) $this->printer->setSettings($settings)->export($definition));
+            $exported = mb_trim((string) $this->printer->setSettings($settings)->export($definition));
             $markdown = <<<MARKDOWN
                 ```graphql
                 {$exported}
