@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\Response;
 
-use GuzzleHttp\Psr7\Response;
 use LastDragon_ru\LaraASP\Testing\Exceptions\InvalidArgumentResponse;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
+use Nyholm\Psr7\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
