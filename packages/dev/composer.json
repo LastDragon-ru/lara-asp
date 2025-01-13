@@ -18,7 +18,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.3",
+    "php": "^8.3|^8.4",
     "illuminate/container": "^11.0.8",
     "illuminate/contracts": "^11.0.8",
     "illuminate/support": "^11.0.8",

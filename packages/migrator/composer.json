@@ -20,7 +20,7 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.3",
+    "php": "^8.3|^8.4",
     "ext-json": "*",
     "ext-mbstring": "*",
     "illuminate/conditionable": "^11.0.8",
