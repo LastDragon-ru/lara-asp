@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Remove::class)]
+#[CoversClass(Mutation::class)]
 final class RemoveTest extends TestCase {
     public function testInvoke(): void {
         $content = <<<'MARKDOWN'
