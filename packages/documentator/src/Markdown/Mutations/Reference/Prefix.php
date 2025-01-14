@@ -2,16 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
-use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use Override;
@@ -21,11 +18,11 @@ use function mb_strlen;
 /**
  * Adds unique prefix for all references.
  */
-class Prefix implements Mutation {
+readonly class Prefix extends Mutation {
     public function __construct(
         protected string $prefix,
     ) {
-        // empty
+        parent::__construct();
     }
 
     /**
@@ -71,25 +68,6 @@ class Prefix implements Mutation {
 
             if ($text !== null) {
                 yield [$location, $text];
-            }
-        }
-    }
-
-    /**
-     * @return Iterator<array-key, AbstractWebResource|ReferenceNode>
-     */
-    private function nodes(Document $document): Iterator {
-        // Just in case
-        yield from [];
-
-        // Search
-        foreach ($document->node->iterator() as $node) {
-            if ($node instanceof AbstractWebResource && ReferenceData::get($node) !== null) {
-                yield $node;
-            } elseif ($node instanceof ReferenceNode) {
-                yield $node;
-            } else {
-                // empty
             }
         }
     }

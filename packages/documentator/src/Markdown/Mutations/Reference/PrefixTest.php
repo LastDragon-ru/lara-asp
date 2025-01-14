@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Prefix::class)]
+#[CoversClass(Mutation::class)]
 final class PrefixTest extends TestCase {
     public function testInvoke(): void {
         $content = <<<'MARKDOWN'
