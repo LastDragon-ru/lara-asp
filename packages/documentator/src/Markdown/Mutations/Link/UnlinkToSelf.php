@@ -10,9 +10,9 @@ use Override;
 use function rawurldecode;
 
 /**
- * Removes all links to the self.
+ * Unlink all links to the self.
  */
-readonly class RemoveToSelf extends Remove {
+readonly class UnlinkToSelf extends Unlink {
     /**
      * @inheritDoc
      */

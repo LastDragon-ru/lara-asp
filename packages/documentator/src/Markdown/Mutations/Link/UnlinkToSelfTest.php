@@ -10,9 +10,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(RemoveToSelf::class)]
+#[CoversClass(UnlinkToSelf::class)]
 #[CoversClass(Mutation::class)]
-final class RemoveToSelfTest extends TestCase {
+final class UnlinkToSelfTest extends TestCase {
     public function testInvoke(): void {
         $content = <<<'MARKDOWN'
             # Header
@@ -51,7 +51,7 @@ final class RemoveToSelfTest extends TestCase {
 
         $markdown = $this->app()->make(Markdown::class);
         $document = $markdown->parse($content, new FilePath('path/to/file.md'));
-        $actual   = (string) $document->mutate(new RemoveToSelf());
+        $actual   = (string) $document->mutate(new UnlinkToSelf());
 
         self::assertSame(
             <<<'MARKDOWN'

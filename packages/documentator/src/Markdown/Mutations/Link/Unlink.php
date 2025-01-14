@@ -8,9 +8,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use Override;
 
 /**
- * Removes all links.
+ * Unlink all links.
  */
-readonly class Remove extends Mutation {
+readonly class Unlink extends Mutation {
     /**
      * @inheritDoc
      */

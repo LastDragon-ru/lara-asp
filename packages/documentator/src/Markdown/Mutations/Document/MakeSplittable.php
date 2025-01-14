@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Composite;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\Remove as FootnotesRemove;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\RemoveToSelf;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\UnlinkToSelf as LinksUnlinkToSelf;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference\Inline as ReferencesInline;
 
 /**
@@ -17,7 +17,7 @@ readonly class MakeSplittable extends Composite {
         parent::__construct(
             new FootnotesRemove(),
             new ReferencesInline(),
-            new RemoveToSelf(),
+            new LinksUnlinkToSelf(),
         );
     }
 }
