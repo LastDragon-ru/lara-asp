@@ -84,6 +84,48 @@ final class EditorTest extends TestCase {
         self::assertSame($expected, $actual->getLines());
     }
 
+    public function testExtract(): void {
+        $startLine = 2;
+        $locations = [
+            new Location(0 + $startLine, 0 + $startLine, 2, 5),
+            new Location(0 + $startLine, 0 + $startLine, 14, 5),
+            new Location(0 + $startLine, 0 + $startLine, 26, 5),
+            new Location(1 + $startLine, 2 + $startLine, 17, null),
+            new Location(1 + $startLine, 2 + $startLine, 17, null), // same line -> should be ignored
+            new Location(4 + $startLine, 4 + $startLine, 2, 7),
+            new Location(4 + $startLine, 4 + $startLine, 9, 7),
+            new Location(4 + $startLine, 4 + $startLine, 16, 5),
+            new Location(5 + $startLine, 5 + $startLine, 16, 5),    // no line -> should be ignored
+        ];
+        $lines     = [
+            '11111 11111 11111 11111 11111 11111',
+            '22222 22222 22222 22222 22222 22222',
+            '33333 33333 33333 33333 33333 33333',
+            '44444 44444 44444 44444 44444 44444',
+            '55555 55555 55555 55555 55555 55555',
+        ];
+        $expected  = [
+            '111 1 111 1 111 1',
+            ' 22222 22222 22222',
+            '33333 33333 33333 33333 33333 33333',
+            '555 55555 55555 555',
+        ];
+        $editor    = new readonly class($lines, $startLine) extends Editor {
+            /**
+             * @return list<string>
+             */
+            public function getLines(): array {
+                return $this->lines;
+            }
+        };
+
+        $actual = $editor->extract($locations);
+
+        self::assertNotSame($editor, $actual);
+        self::assertEquals($lines, $editor->getLines());
+        self::assertSame($expected, $actual->getLines());
+    }
+
     public function testPrepare(): void {
         $editor   = new readonly class(['L1', 'L2']) extends Editor {
             /**
@@ -176,38 +218,5 @@ final class EditorTest extends TestCase {
         ];
 
         self::assertEquals($expected, $editor->expand($changes));
-    }
-
-    public function testGetText(): void {
-        $editor = new Editor(
-            [
-                0 => 'a b c d',
-                1 => 'e f g h',
-                2 => 'i j k l',
-                3 => 'm n o p',
-                4 => '',
-                5 => 'q r s t',
-                6 => 'u v w x',
-            ],
-            1,
-        );
-
-        self::assertNull($editor->getText(new Location(25, 25, 0)));
-        self::assertSame('f g', $editor->getText(new Location(2, 2, 2, 3)));
-        self::assertSame(
-            <<<'TEXT'
-            k l
-            m n o p
-
-            q r s
-            TEXT,
-            $editor->getText(new Location(3, 6, 4, 5)),
-        );
-        self::assertSame(
-            <<<'TEXT'
-            f g
-            TEXT,
-            $editor->getText([new Coordinate(2, 2, 3)]),
-        );
     }
 }

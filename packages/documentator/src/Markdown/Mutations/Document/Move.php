@@ -76,7 +76,7 @@ readonly class Move implements Mutation {
             if ($node instanceof Link || $node instanceof Image) {
                 $offset       = Offset::get($node);
                 $location     = $location->withOffset($offset);
-                $origin       = mb_trim((string) $document->getText($location));
+                $origin       = mb_trim($document->getText($location));
                 $titleValue   = (string) $node->getTitle();
                 $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);
                 $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
@@ -85,7 +85,7 @@ readonly class Move implements Mutation {
                 $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
                 $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
             } elseif ($node instanceof ReferenceNode) {
-                $origin       = mb_trim((string) $document->getText($location));
+                $origin       = mb_trim($document->getText($location));
                 $label        = $node->getLabel();
                 $titleValue   = $node->getTitle();
                 $titleWrapper = mb_substr($origin, -1, 1);

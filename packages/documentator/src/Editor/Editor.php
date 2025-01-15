@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Editor;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Mutators\Extractor;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 use Stringable;
@@ -25,7 +26,8 @@ readonly class Editor implements Stringable {
     /**
      * @var list<string>
      */
-    protected array $lines;
+    protected array     $lines;
+    protected Extractor $extractor;
 
     /**
      * @param list<string>|string $content
@@ -35,7 +37,8 @@ readonly class Editor implements Stringable {
         protected int $startLine = 0,
         protected string $endOfLine = "\n",
     ) {
-        $this->lines = is_string($content) ? Text::getLines($content) : $content;
+        $this->lines     = is_string($content) ? Text::getLines($content) : $content;
+        $this->extractor = new Extractor();
     }
 
     #[Override]
@@ -44,29 +47,15 @@ readonly class Editor implements Stringable {
     }
 
     /**
-     * @param iterable<array-key, Coordinate> $location
+     * @param iterable<mixed, iterable<mixed, Coordinate>> $locations
+     *
+     * @return new<static>
      */
-    public function getText(iterable $location): ?string {
-        // Select
-        $selected = null;
+    public function extract(iterable $locations): static {
+        $extracted = ($this->extractor)($this->lines, $locations, $this->startLine);
+        $editor    = new static($extracted, $this->startLine, $this->endOfLine);
 
-        foreach ($location as $coordinate) {
-            $number = $coordinate->line - $this->startLine;
-
-            if (isset($this->lines[$number])) {
-                $selected[] = mb_substr($this->lines[$number], $coordinate->offset, $coordinate->length);
-            } else {
-                $selected = null;
-                break;
-            }
-        }
-
-        if ($selected === null) {
-            return null;
-        }
-
-        // Return
-        return implode($this->endOfLine, $selected);
+        return $editor;
     }
 
     /**

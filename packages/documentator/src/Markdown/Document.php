@@ -97,8 +97,8 @@ class Document implements Stringable {
     /**
      * @param iterable<array-key, Coordinate> $location
      */
-    public function getText(iterable $location): ?string {
-        return $this->getEditor()->getText($location);
+    public function getText(iterable $location): string {
+        return (string) $this->getEditor()->extract([$location]);
     }
 
     public function mutate(Mutation ...$mutations): self {

@@ -55,7 +55,7 @@ readonly class Prefix implements Mutation {
 
         if ($footnote instanceof FootnoteRef) {
             $location = LocationData::get($footnote);
-            $label    = mb_substr($document->getText($location) ?? '', 2, -1);
+            $label    = mb_substr($document->getText($location), 2, -1);
         }
 
         return $label;
