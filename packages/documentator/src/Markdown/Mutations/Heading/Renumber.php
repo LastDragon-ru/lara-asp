@@ -74,7 +74,7 @@ class Renumber implements Mutation {
             $location = LocationData::get($node);
             $line     = $document->getText($location);
 
-            if ($line === null || !str_starts_with(mb_trim($line), '#')) {
+            if (!str_starts_with(mb_trim($line), '#')) {
                 continue;
             }
 

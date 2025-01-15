@@ -173,7 +173,7 @@ class Task implements TaskContract {
                         $location = Location::get($next);
                     } else {
                         $location    = Location::get($node);
-                        $instruction = mb_trim((string) $document->getText($location));
+                        $instruction = mb_trim($document->getText($location));
                         $text        = "{$instruction}\n{$text}";
                     }
 
