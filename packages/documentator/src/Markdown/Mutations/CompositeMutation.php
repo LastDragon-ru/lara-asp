@@ -9,7 +9,7 @@ use Override;
 /**
  * Merges all mutations into one.
  */
-readonly class Composite implements Mutation {
+readonly class CompositeMutation implements Mutation {
     /**
      * @var array<array-key, Mutation>
      */

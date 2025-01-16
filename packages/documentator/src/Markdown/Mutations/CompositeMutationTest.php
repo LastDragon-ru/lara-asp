@@ -14,8 +14,8 @@ use function array_merge;
 /**
  * @internal
  */
-#[CoversClass(Composite::class)]
-final class CompositeTest extends TestCase {
+#[CoversClass(CompositeMutation::class)]
+final class CompositeMutationTest extends TestCase {
     public function testInvoke(): void {
         $markdown  = $this->app()->make(Markdown::class);
         $document  = $markdown->parse('');
@@ -38,7 +38,7 @@ final class CompositeTest extends TestCase {
             ->once()
             ->andReturn($bChanges);
 
-        $mutation = new Composite($aMutation, $bMutation);
+        $mutation = new CompositeMutation($aMutation, $bMutation);
         $changes  = $mutation($document);
         $expected = array_merge($aChanges, $bChanges);
         $actual   = [];
