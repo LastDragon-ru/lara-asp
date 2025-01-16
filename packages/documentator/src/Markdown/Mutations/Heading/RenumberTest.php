@@ -73,15 +73,14 @@ final class RenumberTest extends TestCase {
                 Text text.
 
                 ## Special
-                 #### foo
-                  ### foo
-                   ## foo
+                #### foo
+                ### foo
+                ## foo
 
                 Foo *bar*
-                =========
+                -----
 
-                Foo *bar*
-                ---------
+                ### Foo *bar*
 
                 ### Header 2
 
@@ -132,11 +131,16 @@ final class RenumberTest extends TestCase {
                 <<<'MARKDOWN'
                 ## Header 2
 
+                * item
+                * item
+
                 # Header 1
 
                 Text text.
 
                 ## Header 2
+
+                * item
 
                 Text text.
 
@@ -148,26 +152,34 @@ final class RenumberTest extends TestCase {
                 Text text.
 
                 # Special
-                 ### foo
-                  ## foo
-                   # foo
+                ### foo
+                ## foo
+                # foo
 
                 Foo *bar*
-                =========
+                =====
 
-                Foo *bar*
-                ---------
+                ## Foo *bar*
+
+                ## Header 2
+
+                * item
 
                 MARKDOWN,
                 1,
                 <<<'MARKDOWN'
                 ### Header 2
 
+                * item
+                * item
+
                 ## Header 1
 
                 Text text.
 
                 ### Header 2
+
+                * item
 
                 Text text.
 
@@ -179,15 +191,18 @@ final class RenumberTest extends TestCase {
                 Text text.
 
                 ## Special
-                 #### foo
-                  ### foo
-                   ## foo
+                #### foo
+                 ### foo
+                  ## foo
 
                 Foo *bar*
-                =========
+                -----
 
-                Foo *bar*
-                ---------
+                ### Foo *bar*
+
+                ### Header 2
+
+                * item
                 MARKDOWN,
             ],
         ];

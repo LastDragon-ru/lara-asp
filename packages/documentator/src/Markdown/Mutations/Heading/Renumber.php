@@ -2,23 +2,25 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
+use function array_map;
+use function array_slice;
+use function implode;
+use function mb_ltrim;
+use function mb_rtrim;
 use function mb_strlen;
-use function mb_strpos;
-use function mb_substr;
 use function mb_trim;
 use function min;
 use function str_repeat;
 use function str_starts_with;
 
 /**
- * Updates all ATX headings levels.
+ * Updates all headings levels.
  */
 readonly class Renumber extends Base implements Mutation {
     public function __construct(
@@ -39,45 +41,60 @@ readonly class Renumber extends Base implements Mutation {
         yield from [];
 
         // Process
-        $highest  = static::MaxLevel;
-        $headings = $this->getHeadings($document, $highest);
-        $diff     = $this->startLevel - $highest;
+        $initial = static::MaxLevel;
+        $nodes   = $this->nodes($document, $initial);
+        $diff    = $this->startLevel - $initial;
 
         if ($diff === 0) {
             return;
         }
 
-        foreach ($headings as [$heading, $location, $text]) {
-            $level  = min(static::MaxLevel, $heading->getLevel() + $diff);
-            $prefix = mb_substr($text, 0, (int) mb_strpos($text, '#'));
-            $eols   = mb_strlen($text) - mb_strlen(mb_trim($text, "\n"));
-            $text   = mb_substr($text, mb_strlen($prefix));
-            $text   = $prefix.str_repeat('#', $level).' '.mb_trim(mb_trim($text, '#')).str_repeat("\n", $eols);
+        foreach ($nodes as $node) {
+            $location = LocationData::get($node);
+            $heading  = $document->getText($location);
+            $setext   = $this->isSetext($heading);
+            $level    = min(static::MaxLevel, $node->getLevel() + $diff);
+            $eols     = str_repeat("\n", mb_strlen($heading) - mb_strlen(mb_rtrim($heading, "\n")));
+            $text     = mb_trim($heading);
+            $lines    = $setext
+                ? array_slice(Text::getLines($text), 0, -1)
+                : [mb_trim($text, '#')];
+            $lines    = array_map(mb_trim(...), $lines);
+            $prefix   = '';
+            $suffix   = '';
 
-            yield [$location, $text];
+            if ($setext && $level <= 2) {
+                $text   = implode("\n", $lines);
+                $suffix = "\n".str_repeat($level === 1 ? '=' : '-', 5);
+            } else {
+                $prefix = str_repeat('#', $level).' ';
+                $text   = implode(' ', $lines);
+            }
+
+            yield [$location, $prefix.$text.$suffix.$eols];
         }
     }
 
     /**
-     * @return list<array{Heading, Location, string}>
+     * @inheritDoc
      */
-    private function getHeadings(Document $document, int &$highest): array {
-        $headings = [];
+    #[Override]
+    protected function nodes(Document $document, int &$initial = 0): iterable {
+        $nodes = [];
 
-        foreach ($this->nodes($document) as $heading) {
-            // ATX?
-            $location = LocationData::get($heading);
-            $line     = $document->getText($location);
-
-            if (!str_starts_with(mb_trim($line), '#')) {
-                continue;
-            }
-
-            // Ok
-            $headings[] = [$heading, $location, $line];
-            $highest    = min($highest, $heading->getLevel());
+        foreach (parent::nodes($document) as $node) {
+            $initial = min($initial, $node->getLevel());
+            $nodes[] = $node;
         }
 
-        return $headings;
+        return $nodes;
+    }
+
+    private function isAtx(string $heading): bool {
+        return str_starts_with(mb_ltrim($heading), '#');
+    }
+
+    private function isSetext(string $heading): bool {
+        return !$this->isAtx($heading);
     }
 }
