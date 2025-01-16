@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
@@ -18,7 +19,7 @@ use function mb_strlen;
 /**
  * Adds unique prefix for all references.
  */
-readonly class Prefix extends Mutation {
+readonly class Prefix extends Base implements Mutation {
     public function __construct(
         protected string $prefix,
     ) {

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -10,7 +11,7 @@ use Override;
 /**
  * Unlink all links.
  */
-readonly class Unlink extends Mutation {
+readonly class Unlink extends Base implements Mutation {
     /**
      * @inheritDoc
      */

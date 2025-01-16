@@ -2,22 +2,20 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
-use Iterator;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation as MutationContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 
-abstract readonly class Mutation implements MutationContract {
+abstract readonly class Base {
     public function __construct() {
         // empty
     }
 
     /**
-     * @return Iterator<array-key, AbstractWebResource|ReferenceNode>
+     * @return iterable<mixed, AbstractWebResource|ReferenceNode>
      */
-    protected function nodes(Document $document): Iterator {
+    protected function nodes(Document $document): iterable {
         // Just in case
         yield from [];
 

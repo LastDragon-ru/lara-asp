@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -16,7 +17,7 @@ use function rawurldecode;
 /**
  * Inlines all references.
  */
-readonly class Inline extends Mutation {
+readonly class Inline extends Base implements Mutation {
     /**
      * @inheritDoc
      */

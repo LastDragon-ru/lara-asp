@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(UnlinkToSelf::class)]
-#[CoversClass(Mutation::class)]
+#[CoversClass(Base::class)]
 final class UnlinkToSelfTest extends TestCase {
     public function testInvoke(): void {
         $content = <<<'MARKDOWN'

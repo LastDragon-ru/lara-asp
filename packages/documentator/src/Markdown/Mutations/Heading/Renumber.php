@@ -20,14 +20,14 @@ use function str_starts_with;
 /**
  * Updates all ATX headings levels.
  */
-class Renumber implements Mutation {
+readonly class Renumber extends Base implements Mutation {
     public function __construct(
         /**
          * @var int<1, 6>
          */
         protected int $startLevel,
     ) {
-        // empty
+        parent::__construct();
     }
 
     /**
@@ -39,7 +39,7 @@ class Renumber implements Mutation {
         yield from [];
 
         // Process
-        $highest  = 6;
+        $highest  = static::MaxLevel;
         $headings = $this->getHeadings($document, $highest);
         $diff     = $this->startLevel - $highest;
 
@@ -48,7 +48,7 @@ class Renumber implements Mutation {
         }
 
         foreach ($headings as [$heading, $location, $text]) {
-            $level  = min(6, $heading->getLevel() + $diff);
+            $level  = min(static::MaxLevel, $heading->getLevel() + $diff);
             $prefix = mb_substr($text, 0, (int) mb_strpos($text, '#'));
             $eols   = mb_strlen($text) - mb_strlen(mb_trim($text, "\n"));
             $text   = mb_substr($text, mb_strlen($prefix));
@@ -64,14 +64,9 @@ class Renumber implements Mutation {
     private function getHeadings(Document $document, int &$highest): array {
         $headings = [];
 
-        foreach ($document->node->iterator() as $node) {
-            // Heading?
-            if (!($node instanceof Heading)) {
-                continue;
-            }
-
+        foreach ($this->nodes($document) as $heading) {
             // ATX?
-            $location = LocationData::get($node);
+            $location = LocationData::get($heading);
             $line     = $document->getText($location);
 
             if (!str_starts_with(mb_trim($line), '#')) {
@@ -79,8 +74,8 @@ class Renumber implements Mutation {
             }
 
             // Ok
-            $headings[] = [$node, $location, $line];
-            $highest    = min($highest, $node->getLevel());
+            $headings[] = [$heading, $location, $line];
+            $highest    = min($highest, $heading->getLevel());
         }
 
         return $headings;

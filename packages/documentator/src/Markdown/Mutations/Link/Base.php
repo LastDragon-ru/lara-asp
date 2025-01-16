@@ -2,20 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation as MutationContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 
-abstract readonly class Mutation implements MutationContract {
+abstract readonly class Base implements MutationContract {
     public function __construct() {
         // empty
     }
 
     /**
-     * @return Iterator<array-key, Link>
+     * @return iterable<mixed, Link>
      */
-    protected function nodes(Document $document): Iterator {
+    protected function nodes(Document $document): iterable {
         // Just in case
         yield from [];
 
