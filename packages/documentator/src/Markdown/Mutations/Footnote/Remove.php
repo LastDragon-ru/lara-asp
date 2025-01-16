@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
@@ -19,7 +18,7 @@ readonly class Remove implements Mutation {
     }
 
     /**
-     * @return iterable<array-key, array{Location, ?string}>
+     * @inheritDoc
      */
     #[Override]
     public function __invoke(Document $document): iterable {

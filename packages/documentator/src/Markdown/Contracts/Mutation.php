@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 
 interface Mutation {
     /**
-     * @return iterable<array-key, array{Location, ?string}>
+     * @return iterable<mixed, array{Location, ?string}>
      */
     public function __invoke(Document $document): iterable;
 }

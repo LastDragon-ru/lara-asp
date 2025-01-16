@@ -13,7 +13,7 @@ use Override;
 readonly class Changeset implements Mutation {
     public function __construct(
         /**
-         * @var iterable<array-key, array{Location, ?string}>
+         * @var iterable<mixed, array{Location, ?string}>
          */
         protected iterable $changes,
     ) {
