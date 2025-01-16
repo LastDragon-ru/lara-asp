@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Extraction;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
@@ -101,12 +102,14 @@ class Document implements Stringable {
         return (string) $this->getEditor()->extract([$location]);
     }
 
-    public function mutate(Mutation ...$mutations): self {
+    public function mutate(Mutation|Extraction ...$mutations): self {
         $document = clone $this;
 
         foreach ($mutations as $mutation) {
-            $changes  = $mutation($document);
-            $content  = mb_trim((string) $document->getEditor()->mutate($changes))."\n";
+            $content  = $mutation instanceof Extraction
+                ? $document->getEditor()->extract($mutation($document))
+                : $document->getEditor()->mutate($mutation($document));
+            $content  = mb_trim((string) $content)."\n";
             $document = $this->markdown->parse($content, $document->path);
         }
 
