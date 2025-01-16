@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use Override;
@@ -13,7 +13,7 @@ use Override;
 readonly class Changeset implements Mutation {
     public function __construct(
         /**
-         * @var iterable<mixed, array{Location, ?string}>
+         * @var iterable<mixed, array{iterable<mixed, Coordinate>, ?string}>
          */
         protected iterable $changes,
     ) {
