@@ -44,8 +44,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -54,8 +58,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -64,8 +72,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -74,8 +86,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -84,8 +100,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -94,8 +114,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -124,8 +148,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -134,8 +162,12 @@
                 <item key="attributes">
                     <array length="0"/>
                 </item>
-                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                    <int>0</int>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                            <int>0</int>
+                        </item>
+                    </array>
                 </item>
             </data>
         </node>
@@ -170,8 +202,12 @@
                     <item key="attributes">
                         <array length="0"/>
                     </item>
-                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                        <int>2</int>
+                    <item key="lara-asp-documentator">
+                        <array length="1">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                <int>2</int>
+                            </item>
+                        </array>
                     </item>
                 </data>
             </node>
@@ -180,8 +216,12 @@
                     <item key="attributes">
                         <array length="0"/>
                     </item>
-                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                        <int>2</int>
+                    <item key="lara-asp-documentator">
+                        <array length="1">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                <int>2</int>
+                            </item>
+                        </array>
                     </item>
                 </data>
             </node>
@@ -203,8 +243,12 @@
                         <item key="attributes">
                             <array length="0"/>
                         </item>
-                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                            <int>4</int>
+                        <item key="lara-asp-documentator">
+                            <array length="1">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                    <int>4</int>
+                                </item>
+                            </array>
                         </item>
                     </data>
                 </node>
@@ -213,8 +257,12 @@
                         <item key="attributes">
                             <array length="0"/>
                         </item>
-                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                            <int>4</int>
+                        <item key="lara-asp-documentator">
+                            <array length="1">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                    <int>4</int>
+                                </item>
+                            </array>
                         </item>
                     </data>
                 </node>

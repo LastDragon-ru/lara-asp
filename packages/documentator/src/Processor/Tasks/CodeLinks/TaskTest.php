@@ -152,52 +152,56 @@ final class TaskTest extends TestCase {
                                     <item key="attributes">
                                         <array length="0"/>
                                     </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                                        <int>0</int>
-                                    </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>8</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <null/>
-                                            </property>
-                                            <property name="offset">
+                                    <item key="lara-asp-documentator">
+                                        <array length="3">
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
                                                 <int>0</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>7</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>5</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <null/>
-                                            </property>
-                                            <property name="offset">
-                                                <int>0</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>5</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>0</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>5</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>8</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>0</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>7</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </array>
                                     </item>
                                 </data>
                                 <node name="paragraph">
@@ -238,52 +242,56 @@ final class TaskTest extends TestCase {
                                     <item key="attributes">
                                         <array length="0"/>
                                     </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                                        <int>0</int>
-                                    </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>16</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <null/>
-                                            </property>
-                                            <property name="offset">
+                                    <item key="lara-asp-documentator">
+                                        <array length="3">
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
                                                 <int>0</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>16</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>13</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <null/>
-                                            </property>
-                                            <property name="offset">
-                                                <int>0</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>13</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>13</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>0</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>13</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>16</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>0</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>16</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </array>
                                     </item>
                                 </data>
                                 <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
@@ -291,8 +299,12 @@ final class TaskTest extends TestCase {
                                         <item key="attributes">
                                             <array length="0"/>
                                         </item>
-                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                                            <int>0</int>
+                                        <item key="lara-asp-documentator">
+                                            <array length="1">
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                                    <int>0</int>
+                                                </item>
+                                            </array>
                                         </item>
                                     </data>
                                 </node>
@@ -301,8 +313,12 @@ final class TaskTest extends TestCase {
                                         <item key="attributes">
                                             <array length="0"/>
                                         </item>
-                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
-                                            <int>0</int>
+                                        <item key="lara-asp-documentator">
+                                            <array length="1">
+                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding">
+                                                    <int>0</int>
+                                                </item>
+                                            </array>
                                         </item>
                                     </data>
                                 </node>
@@ -335,30 +351,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>1</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>17</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>5</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>1</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
                                                         <int>1</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>17</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>5</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>1</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>1</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <string><![CDATA[💀App\Deprecated]]></string>
@@ -391,30 +411,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>1</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>12</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>28</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>1</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
                                                         <int>1</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>12</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>28</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>1</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>1</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <string><![CDATA[App\ClassA]]></string>
@@ -455,30 +479,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>2</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>37</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>5</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>2</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>15</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>2</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>37</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>5</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>2</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>15</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <node name="code">
@@ -486,30 +514,34 @@ final class TaskTest extends TestCase {
                                                 <item key="attributes">
                                                     <array length="0"/>
                                                 </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                        <property name="endLine">
-                                                            <int>2</int>
-                                                        </property>
-                                                        <property name="internalPadding">
-                                                            <null/>
-                                                        </property>
-                                                        <property name="length">
-                                                            <int>13</int>
-                                                        </property>
-                                                        <property name="offset">
-                                                            <int>6</int>
-                                                        </property>
-                                                        <property name="startLine">
-                                                            <int>2</int>
-                                                        </property>
-                                                        <property name="startLinePadding">
-                                                            <int>0</int>
-                                                        </property>
-                                                    </object>
-                                                </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                    <int>1</int>
+                                                <item key="lara-asp-documentator">
+                                                    <array length="2">
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                                <property name="endLine">
+                                                                    <int>2</int>
+                                                                </property>
+                                                                <property name="internalPadding">
+                                                                    <null/>
+                                                                </property>
+                                                                <property name="length">
+                                                                    <int>13</int>
+                                                                </property>
+                                                                <property name="offset">
+                                                                    <int>6</int>
+                                                                </property>
+                                                                <property name="startLine">
+                                                                    <int>2</int>
+                                                                </property>
+                                                                <property name="startLinePadding">
+                                                                    <int>0</int>
+                                                                </property>
+                                                            </object>
+                                                        </item>
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                            <int>1</int>
+                                                        </item>
+                                                    </array>
                                                 </item>
                                             </data>
                                             <string><![CDATA[\App\ClassC]]></string>
@@ -551,30 +583,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>2</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>35</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>48</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>2</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>9</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>2</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>35</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>48</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>2</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>9</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <node name="code">
@@ -582,30 +618,34 @@ final class TaskTest extends TestCase {
                                                 <item key="attributes">
                                                     <array length="0"/>
                                                 </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                        <property name="endLine">
-                                                            <int>2</int>
-                                                        </property>
-                                                        <property name="internalPadding">
-                                                            <null/>
-                                                        </property>
-                                                        <property name="length">
-                                                            <int>7</int>
-                                                        </property>
-                                                        <property name="offset">
-                                                            <int>49</int>
-                                                        </property>
-                                                        <property name="startLine">
-                                                            <int>2</int>
-                                                        </property>
-                                                        <property name="startLinePadding">
-                                                            <int>0</int>
-                                                        </property>
-                                                    </object>
-                                                </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                    <int>1</int>
+                                                <item key="lara-asp-documentator">
+                                                    <array length="2">
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                                <property name="endLine">
+                                                                    <int>2</int>
+                                                                </property>
+                                                                <property name="internalPadding">
+                                                                    <null/>
+                                                                </property>
+                                                                <property name="length">
+                                                                    <int>7</int>
+                                                                </property>
+                                                                <property name="offset">
+                                                                    <int>49</int>
+                                                                </property>
+                                                                <property name="startLine">
+                                                                    <int>2</int>
+                                                                </property>
+                                                                <property name="startLinePadding">
+                                                                    <int>0</int>
+                                                                </property>
+                                                            </object>
+                                                        </item>
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                            <int>1</int>
+                                                        </item>
+                                                    </array>
                                                 </item>
                                             </data>
                                             <string><![CDATA[Class]]></string>
@@ -647,30 +687,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>3</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>16</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>5</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>3</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>9</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>3</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>16</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>5</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>3</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>9</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                             <item key="reference">
                                                 <object class="League\CommonMark\Reference\Reference">
@@ -691,30 +735,34 @@ final class TaskTest extends TestCase {
                                                 <item key="attributes">
                                                     <array length="0"/>
                                                 </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                        <property name="endLine">
-                                                            <int>3</int>
-                                                        </property>
-                                                        <property name="internalPadding">
-                                                            <null/>
-                                                        </property>
-                                                        <property name="length">
-                                                            <int>7</int>
-                                                        </property>
-                                                        <property name="offset">
-                                                            <int>6</int>
-                                                        </property>
-                                                        <property name="startLine">
-                                                            <int>3</int>
-                                                        </property>
-                                                        <property name="startLinePadding">
-                                                            <int>0</int>
-                                                        </property>
-                                                    </object>
-                                                </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                    <int>1</int>
+                                                <item key="lara-asp-documentator">
+                                                    <array length="2">
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                                <property name="endLine">
+                                                                    <int>3</int>
+                                                                </property>
+                                                                <property name="internalPadding">
+                                                                    <null/>
+                                                                </property>
+                                                                <property name="length">
+                                                                    <int>7</int>
+                                                                </property>
+                                                                <property name="offset">
+                                                                    <int>6</int>
+                                                                </property>
+                                                                <property name="startLine">
+                                                                    <int>3</int>
+                                                                </property>
+                                                                <property name="startLinePadding">
+                                                                    <int>0</int>
+                                                                </property>
+                                                            </object>
+                                                        </item>
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                            <int>1</int>
+                                                        </item>
+                                                    </array>
                                                 </item>
                                             </data>
                                             <string><![CDATA[Class]]></string>
@@ -750,30 +798,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>3</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>17</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>27</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>3</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>10</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>3</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>17</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>27</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>3</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>10</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                             <item key="reference">
                                                 <object class="League\CommonMark\Reference\Reference">
@@ -794,30 +846,34 @@ final class TaskTest extends TestCase {
                                                 <item key="attributes">
                                                     <array length="0"/>
                                                 </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                        <property name="endLine">
-                                                            <int>3</int>
-                                                        </property>
-                                                        <property name="internalPadding">
-                                                            <null/>
-                                                        </property>
-                                                        <property name="length">
-                                                            <int>8</int>
-                                                        </property>
-                                                        <property name="offset">
-                                                            <int>28</int>
-                                                        </property>
-                                                        <property name="startLine">
-                                                            <int>3</int>
-                                                        </property>
-                                                        <property name="startLinePadding">
-                                                            <int>0</int>
-                                                        </property>
-                                                    </object>
-                                                </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                    <int>1</int>
+                                                <item key="lara-asp-documentator">
+                                                    <array length="2">
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                                <property name="endLine">
+                                                                    <int>3</int>
+                                                                </property>
+                                                                <property name="internalPadding">
+                                                                    <null/>
+                                                                </property>
+                                                                <property name="length">
+                                                                    <int>8</int>
+                                                                </property>
+                                                                <property name="offset">
+                                                                    <int>28</int>
+                                                                </property>
+                                                                <property name="startLine">
+                                                                    <int>3</int>
+                                                                </property>
+                                                                <property name="startLinePadding">
+                                                                    <int>0</int>
+                                                                </property>
+                                                            </object>
+                                                        </item>
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                            <int>1</int>
+                                                        </item>
+                                                    </array>
                                                 </item>
                                             </data>
                                             <string><![CDATA[💀Class]]></string>
@@ -851,30 +907,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>9</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>27</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>5</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>9</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>1</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>9</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>27</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>5</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>9</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>1</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <string><![CDATA[💀App\Deprecated::method()]]></string>
@@ -907,30 +967,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>9</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>23</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>38</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>9</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>1</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>9</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>23</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>38</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>9</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>1</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <string><![CDATA[App\ClassA::$property]]></string>
@@ -971,30 +1035,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>10</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>55</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>5</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>10</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>19</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>10</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>55</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>5</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>10</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>19</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                         </data>
                                         <node name="code">
@@ -1002,30 +1070,34 @@ final class TaskTest extends TestCase {
                                                 <item key="attributes">
                                                     <array length="0"/>
                                                 </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                        <property name="endLine">
-                                                            <int>10</int>
-                                                        </property>
-                                                        <property name="internalPadding">
-                                                            <null/>
-                                                        </property>
-                                                        <property name="length">
-                                                            <int>17</int>
-                                                        </property>
-                                                        <property name="offset">
-                                                            <int>6</int>
-                                                        </property>
-                                                        <property name="startLine">
-                                                            <int>10</int>
-                                                        </property>
-                                                        <property name="startLinePadding">
-                                                            <int>0</int>
-                                                        </property>
-                                                    </object>
-                                                </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                    <int>1</int>
+                                                <item key="lara-asp-documentator">
+                                                    <array length="2">
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                                <property name="endLine">
+                                                                    <int>10</int>
+                                                                </property>
+                                                                <property name="internalPadding">
+                                                                    <null/>
+                                                                </property>
+                                                                <property name="length">
+                                                                    <int>17</int>
+                                                                </property>
+                                                                <property name="offset">
+                                                                    <int>6</int>
+                                                                </property>
+                                                                <property name="startLine">
+                                                                    <int>10</int>
+                                                                </property>
+                                                                <property name="startLinePadding">
+                                                                    <int>0</int>
+                                                                </property>
+                                                            </object>
+                                                        </item>
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                            <int>1</int>
+                                                        </item>
+                                                    </array>
                                                 </item>
                                             </data>
                                             <string><![CDATA[Class::Constant]]></string>
@@ -1067,30 +1139,34 @@ final class TaskTest extends TestCase {
                                             <item key="attributes">
                                                 <array length="0"/>
                                             </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                    <property name="endLine">
-                                                        <int>11</int>
-                                                    </property>
-                                                    <property name="internalPadding">
-                                                        <null/>
-                                                    </property>
-                                                    <property name="length">
-                                                        <int>27</int>
-                                                    </property>
-                                                    <property name="offset">
-                                                        <int>5</int>
-                                                    </property>
-                                                    <property name="startLine">
-                                                        <int>11</int>
-                                                    </property>
-                                                    <property name="startLinePadding">
-                                                        <int>0</int>
-                                                    </property>
-                                                </object>
-                                            </item>
-                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                <int>19</int>
+                                            <item key="lara-asp-documentator">
+                                                <array length="2">
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                            <property name="endLine">
+                                                                <int>11</int>
+                                                            </property>
+                                                            <property name="internalPadding">
+                                                                <null/>
+                                                            </property>
+                                                            <property name="length">
+                                                                <int>27</int>
+                                                            </property>
+                                                            <property name="offset">
+                                                                <int>5</int>
+                                                            </property>
+                                                            <property name="startLine">
+                                                                <int>11</int>
+                                                            </property>
+                                                            <property name="startLinePadding">
+                                                                <int>0</int>
+                                                            </property>
+                                                        </object>
+                                                    </item>
+                                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                        <int>19</int>
+                                                    </item>
+                                                </array>
                                             </item>
                                             <item key="reference">
                                                 <object class="League\CommonMark\Reference\Reference">
@@ -1111,30 +1187,34 @@ final class TaskTest extends TestCase {
                                                 <item key="attributes">
                                                     <array length="0"/>
                                                 </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                                        <property name="endLine">
-                                                            <int>11</int>
-                                                        </property>
-                                                        <property name="internalPadding">
-                                                            <null/>
-                                                        </property>
-                                                        <property name="length">
-                                                            <int>17</int>
-                                                        </property>
-                                                        <property name="offset">
-                                                            <int>6</int>
-                                                        </property>
-                                                        <property name="startLine">
-                                                            <int>11</int>
-                                                        </property>
-                                                        <property name="startLinePadding">
-                                                            <int>0</int>
-                                                        </property>
-                                                    </object>
-                                                </item>
-                                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
-                                                    <int>1</int>
+                                                <item key="lara-asp-documentator">
+                                                    <array length="2">
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                                <property name="endLine">
+                                                                    <int>11</int>
+                                                                </property>
+                                                                <property name="internalPadding">
+                                                                    <null/>
+                                                                </property>
+                                                                <property name="length">
+                                                                    <int>17</int>
+                                                                </property>
+                                                                <property name="offset">
+                                                                    <int>6</int>
+                                                                </property>
+                                                                <property name="startLine">
+                                                                    <int>11</int>
+                                                                </property>
+                                                                <property name="startLinePadding">
+                                                                    <int>0</int>
+                                                                </property>
+                                                            </object>
+                                                        </item>
+                                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset">
+                                                            <int>1</int>
+                                                        </item>
+                                                    </array>
                                                 </item>
                                             </data>
                                             <string><![CDATA[Class::method()]]></string>
