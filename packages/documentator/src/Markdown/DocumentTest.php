@@ -444,6 +444,16 @@ final class DocumentTest extends TestCase {
                 MARKDOWN,
                 new Changeset([[new Append(), 'fsdfsdfsdf']]),
             ],
+            'Blank'                                      => [
+                '',
+                <<<'MARKDOWN'
+
+
+
+
+                MARKDOWN,
+                null,
+            ],
         ];
     }
     //</editor-fold>

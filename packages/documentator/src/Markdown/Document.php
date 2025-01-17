@@ -109,7 +109,7 @@ class Document implements Stringable {
             $content  = $mutation instanceof Extraction
                 ? $document->getEditor()->extract($mutation($document))
                 : $document->getEditor()->mutate($mutation($document));
-            $content  = mb_trim((string) $content)."\n";
+            $content  = mb_trim((string) $content);
             $document = $this->markdown->parse($content, $document->path);
         }
 
@@ -198,6 +198,11 @@ class Document implements Stringable {
 
     #[Override]
     public function __toString(): string {
-        return implode("\n", $this->getLines())."\n";
+        $lines  = $this->getLines();
+        $string = $lines !== []
+            ? implode("\n", $this->getLines())."\n"
+            : '';
+
+        return $string;
     }
 }
