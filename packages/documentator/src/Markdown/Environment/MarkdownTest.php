@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;

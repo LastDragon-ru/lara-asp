@@ -1,15 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Environment as LocatorEnvironment;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Core\Extension as CoreExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Extension as GeneratedExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator\Extension as LocatorExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Extension as ReferenceExtension;
-use League\CommonMark\Environment\Environment;
+use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
+use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Parser\MarkdownParser;
@@ -17,6 +20,7 @@ use League\CommonMark\Parser\MarkdownParserInterface;
 use League\CommonMark\Renderer\DocumentRendererInterface;
 use League\CommonMark\Renderer\HtmlRenderer;
 use Override;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 class Markdown implements MarkdownContract {
     protected readonly EnvironmentInterface      $environment;
@@ -24,18 +28,33 @@ class Markdown implements MarkdownContract {
     protected readonly DocumentRendererInterface $renderer;
 
     public function __construct() {
-        $this->environment = $this->initialize();
+        $this->environment = $this->environment();
         $this->renderer    = new HtmlRenderer($this->environment);
         $this->parser      = new MarkdownParser($this->environment);
     }
 
-    protected function initialize(): Environment {
-        return (new GithubFlavoredMarkdownConverter())->getEnvironment()
-            ->addExtension(new FootnoteExtension())
-            ->addExtension(new CoreExtension())
-            ->addExtension(new GeneratedExtension())
-            ->addExtension(new LocatorExtension())
-            ->addExtension(new ReferenceExtension());
+    protected function environment(): EnvironmentInterface&EnvironmentBuilderInterface&ListenerProviderInterface {
+        $environment = (new GithubFlavoredMarkdownConverter())->getEnvironment();
+        $environment = new LocatorEnvironment($environment);
+
+        foreach ($this->extensions() as $extension) {
+            $environment->addExtension($extension);
+        }
+
+        return $environment;
+    }
+
+    /**
+     * @return array<array-key, ExtensionInterface>
+     */
+    protected function extensions(): array {
+        return [
+            new CoreExtension(),
+            new LocatorExtension(),
+            new GeneratedExtension(),
+            new ReferenceExtension(),
+            new FootnoteExtension(),
+        ];
     }
 
     #[Override]

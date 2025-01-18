@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Commands\Commands;
 use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Commands\Requirements;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory as LinkFactoryContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Factory as LinkFactory;
 use Override;
