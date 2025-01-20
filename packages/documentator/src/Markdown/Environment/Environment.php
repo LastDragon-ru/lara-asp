@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Wrappers\BlockStartParserWrapper;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorCollection;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
@@ -9,6 +10,7 @@ use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Normalizer\TextNormalizerInterface;
 use League\CommonMark\Parser\Block\BlockStartParserInterface;
+use League\CommonMark\Parser\Block\SkipLinesStartingWithLettersParser;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
 use League\CommonMark\Renderer\NodeRendererInterface;
 use League\Config\ConfigurationInterface;
@@ -43,7 +45,13 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
      */
     #[Override]
     public function getBlockStartParsers(): iterable {
-        return $this->environment->getBlockStartParsers();
+        foreach ($this->environment->getBlockStartParsers() as $key => $parser) {
+            yield $key => !($parser instanceof SkipLinesStartingWithLettersParser)
+                ? new BlockStartParserWrapper($parser)
+                : $parser;
+        };
+
+        yield from [];
     }
 
     /**

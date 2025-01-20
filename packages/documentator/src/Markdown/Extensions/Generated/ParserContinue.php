@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation;
 use League\CommonMark\Node\Block\AbstractBlock;
@@ -31,7 +31,7 @@ class ParserContinue implements BlockContinueParserInterface {
      * @param non-empty-string $line
      * @param non-empty-string $id
      */
-    public function __construct(string $line, string $id, private int $padding) {
+    public function __construct(string $line, string $id) {
         $this->block    = new Node($id);
         $this->lines    = [$line];
         $this->finished = false;
@@ -78,29 +78,27 @@ class ParserContinue implements BlockContinueParserInterface {
 
     #[Override]
     public function closeBlock(): void {
-        // Padding
-        BlockPadding::set($this->block, $this->padding);
-
         // Start
-        $start = $this->getStartMarkerLocation();
+        $location = LocationData::optional()->get($this->block);
+        $start    = $this->getStartMarkerLocation($location);
 
         if ($start !== null) {
             StartMarkerLocation::set($this->block, $start);
         }
 
         // End
-        $end = $this->getEndMarkerLocation();
+        $end = $this->getEndMarkerLocation($location);
 
         if ($end !== null) {
             EndMarkerLocation::set($this->block, $end);
         }
     }
 
-    private function getStartMarkerLocation(): ?Location {
-        $location  = null;
-        $startLine = $this->block->getStartLine();
+    private function getStartMarkerLocation(?Location $location): ?Location {
+        $startLine     = $this->block->getStartLine();
+        $startLocation = null;
 
-        if ($startLine !== null) {
+        if ($location !== null && $startLine !== null) {
             $endLine = $startLine;
             $index   = 1;
 
@@ -113,21 +111,27 @@ class ParserContinue implements BlockContinueParserInterface {
                 $endLine++;
             }
 
-            $location = new Location($startLine, $endLine, 0, null, $this->padding);
+            $startLocation = new Location($startLine, $endLine, 0, null, $location->startLinePadding);
         }
 
-        return $location;
+        return $startLocation;
     }
 
-    private function getEndMarkerLocation(): ?Location {
-        $location = null;
-        $endLine  = $this->block->getEndLine();
+    private function getEndMarkerLocation(?Location $location): ?Location {
+        $endLine = $this->block->getEndLine();
 
-        if ($endLine !== null && str_starts_with($this->lines[count($this->lines) - 1], '[//]: # (end:')) {
-            $startLine = $endLine - (int) ($endLine !== ((int) $this->block->getStartLine() + count($this->lines) - 1));
-            $location  = new Location($startLine, $endLine, 0, null, $this->padding);
+        if ($location === null || $endLine === null) {
+            return null;
         }
 
-        return $location;
+        $lines       = count($this->lines);
+        $endLocation = null;
+
+        if (str_starts_with($this->lines[$lines - 1], '[//]: # (end:')) {
+            $startLine   = $endLine - (int) ($endLine !== ((int) $this->block->getStartLine() + $lines - 1));
+            $endLocation = new Location($startLine, $endLine, 0, null, $location->startLinePadding);
+        }
+
+        return $endLocation;
     }
 }

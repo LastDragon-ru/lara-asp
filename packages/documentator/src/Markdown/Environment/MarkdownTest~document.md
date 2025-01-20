@@ -31,6 +31,8 @@ https://example.com/
 
 > Quote
 >
+> ### Quote Heading[^1]
+>
 > [quote]:
 > https://example.com/
 
@@ -40,6 +42,12 @@ https://example.com/
 |--------------------------|-------------------------------------------------------------|
 | Cell [link][quote] cell. | Cell                                                        |
 | Cell                     | Cell cell [link](https://example.com/) cell [link][simple]. |
+
+> Quote
+>
+> | Header                   |
+> |--------------------------|
+> | Cell [link][quote] cell. |
 
 # Footnotes
 
