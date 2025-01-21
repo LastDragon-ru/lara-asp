@@ -2,31 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Length;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Padding;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
-use League\CommonMark\Extension\Table\Table;
-use League\CommonMark\Extension\Table\TableCell;
-use League\CommonMark\Extension\Table\TableRow;
-use League\CommonMark\Extension\Table\TableSection;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\NodeIterator;
 use Override;
 
-use function array_slice;
-use function count;
-use function iterator_count;
 use function mb_ltrim;
 use function mb_strlen;
 use function mb_substr;
-use function preg_split;
 
 /**
  * Fix/Detect location/padding.
@@ -49,11 +37,7 @@ class Listener implements EnvironmentAwareInterface {
         $document = $event->getDocument();
 
         foreach ($document->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
-            if ($node instanceof TableSection) {
-                $this->fixTableSection($document, $node);
-            } elseif ($node instanceof TableRow) {
-                $this->fixTableRow($document, $node);
-            } elseif ($node instanceof Footnote) {
+            if ($node instanceof Footnote) {
                 $this->fixFootnote($document, $node);
             } else {
                 // empty
@@ -71,97 +55,6 @@ class Listener implements EnvironmentAwareInterface {
     #[Override]
     public function setEnvironment(EnvironmentInterface $environment): void {
         $this->environment = $environment;
-    }
-
-    private function fixTableSection(Document $document, TableSection $section): void {
-        // Fixed?
-        if ($section->getStartLine() !== null && $section->getEndLine() !== null) {
-            return;
-        }
-
-        // Fix
-        $previous = Cast::toNullable(TableSection::class, $section->previous());
-        $rows     = iterator_count($section->children());
-        $start    = null;
-        $end      = null;
-
-        if ($previous !== null) {
-            $start = $previous->getEndLine();
-
-            if ($start !== null) {
-                $start = $start + 1 + 1; // Each table has a `|----|` line, thus `+1`.
-                $end   = $start + $rows - 1;
-            }
-        } else {
-            $start = Cast::toNullable(Table::class, $section->parent())?->getStartLine();
-
-            if ($start !== null) {
-                $end = $start + $rows - 1;
-            }
-        }
-
-        $section->setStartLine($start);
-        $section->setEndLine($end);
-
-        Utils::getPadding($section, $start, '|');
-    }
-
-    private function fixTableRow(Document $document, TableRow $row): void {
-        // Fixed?
-        if (($row->getStartLine() !== null && $row->getEndLine() !== null)) {
-            return;
-        }
-
-        // Fix
-        $line = Cast::toNullable(TableSection::class, $row->parent())?->getStartLine();
-        $line = $line !== null
-            ? $line + Utils::getPosition($row)
-            : null;
-
-        $row->setStartLine($line);
-        $row->setEndLine($line);
-
-        if ($line === null) {
-            return;
-        }
-
-        // Go to Cells?
-        $padding = Utils::getPadding($row, $line, '|');
-        $text    = Utils::getLine($document, $line);
-
-        if ($padding === null || $text === null) {
-            return;
-        }
-
-        // Yep
-        $cells    = preg_split('/(?<!\\\\)[|]/u', mb_substr($text, $padding));  // `|` must be always escaped
-        $cells    = $cells !== false ? $cells : [];
-        $cells    = array_slice($cells, 1, -1);                                 // First&Last characters are `|`, skip
-        $index    = 0;
-        $offset   = 1;
-        $children = $row->children();
-
-        if (iterator_count($children) !== count($cells)) {
-            return;
-        }
-
-        foreach ($children as $cell) {
-            $cell    = Cast::to(TableCell::class, $cell);
-            $content = $cells[$index];
-            $length  = mb_strlen($content);
-            $trimmed = $length - mb_strlen(mb_ltrim($content));
-
-            $cell->setStartLine($line);
-            $cell->setEndLine($line);
-
-            BlockPadding::set($cell, $padding);
-            Padding::set($cell, $trimmed);
-            Offset::set($cell, $offset);
-            Length::set($cell, $length);
-
-            $offset += $length + 1;
-            $index  += 1;
-        }
     }
 
     private function fixFootnote(Document $document, Footnote $footnote): void {
