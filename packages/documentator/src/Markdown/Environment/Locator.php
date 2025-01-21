@@ -11,10 +11,15 @@ use League\CommonMark\Extension\Table\TableRow;
 use League\CommonMark\Extension\Table\TableSection;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Node\Inline\AbstractInline;
+use League\CommonMark\Node\Node;
 use WeakMap;
 
 use function array_slice;
+use function mb_strpos;
 use function preg_split;
+
+// todo(documentator): Internal padding for Location
 
 /**
  * Fix/Detect location.
@@ -29,18 +34,39 @@ class Locator {
      * @var WeakMap<AbstractBlock, int>
      */
     private WeakMap $blocks;
+    /**
+     * @var WeakMap<AbstractInline, array{int, int, int, int, string}>
+     */
+    private WeakMap $inlines;
 
     public function __construct(
         private readonly Document $document,
     ) {
-        $this->blocks = new WeakMap();
+        $this->blocks  = new WeakMap();
+        $this->inlines = new WeakMap();
     }
 
-    public function add(AbstractBlock $block, int $padding): void {
+    public function addBlock(AbstractBlock $block, int $padding): void {
         $this->blocks[$block] = $padding;
     }
 
+    public function addInline(
+        AbstractInline $node,
+        int $startLine,
+        int $endLine,
+        int $offset,
+        int $length,
+        string $origin,
+    ): void {
+        $this->inlines[$node] = [$startLine, $endLine, $offset, $length, $origin];
+    }
+
     public function finalize(): void {
+        $this->finalizeBlocks();
+        $this->finalizeInlines();
+    }
+
+    private function finalizeBlocks(): void {
         foreach ($this->blocks as $block => $padding) {
             // Possible?
             $startLine = $block->getStartLine();
@@ -111,5 +137,35 @@ class Locator {
 
             $offset += $cellLength + 1;
         }
+    }
+
+    private function finalizeInlines(): void {
+        foreach ($this->inlines as $node => [$inlineStartLine, $inlineEndLine, $offset, $length, $origin]) {
+            $blockLocation = $this->getParentLocation($node);
+            $blockPadding  = $blockLocation->startLine !== $inlineStartLine
+                ? ($blockLocation->internalPadding ?? $blockLocation->startLinePadding)
+                : $blockLocation->startLinePadding;
+            $startLine     = $blockLocation->startLine + $inlineStartLine;
+            $endLine       = $blockLocation->endLine + $inlineEndLine;
+            $line          = Lines::get($this->document)[$startLine] ?? '';
+            $line          = mb_substr($line, $blockPadding);
+            $offset        = $offset + $blockPadding + (int) mb_strpos($line, $origin);
+
+            LocationData::set($node, new Location($startLine, $endLine, $offset, $length));
+        }
+    }
+
+    private function getParentLocation(Node $node): Location {
+        $location = null;
+
+        do {
+            $node = $node?->parent();
+
+            if ($node instanceof AbstractBlock) {
+                $location = LocationData::get($node);
+            }
+        } while ($location === null);
+
+        return $location;
     }
 }

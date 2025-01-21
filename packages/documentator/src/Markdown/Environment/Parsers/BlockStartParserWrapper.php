@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Aware;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Locator;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Aware;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Parser\Block\BlockStart;
 use League\CommonMark\Parser\Block\BlockStartParserInterface;
@@ -27,7 +27,7 @@ readonly class BlockStartParserWrapper
     }
 
     #[Override]
-    protected function getObject(): object {
+    protected function getParser(): object {
         return $this->parser;
     }
 
@@ -38,7 +38,7 @@ readonly class BlockStartParserWrapper
 
         if ($start !== null) {
             foreach ($start->getBlockParsers() as $parser) {
-                $this->locator->add($parser->getBlock(), $padding);
+                $this->locator->addBlock($parser->getBlock(), $padding);
             }
         }
 

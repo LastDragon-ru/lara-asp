@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\BlockStartParserWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\InlineParserWrapper;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorCollection;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
@@ -11,7 +12,10 @@ use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Event\DocumentPreParsedEvent;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\BacktickParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\ExtensionInterface;
+use League\CommonMark\Extension\Footnote\Parser\FootnoteRefParser;
 use League\CommonMark\Normalizer\TextNormalizerInterface;
 use League\CommonMark\Parser\Block\BlockStartParserInterface;
 use League\CommonMark\Parser\Block\SkipLinesStartingWithLettersParser;
@@ -91,7 +95,33 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
      */
     #[Override]
     public function getInlineParsers(): iterable {
-        return $this->environment->getInlineParsers();
+        // Locator?
+        $parsers = $this->environment->getInlineParsers();
+        $locator = $this->locator;
+
+        if ($locator === null) {
+            return $parsers;
+        }
+
+        // Wrap to find inline location
+        foreach ($parsers as $key => $parser) {
+            if ($parser instanceof EnvironmentAwareInterface) {
+                $parser->setEnvironment($this);
+            }
+
+            if (
+                $parser instanceof CloseBracketParser
+                || $parser instanceof BacktickParser
+                || $parser instanceof FootnoteRefParser
+            ) {
+                $parser = new InlineParserWrapper($locator, $parser);
+            }
+
+            yield $key => $parser;
+        }
+
+        // Just in case
+        yield from [];
     }
 
     #[Override]
