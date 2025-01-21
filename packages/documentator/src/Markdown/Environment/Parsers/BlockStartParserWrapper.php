@@ -33,12 +33,14 @@ readonly class BlockStartParserWrapper
 
     #[Override]
     public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart {
-        $padding = $cursor->getPosition();
-        $start   = $this->parser->tryStart($cursor, $parserState);
+        $offset = $cursor->getPosition();
+        $start  = $this->parser->tryStart($cursor, $parserState);
 
         if ($start !== null) {
+            $contentOffset = $cursor->getPosition();
+
             foreach ($start->getBlockParsers() as $parser) {
-                $this->locator->addBlock($parser->getBlock(), $padding);
+                $this->locator->addBlock($parser->getBlock(), $offset, $contentOffset);
             }
         }
 

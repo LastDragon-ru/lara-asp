@@ -33,6 +33,10 @@ https://example.com/
 >
 > ### Quote Heading[^1]
 >
+> Text text [link](https://example.com/).
+>
+> > Text text [link](https://example.com/).
+>
 > [quote]:
 > https://example.com/
 

@@ -11,8 +11,10 @@ use League\CommonMark\Extension\Table\TableRow;
 use League\CommonMark\Extension\Table\TableSection;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
+use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Inline\AbstractInline;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Parser\Block\ParagraphParser;
 use WeakMap;
 
 use function array_slice;
@@ -31,7 +33,7 @@ use function preg_split;
  */
 class Locator {
     /**
-     * @var WeakMap<AbstractBlock, int>
+     * @var WeakMap<AbstractBlock, array{int, int}>
      */
     private WeakMap $blocks;
     /**
@@ -46,8 +48,8 @@ class Locator {
         $this->inlines = new WeakMap();
     }
 
-    public function addBlock(AbstractBlock $block, int $padding): void {
-        $this->blocks[$block] = $padding;
+    public function addBlock(AbstractBlock $block, int $offset, int $contentOffset): void {
+        $this->blocks[$block] = [$offset, $contentOffset];
     }
 
     public function addInline(
@@ -67,7 +69,7 @@ class Locator {
     }
 
     private function finalizeBlocks(): void {
-        foreach ($this->blocks as $block => $padding) {
+        foreach ($this->blocks as $block => [$offset]) {
             // Possible?
             $startLine = $block->getStartLine();
             $endLine   = $block->getEndLine();
@@ -77,7 +79,7 @@ class Locator {
             }
 
             // Locate
-            $location = LocationData::set($block, new Location($startLine, $endLine, 0, null, $padding));
+            $location = LocationData::set($block, new Location($startLine, $endLine, 0, null, $offset));
 
             if ($block instanceof Table) {
                 $this->locateTable($block, $location);
@@ -141,7 +143,14 @@ class Locator {
 
     private function finalizeInlines(): void {
         foreach ($this->inlines as $node => [$inlineStartLine, $inlineEndLine, $offset, $length, $origin]) {
+            // Parent?
             $blockLocation = $this->getParentLocation($node);
+
+            if ($blockLocation === null) {
+                continue;
+            }
+
+            // Own
             $blockPadding  = $blockLocation->startLine !== $inlineStartLine
                 ? ($blockLocation->internalPadding ?? $blockLocation->startLinePadding)
                 : $blockLocation->startLinePadding;
@@ -155,16 +164,51 @@ class Locator {
         }
     }
 
-    private function getParentLocation(Node $node): Location {
-        $location = null;
-
+    private function getParentLocation(Node $node): ?Location {
         do {
-            $node = $node?->parent();
+            $node     = $node->parent();
+            $location = match (true) {
+                $node instanceof Paragraph     => $this->getParagraphLocation($node),
+                $node instanceof AbstractBlock => LocationData::get($node),
+                default                        => null,
+            };
+        } while ($location === null && $node !== null);
 
-            if ($node instanceof AbstractBlock) {
-                $location = LocationData::get($node);
-            }
-        } while ($location === null);
+        return $location;
+    }
+
+    /**
+     * Unfortunately, we cannot wrap {@see ParagraphParser} to track location
+     * like for all other {@see AbstractBlock} nodes.
+     *
+     * @see ParagraphParser
+     */
+    private function getParagraphLocation(Paragraph $paragraph): ?Location {
+        // Known?
+        $location = LocationData::optional()->get($paragraph);
+
+        if ($location !== null) {
+            return $location;
+        }
+
+        // Possible?
+        $startLine = $paragraph->getStartLine();
+        $endLine   = $paragraph->getEndLine();
+
+        if ($startLine === null || $endLine === null) {
+            return null;
+        }
+
+        // Content offset is known?
+        $offset = $this->blocks[$paragraph->parent()][1] ?? null;
+
+        if ($offset === null) {
+            return null;
+        }
+
+        // Create
+        $location = new Location($startLine, $endLine, $offset);
+        $location = LocationData::set($paragraph, $location);
 
         return $location;
     }
