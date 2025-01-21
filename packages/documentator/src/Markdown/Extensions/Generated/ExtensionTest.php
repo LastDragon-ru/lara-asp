@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Core\Extension as CoreExtension;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
@@ -24,7 +23,6 @@ final class ExtensionTest extends TestCase {
             #[Override]
             protected function extensions(): array {
                 return [
-                    new CoreExtension(),
                     new Extension(),
                 ];
             }

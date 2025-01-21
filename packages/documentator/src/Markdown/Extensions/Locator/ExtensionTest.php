@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Locator;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Core\Extension as CoreExtension;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
@@ -25,7 +24,6 @@ final class ExtensionTest extends TestCase {
             protected function extensions(): array {
                 return [
                     new FootnoteExtension(),
-                    new CoreExtension(),
                     new Extension(),
                 ];
             }

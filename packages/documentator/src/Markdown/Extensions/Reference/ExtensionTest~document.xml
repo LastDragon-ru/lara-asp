@@ -10,6 +10,13 @@
             <item key="attributes">
                 <array length="0"/>
             </item>
+            <item key="lara-asp-documentator">
+                <array length="1">
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                    </item>
+                </array>
+            </item>
         </data>
         <node name="heading">
             <attributes>

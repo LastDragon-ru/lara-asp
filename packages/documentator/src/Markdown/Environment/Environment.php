@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\BlockStartParserWrapper;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\ParagraphStartParser;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorCollection;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
 use League\CommonMark\Environment\EnvironmentAwareInterface;
@@ -31,7 +31,10 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
         private readonly EnvironmentInterface&EnvironmentBuilderInterface&ListenerProviderInterface $environment,
     ) {
         $environment->addEventListener(DocumentPreParsedEvent::class, function (DocumentPreParsedEvent $event): void {
-            $this->locator = new Locator($event->getDocument());
+            $document      = $event->getDocument();
+            $this->locator = new Locator($document);
+
+            Input::set($document, $event->getMarkdown());
         });
         $environment->addEventListener(DocumentParsedEvent::class, function (DocumentParsedEvent $event): void {
             $this->locator?->finalize();
