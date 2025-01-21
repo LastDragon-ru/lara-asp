@@ -2,11 +2,15 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Wrappers\BlockStartParserWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\BlockStartParserWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\ParagraphStartParser;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorCollection;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
+use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
+use League\CommonMark\Event\DocumentParsedEvent;
+use League\CommonMark\Event\DocumentPreParsedEvent;
 use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Normalizer\TextNormalizerInterface;
 use League\CommonMark\Parser\Block\BlockStartParserInterface;
@@ -21,10 +25,19 @@ use Psr\EventDispatcher\ListenerProviderInterface;
  * @internal
  */
 class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, ListenerProviderInterface {
+    private ?Locator $locator = null;
+
     public function __construct(
         private readonly EnvironmentInterface&EnvironmentBuilderInterface&ListenerProviderInterface $environment,
     ) {
-        // empty
+        $environment->addEventListener(DocumentPreParsedEvent::class, function (DocumentPreParsedEvent $event): void {
+            $this->locator = new Locator($event->getDocument());
+        });
+        $environment->addEventListener(DocumentParsedEvent::class, function (DocumentParsedEvent $event): void {
+            $this->locator?->finalize();
+
+            $this->locator = null;
+        });
     }
 
     #[Override]
@@ -45,12 +58,28 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
      */
     #[Override]
     public function getBlockStartParsers(): iterable {
-        foreach ($this->environment->getBlockStartParsers() as $key => $parser) {
-            yield $key => !($parser instanceof SkipLinesStartingWithLettersParser)
-                ? new BlockStartParserWrapper($parser)
-                : $parser;
-        };
+        // Locator?
+        $parsers = $this->environment->getBlockStartParsers();
+        $locator = $this->locator;
 
+        if ($locator === null) {
+            return $parsers;
+        }
+
+        // Wrap to find block location
+        foreach ($parsers as $key => $parser) {
+            if ($parser instanceof EnvironmentAwareInterface) {
+                $parser->setEnvironment($this);
+            }
+
+            if (!($parser instanceof SkipLinesStartingWithLettersParser)) {
+                $parser = new BlockStartParserWrapper($locator, $parser);
+            }
+
+            yield $key => $parser;
+        }
+
+        // Just in case
         yield from [];
     }
 

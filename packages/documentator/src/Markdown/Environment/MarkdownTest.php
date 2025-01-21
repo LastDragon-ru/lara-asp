@@ -3,9 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Wrappers\BlockContinueParserWithInlinesWrapper;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Wrappers\BlockContinueParserWrapper;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Wrappers\BlockStartParserWrapper;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\BlockStartParserWrapper;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -15,8 +13,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Markdown::class)]
 #[CoversClass(BlockStartParserWrapper::class)]
-#[CoversClass(BlockContinueParserWrapper::class)]
-#[CoversClass(BlockContinueParserWithInlinesWrapper::class)]
 final class MarkdownTest extends TestCase {
     public function testParse(): void {
         $renderer = $this->app()->make(DocumentRenderer::class);

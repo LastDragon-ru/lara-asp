@@ -31,7 +31,7 @@ use function preg_split;
 /**
  * Fix/Detect location/padding.
  *
- * Out the box only start/end line know. But not for all notes, for example,
+ * Out the box only start/end line know. But not for all nodes, for example,
  * `Table`'s nodes don't have this information. Another important thing -
  * padding of the block node.
  *

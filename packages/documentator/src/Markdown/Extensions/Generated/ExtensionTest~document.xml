@@ -10,6 +10,146 @@
             <item key="attributes">
                 <array length="0"/>
             </item>
+            <item key="lara-asp-documentator">
+                <array length="2">
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                    </item>
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                        <array length="43">
+                            <item key="1">
+                                <string><![CDATA[# Generated]]></string>
+                            </item>
+                            <item key="2">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="3">
+                                <string><![CDATA[Text text text text text text text text text text text text text]]></string>
+                            </item>
+                            <item key="4">
+                                <string><![CDATA[text text text text text text text text text text text text text]]></string>
+                            </item>
+                            <item key="5">
+                                <string><![CDATA[text text text text text text text text text text text text.]]></string>
+                            </item>
+                            <item key="6">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="7">
+                                <string><![CDATA[  [//]: # (start: with indent)]]></string>
+                            </item>
+                            <item key="8">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="9">
+                                <string><![CDATA[... nope ...]]></string>
+                            </item>
+                            <item key="10">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="11">
+                                <string><![CDATA[[//]: # (end: with indent)]]></string>
+                            </item>
+                            <item key="12">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="13">
+                                <string><![CDATA[[//]: # (start: block)]]></string>
+                            </item>
+                            <item key="14">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="15">
+                                <string><![CDATA[Text text text text text text text text text text text text text]]></string>
+                            </item>
+                            <item key="16">
+                                <string><![CDATA[text text text text text text text text text text text text text]]></string>
+                            </item>
+                            <item key="17">
+                                <string><![CDATA[text text text text text text text text text text text text.]]></string>
+                            </item>
+                            <item key="18">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="19">
+                                <string><![CDATA[[//]: # (start: nested)]]></string>
+                            </item>
+                            <item key="20">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="21">
+                                <string><![CDATA[Nested should be ignored.]]></string>
+                            </item>
+                            <item key="22">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="23">
+                                <string><![CDATA[[//]: # (end: nested)]]></string>
+                            </item>
+                            <item key="24">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="25">
+                                <string><![CDATA[[//]: # (end: block)]]></string>
+                            </item>
+                            <item key="26">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="27">
+                                <string><![CDATA[> [//]: # (start: quote)]]></string>
+                            </item>
+                            <item key="28">
+                                <string><![CDATA[> should work]]></string>
+                            </item>
+                            <item key="29">
+                                <string><![CDATA[> [//]: # (end: quote)]]></string>
+                            </item>
+                            <item key="30">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="31">
+                                <string><![CDATA[[//]: # (start: block)]]></string>
+                            </item>
+                            <item key="32">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="33">
+                                <string><![CDATA[> Text text text.]]></string>
+                            </item>
+                            <item key="34">
+                                <string><![CDATA[>]]></string>
+                            </item>
+                            <item key="35">
+                                <string><![CDATA[> [//]: # (start: nested)]]></string>
+                            </item>
+                            <item key="36">
+                                <string><![CDATA[> Nested should be ignored.]]></string>
+                            </item>
+                            <item key="37">
+                                <string><![CDATA[> [//]: # (end: nested)]]></string>
+                            </item>
+                            <item key="38">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="39">
+                                <string><![CDATA[[//]: # (end: block)]]></string>
+                            </item>
+                            <item key="40">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="41">
+                                <string><![CDATA[[//]: # (start: without end)]]></string>
+                            </item>
+                            <item key="42">
+                                <string><![CDATA[[//]: # (warning: Generated automatically. Do not edit.)]]></string>
+                            </item>
+                            <item key="43">
+                                <string><![CDATA[Up to the end.]]></string>
+                            </item>
+                        </array>
+                    </item>
+                </array>
+            </item>
         </data>
         <node name="heading">
             <attributes>
