@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
 use League\CommonMark\Extension\Table\Table;
 use League\CommonMark\Extension\Table\TableCell;
@@ -78,7 +79,7 @@ class Locator {
     private function locateNode(Node $node): bool {
         $location = $this->getNodeLocation($node);
 
-        if ($location !== null) {
+        if ($location !== null || $node instanceof AbstractInline) {
             for ($child = $node->firstChild(); $child !== null; $child = $child->next()) {
                 $this->locateNode($child);
             }
@@ -175,21 +176,21 @@ class Locator {
         }
 
         // Parent?
-        $parent         = $node->parent();
-        $parentLocation = $parent !== null ? LocationData::get($parent) : null;
+        $block         = Utils::getContainer($node);
+        $blockLocation = $block !== null ? LocationData::get($block) : null;
 
-        if ($parentLocation === null) {
+        if ($blockLocation === null) {
             return null;
         }
 
         // Create
         [$inlineStartLine, $inlineEndLine, $offset, $length, $origin] = $info;
 
-        $blockPadding = $parentLocation->startLine !== $inlineStartLine
-            ? ($parentLocation->internalPadding ?? $parentLocation->startLinePadding)
-            : $parentLocation->startLinePadding;
-        $startLine    = $parentLocation->startLine + $inlineStartLine;
-        $endLine      = $parentLocation->endLine + $inlineEndLine;
+        $blockPadding = $blockLocation->startLine !== $inlineStartLine
+            ? ($blockLocation->internalPadding ?? $blockLocation->startLinePadding)
+            : $blockLocation->startLinePadding;
+        $startLine    = $blockLocation->startLine + $inlineStartLine;
+        $endLine      = $blockLocation->endLine + $inlineEndLine;
         $line         = Lines::get($this->document)[$startLine] ?? '';
         $line         = mb_substr($line, $blockPadding);
         $offset       = $offset + $blockPadding + (int) mb_strpos($line, $origin);
