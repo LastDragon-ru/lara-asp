@@ -7,7 +7,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use League\CommonMark\Environment\EnvironmentInterface;

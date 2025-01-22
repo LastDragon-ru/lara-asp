@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset as OffsetData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
@@ -43,8 +43,8 @@ class Prefix implements Mutation {
             $text     = null;
 
             if ($node instanceof Link || $node instanceof Image) {
-                $offset   = OffsetData::get($node);
-                $location = $location->withOffset($offset);
+                $content  = ContentData::get($node);
+                $location = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
                 $target   = ReferenceData::get($node)?->getLabel();
                 $target   = "{$this->prefix}-{$target}";
                 $target   = Utils::escapeTextInTableCell($node, $target);

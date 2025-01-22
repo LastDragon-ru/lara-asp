@@ -34,6 +34,7 @@ Nested should be ignored.
 >
 > [//]: # (start: nested)
 > Nested should be ignored.
+>
 > [//]: # (end: nested)
 
 [//]: # (end: block)

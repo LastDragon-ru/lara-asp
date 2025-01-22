@@ -9,7 +9,7 @@ use function iterator_to_array;
 
 /**
  * @internal
- * @extends Data<array<array-key, string>>
+ * @extends Data<array<int, string>>
  */
 readonly class Lines extends Data {
     #[Override]

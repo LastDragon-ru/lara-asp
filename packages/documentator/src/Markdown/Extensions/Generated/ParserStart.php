@@ -37,7 +37,6 @@ class ParserStart implements BlockStartParserInterface {
         }
 
         // Match?
-        $padding = $cursor->getPosition();
         $matches = [];
 
         if (
@@ -50,6 +49,6 @@ class ParserStart implements BlockStartParserInterface {
         // Yep
         $cursor->advanceBy(mb_strlen($matches[0]));
 
-        return BlockStart::of(new ParserContinue($matches[0], $matches[1], $padding))->at($cursor);
+        return BlockStart::of(new ParserContinue($matches[1]))->at($cursor);
     }
 }

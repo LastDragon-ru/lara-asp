@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\BlockPadding;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Parser\Block\BlockContinue;
 use League\CommonMark\Parser\Block\BlockContinueParserInterface;
@@ -16,7 +15,6 @@ use Override;
 class ParserContinue implements BlockContinueParserInterface {
     private Node   $block;
     private Parser $parser;
-    private int    $padding;
     private bool   $finished;
 
     public function __construct(
@@ -24,13 +22,11 @@ class ParserContinue implements BlockContinueParserInterface {
     ) {
         $this->block    = new Node();
         $this->parser   = new Parser();
-        $this->padding  = 0;
         $this->finished = false;
     }
 
     public function start(Cursor $cursor): bool {
         $this->finished = false;
-        $this->padding  = $cursor->getPosition();
         $started        = $this->parse($cursor);
 
         return $started;
@@ -84,9 +80,6 @@ class ParserContinue implements BlockContinueParserInterface {
         ) {
             $this->referenceMap->add($reference);
         }
-
-        // Data
-        BlockPadding::set($this->block, $this->padding);
     }
 
     private function parse(Cursor $cursor): bool {

@@ -13,7 +13,7 @@ readonly class Composite implements Mutation {
     /**
      * @var array<array-key, Mutation>
      */
-    protected array $mutations;
+    private array $mutations;
 
     public function __construct(Mutation ...$mutations) {
         $this->mutations = $mutations;

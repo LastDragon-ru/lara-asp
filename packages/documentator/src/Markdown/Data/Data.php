@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Data;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Exceptions\DataMissed;
+use LastDragon_ru\LaraASP\Documentator\Package;
 use League\CommonMark\Node\Node;
 
 use function is_a;
@@ -26,7 +27,7 @@ abstract readonly class Data {
      * @return T
      */
     public static function get(Node $node): mixed {
-        $data  = $node->data->get(static::class, null);
+        $data  = $node->data->get(Package::Name.'.'.static::class, null);
         $value = is_object($data) && is_a($data, static::class, true)
             ? $data->value
             : static::default($node);
@@ -55,7 +56,7 @@ abstract readonly class Data {
      * @return T
      */
     public static function set(Node $node, mixed $value): mixed {
-        $node->data->set(static::class, new static($value));
+        $node->data->set(Package::Name.'.'.static::class, new static($value));
 
         return $value;
     }

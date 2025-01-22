@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use League\CommonMark\Environment\EnvironmentAwareInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
@@ -17,7 +17,7 @@ use Override;
 trait Aware {
     #[Override]
     public function setEnvironment(EnvironmentInterface $environment): void {
-        $object = $this->getObject();
+        $object = $this->getParser();
 
         if ($object instanceof EnvironmentAwareInterface) {
             $object->setEnvironment($environment);
@@ -26,12 +26,12 @@ trait Aware {
 
     #[Override]
     public function setConfiguration(ConfigurationInterface $configuration): void {
-        $object = $this->getObject();
+        $object = $this->getParser();
 
         if ($object instanceof ConfigurationAwareInterface) {
             $object->setConfiguration($configuration);
         }
     }
 
-    abstract protected function getObject(): object;
+    abstract protected function getParser(): object;
 }

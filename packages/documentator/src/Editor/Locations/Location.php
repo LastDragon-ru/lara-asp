@@ -62,6 +62,9 @@ readonly class Location implements IteratorAggregate {
         yield from [];
     }
 
+    /**
+     * @return new<self>
+     */
     public function withOffset(int $offset): self {
         return new self(
             $this->startLine,
@@ -73,6 +76,9 @@ readonly class Location implements IteratorAggregate {
         );
     }
 
+    /**
+     * @return new<self>
+     */
     public function withLength(?int $length): self {
         return new self(
             $this->startLine,

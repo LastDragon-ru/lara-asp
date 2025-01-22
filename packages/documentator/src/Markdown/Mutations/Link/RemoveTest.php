@@ -35,7 +35,7 @@ final class RemoveTest extends TestCase {
             | Header                  |  [Header][link]               |
             |-------------------------|-------------------------------|
             | Cell [link][self] cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell [table][self].      |
+            | Cell                    | Cell `\|` \\| [table][self].  |
             MARKDOWN;
 
         $markdown = $this->app()->make(Markdown::class);
@@ -65,7 +65,7 @@ final class RemoveTest extends TestCase {
             | Header                  |  Header               |
             |-------------------------|-------------------------------|
             | Cell link cell. | Cell `\|` \\| ![table][image] |
-            | Cell                    | Cell cell table.      |
+            | Cell                    | Cell `\|` \\| table.  |
 
             MARKDOWN,
             $actual,

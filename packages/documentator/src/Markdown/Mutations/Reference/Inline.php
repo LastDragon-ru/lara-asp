@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
@@ -40,8 +40,8 @@ class Inline implements Mutation {
             $text     = null;
 
             if ($node instanceof Link || $node instanceof Image) {
-                $offset   = Offset::get($node);
-                $location = $location->withOffset($offset);
+                $content  = Content::get($node);
+                $location = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
                 $title    = Utils::getLinkTitle($node, (string) $node->getTitle());
                 $target   = Utils::getLinkTarget($node, rawurldecode($node->getUrl()));
                 $text     = $title !== '' ? "({$target} {$title})" : "({$target})";

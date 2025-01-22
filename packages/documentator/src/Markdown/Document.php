@@ -114,7 +114,7 @@ class Document implements Stringable {
     }
 
     /**
-     * @return array<array-key, string>
+     * @return array<int, string>
      */
     protected function getLines(): array {
         return Lines::get($this->node);
