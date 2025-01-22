@@ -1,58 +1,89 @@
-# Generated[^1]
+# Simple[^1]
 
-[//]: # (start: block)
+<!-- markdownlint-disable -->
 
-Text text text text text text text text text text text text text
-text text text text text text text text text text text text text
-text text text text text text text text text text text text.
+Text text _**[**_`link`_**](https://example.com/)**_ text [**_`link`](https://example.com/).
 
-[//]: # (start: nested)
+Text text [link](https://example.com/)[^1] text [link](https://example.com/ "title") text[^1]
+text text text text [link][link] text text [link](https://example.com/) text text text text text text
+text text text text text text text text text text[^2] text text text text text text text
+text text _[link](https://example.com/)_[^note] text.
 
-Nested should be ignored.
+[link]: https://example.com/ "reference"
 
-[//]: # (end: nested)
+# Lists
 
-[//]: # (end: block)
+* List list [link](https://example.com/).
+    * List list [link](https://example.com/).
+    * List list [link](https://example.com/ "\\|").
 
-> Quote
-> [//]: # (start: quote)
-> should work
-> [//]: # (end: quote)
+# Quotes
 
-# References
-
-[simple]: https://example.com/
-
-[multiline]:
-https://example.com/
-(
-    example.com
-)
-
-> Quote
+> Quote quote [link](https://example.com/).
 >
-> ### Quote Heading[^1]
->
-> Text text [link](https://example.com/).
->
-> > Text text [link](https://example.com/).
->
-> [quote]:
-> https://example.com/
+> Quote quote quote quote quote quote quote quote quote quote quote quote quote quote quote quote quote
+> quote quote [link](https://example.com/) quote.
+
+> > Quote quote [link](https://example.com/).
 
 # Tables
 
-| Header                   | Header ([link](https://example.com/))                       |
-|--------------------------|-------------------------------------------------------------|
-| Cell [link][quote] cell. | Cell                                                        |
-| Cell                     | Cell cell [link](https://example.com/) cell [link][simple]. |
+| Header                  |  Header ([link](https://example.com/))                                    |
+|-------------------------|---------------------------------------------------------------------------|
+| Cell [link][link] cell. | Cell                                                                      |
+| Cell                    | Cell cell [link](https://example.com/) cell [link](https://example.com/). |
 
-> Quote
->
-> | Header                   |
-> |--------------------------|
-> | Cell [link][quote] cell. |
+> | Header                                           | Header |
+> |--------------------------------------------------|--------|
+> | Cell `\|` \\| [link](https://example.com/ "\\|") | Cell   |
+
+# Images
+
+Text text ![image](https://example.com/) text ![image](https://example.com/ "title")
+text text ![image][link] text text ![image](https://example.com/) text text text
+text text text text text text text text text text text text text text text text text
+text text _![image](https://example.com/)_ text.
+
+![image](https://example.com/)
+
+![image][link]
+
+> ![image](https://example.com/)
+
+| Header                         | Header |
+|--------------------------------|--------|
+| ![image](https://example.com/) | Cell   |
 
 # Footnotes
 
 [^1]: Footnote text text text text
+
+[^note]: Footnote text text text text text [link](https://example.com/)[^1] text
+text text text [link](https://example.com/) text text text.
+
+> Text text[^quote]
+>
+> [^quote]: Footnote text text text text text [link](https://example.com/)
+>     text text text text text [link](https://example.com/).
+
+[^unused]: Text text text text text text text text text[^unused]
+
+    Text text text text text text text text text text text text
+    text text text text text text text text text text text text.
+
+# Inline code
+
+Text `code` text text **`code`** text text text text `code` text
+text `code` `code` _`code`_ [`code`][link] `[code][link]` text.
+
+Text `
+code
+` text.
+
+> Text `code` text.
+>
+> > `code`
+
+| Header | `Header`    |
+|--------|-------------|
+| `code` | Cell `code` |
