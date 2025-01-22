@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\Footnote\Node\FootnoteContainer;
 use League\CommonMark\Extension\Table\Table;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Extension\Table\TableRow;
@@ -83,7 +84,7 @@ class Locator {
     private function locateNode(Node $node): bool {
         $location = $this->getNodeLocation($node);
 
-        if ($location !== null || $node instanceof AbstractInline) {
+        if ($location !== null || $node instanceof AbstractInline || $node instanceof FootnoteContainer) {
             for ($child = $node->firstChild(); $child !== null; $child = $child->next()) {
                 $this->locateNode($child);
             }
