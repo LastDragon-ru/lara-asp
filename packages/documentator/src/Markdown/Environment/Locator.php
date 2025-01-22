@@ -190,7 +190,7 @@ class Locator {
             ? ($blockLocation->internalPadding ?? $blockLocation->startLinePadding)
             : $blockLocation->startLinePadding;
         $startLine    = $blockLocation->startLine + $inlineStartLine;
-        $endLine      = $blockLocation->endLine + $inlineEndLine;
+        $endLine      = $blockLocation->startLine + $inlineEndLine;
         $line         = Lines::get($this->document)[$startLine] ?? '';
         $line         = mb_substr($line, $blockPadding);
         $offset       = $offset + $blockPadding + (int) mb_strpos($line, $origin);
