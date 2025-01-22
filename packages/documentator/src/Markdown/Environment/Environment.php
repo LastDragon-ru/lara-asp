@@ -41,7 +41,7 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
             Input::set($document, $event->getMarkdown());
         });
         $environment->addEventListener(DocumentParsedEvent::class, function (DocumentParsedEvent $event): void {
-            $this->locator?->finalize();
+            $this->locator?->locate();
 
             $this->locator = null;
         });

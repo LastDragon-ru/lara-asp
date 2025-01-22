@@ -37,10 +37,8 @@ readonly class BlockStartParserWrapper
         $start  = $this->parser->tryStart($cursor, $parserState);
 
         if ($start !== null) {
-            $contentOffset = $cursor->getPosition();
-
             foreach ($start->getBlockParsers() as $parser) {
-                $this->locator->addBlock($parser->getBlock(), $offset, $contentOffset);
+                $this->locator->addBlock($parser->getBlock(), $offset);
             }
         }
 
