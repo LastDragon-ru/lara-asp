@@ -6,8 +6,8 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Offset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
@@ -74,8 +74,8 @@ readonly class Move implements Mutation {
             $text     = null;
 
             if ($node instanceof Link || $node instanceof Image) {
-                $offset       = Offset::get($node);
-                $location     = $location->withOffset($offset);
+                $content      = Content::get($node);
+                $location     = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
                 $origin       = mb_trim($document->getText($location));
                 $titleValue   = (string) $node->getTitle();
                 $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);

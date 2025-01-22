@@ -108,13 +108,14 @@ class InlineParserWrapper implements InlineParserInterface, EnvironmentAwareInte
         if ($container instanceof TableCell) {
             // Escaped `|` passed down to inline parsing as an unescaped
             // pipe character. It leads to invalid `$offset`/`$length`.
-            $offset += mb_substr_count(mb_substr($line, 0, $offset), '|');
-            $length += mb_substr_count(mb_substr($line, $offset, $length), '|');
-            $start   = str_replace('|', '\\|', $start);
+            $delimiter += mb_substr_count(mb_substr($line, $offset, $delimiter), '|');
+            $offset    += mb_substr_count(mb_substr($line, 0, $offset), '|');
+            $length    += mb_substr_count(mb_substr($line, $offset, $length), '|');
+            $start      = str_replace('|', '\\|', $start);
         }
 
         // Save
-        $this->locator->addInline($child, $startLine, $endLine, $offset, $length, $start);
+        $this->locator->addInline($child, $startLine, $endLine, $offset, $length, $start, $delimiter);
 
         // Ok
         return true;

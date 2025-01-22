@@ -3,10 +3,13 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Table\Table;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Extension\Table\TableRow;
@@ -46,7 +49,7 @@ class Locator {
      */
     private WeakMap $blocks;
     /**
-     * @var WeakMap<AbstractInline, array{int, int, int, int, string}>
+     * @var WeakMap<AbstractInline, array{int, int, int, int, string, int}>
      */
     private WeakMap $inlines;
 
@@ -67,9 +70,10 @@ class Locator {
         int $endLine,
         int $offset,
         int $length,
-        string $origin,
+        string $text,
+        int $marker,
     ): void {
-        $this->inlines[$node] = [$startLine, $endLine, $offset, $length, $origin];
+        $this->inlines[$node] = [$startLine, $endLine, $offset, $length, $text, $marker];
     }
 
     public function locate(): void {
@@ -187,7 +191,7 @@ class Locator {
         }
 
         // Create
-        [$inlineStartLine, $inlineEndLine, $offset, $length, $text] = $info;
+        [$inlineStartLine, $inlineEndLine, $offset, $length, $text, $marker] = $info;
 
         $startLine = $blockLocation->startLine + $inlineStartLine;
         $endLine   = $blockLocation->startLine + $inlineEndLine;
@@ -195,6 +199,13 @@ class Locator {
         $line      = mb_substr($line, $blockLocation->offset);
         $offset    = $offset + $blockLocation->offset + (int) mb_strpos($line, $text);
         $location  = new Location($startLine, $endLine, $offset, $length);
+
+        // Some nodes like links/images may
+        if ($node instanceof Link || $node instanceof Image) {
+            $content = $location->withLength($marker - 1)->withOffset(1 + (int) ($node instanceof Image));
+
+            Content::set($node, $content);
+        }
 
         // Cleanup
         unset($this->inlines[$node]);
