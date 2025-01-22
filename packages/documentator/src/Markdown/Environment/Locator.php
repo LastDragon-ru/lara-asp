@@ -24,9 +24,12 @@ use League\CommonMark\Parser\Block\ParagraphParser;
 use WeakMap;
 
 use function array_key_first;
+use function array_key_last;
 use function array_slice;
 use function assert;
+use function mb_strlen;
 use function mb_strpos;
+use function mb_substr;
 use function preg_split;
 
 // todo(documentator): Internal padding for Location
@@ -149,7 +152,7 @@ class Locator {
                     $parent instanceof BlockQuote => 2,
                     default                       => 0,
                 };
-                $parent  = $parent->parent();
+                $parent = $parent->parent();
             } while ($parent instanceof Node);
         }
 

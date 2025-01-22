@@ -15,8 +15,7 @@ use Override;
 /**
  * @internal
  */
-readonly class BlockStartParserWrapper
-    implements BlockStartParserInterface, EnvironmentAwareInterface, ConfigurationAwareInterface {
+readonly class BlockStartParserWrapper implements BlockStartParserInterface, EnvironmentAwareInterface, ConfigurationAwareInterface {
     use Aware;
 
     public function __construct(
