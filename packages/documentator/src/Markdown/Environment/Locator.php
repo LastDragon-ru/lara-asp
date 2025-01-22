@@ -140,7 +140,10 @@ class Locator {
             $offset = 0;
 
             do {
-                $offset += $this->getNodeOffset($parent);
+                $offset += match (true) {
+                    $parent instanceof BlockQuote => 2,
+                    default                       => 0,
+                };
                 $parent  = $parent->parent();
             } while ($parent instanceof Node);
         }
@@ -184,17 +187,14 @@ class Locator {
         }
 
         // Create
-        [$inlineStartLine, $inlineEndLine, $offset, $length, $origin] = $info;
+        [$inlineStartLine, $inlineEndLine, $offset, $length, $text] = $info;
 
-        $blockPadding = $blockLocation->startLine !== $inlineStartLine
-            ? ($blockLocation->internalPadding ?? $blockLocation->startLinePadding)
-            : $blockLocation->startLinePadding;
-        $startLine    = $blockLocation->startLine + $inlineStartLine;
-        $endLine      = $blockLocation->startLine + $inlineEndLine;
-        $line         = Lines::get($this->document)[$startLine] ?? '';
-        $line         = mb_substr($line, $blockPadding);
-        $offset       = $offset + $blockPadding + (int) mb_strpos($line, $origin);
-        $location     = new Location($startLine, $endLine, $offset, $length);
+        $startLine = $blockLocation->startLine + $inlineStartLine;
+        $endLine   = $blockLocation->startLine + $inlineEndLine;
+        $line      = Lines::get($this->document)[$startLine] ?? '';
+        $line      = mb_substr($line, $blockLocation->offset);
+        $offset    = $offset + $blockLocation->offset + (int) mb_strpos($line, $text);
+        $location  = new Location($startLine, $endLine, $offset, $length);
 
         // Cleanup
         unset($this->inlines[$node]);
@@ -282,12 +282,5 @@ class Locator {
 
             $offset += $cellLength + 1;
         }
-    }
-
-    private function getNodeOffset(Node $node): int {
-        return match (true) {
-            $node instanceof BlockQuote => 2,
-            default                     => 0,
-        };
     }
 }

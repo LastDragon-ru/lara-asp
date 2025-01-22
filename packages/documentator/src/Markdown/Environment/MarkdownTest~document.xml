@@ -123,7 +123,7 @@
                         <object class="League\CommonMark\Input\MarkdownInput"/>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                        <array length="89">
+                        <array length="94">
                             <item key="1">
                                 <string><![CDATA[# Simple[^1]]]></string>
                             </item>
@@ -215,7 +215,7 @@
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="31">
-                                <string><![CDATA[| Header                  |  Header ([link](https://example.com/))                                    |]]></string>
+                                <string><![CDATA[| Header                  | Header ([link](https://example.com/))                                     |]]></string>
                             </item>
                             <item key="32">
                                 <string><![CDATA[|-------------------------|---------------------------------------------------------------------------|]]></string>
@@ -227,176 +227,191 @@
                                 <string><![CDATA[| Cell                    | Cell cell [link](https://example.com/) cell [link](https://example.com/). |]]></string>
                             </item>
                             <item key="35">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[| Cell                    | Cell `\|` \\| [table][link].                                              |]]></string>
                             </item>
                             <item key="36">
-                                <string><![CDATA[> | Header                                           | Header |]]></string>
-                            </item>
-                            <item key="37">
-                                <string><![CDATA[> |--------------------------------------------------|--------|]]></string>
-                            </item>
-                            <item key="38">
-                                <string><![CDATA[> | Cell `\|` \\| [link](https://example.com/ "\\|") | Cell   |]]></string>
-                            </item>
-                            <item key="39">
                                 <string><![CDATA[]]></string>
                             </item>
+                            <item key="37">
+                                <string><![CDATA[> | Header                                           | Header |]]></string>
+                            </item>
+                            <item key="38">
+                                <string><![CDATA[> |--------------------------------------------------|--------|]]></string>
+                            </item>
+                            <item key="39">
+                                <string><![CDATA[> | Cell `\|` \\| [link](https://example.com/ "\\|") | Cell   |]]></string>
+                            </item>
                             <item key="40">
-                                <string><![CDATA[# Images]]></string>
+                                <string><![CDATA[> | Cell `\|` \\| [table][link].                     | Cell   |]]></string>
                             </item>
                             <item key="41">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="42">
-                                <string><![CDATA[Text text ![image](https://example.com/) text ![image](https://example.com/ "title")]]></string>
+                                <string><![CDATA[# Images]]></string>
                             </item>
                             <item key="43">
-                                <string><![CDATA[text text ![image][link] text text ![image](https://example.com/) text text text]]></string>
-                            </item>
-                            <item key="44">
-                                <string><![CDATA[text text text text text text text text text text text text text text text text text]]></string>
-                            </item>
-                            <item key="45">
-                                <string><![CDATA[text text _![image](https://example.com/)_ text.]]></string>
-                            </item>
-                            <item key="46">
                                 <string><![CDATA[]]></string>
                             </item>
+                            <item key="44">
+                                <string><![CDATA[Text text ![image](https://example.com/) text ![image](https://example.com/ "title")]]></string>
+                            </item>
+                            <item key="45">
+                                <string><![CDATA[text text ![image][link] text text ![image](https://example.com/) text text text]]></string>
+                            </item>
+                            <item key="46">
+                                <string><![CDATA[text text text text text text text text text text text text text text text text text]]></string>
+                            </item>
                             <item key="47">
-                                <string><![CDATA[![image](https://example.com/)]]></string>
+                                <string><![CDATA[text text _![image](https://example.com/)_ text.]]></string>
                             </item>
                             <item key="48">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="49">
-                                <string><![CDATA[![image][link]]]></string>
+                                <string><![CDATA[![image](https://example.com/)]]></string>
                             </item>
                             <item key="50">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="51">
-                                <string><![CDATA[> ![image](https://example.com/)]]></string>
+                                <string><![CDATA[![image][link]]]></string>
                             </item>
                             <item key="52">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="53">
-                                <string><![CDATA[| Header                         | Header |]]></string>
+                                <string><![CDATA[> ![image](https://example.com/)]]></string>
                             </item>
                             <item key="54">
-                                <string><![CDATA[|--------------------------------|--------|]]></string>
+                                <string><![CDATA[]]></string>
                             </item>
                             <item key="55">
-                                <string><![CDATA[| ![image](https://example.com/) | Cell   |]]></string>
+                                <string><![CDATA[| Header                         | Header                      |]]></string>
                             </item>
                             <item key="56">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[|--------------------------------|-----------------------------|]]></string>
                             </item>
                             <item key="57">
-                                <string><![CDATA[# Footnotes]]></string>
+                                <string><![CDATA[| ![image](https://example.com/) | Cell                        |]]></string>
                             </item>
                             <item key="58">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[| Cell                           | Cell `\|` \\| [table][link] |]]></string>
                             </item>
                             <item key="59">
-                                <string><![CDATA[[^1]: Footnote text text text text]]></string>
-                            </item>
-                            <item key="60">
                                 <string><![CDATA[]]></string>
                             </item>
+                            <item key="60">
+                                <string><![CDATA[# Footnotes]]></string>
+                            </item>
                             <item key="61">
-                                <string><![CDATA[[^note]: Footnote text text text text text [link](https://example.com/)[^1] text]]></string>
+                                <string><![CDATA[]]></string>
                             </item>
                             <item key="62">
-                                <string><![CDATA[text text text [link](https://example.com/) text text text.]]></string>
+                                <string><![CDATA[[^1]: Footnote text text text text]]></string>
                             </item>
                             <item key="63">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="64">
-                                <string><![CDATA[> Text text[^quote]]]></string>
+                                <string><![CDATA[[^note]: Footnote text text text text text [link](https://example.com/)[^1] text]]></string>
                             </item>
                             <item key="65">
-                                <string><![CDATA[>]]></string>
+                                <string><![CDATA[text text text [link](https://example.com/) text text text.]]></string>
                             </item>
                             <item key="66">
-                                <string><![CDATA[> [^quote]: Footnote text text text text text [link](https://example.com/)]]></string>
+                                <string><![CDATA[]]></string>
                             </item>
                             <item key="67">
-                                <string><![CDATA[>     text text text text text [link](https://example.com/).]]></string>
+                                <string><![CDATA[> Text text[^quote]]]></string>
                             </item>
                             <item key="68">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[>]]></string>
                             </item>
                             <item key="69">
-                                <string><![CDATA[[^unused]: Text text text text text text text text text[^unused]]]></string>
+                                <string><![CDATA[> [^quote]: Footnote text text text text text [link](https://example.com/)]]></string>
                             </item>
                             <item key="70">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[>     text text text text text [link](https://example.com/).]]></string>
                             </item>
                             <item key="71">
-                                <string><![CDATA[    Text text text text text text text text text text text text]]></string>
+                                <string><![CDATA[]]></string>
                             </item>
                             <item key="72">
-                                <string><![CDATA[    text text text text text text text text text text text text.]]></string>
+                                <string><![CDATA[[^unused]: Text text text text text text text text text[^unused]]]></string>
                             </item>
                             <item key="73">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="74">
-                                <string><![CDATA[# Inline code]]></string>
+                                <string><![CDATA[    Text text text text text text text text text text text text]]></string>
                             </item>
                             <item key="75">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[    text text text text text text text text text text text text.]]></string>
                             </item>
                             <item key="76">
-                                <string><![CDATA[Text `code` text text **`code`** text text text text `code` text]]></string>
+                                <string><![CDATA[]]></string>
                             </item>
                             <item key="77">
-                                <string><![CDATA[text `code` `code` _`code`_ [`code`][link] `[code][link]` text.]]></string>
+                                <string><![CDATA[# Inline code]]></string>
                             </item>
                             <item key="78">
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="79">
-                                <string><![CDATA[Text `]]></string>
+                                <string><![CDATA[Text `code` text text **`code`** text text text text `code` text]]></string>
                             </item>
                             <item key="80">
-                                <string><![CDATA[code]]></string>
+                                <string><![CDATA[text `code` `code` _`code`_ [`code`][link] `[code][link]` text.]]></string>
                             </item>
                             <item key="81">
-                                <string><![CDATA[` text.]]></string>
+                                <string><![CDATA[]]></string>
                             </item>
                             <item key="82">
-                                <string><![CDATA[]]></string>
+                                <string><![CDATA[Text `]]></string>
                             </item>
                             <item key="83">
-                                <string><![CDATA[> Text `code` text.]]></string>
+                                <string><![CDATA[code]]></string>
                             </item>
                             <item key="84">
-                                <string><![CDATA[>]]></string>
+                                <string><![CDATA[` text.]]></string>
                             </item>
                             <item key="85">
-                                <string><![CDATA[> > `code`]]></string>
-                            </item>
-                            <item key="86">
                                 <string><![CDATA[]]></string>
                             </item>
+                            <item key="86">
+                                <string><![CDATA[> Text `code` text.]]></string>
+                            </item>
                             <item key="87">
-                                <string><![CDATA[| Header | `Header`    |]]></string>
+                                <string><![CDATA[>]]></string>
                             </item>
                             <item key="88">
-                                <string><![CDATA[|--------|-------------|]]></string>
+                                <string><![CDATA[> > `code`]]></string>
                             </item>
                             <item key="89">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="90">
+                                <string><![CDATA[| Header | `Header`    |]]></string>
+                            </item>
+                            <item key="91">
+                                <string><![CDATA[|--------|-------------|]]></string>
+                            </item>
+                            <item key="92">
                                 <string><![CDATA[| `code` | Cell `code` |]]></string>
+                            </item>
+                            <item key="93">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="94">
+                                <string><![CDATA[[link]: https://example.com]]></string>
                             </item>
                         </array>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                             <property name="endLine">
-                                <int>89</int>
+                                <int>94</int>
                             </property>
                             <property name="internalPadding">
                                 <null/>
@@ -2367,7 +2382,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>34</int>
+                                    <int>35</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -2576,7 +2591,7 @@
                                                     <int>28</int>
                                                 </property>
                                                 <property name="offset">
-                                                    <int>37</int>
+                                                    <int>36</int>
                                                 </property>
                                                 <property name="startLine">
                                                     <int>31</int>
@@ -3080,6 +3095,243 @@
                         </node>
                     </node>
                 </node>
+                <node name="table_row">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                        <item key="lara-asp-documentator">
+                            <array length="1">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>35</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <null/>
+                                        </property>
+                                        <property name="offset">
+                                            <int>0</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>35</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
+                                </item>
+                            </array>
+                        </item>
+                    </data>
+                    <node name="table_cell">
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="1">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>35</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>25</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>35</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[Cell]]></string>
+                        </node>
+                    </node>
+                    <node name="table_cell">
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="1">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>35</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>75</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>27</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>35</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[Cell ]]></string>
+                        </node>
+                        <node name="code">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                                <item key="lara-asp-documentator">
+                                    <array length="1">
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                <property name="endLine">
+                                                    <int>35</int>
+                                                </property>
+                                                <property name="internalPadding">
+                                                    <null/>
+                                                </property>
+                                                <property name="length">
+                                                    <int>4</int>
+                                                </property>
+                                                <property name="offset">
+                                                    <int>33</int>
+                                                </property>
+                                                <property name="startLine">
+                                                    <int>35</int>
+                                                </property>
+                                                <property name="startLinePadding">
+                                                    <int>0</int>
+                                                </property>
+                                            </object>
+                                        </item>
+                                    </array>
+                                </item>
+                            </data>
+                            <string><![CDATA[|]]></string>
+                        </node>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[ | ]]></string>
+                        </node>
+                        <node name="link">
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[reference]]></string>
+                                </attribute>
+                            </attributes>
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                                <item key="lara-asp-documentator">
+                                    <array length="1">
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                <property name="endLine">
+                                                    <int>35</int>
+                                                </property>
+                                                <property name="internalPadding">
+                                                    <null/>
+                                                </property>
+                                                <property name="length">
+                                                    <int>13</int>
+                                                </property>
+                                                <property name="offset">
+                                                    <int>42</int>
+                                                </property>
+                                                <property name="startLine">
+                                                    <int>35</int>
+                                                </property>
+                                                <property name="startLinePadding">
+                                                    <int>0</int>
+                                                </property>
+                                            </object>
+                                        </item>
+                                    </array>
+                                </item>
+                                <item key="reference">
+                                    <object class="League\CommonMark\Reference\Reference">
+                                        <property name="destination">
+                                            <string><![CDATA[https://example.com/]]></string>
+                                        </property>
+                                        <property name="label">
+                                            <string><![CDATA[link]]></string>
+                                        </property>
+                                        <property name="title">
+                                            <string><![CDATA[reference]]></string>
+                                        </property>
+                                    </object>
+                                </item>
+                            </data>
+                            <node name="text">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                </data>
+                                <string><![CDATA[table]]></string>
+                            </node>
+                        </node>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[.]]></string>
+                        </node>
+                    </node>
+                </node>
             </node>
         </node>
         <node name="block_quote">
@@ -3092,7 +3344,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>38</int>
+                                    <int>40</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -3104,7 +3356,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>36</int>
+                                    <int>37</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -3124,7 +3376,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>38</int>
+                                        <int>40</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -3136,7 +3388,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>36</int>
+                                        <int>37</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>2</int>
@@ -3161,7 +3413,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>37</int>
+                                            <int>38</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -3173,7 +3425,7 @@
                                             <int>0</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>36</int>
+                                            <int>37</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>2</int>
@@ -3193,7 +3445,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>36</int>
+                                                <int>37</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -3205,7 +3457,7 @@
                                                 <int>0</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>36</int>
+                                                <int>37</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>2</int>
@@ -3230,7 +3482,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>36</int>
+                                                    <int>37</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -3242,7 +3494,7 @@
                                                     <int>3</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>36</int>
+                                                    <int>37</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -3276,7 +3528,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>36</int>
+                                                    <int>37</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -3288,7 +3540,7 @@
                                                     <int>54</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>36</int>
+                                                    <int>37</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -3324,7 +3576,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>38</int>
+                                            <int>39</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -3336,7 +3588,7 @@
                                             <int>0</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>38</int>
+                                            <int>39</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>2</int>
@@ -3356,7 +3608,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>38</int>
+                                                <int>39</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -3368,7 +3620,7 @@
                                                 <int>0</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>38</int>
+                                                <int>39</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>2</int>
@@ -3393,7 +3645,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>38</int>
+                                                    <int>39</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -3405,7 +3657,7 @@
                                                     <int>3</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>38</int>
+                                                    <int>39</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -3433,7 +3685,7 @@
                                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                     <property name="endLine">
-                                                        <int>38</int>
+                                                        <int>39</int>
                                                     </property>
                                                     <property name="internalPadding">
                                                         <null/>
@@ -3445,7 +3697,7 @@
                                                         <int>9</int>
                                                     </property>
                                                     <property name="startLine">
-                                                        <int>38</int>
+                                                        <int>39</int>
                                                     </property>
                                                     <property name="startLinePadding">
                                                         <int>0</int>
@@ -3483,7 +3735,7 @@
                                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                     <property name="endLine">
-                                                        <int>38</int>
+                                                        <int>39</int>
                                                     </property>
                                                     <property name="internalPadding">
                                                         <null/>
@@ -3492,10 +3744,10 @@
                                                         <int>34</int>
                                                     </property>
                                                     <property name="offset">
-                                                        <int>14</int>
+                                                        <int>18</int>
                                                     </property>
                                                     <property name="startLine">
-                                                        <int>38</int>
+                                                        <int>39</int>
                                                     </property>
                                                     <property name="startLinePadding">
                                                         <int>0</int>
@@ -3530,7 +3782,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>38</int>
+                                                    <int>39</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -3542,7 +3794,244 @@
                                                     <int>54</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>38</int>
+                                                    <int>39</int>
+                                                </property>
+                                                <property name="startLinePadding">
+                                                    <int>0</int>
+                                                </property>
+                                            </object>
+                                        </item>
+                                    </array>
+                                </item>
+                            </data>
+                            <node name="text">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                </data>
+                                <string><![CDATA[Cell]]></string>
+                            </node>
+                        </node>
+                    </node>
+                    <node name="table_row">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="1">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>40</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>40</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>2</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <node name="table_cell">
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[data]]></string>
+                                </attribute>
+                            </attributes>
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                                <item key="lara-asp-documentator">
+                                    <array length="1">
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                <property name="endLine">
+                                                    <int>40</int>
+                                                </property>
+                                                <property name="internalPadding">
+                                                    <null/>
+                                                </property>
+                                                <property name="length">
+                                                    <int>50</int>
+                                                </property>
+                                                <property name="offset">
+                                                    <int>3</int>
+                                                </property>
+                                                <property name="startLine">
+                                                    <int>40</int>
+                                                </property>
+                                                <property name="startLinePadding">
+                                                    <int>0</int>
+                                                </property>
+                                            </object>
+                                        </item>
+                                    </array>
+                                </item>
+                            </data>
+                            <node name="text">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                </data>
+                                <string><![CDATA[Cell ]]></string>
+                            </node>
+                            <node name="code">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                    <item key="lara-asp-documentator">
+                                        <array length="1">
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>40</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>4</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>9</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>40</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </array>
+                                    </item>
+                                </data>
+                                <string><![CDATA[|]]></string>
+                            </node>
+                            <node name="text">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                </data>
+                                <string><![CDATA[ | ]]></string>
+                            </node>
+                            <node name="link">
+                                <attributes>
+                                    <attribute name="destination">
+                                        <string><![CDATA[https://example.com/]]></string>
+                                    </attribute>
+                                    <attribute name="title">
+                                        <string><![CDATA[reference]]></string>
+                                    </attribute>
+                                </attributes>
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                    <item key="lara-asp-documentator">
+                                        <array length="1">
+                                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                    <property name="endLine">
+                                                        <int>40</int>
+                                                    </property>
+                                                    <property name="internalPadding">
+                                                        <null/>
+                                                    </property>
+                                                    <property name="length">
+                                                        <int>13</int>
+                                                    </property>
+                                                    <property name="offset">
+                                                        <int>18</int>
+                                                    </property>
+                                                    <property name="startLine">
+                                                        <int>40</int>
+                                                    </property>
+                                                    <property name="startLinePadding">
+                                                        <int>0</int>
+                                                    </property>
+                                                </object>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="reference">
+                                        <object class="League\CommonMark\Reference\Reference">
+                                            <property name="destination">
+                                                <string><![CDATA[https://example.com/]]></string>
+                                            </property>
+                                            <property name="label">
+                                                <string><![CDATA[link]]></string>
+                                            </property>
+                                            <property name="title">
+                                                <string><![CDATA[reference]]></string>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </data>
+                                <node name="text">
+                                    <data>
+                                        <item key="attributes">
+                                            <array length="0"/>
+                                        </item>
+                                    </data>
+                                    <string><![CDATA[table]]></string>
+                                </node>
+                            </node>
+                            <node name="text">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                </data>
+                                <string><![CDATA[.]]></string>
+                            </node>
+                        </node>
+                        <node name="table_cell">
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[data]]></string>
+                                </attribute>
+                            </attributes>
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                                <item key="lara-asp-documentator">
+                                    <array length="1">
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                <property name="endLine">
+                                                    <int>40</int>
+                                                </property>
+                                                <property name="internalPadding">
+                                                    <null/>
+                                                </property>
+                                                <property name="length">
+                                                    <int>8</int>
+                                                </property>
+                                                <property name="offset">
+                                                    <int>54</int>
+                                                </property>
+                                                <property name="startLine">
+                                                    <int>40</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -3580,7 +4069,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>40</int>
+                                    <int>42</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -3592,7 +4081,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>40</int>
+                                    <int>42</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -3621,7 +4110,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>45</int>
+                                    <int>47</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -3633,7 +4122,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>42</int>
+                                    <int>44</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -3669,7 +4158,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>42</int>
+                                        <int>44</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -3681,7 +4170,7 @@
                                         <int>10</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>42</int>
+                                        <int>44</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -3726,7 +4215,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>42</int>
+                                        <int>44</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -3738,7 +4227,7 @@
                                         <int>46</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>42</int>
+                                        <int>44</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -3790,7 +4279,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>43</int>
+                                        <int>45</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -3802,7 +4291,7 @@
                                         <int>10</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>43</int>
+                                        <int>45</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -3860,7 +4349,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>43</int>
+                                        <int>45</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -3872,7 +4361,7 @@
                                         <int>35</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>43</int>
+                                        <int>45</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -3953,7 +4442,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>45</int>
+                                            <int>47</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -3965,7 +4454,7 @@
                                             <int>11</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>45</int>
+                                            <int>47</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -4004,7 +4493,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>47</int>
+                                    <int>49</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4016,7 +4505,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>47</int>
+                                    <int>49</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4044,7 +4533,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>47</int>
+                                        <int>49</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4056,7 +4545,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>47</int>
+                                        <int>49</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4086,7 +4575,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>49</int>
+                                    <int>51</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4098,7 +4587,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>49</int>
+                                    <int>51</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4126,7 +4615,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>49</int>
+                                        <int>51</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4138,7 +4627,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>49</int>
+                                        <int>51</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4181,7 +4670,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>51</int>
+                                    <int>53</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4193,7 +4682,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>51</int>
+                                    <int>53</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4213,7 +4702,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>51</int>
+                                        <int>53</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4225,7 +4714,7 @@
                                         <int>2</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>51</int>
+                                        <int>53</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4253,7 +4742,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>51</int>
+                                            <int>53</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -4262,10 +4751,10 @@
                                             <int>30</int>
                                         </property>
                                         <property name="offset">
-                                            <int>0</int>
+                                            <int>2</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>51</int>
+                                            <int>53</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -4296,7 +4785,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>55</int>
+                                    <int>58</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4308,7 +4797,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>53</int>
+                                    <int>55</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4333,7 +4822,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>54</int>
+                                        <int>56</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4345,7 +4834,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>53</int>
+                                        <int>55</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4365,7 +4854,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>53</int>
+                                            <int>55</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -4377,7 +4866,7 @@
                                             <int>0</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>53</int>
+                                            <int>55</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -4402,7 +4891,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>53</int>
+                                                <int>55</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -4414,7 +4903,7 @@
                                                 <int>1</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>53</int>
+                                                <int>55</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -4448,19 +4937,19 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>53</int>
+                                                <int>55</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
                                             </property>
                                             <property name="length">
-                                                <int>8</int>
+                                                <int>29</int>
                                             </property>
                                             <property name="offset">
                                                 <int>34</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>53</int>
+                                                <int>55</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -4496,7 +4985,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>55</int>
+                                        <int>57</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4508,7 +4997,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>55</int>
+                                        <int>57</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4528,7 +5017,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>55</int>
+                                            <int>57</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -4540,7 +5029,7 @@
                                             <int>0</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>55</int>
+                                            <int>57</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -4565,7 +5054,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>55</int>
+                                                <int>57</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -4577,7 +5066,7 @@
                                                 <int>1</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>55</int>
+                                                <int>57</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -4605,7 +5094,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>55</int>
+                                                    <int>57</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -4614,10 +5103,10 @@
                                                     <int>30</int>
                                                 </property>
                                                 <property name="offset">
-                                                    <int>0</int>
+                                                    <int>2</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>55</int>
+                                                    <int>57</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -4652,19 +5141,19 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>55</int>
+                                                <int>57</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
                                             </property>
                                             <property name="length">
-                                                <int>8</int>
+                                                <int>29</int>
                                             </property>
                                             <property name="offset">
                                                 <int>34</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>55</int>
+                                                <int>57</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -4681,6 +5170,235 @@
                                 </item>
                             </data>
                             <string><![CDATA[Cell]]></string>
+                        </node>
+                    </node>
+                </node>
+                <node name="table_row">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                        <item key="lara-asp-documentator">
+                            <array length="1">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>58</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <null/>
+                                        </property>
+                                        <property name="offset">
+                                            <int>0</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>58</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
+                                </item>
+                            </array>
+                        </item>
+                    </data>
+                    <node name="table_cell">
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="1">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>58</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>32</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>58</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[Cell]]></string>
+                        </node>
+                    </node>
+                    <node name="table_cell">
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="1">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>58</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>29</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>34</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>58</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[Cell ]]></string>
+                        </node>
+                        <node name="code">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                                <item key="lara-asp-documentator">
+                                    <array length="1">
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                <property name="endLine">
+                                                    <int>58</int>
+                                                </property>
+                                                <property name="internalPadding">
+                                                    <null/>
+                                                </property>
+                                                <property name="length">
+                                                    <int>4</int>
+                                                </property>
+                                                <property name="offset">
+                                                    <int>40</int>
+                                                </property>
+                                                <property name="startLine">
+                                                    <int>58</int>
+                                                </property>
+                                                <property name="startLinePadding">
+                                                    <int>0</int>
+                                                </property>
+                                            </object>
+                                        </item>
+                                    </array>
+                                </item>
+                            </data>
+                            <string><![CDATA[|]]></string>
+                        </node>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[ | ]]></string>
+                        </node>
+                        <node name="link">
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[reference]]></string>
+                                </attribute>
+                            </attributes>
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                                <item key="lara-asp-documentator">
+                                    <array length="1">
+                                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                                <property name="endLine">
+                                                    <int>58</int>
+                                                </property>
+                                                <property name="internalPadding">
+                                                    <null/>
+                                                </property>
+                                                <property name="length">
+                                                    <int>13</int>
+                                                </property>
+                                                <property name="offset">
+                                                    <int>49</int>
+                                                </property>
+                                                <property name="startLine">
+                                                    <int>58</int>
+                                                </property>
+                                                <property name="startLinePadding">
+                                                    <int>0</int>
+                                                </property>
+                                            </object>
+                                        </item>
+                                    </array>
+                                </item>
+                                <item key="reference">
+                                    <object class="League\CommonMark\Reference\Reference">
+                                        <property name="destination">
+                                            <string><![CDATA[https://example.com/]]></string>
+                                        </property>
+                                        <property name="label">
+                                            <string><![CDATA[link]]></string>
+                                        </property>
+                                        <property name="title">
+                                            <string><![CDATA[reference]]></string>
+                                        </property>
+                                    </object>
+                                </item>
+                            </data>
+                            <node name="text">
+                                <data>
+                                    <item key="attributes">
+                                        <array length="0"/>
+                                    </item>
+                                </data>
+                                <string><![CDATA[table]]></string>
+                            </node>
                         </node>
                     </node>
                 </node>
@@ -4701,7 +5419,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>57</int>
+                                    <int>60</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4713,7 +5431,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>57</int>
+                                    <int>60</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4742,7 +5460,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>67</int>
+                                    <int>70</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4754,7 +5472,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>64</int>
+                                    <int>67</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4774,7 +5492,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>64</int>
+                                        <int>67</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4786,7 +5504,7 @@
                                         <int>2</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>64</int>
+                                        <int>67</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4819,7 +5537,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>64</int>
+                                            <int>67</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -4831,7 +5549,7 @@
                                             <int>11</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>64</int>
+                                            <int>67</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -4859,7 +5577,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>74</int>
+                                    <int>77</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4871,7 +5589,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>74</int>
+                                    <int>77</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4900,7 +5618,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>77</int>
+                                    <int>80</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -4912,7 +5630,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>76</int>
+                                    <int>79</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -4940,7 +5658,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>76</int>
+                                        <int>79</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -4952,7 +5670,7 @@
                                         <int>5</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>76</int>
+                                        <int>79</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -4988,7 +5706,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>76</int>
+                                            <int>79</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5000,7 +5718,7 @@
                                             <int>24</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>76</int>
+                                            <int>79</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5031,7 +5749,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>76</int>
+                                        <int>79</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5043,7 +5761,7 @@
                                         <int>53</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>76</int>
+                                        <int>79</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5088,7 +5806,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5100,7 +5818,7 @@
                                         <int>5</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5130,7 +5848,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5142,7 +5860,7 @@
                                         <int>12</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5178,7 +5896,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>77</int>
+                                            <int>80</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5190,7 +5908,7 @@
                                             <int>20</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>77</int>
+                                            <int>80</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5229,7 +5947,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5241,7 +5959,7 @@
                                         <int>28</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5274,7 +5992,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>77</int>
+                                            <int>80</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5286,7 +6004,7 @@
                                             <int>29</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>77</int>
+                                            <int>80</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5317,7 +6035,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5329,7 +6047,7 @@
                                         <int>43</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>77</int>
+                                        <int>80</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5360,7 +6078,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>81</int>
+                                    <int>84</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -5372,7 +6090,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>79</int>
+                                    <int>82</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -5400,7 +6118,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>81</int>
+                                        <int>84</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5412,7 +6130,7 @@
                                         <int>5</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>79</int>
+                                        <int>82</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5443,7 +6161,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>85</int>
+                                    <int>88</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -5455,7 +6173,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>83</int>
+                                    <int>86</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -5475,7 +6193,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>83</int>
+                                        <int>86</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5487,7 +6205,7 @@
                                         <int>2</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>83</int>
+                                        <int>86</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5515,7 +6233,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>83</int>
+                                            <int>86</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5527,7 +6245,7 @@
                                             <int>7</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>83</int>
+                                            <int>86</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5558,7 +6276,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>85</int>
+                                        <int>88</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5570,7 +6288,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>85</int>
+                                        <int>88</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>2</int>
@@ -5590,7 +6308,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>85</int>
+                                            <int>88</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5602,7 +6320,7 @@
                                             <int>4</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>85</int>
+                                            <int>88</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5622,7 +6340,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>85</int>
+                                                <int>88</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -5631,10 +6349,10 @@
                                                 <int>6</int>
                                             </property>
                                             <property name="offset">
-                                                <int>0</int>
+                                                <int>4</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>85</int>
+                                                <int>88</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -5659,7 +6377,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>89</int>
+                                    <int>92</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
@@ -5671,7 +6389,7 @@
                                     <int>0</int>
                                 </property>
                                 <property name="startLine">
-                                    <int>87</int>
+                                    <int>90</int>
                                 </property>
                                 <property name="startLinePadding">
                                     <int>0</int>
@@ -5696,7 +6414,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>88</int>
+                                        <int>91</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5708,7 +6426,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>87</int>
+                                        <int>90</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5728,7 +6446,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>87</int>
+                                            <int>90</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5740,7 +6458,7 @@
                                             <int>0</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>87</int>
+                                            <int>90</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5765,7 +6483,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>87</int>
+                                                <int>90</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -5777,7 +6495,7 @@
                                                 <int>1</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>87</int>
+                                                <int>90</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -5811,7 +6529,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>87</int>
+                                                <int>90</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -5823,7 +6541,7 @@
                                                 <int>10</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>87</int>
+                                                <int>90</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -5843,7 +6561,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>87</int>
+                                                    <int>90</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -5852,10 +6570,10 @@
                                                     <int>8</int>
                                                 </property>
                                                 <property name="offset">
-                                                    <int>0</int>
+                                                    <int>11</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>87</int>
+                                                    <int>90</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -5885,7 +6603,7 @@
                             <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                 <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                     <property name="endLine">
-                                        <int>89</int>
+                                        <int>92</int>
                                     </property>
                                     <property name="internalPadding">
                                         <null/>
@@ -5897,7 +6615,7 @@
                                         <int>0</int>
                                     </property>
                                     <property name="startLine">
-                                        <int>89</int>
+                                        <int>92</int>
                                     </property>
                                     <property name="startLinePadding">
                                         <int>0</int>
@@ -5917,7 +6635,7 @@
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                     <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                         <property name="endLine">
-                                            <int>89</int>
+                                            <int>92</int>
                                         </property>
                                         <property name="internalPadding">
                                             <null/>
@@ -5929,7 +6647,7 @@
                                             <int>0</int>
                                         </property>
                                         <property name="startLine">
-                                            <int>89</int>
+                                            <int>92</int>
                                         </property>
                                         <property name="startLinePadding">
                                             <int>0</int>
@@ -5954,7 +6672,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>89</int>
+                                                <int>92</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -5966,7 +6684,7 @@
                                                 <int>1</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>89</int>
+                                                <int>92</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -5986,7 +6704,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>89</int>
+                                                    <int>92</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -5995,10 +6713,10 @@
                                                     <int>6</int>
                                                 </property>
                                                 <property name="offset">
-                                                    <int>0</int>
+                                                    <int>2</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>89</int>
+                                                    <int>92</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -6026,7 +6744,7 @@
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                             <property name="endLine">
-                                                <int>89</int>
+                                                <int>92</int>
                                             </property>
                                             <property name="internalPadding">
                                                 <null/>
@@ -6038,7 +6756,7 @@
                                                 <int>10</int>
                                             </property>
                                             <property name="startLine">
-                                                <int>89</int>
+                                                <int>92</int>
                                             </property>
                                             <property name="startLinePadding">
                                                 <int>0</int>
@@ -6066,7 +6784,7 @@
                                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                                 <property name="endLine">
-                                                    <int>89</int>
+                                                    <int>92</int>
                                                 </property>
                                                 <property name="internalPadding">
                                                     <null/>
@@ -6078,7 +6796,7 @@
                                                     <int>16</int>
                                                 </property>
                                                 <property name="startLine">
-                                                    <int>89</int>
+                                                    <int>92</int>
                                                 </property>
                                                 <property name="startLinePadding">
                                                     <int>0</int>
@@ -6093,6 +6811,39 @@
                     </node>
                 </node>
             </node>
+        </node>
+        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                <property name="endLine">
+                                    <int>94</int>
+                                </property>
+                                <property name="internalPadding">
+                                    <null/>
+                                </property>
+                                <property name="length">
+                                    <null/>
+                                </property>
+                                <property name="offset">
+                                    <int>0</int>
+                                </property>
+                                <property name="startLine">
+                                    <int>94</int>
+                                </property>
+                                <property name="startLinePadding">
+                                    <int>0</int>
+                                </property>
+                            </object>
+                        </item>
+                    </array>
+                </item>
+            </data>
         </node>
         <node name="footnote_container">
             <data>

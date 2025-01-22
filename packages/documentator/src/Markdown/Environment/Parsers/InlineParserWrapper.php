@@ -23,6 +23,7 @@ use function end;
 use function implode;
 use function mb_strlen;
 use function mb_substr;
+use function str_replace;
 
 /**
  * todo(documentator): [league/commonmark] [update] Check {@see Environment::injectEnvironmentAndConfigurationIfNeeded()}.
@@ -91,7 +92,7 @@ class InlineParserWrapper implements InlineParserInterface, EnvironmentAwareInte
         $inlineLinesCount = count($inlineLines) - 1;
         $startLine        = $beforeLinesCount;
         $endLine          = $startLine + $inlineLinesCount;
-        $start            = ((string) end($beforeLines));
+        $start            = ((string) end($beforeLines)).((string) reset($inlineLines));
 
         if ($beforeLinesCount > 0) {
             $correction = (mb_strlen(implode("\n", array_slice($beforeLines, 0, -1))) + 1);
@@ -109,6 +110,7 @@ class InlineParserWrapper implements InlineParserInterface, EnvironmentAwareInte
             // pipe character. It leads to invalid `$offset`/`$length`.
             $offset += mb_substr_count(mb_substr($line, 0, $offset), '|');
             $length += mb_substr_count(mb_substr($line, $offset, $length), '|');
+            $start   = str_replace('|', '\\|', $start);
         }
 
         // Save
