@@ -142,7 +142,13 @@ jobs:
     uses: ./.github/workflows/phpunit.yml
     with:
       fast: ${{ github.event_name == 'schedule' }}
-      runs-on: '["ubuntu-latest", "windows-latest"]'
+
+  phpunit-windows:
+    name: Windows tests
+    uses: ./.github/workflows/phpunit.yml
+    with:
+      fast: true
+      runs-on: '["windows-latest"]'
 
   phpunit-package:
     name: Package tests
