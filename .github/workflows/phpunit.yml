@@ -23,6 +23,11 @@ on:
         required: false
         type: string
         default: '["ubuntu-latest"]'
+      fast:
+        description: "Run only for latest (default `false`)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -55,12 +60,18 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
           # PHP
-          echo "php-versions=$(jq '.require."php" | split("|") | map(sub("^[^\\d]+"; "")) | sort' -c composer.json)" >> $GITHUB_OUTPUT
+          PHP_VERSIONS="$(jq '.require."php" | split("|") | map(sub("^[^\\d]+"; "")) | sort' -c composer.json)"
+
+          if [[ "${{ inputs.fast }}" = true ]]; then
+            PHP_VERSIONS="$(jq '. | sort[-1:]' -c <<< $PHP_VERSIONS)"
+          fi
+
+          echo "php-versions=$PHP_VERSIONS" >> $GITHUB_OUTPUT
 
           # Dependencies
           DEPS_HIGHEST="highest"
-          DEPS_LOCKED="$(if [ ! "${{ github.event_name }}" == "schedule" ] && [ -f "composer.lock" ]; then echo "locked"; fi)"
-          DEPS_LOWEST="$(if [ ! "${{ github.event_name }}" == "schedule" ]; then echo "lowest"; fi)"
+          DEPS_LOCKED="$(if [ ! "${{ inputs.fast }}" = true ] && [ -f "composer.lock" ]; then echo "locked"; fi)"
+          DEPS_LOWEST="$(if [ ! "${{ inputs.fast }}" = true ]; then echo "lowest"; fi)"
 
           echo "dependencies=$(echo "[\"$DEPS_HIGHEST\", \"$DEPS_LOCKED\", \"$DEPS_LOWEST\"]" | jq "[.[] | select(length > 0)]" -r -c)" >> $GITHUB_OUTPUT
 
@@ -69,7 +80,11 @@ jobs:
           echo "laravel-packages=$(jq '.require + ."require-dev" | to_entries | map(select( (.key | startswith("illuminate/")) or (.key == "laravel/framework "))) | map( .key ) | flatten | unique | sort ' -c composer.json)" >> $GITHUB_OUTPUT
 
           # Optional packages
-          echo "optional-packages=$(jq '([((."extra"."lara-asp"."ci"."optional-packages" // ["null"]) | flatten | unique | sort | join(","))] + ["null"]) | unique' -r -c composer.json)" >> $GITHUB_OUTPUT
+          if [[ "${{ inputs.fast }}" = true ]]; then
+            echo "optional-packages=[\"null\"]" >> $GITHUB_OUTPUT
+          else
+            echo "optional-packages=$(jq '([((."extra"."lara-asp"."ci"."optional-packages" // ["null"]) | flatten | unique | sort | join(","))] + ["null"]) | unique' -r -c composer.json)" >> $GITHUB_OUTPUT
+          fi
 
   run:
     # Only 28 characters are visible on UI :(

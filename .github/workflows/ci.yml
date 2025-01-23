@@ -22,6 +22,7 @@ jobs:
   dependencies:
     name: Dependencies checks
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -83,6 +84,7 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.settings.outputs.packages-names) }}
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -144,6 +146,7 @@ jobs:
   phpcs:
     name: PHP CodeSniffer
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -173,7 +176,14 @@ jobs:
     name: Tests
     uses: ./.github/workflows/phpunit.yml
     with:
-      runs-on: '["ubuntu-latest", "windows-latest"]'
+      fast: ${{ github.event_name == 'schedule' }}
+
+  phpunit-windows:
+    name: Windows tests
+    uses: ./.github/workflows/phpunit.yml
+    with:
+      fast: true
+      runs-on: '["windows-latest"]'
 
   phpunit-package:
     name: Package tests
@@ -186,6 +196,7 @@ jobs:
         package: ${{ fromJson(needs.settings.outputs.packages-names) }}
     uses: ./.github/workflows/phpunit.yml
     with:
+      fast: ${{ github.event_name == 'schedule' }}
       package: ${{ matrix.package }}
       packages-names: ${{ needs.settings.outputs.packages-names }}
       packages-directory: ${{ needs.settings.outputs.packages-directory }}
@@ -193,6 +204,7 @@ jobs:
   markdownlint:
     name: Markdownlint
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
