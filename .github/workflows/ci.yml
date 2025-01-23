@@ -141,6 +141,7 @@ jobs:
     name: Tests
     uses: ./.github/workflows/phpunit.yml
     with:
+      fast: ${{ github.event_name == 'schedule' }}
       runs-on: '["ubuntu-latest", "windows-latest"]'
 
   phpunit-package:
@@ -154,6 +155,7 @@ jobs:
         package: ${{ fromJson(needs.settings.outputs.packages-names) }}
     uses: ./.github/workflows/phpunit.yml
     with:
+      fast: ${{ github.event_name == 'schedule' }}
       package: ${{ matrix.package }}
       packages-names: ${{ needs.settings.outputs.packages-names }}
       packages-directory: ${{ needs.settings.outputs.packages-directory }}
