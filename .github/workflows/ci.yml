@@ -22,6 +22,7 @@ jobs:
   dependencies:
     name: Dependencies checks
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,6 +68,7 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.settings.outputs.packages-names) }}
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -112,6 +114,7 @@ jobs:
   phpcs:
     name: PHP CodeSniffer
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -169,6 +172,7 @@ jobs:
   markdownlint:
     name: Markdownlint
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
