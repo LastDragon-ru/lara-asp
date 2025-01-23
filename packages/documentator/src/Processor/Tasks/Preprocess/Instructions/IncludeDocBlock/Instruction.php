@@ -5,6 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Body;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -59,8 +61,8 @@ class Instruction implements InstructionContract {
         // Parse
         $result = match (true) {
             $parameters->summary && $parameters->description => $document,
-            $parameters->summary                             => $context->toSplittable($document)->getSummary() ?? '',
-            $parameters->description                         => $context->toSplittable($document)->getBody() ?? '',
+            $parameters->summary                             => (string) $context->toSplittable($document)->mutate(new Summary()),
+            $parameters->description                         => (string) $context->toSplittable($document)->mutate(new Body()),
             default                                          => '',
         };
 

@@ -8,7 +8,7 @@ readonly class Document {
     public function __construct(
         public FilePath $path,
         public string $title,
-        public ?string $summary,
+        public string $summary,
     ) {
         // empty
     }

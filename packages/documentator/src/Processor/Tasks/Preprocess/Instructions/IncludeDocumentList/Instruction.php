@@ -5,6 +5,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
@@ -23,7 +27,9 @@ use Override;
 
 use function array_filter;
 use function max;
+use function mb_trim;
 use function min;
+use function str_replace;
 use function usort;
 
 /**
@@ -85,10 +91,14 @@ readonly class Instruction implements InstructionContract {
 
             // Add
             $document    = $context->toSplittable($document);
+            $summary     = mb_trim((string) $document->mutate(new Summary()));
+            $title       = mb_trim((string) $document->mutate(new Title(), new Unlink()));
+            $title       = mb_trim(str_replace("\n", ' ', Utils::getHeadingText($title)));
+            $title       = $title === '' ? Text::getPathTitle($file->getName()) : $title;
             $documents[] = new TemplateDocument(
                 $context->file->getRelativePath($file),
-                $document->getTitle() ?? Text::getPathTitle($file->getName()),
-                $document->getSummary(),
+                $title,
+                $summary,
             );
         }
 

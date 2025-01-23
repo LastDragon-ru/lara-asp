@@ -3,12 +3,18 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Util\UrlEncoder;
 
+use function array_map;
+use function array_slice;
 use function filter_var;
+use function implode;
+use function mb_ltrim;
+use function mb_trim;
 use function parse_url;
 use function preg_match;
 use function str_contains;
@@ -126,5 +132,25 @@ class Utils {
         $is   = $path === '' || $path === '.' || $self === null || $self->isEqual($self->getFilePath($path));
 
         return $is;
+    }
+
+    public static function isHeadingAtx(string $heading): bool {
+        return str_starts_with(mb_ltrim($heading), '#');
+    }
+
+    public static function isHeadingSetext(string $heading): bool {
+        return !static::isHeadingAtx($heading);
+    }
+
+    public static function getHeadingText(string $heading): string {
+        $heading = mb_trim($heading);
+        $setext  = static::isHeadingSetext($heading);
+        $lines   = $setext
+            ? array_slice(Text::getLines($heading), 0, -1)
+            : [mb_trim($heading, '#')];
+        $lines   = array_map(mb_trim(...), $lines);
+        $text    = implode($setext ? "\n" : '', $lines);
+
+        return $text;
     }
 }

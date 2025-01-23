@@ -5,19 +5,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use Override;
 
-use function array_map;
-use function array_slice;
-use function implode;
-use function mb_ltrim;
 use function mb_rtrim;
 use function mb_strlen;
-use function mb_trim;
 use function min;
 use function str_repeat;
-use function str_starts_with;
+use function str_replace;
 
 /**
  * Updates all headings levels.
@@ -52,23 +47,18 @@ readonly class Renumber extends Base implements Mutation {
         foreach ($nodes as $node) {
             $location = LocationData::get($node);
             $heading  = $document->getText($location);
-            $setext   = $this->isSetext($heading);
+            $setext   = Utils::isHeadingSetext($heading);
             $level    = min(static::MaxLevel, $node->getLevel() + $diff);
             $eols     = str_repeat("\n", mb_strlen($heading) - mb_strlen(mb_rtrim($heading, "\n")));
-            $text     = mb_trim($heading);
-            $lines    = $setext
-                ? array_slice(Text::getLines($text), 0, -1)
-                : [mb_trim($text, '#')];
-            $lines    = array_map(mb_trim(...), $lines);
+            $text     = Utils::getHeadingText($heading);
             $prefix   = '';
             $suffix   = '';
 
             if ($setext && $level <= 2) {
-                $text   = implode("\n", $lines);
                 $suffix = "\n".str_repeat($level === 1 ? '=' : '-', 5);
             } else {
                 $prefix = str_repeat('#', $level).' ';
-                $text   = implode(' ', $lines);
+                $text   = str_replace("\n", ' ', $text);
             }
 
             yield [$location, $prefix.$text.$suffix.$eols];
@@ -88,13 +78,5 @@ readonly class Renumber extends Base implements Mutation {
         }
 
         return $nodes;
-    }
-
-    private function isAtx(string $heading): bool {
-        return str_starts_with(mb_ltrim($heading), '#');
-    }
-
-    private function isSetext(string $heading): bool {
-        return !$this->isAtx($heading);
     }
 }
