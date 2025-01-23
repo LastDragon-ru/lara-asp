@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Extraction;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
@@ -19,33 +20,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class DocumentTest extends TestCase {
     // <editor-fold desc="Test">
     // =========================================================================
-    #[DataProvider('dataProviderGetTitle')]
-    public function testGetTitle(?string $expected, string $content): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse($content);
-        $actual   = $document->getTitle();
-
-        self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('dataProviderGetSummary')]
-    public function testGetSummary(?string $expected, string $content): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse($content);
-        $actual   = $document->getSummary();
-
-        self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('dataProviderGetBody')]
-    public function testGetBody(?string $expected, string $content): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse($content);
-        $actual   = $document->getBody();
-
-        self::assertSame($expected, $actual);
-    }
-
     #[DataProvider('dataProviderIsEmpty')]
     public function testIsEmpty(bool $expected, string $content): void {
         $markdown = $this->app()->make(Markdown::class);
@@ -55,10 +29,29 @@ final class DocumentTest extends TestCase {
         self::assertSame($expected, $actual);
     }
 
-    public function testMutate(): void {
+    public function testMutateMutation(): void {
         $markdown = $this->app()->make(Markdown::class);
         $document = $markdown->parse('');
         $mutation = Mockery::mock(Mutation::class);
+        $mutation
+            ->shouldReceive('__invoke')
+            ->with(Mockery::type(Document::class))
+            ->once()
+            ->andReturn([
+                // empty
+            ]);
+
+        $clone   = clone $document;
+        $mutated = $document->mutate($mutation);
+
+        self::assertNotSame($document, $mutated);
+        self::assertEquals($clone, $document);
+    }
+
+    public function testMutateExtraction(): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse('');
+        $mutation = Mockery::mock(Extraction::class);
         $mutation
             ->shouldReceive('__invoke')
             ->with(Mockery::type(Document::class))
@@ -86,227 +79,6 @@ final class DocumentTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
-    /**
-     * @return array<string, array{?string, string}>
-     */
-    public static function dataProviderGetTitle(): array {
-        return [
-            'No #'                => [
-                null,
-                <<<'MARKDOWN'
-                ## Header A
-                # Header B
-                MARKDOWN,
-            ],
-            'The # is not first'  => [
-                null,
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-
-                # Header
-                MARKDOWN,
-            ],
-            'The # is empty'      => [
-                null,
-                <<<'MARKDOWN'
-                #
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-            'Empty line before #' => [
-                'Header',
-                <<<'MARKDOWN'
-
-                # Header
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-            'Comment before #'    => [
-                'Header',
-                <<<'MARKDOWN'
-                <!-- Comment -->
-
-                # Header
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array{?string, string}>
-     */
-    public static function dataProviderGetSummary(): array {
-        return [
-            'The # is not first'         => [
-                null,
-                <<<'MARKDOWN'
-                ## Header A
-                # Header B
-
-                sdfsdfsdf
-                MARKDOWN,
-            ],
-            'Summary is the first node'  => [
-                'fsdfsdfsdf',
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-
-                # Header
-
-                sdfsdfsdf
-                MARKDOWN,
-            ],
-            'Quote before #'             => [
-                null,
-                <<<'MARKDOWN'
-                # Header
-
-                > Not a paragraph
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-            'Empty #'                    => [
-                'fsdfsdfsdf',
-                <<<'MARKDOWN'
-                #
-
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-            'Multiline'                  => [
-                <<<'TEXT'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                TEXT,
-                <<<'MARKDOWN'
-
-                # Header
-
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-            'Comments should be ignored' => [
-                <<<'TEXT'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                TEXT,
-                <<<'MARKDOWN'
-                <!-- Comment -->
-
-                # Header
-
-                <!-- Comment -->
-
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array{?string, string}>
-     */
-    public static function dataProviderGetBody(): array {
-        return [
-            'The # is not first'         => [
-                null,
-                <<<'MARKDOWN'
-                ## Header A
-                # Header B
-
-                sdfsdfsdf
-                MARKDOWN,
-            ],
-            'Summary is the first node'  => [
-                <<<'TEXT'
-                # Header
-
-                sdfsdfsdf
-                TEXT,
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-
-                # Header
-
-                sdfsdfsdf
-                MARKDOWN,
-            ],
-            'Quote before #'             => [
-                null,
-                <<<'MARKDOWN'
-                # Header
-
-                > Not a paragraph
-
-                fsdfsdfsdf
-
-                text text text
-                MARKDOWN,
-            ],
-            'Empty #'                    => [
-                <<<'TEXT'
-                text text text
-
-                text text text
-                TEXT,
-                <<<'MARKDOWN'
-                #
-
-                fsdfsdfsdf
-
-                text text text
-
-                text text text
-                MARKDOWN,
-            ],
-            'Multiline summary'          => [
-                <<<'TEXT'
-                text text text
-
-                text text text
-                TEXT,
-                <<<'MARKDOWN'
-
-                # Header
-
-                fsdfsdfsdf
-                fsdfsdfsdf
-
-                text text text
-
-                text text text
-                MARKDOWN,
-            ],
-            'Comments should be ignored' => [
-                <<<'TEXT'
-                <!-- Comment -->
-
-                text text text
-                TEXT,
-                <<<'MARKDOWN'
-                <!-- Comment -->
-
-                # Header
-
-                <!-- Comment -->
-
-                summary
-
-                <!-- Comment -->
-
-                text text text
-                MARKDOWN,
-            ],
-        ];
-    }
-
     /**
      * @return array<string, array{bool, string}>
      */
@@ -423,6 +195,16 @@ final class DocumentTest extends TestCase {
                 fsdfsdfsdf
                 MARKDOWN,
                 new Changeset([[new Append(), 'fsdfsdfsdf']]),
+            ],
+            'Blank'                                      => [
+                '',
+                <<<'MARKDOWN'
+
+
+
+
+                MARKDOWN,
+                null,
             ],
         ];
     }

@@ -2,32 +2,29 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use Override;
 
+use function mb_rtrim;
 use function mb_strlen;
-use function mb_strpos;
-use function mb_substr;
-use function mb_trim;
 use function min;
 use function str_repeat;
-use function str_starts_with;
+use function str_replace;
 
 /**
- * Updates all ATX headings levels.
+ * Updates all headings levels.
  */
-class Renumber implements Mutation {
+readonly class Renumber extends Base implements Mutation {
     public function __construct(
         /**
          * @var int<1, 6>
          */
         protected int $startLevel,
     ) {
-        // empty
+        parent::__construct();
     }
 
     /**
@@ -39,50 +36,47 @@ class Renumber implements Mutation {
         yield from [];
 
         // Process
-        $highest  = 6;
-        $headings = $this->getHeadings($document, $highest);
-        $diff     = $this->startLevel - $highest;
+        $initial = static::MaxLevel;
+        $nodes   = $this->nodes($document, $initial);
+        $diff    = $this->startLevel - $initial;
 
         if ($diff === 0) {
             return;
         }
 
-        foreach ($headings as [$heading, $location, $text]) {
-            $level  = min(6, $heading->getLevel() + $diff);
-            $prefix = mb_substr($text, 0, (int) mb_strpos($text, '#'));
-            $eols   = mb_strlen($text) - mb_strlen(mb_trim($text, "\n"));
-            $text   = mb_substr($text, mb_strlen($prefix));
-            $text   = $prefix.str_repeat('#', $level).' '.mb_trim(mb_trim($text, '#')).str_repeat("\n", $eols);
+        foreach ($nodes as $node) {
+            $location = LocationData::get($node);
+            $heading  = $document->getText($location);
+            $setext   = Utils::isHeadingSetext($heading);
+            $level    = min(static::MaxLevel, $node->getLevel() + $diff);
+            $eols     = str_repeat("\n", mb_strlen($heading) - mb_strlen(mb_rtrim($heading, "\n")));
+            $text     = Utils::getHeadingText($heading);
+            $prefix   = '';
+            $suffix   = '';
 
-            yield [$location, $text];
+            if ($setext && $level <= 2) {
+                $suffix = "\n".str_repeat($level === 1 ? '=' : '-', 5);
+            } else {
+                $prefix = str_repeat('#', $level).' ';
+                $text   = str_replace("\n", ' ', $text);
+            }
+
+            yield [$location, $prefix.$text.$suffix.$eols];
         }
     }
 
     /**
-     * @return list<array{Heading, Location, string}>
+     * @inheritDoc
      */
-    private function getHeadings(Document $document, int &$highest): array {
-        $headings = [];
+    #[Override]
+    protected function nodes(Document $document, int &$initial = 0): iterable {
+        $nodes = [];
 
-        foreach ($document->node->iterator() as $node) {
-            // Heading?
-            if (!($node instanceof Heading)) {
-                continue;
-            }
-
-            // ATX?
-            $location = LocationData::get($node);
-            $line     = $document->getText($location);
-
-            if (!str_starts_with(mb_trim($line), '#')) {
-                continue;
-            }
-
-            // Ok
-            $headings[] = [$node, $location, $line];
-            $highest    = min($highest, $node->getLevel());
+        foreach (parent::nodes($document) as $node) {
+            $initial = min($initial, $node->getLevel());
+            $nodes[] = $node;
         }
 
-        return $headings;
+        return $nodes;
     }
 }

@@ -16,11 +16,11 @@ use function mb_substr;
 /**
  * Adds unique prefix for all footnotes.
  */
-readonly class Prefix implements Mutation {
+readonly class Prefix extends Base implements Mutation {
     public function __construct(
         protected string $prefix,
     ) {
-        // empty
+        parent::__construct();
     }
 
     /**
@@ -32,13 +32,7 @@ readonly class Prefix implements Mutation {
         yield from [];
 
         // Process
-        foreach ($document->node->iterator() as $node) {
-            // Footnote?
-            if (!($node instanceof FootnoteRef) && !($node instanceof Footnote)) {
-                continue;
-            }
-
-            // Replace
+        foreach ($this->nodes($document) as $node) {
             $label    = $this->getLabel($document, $node);
             $location = $this->getLabelLocation($node, $label);
 

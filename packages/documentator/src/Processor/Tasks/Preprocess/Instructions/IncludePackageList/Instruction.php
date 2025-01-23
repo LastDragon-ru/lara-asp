@@ -5,6 +5,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
@@ -25,6 +29,8 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
+use function mb_trim;
+use function str_replace;
 use function trigger_deprecation;
 use function usort;
 
@@ -98,10 +104,13 @@ readonly class Instruction implements InstructionContract {
             $content    = $context->toSplittable($content);
             $upgrade    = $package->getFilePath('UPGRADE.md');
             $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
+            $title      = mb_trim((string) $content->mutate(new Title(), new Unlink()));
+            $title      = mb_trim(str_replace("\n", ' ', Utils::getHeadingText($title)));
+            $title      = $title === '' ? Text::getPathTitle($package->getName()) : $title;
             $packages[] = [
                 'path'    => $context->file->getRelativePath($readme),
-                'title'   => $content->getTitle() ?? Text::getPathTitle("{$package->getName()}.md"),
-                'summary' => $content->getSummary(),
+                'title'   => $title,
+                'summary' => mb_trim((string) $content->mutate(new Summary())),
                 'upgrade' => $upgrade !== null
                     ? $context->file->getRelativePath($upgrade)
                     : null,

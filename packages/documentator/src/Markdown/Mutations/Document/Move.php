@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
-use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
@@ -124,9 +123,9 @@ readonly class Move implements Mutation {
     }
 
     /**
-     * @return Iterator<array-key, Node>
+     * @return iterable<mixed, Node>
      */
-    private function nodes(Document $document): Iterator {
+    private function nodes(Document $document): iterable {
         // Just in case
         yield from [];
 

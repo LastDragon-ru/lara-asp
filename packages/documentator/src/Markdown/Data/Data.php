@@ -27,20 +27,25 @@ abstract readonly class Data {
      * @return T
      */
     public static function get(Node $node): mixed {
-        $data  = $node->data->get(Package::Name.'.'.static::class, null);
-        $value = is_object($data) && is_a($data, static::class, true)
-            ? $data->value
-            : static::default($node);
+        // Cached?
+        $data = $node->data->get(Package::Name.'.'.static::class, null);
 
-        if ($data === null && $value !== null) {
-            static::set($node, $value);
+        if (is_object($data) && is_a($data, static::class, true)) {
+            return $data->value;
+        }
+
+        // Default?
+        $value = static::default($node);
+
+        if ($value === null && is_a(static::class, Nullable::class, true)) {
+            return static::set($node, $value);
         }
 
         if ($value === null) {
             throw new DataMissed($node, static::class);
         }
 
-        return $value;
+        return static::set($node, $value);
     }
 
     /**

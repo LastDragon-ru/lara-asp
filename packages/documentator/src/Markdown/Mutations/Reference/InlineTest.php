@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Inline::class)]
+#[CoversClass(Base::class)]
 final class InlineTest extends TestCase {
     public function testInvoke(): void {
         $content = <<<'MARKDOWN'

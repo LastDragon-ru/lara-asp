@@ -3,19 +3,19 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Extraction;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use Override;
 
 /**
- * Changes container.
+ * Extractions container.
  */
-readonly class Changeset implements Mutation {
+readonly class Subset implements Extraction {
     public function __construct(
         /**
-         * @var iterable<mixed, array{iterable<mixed, Coordinate>, ?string}>
+         * @var iterable<mixed, iterable<mixed, Coordinate>>
          */
-        protected iterable $changes,
+        protected iterable $extractions,
     ) {
         // empty
     }
@@ -25,6 +25,6 @@ readonly class Changeset implements Mutation {
      */
     #[Override]
     public function __invoke(Document $document): iterable {
-        return $this->changes;
+        return $this->extractions;
     }
 }

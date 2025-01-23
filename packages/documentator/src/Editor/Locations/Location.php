@@ -8,7 +8,7 @@ use Override;
 use Traversable;
 
 /**
- * @implements IteratorAggregate<array-key, Coordinate>
+ * @implements IteratorAggregate<mixed, Coordinate>
  */
 readonly class Location implements IteratorAggregate {
     public function __construct(
@@ -23,7 +23,7 @@ readonly class Location implements IteratorAggregate {
     }
 
     /**
-     * @return Traversable<array-key, Coordinate>
+     * @return Traversable<mixed, Coordinate>
      */
     #[Override]
     public function getIterator(): Traversable {

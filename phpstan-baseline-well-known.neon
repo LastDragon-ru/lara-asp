@@ -107,6 +107,13 @@ parameters:
             paths:
                 - packages/documentator/src/Commands/Preprocess.php
 
+        # is_a(static::class, Class::class, true) false positive
+        # https://github.com/phpstan/phpstan/issues/1239
+        -
+            message: '#^Parameter \#2 \$value of static method LastDragon_ru\\LaraASP\\Documentator\\Markdown\\Data\\Data<T>::set\(\) expects T, null given\.$#'
+            paths:
+                - packages/documentator/src/Markdown/Data/Data.php
+
         # (dev) Required for tests
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"
