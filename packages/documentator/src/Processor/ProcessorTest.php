@@ -403,6 +403,80 @@ final class ProcessorTest extends TestCase {
         );
     }
 
+    public function testRunOutputInsideInput(): void {
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $output = $input->getDirectoryPath('a');
+        $events = [];
+        $task   = new ProcessorTest__Task([
+            'ba.txt' => [
+                '../../a/a.txt',
+            ],
+        ]);
+
+        (new Processor($this->app()->make(ContainerResolver::class)))
+            ->task($task)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
+            ->listen(
+                static function (Event $event) use (&$events): void {
+                    $events[] = $event;
+                },
+            )
+            ->run(
+                $input,
+                $output,
+            );
+
+        self::assertEquals(
+            [
+                new ProcessingStarted(),
+                new FileStarted('→ b/a/ba.txt'),
+                new TaskStarted($task::class),
+                new DependencyResolved('← a.txt', DependencyResolvedResult::Success),
+                new FileStarted('← a.txt'),
+                new FileFinished(FileFinishedResult::Skipped),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted('→ b/b.txt'),
+                new TaskStarted($task::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted('→ b/b/bb.txt'),
+                new TaskStarted($task::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted('→ c.txt'),
+                new TaskStarted($task::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new ProcessingFinished(ProcessingFinishedResult::Success),
+            ],
+            $events,
+        );
+        self::assertEquals(
+            [
+                [
+                    (string) $input->getFilePath('b/a/ba.txt'),
+                    [
+                        '../../a/a.txt' => (string) $input->getFilePath('a/a.txt'),
+                    ],
+                ],
+                [
+                    (string) $input->getFilePath('b/b.txt'),
+                    [],
+                ],
+                [
+                    (string) $input->getFilePath('b/b/bb.txt'),
+                    [],
+                ],
+                [
+                    (string) $input->getFilePath('c.txt'),
+                    [],
+                ],
+            ],
+            $task->processed,
+        );
+    }
+
     public function testRunFileNotFound(): void {
         $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $task  = new ProcessorTest__Task(['*' => ['404.html']]);

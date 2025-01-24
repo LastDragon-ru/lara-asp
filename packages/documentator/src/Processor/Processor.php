@@ -97,6 +97,7 @@ class Processor {
     }
 
     public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
+        // Prepare
         $depth = match (true) {
             $input instanceof FilePath => 0,
             default                    => null,
@@ -106,13 +107,23 @@ class Processor {
             !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
             default                    => null,
         };
-        $exclude  = array_map(Glob::toRegex(...), $this->exclude);
-        $input    = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
-        $output ??= $input;
+        $exclude = array_map(Glob::toRegex(...), $this->exclude);
+        $input   = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
 
-        $this->dispatcher->notify(new ProcessingStarted());
+        // If `$output` specified and inside `$input` we should not process it.
+        if ($output !== null) {
+            if (!$input->isEqual($output) && $input->isInside($output)) {
+                $path      = $input->getRelativePath($output);
+                $exclude[] = "#^{$path}/#u";
+            }
+        } else {
+            $output = $input;
+        }
 
+        // Start
         try {
+            $this->dispatcher->notify(new ProcessingStarted());
+
             try {
                 $filesystem = new FileSystem($this->dispatcher, new MetadataStorage($this->container), $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
