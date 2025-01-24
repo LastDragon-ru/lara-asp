@@ -36,6 +36,7 @@ use function end;
 use function implode;
 use function ksort;
 use function mb_strlen;
+use function mb_substr;
 use function memory_get_peak_usage;
 use function memory_get_usage;
 use function microtime;
@@ -110,14 +111,11 @@ class Writer {
         $time    = microtime(true) - $this->start;
         $peak    = memory_get_peak_usage(true);
         $memory  = $peak > $this->peakMemory ? $peak - $this->startMemory : 0;
-        $message = "Files: {$this->formatter->integer($this->filesProcessed)}"
-            .", Updated: {$this->message($this->formatter->integer($this->filesUpdated), FileSystemModifiedType::Updated)}"
-            .", Created: {$this->message($this->formatter->integer($this->filesCreated), FileSystemModifiedType::Created)}"
+        $message = $this->message('✓', ProcessingFinishedResult::Success)
+            ." Files: {$this->formatter->integer($this->filesProcessed)}"
+            .", [{$this->message('U', FileSystemModifiedType::Updated)}]pdated: {$this->message($this->formatter->integer($this->filesUpdated), FileSystemModifiedType::Updated)}"
+            .", [{$this->message('C', FileSystemModifiedType::Created)}]reated: {$this->message($this->formatter->integer($this->filesCreated), FileSystemModifiedType::Created)}"
             .", Memory: {$this->formatter->filesize($memory)}";
-
-        if ($this->filesProcessed > 0) {
-            $this->output->writeln('');
-        }
 
         $this->line(0, $message, $time, $event->result, []);
 
@@ -257,18 +255,18 @@ class Writer {
         ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
         array $changes,
     ): void {
-        if ($changes === [] && (!$this->isLevelVisible($level) || !$this->isResultVisible($result))) {
+        if ((!$this->isLevelVisible($level) || !$this->isResultVisible($result))) {
             return;
         }
 
         $flag     = null;
         $flags    = $this->flags($changes, $path, $flag);
         $template = [
-            'prefix'   => str_repeat('    ', $level),
+            'prefix'   => mb_substr(str_repeat('<fg=gray>·</> ', $level), 0, -1),
             'message'  => $this->message($path, $flag),
             'spacer'   => '',
-            'flags'    => $flags,
             'duration' => $time !== null ? "<fg=gray>{$this->formatter->duration($time)}</>" : '',
+            'flags'    => str_repeat('<fg=gray>.</>', 3 - count($flags)).implode('', $flags),
             'suffix'   => $this->message($this->result($result), $result),
         ];
         $length   = array_map($this->length(...), $template);
@@ -288,8 +286,10 @@ class Writer {
 
     /**
      * @param list<Change> $changes
+     *
+     * @return list<string>
      */
-    protected function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): string {
+    protected function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): array {
         // Collect
         $flag  = null;
         $flags = [];
@@ -305,16 +305,11 @@ class Writer {
             }
         }
 
-        // Only one flag for $path?
-        if ($flag !== null && $flag !== Flag::Mixed && count($flags) === 1) {
-            return '';
-        }
-
         // Sort
         ksort($flags);
 
         // Return
-        return implode('', array_keys($flags));
+        return array_keys($flags);
     }
 
     protected function length(string $message): int {

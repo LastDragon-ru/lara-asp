@@ -1,12 +1,10 @@
-↔ b/a/ba.txt <fg=gray>...............................................</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-<fg=yellow>↔ c.txt</> <fg=gray>....................................................</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-<fg=green>↔ ../../../README.md</> <fg=gray>.......................................</> <fg=gray>00:00:00.000</> <fg=gray>SKIP</>
-↔ b/b/bb.txt <fg=gray>.............................................</> <fg=green>C</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-↔ a/a.txt <fg=gray>..................................................</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-↔ a/a/aa.txt <fg=gray>...............................................</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-↔ a/b/ab.txt <fg=gray>...............................................</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-↔ b/b.txt <fg=gray>..................................................</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-<fg=green>↔ c.new</> <fg=gray>....................................................</> <fg=gray>00:00:00.000</> <fg=red>FAIL</>
-<fg=yellow>↔ c.htm</> <fg=gray>.................................................</> <fg=green>C</><fg=yellow>U</> <fg=gray>00:00:00.000</> <fg=green>DONE</>
-
-Files: 12, Updated: <fg=yellow>2</>, Created: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>.......</> <fg=gray>00:00:00.000</> <fg=green;options=bold>DONE</>
+↔ b/a/ba.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=yellow>↔ c.txt</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
+↔ b/b/bb.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=green>DONE</>
+↔ a/a.txt <fg=gray>..............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+↔ a/a/aa.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+↔ a/b/ab.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+↔ b/b.txt <fg=gray>..............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=green>↔ c.new</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=red>FAIL</>
+<fg=yellow>↔ c.htm</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=green>C</><fg=yellow>U</> <fg=green>DONE</>
+<fg=green;options=bold>✓</> Files: 12, [<fg=yellow>U</>]pdated: <fg=yellow>2</>, [<fg=green>C</>]reated: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>

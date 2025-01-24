@@ -75,8 +75,8 @@ final class WriterTest extends TestCase {
     }
 
     /**
-     * @param array{FileSystemModifiedType|Flag|null, string} $expected
-     * @param list<Change>                                    $changes
+     * @param array{FileSystemModifiedType|Flag|null, list<string>} $expected
+     * @param list<Change>                                          $changes
      */
     #[DataProvider('dataProviderFlags')]
     public function testFlags(array $expected, array $changes, string $path): void {
@@ -90,7 +90,7 @@ final class WriterTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): string {
+            public function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): array {
                 return parent::flags($changes, $path, $flag);
             }
         };
@@ -254,12 +254,12 @@ final class WriterTest extends TestCase {
     }
 
     /**
-     * @return array<string, array{array{FileSystemModifiedType|Flag|null, string}, list<Change>, string}>
+     * @return array<string, array{array{FileSystemModifiedType|Flag|null, list<string>}, list<Change>, string}>
      */
     public static function dataProviderFlags(): array {
         return [
             'Path doesn\'t match'            => [
-                [null, '<fg=green>C</><fg=yellow>U</>'],
+                [null, ['<fg=green>C</>', '<fg=yellow>U</>']],
                 [
                     new Change('a', FileSystemModifiedType::Created),
                     new Change('a', FileSystemModifiedType::Created),
@@ -270,7 +270,7 @@ final class WriterTest extends TestCase {
                 'd',
             ],
             'Path match to one'              => [
-                [FileSystemModifiedType::Updated, '<fg=green>C</><fg=yellow>U</>'],
+                [FileSystemModifiedType::Updated, ['<fg=green>C</>', '<fg=yellow>U</>']],
                 [
                     new Change('a', FileSystemModifiedType::Created),
                     new Change('b', FileSystemModifiedType::Updated),
@@ -279,7 +279,7 @@ final class WriterTest extends TestCase {
                 'b',
             ],
             'Path match to multiple (same)'  => [
-                [FileSystemModifiedType::Created, '<fg=green>C</><fg=yellow>U</>'],
+                [FileSystemModifiedType::Created, ['<fg=green>C</>', '<fg=yellow>U</>']],
                 [
                     new Change('a', FileSystemModifiedType::Created),
                     new Change('a', FileSystemModifiedType::Created),
@@ -288,7 +288,7 @@ final class WriterTest extends TestCase {
                 'a',
             ],
             'Path match to multiple (mixed)' => [
-                [Flag::Mixed, '<fg=green>C</><fg=yellow>U</>'],
+                [Flag::Mixed, ['<fg=green>C</>', '<fg=yellow>U</>']],
                 [
                     new Change('a', FileSystemModifiedType::Created),
                     new Change('a', FileSystemModifiedType::Updated),
@@ -297,7 +297,7 @@ final class WriterTest extends TestCase {
                 'a',
             ],
             'Path only (same)'               => [
-                [FileSystemModifiedType::Created, ''],
+                [FileSystemModifiedType::Created, ['<fg=green>C</>']],
                 [
                     new Change('a', FileSystemModifiedType::Created),
                     new Change('a', FileSystemModifiedType::Created),
@@ -305,7 +305,7 @@ final class WriterTest extends TestCase {
                 'a',
             ],
             'Path only (mixed)'              => [
-                [Flag::Mixed, '<fg=green>C</><fg=yellow>U</>'],
+                [Flag::Mixed, ['<fg=green>C</>', '<fg=yellow>U</>']],
                 [
                     new Change('a', FileSystemModifiedType::Created),
                     new Change('a', FileSystemModifiedType::Updated),
