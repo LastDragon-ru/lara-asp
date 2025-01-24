@@ -481,8 +481,12 @@ final class FileSystemTest extends TestCase {
         $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
         $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
 
+        self::assertSame('↔ /', $bFileSystem->getPathname($bFileSystem->input));
+        self::assertSame('↔ /', $bFileSystem->getPathname($bFileSystem->output));
         self::assertSame('↔ a.txt', $bFileSystem->getPathname($bFileSystemAFile));
         self::assertSame('↔ a.txt', $bFileSystem->getPathname($bFileSystemAFile->getPath()));
+        self::assertSame('→ /', $aFileSystem->getPathname($aFileSystem->input));
+        self::assertSame('← /', $aFileSystem->getPathname($aFileSystem->output));
         self::assertSame('→ a.txt', $aFileSystem->getPathname($aFileSystemAFile));
         self::assertSame('→ a.txt', $aFileSystem->getPathname($aFileSystemAFile->getPath()));
         self::assertSame('← b.txt', $aFileSystem->getPathname($aFileSystemBFile));
