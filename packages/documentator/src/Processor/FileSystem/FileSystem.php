@@ -70,10 +70,16 @@ class FileSystem {
         $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
         $path   = $path instanceof Entry ? $path->getPath() : $path;
         $name   = match (true) {
-            $this->input->isEqual($this->output) => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
-            $this->input->isInside($path)        => Mark::Input->value.' '.$this->input->getRelativePath($path).$suffix,
-            $this->output->isInside($path)       => Mark::Output->value.' '.$this->output->getRelativePath($path).$suffix,
-            default                              => Mark::External->value.' '.$path.$suffix,
+            $this->input->isEqual($this->output),
+                => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
+            $this->output->isInside($path),
+            $this->output->isEqual($path),
+                => Mark::Output->value.' '.$this->output->getRelativePath($path).$suffix,
+            $this->input->isInside($path),
+            $this->input->isEqual($path),
+                => Mark::Input->value.' '.$this->input->getRelativePath($path).$suffix,
+            default
+                => Mark::External->value.' '.$path.$suffix,
         };
 
         return $name;
