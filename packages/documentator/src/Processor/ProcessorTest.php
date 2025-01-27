@@ -536,6 +536,65 @@ final class ProcessorTest extends TestCase {
             ->task($task)
             ->run($input);
     }
+
+    public function testRunCircularDependencyNotWritable(): void {
+        $events = [];
+        $output = (new DirectoryPath(self::getTestData()->path('b')))->getNormalizedPath();
+        $input  = (new DirectoryPath(self::getTestData()->path('a')))->getNormalizedPath();
+        $task   = new ProcessorTest__Task([
+            'aa.txt' => ['../a.txt'],
+        ]);
+
+        (new Processor($this->app()->make(ContainerResolver::class)))
+            ->task($task)
+            ->exclude(['excluded.txt', '**/**/excluded.txt'])
+            ->listen(
+                static function (Event $event) use (&$events): void {
+                    $events[] = $event;
+                },
+            )
+            ->run($input, $output);
+
+        self::assertEquals(
+            [
+                new ProcessingStarted(),
+                new FileStarted('→ a.txt'),
+                new TaskStarted($task::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted('→ a/aa.txt'),
+                new TaskStarted($task::class),
+                new DependencyResolved('→ a.txt', DependencyResolvedResult::Success),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted('→ b/ab.txt'),
+                new TaskStarted($task::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new ProcessingFinished(ProcessingFinishedResult::Success),
+            ],
+            $events,
+        );
+        self::assertEquals(
+            [
+                [
+                    (string) $input->getFilePath('a.txt'),
+                    [],
+                ],
+                [
+                    (string) $input->getFilePath('a/aa.txt'),
+                    [
+                        '../a.txt' => (string) $input->getFilePath('a.txt'),
+                    ],
+                ],
+                [
+                    (string) $input->getFilePath('b/ab.txt'),
+                    [],
+                ],
+            ],
+            $task->processed,
+        );
+    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses

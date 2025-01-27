@@ -80,17 +80,22 @@ class Executor {
             return;
         }
 
-        // Event
-        $pathname = $this->fs->getPathname($file);
-
-        $this->dispatcher->notify(new FileStarted($pathname));
-
         // Circular?
         if (isset($this->stack[$path])) {
-            $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
+            // The $file cannot be changed if it is placed outside the output
+            // directory, so we can return it safely in this case.
+            if ($this->fs->output->isInside($file->getPath())) {
+                $this->dispatcher->notify(new FileStarted($this->fs->getPathname($file)));
+                $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
-            throw new DependencyCircularDependency($file, array_values($this->stack));
+                throw new DependencyCircularDependency($file, array_values($this->stack));
+            } else {
+                return;
+            }
         }
+
+        // Event
+        $this->dispatcher->notify(new FileStarted($this->fs->getPathname($file)));
 
         // Skipped?
         if ($this->isSkipped($file)) {
