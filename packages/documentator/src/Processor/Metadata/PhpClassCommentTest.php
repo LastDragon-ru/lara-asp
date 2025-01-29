@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(PhpDocBlock::class)]
+#[CoversClass(PhpClassComment::class)]
 final class PhpClassCommentTest extends TestCase {
     use WithProcessor;
 
