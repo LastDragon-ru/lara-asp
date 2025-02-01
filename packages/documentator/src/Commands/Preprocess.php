@@ -11,7 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceConfigurator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Writer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
@@ -114,11 +114,11 @@ class Preprocess extends Command {
     }
 
     /**
-     * @return list<InstanceFactory<covariant Task>|Task|class-string<covariant Task>>
+     * @return list<InstanceConfigurator<covariant Task>|Task|class-string<covariant Task>>
      */
     protected function tasks(): array {
         return [
-            new InstanceFactory(PreprocessTask::class, static function (PreprocessTask $task): void {
+            new InstanceConfigurator(PreprocessTask::class, static function (PreprocessTask $task): void {
                 $task->addInstruction(PreprocessIncludeFile::class);
                 $task->addInstruction(PreprocessIncludeExec::class);
                 $task->addInstruction(PreprocessIncludeExample::class);

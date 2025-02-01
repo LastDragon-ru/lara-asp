@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
+use LastDragon_ru\LaraASP\Documentator\Processor\InstanceConfigurator;
 use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -92,13 +92,13 @@ class Task implements TaskContract {
      * @template P of Parameters
      * @template I of Instruction<P>
      *
-     * @param InstanceFactory<covariant I>|I|class-string<I> $instruction
+     * @param InstanceConfigurator<covariant I>|I|class-string<I> $instruction
      */
-    public function addInstruction(InstanceFactory|Instruction|string $instruction): static {
-        if ($instruction instanceof InstanceFactory) {
+    public function addInstruction(InstanceConfigurator|Instruction|string $instruction): static {
+        if ($instruction instanceof InstanceConfigurator) {
             $this->instructions->add(
-                $instruction->class,   // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-                $instruction->factory, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
+                $instruction->class,        // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
+                $instruction->configurator, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
             );
         } else {
             $this->instructions->add($instruction);

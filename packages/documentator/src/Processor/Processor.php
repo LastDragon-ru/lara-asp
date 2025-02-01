@@ -63,13 +63,13 @@ class Processor {
     /**
      * @template T of Task
      *
-     * @param InstanceFactory<covariant T>|T|class-string<T> $task
+     * @param InstanceConfigurator<covariant T>|T|class-string<T> $task
      */
-    public function task(InstanceFactory|Task|string $task): static {
-        if ($task instanceof InstanceFactory) {
+    public function task(InstanceConfigurator|Task|string $task): static {
+        if ($task instanceof InstanceConfigurator) {
             $this->tasks->add(
-                $task->class,   // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-                $task->factory, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
+                $task->class,        // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
+                $task->configurator, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
             );
         } else {
             $this->tasks->add($task);

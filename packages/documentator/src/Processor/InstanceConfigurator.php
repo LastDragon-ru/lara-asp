@@ -11,7 +11,7 @@ use Closure;
  *
  * @template TInstance of object
  */
-readonly class InstanceFactory {
+readonly class InstanceConfigurator {
     public function __construct(
         /**
          * @var class-string<TInstance>
@@ -20,7 +20,7 @@ readonly class InstanceFactory {
         /**
          * @var Closure(TInstance): void
          */
-        public Closure $factory,
+        public Closure $configurator,
     ) {
         // empty
     }
