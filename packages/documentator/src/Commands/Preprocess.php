@@ -17,15 +17,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Instruction as PreprocessIncludeArtisan;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction as PreprocessIncludeDocBlock;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as PreprocessIncludeDocumentList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Instruction as PreprocessIncludeExample;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Instruction as PreprocessIncludeExec;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile\Instruction as PreprocessIncludeFile;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Instruction as PreprocessIncludeGraphqlDirective;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as PreprocessIncludePackageList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as PreprocessIncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
@@ -118,17 +109,7 @@ class Preprocess extends Command {
      */
     protected function tasks(): array {
         return [
-            new InstanceConfigurator(PreprocessTask::class, static function (PreprocessTask $task): void {
-                $task->addInstruction(PreprocessIncludeFile::class);
-                $task->addInstruction(PreprocessIncludeExec::class);
-                $task->addInstruction(PreprocessIncludeExample::class);
-                $task->addInstruction(PreprocessIncludeArtisan::class);
-                $task->addInstruction(PreprocessIncludeTemplate::class);
-                $task->addInstruction(PreprocessIncludeDocBlock::class);
-                $task->addInstruction(PreprocessIncludePackageList::class);
-                $task->addInstruction(PreprocessIncludeDocumentList::class);
-                $task->addInstruction(PreprocessIncludeGraphqlDirective::class);
-            }),
+            PreprocessTask::class,
             CodeLinksTask::class,
         ];
     }

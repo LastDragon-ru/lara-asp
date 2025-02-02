@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use ReflectionAttribute;
+use ReflectionClass;
 
 use function array_keys;
 use function array_merge;
@@ -115,17 +117,18 @@ class InstanceList {
      * @param ($instance is object ? null : ?Closure(TInstance): void) $configurator
      */
     public function add(object|string $instance, ?Closure $configurator = null): static {
-        $keys = (array) ($this->keyResolver)($instance);
+        $keys     = (array) ($this->keyResolver)($instance);
+        $class    = is_string($instance) ? $instance : $instance::class;
+        $resolved = is_object($instance) ? $instance : null;
+
+        if ($resolved === null) {
+            $this->configurators[$class] = $configurator ?? $this->configurator($class);
+        } else {
+            $this->instances[$class] = $resolved;
+        }
 
         foreach ($keys as $key) {
-            $class                       = is_string($instance) ? $instance : $instance::class;
-            $resolved                    = is_object($instance) ? $instance : null;
-            $this->map[$key][]           = $class;
-            $this->configurators[$class] = $configurator;
-
-            if ($resolved !== null) {
-                $this->instances[$class] = $resolved;
-            }
+            $this->map[$key][] = $class;
         }
 
         return $this;
@@ -146,5 +149,19 @@ class InstanceList {
         }
 
         return $this->instances[$class];
+    }
+
+    /**
+     * @param class-string<TInstance> $class
+     *
+     * @return ?Closure(TInstance): void
+     */
+    private function configurator(string $class): ?Closure {
+        $class        = new ReflectionClass($class);
+        $attributes   = $class->getAttributes(InstanceConfiguration::class, ReflectionAttribute::IS_INSTANCEOF);
+        $configurator = ($attributes[0] ?? null)?->newInstance();
+        $configurator = $configurator !== null ? $configurator(...) : null;
+
+        return $configurator;
     }
 }
