@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
 use Generator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 
 interface Task {
     /**
@@ -22,8 +23,10 @@ interface Task {
      *
      * The {@see Generator} means that the task has dependencies (= other files
      * which should be processed before the current). Each returned value will be
-     * resolved relative to the directory where the `$file` located, processed,
+     * resolved relative to the {@see FileSystem::$input} directory, processed,
      * and then send back into the generator.
+     *
+     * @see FileSystem
      *
      * @return Generator<mixed, Dependency<*>, mixed, bool>|bool
      *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, bool>|bool`
