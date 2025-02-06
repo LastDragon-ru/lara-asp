@@ -46,7 +46,7 @@ use function strip_tags;
 
 use const SORT_REGULAR;
 
-class Writer {
+class Listener {
     /**
      * @var list<File|Task>
      */

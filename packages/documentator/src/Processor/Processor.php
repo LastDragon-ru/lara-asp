@@ -82,7 +82,7 @@ class Processor {
     /**
      * @param Closure(Event): void $listener
      */
-    public function listen(Closure $listener): static {
+    public function addListener(Closure $listener): static {
         $this->dispatcher->attach($listener);
 
         return $this;

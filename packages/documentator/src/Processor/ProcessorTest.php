@@ -75,7 +75,7 @@ final class ProcessorTest extends TestCase {
             ->addTask($taskA)
             ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->listen(
+            ->addListener(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -196,7 +196,7 @@ final class ProcessorTest extends TestCase {
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->addTask($task)
-            ->listen(
+            ->addListener(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -260,7 +260,7 @@ final class ProcessorTest extends TestCase {
             ->addTask($taskA)
             ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->listen(
+            ->addListener(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -416,7 +416,7 @@ final class ProcessorTest extends TestCase {
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->listen(
+            ->addListener(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -548,7 +548,7 @@ final class ProcessorTest extends TestCase {
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->listen(
+            ->addListener(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },

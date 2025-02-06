@@ -35,8 +35,8 @@ use function assert;
 /**
  * @internal
  */
-#[CoversClass(Writer::class)]
-final class WriterTest extends TestCase {
+#[CoversClass(Listener::class)]
+final class ListenerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
@@ -57,7 +57,7 @@ final class WriterTest extends TestCase {
         self::assertInstanceOf(Formatter::class, $formatter);
 
         $output = new BufferedOutput($verbosity, false, new RawOutputFormatter());
-        $writer = new class ($output, $formatter) extends Writer {
+        $writer = new class ($output, $formatter) extends Listener {
             #[Override]
             protected function getTerminalWidth(): int {
                 return 80;
@@ -80,7 +80,7 @@ final class WriterTest extends TestCase {
      */
     #[DataProvider('dataProviderFlags')]
     public function testFlags(array $expected, array $changes, string $path): void {
-        $writer = new class () extends Writer {
+        $writer = new class () extends Listener {
             /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct() {
                 // empty
@@ -113,19 +113,19 @@ final class WriterTest extends TestCase {
             [
                 new FileStarted('↔ a/a.txt'),
                 [
-                    new TaskStarted(WriterTest__TaskA::class),
+                    new TaskStarted(ListenerTest__TaskA::class),
                     [
                         new DependencyResolved('↔ b/b/bb.txt', DependencyResolvedResult::Success),
                         [
                             new FileStarted('↔ b/b/bb.txt'),
                             [
-                                new TaskStarted(WriterTest__TaskA::class),
+                                new TaskStarted(ListenerTest__TaskA::class),
                                 [
                                     new DependencyResolved('↔ b/a/ba.txt', DependencyResolvedResult::Success),
                                     [
                                         new FileStarted('↔ b/a/ba.txt'),
                                         [
-                                            new TaskStarted(WriterTest__TaskA::class),
+                                            new TaskStarted(ListenerTest__TaskA::class),
                                             new TaskFinished(TaskFinishedResult::Success),
                                         ],
                                         new FileFinished(FileFinishedResult::Success),
@@ -134,7 +134,7 @@ final class WriterTest extends TestCase {
                                     [
                                         new FileStarted('↔ c.txt'),
                                         [
-                                            new TaskStarted(WriterTest__TaskA::class),
+                                            new TaskStarted(ListenerTest__TaskA::class),
                                             [
                                                 new FileSystemModified('↔ c.txt', FileSystemModifiedType::Updated),
                                                 new DependencyResolved('↔ c.txt', DependencyResolvedResult::Null),
@@ -171,25 +171,25 @@ final class WriterTest extends TestCase {
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ a/a/aa.txt'),
                 [
-                    new TaskStarted(WriterTest__TaskA::class),
+                    new TaskStarted(ListenerTest__TaskA::class),
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ a/b/ab.txt'),
                 [
-                    new TaskStarted(WriterTest__TaskA::class),
+                    new TaskStarted(ListenerTest__TaskA::class),
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ b/b.txt'),
                 [
-                    new TaskStarted(WriterTest__TaskA::class),
+                    new TaskStarted(ListenerTest__TaskA::class),
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ c.htm'),
                 [
-                    new TaskStarted(WriterTest__TaskA::class),
+                    new TaskStarted(ListenerTest__TaskA::class),
                     [
                         new FileSystemModified('↔ c.htm', FileSystemModifiedType::Updated),
                         new DependencyResolved('↔ c.htm', DependencyResolvedResult::Null),
@@ -201,7 +201,7 @@ final class WriterTest extends TestCase {
                         ],
                     ],
                     new TaskFinished(TaskFinishedResult::Success),
-                    new TaskStarted(WriterTest__TaskB::class),
+                    new TaskStarted(ListenerTest__TaskB::class),
                     [
                         new FileSystemModified('↔ c.new', FileSystemModifiedType::Updated),
                         new DependencyResolved('↔ c.new', DependencyResolvedResult::Null),
@@ -324,7 +324,7 @@ final class WriterTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class WriterTest__TaskA implements Task {
+class ListenerTest__TaskA implements Task {
     public function __construct() {
         // empty
     }
@@ -347,7 +347,7 @@ class WriterTest__TaskA implements Task {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class WriterTest__TaskB implements Task {
+class ListenerTest__TaskB implements Task {
     public function __construct() {
         // empty
     }
