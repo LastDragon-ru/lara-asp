@@ -44,7 +44,7 @@ final class ProcessorTest extends TestCase {
         $mock = Mockery::mock(Task::class);
         $mock
             ->shouldReceive('getExtensions')
-            ->once()
+            ->twice()
             ->andReturns(['php']);
 
         $taskA = new class() extends ProcessorTest__Task {
@@ -71,9 +71,9 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($mock)
-            ->task($taskA)
-            ->task($taskB)
+            ->addTask($mock)
+            ->addTask($taskA)
+            ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->listen(
                 static function (Event $event) use (&$events): void {
@@ -195,7 +195,7 @@ final class ProcessorTest extends TestCase {
         $events = [];
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
+            ->addTask($task)
             ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
@@ -257,8 +257,8 @@ final class ProcessorTest extends TestCase {
         };
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($taskA)
-            ->task($taskB)
+            ->addTask($taskA)
+            ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->listen(
                 static function (Event $event) use (&$events): void {
@@ -414,7 +414,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
+            ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->listen(
                 static function (Event $event) use (&$events): void {
@@ -485,7 +485,7 @@ final class ProcessorTest extends TestCase {
         self::expectExceptionMessage('Dependency not found.');
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
+            ->addTask($task)
             ->run($input);
     }
 
@@ -512,7 +512,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
+            ->addTask($task)
             ->run($input);
     }
 
@@ -533,7 +533,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
+            ->addTask($task)
             ->run($input);
     }
 
@@ -546,7 +546,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->task($task)
+            ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->listen(
                 static function (Event $event) use (&$events): void {

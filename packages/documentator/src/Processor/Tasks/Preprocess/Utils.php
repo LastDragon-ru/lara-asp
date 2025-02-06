@@ -7,9 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as Gen
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils as MarkdownUtils;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Node\Node;
 
@@ -20,11 +17,9 @@ use function uniqid;
  */
 class Utils {
     /**
-     * @param InstanceList<Instruction<Parameters>> $instructions
-     *
-     * @phpstan-assert-if-true ReferenceNode        $node
+     * @phpstan-assert-if-true ReferenceNode $node
      */
-    public static function isInstruction(Node $node, InstanceList $instructions): bool {
+    public static function isInstruction(Node $node, Instructions $instructions): bool {
         return $node instanceof ReferenceNode
             && MarkdownUtils::getParent($node, GeneratedNode::class) === null
             && $instructions->has($node->getLabel());

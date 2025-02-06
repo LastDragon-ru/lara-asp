@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceConfigurator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Writer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
@@ -94,24 +93,13 @@ class Preprocess extends Command {
             ->run($path);
     }
 
-    private function processor(): Processor {
+    protected function processor(): Processor {
         $processor = new Processor($this->container);
 
-        foreach ($this->tasks() as $task) {
-            $processor->task($task);
-        }
+        $processor->addTask(PreprocessTask::class, 100);
+        $processor->addTask(CodeLinksTask::class, 200);
 
         return $processor;
-    }
-
-    /**
-     * @return list<InstanceConfigurator<covariant Task>|Task|class-string<covariant Task>>
-     */
-    protected function tasks(): array {
-        return [
-            PreprocessTask::class,
-            CodeLinksTask::class,
-        ];
     }
 
     #[Override]
@@ -131,7 +119,7 @@ class Preprocess extends Command {
         $default   = '_No description provided_.';
         $processor = $this->processor();
 
-        foreach ($processor->tasks() as $index => $task) {
+        foreach ($processor->getTasks() as $index => $task) {
             $description = mb_trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
             $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';

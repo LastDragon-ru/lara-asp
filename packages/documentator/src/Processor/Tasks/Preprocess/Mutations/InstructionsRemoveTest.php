@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -36,7 +36,7 @@ final class InstructionsRemoveTest extends TestCase {
             [test]: /path/to/file.md
             MARKDOWN;
 
-        $instructions = Mockery::mock(InstanceList::class);
+        $instructions = Mockery::mock(Instructions::class);
         $instructions
             ->shouldReceive('has')
             ->with('test:instruction')

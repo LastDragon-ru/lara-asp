@@ -25,11 +25,7 @@ use function array_merge;
  * Perform one or more task on the file.
  */
 class Processor {
-    /**
-     * @var InstanceList<Task>
-     */
-    private InstanceList $tasks;
-
+    private readonly Tasks        $tasks;
     protected readonly Dispatcher $dispatcher;
 
     /**
@@ -40,40 +36,36 @@ class Processor {
     public function __construct(
         protected readonly ContainerResolver $container,
     ) {
-        $this->tasks      = new InstanceList($container, $this->key(...));
+        $this->tasks      = new Tasks($container);
         $this->dispatcher = new Dispatcher();
     }
 
     /**
-     * @param Task|class-string<Task> $task
-     *
-     * @return list<string>
-     */
-    private function key(Task|string $task): array {
-        return $task::getExtensions();
-    }
-
-    /**
+     * @internal
      * @return list<Task>
      */
-    public function tasks(): array {
-        return $this->tasks->instances();
+    public function getTasks(): array {
+        return $this->tasks->getInstances();
     }
 
     /**
      * @template T of Task
      *
-     * @param InstanceConfigurator<covariant T>|T|class-string<T> $task
+     * @param T|class-string<T> $task
      */
-    public function task(InstanceConfigurator|Task|string $task): static {
-        if ($task instanceof InstanceConfigurator) {
-            $this->tasks->add(
-                $task->class,        // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-                $task->configurator, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-            );
-        } else {
-            $this->tasks->add($task);
-        }
+    public function addTask(Task|string $task, ?int $priority = null): static {
+        $this->tasks->add($task, $priority);
+
+        return $this;
+    }
+
+    /**
+     * @template T of Task
+     *
+     * @param T|class-string<T> $task
+     */
+    public function removeTask(Task|string $task): static {
+        $this->tasks->remove($task);
 
         return $this;
     }
@@ -104,7 +96,7 @@ class Processor {
         };
         $extensions = match (true) {
             $input instanceof FilePath => $input->getName(),
-            !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
+            !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->getKeys()),
             default                    => null,
         };
         $exclude = array_map(Glob::toRegex(...), $this->exclude);

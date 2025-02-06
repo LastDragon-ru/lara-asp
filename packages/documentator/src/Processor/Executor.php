@@ -49,10 +49,7 @@ class Executor {
          * @var array<array-key, string>
          */
         private readonly array $exclude,
-        /**
-         * @var InstanceList<Task>
-         */
-        private readonly InstanceList $tasks,
+        private readonly Tasks $tasks,
         private readonly Dispatcher $dispatcher,
         /**
          * @var Iterator<array-key, File>
