@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -39,6 +40,7 @@ class FileSystem {
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly MetadataStorage $metadata,
+        private readonly Metadata $newMetadata,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -111,7 +113,7 @@ class FileSystem {
 
         // Create
         if (is_file((string) $path)) {
-            $file = $this->cache(new File($this->metadata, $path));
+            $file = $this->cache(new File($this->metadata, $this->newMetadata, $path));
         } else {
             throw new FileNotFound($path);
         }

@@ -98,6 +98,8 @@ class Task implements TaskContract {
     }
 
     /**
+     * The last added instructions have a bigger priority.
+     *
      * @template P of Parameters
      * @template I of Instruction<P>
      *

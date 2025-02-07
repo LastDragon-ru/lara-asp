@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
@@ -249,12 +250,13 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteFile(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $input       = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path        = $input->getFilePath('file.md');
+        $file        = Mockery::mock(File::class);
+        $content     = 'content';
+        $metadata    = Mockery::mock(MetadataStorage::class);
+        $newMetadata = Mockery::mock(Metadata::class);
+        $dispatcher  = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
@@ -267,7 +269,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -304,17 +306,18 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteFileNoChanges(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $input       = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path        = $input->getFilePath('file.md');
+        $file        = Mockery::mock(File::class);
+        $content     = 'content';
+        $metadata    = Mockery::mock(MetadataStorage::class);
+        $newMetadata = Mockery::mock(Metadata::class);
+        $dispatcher  = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -353,12 +356,13 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteCreate(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $input       = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path        = $input->getFilePath('file.md');
+        $file        = Mockery::mock(File::class);
+        $content     = 'content';
+        $metadata    = Mockery::mock(MetadataStorage::class);
+        $newMetadata = Mockery::mock(Metadata::class);
+        $dispatcher  = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
@@ -371,7 +375,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -420,12 +424,13 @@ final class FileSystemTest extends TestCase {
     public function testWriteCreateFailed(): void {
         self::expectException(FileCreateFailed::class);
 
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $input       = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path        = $input->getFilePath('file.md');
+        $content     = 'content';
+        $metadata    = Mockery::mock(MetadataStorage::class);
+        $newMetadata = Mockery::mock(Metadata::class);
+        $dispatcher  = Mockery::mock(Dispatcher::class);
+        $filesystem  = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem

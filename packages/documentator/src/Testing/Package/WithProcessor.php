@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 /**
  * @phpstan-require-extends TestCase
@@ -22,13 +23,14 @@ trait WithProcessor {
         DirectoryPath|string $input,
         DirectoryPath|string|null $output = null,
     ): FileSystem {
-        $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
-        $output     = $output !== null
+        $input       = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
+        $output      = $output !== null
             ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
             : $input;
-        $metadata   = new MetadataStorage($this->app()->make(ContainerResolver::class));
-        $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output);
+        $metadata    = new MetadataStorage($this->app()->make(ContainerResolver::class));
+        $newMetadata = new Metadata($this->app()->make(ContainerResolver::class));
+        $dispatcher  = new Dispatcher();
+        $filesystem  = new FileSystem($dispatcher, $metadata, $newMetadata, $input, $output);
 
         return $filesystem;
     }

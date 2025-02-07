@@ -194,6 +194,52 @@ final class InstancesTest extends TestCase {
         self::assertSame($bInstance, $instances->last('b', 'aa'));
     }
 
+    public function testGetReverse(): void {
+        $container = Mockery::mock(Container::class);
+        $resolver  = Mockery::mock(ContainerResolver::class);
+        $resolver
+            ->shouldReceive('getInstance')
+            ->once()
+            ->andReturn($container);
+
+        $instances = new InstancesTest__Instances($resolver, true);
+        $aInstance = new class() implements InstancesTest__Instance {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getKeys(): array {
+                return ['aa', 'ab'];
+            }
+        };
+        $bInstance = new class() implements InstancesTest__Instance {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getKeys(): array {
+                return ['b'];
+            }
+        };
+
+        $container
+            ->shouldReceive('make')
+            ->with($bInstance::class)
+            ->once()
+            ->andReturn($bInstance);
+
+        $instances->add($aInstance);
+        $instances->add($bInstance::class);
+
+        self::assertSame([$aInstance], $instances->get('aa'));
+        self::assertSame([$bInstance, $aInstance], $instances->get('b', 'ab'));
+        self::assertSame([$bInstance], $instances->get('b'));
+        self::assertSame([$bInstance], $instances->get('b'));
+
+        self::assertSame($bInstance, $instances->first('b', 'aa'));
+        self::assertSame($aInstance, $instances->last('b', 'aa'));
+    }
+
     public function testAdd(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container);
@@ -276,12 +322,24 @@ final class InstancesTest extends TestCase {
  * @extends Instances<InstancesTest__Instance>
  */
 class InstancesTest__Instances extends Instances {
+    public function __construct(
+        ContainerResolver $container,
+        private readonly bool $reverse = false,
+    ) {
+        parent::__construct($container);
+    }
+
     /**
      * @inheritDoc
      */
     #[Override]
     protected function getInstanceKeys(object|string $instance): array {
         return $instance::getKeys();
+    }
+
+    #[Override]
+    protected function isHighPriorityFirst(): bool {
+        return $this->reverse;
     }
 }
 

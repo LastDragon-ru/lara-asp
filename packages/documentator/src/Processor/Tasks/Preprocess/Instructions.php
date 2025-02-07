@@ -19,4 +19,9 @@ class Instructions extends Instances {
     protected function getInstanceKeys(object|string $instance): array {
         return [$instance::getName()];
     }
+
+    #[Override]
+    protected function isHighPriorityFirst(): bool {
+        return true;
+    }
 }

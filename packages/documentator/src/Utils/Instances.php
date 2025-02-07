@@ -223,6 +223,10 @@ abstract class Instances {
         return $priority + 1;
     }
 
+    protected function isHighPriorityFirst(): bool {
+        return false;
+    }
+
     /**
      * @param TInstance|class-string<TInstance> $a
      * @param TInstance|class-string<TInstance> $b
@@ -231,6 +235,10 @@ abstract class Instances {
         $a = $this->priorities[is_object($a) ? $a::class : $a] ?? null;
         $b = $this->priorities[is_object($b) ? $b::class : $b] ?? null;
         $c = $a <=> $b;
+
+        if ($this->isHighPriorityFirst()) {
+            $c = - $c;
+        }
 
         return $c;
     }

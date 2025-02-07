@@ -7,6 +7,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
@@ -16,16 +17,18 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Finder\Glob;
 
 use function array_map;
 use function array_merge;
 
 /**
- * Perform one or more task on the file.
+ * Perform one or more task on the file(s).
  */
 class Processor {
     private readonly Tasks        $tasks;
+    private readonly Metadata     $metadata;
     protected readonly Dispatcher $dispatcher;
 
     /**
@@ -37,6 +40,7 @@ class Processor {
         protected readonly ContainerResolver $container,
     ) {
         $this->tasks      = new Tasks($container);
+        $this->metadata   = new Metadata($container);
         $this->dispatcher = new Dispatcher();
     }
 
@@ -49,6 +53,8 @@ class Processor {
     }
 
     /**
+     * The first added tasks have a bigger priority.
+     *
      * @template T of Task
      *
      * @param T|class-string<T> $task
@@ -66,6 +72,32 @@ class Processor {
      */
     public function removeTask(Task|string $task): static {
         $this->tasks->remove($task);
+
+        return $this;
+    }
+
+    /**
+     * The last added resolvers have a bigger priority.
+     *
+     * @template V of object
+     * @template R of MetadataResolver<V>
+     *
+     * @param R|class-string<R> $metadata
+     */
+    public function addMetadata(MetadataResolver|string $metadata, ?int $priority = null): static {
+        $this->metadata->addResolver($metadata, $priority);
+
+        return $this;
+    }
+
+    /**
+     * @template V of object
+     * @template R of MetadataResolver<V>
+     *
+     * @param R|class-string<R> $metadata
+     */
+    public function removeMetadata(MetadataResolver|string $metadata): static {
+        $this->metadata->removeResolver($metadata);
 
         return $this;
     }
@@ -117,7 +149,7 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $filesystem = new FileSystem($this->dispatcher, new MetadataStorage($this->container), $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, new MetadataStorage($this->container), $this->metadata, $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 
