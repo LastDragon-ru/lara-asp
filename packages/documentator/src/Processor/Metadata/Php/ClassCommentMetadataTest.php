@@ -1,21 +1,19 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
-#[CoversClass(PhpClassComment::class)]
-final class PhpClassCommentTest extends TestCase {
+#[CoversClass(ClassCommentMetadata::class)]
+final class ClassCommentMetadataTest extends TestCase {
     use WithProcessor;
 
-    public function testInvoke(): void {
+    public function testResolve(): void {
         $content  = <<<'PHP'
         <?php declare(strict_types = 1);
 
@@ -35,37 +33,16 @@ final class PhpClassCommentTest extends TestCase {
         PHP;
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(self::getTempFile($content)->getPathname());
-        $factory  = new PhpClassComment();
-        $metadata = $factory($file);
+        $metadata = new ClassCommentMetadata();
+        $resolved = $metadata->resolve($file, ClassComment::class);
 
-        self::assertNotNull($metadata);
         self::assertSame(
             <<<'MARKDOWN'
             Description.
 
             Summary {@see stdClass} and {@see PhpClass}, {@see https://example.com/}.
             MARKDOWN,
-            $metadata->comment->getText(),
+            $resolved->comment->getText(),
         );
-    }
-
-    public function testInvokeNotPhp(): void {
-        $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(self::getTempFile()->getPathname());
-        $factory = new PhpClassComment();
-
-        $this->override(
-            PhpClass::class,
-            new readonly class() extends PhpClass {
-                #[Override]
-                public function __invoke(File $file): mixed {
-                    return null;
-                }
-            },
-        );
-
-        $metadata = $factory($file);
-
-        self::assertNull($metadata);
     }
 }

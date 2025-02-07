@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassCommentMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassMarkdownMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ComposerPackageMetadata;
 use RuntimeException;
@@ -30,6 +31,7 @@ class Metadata {
 
         $this->addResolver(ComposerPackageMetadata::class);
         $this->addResolver(ClassMarkdownMetadata::class);
+        $this->addResolver(ClassCommentMetadata::class);
     }
 
     /**

@@ -34,7 +34,7 @@ final class ClassMarkdownMetadataTest extends TestCase {
         }
         PHP;
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(self::getTempFile($content)->getPathname());
+        $file     = $fs->getFile(self::getTempFile($content, '.php')->getPathname());
         $metadata = new ClassMarkdownMetadata(
             $this->app()->make(PhpDocumentFactory::class),
         );
