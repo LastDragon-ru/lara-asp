@@ -1,5 +1,8 @@
 <?php declare(strict_types = 1);
 
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction;
 
 /**
@@ -12,8 +15,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
  *
  * Description with inline tags:
  *
- * - {@see B}, {@link B}, {@see B::b()}
- * - {@see A}, {@link A}, {@see A::a()}
+ * - {@see ValidB}, {@link ValidB}, {@see ValidB::b()}
+ * - {@see ValidA}, {@link ValidA}, {@see ValidA::a()}
  * - {@see Instruction}
  * - {@see Instruction::getName()}
  *
@@ -23,8 +26,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
  * [^1]: Footnote
  *
  * @see https://example.com/
+ * @see Instruction
  */
-interface A {
+interface ValidA {
     // empty
 }
 
@@ -35,6 +39,6 @@ interface A {
  * description description description description description description
  * description description description description description description
  */
-class B {
+class ValidB {
     // empty
 }

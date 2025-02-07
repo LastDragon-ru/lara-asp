@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
@@ -64,36 +63,29 @@ final class InstructionTest extends TestCase {
     public static function dataProviderProcess(): array {
         return [
             'default'          => [
-                'ValidExpected.txt',
-                'Valid.txt',
-                new Parameters('Valid.txt'),
+                'ValidExpected.md',
+                'Valid.php',
+                new Parameters('Valid.php'),
             ],
             'with summary'     => [
-                'ValidWithSummaryExpected.txt',
-                'Valid.txt',
-                new Parameters('Valid.txt', summary: true),
+                'ValidWithSummaryExpected.md',
+                'Valid.php',
+                new Parameters('Valid.php', summary: true),
             ],
             'only summary'     => [
-                'ValidOnlySummaryExpected.txt',
-                'Valid.txt',
-                new Parameters('Valid.txt', summary: true, description: false),
+                'ValidOnlySummaryExpected.md',
+                'Valid.php',
+                new Parameters('Valid.php', summary: true, description: false),
             ],
             'only description' => [
-                'ValidOnlyDescriptionExpected.txt',
-                'Valid.txt',
-                new Parameters('Valid.txt', summary: false, description: true),
+                'ValidOnlyDescriptionExpected.md',
+                'Valid.php',
+                new Parameters('Valid.php', summary: false, description: true),
             ],
             'no docblock'      => [
-                'NoDocBlockExpected.txt',
-                'NoDocBlock.txt',
-                new Parameters('NoDocBlock.txt'),
-            ],
-            'invalid'          => [
-                static function (self $test, Context $context, Parameters $parameters): Exception {
-                    return new TargetIsNotValidPhpFile($context, $parameters);
-                },
-                'Invalid.txt',
-                new Parameters('Invalid.txt'),
+                'NoDocBlockExpected.md',
+                'NoDocBlock.php',
+                new Parameters('NoDocBlock.php'),
             ],
         ];
     }

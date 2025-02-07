@@ -1,18 +1,11 @@
-Summary [A][link][^1] [B](#fragment) [C][fragment].
-
 Description description description description description description
 description description description description description description
 description description description description description description
-[description][link][^1] [description](#fragment) [description][fragment].
+[description](https://example.com/) description description.
 
 Description with inline tags:
 
-- `\B`, `\B`, `\B::b()`
-- `\A`, `\A`, `\A::a()`
+- `\ValidB`, `\ValidB`, `\ValidB::b()`
+- `\ValidA`, `\ValidA`, `\ValidA::a()`
 - `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction`
 - `\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction::getName()`
-
-[link]: https://example.com/
-[fragment]: #fragment
-
-[^1]: Footnote

@@ -32,7 +32,7 @@ final class MetadataTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return ['txt'];
+                return ['extension-b'];
             }
         };
         $container = Mockery::mock(Container::class);
@@ -56,7 +56,7 @@ final class MetadataTest extends TestCase {
         $aFile
             ->shouldReceive('getExtension')
             ->once()
-            ->andReturn('php');
+            ->andReturn('extension-a');
 
         $aActual = $metadata->get($aFile, MetadataTest__Value::class);
 
@@ -68,7 +68,7 @@ final class MetadataTest extends TestCase {
         $bFile
             ->shouldReceive('getExtension')
             ->once()
-            ->andReturn('txt');
+            ->andReturn('extension-b');
         $bActual = $metadata->get($bFile, MetadataTest__Value::class);
 
         self::assertEquals(new MetadataTest__Value($bResolver::class), $bActual);
@@ -89,7 +89,7 @@ final class MetadataTest extends TestCase {
         $file
             ->shouldReceive('getExtension')
             ->once()
-            ->andReturn('php');
+            ->andReturn('extension');
 
         $metadata->addResolver($resolver);
 
@@ -122,7 +122,7 @@ final class MetadataTest extends TestCase {
         $file
             ->shouldReceive('getExtension')
             ->once()
-            ->andReturn('php');
+            ->andReturn('extension');
 
         // Test
         $previous = null;

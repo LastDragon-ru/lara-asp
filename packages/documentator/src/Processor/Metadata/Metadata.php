@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassMarkdownMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ComposerPackageMetadata;
 use RuntimeException;
 use UnexpectedValueException;
@@ -28,6 +29,7 @@ class Metadata {
         $this->resolvers = new Resolvers($container);
 
         $this->addResolver(ComposerPackageMetadata::class);
+        $this->addResolver(ClassMarkdownMetadata::class);
     }
 
     /**
