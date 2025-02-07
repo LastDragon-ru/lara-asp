@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
@@ -43,12 +43,8 @@ final class ClassConstantLinkTest extends TestCase {
     }
 
     public function testGetTargetNodeClassConstant(): void {
-        $storage = $this->app()->make(MetadataStorage::class);
-        $file    = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
+        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
-        $file
-            ->shouldUseProperty('metadata')
-            ->value($storage);
         $file
             ->shouldReceive('getMetadata')
             ->with(Content::class)
@@ -70,11 +66,9 @@ final class ClassConstantLinkTest extends TestCase {
             }
         };
 
-        $class = $file->getMetadata(PhpClass::class);
-
-        self::assertNotNull($class);
-
-        $actual = $link->getTargetNode($class->class);
+        $resolver = $this->app()->make(ClassObjectMetadata::class);
+        $class    = $resolver->resolve($file, ClassObject::class);
+        $actual   = $link->getTargetNode($class->class);
 
         self::assertInstanceOf(ClassConst::class, $actual);
         self::assertEquals(
@@ -87,12 +81,8 @@ final class ClassConstantLinkTest extends TestCase {
     }
 
     public function testGetTargetNodeEnum(): void {
-        $storage = $this->app()->make(MetadataStorage::class);
-        $file    = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
+        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
-        $file
-            ->shouldUseProperty('metadata')
-            ->value($storage);
         $file
             ->shouldReceive('getMetadata')
             ->with(Content::class)
@@ -114,11 +104,9 @@ final class ClassConstantLinkTest extends TestCase {
             }
         };
 
-        $class = $file->getMetadata(PhpClass::class);
-
-        self::assertNotNull($class);
-
-        $actual = $link->getTargetNode($class->class);
+        $resolver = $this->app()->make(ClassObjectMetadata::class);
+        $class    = $resolver->resolve($file, ClassObject::class);
+        $actual   = $link->getTargetNode($class->class);
 
         self::assertInstanceOf(EnumCase::class, $actual);
         self::assertSame('A', (string) $actual->name);

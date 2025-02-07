@@ -19,20 +19,20 @@ final class ClassCommentMetadataTest extends TestCase {
 
         namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
+        use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
         use stdClass;
-        use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
 
         /**
          * Description.
          *
-         * Summary {@see stdClass} and {@see PhpClass}, {@see https://example.com/}.
+         * Summary {@see stdClass} and {@see ClassObject}, {@see https://example.com/}.
          */
         class A {
             // empty
         }
         PHP;
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(self::getTempFile($content)->getPathname());
+        $file     = $fs->getFile(self::getTempFile($content, '.php')->getPathname());
         $metadata = new ClassCommentMetadata();
         $resolved = $metadata->resolve($file, ClassComment::class);
 
@@ -40,7 +40,7 @@ final class ClassCommentMetadataTest extends TestCase {
             <<<'MARKDOWN'
             Description.
 
-            Summary {@see stdClass} and {@see PhpClass}, {@see https://example.com/}.
+            Summary {@see stdClass} and {@see ClassObject}, {@see https://example.com/}.
             MARKDOWN,
             $resolved->comment->getText(),
         );

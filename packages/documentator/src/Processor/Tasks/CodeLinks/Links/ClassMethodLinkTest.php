@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
@@ -34,12 +34,8 @@ final class ClassMethodLinkTest extends TestCase {
     }
 
     public function testGetTargetNode(): void {
-        $storage = $this->app()->make(MetadataStorage::class);
-        $file    = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
+        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
-        $file
-            ->shouldUseProperty('metadata')
-            ->value($storage);
         $file
             ->shouldReceive('getMetadata')
             ->with(Content::class)
@@ -55,7 +51,6 @@ final class ClassMethodLinkTest extends TestCase {
                 }
                 PHP,
             );
-
         $link = new class ('A', 'method') extends ClassMethodLink {
             #[Override]
             public function getTargetNode(ClassLike $class): ?Node {
@@ -63,11 +58,9 @@ final class ClassMethodLinkTest extends TestCase {
             }
         };
 
-        $class = $file->getMetadata(PhpClass::class);
-
-        self::assertNotNull($class);
-
-        $actual = $link->getTargetNode($class->class);
+        $resolver = $this->app()->make(ClassObjectMetadata::class);
+        $class    = $resolver->resolve($file, ClassObject::class);
+        $actual   = $link->getTargetNode($class->class);
 
         self::assertInstanceOf(ClassMethod::class, $actual);
         self::assertSame('method', $actual->name->name);

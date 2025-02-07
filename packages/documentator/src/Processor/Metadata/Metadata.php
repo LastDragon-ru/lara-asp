@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolv
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassCommentMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassMarkdownMetadata;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ComposerPackageMetadata;
 use RuntimeException;
 use UnexpectedValueException;
@@ -32,6 +33,7 @@ class Metadata {
         $this->addResolver(ComposerPackageMetadata::class);
         $this->addResolver(ClassMarkdownMetadata::class);
         $this->addResolver(ClassCommentMetadata::class);
+        $this->addResolver(ClassObjectMetadata::class);
     }
 
     /**

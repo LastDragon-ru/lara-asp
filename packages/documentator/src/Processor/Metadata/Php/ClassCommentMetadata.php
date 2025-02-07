@@ -2,10 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
-use Exception;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use Override;
 
@@ -32,12 +30,7 @@ class ClassCommentMetadata implements MetadataResolver {
 
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
-        $class = $file->getMetadata(PhpClass::class);
-
-        if ($class === null) {
-            throw new Exception('Class not found.');
-        }
-
+        $class   = $file->as(ClassObject::class);
         $comment = new PhpDoc($class->class->getDocComment()?->getText());
         $comment = new ClassComment($class->class, $class->context, $comment);
 
