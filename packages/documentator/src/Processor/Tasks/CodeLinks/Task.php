@@ -18,7 +18,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
@@ -83,7 +82,7 @@ class Task implements TaskContract {
 
         // Composer?
         $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
-        $composer = $composer?->getMetadata(Composer::class);
+        $composer = $composer?->as(Package::class);
 
         if (!($composer instanceof Package)) {
             return true;
