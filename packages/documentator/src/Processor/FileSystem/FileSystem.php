@@ -39,8 +39,7 @@ class FileSystem {
 
     public function __construct(
         private readonly Dispatcher $dispatcher,
-        private readonly MetadataStorage $metadata,
-        private readonly Metadata $newMetadata,
+        private readonly Metadata $metadata,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -113,7 +112,7 @@ class FileSystem {
 
         // Create
         if (is_file((string) $path)) {
-            $file = $this->cache(new File($this->metadata, $this->newMetadata, $path));
+            $file = $this->cache(new File($this->metadata, $path));
         } else {
             throw new FileNotFound($path);
         }
@@ -270,12 +269,12 @@ class FileSystem {
         }
 
         // Changed?
-        $updated = !$this->newMetadata->has($file, Content::class)
-            || $this->newMetadata->get($file, Content::class)->content !== $content;
+        $updated = !$this->metadata->has($file, Content::class)
+            || $this->metadata->get($file, Content::class)->content !== $content;
 
         if ($updated) {
-            $this->newMetadata->reset($file);
-            $this->newMetadata->set($file, new Content($content));
+            $this->metadata->reset($file);
+            $this->metadata->set($file, new Content($content));
 
             if (!$created) {
                 $this->change($file, $content);
