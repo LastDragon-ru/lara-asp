@@ -4,8 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\ContentMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown\MarkdownMetadata;
@@ -89,15 +92,29 @@ class Metadata {
     /**
      * @template T of object
      *
-     * @param T $object
+     * @param T $metadata
      */
-    public function set(File $file, object $object): void {
-        $this->cache[$file]               ??= [];
-        $this->cache[$file][$object::class] = $object;
+    public function set(File $file, object $metadata): void {
+        $this->cache[$file]                 ??= [];
+        $this->cache[$file][$metadata::class] = $metadata;
     }
 
     public function reset(File $file): void {
         $this->cache[$file] = [];
+    }
+
+    public function serialize(FilePath $path, object $value): string {
+        try {
+            $resolver = $this->getResolver($path, $value::class);
+
+            if (!($resolver instanceof MetadataSerializer)) {
+                throw new RuntimeException('Serializer not found.');
+            }
+        } catch (Exception $exception) {
+            throw new MetadataUnserializable($path, $value, $exception);
+        }
+
+        return $resolver->serialize($path, $value);
     }
 
     /**
@@ -127,9 +144,9 @@ class Metadata {
      *
      * @return MetadataResolver<T>
      */
-    private function getResolver(File $file, string $metadata): MetadataResolver {
+    private function getResolver(File|FilePath $path, string $metadata): MetadataResolver {
         $resolver  = null;
-        $resolvers = $this->resolvers->get($file->getExtension(), '*');
+        $resolvers = $this->resolvers->get($path->getExtension(), '*');
 
         foreach ($resolvers as $instance) {
             if ($instance->isSupported($metadata)) {
@@ -139,10 +156,7 @@ class Metadata {
         }
 
         if (!($resolver instanceof MetadataResolver)) {
-            throw new RuntimeException(sprintf(
-                'No resolver for metadata `%s`.',
-                $metadata,
-            ));
+            throw new RuntimeException('Resolver not found.');
         }
 
         return $resolver; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)

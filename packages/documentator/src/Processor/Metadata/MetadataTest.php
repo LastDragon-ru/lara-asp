@@ -4,8 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
@@ -15,6 +18,7 @@ use RuntimeException;
 use stdClass;
 use UnexpectedValueException;
 
+use function assert;
 use function is_a;
 use function sprintf;
 
@@ -151,13 +155,7 @@ final class MetadataTest extends TestCase {
         }
 
         self::assertInstanceOf(RuntimeException::class, $previous);
-        self::assertSame(
-            sprintf(
-                'No resolver for metadata `%s`.',
-                MetadataTest__Value::class,
-            ),
-            $previous->getMessage(),
-        );
+        self::assertSame('Resolver not found.', $previous->getMessage());
     }
 
     public function testHas(): void {
@@ -199,6 +197,84 @@ final class MetadataTest extends TestCase {
         $metadata->reset($file);
 
         self::assertFalse($metadata->has($file, MetadataTest__Value::class));
+    }
+
+    public function testSerialize(): void {
+        // Prepare
+        $path      = new FilePath(__FILE__);
+        $value     = new MetadataTest__Value(__METHOD__);
+        $resolver  = new class() extends MetadataTest__Resolver implements MetadataSerializer {
+            #[Override]
+            public function serialize(FilePath $path, object $value): string {
+                assert($value instanceof MetadataTest__Value);
+
+                return $value->value;
+            }
+        };
+        $container = Mockery::mock(ContainerResolver::class);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        $metadata->addResolver($resolver);
+
+        // Test
+        self::assertSame($value->value, $metadata->serialize($path, $value));
+    }
+
+    public function testSerializeNoResolver(): void {
+        // Prepare
+        $path      = new FilePath(__FILE__);
+        $value     = new MetadataTest__Value(__METHOD__);
+        $container = Mockery::mock(ContainerResolver::class);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        // Test
+        $previous = null;
+
+        try {
+            $metadata->serialize($path, $value);
+        } catch (MetadataUnserializable $exception) {
+            $previous = $exception->getPrevious();
+        }
+
+        self::assertInstanceOf(RuntimeException::class, $previous);
+        self::assertSame('Resolver not found.', $previous->getMessage());
+    }
+
+    public function testSerializeNoSerializer(): void {
+        // Prepare
+        $path      = new FilePath(__FILE__);
+        $value     = new MetadataTest__Value(__METHOD__);
+        $container = Mockery::mock(ContainerResolver::class);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        $metadata->addResolver(new MetadataTest__Resolver());
+
+        // Test
+        $previous = null;
+
+        try {
+            $metadata->serialize($path, $value);
+        } catch (MetadataUnserializable $exception) {
+            $previous = $exception->getPrevious();
+        }
+
+        self::assertInstanceOf(RuntimeException::class, $previous);
+        self::assertSame('Serializer not found.', $previous->getMessage());
     }
 }
 

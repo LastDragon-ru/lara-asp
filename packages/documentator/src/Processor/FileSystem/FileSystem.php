@@ -22,6 +22,7 @@ use Symfony\Component\Finder\Finder;
 
 use function is_dir;
 use function is_file;
+use function is_object;
 use function sprintf;
 
 class FileSystem {
@@ -234,7 +235,7 @@ class FileSystem {
      * if not, it will be created immediately. Relative path will be resolved
      * based on {@see self::$output}.
      */
-    public function write(File|FilePath|string $path, string $content): File {
+    public function write(File|FilePath|string $path, object|string $content): File {
         // Prepare
         $file = null;
 
@@ -252,6 +253,19 @@ class FileSystem {
         // Writable?
         if (!$this->output->isInside($path)) {
             throw new FileNotWritable($path);
+        }
+
+        // Metadata?
+        $metadata = null;
+
+        if (is_object($content)) {
+            $metadata = $content;
+            $content  = $this->metadata->serialize($path, $metadata);
+        }
+
+        // Content
+        if (!($metadata instanceof Content)) {
+            $content = $this->metadata->serialize($path, new Content($content));
         }
 
         // File?
@@ -279,6 +293,11 @@ class FileSystem {
             if (!$created) {
                 $this->change($file, $content);
             }
+        }
+
+        // Metadata
+        if ($metadata !== null && !($metadata instanceof Content)) {
+            $this->metadata->set($file, $metadata);
         }
 
         // Event
