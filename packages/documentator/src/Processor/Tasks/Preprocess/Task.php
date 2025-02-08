@@ -13,13 +13,19 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Instruction as IncludeArtisan;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction as IncludeDocBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Instruction as IncludeExample;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Instruction as IncludeExec;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile\Instruction as IncludeFile;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as IncludePackageList;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutations\InstructionsRemove;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -62,47 +68,56 @@ use const JSON_THROW_ON_ERROR;
 class Task implements TaskContract {
     protected const string BlockMarker = 'preprocess';
 
-    /**
-     * @var InstanceList<Instruction<Parameters>>
-     */
-    private InstanceList $instructions;
+    private readonly Instructions $instructions;
 
     public function __construct(
         ContainerResolver $container,
         protected readonly Serializer $serializer,
     ) {
-        $this->instructions = new InstanceList($container, $this->key(...));
+        $this->instructions = new Instructions($container);
+
+        $this->addInstruction(IncludeFile::class);
+        $this->addInstruction(IncludeExec::class);
+        $this->addInstruction(IncludeExample::class);
+        $this->addInstruction(IncludeArtisan::class);
+        $this->addInstruction(IncludeTemplate::class);
+        $this->addInstruction(IncludeDocBlock::class);
+        $this->addInstruction(IncludePackageList::class);
+        $this->addInstruction(IncludeDocumentList::class);
+        $this->addInstruction(IncludeGraphqlDirective::class);
     }
 
     /**
-     * @param Instruction<Parameters>|class-string<Instruction<Parameters>> $task
-     */
-    private function key(Instruction|string $task): string {
-        return $task::getName();
-    }
-
-    /**
+     * @internal
+     *
      * @return list<class-string<Instruction<Parameters>>>
      */
     public function getInstructions(): array {
-        return $this->instructions->classes();
+        return $this->instructions->getClasses();
+    }
+
+    /**
+     * The last added instructions have a bigger priority.
+     *
+     * @template P of Parameters
+     * @template I of Instruction<P>
+     *
+     * @param I|class-string<I> $instruction
+     */
+    public function addInstruction(Instruction|string $instruction): static {
+        $this->instructions->add($instruction);
+
+        return $this;
     }
 
     /**
      * @template P of Parameters
      * @template I of Instruction<P>
      *
-     * @param InstanceFactory<covariant I>|I|class-string<I> $instruction
+     * @param I|class-string<I> $instruction
      */
-    public function addInstruction(InstanceFactory|Instruction|string $instruction): static {
-        if ($instruction instanceof InstanceFactory) {
-            $this->instructions->add(
-                $instruction->class,   // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-                $instruction->factory, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-            );
-        } else {
-            $this->instructions->add($instruction);
-        }
+    public function removeInstruction(Instruction|string $instruction): static {
+        $this->instructions->remove($instruction);
 
         return $this;
     }
@@ -123,16 +138,10 @@ class Task implements TaskContract {
         // Just in case
         yield from [];
 
-        // Markdown?
-        $document = $file->getMetadata(Markdown::class);
-
-        if ($document === null) {
-            return false;
-        }
-
         // Process
-        $parsed  = $this->parse($file, $document);
-        $mutated = false;
+        $document = $file->as(Document::class);
+        $parsed   = $this->parse($file, $document);
+        $mutated  = false;
 
         foreach ($parsed as $group) {
             // Run
@@ -218,7 +227,7 @@ class Task implements TaskContract {
 
             // Exists?
             $name        = $node->getLabel();
-            $instruction = $this->instructions->get($name)[0] ?? null;
+            $instruction = $this->instructions->first($name);
 
             if ($instruction === null) {
                 continue;

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
@@ -13,7 +14,6 @@ use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -83,9 +83,9 @@ readonly class Instruction implements InstructionContract {
             }
 
             // Empty?
-            $document = $file->getMetadata(Markdown::class);
+            $document = $file->as(Document::class);
 
-            if ($document === null || $document->isEmpty()) {
+            if ($document->isEmpty()) {
                 continue;
             }
 

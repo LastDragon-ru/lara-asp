@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
-use Stringable;
 
 /**
  * @implements Dependency<null>
@@ -14,14 +13,14 @@ use Stringable;
 readonly class FileSave implements Dependency {
     public function __construct(
         protected File $file,
-        protected Stringable|string $content,
+        protected object|string $content,
     ) {
         // empty
     }
 
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
-        $fs->write($this->file, (string) $this->content);
+        $fs->write($this->file, $this->content);
 
         return null;
     }

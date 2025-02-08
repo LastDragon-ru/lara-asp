@@ -5,9 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Mutation
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
 use League\CommonMark\Node\NodeIterator;
 use Override;
@@ -19,10 +17,7 @@ use Override;
  */
 readonly class InstructionsRemove implements Mutation {
     public function __construct(
-        /**
-         * @var InstanceList<Instruction<Parameters>>
-         */
-        private InstanceList $instructions,
+        private Instructions $instructions,
     ) {
         // empty
     }

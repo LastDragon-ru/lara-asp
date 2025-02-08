@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Override;
 use PhpParser\Comment\Doc;
+use PhpParser\NameContext;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
@@ -71,25 +72,18 @@ final class BaseTest extends TestCase {
                 Mockery::mock(Doc::class),
             );
 
+        $context = Mockery::mock(NameContext::class);
         $comment = Mockery::mock(PhpDoc::class);
         $comment
             ->shouldReceive('isDeprecated')
             ->twice()
             ->andReturn(true, false);
 
-        $data = new readonly class ($class, $comment) {
-            public function __construct(
-                public ClassLike $class,
-                public PhpDoc $comment,
-            ) {
-                // empty
-            }
-        };
-
+        $data   = new ClassComment($class, $context, $comment);
         $source = Mockery::mock(File::class);
         $source
-            ->shouldReceive('getMetadata')
-            ->with(PhpClassComment::class)
+            ->shouldReceive('as')
+            ->with(ClassComment::class)
             ->twice()
             ->andReturn($data);
 
@@ -144,45 +138,19 @@ final class BaseTest extends TestCase {
         );
     }
 
-    public function testGetTargetNoMetadata(): void {
-        $file = Mockery::mock(File::class);
-
-        $source = Mockery::mock(File::class);
-        $source
-            ->shouldReceive('getMetadata')
-            ->with(PhpClassComment::class)
-            ->once()
-            ->andReturn(null);
-
-        $link = Mockery::mock(Base::class, [$this::class]);
-        $link->shouldAllowMockingProtectedMethods();
-        $link->makePartial();
-        $link
-            ->shouldReceive('getTargetNode')
-            ->never();
-
-        self::assertNull($link->getTarget($file, $source));
-    }
-
     public function testGetTargetClassNotMatch(): void {
+        $file  = Mockery::mock(File::class);
         $class = Mockery::mock(ClassLike::class, new WithProperties(), PropertiesMock::class);
         $class
             ->shouldUseProperty('namespacedName')
             ->value(new Name('App\\A'));
-
-        $file = Mockery::mock(File::class);
-        $data = new readonly class ($class) {
-            public function __construct(
-                public ClassLike $class,
-            ) {
-                // empty
-            }
-        };
-
-        $source = Mockery::mock(File::class);
+        $context = Mockery::mock(NameContext::class);
+        $comment = Mockery::mock(PhpDoc::class);
+        $data    = new ClassComment($class, $context, $comment);
+        $source  = Mockery::mock(File::class);
         $source
-            ->shouldReceive('getMetadata')
-            ->with(PhpClassComment::class)
+            ->shouldReceive('as')
+            ->with(ClassComment::class)
             ->once()
             ->andReturn($data);
 

@@ -15,12 +15,14 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 
 use function is_dir;
 use function is_file;
+use function is_object;
 use function sprintf;
 
 class FileSystem {
@@ -38,7 +40,7 @@ class FileSystem {
 
     public function __construct(
         private readonly Dispatcher $dispatcher,
-        private readonly MetadataStorage $metadata,
+        private readonly Metadata $metadata,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -233,7 +235,7 @@ class FileSystem {
      * if not, it will be created immediately. Relative path will be resolved
      * based on {@see self::$output}.
      */
-    public function write(File|FilePath|string $path, string $content): File {
+    public function write(File|FilePath|string $path, object|string $content): File {
         // Prepare
         $file = null;
 
@@ -253,6 +255,19 @@ class FileSystem {
             throw new FileNotWritable($path);
         }
 
+        // Metadata?
+        $metadata = null;
+
+        if (is_object($content)) {
+            $metadata = $content;
+            $content  = $this->metadata->serialize($path, $metadata);
+        }
+
+        // Content
+        if (!($metadata instanceof Content)) {
+            $content = $this->metadata->serialize($path, new Content($content));
+        }
+
         // File?
         $created = false;
 
@@ -269,15 +284,20 @@ class FileSystem {
 
         // Changed?
         $updated = !$this->metadata->has($file, Content::class)
-            || $this->metadata->get($file, Content::class) !== $content;
+            || $this->metadata->get($file, Content::class)->content !== $content;
 
         if ($updated) {
             $this->metadata->reset($file);
-            $this->metadata->set($file, Content::class, $content);
+            $this->metadata->set($file, new Content($content));
 
             if (!$created) {
                 $this->change($file, $content);
             }
+        }
+
+        // Metadata
+        if ($metadata !== null && !($metadata instanceof Content)) {
+            $this->metadata->set($file, $metadata);
         }
 
         // Event

@@ -7,6 +7,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
@@ -15,21 +16,18 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Finder\Glob;
 
 use function array_map;
 use function array_merge;
 
 /**
- * Perform one or more task on the file.
+ * Perform one or more task on the file(s).
  */
 class Processor {
-    /**
-     * @var InstanceList<Task>
-     */
-    private InstanceList $tasks;
-
+    private readonly Tasks        $tasks;
+    private readonly Metadata     $metadata;
     protected readonly Dispatcher $dispatcher;
 
     /**
@@ -40,40 +38,65 @@ class Processor {
     public function __construct(
         protected readonly ContainerResolver $container,
     ) {
-        $this->tasks      = new InstanceList($container, $this->key(...));
+        $this->tasks      = new Tasks($container);
+        $this->metadata   = new Metadata($container);
         $this->dispatcher = new Dispatcher();
     }
 
     /**
-     * @param Task|class-string<Task> $task
-     *
-     * @return list<string>
+     * @internal
+     * @return list<Task>
      */
-    private function key(Task|string $task): array {
-        return $task::getExtensions();
+    public function getTasks(): array {
+        return $this->tasks->getInstances();
     }
 
     /**
-     * @return list<Task>
+     * The first added tasks have a bigger priority.
+     *
+     * @template T of Task
+     *
+     * @param T|class-string<T> $task
      */
-    public function tasks(): array {
-        return $this->tasks->instances();
+    public function addTask(Task|string $task, ?int $priority = null): static {
+        $this->tasks->add($task, $priority);
+
+        return $this;
     }
 
     /**
      * @template T of Task
      *
-     * @param InstanceFactory<covariant T>|T|class-string<T> $task
+     * @param T|class-string<T> $task
      */
-    public function task(InstanceFactory|Task|string $task): static {
-        if ($task instanceof InstanceFactory) {
-            $this->tasks->add(
-                $task->class,   // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-                $task->factory, // @phpstan-ignore argument.type (https://github.com/phpstan/phpstan/issues/7609)
-            );
-        } else {
-            $this->tasks->add($task);
-        }
+    public function removeTask(Task|string $task): static {
+        $this->tasks->remove($task);
+
+        return $this;
+    }
+
+    /**
+     * The last added resolvers have a bigger priority.
+     *
+     * @template V of object
+     * @template R of MetadataResolver<V>
+     *
+     * @param R|class-string<R> $metadata
+     */
+    public function addMetadata(MetadataResolver|string $metadata, ?int $priority = null): static {
+        $this->metadata->addResolver($metadata, $priority);
+
+        return $this;
+    }
+
+    /**
+     * @template V of object
+     * @template R of MetadataResolver<V>
+     *
+     * @param R|class-string<R> $metadata
+     */
+    public function removeMetadata(MetadataResolver|string $metadata): static {
+        $this->metadata->removeResolver($metadata);
 
         return $this;
     }
@@ -90,7 +113,7 @@ class Processor {
     /**
      * @param Closure(Event): void $listener
      */
-    public function listen(Closure $listener): static {
+    public function addListener(Closure $listener): static {
         $this->dispatcher->attach($listener);
 
         return $this;
@@ -104,7 +127,7 @@ class Processor {
         };
         $extensions = match (true) {
             $input instanceof FilePath => $input->getName(),
-            !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->keys()),
+            !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->getKeys()),
             default                    => null,
         };
         $exclude = array_map(Glob::toRegex(...), $this->exclude);
@@ -125,7 +148,7 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $filesystem = new FileSystem($this->dispatcher, new MetadataStorage($this->container), $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 

@@ -139,7 +139,8 @@
       "packages/migrator/src/Migrations/MigratorTest/raw/",
       "packages/serializer/docs/",
       "packages/spa/docs/",
-      "packages/testing/docs/"
+      "packages/testing/docs/",
+      "packages/**/*Test/"
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/core/docs",

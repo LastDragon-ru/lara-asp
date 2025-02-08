@@ -11,21 +11,11 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\InstanceFactory;
-use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Writer;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Listener;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Instruction as PreprocessIncludeArtisan;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Instruction as PreprocessIncludeDocBlock;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as PreprocessIncludeDocumentList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Instruction as PreprocessIncludeExample;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Instruction as PreprocessIncludeExec;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile\Instruction as PreprocessIncludeFile;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Instruction as PreprocessIncludeGraphqlDirective;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as PreprocessIncludePackageList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as PreprocessIncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as PreprocessTask;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
@@ -98,39 +88,18 @@ class Preprocess extends Command {
         $exclude = array_map(strval(...), (array) $this->option('exclude'));
 
         $this->processor()
-            ->listen((new Writer($this->output, $formatter))(...))
+            ->addListener((new Listener($this->output, $formatter))(...))
             ->exclude($exclude)
             ->run($path);
     }
 
-    private function processor(): Processor {
+    protected function processor(): Processor {
         $processor = new Processor($this->container);
 
-        foreach ($this->tasks() as $task) {
-            $processor->task($task);
-        }
+        $processor->addTask(PreprocessTask::class, 100);
+        $processor->addTask(CodeLinksTask::class, 200);
 
         return $processor;
-    }
-
-    /**
-     * @return list<InstanceFactory<covariant Task>|Task|class-string<covariant Task>>
-     */
-    protected function tasks(): array {
-        return [
-            new InstanceFactory(PreprocessTask::class, static function (PreprocessTask $task): void {
-                $task->addInstruction(PreprocessIncludeFile::class);
-                $task->addInstruction(PreprocessIncludeExec::class);
-                $task->addInstruction(PreprocessIncludeExample::class);
-                $task->addInstruction(PreprocessIncludeArtisan::class);
-                $task->addInstruction(PreprocessIncludeTemplate::class);
-                $task->addInstruction(PreprocessIncludeDocBlock::class);
-                $task->addInstruction(PreprocessIncludePackageList::class);
-                $task->addInstruction(PreprocessIncludeDocumentList::class);
-                $task->addInstruction(PreprocessIncludeGraphqlDirective::class);
-            }),
-            CodeLinksTask::class,
-        ];
     }
 
     #[Override]
@@ -150,7 +119,7 @@ class Preprocess extends Command {
         $default   = '_No description provided_.';
         $processor = $this->processor();
 
-        foreach ($processor->tasks() as $index => $task) {
+        foreach ($processor->getTasks() as $index => $task) {
             $description = mb_trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
             $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';

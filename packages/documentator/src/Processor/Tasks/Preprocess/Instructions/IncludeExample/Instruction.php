@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -70,7 +70,7 @@ class Instruction implements InstructionContract {
         $target   = $context->file->getFilePath($parameters->target);
         $target   = Cast::to(File::class, yield new FileReference($target));
         $language = $this->getLanguage($context, $target, $parameters);
-        $content  = mb_trim($target->getMetadata(Content::class));
+        $content  = mb_trim($target->as(Content::class)->content);
         $content  = <<<CODE
             ```{$language}
             $content

@@ -10,11 +10,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassMarkdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock\Exceptions\TargetIsNotValidPhpFile;
 use Override;
 
 /**
@@ -49,24 +47,16 @@ class Instruction implements InstructionContract {
      */
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
-        // Class?
         $target   = $context->file->getFilePath($parameters->target);
         $target   = Cast::to(File::class, yield new FileReference($target));
-        $document = $target->getMetadata(PhpClassMarkdown::class);
-
-        if ($document === null) {
-            throw new TargetIsNotValidPhpFile($context, $parameters);
-        }
-
-        // Parse
-        $result = match (true) {
+        $document = $target->as(Document::class);
+        $result   = match (true) {
             $parameters->summary && $parameters->description => $document,
             $parameters->summary                             => (string) $context->toSplittable($document)->mutate(new Summary()),
             $parameters->description                         => (string) $context->toSplittable($document)->mutate(new Body()),
             default                                          => '',
         };
 
-        // Return
         return $result;
     }
 }

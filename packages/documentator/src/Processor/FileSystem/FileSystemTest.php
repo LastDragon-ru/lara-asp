@@ -13,11 +13,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
 
 use function array_map;
 use function basename;
@@ -253,7 +255,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
         $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
+        $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -291,9 +293,19 @@ final class FileSystemTest extends TestCase {
             ->andReturn(false);
         $metadata
             ->shouldReceive('set')
-            ->with($file, Content::class, $content)
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
             ->once()
             ->andReturns();
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, Mockery::type(Content::class))
+            ->once()
+            ->andReturn($content);
 
         $file
             ->shouldReceive('getPath')
@@ -308,7 +320,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
         $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
+        $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -338,11 +350,21 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('get')
             ->with($file, Content::class)
             ->once()
-            ->andReturn($content);
+            ->andReturn(new Content($content));
         $metadata
             ->shouldReceive('set')
-            ->with($file, Content::class, $content)
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
             ->never();
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, Mockery::type(Content::class))
+            ->once()
+            ->andReturn($content);
 
         $file
             ->shouldReceive('getPath')
@@ -357,7 +379,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
         $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
+        $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -405,9 +427,19 @@ final class FileSystemTest extends TestCase {
             ->andReturn(false);
         $metadata
             ->shouldReceive('set')
-            ->with($file, Content::class, $content)
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
             ->once()
             ->andReturns();
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, Mockery::type(Content::class))
+            ->once()
+            ->andReturn($content);
 
         $file
             ->shouldReceive('getPath')
@@ -423,7 +455,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $content    = 'content';
-        $metadata   = Mockery::mock(MetadataStorage::class);
+        $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
@@ -442,6 +474,12 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('change')
             ->never();
 
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, Mockery::type(Content::class))
+            ->once()
+            ->andReturn($content);
+
         $filesystem->write($path, $content);
     }
 
@@ -453,6 +491,153 @@ final class FileSystemTest extends TestCase {
         $file = $fs->getFile(__FILE__);
 
         $fs->write($file, 'outside output');
+    }
+
+    public function testWriteMetadata(): void {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path       = $input->getFilePath('file.md');
+        $file       = Mockery::mock(File::class);
+        $value      = new stdClass();
+        $content    = 'content';
+        $metadata   = Mockery::mock(Metadata::class);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher
+            ->shouldReceive('notify')
+            ->withArgs(
+                static function (Event $event): bool {
+                    return $event instanceof FileSystemModified
+                        && $event->path === '↔ file.md'
+                        && $event->type === FileSystemModifiedType::Updated;
+                },
+            )
+            ->once()
+            ->andReturns();
+
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+        $filesystem
+            ->shouldReceive('save')
+            ->never();
+        $filesystem
+            ->shouldReceive('change')
+            ->with($file, $content)
+            ->once()
+            ->andReturns();
+
+        $metadata
+            ->shouldReceive('reset')
+            ->with($file)
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('has')
+            ->with($file, Content::class)
+            ->once()
+            ->andReturn(false);
+        $metadata
+            ->shouldReceive('set')
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('set')
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $object) use ($value): bool {
+                    return $value === $object;
+                }),
+            )
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, $value)
+            ->once()
+            ->andReturn($content);
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, Mockery::type(Content::class))
+            ->once()
+            ->andReturn($content);
+
+        $file
+            ->shouldReceive('getPath')
+            ->twice()
+            ->andReturn($path);
+
+        $filesystem->write($file, $value);
+    }
+
+    public function testWriteMetadataContent(): void {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path       = $input->getFilePath('file.md');
+        $file       = Mockery::mock(File::class);
+        $value      = new Content('content');
+        $content    = $value->content;
+        $metadata   = Mockery::mock(Metadata::class);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher
+            ->shouldReceive('notify')
+            ->withArgs(
+                static function (Event $event): bool {
+                    return $event instanceof FileSystemModified
+                        && $event->path === '↔ file.md'
+                        && $event->type === FileSystemModifiedType::Updated;
+                },
+            )
+            ->once()
+            ->andReturns();
+
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+        $filesystem
+            ->shouldReceive('save')
+            ->never();
+        $filesystem
+            ->shouldReceive('change')
+            ->with($file, $content)
+            ->once()
+            ->andReturns();
+
+        $metadata
+            ->shouldReceive('reset')
+            ->with($file)
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('has')
+            ->with($file, Content::class)
+            ->once()
+            ->andReturn(false);
+        $metadata
+            ->shouldReceive('set')
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
+            ->once()
+            ->andReturns();
+        $metadata
+            ->shouldReceive('serialize')
+            ->with($path, $value)
+            ->once()
+            ->andReturn($content);
+
+        $file
+            ->shouldReceive('getPath')
+            ->twice()
+            ->andReturn($path);
+
+        $filesystem->write($file, $value);
     }
 
     public function testCache(): void {

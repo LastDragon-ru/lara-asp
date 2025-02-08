@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClassComment;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
@@ -70,11 +70,7 @@ abstract class Base implements Link {
     #[Override]
     public function getTarget(File $file, File $source): ?LinkTarget {
         // Class?
-        $comment = $source->getMetadata(PhpClassComment::class);
-
-        if ($comment === null) {
-            return null;
-        }
+        $comment = $source->as(ClassComment::class);
 
         if ((string) $comment->class->namespacedName !== mb_ltrim($this->class, '\\')) {
             return null;

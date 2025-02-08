@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Throwable;
 
@@ -12,7 +11,7 @@ class MetadataUnresolvable extends MetadataError {
     public function __construct(
         protected readonly File $target,
         /**
-         * @var class-string<Metadata<*>>
+         * @var class-string
          */
         protected readonly string $metadata,
         ?Throwable $previous = null,
@@ -32,7 +31,7 @@ class MetadataUnresolvable extends MetadataError {
     }
 
     /**
-     * @return class-string<Metadata<*>>
+     * @return class-string
      */
     public function getMetadata(): string {
         return $this->metadata;

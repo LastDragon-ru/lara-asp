@@ -17,8 +17,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -49,10 +47,7 @@ class Executor {
          * @var array<array-key, string>
          */
         private readonly array $exclude,
-        /**
-         * @var InstanceList<Task>
-         */
-        private readonly InstanceList $tasks,
+        private readonly Tasks $tasks,
         private readonly Dispatcher $dispatcher,
         /**
          * @var Iterator<array-key, File>
@@ -159,12 +154,6 @@ class Executor {
                 if ($result !== true) {
                     throw new TaskFailed($file, $task);
                 }
-            } catch (FileMetadataUnresolvable $exception) {
-                throw new MetadataUnresolvable(
-                    $exception->getTarget(),
-                    $exception->getMetadata(),
-                    $exception->getPrevious(),
-                );
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
