@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJsonFactory;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
 
 /**
@@ -34,6 +34,6 @@ readonly class ComposerPackageMetadata implements MetadataResolver {
 
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
-        return new Package($this->factory->createFromJson($file->getMetadata(Content::class)));
+        return new Package($this->factory->createFromJson($file->as(Content::class)->content));
     }
 }

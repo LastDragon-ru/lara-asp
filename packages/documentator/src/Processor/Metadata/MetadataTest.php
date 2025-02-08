@@ -47,7 +47,13 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn($bResolver);
 
-        $metadata = new Metadata($resolver);
+        $metadata = new class($resolver) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
         $metadata->addResolver($aResolver, 100);
         $metadata->addResolver($bResolver::class, 200);
 
@@ -76,9 +82,7 @@ final class MetadataTest extends TestCase {
 
     public function testGetUnexpected(): void {
         // Prepare
-        $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new Metadata($container);
-        $resolver  = Mockery::mock(MetadataTest__Resolver::class);
+        $resolver = Mockery::mock(MetadataTest__Resolver::class);
         $resolver->makePartial();
         $resolver
             ->shouldReceive('resolve')
@@ -90,6 +94,14 @@ final class MetadataTest extends TestCase {
             ->shouldReceive('getExtension')
             ->once()
             ->andReturn('extension');
+
+        $container = Mockery::mock(ContainerResolver::class);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
 
         $metadata->addResolver($resolver);
 
@@ -117,7 +129,12 @@ final class MetadataTest extends TestCase {
     public function testGetNoResolver(): void {
         // Prepare
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new Metadata($container);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
         $file      = Mockery::mock(File::class);
         $file
             ->shouldReceive('getExtension')

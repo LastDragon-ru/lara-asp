@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -47,17 +47,19 @@ final class ClassPropertyLinkTest extends TestCase {
         $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
+            ->shouldReceive('as')
             ->with(Content::class)
             ->once()
             ->andReturn(
-                <<<'PHP'
-                <?php declare(strict_types = 1);
+                new Content(
+                    <<<'PHP'
+                    <?php declare(strict_types = 1);
 
-                class A {
-                    protected int $property = 123;
-                }
-                PHP,
+                    class A {
+                        protected int $property = 123;
+                    }
+                    PHP,
+                ),
             );
 
         $link = new class ('A', 'property') extends ClassPropertyLink {
@@ -85,21 +87,23 @@ final class ClassPropertyLinkTest extends TestCase {
         $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
+            ->shouldReceive('as')
             ->with(Content::class)
             ->once()
             ->andReturn(
-                <<<'PHP'
-                <?php declare(strict_types = 1);
+                new Content(
+                    <<<'PHP'
+                    <?php declare(strict_types = 1);
 
-                class A {
-                    public function __construct(
-                        protected int $property = 123,
-                    ) {
-                        // empty
+                    class A {
+                        public function __construct(
+                            protected int $property = 123,
+                        ) {
+                            // empty
+                        }
                     }
-                }
-                PHP,
+                    PHP,
+                ),
             );
 
         $link = new class ('A', 'property') extends ClassPropertyLink {

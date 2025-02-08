@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown as MarkdownImpl;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
@@ -54,7 +54,7 @@ final class TaskTest extends TestCase {
         $actual = $this->getProcessorResult($fs, ($task)($file));
 
         self::assertTrue($actual);
-        self::assertEquals($expected, $file->getMetadata(Content::class));
+        self::assertEquals($expected, $file->as(Content::class)->content);
     }
 
     public function testParse(): void {

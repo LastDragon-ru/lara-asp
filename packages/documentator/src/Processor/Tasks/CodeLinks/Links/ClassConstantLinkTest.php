@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -46,17 +46,19 @@ final class ClassConstantLinkTest extends TestCase {
         $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
+            ->shouldReceive('as')
             ->with(Content::class)
             ->once()
             ->andReturn(
-                <<<'PHP'
-                <?php declare(strict_types = 1);
+                new Content(
+                    <<<'PHP'
+                    <?php declare(strict_types = 1);
 
-                class A {
-                    public const Constant = 123;
-                }
-                PHP,
+                    class A {
+                        public const Constant = 123;
+                    }
+                    PHP,
+                ),
             );
 
         $link = new class ('A', 'Constant') extends ClassConstantLink {
@@ -84,17 +86,19 @@ final class ClassConstantLinkTest extends TestCase {
         $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
+            ->shouldReceive('as')
             ->with(Content::class)
             ->once()
             ->andReturn(
-                <<<'PHP'
-                <?php declare(strict_types = 1);
+                new Content(
+                    <<<'PHP'
+                    <?php declare(strict_types = 1);
 
-                enum A {
-                    case A;
-                }
-                PHP,
+                    enum A {
+                        case A;
+                    }
+                    PHP,
+                ),
             );
 
         $link = new class ('A', 'A') extends ClassConstantLink {

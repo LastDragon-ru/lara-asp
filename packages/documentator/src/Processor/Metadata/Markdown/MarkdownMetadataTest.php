@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -24,10 +24,10 @@ final class MarkdownMetadataTest extends TestCase {
         $path     = new FilePath('path/to/file.md');
         $file     = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getMetadata')
+            ->shouldReceive('as')
             ->with(Content::class)
             ->once()
-            ->andReturn($content);
+            ->andReturn(new Content($content));
         $file
             ->shouldReceive('getPath')
             ->once()

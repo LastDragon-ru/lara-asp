@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\ContentMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown\MarkdownMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassCommentMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassMarkdownMetadata;
@@ -31,11 +32,16 @@ class Metadata {
         $this->cache     = new WeakMap();
         $this->resolvers = new Resolvers($container);
 
+        $this->addBuiltInResolvers();
+    }
+
+    protected function addBuiltInResolvers(): void {
         $this->addResolver(ComposerPackageMetadata::class);
         $this->addResolver(ClassMarkdownMetadata::class);
         $this->addResolver(ClassCommentMetadata::class);
         $this->addResolver(ClassObjectMetadata::class);
         $this->addResolver(MarkdownMetadata::class);
+        $this->addResolver(ContentMetadata::class);
     }
 
     /**

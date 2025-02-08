@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -37,19 +37,21 @@ final class ClassMethodLinkTest extends TestCase {
         $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
-            ->shouldReceive('getMetadata')
+            ->shouldReceive('as')
             ->with(Content::class)
             ->once()
             ->andReturn(
-                <<<'PHP'
-                <?php declare(strict_types = 1);
+                new Content(
+                    <<<'PHP'
+                    <?php declare(strict_types = 1);
 
-                class A {
-                    protected function method(): void {
-                        // empty
+                    class A {
+                        protected function method(): void {
+                            // empty
+                        }
                     }
-                }
-                PHP,
+                    PHP,
+                ),
             );
         $link = new class ('A', 'method') extends ClassMethodLink {
             #[Override]

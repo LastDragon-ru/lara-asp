@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownCo
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
 
 /**
@@ -34,6 +34,6 @@ readonly class MarkdownMetadata implements MetadataResolver {
 
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
-        return $this->markdown->parse($file->getMetadata(Content::class), $file->getPath());
+        return $this->markdown->parse($file->as(Content::class)->content, $file->getPath());
     }
 }

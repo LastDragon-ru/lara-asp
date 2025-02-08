@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
@@ -254,8 +254,8 @@ final class FileSystemTest extends TestCase {
         $path        = $input->getFilePath('file.md');
         $file        = Mockery::mock(File::class);
         $content     = 'content';
-        $metadata    = Mockery::mock(MetadataStorage::class);
-        $newMetadata = Mockery::mock(Metadata::class);
+        $oldMetadata = Mockery::mock(MetadataStorage::class);
+        $metadata    = Mockery::mock(Metadata::class);
         $dispatcher  = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -269,7 +269,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $oldMetadata, $metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -293,7 +293,9 @@ final class FileSystemTest extends TestCase {
             ->andReturn(false);
         $metadata
             ->shouldReceive('set')
-            ->with($file, Content::class, $content)
+            ->with($file, Mockery::on(static function (mixed $value) use ($content): bool {
+                return $value instanceof Content && $value->content === $content;
+            }))
             ->once()
             ->andReturns();
 
@@ -310,14 +312,14 @@ final class FileSystemTest extends TestCase {
         $path        = $input->getFilePath('file.md');
         $file        = Mockery::mock(File::class);
         $content     = 'content';
-        $metadata    = Mockery::mock(MetadataStorage::class);
-        $newMetadata = Mockery::mock(Metadata::class);
+        $oldMetadata = Mockery::mock(MetadataStorage::class);
+        $metadata    = Mockery::mock(Metadata::class);
         $dispatcher  = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $oldMetadata, $metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -341,10 +343,12 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('get')
             ->with($file, Content::class)
             ->once()
-            ->andReturn($content);
+            ->andReturn(new Content($content));
         $metadata
             ->shouldReceive('set')
-            ->with($file, Content::class, $content)
+            ->with($file, Mockery::on(static function (mixed $value) use ($content): bool {
+                return $value instanceof Content && $value->content === $content;
+            }))
             ->never();
 
         $file
@@ -360,8 +364,8 @@ final class FileSystemTest extends TestCase {
         $path        = $input->getFilePath('file.md');
         $file        = Mockery::mock(File::class);
         $content     = 'content';
-        $metadata    = Mockery::mock(MetadataStorage::class);
-        $newMetadata = Mockery::mock(Metadata::class);
+        $oldMetadata = Mockery::mock(MetadataStorage::class);
+        $metadata    = Mockery::mock(Metadata::class);
         $dispatcher  = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -375,7 +379,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $newMetadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $oldMetadata, $metadata, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -409,7 +413,9 @@ final class FileSystemTest extends TestCase {
             ->andReturn(false);
         $metadata
             ->shouldReceive('set')
-            ->with($file, Content::class, $content)
+            ->with($file, Mockery::on(static function (mixed $value) use ($content): bool {
+                return $value instanceof Content && $value->content === $content;
+            }))
             ->once()
             ->andReturns();
 

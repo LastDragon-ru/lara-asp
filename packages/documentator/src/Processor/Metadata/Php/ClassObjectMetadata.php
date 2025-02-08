@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
@@ -36,9 +36,8 @@ readonly class ClassObjectMetadata implements MetadataResolver {
 
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
-        $content  = $file->getMetadata(Content::class);
         $resolver = new NameResolver();
-        $stmts    = $this->parse($resolver, $content);
+        $stmts    = $this->parse($resolver, $file->as(Content::class)->content);
         $finder   = new NodeFinder();
         $class    = $finder->findFirstInstanceOf($stmts, ClassLike::class);
 

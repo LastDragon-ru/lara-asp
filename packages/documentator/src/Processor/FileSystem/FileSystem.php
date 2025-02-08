@@ -15,7 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
@@ -270,12 +270,12 @@ class FileSystem {
         }
 
         // Changed?
-        $updated = !$this->metadata->has($file, Content::class)
-            || $this->metadata->get($file, Content::class) !== $content;
+        $updated = !$this->newMetadata->has($file, Content::class)
+            || $this->newMetadata->get($file, Content::class)->content !== $content;
 
         if ($updated) {
-            $this->metadata->reset($file);
-            $this->metadata->set($file, Content::class, $content);
+            $this->newMetadata->reset($file);
+            $this->newMetadata->set($file, new Content($content));
 
             if (!$created) {
                 $this->change($file, $content);
