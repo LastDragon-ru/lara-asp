@@ -5,13 +5,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\MetadataStorage;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -92,7 +90,7 @@ final class TaskTest extends TestCase {
         $task->addInstruction($b);
 
         $file     = Mockery::mock(File::class);
-        $document = $this->app()->make(MarkdownContract::class)->parse(self::MARKDOWN);
+        $document = $this->app()->make(Markdown::class)->parse(self::MARKDOWN);
         $tokens   = $task->parse($file, $document);
         $actual   = array_map(
             static function (array $tokens): array {
@@ -162,18 +160,19 @@ final class TaskTest extends TestCase {
             ->addInstruction(TaskTest__TestInstruction::class)
             ->addInstruction(TaskTest__DocumentInstruction::class);
 
-        $metadata = $this->app()->make(MetadataStorage::class);
-        $path     = new FilePath('path/to/file.md');
-        $file     = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
+        $path = new FilePath('path/to/file.md');
+        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
         $file->makePartial();
         $file
             ->shouldUseProperty('path')
             ->value($path);
         $file
-            ->shouldUseProperty('metadata')
-            ->value($metadata);
-
-        $metadata->set($file, Content::class, static::MARKDOWN);
+            ->shouldReceive('as')
+            ->with(Document::class)
+            ->once()
+            ->andReturn(
+                $this->app()->make(Markdown::class)->parse(self::MARKDOWN, $path),
+            );
 
         $actual     = '';
         $filesystem = Mockery::mock(FileSystem::class);
@@ -346,7 +345,7 @@ readonly class TaskTest__TestInstruction implements Instruction {
  */
 readonly class TaskTest__DocumentInstruction implements Instruction {
     public function __construct(
-        protected MarkdownContract $markdown,
+        protected Markdown $markdown,
     ) {
         // empty
     }

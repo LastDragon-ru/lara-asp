@@ -18,7 +18,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -89,9 +88,9 @@ class Task implements TaskContract {
         }
 
         // Markdown?
-        $document = $file->getMetadata(Markdown::class);
+        $document = $file->as(Document::class);
 
-        if ($document === null || $document->isEmpty()) {
+        if ($document->isEmpty()) {
             return true;
         }
 

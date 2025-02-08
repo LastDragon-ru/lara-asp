@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessError;
@@ -139,16 +138,10 @@ class Task implements TaskContract {
         // Just in case
         yield from [];
 
-        // Markdown?
-        $document = $file->getMetadata(Markdown::class);
-
-        if ($document === null) {
-            return false;
-        }
-
         // Process
-        $parsed  = $this->parse($file, $document);
-        $mutated = false;
+        $document = $file->as(Document::class);
+        $parsed   = $this->parse($file, $document);
+        $mutated  = false;
 
         foreach ($parsed as $group) {
             // Run
