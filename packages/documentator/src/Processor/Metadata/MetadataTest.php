@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileMetadataUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -114,7 +114,7 @@ final class MetadataTest extends TestCase {
 
         try {
             $metadata->get($file, MetadataTest__Value::class);
-        } catch (FileMetadataUnresolvable $exception) {
+        } catch (MetadataUnresolvable $exception) {
             $previous = $exception->getPrevious();
         }
 
@@ -150,7 +150,7 @@ final class MetadataTest extends TestCase {
 
         try {
             $metadata->get($file, MetadataTest__Value::class);
-        } catch (FileMetadataUnresolvable $exception) {
+        } catch (MetadataUnresolvable $exception) {
             $previous = $exception->getPrevious();
         }
 
