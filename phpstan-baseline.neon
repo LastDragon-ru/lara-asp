@@ -97,12 +97,6 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php
 
 		-
-			message: '#^Callable callable\(\)\: \(object\|null\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
-			count: 3
-			path: packages/serializer/src/Casts/SerializedAttributeTest.php
-
-		-
 			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'
 			identifier: argument.type
 			count: 1

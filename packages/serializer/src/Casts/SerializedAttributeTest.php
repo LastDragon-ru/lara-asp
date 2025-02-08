@@ -22,7 +22,7 @@ final class SerializedAttributeTest extends TestCase {
         $serializer = $this->app()->make(Serializer::class);
         $attribute  = new SerializedAttribute($serializer, SerializedAttributeTest__Serializable::class);
         $expected   = new SerializedAttributeTest__Serializable('value');
-        $actual     = ($attribute->get)('{"property":"value"}');
+        $actual     = ($attribute->get)('{"property":"value"}', []);
 
         self::assertEquals($expected, $actual);
     }
@@ -30,7 +30,7 @@ final class SerializedAttributeTest extends TestCase {
     public function testGetNull(): void {
         $serializer = $this->app()->make(Serializer::class);
         $attribute  = new SerializedAttribute($serializer, SerializedAttributeTest__Serializable::class);
-        $actual     = ($attribute->get)(null);
+        $actual     = ($attribute->get)(null, []);
 
         self::assertNull($actual);
     }
@@ -48,14 +48,14 @@ final class SerializedAttributeTest extends TestCase {
         $serializer = $this->app()->make(Serializer::class);
         $attribute  = new SerializedAttribute($serializer, SerializedAttributeTest__Serializable::class);
 
-        ($attribute->get)(123);
+        ($attribute->get)(123, []);
     }
 
     public function testSet(): void {
         $serializer = $this->app()->make(Serializer::class);
         $attribute  = new SerializedAttribute($serializer, SerializedAttributeTest__Serializable::class);
         $expected   = '{"property":"value"}';
-        $actual     = ($attribute->set)(new SerializedAttributeTest__Serializable('value'));
+        $actual     = ($attribute->set)(new SerializedAttributeTest__Serializable('value'), []);
 
         self::assertEquals($expected, $actual);
     }
@@ -63,7 +63,7 @@ final class SerializedAttributeTest extends TestCase {
     public function testSetNull(): void {
         $serializer = $this->app()->make(Serializer::class);
         $attribute  = new SerializedAttribute($serializer, SerializedAttributeTest__Serializable::class);
-        $actual     = ($attribute->set)(null);
+        $actual     = ($attribute->set)(null, []);
 
         self::assertNull($actual);
     }
@@ -81,7 +81,7 @@ final class SerializedAttributeTest extends TestCase {
         $serializer = $this->app()->make(Serializer::class);
         $attribute  = new SerializedAttribute($serializer, SerializedAttributeTest__Serializable::class);
 
-        ($attribute->set)(new stdClass());
+        ($attribute->set)(new stdClass(), []);
     }
 
     public function testModelAttribute(): void {
