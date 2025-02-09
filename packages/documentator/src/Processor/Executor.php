@@ -18,7 +18,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use Throwable;
 use Traversable;
 
 use function array_values;
@@ -161,7 +160,7 @@ class Executor {
             if (!$this->fs->save($file)) {
                 throw new FileSaveFailed($this->root, $file);
             }
-        } catch (Throwable $exception) {
+        } catch (Exception $exception) {
             throw $exception;
         } finally {
             $result                 = isset($exception) ? Result::Failed : Result::Success;
