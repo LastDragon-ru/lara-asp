@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassCommentMetada
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassMarkdownMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ComposerPackageMetadata;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Serializer\SerializableMetadata;
 use RuntimeException;
 use UnexpectedValueException;
 use WeakMap;
@@ -43,6 +44,7 @@ class Metadata {
         $this->addResolver(ClassMarkdownMetadata::class);
         $this->addResolver(ClassCommentMetadata::class);
         $this->addResolver(ClassObjectMetadata::class);
+        $this->addResolver(SerializableMetadata::class);
         $this->addResolver(MarkdownMetadata::class);
         $this->addResolver(ContentMetadata::class);
     }
