@@ -22,7 +22,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use Throwable;
 use Traversable;
 
 use function array_values;
@@ -113,7 +112,7 @@ class Executor {
             }
 
             $this->fs->commit();
-        } catch (Throwable $exception) {
+        } catch (Exception $exception) {
             $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
             throw $exception;
