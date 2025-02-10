@@ -54,8 +54,9 @@ final class TextTest extends TestCase {
     }
 
     public function testGetPathTitle(): void {
-        self::assertSame('file', Text::getPathTitle('path/to/file.txt'));
-        self::assertSame('file Name', Text::getPathTitle('path/to/fileName.txt'));
+        self::assertSame('File', Text::getPathTitle('path/to/file.txt'));
+        self::assertSame('File name', Text::getPathTitle('path/to/file-name.txt'));
+        self::assertSame('File Name', Text::getPathTitle('path/to/fileName.txt'));
         self::assertSame('File name second', Text::getPathTitle('path/to/File name.second.txt'));
         self::assertSame('File name', Text::getPathTitle('path/to/File     name'));
     }

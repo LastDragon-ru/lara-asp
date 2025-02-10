@@ -8,6 +8,7 @@ use function mb_rtrim;
 use function mb_strlen;
 use function mb_substr;
 use function mb_trim;
+use function mb_ucfirst;
 use function min;
 use function pathinfo;
 use function preg_replace;
@@ -79,10 +80,11 @@ class Text {
 
     public static function getPathTitle(string $path): string {
         $title = pathinfo($path, PATHINFO_FILENAME);
-        $title = str_replace(['_', '.'], ' ', $title);
+        $title = str_replace(['-', '_', '.'], ' ', $title);
         $title = (string) preg_replace('/(\p{Ll})(\p{Lu})/u', '$1 $2', $title);
         $title = (string) preg_replace('/\s+/u', ' ', $title);
         $title = mb_trim($title);
+        $title = mb_ucfirst($title);
 
         return $title;
     }

@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 
-## no title
+## No title
 
 Package readme.
 

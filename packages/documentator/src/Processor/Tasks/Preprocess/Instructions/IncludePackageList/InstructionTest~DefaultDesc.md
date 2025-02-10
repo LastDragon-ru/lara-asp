@@ -12,7 +12,7 @@ Summary text with special characters `<`, `>`, `&`.
 
 [Read more](<packages/package/README.md>).
 
-## no title
+## No title
 
 Package readme.
 
