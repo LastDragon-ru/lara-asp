@@ -281,6 +281,7 @@ class Executor {
 
         if ($file instanceof FileReal) {
             $extensions[] = '*';
+            $extensions[] = Virtual::Each->value;
         }
 
         return $extensions;

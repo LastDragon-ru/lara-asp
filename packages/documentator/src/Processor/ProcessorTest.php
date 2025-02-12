@@ -250,6 +250,74 @@ final class ProcessorTest extends TestCase {
         );
     }
 
+    public function testRunEach(): void {
+        $taskA  = new ProcessorTest__Task();
+        $taskB  = new class() extends ProcessorTest__Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getExtensions(): array {
+                return [Virtual::Each->value];
+            }
+        };
+        $taskC  = new class() extends ProcessorTest__Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getExtensions(): array {
+                return [Virtual::Each->value];
+            }
+        };
+        $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $events = [];
+
+        (new Processor($this->app()->make(ContainerResolver::class)))
+            ->addTask($taskA)
+            ->addTask($taskB)
+            ->addTask($taskC, -1)
+            ->addListener(
+                static function (Event $event) use (&$events): void {
+                    $events[] = $event;
+                },
+            )
+            ->run(
+                $input,
+            );
+
+        self::assertEquals(
+            [
+                new ProcessingStarted(),
+                new FileStarted('~ :before'),
+                new FileFinished(FileFinishedResult::Skipped),
+                new FileStarted('↔ excluded.txt'),
+                new TaskStarted($taskC::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskA::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskB::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted('~ :after'),
+                new FileFinished(FileFinishedResult::Skipped),
+                new ProcessingFinished(ProcessingFinishedResult::Success),
+            ],
+            $events,
+        );
+        self::assertEquals(
+            [
+                [
+                    (string) $input->getFilePath('excluded.txt'),
+                    [
+                        // empty
+                    ],
+                ],
+            ],
+            $taskA->processed,
+        );
+    }
+
     public function testRunWildcard(): void {
         $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $events = [];
