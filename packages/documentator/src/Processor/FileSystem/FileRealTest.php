@@ -15,14 +15,14 @@ use function sprintf;
 /**
  * @internal
  */
-#[CoversClass(File::class)]
-final class FileTest extends TestCase {
+#[CoversClass(FileReal::class)]
+final class FileRealTest extends TestCase {
     public function testConstruct(): void {
         $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new File(Mockery::mock(Metadata::class), $path);
+        $file = new FileReal(Mockery::mock(Metadata::class), $path);
 
         self::assertSame('php', $file->getExtension());
-        self::assertSame('FileTest.php', $file->getName());
+        self::assertSame('FileRealTest.php', $file->getName());
     }
 
     public function testConstructNotFile(): void {
@@ -31,14 +31,14 @@ final class FileTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage(sprintf('The `%s` is not a file.', $path));
 
-        new File(Mockery::mock(Metadata::class), $path);
+        new FileReal(Mockery::mock(Metadata::class), $path);
     }
 
     public function testAs(): void {
         $metadata = Mockery::mock(Metadata::class);
         $value    = new stdClass();
         $path     = (new FilePath(__FILE__))->getNormalizedPath();
-        $file     = new File($metadata, $path);
+        $file     = new FileReal($metadata, $path);
 
         $metadata
             ->shouldReceive('get')
