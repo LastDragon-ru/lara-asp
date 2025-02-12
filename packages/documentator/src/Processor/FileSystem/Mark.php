@@ -6,5 +6,6 @@ enum Mark: string {
     case Inout    = '↔';
     case Input    = '→';
     case Output   = '←';
+    case Virtual  = '~';
     case External = '!';
 }
