@@ -21,7 +21,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Virtual;
 use Traversable;
 
 use function array_values;
@@ -57,6 +59,8 @@ class Executor {
     }
 
     public function run(): void {
+        $this->file($this->fs->getVirtual(Virtual::Before));
+
         while ($this->iterator->valid()) {
             $file = $this->iterator->current();
 
@@ -64,6 +68,8 @@ class Executor {
 
             $this->file($file);
         }
+
+        $this->file($this->fs->getVirtual(Virtual::After));
     }
 
     private function file(File $file): void {
@@ -101,7 +107,7 @@ class Executor {
         }
 
         // Process
-        $tasks              = $this->tasks->get($file->getExtension(), '*');
+        $tasks              = $this->tasks->get(...$this->extensions($file));
         $this->stack[$path] = $file;
 
         try {
@@ -224,7 +230,7 @@ class Executor {
         );
 
         // Process
-        if ($resolved instanceof File) {
+        if ($resolved instanceof FileReal) {
             $this->file($resolved);
         }
 
@@ -234,7 +240,7 @@ class Executor {
 
     private function isSkipped(File $file): bool {
         // Tasks?
-        if (!$this->tasks->has($file->getExtension(), '*')) {
+        if (!$this->tasks->has(...$this->extensions($file))) {
             return true;
         }
 
@@ -260,5 +266,23 @@ class Executor {
 
         // Return
         return false;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function extensions(File $file): array {
+        $extensions = [];
+        $extension  = $file->getExtension();
+
+        if ($extension !== null) {
+            $extensions[] = $extension;
+        }
+
+        if ($file instanceof FileReal) {
+            $extensions[] = '*';
+        }
+
+        return $extensions;
     }
 }

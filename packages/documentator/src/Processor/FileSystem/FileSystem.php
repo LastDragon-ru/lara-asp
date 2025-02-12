@@ -20,6 +20,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 
+use function array_reverse;
+use function explode;
 use function is_dir;
 use function is_file;
 use function is_object;
@@ -69,9 +71,12 @@ class FileSystem {
      * @return non-empty-string
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
-        $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
-        $path   = $path instanceof Entry ? $path->getPath() : $path;
-        $name   = match (true) {
+        $virtual = $path instanceof FileVirtual;
+        $suffix  = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
+        $path    = $path instanceof Entry ? $path->getPath() : $path;
+        $name    = match (true) {
+            $virtual && $path instanceof FilePath
+                => Mark::Virtual->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
             $this->input->isEqual($this->output),
                 => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
             $this->output->isInside($path),
@@ -113,10 +118,17 @@ class FileSystem {
 
         // Create
         if (is_file((string) $path)) {
-            $file = $this->cache(new File($this->metadata, $path));
+            $file = $this->cache(new FileReal($this->metadata, $path));
         } else {
             throw new FileNotFound($path);
         }
+
+        return $file;
+    }
+
+    public function getVirtual(Virtual $path): FileVirtual {
+        $path = $this->input->getFilePath("$.{$path->value}");
+        $file = new FileVirtual($path);
 
         return $file;
     }
