@@ -29,6 +29,9 @@ class File extends Entry {
         }
     }
 
+    /**
+     * @return ?non-empty-string
+     */
     public function getExtension(): ?string {
         return $this->path->getExtension();
     }

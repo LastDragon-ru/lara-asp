@@ -20,6 +20,9 @@ class FilePath extends Path {
         return new DirectoryPath(dirname($this->path));
     }
 
+    /**
+     * @return ?non-empty-string
+     */
     public function getExtension(): ?string {
         $extension = pathinfo($this->path, PATHINFO_EXTENSION);
         $extension = $extension !== '' ? $extension : null;
