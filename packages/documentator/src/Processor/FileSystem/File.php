@@ -67,6 +67,9 @@ class File implements Stringable {
         return $this->path->getName();
     }
 
+    /**
+     * @return ?non-empty-string
+     */
     public function getExtension(): ?string {
         return $this->path->getExtension();
     }
