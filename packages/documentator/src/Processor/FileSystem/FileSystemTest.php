@@ -75,6 +75,18 @@ final class FileSystemTest extends TestCase {
         $this->getFileSystem(__DIR__)->getFile('not found');
     }
 
+    public function testGetVirtual(): void {
+        $fs = $this->getFileSystem(__DIR__);
+        $a  = $fs->getVirtual(Virtual::Before);
+        $b  = $fs->getVirtual(Virtual::Before);
+
+        self::assertNotSame($a, $b);
+        self::assertSame(
+            '$.'.Virtual::Before->value,
+            (string) $fs->input->getRelativePath($a->getPath()),
+        );
+    }
+
     public function testGetDirectory(): void {
         // Prepare
         $fs = $this->getFileSystem(__DIR__.'/..');
@@ -662,6 +674,7 @@ final class FileSystemTest extends TestCase {
         $aFileSystemBDirectory = $aFileSystem->getDirectory($bPath->getDirectoryPath('b'));
         $aFileSystemFFile      = $aFileSystem->getFile($fPath);
         $aFileSystemDDirectory = $aFileSystem->getDirectory($dPath);
+        $aFileSystemAVirtual   = $aFileSystem->getVirtual(Virtual::Before);
         $bFileSystem           = $this->getFileSystem($aPath, $aPath);
         $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
         $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
@@ -687,5 +700,8 @@ final class FileSystemTest extends TestCase {
         self::assertSame('← b/', $aFileSystem->getPathname($aFileSystemBDirectory->getPath()));
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory->getPath()));
+
+        self::assertSame('~ :before', $aFileSystem->getPathname($aFileSystemAVirtual));
+        self::assertSame('~ :before', $bFileSystem->getPathname($aFileSystemAVirtual));
     }
 }
