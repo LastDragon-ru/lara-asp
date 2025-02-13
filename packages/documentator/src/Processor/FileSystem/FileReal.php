@@ -10,6 +10,9 @@ use Override;
 use function is_file;
 use function sprintf;
 
+/**
+ * @internal
+ */
 class FileReal extends File {
     public function __construct(
         private readonly Metadata $metadata,

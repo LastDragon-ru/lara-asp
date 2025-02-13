@@ -15,6 +15,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\HookFile;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
@@ -43,6 +46,7 @@ class FileSystem {
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Metadata $metadata,
+        private readonly Hooks $hooks,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -71,12 +75,12 @@ class FileSystem {
      * @return non-empty-string
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
-        $virtual = $path instanceof FileVirtual;
-        $suffix  = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
-        $path    = $path instanceof Entry ? $path->getPath() : $path;
-        $name    = match (true) {
-            $virtual && $path instanceof FilePath
-                => Mark::Virtual->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
+        $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
+        $hook   = $path instanceof HookFile;
+        $path   = $path instanceof Entry ? $path->getPath() : $path;
+        $name   = match (true) {
+            $hook && $path instanceof FilePath
+                => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
             $this->input->isEqual($this->output),
                 => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
             $this->output->isInside($path),
@@ -126,11 +130,8 @@ class FileSystem {
         return $file;
     }
 
-    public function getVirtual(Virtual $path): FileVirtual {
-        $path = $this->input->getFilePath("$.{$path->value}");
-        $file = new FileVirtual($path);
-
-        return $file;
+    public function getHook(Hook $hook): File {
+        return $this->hooks->get($this, $hook);
     }
 
     /**

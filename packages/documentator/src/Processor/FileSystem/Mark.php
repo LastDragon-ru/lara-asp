@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 enum Mark: string {
+    case Hook     = '~';
     case Inout    = '↔';
     case Input    = '→';
     case Output   = '←';
-    case Virtual  = '~';
     case External = '!';
 }
