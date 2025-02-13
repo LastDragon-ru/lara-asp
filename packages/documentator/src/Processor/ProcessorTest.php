@@ -24,7 +24,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Virtual;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;
@@ -76,7 +76,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Virtual::Before->value];
+                return [Hook::Before->value];
             }
         };
 
@@ -258,7 +258,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Virtual::Each->value];
+                return [Hook::Each->value];
             }
         };
         $taskC  = new class() extends ProcessorTest__Task {
@@ -267,7 +267,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Virtual::Each->value];
+                return [Hook::Each->value];
             }
         };
         $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();

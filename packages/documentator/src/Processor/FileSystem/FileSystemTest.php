@@ -13,6 +13,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -73,18 +75,6 @@ final class FileSystemTest extends TestCase {
         self::expectException(FileNotFound::class);
 
         $this->getFileSystem(__DIR__)->getFile('not found');
-    }
-
-    public function testGetVirtual(): void {
-        $fs = $this->getFileSystem(__DIR__);
-        $a  = $fs->getVirtual(Virtual::Before);
-        $b  = $fs->getVirtual(Virtual::Before);
-
-        self::assertNotSame($a, $b);
-        self::assertSame(
-            '$.'.Virtual::Before->value,
-            (string) $fs->input->getRelativePath($a->getPath()),
-        );
     }
 
     public function testGetDirectory(): void {
@@ -266,6 +256,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
+        $hooks      = Mockery::mock(Hooks::class);
         $content    = 'content';
         $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
@@ -281,7 +272,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $hooks, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -331,6 +322,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
+        $hooks      = Mockery::mock(Hooks::class);
         $content    = 'content';
         $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
@@ -338,7 +330,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('notify')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $hooks, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -390,6 +382,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
+        $hooks      = Mockery::mock(Hooks::class);
         $content    = 'content';
         $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
@@ -405,7 +398,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $hooks, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -466,10 +459,11 @@ final class FileSystemTest extends TestCase {
 
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
+        $hooks      = Mockery::mock(Hooks::class);
         $content    = 'content';
         $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $hooks, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -509,6 +503,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
+        $hooks      = Mockery::mock(Hooks::class);
         $value      = new stdClass();
         $content    = 'content';
         $metadata   = Mockery::mock(Metadata::class);
@@ -525,7 +520,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $hooks, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -590,6 +585,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $file       = Mockery::mock(File::class);
+        $hooks      = Mockery::mock(Hooks::class);
         $value      = new Content('content');
         $content    = $value->content;
         $metadata   = Mockery::mock(Metadata::class);
@@ -606,7 +602,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $hooks, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -674,7 +670,7 @@ final class FileSystemTest extends TestCase {
         $aFileSystemBDirectory = $aFileSystem->getDirectory($bPath->getDirectoryPath('b'));
         $aFileSystemFFile      = $aFileSystem->getFile($fPath);
         $aFileSystemDDirectory = $aFileSystem->getDirectory($dPath);
-        $aFileSystemAVirtual   = $aFileSystem->getVirtual(Virtual::Before);
+        $aFileSystemAHook      = $aFileSystem->getHook(Hook::Before);
         $bFileSystem           = $this->getFileSystem($aPath, $aPath);
         $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
         $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
@@ -701,7 +697,7 @@ final class FileSystemTest extends TestCase {
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory->getPath()));
 
-        self::assertSame('~ :before', $aFileSystem->getPathname($aFileSystemAVirtual));
-        self::assertSame('~ :before', $bFileSystem->getPathname($aFileSystemAVirtual));
+        self::assertSame('~ :before', $aFileSystem->getPathname($aFileSystemAHook));
+        self::assertSame('~ :before', $bFileSystem->getPathname($aFileSystemAHook));
     }
 }

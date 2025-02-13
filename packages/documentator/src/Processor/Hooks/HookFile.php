@@ -1,11 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Hooks;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
-class FileVirtual extends File {
+/**
+ * @internal
+ */
+class HookFile extends File {
     /**
      * @template T of object
      *
