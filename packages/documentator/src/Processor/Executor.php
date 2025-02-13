@@ -23,7 +23,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Virtual;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
 use Traversable;
 
 use function array_values;
@@ -59,7 +59,7 @@ class Executor {
     }
 
     public function run(): void {
-        $this->file($this->fs->getVirtual(Virtual::Before));
+        $this->file($this->fs->getHook(Hook::Before));
 
         while ($this->iterator->valid()) {
             $file = $this->iterator->current();
@@ -69,7 +69,7 @@ class Executor {
             $this->file($file);
         }
 
-        $this->file($this->fs->getVirtual(Virtual::After));
+        $this->file($this->fs->getHook(Hook::After));
     }
 
     private function file(File $file): void {
@@ -281,7 +281,7 @@ class Executor {
 
         if ($file instanceof FileReal) {
             $extensions[] = '*';
-            $extensions[] = Virtual::Each->value;
+            $extensions[] = Hook::Each->value;
         }
 
         return $extensions;

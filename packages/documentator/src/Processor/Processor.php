@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Finder\Glob;
 
@@ -148,7 +149,7 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, $this->metadata, new Hooks(), $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 
