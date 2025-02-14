@@ -697,7 +697,7 @@ final class FileSystemTest extends TestCase {
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory->getPath()));
 
-        self::assertSame('~ :before', $aFileSystem->getPathname($aFileSystemAHook));
-        self::assertSame('~ :before', $bFileSystem->getPathname($aFileSystemAHook));
+        self::assertSame('@ :before', $aFileSystem->getPathname($aFileSystemAHook));
+        self::assertSame('@ :before', $bFileSystem->getPathname($aFileSystemAHook));
     }
 }
