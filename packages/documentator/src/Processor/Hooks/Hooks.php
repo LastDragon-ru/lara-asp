@@ -6,13 +6,21 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 
 class Hooks {
-    public function __construct() {
+    /**
+     * @param array<array-key, object> $context
+     */
+    public function __construct(
+        protected array $context = [],
+    ) {
         // empty
     }
 
     public function get(FileSystem $fs, Hook $hook): File {
         $path = $fs->input->getFilePath("$.{$hook->value}");
-        $file = new HookFile($path);
+        $file = match ($hook) {
+            Hook::Context => new HookFile($path, $this->context),
+            default       => new HookFile($path),
+        };
 
         return $file;
     }
