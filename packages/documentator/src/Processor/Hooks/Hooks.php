@@ -16,7 +16,7 @@ class Hooks {
     }
 
     public function get(FileSystem $fs, Hook $hook): File {
-        $path = $fs->input->getFilePath("$.{$hook->value}");
+        $path = $fs->input->getFilePath("@.{$hook->value}");
         $file = match ($hook) {
             Hook::Context => new HookFile($path, $this->context),
             default       => new HookFile($path),

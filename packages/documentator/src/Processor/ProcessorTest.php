@@ -102,7 +102,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new TaskStarted($taskC::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
@@ -151,7 +151,7 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($taskA::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -229,13 +229,13 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('↔ excluded.txt'),
                 new TaskStarted(ProcessorTest__Task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -293,7 +293,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('↔ excluded.txt'),
                 new TaskStarted($taskC::class),
@@ -303,7 +303,7 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -367,17 +367,17 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('↔ c.txt'),
                 new TaskStarted($taskA::class),
-                new DependencyResolved('~ :context', DependencyResolvedResult::Success),
+                new DependencyResolved('@ :context', DependencyResolvedResult::Success),
                 new DependencyResolved('↔ c.html', DependencyResolvedResult::Success),
                 new FileStarted('↔ c.html'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -445,7 +445,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('↔ a/a.html'),
                 new TaskStarted($taskA::class),
@@ -503,7 +503,7 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -606,7 +606,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('→ b/a/ba.txt'),
                 new TaskStarted($task::class),
@@ -627,7 +627,7 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -739,7 +739,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted(),
-                new FileStarted('~ :before'),
+                new FileStarted('@ :before'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('→ a.txt'),
                 new TaskStarted($task::class),
@@ -754,7 +754,7 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('~ :after'),
+                new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
