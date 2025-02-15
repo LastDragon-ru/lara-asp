@@ -151,10 +151,10 @@ class Relationship extends Operator {
     }
 
     /**
-     * @template TBuilder of EloquentBuilder<EloquentModel>
+     * @template TModel of EloquentModel
      *
-     * @param TBuilder                $builder
-     * @param Closure(TBuilder): void $closure
+     * @param EloquentBuilder<TModel>                $builder
+     * @param Closure(EloquentBuilder<TModel>): void $closure
      */
     protected function build(
         EloquentBuilder $builder,

@@ -207,17 +207,18 @@ class Args {
     public static function getScoutQuery(mixed $query): array {
         $actual    = [];
         $default   = [
-            'model'         => [],
-            'query'         => '',
-            'callback'      => null,
-            'queryCallback' => null,
-            'index'         => null,
-            'wheres'        => [],
-            'whereIns'      => [],
-            'limit'         => null,
-            'orders'        => [],
-            'options'       => [],
-            'whereNotIns'   => [],
+            'model'                  => [],
+            'query'                  => '',
+            'callback'               => null,
+            'queryCallback'          => null,
+            'index'                  => null,
+            'wheres'                 => [],
+            'whereIns'               => [],
+            'limit'                  => null,
+            'orders'                 => [],
+            'options'                => [],
+            'whereNotIns'            => [],
+            'afterRawSearchCallback' => null,
         ];
         $converted = [];
 

@@ -76,9 +76,6 @@ class EloquentModelComparator extends ObjectComparator {
 
         // Normalize attributes
         foreach ($model->getAttributes() as $key => $value) {
-            // Just for the ... phpstan.
-            $key = (string) $key;
-
             // This will force Laravel to convert properties into the right types.
             $model->setAttribute($key, $model->getAttribute($key));
 
