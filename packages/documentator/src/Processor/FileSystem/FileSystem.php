@@ -15,11 +15,16 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\HookFile;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 
+use function array_reverse;
+use function explode;
 use function is_dir;
 use function is_file;
 use function is_object;
@@ -41,6 +46,7 @@ class FileSystem {
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Metadata $metadata,
+        private readonly Hooks $hooks,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -70,8 +76,11 @@ class FileSystem {
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
         $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
+        $hook   = $path instanceof HookFile;
         $path   = $path instanceof Entry ? $path->getPath() : $path;
         $name   = match (true) {
+            $hook && $path instanceof FilePath
+                => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
             $this->input->isEqual($this->output),
                 => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
             $this->output->isInside($path),
@@ -113,12 +122,16 @@ class FileSystem {
 
         // Create
         if (is_file((string) $path)) {
-            $file = $this->cache(new File($this->metadata, $path));
+            $file = $this->cache(new FileReal($this->metadata, $path));
         } else {
             throw new FileNotFound($path);
         }
 
         return $file;
+    }
+
+    public function getHook(Hook $hook): File {
+        return $this->hooks->get($this, $hook);
     }
 
     /**

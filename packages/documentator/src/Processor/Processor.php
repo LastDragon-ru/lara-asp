@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Finder\Glob;
 
@@ -119,7 +120,10 @@ class Processor {
         return $this;
     }
 
-    public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
+    /**
+     * @param array<array-key, object> $context
+     */
+    public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null, array $context = []): void {
         // Prepare
         $depth = match (true) {
             $input instanceof FilePath => 0,
@@ -148,7 +152,7 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, $this->metadata, new Hooks($context), $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
 
