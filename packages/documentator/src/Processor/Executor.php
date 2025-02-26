@@ -43,17 +43,17 @@ class Executor {
     private array $stack = [];
 
     public function __construct(
-        private readonly FileSystem $fs,
-        /**
-         * @var array<array-key, string>
-         */
-        private readonly array $exclude,
-        private readonly Tasks $tasks,
         private readonly Dispatcher $dispatcher,
+        private readonly Tasks $tasks,
+        private readonly FileSystem $fs,
         /**
          * @var Iterator<array-key, File>
          */
         private readonly Iterator $iterator,
+        /**
+         * @var array<array-key, string>
+         */
+        private readonly array $exclude,
     ) {
         // empty
     }
