@@ -154,7 +154,7 @@ class Processor {
             try {
                 $filesystem = new FileSystem($this->dispatcher, $this->metadata, new Hooks($context), $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
-                $executor   = new Executor($filesystem, $exclude, $this->tasks, $this->dispatcher, $iterator);
+                $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, $exclude);
 
                 $executor->run();
             } catch (ProcessorError $exception) {
