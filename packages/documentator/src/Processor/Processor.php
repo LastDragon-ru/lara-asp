@@ -16,7 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Finder\Glob;
 
@@ -151,8 +151,12 @@ class Processor {
         try {
             $this->dispatcher->notify(new ProcessingStarted());
 
+            if ($context !== []) {
+                $this->addMetadata(new Context($context));
+            }
+
             try {
-                $filesystem = new FileSystem($this->dispatcher, $this->metadata, new Hooks($context), $input, $output);
+                $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
                 $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
                 $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, $exclude);
 
@@ -168,6 +172,8 @@ class Processor {
             $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Failed));
 
             throw $exception;
+        } finally {
+            $this->removeMetadata(Context::class);
         }
     }
 }

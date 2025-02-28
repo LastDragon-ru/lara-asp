@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
@@ -22,7 +22,7 @@ final class ContextTest extends TestCase {
         $dependency = new Context();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getHook')
+            ->shouldReceive('getFile')
             ->with(Hook::Context)
             ->once()
             ->andReturn($file);
@@ -35,7 +35,7 @@ final class ContextTest extends TestCase {
         $dependency = new Context();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getHook')
+            ->shouldReceive('getFile')
             ->with(Hook::Context)
             ->once()
             ->andReturn($file);
