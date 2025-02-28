@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use Override;
 
 /**
@@ -21,7 +21,7 @@ readonly class Context implements Dependency {
 
     #[Override]
     public function __invoke(FileSystem $fs): mixed {
-        return $fs->getHook(Hook::Context);
+        return $fs->getFile(Hook::Context);
     }
 
     #[Override]

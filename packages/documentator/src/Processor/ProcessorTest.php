@@ -26,7 +26,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;

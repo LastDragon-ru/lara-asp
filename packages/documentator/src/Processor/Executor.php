@@ -23,7 +23,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use Traversable;
 
 use function array_values;
@@ -59,7 +59,7 @@ class Executor {
     }
 
     public function run(): void {
-        $this->file($this->fs->getHook(Hook::Before));
+        $this->file($this->fs->getFile(Hook::Before));
 
         while ($this->iterator->valid()) {
             $file = $this->iterator->current();
@@ -69,7 +69,7 @@ class Executor {
             $this->file($file);
         }
 
-        $this->file($this->fs->getHook(Hook::After));
+        $this->file($this->fs->getFile(Hook::After));
     }
 
     private function file(File $file): void {

@@ -14,22 +14,22 @@ use function sprintf;
 /**
  * @internal
  */
-#[CoversClass(FileReal::class)]
-final class FileRealTest extends TestCase {
+#[CoversClass(FileHook::class)]
+final class FileHookTest extends TestCase {
     public function testConstruct(): void {
-        $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = new FileReal(Mockery::mock(Metadata::class), $path);
+        $hook = Hook::Before;
+        $path = (new FilePath(__DIR__))->getFilePath("@.{$hook->value}")->getNormalizedPath();
+        $file = new FileHook(Mockery::mock(Metadata::class), $path);
 
-        self::assertSame('php', $file->getExtension());
-        self::assertSame('FileRealTest.php', $file->getName());
+        self::assertSame($hook->value, $file->getExtension());
     }
 
     public function testConstructNotFile(): void {
-        $path = (new FilePath(__DIR__))->getNormalizedPath();
+        $path = (new FilePath(__FILE__))->getNormalizedPath();
 
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage(sprintf('The `%s` is not a file.', $path));
+        self::expectExceptionMessage(sprintf('The `%s` is not a hook.', $path));
 
-        new FileReal(Mockery::mock(Metadata::class), $path);
+        new FileHook(Mockery::mock(Metadata::class), $path);
     }
 }

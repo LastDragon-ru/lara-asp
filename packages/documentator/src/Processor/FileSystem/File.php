@@ -3,11 +3,19 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 /**
  * @extends Entry<FilePath>
  */
 abstract class File extends Entry {
+    public function __construct(
+        private readonly Metadata $metadata,
+        FilePath $path,
+    ) {
+        parent::__construct($path);
+    }
+
     /**
      * @return ?non-empty-string
      */
@@ -22,5 +30,7 @@ abstract class File extends Entry {
      *
      * @return T
      */
-    abstract public function as(string $metadata): object;
+    public function as(string $metadata): object {
+        return $this->metadata->get($this, $metadata);
+    }
 }
