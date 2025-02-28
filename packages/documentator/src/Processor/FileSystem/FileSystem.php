@@ -15,9 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hook;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\HookFile;
-use LastDragon_ru\LaraASP\Documentator\Processor\Hooks\Hooks;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
@@ -46,7 +43,6 @@ class FileSystem {
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Metadata $metadata,
-        private readonly Hooks $hooks,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -76,7 +72,7 @@ class FileSystem {
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
         $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
-        $hook   = $path instanceof HookFile;
+        $hook   = $path instanceof FileHook;
         $path   = $path instanceof Entry ? $path->getPath() : $path;
         $name   = match (true) {
             $hook && $path instanceof FilePath
@@ -107,7 +103,15 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(FilePath|string $path): File {
+    public function getFile(FilePath|Hook|string $path): File {
+        // Hook?
+        $hook = null;
+
+        if ($path instanceof Hook) {
+            $hook = $path;
+            $path = "@.{$hook->value}";
+        }
+
         // Cached?
         $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
@@ -121,17 +125,15 @@ class FileSystem {
         }
 
         // Create
-        if (is_file((string) $path)) {
-            $file = $this->cache(new FileReal($this->metadata, $path));
+        if ($hook !== null) {
+            $file = new FileHook($this->metadata, $path);
+        } elseif (is_file((string) $path)) {
+            $file = new FileReal($this->metadata, $path);
         } else {
             throw new FileNotFound($path);
         }
 
-        return $file;
-    }
-
-    public function getHook(Hook $hook): File {
-        return $this->hooks->get($this, $hook);
+        return $this->cache($file);
     }
 
     /**
