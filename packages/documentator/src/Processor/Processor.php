@@ -17,11 +17,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context\IndexFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Finder\Glob;
 
 use function array_map;
 use function array_merge;
+use function array_unshift;
 
 /**
  * Perform one or more task on the file(s).
@@ -134,17 +136,22 @@ class Processor {
             !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->getKeys()),
             default                    => null,
         };
-        $exclude = array_map(Glob::toRegex(...), $this->exclude);
-        $input   = $input instanceof FilePath ? $input->getDirectoryPath() : $input;
+        $exclude   = array_map(Glob::toRegex(...), $this->exclude);
+        $directory = $input->getDirectoryPath('.');
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
-            if (!$input->isEqual($output) && $input->isInside($output)) {
-                $path      = $input->getRelativePath($output);
+            if (!$directory->isEqual($output) && $directory->isInside($output)) {
+                $path      = $directory->getRelativePath($output);
                 $exclude[] = "#^{$path}/#u";
             }
         } else {
-            $output = $input;
+            $output = $directory;
+        }
+
+        // Context
+        if ($input instanceof FilePath) {
+            array_unshift($context, new IndexFile($input));
         }
 
         // Start
@@ -156,11 +163,7 @@ class Processor {
             }
 
             try {
-                $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
-                $iterator   = $filesystem->getFilesIterator($filesystem->input, $extensions, $depth, $exclude);
-                $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, $exclude);
-
-                $executor->run();
+                $this->execute($directory, $output, $extensions, $exclude, $depth);
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -175,5 +178,23 @@ class Processor {
         } finally {
             $this->removeMetadata(Context::class);
         }
+    }
+
+    /**
+     * @param array<array-key, string>|string|null $include
+     * @param array<array-key, string>             $exclude
+     */
+    protected function execute(
+        DirectoryPath $input,
+        DirectoryPath $output,
+        array|string|null $include,
+        array $exclude,
+        ?int $depth,
+    ): void {
+        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
+        $iterator   = $filesystem->getFilesIterator($input, $include, $depth, $exclude);
+        $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, $exclude);
+
+        $executor->run();
     }
 }
