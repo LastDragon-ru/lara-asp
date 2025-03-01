@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
@@ -334,10 +335,17 @@ final class ProcessorTest extends TestCase {
         $processor
             ->shouldReceive('addMetadata')
             ->with(
-                Mockery::isEqual(new Context([
-                    new IndexFile($input),
-                    $context,
-                ])),
+                Mockery::on(static function (MetadataResolver $resolver) use ($input, $context): bool {
+                    self::assertEquals(
+                        new Context([
+                            new IndexFile($input),
+                            $context,
+                        ]),
+                        $resolver,
+                    );
+
+                    return true;
+                }),
             )
             ->once()
             ->andReturn();
