@@ -23,7 +23,7 @@ readonly class FileReference implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs): mixed {
+    public function __invoke(FileSystem $fs): File {
         try {
             return $fs->getFile($this->reference);
         } catch (FileNotFound $exception) {
