@@ -21,7 +21,7 @@ interface Dependency {
      *
      * @return TValue
      */
-    public function __invoke(FileSystem $fs): mixed;
+    public function __invoke(FileSystem $fs): Traversable|Directory|File|null;
 
     /**
      * Used only for events. Relative path will be resolved based on {@see FileSystem::$input}.
