@@ -126,7 +126,7 @@ class FileSystem {
 
         // Create
         if ($hook !== null) {
-            $file = new FileHook($this->metadata, $path);
+            $file = new FileHook($this->metadata, $path, $hook);
         } elseif (is_file((string) $path)) {
             $file = new FileReal($this->metadata, $path);
         } else {

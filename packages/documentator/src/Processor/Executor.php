@@ -16,11 +16,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileHook;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
@@ -146,7 +148,7 @@ class Executor {
                 if ($generator instanceof Generator) {
                     while ($generator->valid()) {
                         $dependency = $generator->current();
-                        $resolved   = $this->resolve($dependency);
+                        $resolved   = $this->resolve($file, $dependency);
 
                         $generator->send($resolved);
                     }
@@ -178,12 +180,12 @@ class Executor {
      *
      * @return Traversable<mixed, Directory|File>|Directory|File|null
      */
-    private function resolve(Dependency $dependency): Traversable|Directory|File|null {
+    private function resolve(File $file, Dependency $dependency): Traversable|Directory|File|null {
         try {
             $resolved = $dependency($this->fs);
-            $resolved = $this->dependency($dependency, $resolved);
+            $resolved = $this->dependency($file, $dependency, $resolved);
             $resolved = $resolved instanceof Traversable
-                ? new ExecutorTraversable($dependency, $resolved, $this->dependency(...))
+                ? new ExecutorTraversable($file, $dependency, $resolved, $this->dependency(...))
                 : $resolved;
         } catch (DependencyUnresolvable $exception) {
             $this->dispatcher->notify(
@@ -216,7 +218,15 @@ class Executor {
      *
      * @return T
      */
-    private function dependency(Dependency $dependency, mixed $resolved): mixed {
+    private function dependency(File $file, Dependency $dependency, mixed $resolved): mixed {
+        // The `:before` hook cannot use files that will be processed because
+        // the hook should be run before any of the tasks.
+        $isBeforeHook = $file instanceof FileHook && $file->hook === Hook::Before;
+
+        if ($isBeforeHook && $resolved instanceof File && !$this->isSkipped($resolved)) {
+            throw new DependencyUnavailable($dependency);
+        }
+
         // Event
         $path   = $resolved instanceof File || $resolved instanceof Directory
             ? $resolved
@@ -230,7 +240,7 @@ class Executor {
         );
 
         // Process
-        if ($resolved instanceof FileReal) {
+        if (!$isBeforeHook && $resolved instanceof FileReal) {
             $this->file($resolved);
         }
 
