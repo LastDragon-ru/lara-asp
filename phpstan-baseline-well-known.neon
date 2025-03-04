@@ -60,6 +60,10 @@ parameters:
             message: "#^Call to protected method getBuilder\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
                 - packages/graphql/src/Stream/Directives/DirectiveTest.php
+        -
+            message: "#^Call to protected method getContent\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Testing\\\\Constraints\\\\FileSystem\\\\DirectoryMatchesDirectory\\.$#"
+            paths:
+                - packages/testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
