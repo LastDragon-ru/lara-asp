@@ -11,4 +11,5 @@ trait Assertions {
     use ScheduleAssertions;
     use ResponseAssertions;
     use DatabaseAssertions;
+    use FileSystemAssertions;
 }
