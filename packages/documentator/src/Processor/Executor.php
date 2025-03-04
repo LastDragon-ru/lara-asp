@@ -240,7 +240,7 @@ class Executor {
         );
 
         // Process
-        if (!$isBeforeHook && $resolved instanceof FileReal) {
+        if (!$isBeforeHook && $resolved instanceof FileReal && $file !== $resolved) {
             $this->file($resolved);
         }
 
