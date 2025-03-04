@@ -239,6 +239,12 @@ Asserts that SQL Query equals SQL Query.
 
 [Read more](<docs/Assertions/AssertDatabaseQueryEquals.md>).
 
+## [`assertDirectoryEquals`](<docs/Assertions/AssertDirectoryEquals.md>)
+
+Asserts that Directory equals Directory.
+
+[Read more](<docs/Assertions/AssertDirectoryEquals.md>).
+
 ## [`assertJsonMatchesSchema`](<docs/Assertions/AssertJsonMatchesSchema.md>)
 
 Asserts that JSON matches [schema](https://json-schema.org/). Validation based on the [Opis JSON Schema](https://github.com/opis/json-schema) package.
