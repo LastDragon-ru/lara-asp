@@ -20,6 +20,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 
+use function array_reverse;
+use function explode;
 use function is_dir;
 use function is_file;
 use function is_object;
@@ -70,8 +72,11 @@ class FileSystem {
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
         $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
+        $hook   = $path instanceof FileHook;
         $path   = $path instanceof Entry ? $path->getPath() : $path;
         $name   = match (true) {
+            $hook && $path instanceof FilePath
+                => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
             $this->input->isEqual($this->output),
                 => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
             $this->output->isInside($path),
@@ -98,7 +103,15 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(FilePath|string $path): File {
+    public function getFile(FilePath|Hook|string $path): File {
+        // Hook?
+        $hook = null;
+
+        if ($path instanceof Hook) {
+            $hook = $path;
+            $path = "@.{$hook->value}";
+        }
+
         // Cached?
         $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
@@ -112,13 +125,15 @@ class FileSystem {
         }
 
         // Create
-        if (is_file((string) $path)) {
-            $file = $this->cache(new File($this->metadata, $path));
+        if ($hook !== null) {
+            $file = new FileHook($this->metadata, $path, $hook);
+        } elseif (is_file((string) $path)) {
+            $file = new FileReal($this->metadata, $path);
         } else {
             throw new FileNotFound($path);
         }
 
-        return $file;
+        return $this->cache($file);
     }
 
     /**

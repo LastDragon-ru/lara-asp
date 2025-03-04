@@ -38,8 +38,11 @@ readonly class FileIterator implements Dependency {
         // empty
     }
 
+    /**
+     * @return Iterator<mixed, File>
+     */
     #[Override]
-    public function __invoke(FileSystem $fs): mixed {
+    public function __invoke(FileSystem $fs): Iterator {
         try {
             yield from $fs->getFilesIterator($this->directory, $this->patterns, $this->depth, $this->exclude);
         } catch (DirectoryNotFound $exception) {
