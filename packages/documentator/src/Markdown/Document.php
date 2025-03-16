@@ -13,8 +13,6 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 use Override;
 use Stringable;
 
-use function array_key_first;
-use function array_values;
 use function count;
 use function implode;
 use function mb_trim;
@@ -67,9 +65,7 @@ class Document implements Stringable {
 
     protected function getEditor(): Editor {
         if ($this->editor === null) {
-            $lines        = $this->getLines();
-            $offset       = (int) array_key_first($lines);
-            $this->editor = new Editor(array_values($lines), $offset);
+            $this->editor = new Editor($this->getLines());
         }
 
         return $this->editor;

@@ -11,20 +11,18 @@ use function usort;
 
 readonly class Extractor extends Base {
     /**
-     * @param list<string>                                 $lines
+     * @param array<int, string>                           $lines
      * @param iterable<mixed, iterable<mixed, Coordinate>> $locations
      *
-     * @return list<string>
+     * @return array<int, string>
      */
-    public function __invoke(array $lines, iterable $locations, int $startLine = 0): array {
+    public function __invoke(array $lines, iterable $locations): array {
         $prepared = $this->unpack($locations);
         $prepared = $this->prepare($prepared);
         $result   = [];
 
-        foreach ($prepared as $index => $coordinates) {
+        foreach ($prepared as $number => $coordinates) {
             // Line exist?
-            $number = $index - $startLine;
-
             if (!isset($lines[$number])) {
                 continue;
             }
@@ -36,7 +34,7 @@ readonly class Extractor extends Base {
                 $line[] = mb_substr($lines[$number], $coordinate->offset, $coordinate->length);
             }
 
-            $result[] = implode(' ', $line);
+            $result[$number] = implode(' ', $line);
         }
 
         return $result;

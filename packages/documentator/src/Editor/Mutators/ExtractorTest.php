@@ -15,33 +15,32 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class ExtractorTest extends TestCase {
     public function testInvoke(): void {
         $extractor = new Extractor();
-        $startLine = 2;
         $locations = [
-            new Location(0 + $startLine, 0 + $startLine, 2, 5),
-            new Location(0 + $startLine, 0 + $startLine, 14, 5),
-            new Location(0 + $startLine, 0 + $startLine, 26, 5),
-            new Location(1 + $startLine, 2 + $startLine, 17, null),
-            new Location(1 + $startLine, 2 + $startLine, 17, null), // same line -> should be ignored
-            new Location(4 + $startLine, 4 + $startLine, 2, 7),
-            new Location(4 + $startLine, 4 + $startLine, 9, 7),
-            new Location(4 + $startLine, 4 + $startLine, 16, 5),
-            new Location(5 + $startLine, 5 + $startLine, 16, 5),    // no line -> should be ignored
+            new Location(2, 2, 2, 5),
+            new Location(2, 2, 14, 5),
+            new Location(2, 2, 26, 5),
+            new Location(3, 4, 17, null),
+            new Location(3, 4, 17, null), // same line -> should be ignored
+            new Location(6, 6, 2, 7),
+            new Location(6, 6, 9, 7),
+            new Location(6, 6, 16, 5),
+            new Location(7, 7, 16, 5),    // no line -> should be ignored
         ];
         $lines     = [
-            '11111 11111 11111 11111 11111 11111',
-            '22222 22222 22222 22222 22222 22222',
-            '33333 33333 33333 33333 33333 33333',
-            '44444 44444 44444 44444 44444 44444',
-            '55555 55555 55555 55555 55555 55555',
+            2 => '11111 11111 11111 11111 11111 11111',
+            3 => '22222 22222 22222 22222 22222 22222',
+            4 => '33333 33333 33333 33333 33333 33333',
+            5 => '44444 44444 44444 44444 44444 44444',
+            6 => '55555 55555 55555 55555 55555 55555',
         ];
         $expected  = [
-            '111 1 111 1 111 1',
-            ' 22222 22222 22222',
-            '33333 33333 33333 33333 33333 33333',
-            '555 55555 55555 555',
+            2 => '111 1 111 1 111 1',
+            3 => ' 22222 22222 22222',
+            4 => '33333 33333 33333 33333 33333 33333',
+            6 => '555 55555 55555 555',
         ];
 
-        self::assertEquals($expected, $extractor($lines, $locations, $startLine));
+        self::assertEquals($expected, $extractor($lines, $locations));
     }
 
     public function testUnpack(): void {

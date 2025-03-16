@@ -20,24 +20,23 @@ use const PHP_INT_MAX;
 #[CoversClass(Mutator::class)]
 final class MutatorTest extends TestCase {
     public function testInvoke(): void {
-        $start    = 1;
         $lines    = [
-            0  => 'a b c d',
-            1  => 'e f g h',
-            2  => 'i j k l',
-            3  => 'm n o p',
-            4  => '',
-            5  => 'q r s t',
-            6  => 'u v w x',
-            7  => '',
-            8  => 'y z',
-            9  => '',
-            10 => '> a b c d',
-            11 => '> e f g h',
-            12 => '>',
-            13 => '> i j k l',
-            14 => '>',
+            1  => 'a b c d',
+            2  => 'e f g h',
+            3  => 'i j k l',
+            4  => 'm n o p',
+            5  => '',
+            6  => 'q r s t',
+            7  => 'u v w x',
+            8  => '',
+            9  => 'y z',
+            10 => '',
+            11 => '> a b c d',
+            12 => '> e f g h',
+            13 => '>',
+            14 => '> i j k l',
             15 => '>',
+            16 => '>',
         ];
         $changes  = [
             [new Location(1, 1, 2, 3), "123\n345\n567"],
@@ -50,7 +49,7 @@ final class MutatorTest extends TestCase {
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
         ];
         $mutator  = new Mutator();
-        $actual   = ($mutator)($lines, $changes, $start);
+        $actual   = ($mutator)($lines, $changes);
         $expected = [
             'a 123',
             '345',
