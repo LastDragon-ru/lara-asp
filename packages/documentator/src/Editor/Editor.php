@@ -13,18 +13,17 @@ use function is_string;
 
 readonly class Editor implements Stringable {
     /**
-     * @var list<string>
+     * @var array<int, string>
      */
     protected array     $lines;
     protected Mutator   $mutator;
     protected Extractor $extractor;
 
     /**
-     * @param list<string>|string $content
+     * @param array<int, string>|string $content
      */
     final public function __construct(
         array|string $content,
-        protected int $startLine = 0,
         protected string $endOfLine = "\n",
     ) {
         $this->lines     = is_string($content) ? Text::getLines($content) : $content;
@@ -43,8 +42,8 @@ readonly class Editor implements Stringable {
      * @return new<static>
      */
     public function extract(iterable $locations): static {
-        $extracted = ($this->extractor)($this->lines, $locations, $this->startLine);
-        $editor    = new static($extracted, $this->startLine, $this->endOfLine);
+        $extracted = ($this->extractor)($this->lines, $locations);
+        $editor    = new static($extracted, $this->endOfLine);
 
         return $editor;
     }
@@ -55,8 +54,8 @@ readonly class Editor implements Stringable {
      * @return new<static>
      */
     public function mutate(iterable $changes): static {
-        $mutated = ($this->mutator)($this->lines, $changes, $this->startLine);
-        $editor  = new static($mutated, $this->startLine, $this->endOfLine);
+        $mutated = ($this->mutator)($this->lines, $changes);
+        $editor  = new static($mutated, $this->endOfLine);
 
         return $editor;
     }

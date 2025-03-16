@@ -15,22 +15,22 @@ use const PHP_INT_MAX;
 final class EditorTest extends TestCase {
     public function testMutate(): void {
         $lines   = [
-            0  => 'a b c d',
-            1  => 'e f g h',
-            2  => 'i j k l',
-            3  => 'm n o p',
-            4  => '',
-            5  => 'q r s t',
-            6  => 'u v w x',
-            7  => '',
-            8  => 'y z',
-            9  => '',
-            10 => '> a b c d',
-            11 => '> e f g h',
-            12 => '>',
-            13 => '> i j k l',
-            14 => '>',
+            1  => 'a b c d',
+            2  => 'e f g h',
+            3  => 'i j k l',
+            4  => 'm n o p',
+            5  => '',
+            6  => 'q r s t',
+            7  => 'u v w x',
+            8  => '',
+            9  => 'y z',
+            10 => '',
+            11 => '> a b c d',
+            12 => '> e f g h',
+            13 => '>',
+            14 => '> i j k l',
             15 => '>',
+            16 => '>',
         ];
         $changes = [
             [new Location(1, 1, 2, 3), "123\n345\n567"],
@@ -42,9 +42,9 @@ final class EditorTest extends TestCase {
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
         ];
-        $editor  = new readonly class($lines, 1) extends Editor {
+        $editor  = new readonly class($lines) extends Editor {
             /**
-             * @return list<string>
+             * @return array<int, string>
              */
             public function getLines(): array {
                 return $this->lines;
@@ -80,34 +80,33 @@ final class EditorTest extends TestCase {
     }
 
     public function testExtract(): void {
-        $startLine = 2;
         $locations = [
-            new Location(0 + $startLine, 0 + $startLine, 2, 5),
-            new Location(0 + $startLine, 0 + $startLine, 14, 5),
-            new Location(0 + $startLine, 0 + $startLine, 26, 5),
-            new Location(1 + $startLine, 2 + $startLine, 17, null),
-            new Location(1 + $startLine, 2 + $startLine, 17, null), // same line -> should be ignored
-            new Location(4 + $startLine, 4 + $startLine, 2, 7),
-            new Location(4 + $startLine, 4 + $startLine, 9, 7),
-            new Location(4 + $startLine, 4 + $startLine, 16, 5),
-            new Location(5 + $startLine, 5 + $startLine, 16, 5),    // no line -> should be ignored
+            new Location(2, 2, 2, 5),
+            new Location(2, 2, 14, 5),
+            new Location(2, 2, 26, 5),
+            new Location(3, 4, 17, null),
+            new Location(3, 4, 17, null), // same line -> should be ignored
+            new Location(6, 6, 2, 7),
+            new Location(6, 6, 9, 7),
+            new Location(6, 6, 16, 5),
+            new Location(7, 7, 16, 5),    // no line -> should be ignored
         ];
         $lines     = [
-            '11111 11111 11111 11111 11111 11111',
-            '22222 22222 22222 22222 22222 22222',
-            '33333 33333 33333 33333 33333 33333',
-            '44444 44444 44444 44444 44444 44444',
-            '55555 55555 55555 55555 55555 55555',
+            2 => '11111 11111 11111 11111 11111 11111',
+            3 => '22222 22222 22222 22222 22222 22222',
+            4 => '33333 33333 33333 33333 33333 33333',
+            5 => '44444 44444 44444 44444 44444 44444',
+            6 => '55555 55555 55555 55555 55555 55555',
         ];
         $expected  = [
-            '111 1 111 1 111 1',
-            ' 22222 22222 22222',
-            '33333 33333 33333 33333 33333 33333',
-            '555 55555 55555 555',
+            2 => '111 1 111 1 111 1',
+            3 => ' 22222 22222 22222',
+            4 => '33333 33333 33333 33333 33333 33333',
+            6 => '555 55555 55555 555',
         ];
-        $editor    = new readonly class($lines, $startLine) extends Editor {
+        $editor    = new readonly class($lines) extends Editor {
             /**
-             * @return list<string>
+             * @return array<int, string>
              */
             public function getLines(): array {
                 return $this->lines;

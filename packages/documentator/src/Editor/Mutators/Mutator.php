@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
 
+use function array_key_first;
 use function array_merge;
 use function array_push;
 use function array_reverse;
@@ -21,16 +22,21 @@ use const PHP_INT_MAX;
 
 readonly class Mutator extends Base {
     /**
-     * @param list<string>                                                 $lines
+     * @param array<int, string>                                           $lines
      * @param iterable<mixed, array{iterable<mixed, Coordinate>, ?string}> $changes
      *
      * @return list<string>
      */
-    public function __invoke(array $lines, iterable $changes, int $startLine = 0): array {
+    public function __invoke(array $lines, iterable $changes): array {
         // Modify
-        $changes = $this->unpack($changes);
-        $changes = $this->cleanup($changes);
-        $changes = $this->prepare($changes);
+        $changes   = $this->unpack($changes);
+        $changes   = $this->cleanup($changes);
+        $changes   = $this->prepare($changes);
+        $startLine = (int) array_key_first($lines);
+
+        if ($startLine !== 0) {
+            $lines = array_values($lines);
+        }
 
         foreach ($changes as [$coordinate, $text]) {
             // Append?
