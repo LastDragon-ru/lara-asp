@@ -2,27 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
+use Override;
 
-abstract readonly class Base {
+/**
+ * @implements Mutation<FootnoteRef|Footnote>
+ */
+abstract readonly class Base implements Mutation {
     public function __construct() {
         // empty
     }
 
     /**
-     * @return iterable<mixed, Footnote|FootnoteRef>
+     * @inheritDoc
      */
-    protected function nodes(Document $document): iterable {
-        // Just in case
-        yield from [];
-
-        // Search
-        foreach ($document->node->iterator() as $node) {
-            if ($node instanceof FootnoteRef || $node instanceof Footnote) {
-                yield $node;
-            }
-        }
+    #[Override]
+    public static function nodes(): array {
+        return [
+            FootnoteRef::class,
+            Footnote::class,
+        ];
     }
 }

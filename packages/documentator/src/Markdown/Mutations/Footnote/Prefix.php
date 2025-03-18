@@ -3,11 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
+use League\CommonMark\Node\Node;
 use Override;
 
 use function mb_strlen;
@@ -16,7 +17,7 @@ use function mb_substr;
 /**
  * Adds unique prefix for all footnotes.
  */
-readonly class Prefix extends Base implements Mutation {
+readonly class Prefix extends Base {
     public function __construct(
         protected string $prefix,
     ) {
@@ -27,19 +28,14 @@ readonly class Prefix extends Base implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document): iterable {
-        // Just in case
-        yield from [];
+    public function mutagens(Document $document, Node $node): array {
+        $label    = $this->getLabel($document, $node);
+        $location = $this->getLabelLocation($node, $label);
+        $mutagens = $location !== null
+            ? [new Replace($location, "{$this->prefix}-{$label}")]
+            : [];
 
-        // Process
-        foreach ($this->nodes($document) as $node) {
-            $label    = $this->getLabel($document, $node);
-            $location = $this->getLabelLocation($node, $label);
-
-            if ($location !== null) {
-                yield [$location, "{$this->prefix}-{$label}"];
-            }
-        }
+        return $mutagens;
     }
 
     private function getLabel(Document $document, Footnote|FootnoteRef $footnote): string {
