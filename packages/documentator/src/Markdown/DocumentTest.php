@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Extraction;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
@@ -33,25 +32,6 @@ final class DocumentTest extends TestCase {
         $markdown = $this->app()->make(Markdown::class);
         $document = $markdown->parse('');
         $mutation = Mockery::mock(Mutation::class);
-        $mutation
-            ->shouldReceive('__invoke')
-            ->with(Mockery::type(Document::class))
-            ->once()
-            ->andReturn([
-                // empty
-            ]);
-
-        $clone   = clone $document;
-        $mutated = $document->mutate($mutation);
-
-        self::assertNotSame($document, $mutated);
-        self::assertEquals($clone, $document);
-    }
-
-    public function testMutateExtraction(): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse('');
-        $mutation = Mockery::mock(Extraction::class);
         $mutation
             ->shouldReceive('__invoke')
             ->with(Mockery::type(Document::class))
