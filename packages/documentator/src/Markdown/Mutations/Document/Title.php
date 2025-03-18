@@ -2,12 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Extraction;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
+use League\CommonMark\Node\Block\Document as DocumentNode;
+use League\CommonMark\Node\Node;
 use Override;
 
-readonly class Title implements Extraction {
+/**
+ * @implements Mutation<DocumentNode>
+ */
+readonly class Title implements Mutation {
     public function __construct() {
         // empty
     }
@@ -16,10 +23,22 @@ readonly class Title implements Extraction {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document): iterable {
-        $title    = TitleData::get($document->node);
-        $location = $title !== null ? [Location::get($title)] : [];
+    public static function nodes(): array {
+        return [
+            DocumentNode::class,
+        ];
+    }
 
-        return $location;
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function mutagens(Document $document, Node $node): array {
+        $summary  = TitleData::get($node);
+        $mutagens = $summary !== null
+            ? [new Extract(LocationData::get($summary))]
+            : [new Extract(new Location(0, 0, 0, 0))];
+
+        return $mutagens;
     }
 }
