@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutator;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\List\Mutagens;

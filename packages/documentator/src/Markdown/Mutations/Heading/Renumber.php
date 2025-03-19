@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Block\Document as DocumentNode;

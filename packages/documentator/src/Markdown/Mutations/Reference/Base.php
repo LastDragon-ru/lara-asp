@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image as ImageNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use Override;

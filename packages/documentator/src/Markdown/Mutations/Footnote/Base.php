@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
 use Override;

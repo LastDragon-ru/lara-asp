@@ -4,10 +4,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
 use Generator;
 use IteratorAggregate;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\Remove as FootnotesRemove;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\UnlinkToSelf as LinksUnlinkToSelf;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference\Inline as ReferencesInline;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
 use League\CommonMark\Node\Node;
 use Override;
 

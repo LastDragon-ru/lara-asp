@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use Override;
 

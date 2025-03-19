@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
 use Generator;
 use IteratorAggregate;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\Prefix as FootnotesPrefix;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference\Prefix as ReferencesPrefix;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
 use League\CommonMark\Node\Node;
 use Override;
 
