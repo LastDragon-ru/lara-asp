@@ -2,7 +2,7 @@
 
 ## The Package with custom readme
 
-Text with [link](packages/package%20custom%20readme/README.md) and [link](<packages/package custom readme/README.md> "title") and footnote and self and self.
+Text with [link](packages/package%20custom%20readme/README.md) and [link](packages/package%20custom%20readme/README.md "title") and footnote and self and self.
 
 [Read more](<packages/package custom readme/CUSTOM.md>).
 

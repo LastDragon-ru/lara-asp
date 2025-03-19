@@ -7,6 +7,7 @@ use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package as ComposerPackage;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
@@ -96,16 +97,17 @@ readonly class Instruction implements InstructionContract {
             }
 
             // Add
-            $content    = $context->toSplittable($content);
-            $upgrade    = $package->getFilePath('UPGRADE.md');
-            $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
+            $move       = new Move($context->file->getFilePath($readme->getName()));
             $title      = mb_trim((string) $content->mutate(new Title(), new Unlink()));
             $title      = mb_trim(str_replace("\n", ' ', Utils::getHeadingText($title)));
             $title      = $title === '' ? Text::getPathTitle($package->getName()) : $title;
+            $summary    = mb_trim((string) $content->mutate(new Summary())->mutate($move));
+            $upgrade    = $package->getFilePath('UPGRADE.md');
+            $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
             $packages[] = [
                 'path'    => $context->file->getRelativePath($readme),
                 'title'   => $title,
-                'summary' => mb_trim((string) $content->mutate(new Summary())),
+                'summary' => $summary,
                 'upgrade' => $upgrade !== null
                     ? $context->file->getRelativePath($upgrade)
                     : null,

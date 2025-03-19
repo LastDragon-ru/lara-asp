@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
+use Generator;
+use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
@@ -12,33 +14,43 @@ use League\CommonMark\Node\Node;
 use Override;
 
 /**
- * @implements Mutation<DocumentNode>
+ * @implements IteratorAggregate<array-key, Mutation<covariant Node>>
  */
-readonly class Title implements Mutation {
+readonly class Title implements IteratorAggregate {
     public function __construct() {
         // empty
     }
 
     /**
-     * @inheritDoc
+     * @return Generator<array-key, Mutation<covariant Node>>
      */
     #[Override]
-    public static function nodes(): array {
-        return [
-            DocumentNode::class,
-        ];
-    }
+    public function getIterator(): Generator {
+        yield new readonly class() implements Mutation {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function nodes(): array {
+                return [
+                    DocumentNode::class,
+                ];
+            }
 
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function mutagens(Document $document, Node $node): array {
-        $summary  = TitleData::get($node);
-        $mutagens = $summary !== null
-            ? [new Extract(LocationData::get($summary))]
-            : [new Extract(new Location(0, 0, 0, 0))];
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function mutagens(Document $document, Node $node): array {
+                $summary  = TitleData::get($node);
+                $mutagens = $summary !== null
+                    ? [new Extract(LocationData::get($summary))]
+                    : [new Extract(new Location(0, 0, 0, 0))];
 
-        return $mutagens;
+                return $mutagens;
+            }
+        };
+
+        yield from new MakeSplittable();
     }
 }

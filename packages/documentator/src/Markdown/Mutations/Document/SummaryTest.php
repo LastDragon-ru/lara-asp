@@ -106,6 +106,22 @@ final class SummaryTest extends TestCase {
                 fsdfsdfsdf
                 MARKDOWN,
             ],
+            'Splittable'                 => [
+                <<<'TEXT'
+                fsdfsdfsdf [link](https://example.com/)
+                fsdfsdfsdf
+
+                TEXT,
+                <<<'MARKDOWN'
+                # Header
+
+                fsdfsdfsdf [link][example]
+                fsdfsdfsdf[^1]
+
+                [example]: https://example.com/
+                [^1]: Should be removed
+                MARKDOWN,
+            ],
         ];
     }
     // </editor-fold>

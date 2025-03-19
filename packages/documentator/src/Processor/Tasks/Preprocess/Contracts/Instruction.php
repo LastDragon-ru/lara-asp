@@ -32,7 +32,6 @@ interface Instruction {
      * should be used to resolve any file which the Instruction depends on.
      *
      * @see Context::toInlinable()
-     * @see Context::toSplittable()
      *
      * @param TParameters $parameters
      *

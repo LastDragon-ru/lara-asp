@@ -6,6 +6,7 @@ use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
@@ -90,11 +91,11 @@ readonly class Instruction implements InstructionContract {
             }
 
             // Add
-            $document    = $context->toSplittable($document);
-            $summary     = mb_trim((string) $document->mutate(new Summary()));
+            $move        = new Move($context->file->getFilePath($file->getName()));
             $title       = mb_trim((string) $document->mutate(new Title(), new Unlink()));
             $title       = mb_trim(str_replace("\n", ' ', Utils::getHeadingText($title)));
             $title       = $title === '' ? Text::getPathTitle($file->getName()) : $title;
+            $summary     = mb_trim((string) $document->mutate(new Summary())->mutate($move));
             $documents[] = new TemplateDocument(
                 $context->file->getRelativePath($file),
                 $title,

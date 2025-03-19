@@ -45,12 +45,7 @@ final class InstructionTest extends TestCase {
 
         $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
 
-        if ($params->summary && $params->description) {
-            self::assertInstanceOf(Document::class, $actual);
-        } else {
-            self::assertIsString($actual);
-        }
-
+        self::assertInstanceOf(Document::class, $actual);
         self::assertSame($expected, mb_trim((string) $actual));
     }
     //</editor-fold>

@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -36,17 +35,6 @@ readonly class Context {
         return $document
             ->mutate($this->getMutation($document))
             ->mutate(new MakeInlinable($seed));
-    }
-
-    /**
-     * Moves the document into the correct location and makes it splittable.
-     *
-     * @see MakeSplittable
-     */
-    public function toSplittable(Document $document): Document {
-        return $document
-            ->mutate($this->getMutation($document))
-            ->mutate(new MakeSplittable());
     }
 
     /**
