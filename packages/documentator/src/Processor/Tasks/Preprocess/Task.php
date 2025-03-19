@@ -8,7 +8,9 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as GeneratedNode;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
@@ -186,7 +188,7 @@ class Task implements TaskContract {
                         $text        = "{$instruction}\n{$text}";
                     }
 
-                    $changes[] = [$location, $text];
+                    $changes[] = new Replace($location, $text);
                 }
             }
 
@@ -221,7 +223,7 @@ class Task implements TaskContract {
 
         foreach ($document->node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
-            if (!Utils::isInstruction($node, $this->instructions)) {
+            if (!($node instanceof ReferenceNode) || !Utils::isInstruction($node, $this->instructions)) {
                 continue;
             }
 

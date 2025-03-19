@@ -6,15 +6,16 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutation;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutator;
 use League\CommonMark\Node\Block\Document as DocumentNode;
+use League\CommonMark\Node\Node;
 use Override;
 use Stringable;
 
 use function count;
 use function implode;
-use function mb_trim;
 
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
@@ -41,14 +42,12 @@ class Document implements Stringable {
         return (string) $this->getEditor()->extract([$location]);
     }
 
-    public function mutate(Mutation ...$mutations): self {
-        $document = clone $this;
-
-        foreach ($mutations as $mutation) {
-            $content  = $document->getEditor()->mutate($mutation($document));
-            $content  = mb_trim((string) $content);
-            $document = $this->markdown->parse($content, $document->path);
-        }
+    /**
+     * @param Mutation<covariant Node>|iterable<mixed, Mutation<covariant Node>> ...$mutations
+     */
+    public function mutate(Mutation|iterable ...$mutations): self {
+        $mutator  = new Mutator($mutations);
+        $document = $mutator->mutate($this->markdown, $this, $this->getLines());
 
         return $document;
     }
