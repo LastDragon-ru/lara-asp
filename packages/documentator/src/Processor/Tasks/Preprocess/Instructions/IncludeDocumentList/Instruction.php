@@ -150,7 +150,7 @@ readonly class Instruction implements InstructionContract {
                 $level = $block->getLevel();
                 $block = null;
             }
-        } while ($block);
+        } while ($block !== null);
 
         return $level;
     }

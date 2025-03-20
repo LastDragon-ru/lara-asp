@@ -236,7 +236,7 @@ class Task implements TaskContract {
         /** @var WeakMap<LinkToken, true> $duplicates */
         $duplicates = new WeakMap();
 
-        while ($link = array_pop($links)) {
+        while (($link = array_pop($links)) !== null) {
             // Target?
             [$currentToken, $currentTarget] = $link;
 

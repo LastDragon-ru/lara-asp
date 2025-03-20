@@ -149,7 +149,7 @@ final class PackageProviderTest extends TestCase {
         do {
             $messages[] = $exception->getMessage();
             $exception  = $exception->getPrevious();
-        } while ($exception);
+        } while ($exception !== null);
 
         return $messages;
     }

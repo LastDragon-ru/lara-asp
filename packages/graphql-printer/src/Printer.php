@@ -187,7 +187,7 @@ class Printer implements PrinterContract {
         $printed    = [];
         $directives = $context->getSettings()->isPrintDirectiveDefinitions();
 
-        while ($stack) {
+        while ($stack !== []) {
             // Added?
             $name = array_pop($stack);
 
