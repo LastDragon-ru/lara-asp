@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Editor\Mutators;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Prepend;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -13,6 +14,7 @@ use function array_values;
 use function iterator_to_array;
 
 use const PHP_INT_MAX;
+use const PHP_INT_MIN;
 
 /**
  * @internal
@@ -46,11 +48,16 @@ final class MutatorTest extends TestCase {
             [new Location(12, 12, 5, 2, 2), null],
             [new Location(14, 16, 4, 3, 2), '123'],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
-            [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
+            [new Location(PHP_INT_MAX, PHP_INT_MAX), 'added line b'],
+            [new Location(PHP_INT_MIN, PHP_INT_MIN), "added line c\n"],
+            [new Location(PHP_INT_MIN, PHP_INT_MIN), 'added line d'],
         ];
         $mutator  = new Mutator();
         $actual   = ($mutator)($lines, $changes);
         $expected = [
+            'added line c',
+            '',
+            'added line d',
             'a 123',
             '345',
             '567 d',
@@ -69,7 +76,6 @@ final class MutatorTest extends TestCase {
             'added line a',
             '',
             'added line b',
-            '',
         ];
 
         self::assertEquals($expected, $actual);
@@ -122,8 +128,12 @@ final class MutatorTest extends TestCase {
             9  => [array_values(iterator_to_array(new Location(9, 9, 40, 10))), 'j'],
             10 => [array_values(iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX))), 'k'],
             11 => [array_values(iterator_to_array(new Append())), 'l'],
+            12 => [array_values(iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN))), 'm'],
+            13 => [array_values(iterator_to_array(new Prepend())), 'n'],
         ];
         $expected = [
+            12 => [iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN)), 'm'],
+            13 => [iterator_to_array(new Prepend()), 'n'],
             0  => [iterator_to_array(new Location(18, 18, 5, 10)), 'a'],
             1  => [iterator_to_array(new Location(17, 17, 11, 10)), 'b'],
             3  => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
@@ -148,12 +158,14 @@ final class MutatorTest extends TestCase {
             }
         };
         $changes  = [
+            [array_values(iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN))), "new line ea\nnew line eb"],
             [array_values(iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX))), "new line aa\nnew line ab"],
             [array_values(iterator_to_array(new Location(6, 6, 5, 10, 2))), "text aa\ntext ab"],
             [array_values(iterator_to_array(new Location(4, 5, 5, 5, 1))), "text ba\ntext bb"],
             [array_values(iterator_to_array(new Location(2, 3, 5, null))), 'text c'],
             [array_values(iterator_to_array(new Location(1, 1, 5, 10))), "text da\ntext db\ntext dc"],
             [array_values(iterator_to_array(new Append())), "new line ba\nnew line bb"],
+            [array_values(iterator_to_array(new Prepend())), "new line fa\nnew line fb"],
         ];
         $expected = [
             [new Coordinate(6, 7, 10, 2), ['text aa', 'text ab']],
@@ -162,6 +174,8 @@ final class MutatorTest extends TestCase {
             [new Coordinate(3, 0, null, 0), []],
             [new Coordinate(2, 5, null, 0), ['text c']],
             [new Coordinate(1, 5, 10, 0), ['text da', 'text db', 'text dc']],
+            [new Coordinate(PHP_INT_MIN, 0, null, 0), ['new line ea', 'new line eb']],
+            [new Coordinate(PHP_INT_MIN, 0, null, 0), ['new line fa', 'new line fb']],
             [new Coordinate(PHP_INT_MAX, 0, null, 0), ['new line ba', 'new line bb']],
             [new Coordinate(PHP_INT_MAX, 0, null, 0), ['new line aa', 'new line ab']],
         ];
