@@ -12,6 +12,7 @@ use function array_push;
 use function array_reverse;
 use function array_slice;
 use function array_splice;
+use function array_unshift;
 use function array_values;
 use function count;
 use function mb_rtrim;
@@ -19,6 +20,7 @@ use function mb_substr;
 use function usort;
 
 use const PHP_INT_MAX;
+use const PHP_INT_MIN;
 
 readonly class Mutator extends Base {
     /**
@@ -39,6 +41,12 @@ readonly class Mutator extends Base {
         }
 
         foreach ($changes as [$coordinate, $text]) {
+            // Prepend?
+            if ($coordinate->line === PHP_INT_MIN) {
+                array_unshift($lines, ...$text);
+                continue;
+            }
+
             // Append?
             if ($coordinate->line === PHP_INT_MAX) {
                 array_push($lines, ...$text);
@@ -109,6 +117,7 @@ readonly class Mutator extends Base {
      */
     protected function prepare(array $changes): array {
         $expanded = [];
+        $prepend  = [];
         $append   = [];
 
         foreach ($changes as [$coordinates, $text]) {
@@ -125,6 +134,8 @@ readonly class Mutator extends Base {
 
                 if ($coordinates[$i]->line === PHP_INT_MAX) {
                     $append[] = [$coordinates[$i], $line];
+                } elseif ($coordinates[$i]->line === PHP_INT_MIN) {
+                    $prepend[] = [$coordinates[$i], $line];
                 } else {
                     $expanded[] = [$coordinates[$i], $line];
                 }
@@ -133,7 +144,7 @@ readonly class Mutator extends Base {
 
         usort($expanded, fn ($a, $b) => -$this->compare($a[0], $b[0]));
 
-        return array_merge($expanded, array_reverse($append));
+        return array_merge($expanded, $prepend, array_reverse($append));
     }
 
     /**
@@ -175,6 +186,7 @@ readonly class Mutator extends Base {
     #[Override]
     protected function isOverlapped(array $coordinates, Coordinate $coordinate, ?int &$key = null): bool {
         return $coordinate->line !== PHP_INT_MAX
+            && $coordinate->line !== PHP_INT_MIN
             && parent::isOverlapped($coordinates, $coordinate, $key);
     }
 }

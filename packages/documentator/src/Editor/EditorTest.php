@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use const PHP_INT_MAX;
+use const PHP_INT_MIN;
 
 /**
  * @internal
@@ -40,7 +41,9 @@ final class EditorTest extends TestCase {
             [new Location(12, 12, 5, 2, 2), null],
             [new Location(14, 16, 4, 3, 2), '123'],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
-            [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line b\n"],
+            [new Location(PHP_INT_MAX, PHP_INT_MAX), 'added line b'],
+            [new Location(PHP_INT_MIN, PHP_INT_MIN), "added line c\n"],
+            [new Location(PHP_INT_MIN, PHP_INT_MIN), 'added line d'],
         ];
         $editor  = new readonly class($lines) extends Editor {
             /**
@@ -53,6 +56,9 @@ final class EditorTest extends TestCase {
 
         $actual   = $editor->mutate($changes);
         $expected = [
+            'added line c',
+            '',
+            'added line d',
             'a 123',
             '345',
             '567 d',
@@ -71,7 +77,6 @@ final class EditorTest extends TestCase {
             'added line a',
             '',
             'added line b',
-            '',
         ];
 
         self::assertNotSame($editor, $actual);
