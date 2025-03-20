@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Node\Node;
@@ -38,7 +37,7 @@ final class DocumentTest extends TestCase {
     public function testMutate(string $expected, string $content, ?Mutation $mutation): void {
         $markdown = $this->app()->make(Markdown::class);
         $document = $markdown->parse($content);
-        $mutated  = $document->mutate($mutation ?? new Nop());
+        $mutated  = $document->mutate($mutation ?? []);
         $actual   = (string) $mutated;
 
         if (mb_trim($expected) !== mb_trim($content)) {
