@@ -10,6 +10,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
@@ -163,7 +166,15 @@ class Task implements TaskContract {
 
                     // Markdown?
                     if ($content instanceof Document) {
-                        $content = (string) $token->context->toInlinable($content);
+                        $content = (string) $content
+                            ->mutate(
+                                new MakeInlinable(Utils::getSeed($token->context, $content)),
+                                new InstructionsRemove($this->instructions),
+                                new Unwrap(),
+                            )
+                            ->mutate(
+                                new Move($file->getPath()),
+                            );
                     }
                 } catch (PreprocessError $exception) {
                     throw $exception;
@@ -218,8 +229,7 @@ class Task implements TaskContract {
         }
 
         // Extract all possible instructions
-        $tokens   = [];
-        $mutation = new InstructionsRemove($this->instructions);
+        $tokens = [];
 
         foreach ($document->node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
             // Instruction?
@@ -249,7 +259,7 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($file, $document, $node, $mutation);
+            $context    = new Context($file, $document, $node);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 

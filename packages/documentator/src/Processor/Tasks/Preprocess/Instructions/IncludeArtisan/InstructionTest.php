@@ -6,7 +6,6 @@ use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandFailed;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -33,7 +32,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('command to execute');
         $expected = 'result';
         $command  = $params->target;
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command, $expected): void {
@@ -83,7 +82,7 @@ final class InstructionTest extends TestCase {
         };
         $params   = new Parameters($node->getDestination());
         $command  = $params->target;
-        $context  = new Context($file, Mockery::mock(Document::class), $node, new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), $node);
         $instance = $this->app()->make(Instruction::class);
 
         $this->override(Kernel::class, static function (MockInterface $mock) use ($command): void {
@@ -135,7 +134,7 @@ final class InstructionTest extends TestCase {
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters('artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"');
         $command  = $params->target;
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = new class (Mockery::mock(ApplicationResolver::class)) extends Instruction {
             #[Override]
             public function getCommand(Context $context, string $target, Parameters $parameters): string {

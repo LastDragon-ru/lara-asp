@@ -5,6 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -14,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Inst
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Exceptions\ExampleFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
 use Override;
 use Throwable;
 
@@ -99,7 +103,14 @@ class Instruction implements InstructionContract {
                     flags   : PREG_UNMATCHED_AS_NULL,
                 );
                 $output = $this->markdown->parse($output, $target->getPath());
-                $output = $context->toInlinable($output);
+                $output = $output
+                    ->mutate(
+                        new MakeInlinable(Utils::getSeed($context, $output)),
+                        new Unwrap(),
+                    )
+                    ->mutate(
+                        new Move($context->file->getPath()),
+                    );
                 $output = mb_trim((string) $output);
             }
 

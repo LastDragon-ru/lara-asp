@@ -6,7 +6,6 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -34,7 +33,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem($path->getDirectoryPath());
         $file     = $fs->getFile($path);
         $params   = new Parameters('packages', template: $template, order: $order);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
@@ -54,7 +53,7 @@ final class InstructionTest extends TestCase {
         $file     = $fs->getFile($path);
         $target   = $fs->input->getDirectoryPath('no readme');
         $params   = new Parameters((string) $target);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -73,7 +72,7 @@ final class InstructionTest extends TestCase {
         $file     = $fs->getFile($path);
         $target   = $fs->input->getDirectoryPath('empty readme');
         $params   = new Parameters((string) $target);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
         $package  = $fs->getDirectory($target->getDirectoryPath('package'));
 
