@@ -12,7 +12,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 |--------------|---------------------|------------------|
 |  PHP  | `^8.4` |  `HEAD`   |
 |  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
-|  | `^8.2` |   `7.1.0 ⋯ 3.0.0`   |
+|  | `^8.2` |   `7.2.0 ⋯ 3.0.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 3.0.0`   |
 |  | `^8.0` |   `4.6.0 ⋯ 3.0.0`   |
 |  `webonyx/graphql-php`  | `^15.4.0` |   `HEAD ⋯ 4.2.1`   |
