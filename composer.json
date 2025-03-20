@@ -101,7 +101,7 @@
     "laravel/scout": "^10.8.0",
     "larastan/larastan": "^3.0.2",
     "orchestra/testbench": "^9.0.0",
-    "phpstan/phpstan": "2.1.5",
+    "phpstan/phpstan": "2.1.8",
     "phpstan/phpstan-mockery": "^2.0.0",
     "phpstan/phpstan-phpunit": "^2.0.3",
     "phpstan/phpstan-strict-rules": "^2.0.1",

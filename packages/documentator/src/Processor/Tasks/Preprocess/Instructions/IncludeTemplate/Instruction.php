@@ -91,7 +91,7 @@ readonly class Instruction implements InstructionContract {
                 count   : $count,
                 flags   : PREG_UNMATCHED_AS_NULL,
             );
-        } while ($count);
+        } while ($count > 0);
 
         // Unused?
         $unused = array_diff($vars, $used);

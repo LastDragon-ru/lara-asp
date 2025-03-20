@@ -37,7 +37,7 @@ class Utils {
     public static function getPosition(Node $node): int {
         $position = 0;
 
-        while ($node = $node->previous()) {
+        while (($node = $node->previous()) !== null) {
             $position++;
         }
 
@@ -104,7 +104,7 @@ class Utils {
             }
 
             $node = $node->parent();
-        } while ($node);
+        } while ($node !== null);
 
         return $parent;
     }
