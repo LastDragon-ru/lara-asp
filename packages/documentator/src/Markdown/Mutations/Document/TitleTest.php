@@ -98,6 +98,18 @@ final class TitleTest extends TestCase {
                 fsdfsdfsdf
                 MARKDOWN,
             ],
+            'Splittable'          => [
+                <<<'MARKDOWN'
+                # Header [link](https://example.com/)
+
+                MARKDOWN,
+                <<<'MARKDOWN'
+                # Header[^1] [link][example]
+
+                [example]: https://example.com/
+                [^1]: Should be removed
+                MARKDOWN,
+            ],
         ];
     }
     // </editor-fold>

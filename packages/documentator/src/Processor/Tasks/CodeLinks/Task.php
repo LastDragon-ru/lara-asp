@@ -6,11 +6,12 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
-use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
@@ -165,7 +166,7 @@ class Task implements TaskContract {
      * @param list<GeneratedNode>                 $blocks
      * @param list<array{LinkToken, ?LinkTarget}> $links
      *
-     * @return list<array{Location, ?string}>
+     * @return list<Replace|Delete>
      */
     private function getChanges(Document $document, array $blocks, array $links): array {
         // Prepare
@@ -176,9 +177,9 @@ class Task implements TaskContract {
         $refsParentLocation = null;
 
         foreach ($blocks as $block) {
-            $refsParentLocation = LocationData::get($block);
+            $refsParentLocation = Location::get($block);
             $refsParentNode     = $block;
-            $changes[]          = [$refsParentLocation, null];
+            $changes[]          = new Delete($refsParentLocation);
         }
 
         // Update links
@@ -203,9 +204,9 @@ class Task implements TaskContract {
             }
 
             foreach ($token->nodes as $node) {
-                $location  = LocationData::get($node);
+                $location  = Location::get($node);
                 $linkTitle = Utils::escapeTextInTableCell($node, $title);
-                $changes[] = [$location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`"];
+                $changes[] = new Replace($location, $target !== null ? "[`{$linkTitle}`][{$hash}]" : "`{$linkTitle}`");
             }
         }
 
@@ -220,7 +221,7 @@ class Task implements TaskContract {
                 $content = "\n{$content}";
             }
 
-            $changes[] = [$location, $content];
+            $changes[] = new Replace($location, $content);
         }
 
         // Return

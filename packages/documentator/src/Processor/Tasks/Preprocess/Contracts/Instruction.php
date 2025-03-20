@@ -31,9 +31,6 @@ interface Instruction {
      * references/footnotes are not conflicting. And, finally, `Generator`
      * should be used to resolve any file which the Instruction depends on.
      *
-     * @see Context::toInlinable()
-     * @see Context::toSplittable()
-     *
      * @param TParameters $parameters
      *
      * @return Generator<mixed, Dependency<*>, mixed, Document|string>|Document|string

@@ -2,20 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
+use League\CommonMark\Node\Block\Document as DocumentNode;
+use League\CommonMark\Node\Node;
 use Override;
 
 /**
  * Changes container.
+ *
+ * @deprecated %{VERSION} Use own {@see Mutation} implementation instead.
+ *
+ * @implements Mutation<DocumentNode>
  */
 readonly class Changeset implements Mutation {
     public function __construct(
         /**
-         * @var iterable<mixed, array{iterable<mixed, Coordinate>, ?string}>
+         * @var list<Replace|Delete>
          */
-        protected iterable $changes,
+        protected array $mutagens,
     ) {
         // empty
     }
@@ -24,7 +31,17 @@ readonly class Changeset implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document): iterable {
-        return $this->changes;
+    public static function nodes(): array {
+        return [
+            DocumentNode::class,
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function mutagens(Document $document, Node $node): array {
+        return $this->mutagens;
     }
 }

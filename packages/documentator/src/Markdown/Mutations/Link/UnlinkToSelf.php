@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
+use League\CommonMark\Node\Node;
 use Override;
 
 use function rawurldecode;
@@ -12,19 +12,18 @@ use function rawurldecode;
 /**
  * Unlink all links to the self.
  */
-readonly class UnlinkToSelf extends Unlink implements Mutation {
+readonly class UnlinkToSelf extends Unlink {
     /**
      * @inheritDoc
      */
     #[Override]
-    protected function nodes(Document $document): iterable {
-        foreach (parent::nodes($document) as $key => $node) {
-            $url  = rawurldecode($node->getUrl());
-            $self = Utils::isPathRelative($url) && Utils::isPathToSelf($document, $url);
+    public function mutagens(Document $document, Node $node): array {
+        $url      = rawurldecode($node->getUrl());
+        $self     = Utils::isPathRelative($url) && Utils::isPathToSelf($document, $url);
+        $mutagens = $self
+            ? parent::mutagens($document, $node)
+            : [];
 
-            if ($self) {
-                yield $key => $node;
-            }
-        }
+        return $mutagens;
     }
 }

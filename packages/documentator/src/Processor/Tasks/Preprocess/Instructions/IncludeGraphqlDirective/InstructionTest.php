@@ -6,7 +6,6 @@ use ArrayAccess;
 use GraphQL\Language\Parser;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
@@ -51,7 +50,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters('@test');
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
 
@@ -77,7 +76,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters('@test');
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -104,7 +103,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters('@test');
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
@@ -122,7 +121,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters('@test');
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(

@@ -7,7 +7,6 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
@@ -34,7 +33,7 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
         $fs       = $this->getFileSystem($path->getDirectoryPath());
         $file     = $fs->getFile($path);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
@@ -45,12 +44,7 @@ final class InstructionTest extends TestCase {
 
         $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
 
-        if ($params->summary && $params->description) {
-            self::assertInstanceOf(Document::class, $actual);
-        } else {
-            self::assertIsString($actual);
-        }
-
+        self::assertInstanceOf(Document::class, $actual);
         self::assertSame($expected, mb_trim((string) $actual));
     }
     //</editor-fold>

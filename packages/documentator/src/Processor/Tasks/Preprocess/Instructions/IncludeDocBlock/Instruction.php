@@ -52,8 +52,8 @@ class Instruction implements InstructionContract {
         $document = $target->as(Document::class);
         $result   = match (true) {
             $parameters->summary && $parameters->description => $document,
-            $parameters->summary                             => (string) $context->toSplittable($document)->mutate(new Summary()),
-            $parameters->description                         => (string) $context->toSplittable($document)->mutate(new Body()),
+            $parameters->summary                             => $document->mutate(new Summary()),
+            $parameters->description                         => $document->mutate(new Body()),
             default                                          => '',
         };
 

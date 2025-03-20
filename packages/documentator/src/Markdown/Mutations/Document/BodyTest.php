@@ -137,6 +137,30 @@ final class BodyTest extends TestCase {
                 text text text
                 MARKDOWN,
             ],
+            'Splittable'                 => [
+                <<<'TEXT'
+                <!-- Comment -->
+
+                text text text [link](https://example.com/)
+
+                TEXT,
+                <<<'MARKDOWN'
+                <!-- Comment -->
+
+                # Header
+
+                <!-- Comment -->
+
+                summary
+
+                <!-- Comment -->
+
+                text text[^1] text [link][example]
+
+                [example]: https://example.com/
+                [^1]: Should be removed
+                MARKDOWN,
+            ],
         ];
     }
     // </editor-fold>

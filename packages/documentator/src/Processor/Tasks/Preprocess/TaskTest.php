@@ -167,6 +167,11 @@ final class TaskTest extends TestCase {
             ->shouldUseProperty('path')
             ->value($path);
         $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
+        $file
             ->shouldReceive('as')
             ->with(Document::class)
             ->once()

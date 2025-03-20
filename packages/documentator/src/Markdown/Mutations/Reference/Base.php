@@ -2,32 +2,35 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
-use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image as ImageNode;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
+use Override;
 
-abstract readonly class Base {
+/**
+ * @implements Mutation<LinkNode|ImageNode|ReferenceNode>
+ */
+abstract readonly class Base implements Mutation {
     public function __construct() {
         // empty
     }
 
     /**
-     * @return iterable<mixed, AbstractWebResource|ReferenceNode>
+     * @inheritDoc
      */
-    protected function nodes(Document $document): iterable {
-        // Just in case
-        yield from [];
+    #[Override]
+    public static function nodes(): array {
+        return [
+            LinkNode::class,
+            ImageNode::class,
+            ReferenceNode::class,
+        ];
+    }
 
-        // Search
-        foreach ($document->node->iterator() as $node) {
-            if ($node instanceof AbstractWebResource && Reference::get($node) !== null) {
-                yield $node;
-            } elseif ($node instanceof ReferenceNode) {
-                yield $node;
-            } else {
-                // empty
-            }
-        }
+    protected function isReference(LinkNode|ImageNode|ReferenceNode $node): bool {
+        return $node instanceof ReferenceNode
+            || Reference::get($node) !== null;
     }
 }

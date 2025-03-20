@@ -16,9 +16,6 @@ use function uniqid;
  * @internal
  */
 class Utils {
-    /**
-     * @phpstan-assert-if-true ReferenceNode $node
-     */
     public static function isInstruction(Node $node, Instructions $instructions): bool {
         return $node instanceof ReferenceNode
             && MarkdownUtils::getParent($node, GeneratedNode::class) === null

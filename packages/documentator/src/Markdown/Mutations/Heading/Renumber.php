@@ -5,7 +5,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Node\Block\Document as DocumentNode;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Node\NodeIterator;
 use Override;
 
 use function mb_rtrim;
@@ -16,39 +21,53 @@ use function str_replace;
 
 /**
  * Updates all headings levels.
+ *
+ * @implements Mutation<DocumentNode>
  */
-readonly class Renumber extends Base implements Mutation {
+readonly class Renumber implements Mutation {
+    protected const int MaxLevel = 6;
+
     public function __construct(
         /**
          * @var int<1, 6>
          */
         protected int $startLevel,
     ) {
-        parent::__construct();
+        // empty
     }
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document): iterable {
-        // Just in case
-        yield from [];
+    public static function nodes(): array {
+        return [
+            DocumentNode::class,
+        ];
+    }
 
-        // Process
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function mutagens(Document $document, Node $node): array {
+        // Update?
         $initial = static::MaxLevel;
-        $nodes   = $this->nodes($document, $initial);
+        $nodes   = $this->headings($node, $initial);
         $diff    = $this->startLevel - $initial;
 
         if ($diff === 0) {
-            return;
+            return [];
         }
 
-        foreach ($nodes as $node) {
-            $location = LocationData::get($node);
+        // Process
+        $mutagens = [];
+
+        foreach ($nodes as $head) {
+            $location = LocationData::get($head);
             $heading  = $document->getText($location);
             $setext   = Utils::isHeadingSetext($heading);
-            $level    = min(static::MaxLevel, $node->getLevel() + $diff);
+            $level    = min(static::MaxLevel, $head->getLevel() + $diff);
             $eols     = str_repeat("\n", mb_strlen($heading) - mb_strlen(mb_rtrim($heading, "\n")));
             $text     = Utils::getHeadingText($heading);
             $prefix   = '';
@@ -61,22 +80,27 @@ readonly class Renumber extends Base implements Mutation {
                 $text   = str_replace("\n", ' ', $text);
             }
 
-            yield [$location, $prefix.$text.$suffix.$eols];
+            $mutagens[] = new Replace($location, $prefix.$text.$suffix.$eols);
         }
+
+        return $mutagens;
     }
 
     /**
-     * @inheritDoc
+     * @return list<Heading>
      */
-    #[Override]
-    protected function nodes(Document $document, int &$initial = 0): iterable {
-        $nodes = [];
+    protected function headings(DocumentNode $document, int &$initial = 0): array {
+        $headings = [];
 
-        foreach (parent::nodes($document) as $node) {
-            $initial = min($initial, $node->getLevel());
-            $nodes[] = $node;
+        foreach ($document->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
+            if (!($node instanceof Heading)) {
+                continue;
+            }
+
+            $initial    = min($initial, $node->getLevel());
+            $headings[] = $node;
         }
 
-        return $nodes;
+        return $headings;
     }
 }

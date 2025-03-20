@@ -6,7 +6,6 @@ use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
@@ -26,7 +25,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('command to execute');
         $expected = 'result';
         $command  = $params->target;
-        $context  = new Context($file, Mockery::mock(Document::class), new Node(), new Nop());
+        $context  = new Context($file, Mockery::mock(Document::class), new Node());
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();

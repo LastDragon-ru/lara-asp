@@ -6,12 +6,15 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\EndMarkerLocation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Data\StartMarkerLocation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node;
-use League\CommonMark\Node\NodeIterator;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as GeneratedNode;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
+use League\CommonMark\Node\Node;
 use Override;
 
 /**
  * Removes start and end marks of Generated block.
+ *
+ * @implements Mutation<GeneratedNode>
  */
 readonly class Unwrap implements Mutation {
     public function __construct() {
@@ -22,30 +25,29 @@ readonly class Unwrap implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document): iterable {
-        // Just in case
-        yield from [];
+    public static function nodes(): array {
+        return [
+            GeneratedNode::class,
+        ];
+    }
 
-        // Process
-        foreach ($document->node->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
-            // Generated?
-            if (!($node instanceof Node)) {
-                continue;
-            }
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function mutagens(Document $document, Node $node): array {
+        $startMarker = StartMarkerLocation::optional()->get($node);
+        $endMarker   = EndMarkerLocation::optional()->get($node);
+        $mutagens    = [];
 
-            // Start?
-            $startMarker = StartMarkerLocation::optional()->get($node);
-
-            if ($startMarker !== null) {
-                yield [$startMarker, null];
-            }
-
-            // End
-            $endMarker = EndMarkerLocation::optional()->get($node);
-
-            if ($endMarker !== null) {
-                yield [$endMarker, null];
-            }
+        if ($startMarker !== null) {
+            $mutagens[] = new Delete($startMarker);
         }
+
+        if ($endMarker !== null) {
+            $mutagens[] = new Delete($endMarker);
+        }
+
+        return $mutagens;
     }
 }

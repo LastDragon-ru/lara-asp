@@ -3,15 +3,16 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Extraction;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Nop;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use Mockery;
+use League\CommonMark\Node\Node;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
+use function mb_trim;
 
 /**
  * @internal
@@ -29,49 +30,19 @@ final class DocumentTest extends TestCase {
         self::assertSame($expected, $actual);
     }
 
-    public function testMutateMutation(): void {
+    /**
+     * @param Mutation<covariant Node>|null $mutation
+     */
+    #[DataProvider('dataProviderMutate')]
+    public function testMutate(string $expected, string $content, ?Mutation $mutation): void {
         $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse('');
-        $mutation = Mockery::mock(Mutation::class);
-        $mutation
-            ->shouldReceive('__invoke')
-            ->with(Mockery::type(Document::class))
-            ->once()
-            ->andReturn([
-                // empty
-            ]);
+        $document = $markdown->parse($content);
+        $mutated  = $document->mutate($mutation ?? []);
+        $actual   = (string) $mutated;
 
-        $clone   = clone $document;
-        $mutated = $document->mutate($mutation);
-
-        self::assertNotSame($document, $mutated);
-        self::assertEquals($clone, $document);
-    }
-
-    public function testMutateExtraction(): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse('');
-        $mutation = Mockery::mock(Extraction::class);
-        $mutation
-            ->shouldReceive('__invoke')
-            ->with(Mockery::type(Document::class))
-            ->once()
-            ->andReturn([
-                // empty
-            ]);
-
-        $clone   = clone $document;
-        $mutated = $document->mutate($mutation);
-
-        self::assertNotSame($document, $mutated);
-        self::assertEquals($clone, $document);
-    }
-
-    #[DataProvider('dataProviderToString')]
-    public function testToString(string $expected, string $content, ?Mutation $mutation): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse($content)->mutate($mutation ?? new Nop());
-        $actual   = (string) $document;
+        if (mb_trim($expected) !== mb_trim($content)) {
+            self::assertNotSame($document, $mutated);
+        }
 
         self::assertSame($expected, $actual);
     }
@@ -115,9 +86,9 @@ final class DocumentTest extends TestCase {
     }
 
     /**
-     * @return array<string, array{string, string, ?Mutation}>
+     * @return array<string, array{string, string, ?Mutation<covariant Node>}>
      */
-    public static function dataProviderToString(): array {
+    public static function dataProviderMutate(): array {
         return [
             'Blank line on the end'                      => [
                 <<<'MARKDOWN'
@@ -181,7 +152,7 @@ final class DocumentTest extends TestCase {
                 fsdfsdfsdf
 
                 MARKDOWN,
-                new Changeset([[new Append(), 'fsdfsdfsdf']]),
+                new Changeset([new Replace(new Append(), 'fsdfsdfsdf')]),
             ],
             'No blank line on the end + Append Mutation' => [
                 <<<'MARKDOWN'
@@ -194,13 +165,14 @@ final class DocumentTest extends TestCase {
                 fsdfsdfsdf
                 fsdfsdfsdf
                 MARKDOWN,
-                new Changeset([[new Append(), 'fsdfsdfsdf']]),
+                new Changeset([new Replace(new Append(), 'fsdfsdfsdf')]),
             ],
             'Blank'                                      => [
-                '',
                 <<<'MARKDOWN'
 
 
+                MARKDOWN,
+                <<<'MARKDOWN'
 
 
                 MARKDOWN,

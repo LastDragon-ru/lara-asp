@@ -10,10 +10,13 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image as ImageNode;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
+use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use Override;
 
@@ -34,6 +37,8 @@ use const PHP_URL_PATH;
  *
  * Please note that links may/will be reformatted (because there is no
  * information about their original form)
+ *
+ * @implements Mutation<DocumentNode|LinkNode|ImageNode|ReferenceNode>
  */
 readonly class Move implements Mutation {
     public function __construct(
@@ -46,105 +51,93 @@ readonly class Move implements Mutation {
      * @inheritDoc
      */
     #[Override]
-    public function __invoke(Document $document): iterable {
-        // Just in case
-        yield from [];
-
-        // No path?
-        $docPath = $document->path;
-
-        if ($docPath === null) {
-            $document->path = $this->path->getNormalizedPath();
-
-            return;
-        }
-
-        // Same?
-        $newPath = $docPath->getPath($this->path);
-
-        if ($docPath->isEqual($newPath)) {
-            return;
-        }
-
-        // Update
-        foreach ($this->nodes($document) as $node) {
-            // Changes
-            $location = Location::get($node);
-            $text     = null;
-
-            if ($node instanceof Link || $node instanceof Image) {
-                $content      = Content::get($node);
-                $location     = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
-                $origin       = mb_trim($document->getText($location));
-                $titleValue   = (string) $node->getTitle();
-                $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);
-                $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
-                $targetValue  = $this->target($document, $docPath, $newPath, $node->getUrl());
-                $targetWrap   = mb_substr(mb_ltrim(mb_ltrim($origin, '(')), 0, 1) === '<';
-                $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
-                $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
-            } elseif ($node instanceof ReferenceNode) {
-                $origin       = mb_trim($document->getText($location));
-                $label        = $node->getLabel();
-                $titleValue   = $node->getTitle();
-                $titleWrapper = mb_substr($origin, -1, 1);
-                $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
-                $targetValue  = $this->target($document, $docPath, $newPath, $node->getDestination());
-                $targetWrap   = (bool) preg_match('/^\['.preg_quote($node->getLabel(), '/').']:\s+</u', $origin);
-                $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
-                $text         = mb_trim("[{$label}]: {$target} {$title}");
-
-                if ($location->startLine !== $location->endLine) {
-                    $padding = $location->internalPadding ?? $location->startLinePadding;
-                    $last    = $document->getText([
-                        new Coordinate(
-                            $location->endLine,
-                            $padding,
-                            $location->length,
-                            $padding,
-                        ),
-                    ]);
-
-                    if ($last === '') {
-                        $text .= "\n";
-                    }
-                }
-            } else {
-                // skipped
-            }
-
-            if ($text !== null) {
-                yield [$location, $text];
-            }
-        }
-
-        // Set
-        $document->path = $newPath;
+    public static function nodes(): array {
+        return [
+            DocumentNode::class,
+            LinkNode::class,
+            ImageNode::class,
+            ReferenceNode::class,
+        ];
     }
 
     /**
-     * @return iterable<mixed, Node>
+     * @inheritDoc
      */
-    private function nodes(Document $document): iterable {
-        // Just in case
-        yield from [];
+    #[Override]
+    public function mutagens(Document $document, Node $node): array {
+        $mutagens = [];
 
-        // Search
-        foreach ($document->node->iterator() as $node) {
-            $url = null;
-
-            if ($node instanceof AbstractWebResource && Reference::get($node) === null) {
-                $url = rawurldecode($node->getUrl());
-            } elseif ($node instanceof ReferenceNode) {
-                $url = rawurldecode($node->getDestination());
+        if ($node instanceof DocumentNode) {
+            if ($document->path !== null) {
+                $mutagens[] = new Finalize(function (Document $document): void {
+                    $document->path = $document->path?->getPath($this->path);
+                });
             } else {
-                // empty
+                $mutagens[] = new Finalize(function (Document $document): void {
+                    $document->path = $this->path->getNormalizedPath();
+                });
+            }
+        } elseif ($document->path === null || $document->path->isEqual($document->path->getPath($this->path))) {
+            // Path already equal to new path -> skip
+        } elseif (!$this->isPathRelative($node)) {
+            // Path is not relative -> skip
+        } elseif ($node instanceof AbstractWebResource && Reference::get($node) === null) {
+            $path         = $document->path->getPath($this->path);
+            $content      = Content::get($node);
+            $location     = Location::get($node);
+            $location     = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
+            $origin       = mb_trim($document->getText($location));
+            $titleValue   = (string) $node->getTitle();
+            $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);
+            $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
+            $targetValue  = $this->target($document, $document->path, $path, $node->getUrl());
+            $targetWrap   = mb_substr(mb_ltrim(mb_ltrim($origin, '(')), 0, 1) === '<';
+            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
+            $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
+            $mutagens[]   = new Replace($location, $text);
+        } elseif ($node instanceof ReferenceNode) {
+            $path         = $document->path->getPath($this->path);
+            $location     = Location::get($node);
+            $origin       = mb_trim($document->getText($location));
+            $label        = $node->getLabel();
+            $titleValue   = $node->getTitle();
+            $titleWrapper = mb_substr($origin, -1, 1);
+            $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
+            $targetValue  = $this->target($document, $document->path, $path, $node->getDestination());
+            $targetWrap   = (bool) preg_match('/^\['.preg_quote($node->getLabel(), '/').']:\s+</u', $origin);
+            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
+            $text         = mb_trim("[{$label}]: {$target} {$title}");
+
+            if ($location->startLine !== $location->endLine) {
+                $padding = $location->internalPadding ?? $location->startLinePadding;
+                $last    = $document->getText([
+                    new Coordinate(
+                        $location->endLine,
+                        $padding,
+                        $location->length,
+                        $padding,
+                    ),
+                ]);
+
+                if ($last === '') {
+                    $text .= "\n";
+                }
             }
 
-            if ($url !== null && Utils::isPathRelative($url)) {
-                yield $node;
-            }
+            $mutagens[] = new Replace($location, $text);
+        } else {
+            // empty
         }
+
+        return $mutagens;
+    }
+
+    private function isPathRelative(LinkNode|ImageNode|ReferenceNode $node): bool {
+        $url      = $node instanceof AbstractWebResource ? $node->getUrl() : $node->getDestination();
+        $url      = rawurldecode($url);
+        $relative = Utils::isPathRelative($url);
+
+        return $relative;
     }
 
     private function target(Document $document, FilePath $docPath, FilePath $newPath, string $target): string {
