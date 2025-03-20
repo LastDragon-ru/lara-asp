@@ -21,6 +21,7 @@ use Traversable;
  */
 readonly class ExecutorTraversable implements IteratorAggregate {
     public function __construct(
+        private File $file,
         /**
          * @var Dependency<*>
          */
@@ -30,7 +31,7 @@ readonly class ExecutorTraversable implements IteratorAggregate {
          */
         private Traversable $resolved,
         /**
-         * @var Closure(Dependency<*>, TValue): mixed
+         * @var Closure(File, Dependency<*>, TValue): mixed
          */
         private Closure $handler,
     ) {
@@ -43,7 +44,7 @@ readonly class ExecutorTraversable implements IteratorAggregate {
     #[Override]
     public function getIterator(): Generator {
         foreach ($this->resolved as $key => $value) {
-            ($this->handler)($this->dependency, $value);
+            ($this->handler)($this->file, $this->dependency, $value);
 
             yield $key => $value;
         }

@@ -23,7 +23,7 @@ readonly class DirectoryReference implements Dependency {
     }
 
     #[Override]
-    public function __invoke(FileSystem $fs): mixed {
+    public function __invoke(FileSystem $fs): Directory {
         try {
             return $fs->getDirectory($this->reference);
         } catch (DirectoryNotFound $exception) {
