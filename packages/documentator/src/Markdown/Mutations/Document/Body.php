@@ -6,15 +6,12 @@ use Generator;
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines as LinesData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use Override;
-
-use function array_key_first;
-use function array_key_last;
 
 /**
  * @implements IteratorAggregate<array-key, Mutation<covariant Node>>
@@ -45,12 +42,12 @@ readonly class Body implements IteratorAggregate {
              */
             #[Override]
             public function mutagens(Document $document, Node $node): array {
-                $lines         = LinesData::get($node);
-                $startLine     = array_key_first($lines);
-                $bodyEndLine   = array_key_last($lines);
+                $location      = LocationData::get($node);
+                $startLine     = $location->startLine;
+                $bodyEndLine   = $location->endLine;
                 $bodyStartLine = (SummaryData::get($document->node) ?? TitleData::get($document->node))?->getEndLine();
                 $mutagens      = $bodyStartLine !== null && $bodyStartLine + 1 > $startLine
-                    ? [new Extract(new Location($bodyStartLine + 1, $bodyEndLine ?? $bodyStartLine + 1))]
+                    ? [new Extract(new Location($bodyStartLine + 1, $bodyEndLine))]
                     : [];
 
                 return $mutagens;
