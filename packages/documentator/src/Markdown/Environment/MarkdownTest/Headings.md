@@ -14,11 +14,15 @@
 ## Heading ##
 ###   Heading    ###
 
+Heading
+=========
 Heading *text*
 =========
 
 Heading
 *text*
+---------
+Heading
 ---------
 
 > # Heading
