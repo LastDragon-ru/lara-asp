@@ -252,7 +252,7 @@ class Locator {
 
         // Some nodes like links/images may have content
         if ($node instanceof Link || $node instanceof Image) {
-            $content = $location->withLength($marker - 1)->withOffset(1 + (int) ($node instanceof Image));
+            $content = $location->withLength($marker - 1)->moveOffset(1 + (int) ($node instanceof Image));
 
             Content::set($node, $content);
         }

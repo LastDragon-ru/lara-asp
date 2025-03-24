@@ -7,6 +7,8 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use Override;
 use Traversable;
 
+use function max;
+
 /**
  * @implements IteratorAggregate<mixed, Coordinate>
  */
@@ -65,12 +67,34 @@ readonly class Location implements IteratorAggregate {
     /**
      * @return new<self>
      */
+    public function moveOffset(int $move): self {
+        if ($move === 0) {
+            return $this;
+        }
+
+        $offset = max(0, $this->offset + $move);
+
+        return new self(
+            $this->startLine,
+            $this->endLine,
+            $offset,
+            $this->length !== null && $this->startLine === $this->endLine
+                ? $this->length - ($offset - $this->offset)
+                : $this->length,
+            $this->startLinePadding,
+            $this->internalPadding,
+        );
+    }
+
+    /**
+     * @return new<self>
+     */
     public function withOffset(int $offset): self {
         return new self(
             $this->startLine,
             $this->endLine,
-            $this->offset + $offset,
-            $this->length !== null ? $this->length - $offset : $this->length,
+            $offset,
+            $this->length,
             $this->startLinePadding,
             $this->internalPadding,
         );

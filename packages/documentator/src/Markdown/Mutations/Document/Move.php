@@ -85,7 +85,7 @@ readonly class Move implements Mutation {
             $path         = $document->path->getPath($this->path);
             $content      = Content::get($node);
             $location     = Location::get($node);
-            $location     = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
+            $location     = $location->moveOffset(($content->offset - $location->offset) + (int) $content->length + 1);
             $origin       = mb_trim($document->getText($location));
             $titleValue   = (string) $node->getTitle();
             $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);

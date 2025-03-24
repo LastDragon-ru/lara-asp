@@ -23,7 +23,7 @@ readonly class Unlink extends Base {
 
         return [
             new Delete($location->withLength(1)),
-            new Delete($location->withOffset(($content->offset - $location->offset) + (int) $content->length)),
+            new Delete($location->moveOffset(($content->offset - $location->offset) + (int) $content->length)),
         ];
     }
 }
