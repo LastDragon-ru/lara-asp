@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
@@ -161,8 +160,8 @@ class Utils {
      * @see MakeSplittable
      */
     public static function getTitle(Document $document): ?string {
-        $title = mb_trim((string) $document->mutate(new Title(), new Unlink()));
-        $title = mb_trim(str_replace("\n", ' ', static::getHeadingText($title)));
+        $title = mb_trim((string) $document->mutate(new Title()));
+        $title = mb_trim(str_replace("\n", ' ', $title));
         $title = $title === '' ? Text::getPathTitle((string) $document->path) : $title;
         $title = $title === '' ? null : $title;
 

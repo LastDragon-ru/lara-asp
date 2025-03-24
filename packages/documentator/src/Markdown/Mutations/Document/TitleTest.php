@@ -48,10 +48,7 @@ final class TitleTest extends TestCase {
                 MARKDOWN,
             ],
             'The # is empty'      => [
-                <<<'MARKDOWN'
-                #
-
-                MARKDOWN,
+                '',
                 <<<'MARKDOWN'
                 #
 
@@ -60,7 +57,7 @@ final class TitleTest extends TestCase {
             ],
             'Empty line before #' => [
                 <<<'MARKDOWN'
-                # Header
+                Header
 
                 MARKDOWN,
                 <<<'MARKDOWN'
@@ -72,7 +69,7 @@ final class TitleTest extends TestCase {
             ],
             'Comment before #'    => [
                 <<<'MARKDOWN'
-                # Header
+                Header
 
                 MARKDOWN,
                 <<<'MARKDOWN'
@@ -86,21 +83,22 @@ final class TitleTest extends TestCase {
             'Setext'              => [
                 <<<'MARKDOWN'
                 Header
-                =====
+                second line
 
                 MARKDOWN,
                 <<<'MARKDOWN'
                 <!-- Comment -->
 
                 Header
+                second line
                 =====
 
                 fsdfsdfsdf
                 MARKDOWN,
             ],
-            'Splittable'          => [
+            'Splittable + Unlink' => [
                 <<<'MARKDOWN'
-                # Header [link](https://example.com/)
+                Header link
 
                 MARKDOWN,
                 <<<'MARKDOWN'

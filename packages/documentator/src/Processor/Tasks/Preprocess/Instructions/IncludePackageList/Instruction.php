@@ -10,8 +10,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
@@ -98,8 +96,8 @@ readonly class Instruction implements InstructionContract {
 
             // Add
             $move       = new Move($context->file->getFilePath($readme->getName()));
-            $title      = mb_trim((string) $content->mutate(new Title(), new Unlink()));
-            $title      = mb_trim(str_replace("\n", ' ', Utils::getHeadingText($title)));
+            $title      = mb_trim((string) $content->mutate(new Title()));
+            $title      = mb_trim(str_replace("\n", ' ', $title));
             $title      = $title === '' ? Text::getPathTitle($package->getName()) : $title;
             $summary    = mb_trim((string) $content->mutate(new Summary())->mutate($move));
             $upgrade    = $package->getFilePath('UPGRADE.md');
