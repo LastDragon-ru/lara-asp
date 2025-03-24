@@ -204,15 +204,15 @@ final class MutatorTest extends TestCase {
                     [
                         new Location(1, 6),
                         [
-                            [new Location(1, 1), null],
+                            [new Location(0, 0), null],
+                            [new Location(2, 2, 15, 27), null],
                             [new Location(3, 3, 15, 27), null],
-                            [new Location(4, 4, 15, 27), null],
                         ],
                     ],
                     [
                         new Location(9, 9),
                         [
-                            [new Location(9, 9, 15, 27), null],
+                            [new Location(0, 0, 15, 27), null],
                         ],
                     ],
                 ],

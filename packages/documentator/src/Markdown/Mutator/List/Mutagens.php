@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\List;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Exceptions\LocationsCannotBeMerged;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Exceptions\LocationsUnhandledPosition;
@@ -40,14 +39,14 @@ class Mutagens {
     }
 
     /**
-     * @return Traversable<?Location, array<array-key, array{iterable<mixed, Coordinate>, ?string}>>
+     * @return Traversable<?Location, array<array-key, array{Location, ?string}>>
      */
     public function getChanges(): Traversable {
         if ($this->zones instanceof ZoneDefault) {
-            yield null => $this->changes($this->zones->mutagens);
+            yield null => $this->changes(null, $this->zones->mutagens);
         } else {
             foreach ($this->zones as $zone) {
-                yield $zone->location => $this->changes($zone->mutagens);
+                yield $zone->location => $this->changes($zone->location, $zone->mutagens);
             }
         }
 
@@ -57,15 +56,28 @@ class Mutagens {
     /**
      * @param list<Replace|Delete> $mutagens
      *
-     * @return array<array-key, array{iterable<mixed, Coordinate>, ?string}>
+     * @return array<array-key, array{Location, ?string}>
      */
-    private function changes(array $mutagens): array {
+    private function changes(?Location $location, array $mutagens): array {
         $changes = [];
 
         foreach ($mutagens as $mutagen) {
+            // The `Editor` will reset/lose lines/offset after extraction, thus
+            // we need to update our locations to they stay correct.
+            $target = $mutagen->location;
+
+            if ($location !== null) {
+                if ($location->offset !== 0 && $target->startLine === $location->startLine) {
+                    $target = $target->withOffset($target->offset - $location->offset);
+                }
+
+                $target = $target->move(-$location->startLine);
+            }
+
+            // Add
             $changes[] = match (true) {
-                $mutagen instanceof Replace => [$mutagen->location, $mutagen->string],
-                default                     => [$mutagen->location, null],
+                $mutagen instanceof Replace => [$target, $mutagen->string],
+                default                     => [$target, null],
             };
         }
 

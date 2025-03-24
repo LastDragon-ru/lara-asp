@@ -14,7 +14,7 @@ readonly class Extractor extends Base {
      * @param array<int, string>                           $lines
      * @param iterable<mixed, iterable<mixed, Coordinate>> $locations
      *
-     * @return array<int, string>
+     * @return list<string>
      */
     public function __invoke(array $lines, iterable $locations): array {
         $prepared = $this->unpack($locations);
@@ -34,7 +34,7 @@ readonly class Extractor extends Base {
                 $line[] = mb_substr($lines[$number], $coordinate->offset, $coordinate->length);
             }
 
-            $result[$number] = implode(' ', $line);
+            $result[] = implode(' ', $line);
         }
 
         return $result;

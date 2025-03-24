@@ -15,8 +15,6 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function iterator_to_array;
-
 /**
  * @internal
  */
@@ -141,10 +139,10 @@ final class MutagensTest extends TestCase {
         $actual   = [];
 
         foreach ($mutagens->getChanges() as $location => $changes) {
-            $actual[] = [$location, iterator_to_array($changes)];
+            $actual[] = [$location, $changes];
         }
 
-        self::assertSame($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     public function testGetFinalizers(): void {
@@ -196,28 +194,28 @@ final class MutagensTest extends TestCase {
             'zone'    => [
                 [
                     [
-                        $aLocation,
+                        new Location(1, 3, 10),
                         [
-                            [$aLocation, null],
-                            [$bLocation, 'text'],
+                            [new Location(0, 2, 5, 5), null],
+                            [new Location(1, 1), 'text'],
                         ],
                     ],
                     [
-                        $bLocation,
+                        new Location(4, 4),
                         [
-                            [$aLocation, null],
-                            [$bLocation, 'text'],
+                            [new Location(0, 0), null],
+                            [new Location(0, 0), 'text'],
                         ],
                     ],
                 ],
                 [
-                    new Zone($aLocation, [
-                        new Delete($aLocation),
-                        new Replace($bLocation, 'text'),
+                    new Zone(new Location(1, 3, 10), [
+                        new Delete(new Location(1, 3, 15, 5)),
+                        new Replace(new Location(2, 2), 'text'),
                     ]),
-                    new Zone($bLocation, [
-                        new Delete($aLocation),
-                        new Replace($bLocation, 'text'),
+                    new Zone(new Location(4, 4), [
+                        new Delete(new Location(4, 4)),
+                        new Replace(new Location(4, 4), 'text'),
                     ]),
                 ],
             ],
