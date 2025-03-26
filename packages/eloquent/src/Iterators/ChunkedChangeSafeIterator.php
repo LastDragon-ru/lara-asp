@@ -87,7 +87,7 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
     /**
      * @param TItem|null $item
      */
-    protected function column(Model|null $item): mixed {
+    protected function column(?Model $item): mixed {
         $value  = null;
         $column = explode('.', $this->getColumn());
         $column = mb_trim(end($column), '`"[]');

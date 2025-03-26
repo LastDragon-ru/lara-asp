@@ -376,7 +376,7 @@ abstract class InputObject implements TypeDefinition {
         Manipulator $manipulator,
         InputFieldSource|ObjectFieldSource|InterfaceFieldSource $field,
         Context $context,
-    ): string|null {
+    ): ?string {
         $description = null;
 
         if ($field instanceof InputFieldSource) {

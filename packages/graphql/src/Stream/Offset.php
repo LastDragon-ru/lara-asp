@@ -11,8 +11,8 @@ class Offset implements Serializable {
      */
     public function __construct(
         public string $path,
-        public int|null $offset = null,
-        public array|null $cursor = null,
+        public ?int $offset = null,
+        public ?array $cursor = null,
     ) {
         // empty
     }

@@ -22,7 +22,7 @@ class DateTimeRule extends DateRule {
     }
 
     #[Override]
-    public function getValue(mixed $value): DateTimeInterface|null {
+    public function getValue(mixed $value): ?DateTimeInterface {
         $value = parent::getValue($value);
         $tz    = $this->config->getInstance()->get('app.timezone') ?? 'UTC';
 
