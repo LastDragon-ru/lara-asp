@@ -36,6 +36,7 @@ final class FileSystemTest extends TestCase {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
         $file         = $fs->getFile($path);
+        $hook         = $fs->getFile(Hook::After);
         $readonly     = $fs->getFile(__FILE__);
         $relative     = $fs->getFile(basename(__FILE__));
         $internal     = $fs->getFile(self::getTestData()->path('c.html'));
@@ -66,6 +67,11 @@ final class FileSystemTest extends TestCase {
         self::assertSame(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
             (string) $fromFilePath,
+        );
+
+        self::assertSame(
+            (string) (new DirectoryPath(__DIR__))->getFilePath('@.'.Hook::After->value),
+            (string) $hook,
         );
     }
 
@@ -662,6 +668,7 @@ final class FileSystemTest extends TestCase {
         $aFileSystemBDirectory = $aFileSystem->getDirectory($bPath->getDirectoryPath('b'));
         $aFileSystemFFile      = $aFileSystem->getFile($fPath);
         $aFileSystemDDirectory = $aFileSystem->getDirectory($dPath);
+        $aFileSystemAHook      = $aFileSystem->getFile(Hook::Before);
         $bFileSystem           = $this->getFileSystem($aPath, $aPath);
         $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
         $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
@@ -687,5 +694,8 @@ final class FileSystemTest extends TestCase {
         self::assertSame('← b/', $aFileSystem->getPathname($aFileSystemBDirectory->getPath()));
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
         self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory->getPath()));
+
+        self::assertSame('@ :before', $aFileSystem->getPathname($aFileSystemAHook));
+        self::assertSame('@ :before', $bFileSystem->getPathname($aFileSystemAHook));
     }
 }

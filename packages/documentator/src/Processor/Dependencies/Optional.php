@@ -13,7 +13,7 @@ use Override;
 use Traversable;
 
 /**
- * @template TValue of Traversable<mixed, Directory|File>|Directory|File|null
+ * @template TValue of Traversable<mixed, Directory|File>|Directory|File
  *
  * @implements Dependency<TValue|null>
  */
@@ -27,8 +27,11 @@ readonly class Optional implements Dependency {
         // empty
     }
 
+    /**
+     * @return TValue|null
+     */
     #[Override]
-    public function __invoke(FileSystem $fs): mixed {
+    public function __invoke(FileSystem $fs): Traversable|Directory|File|null {
         $resolved = null;
 
         try {
