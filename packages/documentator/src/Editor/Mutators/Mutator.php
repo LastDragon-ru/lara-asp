@@ -17,6 +17,7 @@ use function array_values;
 use function count;
 use function mb_rtrim;
 use function mb_substr;
+use function min;
 use function usort;
 
 use const PHP_INT_MAX;
@@ -59,7 +60,7 @@ readonly class Mutator extends Base {
             $count   = count($text);
             $prefix  = mb_substr($line, 0, $coordinate->offset);
             $suffix  = $coordinate->length !== null
-                ? mb_substr($line, $coordinate->offset + $coordinate->length)
+                ? mb_substr($line, min(PHP_INT_MAX, $coordinate->offset + $coordinate->length))
                 : '';
             $padding = mb_substr($line, 0, $coordinate->padding);
 

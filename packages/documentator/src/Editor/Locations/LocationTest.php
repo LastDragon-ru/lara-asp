@@ -9,6 +9,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function iterator_to_array;
 
+use const PHP_INT_MAX;
+
 /**
  * @internal
  */
@@ -61,6 +63,36 @@ final class LocationTest extends TestCase {
     #[DataProvider('dataProviderMoveOffset')]
     public function testMoveOffset(Location $expected, Location $location, int $move): void {
         self::assertEquals($expected, $location->moveOffset($move));
+    }
+
+    public function testBefore(): void {
+        self::assertEquals(
+            new Location(3, 3, 15, 0, 2, 4),
+            (new Location(3, 5, 15, 5, 2, 4))->before(),
+        );
+    }
+
+    public function testAfter(): void {
+        self::assertEquals(
+            new Location(5, 5, 5, 0, 4, null),
+            (new Location(3, 5, 15, 5, 2, 4))->after(),
+        );
+        self::assertEquals(
+            new Location(5, 5, 5, 0, 2, null),
+            (new Location(3, 5, 15, 5, 2))->after(),
+        );
+        self::assertEquals(
+            new Location(5, 5, PHP_INT_MAX, 0),
+            (new Location(3, 5, 15))->after(),
+        );
+        self::assertEquals(
+            new Location(3, 3, PHP_INT_MAX, 0),
+            (new Location(3, 3, 15))->after(),
+        );
+        self::assertEquals(
+            new Location(3, 3, 20, 0),
+            (new Location(3, 3, 15, 5))->after(),
+        );
     }
     // </editor-fold>
 

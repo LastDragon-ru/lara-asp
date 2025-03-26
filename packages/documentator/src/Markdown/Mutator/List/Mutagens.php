@@ -473,6 +473,29 @@ class Mutagens {
                         $position = Position::Intersect;
                     }
                     break;
+                case Position::Wrap:
+                case Position::Inside:
+                    // Zero-length locations are the inserts, so they are located at
+                    // TouchStart/TouchEnd but not Inside/Wrap.
+                    $aInsert = $a->length === 0 && $a->startLine === $a->endLine;
+                    $bInsert = $b->length === 0 && $b->startLine === $b->endLine;
+
+                    if ($aInsert || $bInsert) {
+                        $wrap = $position === Position::Wrap;
+
+                        if ($aInsert) {
+                            $position = $a->offset > $b->offset ? Position::TouchEnd : Position::TouchStart;
+                        } else {
+                            $position = $a->offset < $b->offset ? Position::TouchEnd : Position::TouchStart;
+                        }
+
+                        if ($wrap) {
+                            $position = $position === Position::TouchStart
+                                ? Position::TouchEnd
+                                : Position::TouchStart;
+                        }
+                    }
+                    break;
                 default:
                     // as is
                     break;

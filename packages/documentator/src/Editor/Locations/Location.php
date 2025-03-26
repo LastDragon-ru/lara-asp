@@ -8,6 +8,9 @@ use Override;
 use Traversable;
 
 use function max;
+use function min;
+
+use const PHP_INT_MAX;
 
 /**
  * @implements IteratorAggregate<mixed, Coordinate>
@@ -32,7 +35,7 @@ readonly class Location implements IteratorAggregate {
         if ($this->startLine === $this->endLine) {
             yield new Coordinate(
                 $this->startLine,
-                $this->startLinePadding + $this->offset,
+                min(PHP_INT_MAX, $this->startLinePadding + $this->offset),
                 $this->length,
                 $this->startLinePadding,
             );
@@ -41,7 +44,7 @@ readonly class Location implements IteratorAggregate {
                 yield match (true) {
                     $line === $this->startLine => new Coordinate(
                         $line,
-                        $this->startLinePadding + $this->offset,
+                        min(PHP_INT_MAX, $this->startLinePadding + $this->offset),
                         null,
                         $this->startLinePadding,
                     ),
@@ -62,6 +65,35 @@ readonly class Location implements IteratorAggregate {
         }
 
         yield from [];
+    }
+
+    /**
+     * @return new<self>
+     */
+    public function before(): self {
+        return new self(
+            $this->startLine,
+            $this->startLine,
+            $this->offset,
+            0,
+            $this->startLinePadding,
+            $this->internalPadding,
+        );
+    }
+
+    /**
+     * @return new<self>
+     */
+    public function after(): self {
+        return new self(
+            $this->endLine,
+            $this->endLine,
+            $this->length !== null
+                ? min(PHP_INT_MAX, ($this->startLine === $this->endLine ? $this->offset : 0) + $this->length)
+                : PHP_INT_MAX,
+            0,
+            $this->internalPadding ?? $this->startLinePadding,
+        );
     }
 
     /**

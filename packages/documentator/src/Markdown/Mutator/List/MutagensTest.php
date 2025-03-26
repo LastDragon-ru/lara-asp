@@ -357,145 +357,190 @@ final class MutagensTest extends TestCase {
      */
     public static function dataProviderPosition(): array {
         return [
-            'Before'                    => [
+            'Before'                           => [
                 Position::Before,
                 new Location(4, 5),
                 new Location(1, 2),
             ],
-            'Touch Before'              => [
+            'Touch Before'                     => [
                 Position::TouchStart,
                 new Location(4, 5),
                 new Location(1, 3),
             ],
-            'Before (offset)'           => [
-                Position::Before,
-                new Location(4, 5, 1),
-                new Location(1, 3),
-            ],
-            'Before (length)'           => [
-                Position::Before,
-                new Location(4, 5),
-                new Location(1, 3, 0, 10),
-            ],
-            'Before (intersect)'        => [
-                Position::Intersect,
-                new Location(3, 5, 0, 10),
-                new Location(1, 3),
-            ],
-            'Before (touch)'            => [
+            'Touch Before (offset + length)'   => [
                 Position::TouchStart,
                 new Location(3, 5, 10),
                 new Location(1, 3, 0, 9),
             ],
-            'Before (before)'           => [
+            'Touch Before (insert)'            => [
+                Position::TouchStart,
+                new Location(1, 10, 1, 5),
+                (new Location(1, 10, 1, 5))->before(),
+            ],
+            'Touch Before (insert; same line)' => [
+                Position::TouchStart,
+                new Location(1, 1, 1, 5),
+                (new Location(1, 1, 1, 5))->before(),
+            ],
+            'Touch Before (insert - location)' => [
+                Position::TouchStart,
+                (new Location(1, 10, 1, 5))->after(),
+                new Location(1, 10, 1, 5),
+            ],
+            'Before (offset)'                  => [
+                Position::Before,
+                new Location(4, 5, 1),
+                new Location(1, 3),
+            ],
+            'Before (length)'                  => [
+                Position::Before,
+                new Location(4, 5),
+                new Location(1, 3, 0, 10),
+            ],
+            'Before (intersect)'               => [
+                Position::Intersect,
+                new Location(3, 5, 0, 10),
+                new Location(1, 3),
+            ],
+            'Before (before)'                  => [
                 Position::Before,
                 new Location(3, 5, 10),
                 new Location(1, 3, 0, 8),
             ],
-            'Before (all line)'         => [
+            'Before (all line)'                => [
                 Position::Intersect,
                 new Location(3, 5, 0),
                 new Location(1, 3, 12),
             ],
-            'After'                     => [
+            'After'                            => [
                 Position::After,
                 new Location(1, 2),
                 new Location(4, 5),
             ],
-            'Touch After'               => [
+            'Touch After'                      => [
                 Position::TouchEnd,
                 new Location(1, 3),
                 new Location(4, 5),
             ],
-            'After (offset)'            => [
+            'After (offset)'                   => [
                 Position::After,
                 new Location(1, 3),
                 new Location(4, 5, 1),
             ],
-            'After (length)'            => [
+            'After (length)'                   => [
                 Position::After,
                 new Location(1, 3, 0, 10),
                 new Location(4, 5),
             ],
-            'After (intersect)'         => [
+            'After (intersect)'                => [
                 Position::Intersect,
                 new Location(1, 3, 0, 10),
                 new Location(3, 5),
             ],
-            'After (touch)'             => [
+            'After (touch)'                    => [
                 Position::TouchEnd,
                 new Location(1, 3, 0, 10),
                 new Location(3, 5, 11),
             ],
-            'After (after)'             => [
+            'After (after)'                    => [
                 Position::After,
                 new Location(1, 3, 0, 10),
                 new Location(3, 5, 12),
             ],
-            'After (all line)'          => [
+            'After (all line)'                 => [
                 Position::Intersect,
                 new Location(1, 3, 0),
                 new Location(3, 5, 12),
             ],
-            'After (same line + touch)' => [
+            'After (same line + touch)'        => [
                 Position::TouchEnd,
                 new Location(1, 1, 11, 6),
                 new Location(1, 1, 17, 4),
             ],
-            'Inside'                    => [
+            'Touch After (location + insert)'  => [
+                Position::TouchEnd,
+                new Location(1, 10, 1, 5),
+                (new Location(1, 10, 1, 5))->after(),
+            ],
+            'Touch After (before + location)'  => [
+                Position::TouchEnd,
+                (new Location(1, 10, 1, 5))->before(),
+                new Location(1, 10, 1, 5),
+            ],
+            'Inside'                           => [
                 Position::Inside,
                 new Location(1, 10),
                 new Location(2, 3),
             ],
-            'Inside (last line)'        => [
+            'Inside (last line)'               => [
                 Position::Inside,
                 new Location(1, 3),
                 new Location(3, 3),
             ],
-            'Inside (first line)'       => [
+            'Inside (first line)'              => [
                 Position::Inside,
                 new Location(1, 3),
                 new Location(1, 1),
             ],
-            'Wrap'                      => [
+            'Wrap'                             => [
                 Position::Wrap,
                 new Location(3, 4),
                 new Location(1, 10),
             ],
-            'Wrap (same line)'          => [
+            'Wrap (same line)'                 => [
                 Position::Wrap,
                 new Location(1, 1, 5, 5),
                 new Location(1, 1, 2, 15),
             ],
-            'Wrap (same start line)'    => [
+            'Wrap (same start line)'           => [
                 Position::Wrap,
                 new Location(1, 1),
                 new Location(1, 2),
             ],
-            'Wrap (same end line)'      => [
+            'Wrap (same end line)'             => [
                 Position::Wrap,
                 new Location(2, 3),
                 new Location(1, 3),
             ],
-            'Wrap (end)'                => [
+            'Wrap (end)'                       => [
                 Position::Wrap,
                 new Location(1, 10, 0, 10),
                 new Location(1, 10),
             ],
-            'Wrap (start)'              => [
+            'Wrap (start)'                     => [
                 Position::Wrap,
                 new Location(1, 10, 1),
                 new Location(1, 10),
             ],
-            'Same'                      => [
+            'Same'                             => [
                 Position::Same,
                 new Location(1, 10),
                 new Location(1, 10),
             ],
-            'Same (length + offset)'    => [
+            'Same (length + offset)'           => [
                 Position::Same,
                 new Location(1, 10, 1, 5),
                 new Location(1, 10, 1, 5),
+            ],
+            'Same (before + before)'           => [
+                Position::Same,
+                (new Location(1, 10, 1, 5))->before(),
+                (new Location(1, 10, 1, 5))->before(),
+            ],
+            'Same (after + after)'             => [
+                Position::Same,
+                (new Location(1, 10, 1, 5))->after(),
+                (new Location(1, 10, 1, 5))->after(),
+            ],
+            'Same (before + after)'            => [
+                Position::Same,
+                (new Location(1, 10, 1, 5))->before(),
+                (new Location(1, 10, 1, 5))->before()->after(),
+            ],
+            'Same (after + before)'            => [
+                Position::Same,
+                (new Location(1, 10, 1, 5))->after(),
+                (new Location(1, 10, 1, 5))->after()->before(),
             ],
         ];
     }
