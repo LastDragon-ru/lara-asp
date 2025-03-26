@@ -56,56 +56,6 @@ final class UtilsTest extends TestCase {
         self::assertTrue(Utils::isPathToSelf($a, new FilePath('../to/a.md')));
     }
 
-    public function testIsHeadingAtx(): void {
-        self::assertTrue(Utils::isHeadingAtx('# Header'));
-        self::assertFalse(
-            Utils::isHeadingAtx(
-                <<<'MARKDOWN'
-            Header
-            ------
-            MARKDOWN,
-            ),
-        );
-    }
-
-    public function testIsHeadingSetext(): void {
-        self::assertFalse(Utils::isHeadingSetext('# Header'));
-        self::assertTrue(
-            Utils::isHeadingSetext(
-                <<<'MARKDOWN'
-            Header
-            ------
-            MARKDOWN,
-            ),
-        );
-    }
-
-    public function testGetHeadingText(): void {
-        self::assertSame(
-            'Header',
-            Utils::getHeadingText(
-                <<<'MARKDOWN'
-                # Header
-
-                MARKDOWN,
-            ),
-        );
-        self::assertSame(
-            <<<'TEXT'
-            Header
-            line b
-            TEXT,
-            Utils::getHeadingText(
-                <<<'MARKDOWN'
-                Header
-                line b
-                ======
-
-                MARKDOWN,
-            ),
-        );
-    }
-
     #[DataProvider('dataProviderGetTitle')]
     public function testGetTitle(?string $expected, string $document, ?FilePath $path): void {
         $document = $this->app()->make(Markdown::class)->parse($document, $path);

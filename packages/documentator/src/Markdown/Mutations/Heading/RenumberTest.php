@@ -59,14 +59,14 @@ final class RenumberTest extends TestCase {
 
                 Text text.
 
-                ### Header 2
+                ### Header 2 ###
 
                 * item
 
                 Text text.
 
                 #### Header 3
-                ##### Header 4
+                ##### Header 4 #####
                 ###### Header 5
                 ###### Header 6
 
@@ -81,6 +81,8 @@ final class RenumberTest extends TestCase {
                 -----
 
                 ### Foo *bar*
+
+                ### Foo *bar* multiline
 
                 ### Header 2
 
@@ -120,6 +122,10 @@ final class RenumberTest extends TestCase {
                 =========
 
                 Foo *bar*
+                ---------
+
+                Foo *bar*
+                multiline
                 ---------
 
                 ## Header 2
