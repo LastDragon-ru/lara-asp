@@ -52,6 +52,7 @@
         <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned"/>
     </rule>
     <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.ClassConstantTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.DNFTypeHintFormat">
         <properties>
             <property name="withSpacesAroundOperators" value="no"/>
