@@ -4,11 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Editor\Locations;
 
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
+use LastDragon_ru\LaraASP\Documentator\Utils\Integer;
 use Override;
 use Traversable;
 
 use function max;
-use function min;
 
 use const PHP_INT_MAX;
 
@@ -35,7 +35,7 @@ readonly class Location implements IteratorAggregate {
         if ($this->startLine === $this->endLine) {
             yield new Coordinate(
                 $this->startLine,
-                min(PHP_INT_MAX, $this->startLinePadding + $this->offset),
+                Integer::add($this->startLinePadding, $this->offset),
                 $this->length,
                 $this->startLinePadding,
             );
@@ -44,7 +44,7 @@ readonly class Location implements IteratorAggregate {
                 yield match (true) {
                     $line === $this->startLine => new Coordinate(
                         $line,
-                        min(PHP_INT_MAX, $this->startLinePadding + $this->offset),
+                        Integer::add($this->startLinePadding, $this->offset),
                         null,
                         $this->startLinePadding,
                     ),
@@ -89,7 +89,7 @@ readonly class Location implements IteratorAggregate {
             $this->endLine,
             $this->endLine,
             $this->length !== null
-                ? min(PHP_INT_MAX, ($this->startLine === $this->endLine ? $this->offset : 0) + $this->length)
+                ? Integer::add(($this->startLine === $this->endLine ? $this->offset : 0), $this->length)
                 : PHP_INT_MAX,
             0,
             $this->internalPadding ?? $this->startLinePadding,

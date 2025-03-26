@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
+use LastDragon_ru\LaraASP\Documentator\Utils\Integer;
 use Traversable;
 
 use function array_merge;
@@ -509,7 +510,7 @@ class Mutagens {
         $end = $location->length ?? PHP_INT_MAX;
 
         if ($location->startLine === $location->endLine && $end !== PHP_INT_MAX) {
-            $end = min(PHP_INT_MAX, $location->offset + $end - 1);
+            $end = Integer::add($location->offset, $end - 1);
         }
 
         return $end;
