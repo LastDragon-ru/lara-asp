@@ -32,6 +32,13 @@ class Utils {
         return self::getParent($node, AbstractBlock::class);
     }
 
+    /**
+     * @param class-string<AbstractBlock> $check
+     */
+    public static function isInside(Node $node, string $check): bool {
+        return self::getParent($node, $check) !== null;
+    }
+
     public static function getPosition(Node $node): int {
         $position = 0;
 
@@ -86,7 +93,7 @@ class Utils {
     }
 
     /**
-     * @template T of object
+     * @template T of AbstractBlock
      *
      * @param class-string<T> $class
      *

@@ -88,6 +88,12 @@ final class RenumberTest extends TestCase {
 
                 * item
 
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
+
                 MARKDOWN,
                 2,
                 <<<'MARKDOWN'
@@ -131,6 +137,12 @@ final class RenumberTest extends TestCase {
                 ## Header 2
 
                 * item
+
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
                 MARKDOWN,
             ],
             'decrease'   => [
@@ -171,6 +183,12 @@ final class RenumberTest extends TestCase {
 
                 * item
 
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
+
                 MARKDOWN,
                 1,
                 <<<'MARKDOWN'
@@ -209,6 +227,12 @@ final class RenumberTest extends TestCase {
                 ### Header 2
 
                 * item
+
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
                 MARKDOWN,
             ],
         ];

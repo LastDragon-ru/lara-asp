@@ -108,6 +108,12 @@ final class TitleTest extends TestCase {
                 [^1]: Should be removed
                 MARKDOWN,
             ],
+            'Inside Quote'        => [
+                '',
+                <<<'MARKDOWN'
+                > # Header
+                MARKDOWN,
+            ],
         ];
     }
     // </editor-fold>

@@ -9,7 +9,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
@@ -121,7 +123,7 @@ readonly class Renumber implements Mutation {
         $headings = [];
 
         foreach ($document->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
-            if (!($node instanceof Heading)) {
+            if (!($node instanceof Heading) || Utils::isInside($node, BlockQuote::class)) {
                 continue;
             }
 
