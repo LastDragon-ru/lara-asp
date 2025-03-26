@@ -32,6 +32,9 @@ final class EditorTest extends TestCase {
             14 => '> i j k l',
             15 => '>',
             16 => '>',
+            17 => 'm n o p',
+            18 => 'q r s t',
+            19 => 'u v w x',
         ];
         $changes = [
             [new Location(1, 1, 2, 3), "123\n345\n567"],
@@ -40,6 +43,10 @@ final class EditorTest extends TestCase {
             [new Location(11, 12, 4, 3, 2), "123\n345\n567"],
             [new Location(12, 12, 5, 2, 2), null],
             [new Location(14, 16, 4, 3, 2), '123'],
+            [new Location(17, 17, 0, 0), 'prefix '],
+            [new Location(17, 17, PHP_INT_MAX, 0), ' suffix'],
+            [new Location(18, 18, PHP_INT_MAX, 10), ' suffix'],
+            [new Location(19, 19, PHP_INT_MAX, null), ' suffix'],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), "added line a\n"],
             [new Location(PHP_INT_MAX, PHP_INT_MAX), 'added line b'],
             [new Location(PHP_INT_MIN, PHP_INT_MIN), "added line c\n"],
@@ -74,6 +81,9 @@ final class EditorTest extends TestCase {
             '> 567 g',
             '>',
             '> i j 123',
+            'prefix m n o p suffix',
+            'q r s t suffix',
+            'u v w x suffix',
             'added line a',
             '',
             'added line b',
@@ -104,10 +114,10 @@ final class EditorTest extends TestCase {
             6 => '55555 55555 55555 55555 55555 55555',
         ];
         $expected  = [
-            2 => '111 1 111 1 111 1',
-            3 => ' 22222 22222 22222',
-            4 => '33333 33333 33333 33333 33333 33333',
-            6 => '555 55555 55555 555',
+            '111 1 111 1 111 1',
+            ' 22222 22222 22222',
+            '33333 33333 33333 33333 33333 33333',
+            '555 55555 55555 555',
         ];
         $editor    = new readonly class($lines) extends Editor {
             /**

@@ -35,7 +35,7 @@ readonly class Inline extends Base {
 
         if ($node instanceof Link || $node instanceof Image) {
             $content  = Content::get($node);
-            $location = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
+            $location = $location->moveOffset(($content->offset - $location->offset) + (int) $content->length + 1);
             $title    = Utils::getLinkTitle($node, (string) $node->getTitle());
             $target   = Utils::getLinkTarget($node, rawurldecode($node->getUrl()));
             $text     = $title !== '' ? "({$target} {$title})" : "({$target})";

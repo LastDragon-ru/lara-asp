@@ -59,14 +59,14 @@ final class RenumberTest extends TestCase {
 
                 Text text.
 
-                ### Header 2
+                ### Header 2 ###
 
                 * item
 
                 Text text.
 
                 #### Header 3
-                ##### Header 4
+                ##### Header 4 #####
                 ###### Header 5
                 ###### Header 6
 
@@ -82,9 +82,17 @@ final class RenumberTest extends TestCase {
 
                 ### Foo *bar*
 
+                ### Foo *bar* multiline
+
                 ### Header 2
 
                 * item
+
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
 
                 MARKDOWN,
                 2,
@@ -122,9 +130,19 @@ final class RenumberTest extends TestCase {
                 Foo *bar*
                 ---------
 
+                Foo *bar*
+                multiline
+                ---------
+
                 ## Header 2
 
                 * item
+
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
                 MARKDOWN,
             ],
             'decrease'   => [
@@ -165,6 +183,12 @@ final class RenumberTest extends TestCase {
 
                 * item
 
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
+
                 MARKDOWN,
                 1,
                 <<<'MARKDOWN'
@@ -203,6 +227,12 @@ final class RenumberTest extends TestCase {
                 ### Header 2
 
                 * item
+
+                > ## Should be untouched
+                > > ## Should be untouched
+                > >
+                > > Should be untouched
+                > > =========
                 MARKDOWN,
             ],
         ];

@@ -65,6 +65,20 @@ final class TextTest extends TestCase {
         self::assertSame("a\nb\nc\n", Text::setEol("a\r\nb\r\nc\r\n"));
         self::assertSame("a\rb\rc\r", Text::setEol("a\r\nb\r\nc\r\n", "\r"));
     }
+
+    public function testIsMultiline(): void {
+        self::assertFalse(Text::isMultiline(''));
+        self::assertFalse(Text::isMultiline('a'));
+        self::assertTrue(Text::isMultiline("a\nb\nc\n"));
+        self::assertTrue(Text::isMultiline("a\r\nb\r\nc\r\n"));
+    }
+
+    public function testToSingleLine(): void {
+        self::assertSame('', Text::toSingleLine(''));
+        self::assertSame('abc', Text::toSingleLine('abc'));
+        self::assertSame('abc', Text::toSingleLine("\nabc"));
+        self::assertSame('a b c', Text::toSingleLine("\na\n\nb\n\nc\n"));
+    }
     //</editor-fold>
 
     // <editor-fold desc="DataProviders">

@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\List;
 
-use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Exceptions\LocationsCannotBeMerged;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Exceptions\LocationsUnhandledPosition;
@@ -11,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
+use LastDragon_ru\LaraASP\Documentator\Utils\Integer;
 use Traversable;
 
 use function array_merge;
@@ -40,14 +40,14 @@ class Mutagens {
     }
 
     /**
-     * @return Traversable<?Location, array<array-key, array{iterable<mixed, Coordinate>, ?string}>>
+     * @return Traversable<?Location, array<array-key, array{Location, ?string}>>
      */
     public function getChanges(): Traversable {
         if ($this->zones instanceof ZoneDefault) {
-            yield null => $this->changes($this->zones->mutagens);
+            yield null => $this->changes(null, $this->zones->mutagens);
         } else {
             foreach ($this->zones as $zone) {
-                yield $zone->location => $this->changes($zone->mutagens);
+                yield $zone->location => $this->changes($zone->location, $zone->mutagens);
             }
         }
 
@@ -57,15 +57,28 @@ class Mutagens {
     /**
      * @param list<Replace|Delete> $mutagens
      *
-     * @return array<array-key, array{iterable<mixed, Coordinate>, ?string}>
+     * @return array<array-key, array{Location, ?string}>
      */
-    private function changes(array $mutagens): array {
+    private function changes(?Location $location, array $mutagens): array {
         $changes = [];
 
         foreach ($mutagens as $mutagen) {
+            // The `Editor` will reset/lose lines/offset after extraction, thus
+            // we need to update our locations to they stay correct.
+            $target = $mutagen->location;
+
+            if ($location !== null) {
+                if ($location->offset !== 0 && $target->startLine === $location->startLine) {
+                    $target = $target->withOffset($target->offset - $location->offset);
+                }
+
+                $target = $target->move(-$location->startLine);
+            }
+
+            // Add
             $changes[] = match (true) {
-                $mutagen instanceof Replace => [$mutagen->location, $mutagen->string],
-                default                     => [$mutagen->location, null],
+                $mutagen instanceof Replace => [$target, $mutagen->string],
+                default                     => [$target, null],
             };
         }
 
@@ -461,6 +474,29 @@ class Mutagens {
                         $position = Position::Intersect;
                     }
                     break;
+                case Position::Wrap:
+                case Position::Inside:
+                    // Zero-length locations are the inserts, so they are located at
+                    // TouchStart/TouchEnd but not Inside/Wrap.
+                    $aInsert = $a->length === 0 && $a->startLine === $a->endLine;
+                    $bInsert = $b->length === 0 && $b->startLine === $b->endLine;
+
+                    if ($aInsert || $bInsert) {
+                        $wrap = $position === Position::Wrap;
+
+                        if ($aInsert) {
+                            $position = $a->offset > $b->offset ? Position::TouchEnd : Position::TouchStart;
+                        } else {
+                            $position = $a->offset < $b->offset ? Position::TouchEnd : Position::TouchStart;
+                        }
+
+                        if ($wrap) {
+                            $position = $position === Position::TouchStart
+                                ? Position::TouchEnd
+                                : Position::TouchStart;
+                        }
+                    }
+                    break;
                 default:
                     // as is
                     break;
@@ -474,7 +510,7 @@ class Mutagens {
         $end = $location->length ?? PHP_INT_MAX;
 
         if ($location->startLine === $location->endLine && $end !== PHP_INT_MAX) {
-            $end = min(PHP_INT_MAX, $location->offset + $end - 1);
+            $end = Integer::add($location->offset, $end - 1);
         }
 
         return $end;

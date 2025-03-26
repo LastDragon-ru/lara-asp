@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Link\Unlink;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
@@ -21,7 +19,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data as TemplateData;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Document as TemplateDocument;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
-use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Node;
 use Override;
@@ -30,7 +27,6 @@ use function array_filter;
 use function max;
 use function mb_trim;
 use function min;
-use function str_replace;
 use function usort;
 
 /**
@@ -92,9 +88,7 @@ readonly class Instruction implements InstructionContract {
 
             // Add
             $move        = new Move($context->file->getFilePath($file->getName()));
-            $title       = mb_trim((string) $document->mutate(new Title(), new Unlink()));
-            $title       = mb_trim(str_replace("\n", ' ', Utils::getHeadingText($title)));
-            $title       = $title === '' ? Text::getPathTitle($file->getName()) : $title;
+            $title       = Utils::getTitle($document) ?? '';
             $summary     = mb_trim((string) $document->mutate(new Summary())->mutate($move));
             $documents[] = new TemplateDocument(
                 $context->file->getRelativePath($file),

@@ -3,17 +3,15 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Util\UrlEncoder;
 
-use function array_map;
-use function array_slice;
 use function filter_var;
-use function implode;
-use function mb_ltrim;
 use function mb_trim;
 use function parse_url;
 use function preg_match;
@@ -32,6 +30,13 @@ use const PHP_URL_PATH;
 class Utils {
     public static function getContainer(Node $node): ?AbstractBlock {
         return self::getParent($node, AbstractBlock::class);
+    }
+
+    /**
+     * @param class-string<AbstractBlock> $check
+     */
+    public static function isInside(Node $node, string $check): bool {
+        return self::getParent($node, $check) !== null;
     }
 
     public static function getPosition(Node $node): int {
@@ -88,7 +93,7 @@ class Utils {
     }
 
     /**
-     * @template T of object
+     * @template T of AbstractBlock
      *
      * @param class-string<T> $class
      *
@@ -134,23 +139,15 @@ class Utils {
         return $is;
     }
 
-    public static function isHeadingAtx(string $heading): bool {
-        return str_starts_with(mb_ltrim($heading), '#');
-    }
+    /**
+     * @see MakeSplittable
+     */
+    public static function getTitle(Document $document): ?string {
+        $title = mb_trim((string) $document->mutate(new Title()));
+        $title = mb_trim(str_replace("\n", ' ', $title));
+        $title = $title === '' ? Text::getPathTitle((string) $document->path) : $title;
+        $title = $title === '' ? null : $title;
 
-    public static function isHeadingSetext(string $heading): bool {
-        return !static::isHeadingAtx($heading);
-    }
-
-    public static function getHeadingText(string $heading): string {
-        $heading = mb_trim($heading);
-        $setext  = static::isHeadingSetext($heading);
-        $lines   = $setext
-            ? array_slice(Text::getLines($heading), 0, -1)
-            : [mb_trim($heading, '#')];
-        $lines   = array_map(mb_trim(...), $lines);
-        $text    = implode($setext ? "\n" : '', $lines);
-
-        return $text;
+        return $title;
     }
 }

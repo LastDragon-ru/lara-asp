@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Footnote\Node\FootnoteContainer;
@@ -27,10 +28,14 @@ use function array_key_first;
 use function array_key_last;
 use function array_slice;
 use function assert;
+use function mb_ltrim;
+use function mb_rtrim;
 use function mb_strlen;
 use function mb_strpos;
 use function mb_substr;
 use function preg_split;
+use function str_ends_with;
+use function str_starts_with;
 
 // todo(documentator): Internal padding for Location
 
@@ -101,6 +106,7 @@ class Locator {
             $node instanceof AbstractInline => $this->getInlineLocation($node),
             $node instanceof Paragraph      => $this->getParagraphLocation($node),
             $node instanceof Document       => $this->getDocumentLocation($node),
+            $node instanceof Heading        => $this->getHeadingLocation($node),
             $node instanceof Table          => $this->getTableLocation($node),
             $node instanceof TableSection   => $this->getDataLocation($node),
             $node instanceof TableRow       => $this->getDataLocation($node),
@@ -164,6 +170,46 @@ class Locator {
         return new Location($startLine, $endLine, $offset);
     }
 
+    private function getHeadingLocation(Heading $node): ?Location {
+        // Location?
+        $location = $this->getBlockLocation($node);
+
+        if ($location === null) {
+            return $location;
+        }
+
+        // Content
+        $line    = Lines::get($this->document)[$location->startLine] ?? '';
+        $line    = mb_substr($line, $location->startLinePadding);
+        $isAtx   = $node->getLevel() > 2 || str_starts_with(mb_ltrim($line), '#');
+        $offset  = 0;
+        $length  = null;
+        $endLine = $location->endLine;
+
+        if ($isAtx) {
+            $endLine = $location->startLine;
+            $offset  = mb_strlen($line) - mb_strlen(mb_ltrim(mb_ltrim($line), '#')) + 1;
+
+            if (str_ends_with(mb_rtrim($line), '#')) {
+                $length = mb_strlen(mb_rtrim(mb_rtrim(mb_substr($line, $offset)), '#')) - 1;
+            }
+        } else {
+            $endLine--;
+        }
+
+        Content::set($node, new Location(
+            $location->startLine,
+            $endLine,
+            $offset,
+            $length,
+            $location->startLinePadding,
+            $location->internalPadding,
+        ));
+
+        // Return
+        return $location;
+    }
+
     private function getBlockLocation(AbstractBlock $node): ?Location {
         // Possible?
         $startLine = $node->getStartLine();
@@ -204,9 +250,9 @@ class Locator {
         $offset    = $offset + $blockLocation->offset + (int) mb_strpos($line, $text);
         $location  = new Location($startLine, $endLine, $offset, $length);
 
-        // Some nodes like links/images may
+        // Some nodes like links/images may have content
         if ($node instanceof Link || $node instanceof Image) {
-            $content = $location->withLength($marker - 1)->withOffset(1 + (int) ($node instanceof Image));
+            $content = $location->withLength($marker - 1)->moveOffset(1 + (int) ($node instanceof Image));
 
             Content::set($node, $content);
         }

@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
+use function array_filter;
+use function array_map;
 use function hash;
 use function implode;
 use function mb_rtrim;
@@ -11,6 +13,7 @@ use function mb_trim;
 use function mb_ucfirst;
 use function min;
 use function pathinfo;
+use function preg_match;
 use function preg_replace;
 use function preg_split;
 use function str_repeat;
@@ -76,6 +79,19 @@ class Text {
         $lines = $lines !== false ? $lines : [];
 
         return  $lines;
+    }
+
+    public static function isMultiline(string $text): bool {
+        return preg_match('/\R/u', $text) > 0;
+    }
+
+    public static function toSingleLine(string $text): string {
+        $lines = static::getLines($text);
+        $lines = array_map(mb_trim(...), $lines);
+        $lines = array_filter($lines, static fn($line) => $line !== '');
+        $line  = implode(' ', $lines);
+
+        return $line;
     }
 
     public static function getPathTitle(string $path): string {

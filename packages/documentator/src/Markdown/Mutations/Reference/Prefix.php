@@ -42,7 +42,7 @@ readonly class Prefix extends Base {
 
         if ($node instanceof Link || $node instanceof Image) {
             $content  = ContentData::get($node);
-            $location = $location->withOffset(($content->offset - $location->offset) + (int) $content->length + 1);
+            $location = $location->moveOffset(($content->offset - $location->offset) + (int) $content->length + 1);
             $target   = ReferenceData::get($node)?->getLabel();
             $target   = "{$this->prefix}-{$target}";
             $target   = Utils::escapeTextInTableCell($node, $target);

@@ -6,12 +6,15 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
  */
 #[CoversClass(Utils::class)]
 final class UtilsTest extends TestCase {
+    // <editor-fold desc="Tests">
+    // =========================================================================
     public function testIsPathRelative(): void {
         // Nope
         self::assertFalse(Utils::isPathRelative('tel:+70000000000'));
@@ -53,53 +56,55 @@ final class UtilsTest extends TestCase {
         self::assertTrue(Utils::isPathToSelf($a, new FilePath('../to/a.md')));
     }
 
-    public function testIsHeadingAtx(): void {
-        self::assertTrue(Utils::isHeadingAtx('# Header'));
-        self::assertFalse(
-            Utils::isHeadingAtx(
-                <<<'MARKDOWN'
-            Header
-            ------
-            MARKDOWN,
-            ),
-        );
+    #[DataProvider('dataProviderGetTitle')]
+    public function testGetTitle(?string $expected, string $document, ?FilePath $path): void {
+        $document = $this->app()->make(Markdown::class)->parse($document, $path);
+        $actual   = Utils::getTitle($document);
+
+        self::assertSame($expected, $actual);
     }
+    // </editor-fold>
 
-    public function testIsHeadingSetext(): void {
-        self::assertFalse(Utils::isHeadingSetext('# Header'));
-        self::assertTrue(
-            Utils::isHeadingSetext(
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{?string, string, ?FilePath}>
+     */
+    public static function dataProviderGetTitle(): array {
+        return [
+            'no title, no path' => [
+                null,
                 <<<'MARKDOWN'
-            Header
-            ------
-            MARKDOWN,
-            ),
-        );
-    }
-
-    public function testGetHeadingText(): void {
-        self::assertSame(
-            'Header',
-            Utils::getHeadingText(
-                <<<'MARKDOWN'
-                # Header
-
+                text
                 MARKDOWN,
-            ),
-        );
-        self::assertSame(
-            <<<'TEXT'
-            Header
-            line b
-            TEXT,
-            Utils::getHeadingText(
+                null,
+            ],
+            'no title, path'    => [
+                'File name',
                 <<<'MARKDOWN'
-                Header
-                line b
-                ======
-
+                text
                 MARKDOWN,
-            ),
-        );
+                new FilePath('/path/to/file-name.md'),
+            ],
+            '# title, path'     => [
+                'Title',
+                <<<'MARKDOWN'
+                # Title
+
+                text
+                MARKDOWN,
+                new FilePath('/path/to/file-name.md'),
+            ],
+            '## title, path'    => [
+                'File name',
+                <<<'MARKDOWN'
+                ## Title
+
+                text
+                MARKDOWN,
+                new FilePath('/path/to/file-name.md'),
+            ],
+        ];
     }
+    // </editor-fold>
 }
