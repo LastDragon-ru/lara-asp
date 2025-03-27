@@ -86,6 +86,7 @@ final class ProcessorTest extends TestCase {
         };
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($mock)
             ->addTask($taskA)
             ->addTask($taskB)
@@ -390,6 +391,7 @@ final class ProcessorTest extends TestCase {
         };
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($taskA)
             ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
@@ -551,6 +553,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -687,6 +690,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(

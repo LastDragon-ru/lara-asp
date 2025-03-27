@@ -36,7 +36,8 @@ class Processor {
     /**
      * @var array<array-key, string>
      */
-    private array $exclude = [];
+    private array  $exclude    = [];
+    protected bool $consistent = false;
 
     public function __construct(
         protected readonly ContainerResolver $container,
@@ -44,6 +45,19 @@ class Processor {
         $this->tasks      = new Tasks($container);
         $this->metadata   = new Metadata($container);
         $this->dispatcher = new Dispatcher();
+    }
+
+    /**
+     * If enabled, the `Processor` will iterate files/directories in a consistent
+     * way (= sort by name). Useful mainly for testing, in all other cases it is
+     * recommended do not change default behavior.
+     *
+     * @internal
+     */
+    public function consistent(): static {
+        $this->consistent = true;
+
+        return $this;
     }
 
     /**
@@ -191,7 +205,7 @@ class Processor {
         array $exclude,
         ?int $depth,
     ): void {
-        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
+        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output, $this->consistent);
         $iterator   = $filesystem->getFilesIterator($input, $include, $depth, $exclude);
         $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, $exclude);
 

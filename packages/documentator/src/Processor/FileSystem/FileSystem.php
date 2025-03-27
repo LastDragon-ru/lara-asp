@@ -45,6 +45,7 @@ class FileSystem {
         private readonly Metadata $metadata,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
+        public readonly bool $consistent = false,
     ) {
         if (!$input->isAbsolute()) {
             throw new InvalidArgumentException(
@@ -227,8 +228,11 @@ class FileSystem {
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
-            ->in((string) $directory)
-            ->sortByName(true);
+            ->in((string) $directory);
+
+        if ($this->consistent) {
+            $finder = $finder->sortByName(true);
+        }
 
         if ($patterns !== null) {
             $finder = $finder->name($patterns);

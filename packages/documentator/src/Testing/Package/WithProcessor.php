@@ -33,7 +33,7 @@ trait WithProcessor {
             : $input;
         $metadata   = new Metadata($this->app()->make(ContainerResolver::class));
         $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output);
+        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output, true);
 
         $metadata->addResolver(new Context($context));
 
