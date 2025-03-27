@@ -163,4 +163,6 @@
     <rule ref="SlevomatCodingStandard.Commenting.AnnotationName"/>
     <rule ref="SlevomatCodingStandard.Arrays.ArrayAccess"/>
     <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
 </ruleset>
