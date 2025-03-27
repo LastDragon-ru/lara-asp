@@ -84,9 +84,9 @@ class Executor {
 
         // Circular?
         if (isset($this->stack[$path])) {
-            // The $file cannot be changed if it is placed outside the output
-            // directory, so we can return it safely in this case.
-            if ($this->fs->output->isInside($file->getPath())) {
+            // The $file cannot be processed if it is skipped, so we can return
+            // it safely in this case.
+            if (!$this->isSkipped($file)) {
                 $this->dispatcher->notify(new FileStarted($this->fs->getPathname($file)));
                 $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
