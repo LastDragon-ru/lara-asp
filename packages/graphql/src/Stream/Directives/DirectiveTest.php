@@ -852,7 +852,7 @@ final class DirectiveTest extends TestCase {
      * @param array{method: string, args: array<array-key, mixed>}|null $expected
      */
     #[DataProvider('dataProviderGetResolverExplicit')]
-    public function testGetResolverExplicit(array|null $expected, string $arguments): void {
+    public function testGetResolverExplicit(?array $expected, string $arguments): void {
         // Prepare
         $this->setConfig([
             'lighthouse.namespaces.models' => [

@@ -23,7 +23,7 @@ class Directives extends ListBlock {
     public function __construct(
         Context $context,
         iterable $directives,
-        string|null $deprecationReason = null,
+        ?string $deprecationReason = null,
     ) {
         if ($deprecationReason !== null) {
             $list       = [];

@@ -84,7 +84,6 @@ includes:
     # Package
     - ./phpstan-larastan.neon
     - ./packages/dev/src/PhpStan/Container/extension.neon
-    - ./packages/dev/src/PhpStan/ClassConstantMustBeTyped/extension.neon
     - ./packages/dev/src/PhpStan/ClassMustBeFinal/extension.neon
     - ./packages/dev/src/PhpStan/ClassMustBeInternal/extension.neon
 

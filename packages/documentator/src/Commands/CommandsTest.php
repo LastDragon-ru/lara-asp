@@ -143,7 +143,7 @@ class CommandsTest_CommandB extends Command {
 class CommandsTest_CommandC extends Command {
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var boolean
+     * @var bool
      */
     protected $hidden = true;
 

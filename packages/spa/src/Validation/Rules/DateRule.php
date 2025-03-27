@@ -28,7 +28,7 @@ class DateRule extends Rule implements ValueProvider {
     }
 
     #[Override]
-    public function getValue(mixed $value): DateTimeInterface|null {
+    public function getValue(mixed $value): ?DateTimeInterface {
         $value = Date::createFromFormat("{$this->getFormat()}|", $value);
         $value = $value instanceof DateTimeInterface ? $value : null;
 

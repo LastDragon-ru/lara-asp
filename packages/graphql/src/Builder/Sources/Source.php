@@ -22,7 +22,7 @@ class Source implements TypeSource {
     public function __construct(
         private AstManipulator $manipulator,
         private (TypeDefinitionNode&Node)|(TypeNode&Node)|Type $type,
-        private TypeSource|null $parent = null,
+        private ?TypeSource $parent = null,
     ) {
         // empty
     }

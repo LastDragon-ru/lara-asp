@@ -1,5 +1,0 @@
-services:
-    -
-        class: LastDragon_ru\LaraASP\Dev\PhpStan\ClassConstantMustBeTyped\Rule
-        tags:
-            - phpstan.rules.rule
