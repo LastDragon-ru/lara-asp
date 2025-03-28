@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Editor\Editor;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
@@ -20,8 +19,7 @@ use Override;
  * @internal
  */
 class Document extends DocumentImpl implements DocumentContract {
-    private ?Editor       $editor = null;
-    private ?DocumentNode $node   = null;
+    private ?DocumentNode $node = null;
 
     public function __construct(
         protected readonly Markdown $markdown,
@@ -55,14 +53,6 @@ class Document extends DocumentImpl implements DocumentContract {
      * @inheritDoc
      */
     #[Override]
-    public function getText(iterable $location): string {
-        return (string) $this->getEditor()->extract([$location]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
     public function mutate(Mutation|iterable ...$mutations): DocumentContract {
         $mutator  = new Mutator($mutations);
         $document = $mutator->mutate($this->markdown, $this, $this->getLines());
@@ -75,14 +65,6 @@ class Document extends DocumentImpl implements DocumentContract {
      */
     protected function getLines(): array {
         return Lines::get($this->getNode());
-    }
-
-    protected function getEditor(): Editor {
-        if ($this->editor === null) {
-            $this->editor = new Editor($this->getLines());
-        }
-
-        return $this->editor;
     }
 
     #[Override]

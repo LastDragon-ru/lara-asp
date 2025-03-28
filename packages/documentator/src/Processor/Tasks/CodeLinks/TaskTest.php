@@ -71,14 +71,6 @@ final class TaskTest extends TestCase {
                             $this->document->appendChild($node);
                         }
 
-                        /**
-                         * @inheritDoc
-                         */
-                        #[Override]
-                        public function getText(iterable $location): string {
-                            return '';
-                        }
-
                         #[Override]
                         public function mutate(iterable|Mutation ...$mutations): DocumentContract {
                             return $this;
