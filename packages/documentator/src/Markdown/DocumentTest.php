@@ -107,7 +107,6 @@ final class DocumentTest extends TestCase {
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 fsdfsdfsdf
-
                 MARKDOWN,
                 <<<'MARKDOWN'
                 fsdfsdfsdf
@@ -132,7 +131,6 @@ final class DocumentTest extends TestCase {
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 fsdfsdfsdf
-
                 MARKDOWN,
                 <<<'MARKDOWN'
                 fsdfsdfsdf

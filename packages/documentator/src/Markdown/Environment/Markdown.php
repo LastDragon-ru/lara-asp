@@ -55,10 +55,7 @@ class Markdown implements MarkdownContract {
 
     #[Override]
     public function parse(string $content, ?FilePath $path = null): DocumentContract {
-        $node     = $this->parser->parse($content);
-        $document = new Document($this, $node, $path);
-
-        return $document;
+        return new Document($this, $this->parser, $content, $path);
     }
 
     #[Override]

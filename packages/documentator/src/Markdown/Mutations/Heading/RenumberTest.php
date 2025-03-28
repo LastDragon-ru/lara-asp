@@ -39,7 +39,6 @@ final class RenumberTest extends TestCase {
                 ## A
 
                 ### B ###
-
                 MARKDOWN,
                 2,
                 <<<'MARKDOWN'

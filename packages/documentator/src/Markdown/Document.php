@@ -10,10 +10,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutator;
 use League\CommonMark\Node\Block\Document as DocumentNode;
+use League\CommonMark\Parser\MarkdownParserInterface;
 use Override;
 
 use function count;
-use function implode;
 
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
@@ -22,11 +22,13 @@ use function implode;
  * @internal
  */
 class Document extends DocumentImpl implements DocumentContract {
-    private ?Editor $editor = null;
+    private ?Editor       $editor = null;
+    private ?DocumentNode $node   = null;
 
     public function __construct(
         protected readonly Markdown $markdown,
-        protected readonly DocumentNode $node,
+        protected readonly MarkdownParserInterface $parser,
+        protected readonly string $content,
         protected ?FilePath $path = null,
     ) {
         // empty
@@ -44,12 +46,16 @@ class Document extends DocumentImpl implements DocumentContract {
 
     #[Override]
     protected function getNode(): DocumentNode {
+        if ($this->node === null) {
+            $this->node = $this->parser->parse($this->content);
+        }
+
         return $this->node;
     }
 
     #[Override]
     public function isEmpty(): bool {
-        return !$this->node->hasChildren() && count($this->node->getReferenceMap()) === 0;
+        return !$this->getNode()->hasChildren() && count($this->getNode()->getReferenceMap()) === 0;
     }
 
     /**
@@ -75,7 +81,7 @@ class Document extends DocumentImpl implements DocumentContract {
      * @return array<int, string>
      */
     protected function getLines(): array {
-        return Lines::get($this->node);
+        return Lines::get($this->getNode());
     }
 
     protected function getEditor(): Editor {
@@ -88,11 +94,6 @@ class Document extends DocumentImpl implements DocumentContract {
 
     #[Override]
     public function __toString(): string {
-        $lines  = $this->getLines();
-        $string = $lines !== []
-            ? implode("\n", $this->getLines())."\n"
-            : '';
-
-        return $string;
+        return $this->content;
     }
 }

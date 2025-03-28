@@ -45,7 +45,6 @@ final class ClassMarkdownMetadataTest extends TestCase {
             Description.
 
             Summary `\stdClass` and `\LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`, {@see https://example.com/}.
-
             MARKDOWN,
             (string) $resolved,
         );
