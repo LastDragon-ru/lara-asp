@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;

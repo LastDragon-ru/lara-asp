@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;

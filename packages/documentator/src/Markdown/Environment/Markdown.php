@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Extension as GeneratedExtension;
@@ -53,7 +54,7 @@ class Markdown implements MarkdownContract {
     }
 
     #[Override]
-    public function parse(string $content, ?FilePath $path = null): Document {
+    public function parse(string $content, ?FilePath $path = null): DocumentContract {
         $node     = $this->parser->parse($content);
         $document = new Document($this, $node, $path);
 
@@ -61,7 +62,7 @@ class Markdown implements MarkdownContract {
     }
 
     #[Override]
-    public function render(Document $document): string {
+    public function render(DocumentContract $document): string {
         return (string) $this->renderer->renderDocument($document->node);
     }
 }

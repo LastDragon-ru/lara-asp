@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;

@@ -4,17 +4,19 @@ namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
+use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Node\StringContainerInterface;
 use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Xml\XmlNodeRendererInterface;
+use Override;
+use Psr\EventDispatcher\ListenerProviderInterface;
 use XMLWriter;
 
 use function array_key_exists;
@@ -53,7 +55,7 @@ class DocumentRenderer {
 
     public function render(Document $document): string {
         try {
-            $this->env = $this->getEnvironment($document);
+            $this->env = $this->getEnvironment();
 
             $this->xml->openMemory();
             $this->xml->setIndent(true);
@@ -254,38 +256,14 @@ class DocumentRenderer {
         return $array;
     }
 
-    private function getEnvironment(Document $document): ?EnvironmentInterface {
-        $documentWrapper = new class ($document) extends Document {
-            /**
-             * @noinspection             PhpMissingParentConstructorInspection
-             * @phpstan-ignore-next-line constructor.missingParentCall (no need to call parent `__construct`)
-             */
-            public function __construct(
-                private readonly Document $document,
-            ) {
-                // empty
-            }
-
-            public function getMarkdown(): MarkdownContract {
-                return $this->document->markdown;
+    private function getEnvironment(): EnvironmentInterface {
+        $wrapper     = new class () extends Markdown {
+            #[Override]
+            public function environment(): EnvironmentInterface&EnvironmentBuilderInterface&ListenerProviderInterface {
+                return parent::environment();
             }
         };
-        $markdownWrapper = new class ($documentWrapper->getMarkdown()) extends Markdown {
-            /**
-             * @noinspection             PhpMissingParentConstructorInspection
-             * @phpstan-ignore-next-line constructor.missingParentCall (no need to call parent `__construct`)
-             */
-            public function __construct(
-                private readonly MarkdownContract $markdown,
-            ) {
-                // empty
-            }
-
-            public function getEnvironment(): ?EnvironmentInterface {
-                return $this->markdown instanceof Markdown ? $this->markdown->environment : null;
-            }
-        };
-        $environment     = $markdownWrapper->getEnvironment();
+        $environment = $wrapper->environment();
 
         return $environment;
     }

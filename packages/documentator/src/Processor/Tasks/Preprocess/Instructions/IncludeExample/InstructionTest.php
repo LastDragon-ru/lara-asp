@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;

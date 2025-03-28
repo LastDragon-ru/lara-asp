@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;

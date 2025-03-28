@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Contracts\Console\Kernel;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeArtisan\Exceptions\ArtisanCommandFailed;
@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
 use function sprintf;
 
 /**

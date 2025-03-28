@@ -2,11 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
+
+use function is_a;
 
 /**
  * @implements MetadataResolver<Document>
@@ -28,7 +30,7 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
 
     #[Override]
     public function isSupported(string $metadata): bool {
-        return $metadata === Document::class;
+        return is_a($metadata, Document::class, true);
     }
 
     #[Override]

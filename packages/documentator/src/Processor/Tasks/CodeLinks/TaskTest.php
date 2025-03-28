@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown as MarkdownImpl;
@@ -107,7 +108,7 @@ final class TaskTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function parse(Document $document): array {
+            public function parse(DocumentContract $document): array {
                 return parent::parse($document);
             }
         };

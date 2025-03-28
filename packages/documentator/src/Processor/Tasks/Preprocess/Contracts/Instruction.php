@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts;
 
 use Generator;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document as MarkdownDocument;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as MarkdownDocument;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;

@@ -6,7 +6,7 @@ use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package as ComposerPackage;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
