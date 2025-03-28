@@ -71,11 +71,6 @@ final class TaskTest extends TestCase {
                             $this->document->appendChild($node);
                         }
 
-                        #[Override]
-                        public function isEmpty(): bool {
-                            return false;
-                        }
-
                         /**
                          * @inheritDoc
                          */

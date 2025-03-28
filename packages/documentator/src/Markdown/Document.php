@@ -13,8 +13,6 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Parser\MarkdownParserInterface;
 use Override;
 
-use function count;
-
 // todo(documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
 
@@ -51,11 +49,6 @@ class Document extends DocumentImpl implements DocumentContract {
         }
 
         return $this->node;
-    }
-
-    #[Override]
-    public function isEmpty(): bool {
-        return !$this->getNode()->hasChildren() && count($this->getNode()->getReferenceMap()) === 0;
     }
 
     /**

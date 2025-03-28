@@ -88,16 +88,10 @@ class Task implements TaskContract {
             return true;
         }
 
-        // Markdown?
-        $document = $file->as(Document::class);
-
-        if ($document->isEmpty()) {
-            return true;
-        }
-
         // Parse
         $unresolved = [];
         $resolved   = [];
+        $document   = $file->as(Document::class);
         $parsed     = $this->parse($document);
 
         // Links

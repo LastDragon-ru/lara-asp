@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
@@ -61,23 +60,6 @@ final class InstructionTest extends TestCase {
                 new FileReference($fs->input->getFilePath('no readme/package/README.md')),
                 new Exception(),
             ),
-        );
-
-        $this->getProcessorResult($fs, ($instance)($context, $params));
-    }
-
-    public function testInvokeEmptyReadme(): void {
-        $path     = (new FilePath(self::getTestData()->path('Document.md')))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
-        $file     = $fs->getFile($path);
-        $target   = $fs->input->getDirectoryPath('empty readme');
-        $params   = new Parameters((string) $target);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
-        $instance = $this->app()->make(Instruction::class);
-        $package  = $fs->getDirectory($target->getDirectoryPath('package'));
-
-        self::expectExceptionObject(
-            new PackageReadmeIsEmpty($context, $params, $package->getName()),
         );
 
         $this->getProcessorResult($fs, ($instance)($context, $params));

@@ -16,8 +16,6 @@ use Stringable;
  * @phpstan-require-extends DocumentImpl
  */
 interface Document extends Stringable {
-    public function isEmpty(): bool;
-
     /**
      * @param iterable<array-key, Coordinate> $location
      */

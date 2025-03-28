@@ -79,14 +79,8 @@ readonly class Instruction implements InstructionContract {
                 continue;
             }
 
-            // Empty?
-            $document = $file->as(Document::class);
-
-            if ($document->isEmpty()) {
-                continue;
-            }
-
             // Add
+            $document    = $file->as(Document::class);
             $move        = new Move($context->file->getFilePath($file->getName()));
             $title       = Utils::getTitle($document) ?? '';
             $summary     = mb_trim((string) $document->mutate(new Summary())->mutate($move));
