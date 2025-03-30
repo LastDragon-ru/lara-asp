@@ -3,19 +3,21 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
+
+use function is_a;
 
 /**
  * @implements MetadataSerializer<Document>
  */
 readonly class MarkdownMetadata implements MetadataSerializer {
     public function __construct(
-        protected MarkdownContract $markdown,
+        protected Markdown $markdown,
     ) {
         // empty
     }
@@ -30,7 +32,7 @@ readonly class MarkdownMetadata implements MetadataSerializer {
 
     #[Override]
     public function isSupported(string $metadata): bool {
-        return $metadata === Document::class;
+        return is_a($metadata, Document::class, true);
     }
 
     #[Override]

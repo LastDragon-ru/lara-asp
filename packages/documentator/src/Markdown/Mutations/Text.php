@@ -2,27 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations;
 
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use Override;
 
 /**
- * Changes container.
- *
- * @deprecated %{VERSION} Use own {@see Mutation} implementation instead.
+ * Extract text.
  *
  * @implements Mutation<DocumentNode>
  */
-readonly class Changeset implements Mutation {
+readonly class Text implements Mutation {
     public function __construct(
-        /**
-         * @var list<Replace|Delete>
-         */
-        protected array $mutagens,
+        protected Location $location,
     ) {
         // empty
     }
@@ -42,6 +37,8 @@ readonly class Changeset implements Mutation {
      */
     #[Override]
     public function mutagens(Document $document, Node $node): array {
-        return $this->mutagens;
+        return [
+            new Extract($this->location),
+        ];
     }
 }

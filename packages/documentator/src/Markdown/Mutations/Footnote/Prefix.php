@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use League\CommonMark\Extension\Footnote\Node\Footnote;
 use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
@@ -12,7 +13,7 @@ use League\CommonMark\Node\Node;
 use Override;
 
 use function mb_strlen;
-use function mb_substr;
+use function mb_trim;
 
 /**
  * Adds unique prefix for all footnotes.
@@ -44,8 +45,8 @@ readonly class Prefix extends Base {
         $label = $footnote->getReference()->getLabel();
 
         if ($footnote instanceof FootnoteRef) {
-            $location = LocationData::get($footnote);
-            $label    = mb_substr($document->getText($location), 2, -1);
+            $location = LocationData::get($footnote)->moveOffset(2)->moveLength(-1);
+            $label    = mb_trim((string) $document->mutate(new Text($location)));
         }
 
         return $label;

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens;
 
 use Closure;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 
 readonly class Finalize {
     public function __construct(

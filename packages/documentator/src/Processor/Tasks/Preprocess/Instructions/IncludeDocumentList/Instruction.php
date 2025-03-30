@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
@@ -79,14 +79,8 @@ readonly class Instruction implements InstructionContract {
                 continue;
             }
 
-            // Empty?
-            $document = $file->as(Document::class);
-
-            if ($document->isEmpty()) {
-                continue;
-            }
-
             // Add
+            $document    = $file->as(Document::class);
             $move        = new Move($context->file->getFilePath($file->getName()));
             $title       = Utils::getTitle($document) ?? '';
             $summary     = mb_trim((string) $document->mutate(new Summary())->mutate($move));

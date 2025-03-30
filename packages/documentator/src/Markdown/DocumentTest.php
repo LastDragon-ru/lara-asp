@@ -21,15 +21,6 @@ use function mb_trim;
 final class DocumentTest extends TestCase {
     // <editor-fold desc="Test">
     // =========================================================================
-    #[DataProvider('dataProviderIsEmpty')]
-    public function testIsEmpty(bool $expected, string $content): void {
-        $markdown = $this->app()->make(Markdown::class);
-        $document = $markdown->parse($content);
-        $actual   = $document->isEmpty();
-
-        self::assertSame($expected, $actual);
-    }
-
     /**
      * @param Mutation<covariant Node>|null $mutation
      */
@@ -50,41 +41,6 @@ final class DocumentTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
-    /**
-     * @return array<string, array{bool, string}>
-     */
-    public static function dataProviderIsEmpty(): array {
-        return [
-            'Empty'          => [
-                true,
-                <<<'MARKDOWN'
-
-
-
-                MARKDOWN,
-            ],
-            'Not empty'      => [
-                false,
-                <<<'MARKDOWN'
-                fsdfsdfsdf
-                fsdfsdfsdf
-                MARKDOWN,
-            ],
-            'Reference only' => [
-                false,
-                <<<'MARKDOWN'
-                [unused]: ../path/to/file
-                MARKDOWN,
-            ],
-            'Comment only'   => [
-                false,
-                <<<'MARKDOWN'
-                <!-- comment -->
-                MARKDOWN,
-            ],
-        ];
-    }
-
     /**
      * @return array<string, array{string, string, ?Mutation<covariant Node>}>
      */
@@ -107,7 +63,6 @@ final class DocumentTest extends TestCase {
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 fsdfsdfsdf
-
                 MARKDOWN,
                 <<<'MARKDOWN'
                 fsdfsdfsdf
@@ -132,7 +87,6 @@ final class DocumentTest extends TestCase {
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 fsdfsdfsdf
-
                 MARKDOWN,
                 <<<'MARKDOWN'
                 fsdfsdfsdf

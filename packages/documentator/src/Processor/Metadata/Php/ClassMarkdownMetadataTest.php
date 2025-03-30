@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
@@ -45,7 +45,6 @@ final class ClassMarkdownMetadataTest extends TestCase {
             Description.
 
             Summary `\stdClass` and `\LastDragon_ru\LaraASP\Documentator\Processor\Metadata\PhpClass`, {@see https://example.com/}.
-
             MARKDOWN,
             (string) $resolved,
         );

@@ -6,8 +6,8 @@ use Generator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
@@ -88,16 +88,10 @@ class Task implements TaskContract {
             return true;
         }
 
-        // Markdown?
-        $document = $file->as(Document::class);
-
-        if ($document->isEmpty()) {
-            return true;
-        }
-
         // Parse
         $unresolved = [];
         $resolved   = [];
+        $document   = $file->as(Document::class);
         $parsed     = $this->parse($document);
 
         // Links

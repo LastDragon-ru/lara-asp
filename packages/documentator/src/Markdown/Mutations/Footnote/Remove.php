@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote;
 
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use League\CommonMark\Node\Node;
 use Override;

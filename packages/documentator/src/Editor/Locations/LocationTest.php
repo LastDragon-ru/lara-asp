@@ -65,6 +65,11 @@ final class LocationTest extends TestCase {
         self::assertEquals($expected, $location->moveOffset($move));
     }
 
+    #[DataProvider('dataProviderMoveLength')]
+    public function testMoveLength(Location $expected, Location $location, int $move): void {
+        self::assertEquals($expected, $location->moveLength($move));
+    }
+
     public function testBefore(): void {
         self::assertEquals(
             new Location(3, 3, 15, 0, 2, 4),
@@ -168,6 +173,44 @@ final class LocationTest extends TestCase {
             ],
             'negative (multiline)' => [
                 new Location(1, 2, 5, 10),
+                new Location(1, 2, 10, 10),
+                -5,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{Location, Location, int}>
+     */
+    public static function dataProviderMoveLength(): array {
+        return [
+            'no shift'             => [
+                new Location(1, 1, 10, 10),
+                new Location(1, 1, 10, 10),
+                0,
+            ],
+            'positive'             => [
+                new Location(1, 1, 10, 15),
+                new Location(1, 1, 10, 10),
+                5,
+            ],
+            'positive (multiline)' => [
+                new Location(1, 2, 10, 15),
+                new Location(1, 2, 10, 10),
+                5,
+            ],
+            'negative'             => [
+                new Location(1, 1, 10, 5),
+                new Location(1, 1, 10, 10),
+                -5,
+            ],
+            'negative (too big)'   => [
+                new Location(1, 1, 10, 0),
+                new Location(1, 1, 10, 10),
+                -50,
+            ],
+            'negative (multiline)' => [
+                new Location(1, 2, 10, 5),
                 new Location(1, 2, 10, 10),
                 -5,
             ],

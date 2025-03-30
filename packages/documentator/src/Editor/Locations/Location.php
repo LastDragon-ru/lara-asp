@@ -138,6 +138,26 @@ readonly class Location implements IteratorAggregate {
     /**
      * @return new<self>
      */
+    public function moveLength(int $move): self {
+        if ($move === 0 || $this->length === null) {
+            return $this;
+        }
+
+        $length = max(0, $this->length + $move);
+
+        return new self(
+            $this->startLine,
+            $this->endLine,
+            $this->offset,
+            $length,
+            $this->startLinePadding,
+            $this->internalPadding,
+        );
+    }
+
+    /**
+     * @return new<self>
+     */
     public function withOffset(int $offset): self {
         return new self(
             $this->startLine,

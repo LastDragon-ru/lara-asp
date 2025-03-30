@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Contracts;
 
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;

@@ -37,7 +37,6 @@ final class MoveTest extends TestCase {
             'from `null`'    => [
                 <<<'MARKDOWN'
                 [foo]: relative/path/from "title"
-
                 MARKDOWN,
                 null,
                 <<<'MARKDOWN'
@@ -48,7 +47,6 @@ final class MoveTest extends TestCase {
             'same'           => [
                 <<<'MARKDOWN'
                 [foo]: /path "title"
-
                 MARKDOWN,
                 '/path/file.md',
                 <<<'MARKDOWN'

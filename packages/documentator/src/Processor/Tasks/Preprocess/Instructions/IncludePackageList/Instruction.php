@@ -6,7 +6,7 @@ use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package as ComposerPackage;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
@@ -22,7 +22,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Instruction as IncludeDocumentList;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Exceptions\PackageReadmeIsEmpty;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use Override;
@@ -89,10 +88,6 @@ readonly class Instruction implements InstructionContract {
             $readme  = $package->getFilePath(Cast::toString($packageInfo->readme ?? 'README.md'));
             $readme  = Cast::to(File::class, yield new FileReference($readme));
             $content = $readme->as(Document::class);
-
-            if ($content->isEmpty()) {
-                throw new PackageReadmeIsEmpty($context, $parameters, $package->getName());
-            }
 
             // Add
             $move       = new Move($context->file->getFilePath($readme->getName()));

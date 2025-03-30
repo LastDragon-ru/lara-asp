@@ -5,14 +5,15 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 use Exception;
 use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node as GeneratedNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
@@ -195,7 +196,7 @@ class Task implements TaskContract {
                         $location = Location::get($next);
                     } else {
                         $location    = Location::get($node);
-                        $instruction = mb_trim($document->getText($location));
+                        $instruction = mb_trim((string) $document->mutate(new TextMutation($location)));
                         $text        = "{$instruction}\n{$text}";
                     }
 

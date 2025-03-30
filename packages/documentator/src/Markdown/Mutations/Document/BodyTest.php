@@ -37,7 +37,6 @@ final class BodyTest extends TestCase {
                 # Header B
 
                 sdfsdfsdf
-
                 TEXT,
                 <<<'MARKDOWN'
                 ## Header A
