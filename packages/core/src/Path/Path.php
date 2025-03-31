@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Core\Path;
 
+use LastDragon_ru\LaraASP\Core\Package;
 use Override;
 use Stringable;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 use function basename;
 use function preg_match;
+use function trigger_deprecation;
 
 abstract class Path implements Stringable {
     private ?bool $normalized = null;
@@ -113,7 +115,12 @@ abstract class Path implements Stringable {
             && (string) $path->getNormalizedPath() === (string) $this->getNormalizedPath();
     }
 
+    /**
+     * @deprecated %{VERSION} Use `preg_match()` directly.
+     */
     public function isMatch(string $regexp): bool {
+        trigger_deprecation(Package::Name, '%{VERSION}', 'The method should not be used.');
+
         return preg_match($regexp, $this->path) > 0;
     }
 }
