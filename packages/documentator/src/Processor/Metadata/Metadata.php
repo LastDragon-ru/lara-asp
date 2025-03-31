@@ -55,38 +55,45 @@ class Metadata {
      * @return T
      */
     public function get(File $file, string $metadata): mixed {
-        // Resolved?
-        if (isset($this->cache[$file][$metadata])) {
-            return $this->cache[$file][$metadata]; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
-        }
-
-        // Resolve
         try {
             $resolver = $this->getResolver($file, $metadata);
-            $resolved = $resolver->resolve($file, $metadata);
+            $resolved = $this->cache[$file][$resolver::class] ?? null;
 
-            if ($resolved instanceof $metadata) {
-                $this->set($file, $resolved);
-            } else {
-                throw new UnexpectedValueException(sprintf(
-                    'Expected `%s`, got `%s` (resolver `%s`).',
-                    $metadata,
-                    $resolved::class,
-                    $resolver::class,
-                ));
+            if ($resolved === null) {
+                $resolved = $resolver->resolve($file, $metadata);
+
+                if ($resolved instanceof $metadata) {
+                    $this->set($file, $resolved);
+                } else {
+                    throw new UnexpectedValueException(
+                        sprintf(
+                            'Expected `%s`, got `%s` (resolver `%s`).',
+                            $metadata,
+                            $resolved::class,
+                            $resolver::class,
+                        ),
+                    );
+                }
             }
         } catch (Exception $exception) {
             throw new MetadataUnresolvable($file, $metadata, $exception);
         }
 
-        return $resolved;
+        return $resolved; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
     }
 
     /**
      * @param class-string $metadata
      */
     public function has(File $file, string $metadata): bool {
-        return isset($this->cache[$file][$metadata]);
+        try {
+            $resolver = $this->getResolver($file, $metadata);
+            $exists   = isset($this->cache[$file][$resolver::class]);
+
+            return $exists;
+        } catch (Exception) {
+            return false;
+        }
     }
 
     /**
@@ -95,8 +102,13 @@ class Metadata {
      * @param T $metadata
      */
     public function set(File $file, object $metadata): void {
-        $this->cache[$file]                 ??= [];
-        $this->cache[$file][$metadata::class] = $metadata;
+        try {
+            $resolver                             = $this->getResolver($file, $metadata::class);
+            $this->cache[$file]                 ??= [];
+            $this->cache[$file][$resolver::class] = $metadata;
+        } catch (Exception $exception) {
+            throw new MetadataUnresolvable($file, $metadata::class, $exception);
+        }
     }
 
     public function reset(File $file): void {

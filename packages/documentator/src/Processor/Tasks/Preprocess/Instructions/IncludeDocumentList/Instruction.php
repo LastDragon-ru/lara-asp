@@ -23,7 +23,6 @@ use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Node;
 use Override;
 
-use function array_filter;
 use function max;
 use function mb_trim;
 use function min;
@@ -65,9 +64,15 @@ readonly class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Generator {
         $target    = $context->file->getDirectoryPath($parameters->target);
-        $patterns  = array_filter((array) $parameters->include, static fn ($s) => $s !== '');
-        $patterns  = $patterns === [] ? '*.md' : $patterns;
-        $iterator  = Cast::to(Iterator::class, yield new FileIterator($target, $patterns, $parameters->depth));
+        $iterator  = Cast::to(
+            Iterator::class,
+            yield new FileIterator(
+                $target,
+                $parameters->include,
+                $parameters->exclude,
+                $parameters->depth,
+            ),
+        );
         $documents = [];
 
         foreach ($iterator as $file) {

@@ -16,14 +16,15 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context\IndexFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
-use Symfony\Component\Finder\Glob;
 
 use function array_map;
 use function array_merge;
 use function array_unshift;
+use function array_values;
 
 /**
  * Perform one or more task on the file(s).
@@ -34,9 +35,10 @@ class Processor {
     protected readonly Dispatcher $dispatcher;
 
     /**
-     * @var array<array-key, string>
+     * @var list<string>
      */
-    private array $exclude = [];
+    private array  $exclude    = [];
+    protected bool $consistent = false;
 
     public function __construct(
         protected readonly ContainerResolver $container,
@@ -44,6 +46,19 @@ class Processor {
         $this->tasks      = new Tasks($container);
         $this->metadata   = new Metadata($container);
         $this->dispatcher = new Dispatcher();
+    }
+
+    /**
+     * If enabled, the `Processor` will iterate files/directories in a consistent
+     * way (= sort by name). Useful mainly for testing, in all other cases it is
+     * recommended do not change default behavior.
+     *
+     * @internal
+     */
+    public function consistent(): static {
+        $this->consistent = true;
+
+        return $this;
     }
 
     /**
@@ -108,7 +123,7 @@ class Processor {
      * @param array<array-key, string>|string $exclude glob(s) to exclude.
      */
     public function exclude(array|string $exclude): static {
-        $this->exclude = array_merge($this->exclude, (array) $exclude);
+        $this->exclude = array_merge($this->exclude, array_values((array) $exclude));
 
         return $this;
     }
@@ -136,14 +151,13 @@ class Processor {
             !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->getKeys()),
             default                    => null,
         };
-        $exclude   = array_map(Glob::toRegex(...), $this->exclude);
+        $exclude   = $this->exclude;
         $directory = $input->getDirectoryPath('.');
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
             if (!$directory->isEqual($output) && $directory->isInside($output)) {
-                $path      = $directory->getRelativePath($output);
-                $exclude[] = "#^{$path}/#u";
+                $exclude[] = ((string) $directory->getRelativePath($output)).'/**'; // fixme(documentator): escape glob pattern?
             }
         } else {
             $output = $directory;
@@ -181,8 +195,8 @@ class Processor {
     }
 
     /**
-     * @param array<array-key, string>|string|null $include
-     * @param array<array-key, string>             $exclude
+     * @param list<string>|string|null $include
+     * @param list<string>             $exclude
      */
     protected function execute(
         DirectoryPath $input,
@@ -191,9 +205,9 @@ class Processor {
         array $exclude,
         ?int $depth,
     ): void {
-        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output);
-        $iterator   = $filesystem->getFilesIterator($input, $include, $depth, $exclude);
-        $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, $exclude);
+        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output, $this->consistent);
+        $iterator   = $filesystem->getFilesIterator($input, $include, $exclude, $depth);
+        $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
 
         $executor->run();
     }

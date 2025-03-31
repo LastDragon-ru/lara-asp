@@ -65,6 +65,7 @@ final class MetadataTest extends TestCase {
         $aFile = Mockery::mock(File::class);
         $aFile
             ->shouldReceive('getExtension')
+            ->atLeast()
             ->once()
             ->andReturn('extension-a');
 
@@ -77,11 +78,63 @@ final class MetadataTest extends TestCase {
         $bFile = Mockery::mock(File::class);
         $bFile
             ->shouldReceive('getExtension')
+            ->atLeast()
             ->once()
             ->andReturn('extension-b');
         $bActual = $metadata->get($bFile, MetadataTest__Value::class);
 
         self::assertEquals(new MetadataTest__Value($bResolver::class), $bActual);
+    }
+
+    public function testGetCached(): void {
+        // Prepare
+        $resolved = new class() extends stdClass {
+            // empty
+        };
+        $resolver = Mockery::mock(MetadataResolver::class);
+        $resolver
+            ->shouldReceive('getExtensions')
+            ->twice()
+            ->andReturn(['*']);
+        $resolver
+            ->shouldReceive('isSupported')
+            ->atLeast()
+            ->once()
+            ->andReturnUsing(
+                static function (string $metadata): bool {
+                    return is_a($metadata, stdClass::class, true);
+                },
+            );
+        $resolver
+            ->shouldReceive('resolve')
+            ->once()
+            ->andReturn($resolved);
+
+        $container = Mockery::mock(ContainerResolver::class);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        $metadata->addResolver($resolver);
+
+        // Test
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->atLeast()
+            ->once()
+            ->andReturn('extension');
+
+        $aActual = $metadata->get($file, $resolved::class);
+        $bActual = $metadata->get($file, $resolved::class);
+        $cActual = $metadata->get($file, stdClass::class);
+
+        self::assertSame($resolved, $aActual);
+        self::assertSame($resolved, $bActual);
+        self::assertSame($resolved, $cActual);
     }
 
     public function testGetUnexpected(): void {
@@ -159,44 +212,95 @@ final class MetadataTest extends TestCase {
     }
 
     public function testHas(): void {
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->atLeast()
+            ->once()
+            ->andReturn('extension');
+
+        $value     = new class(__METHOD__) extends MetadataTest__Value {
+            // empty
+        };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new Metadata($container);
-        $file      = Mockery::mock(File::class);
-        $value     = new MetadataTest__Value(__METHOD__);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        $metadata->addResolver(new MetadataTest__Resolver());
 
         self::assertFalse($metadata->has($file, MetadataTest__Value::class));
+        self::assertFalse($metadata->has($file, $value::class));
 
         $metadata->set($file, $value);
 
         self::assertTrue($metadata->has($file, MetadataTest__Value::class));
+        self::assertTrue($metadata->has($file, $value::class));
     }
 
     public function testSet(): void {
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->atLeast()
+            ->once()
+            ->andReturn('extension');
+
+        $value     = new class(__METHOD__) extends MetadataTest__Value {
+            // empty
+        };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new Metadata($container);
-        $file      = Mockery::mock(File::class);
-        $value     = new MetadataTest__Value(__METHOD__);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        $metadata->addResolver(new MetadataTest__Resolver());
 
         $metadata->set($file, $value);
 
         self::assertSame($value, $metadata->get($file, MetadataTest__Value::class));
+        self::assertSame($value, $metadata->get($file, $value::class));
     }
 
     public function testReset(): void {
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->atLeast()
+            ->once()
+            ->andReturn('extension');
+
+        $value     = new class(__METHOD__) extends MetadataTest__Value {
+            // empty
+        };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new Metadata($container);
-        $file      = Mockery::mock(File::class);
-        $value     = new MetadataTest__Value(__METHOD__);
+        $metadata  = new class($container) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+        };
+
+        $metadata->addResolver(new MetadataTest__Resolver());
 
         self::assertFalse($metadata->has($file, MetadataTest__Value::class));
+        self::assertFalse($metadata->has($file, $value::class));
 
         $metadata->set($file, $value);
 
         self::assertTrue($metadata->has($file, MetadataTest__Value::class));
+        self::assertTrue($metadata->has($file, $value::class));
 
         $metadata->reset($file);
 
         self::assertFalse($metadata->has($file, MetadataTest__Value::class));
+        self::assertFalse($metadata->has($file, $value::class));
     }
 
     public function testSerialize(): void {
