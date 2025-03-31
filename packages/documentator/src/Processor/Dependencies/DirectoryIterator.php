@@ -10,29 +10,31 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
-use Symfony\Component\Finder\Finder;
 
 use function is_string;
 
 /**
- * @see Finder
  * @implements Dependency<Iterator<mixed, Directory>>
  */
 readonly class DirectoryIterator implements Dependency {
     public function __construct(
         protected Directory|DirectoryPath|string $directory,
         /**
-         * @var array<array-key, string>|string|null {@see Finder::name()}
+         * Glob(s) to include.
+         *
+         * @var array<array-key, string>|string|null
          */
-        protected array|string|null $patterns = null,
+        protected array|string|null $include = null,
         /**
-         * @var array<array-key, string|int>|string|int|null {@see Finder::depth()}
-         */
-        protected array|string|int|null $depth = null,
-        /**
-         * @var array<array-key, string>|string|null {@see Finder::notPath()}
+         * Glob(s) to exclude.
+         *
+         * @var array<array-key, string>|string|null
          */
         protected array|string|null $exclude = null,
+        /**
+         * Maximum depth.
+         */
+        protected ?int $depth = null,
     ) {
         // empty
     }
@@ -43,7 +45,7 @@ readonly class DirectoryIterator implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): Iterator {
         try {
-            yield from $fs->getDirectoriesIterator($this->directory, $this->patterns, $this->depth, $this->exclude);
+            yield from $fs->getDirectoriesIterator($this->directory, $this->include, $this->exclude, $this->depth);
         } catch (DirectoryNotFound $exception) {
             throw new DependencyUnresolvable($this, $exception);
         }

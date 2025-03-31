@@ -167,19 +167,18 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      *
-     * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
-     * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
-     * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
+     * @param array<array-key, string>|string|null $include
+     * @param array<array-key, string>|string|null $exclude
      *
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
         Directory|DirectoryPath|string $directory,
-        array|string|null $patterns = null,
-        array|string|int|null $depth = null,
+        array|string|null $include = null,
         array|string|null $exclude = null,
+        ?int $depth = null,
     ): Iterator {
-        $finder = $this->getFinder($directory, $patterns, $depth, $exclude);
+        $finder = $this->getFinder($directory, $include, $exclude, $depth);
 
         foreach ($finder->files() as $info) {
             yield $this->getFile($info->getPathname());
@@ -191,19 +190,18 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      *
-     * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
-     * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
-     * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
+     * @param array<array-key, string>|string|null $exclude
+     * @param array<array-key, string>|string|null $include
      *
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
         Directory|DirectoryPath|string $directory,
-        array|string|null $patterns = null,
-        array|string|int|null $depth = null,
+        array|string|null $include = null,
         array|string|null $exclude = null,
+        ?int $depth = null,
     ): Iterator {
-        $finder = $this->getFinder($directory, $patterns, $depth, $exclude);
+        $finder = $this->getFinder($directory, $include, $exclude, $depth);
 
         foreach ($finder->directories() as $info) {
             yield $this->getDirectory($info->getPathname());
@@ -213,15 +211,14 @@ class FileSystem {
     }
 
     /**
-     * @param array<array-key, string>|string|null         $patterns {@see Finder::name()}
-     * @param array<array-key, string|int>|string|int|null $depth    {@see Finder::depth()}
-     * @param array<array-key, string>|string|null         $exclude  {@see Finder::notPath()}
+     * @param array<array-key, string>|string|null $exclude
+     * @param array<array-key, string>|string|null $include
      */
-    protected function getFinder(
+    private function getFinder(
         Directory|DirectoryPath|string $directory,
-        array|string|null $patterns = null,
-        array|string|int|null $depth = null,
+        array|string|null $include = null,
         array|string|null $exclude = null,
+        ?int $depth = null,
     ): Finder {
         $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
         $finder    = Finder::create()
@@ -234,16 +231,20 @@ class FileSystem {
             $finder = $finder->sortByName(true);
         }
 
-        if ($patterns !== null) {
-            $finder = $finder->name($patterns);
+        if ($include !== null) {
+            $finder = $finder->name($include);
         }
 
         if ($depth !== null) {
-            $finder = $finder->depth($depth);
+            $finder = $finder->depth("<= {$depth}");
         }
 
         if ($exclude !== null) {
-            $finder = $finder->notPath($exclude);
+            $exclude = (new Globs((array) $exclude))->regexp;
+
+            if ($exclude !== null) {
+                $finder = $finder->notPath($exclude);
+            }
         }
 
         return $finder;

@@ -34,10 +34,10 @@ final class FileIteratorTest extends TestCase {
     public function testInvoke(): void {
         $fs        = $this->getFileSystem(__DIR__);
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $pattern   = '*.txt';
-        $absolute  = new FileIterator($path, $pattern);
-        $relative  = new FileIterator(basename((string) $path), $pattern);
-        $directory = new FileIterator($fs->getDirectory($path), $pattern);
+        $include   = '*.txt';
+        $absolute  = new FileIterator($path, $include);
+        $relative  = new FileIterator(basename((string) $path), $include);
+        $directory = new FileIterator($fs->getDirectory($path), $include);
         $formatter = static function (File|FilePath $item): string {
             return (string) $item;
         };

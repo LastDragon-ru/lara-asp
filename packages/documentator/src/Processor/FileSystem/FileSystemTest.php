@@ -188,7 +188,7 @@ final class FileSystemTest extends TestCase {
             [
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '*.html', 0))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '*.html', null, 0))),
         );
 
         self::assertEquals(
@@ -197,7 +197,7 @@ final class FileSystemTest extends TestCase {
                 'b/b.html',
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, exclude: ['#.*?\.txt$#']))),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, exclude: ['*.txt', '**/**/*.txt']))),
         );
     }
 
@@ -232,26 +232,13 @@ final class FileSystemTest extends TestCase {
         self::assertEquals(
             [
                 'a',
-                'b',
-                'b/a',
-                'b/b',
-            ],
-            array_map(
-                $map,
-                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: '#^a/[^/]*?$#')),
-            ),
-        );
-
-        self::assertEquals(
-            [
-                'a',
                 'a/b',
                 'b',
                 'b/b',
             ],
             array_map(
                 $map,
-                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: '#^[^/]*?/a$#')),
+                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: '*/a')),
             ),
         );
     }

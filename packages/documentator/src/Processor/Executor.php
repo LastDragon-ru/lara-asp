@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileHook;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use Traversable;
 
@@ -52,10 +53,7 @@ class Executor {
          * @var Iterator<array-key, File>
          */
         private readonly Iterator $iterator,
-        /**
-         * @var array<array-key, string>
-         */
-        private readonly array $exclude,
+        private readonly Globs $exclude,
     ) {
         // empty
     }
@@ -261,14 +259,7 @@ class Executor {
 
         // Excluded?
         $path     = $this->fs->input->getRelativePath($file->getPath());
-        $excluded = false;
-
-        foreach ($this->exclude as $regexp) {
-            if ($path->isMatch($regexp)) {
-                $excluded = true;
-                break;
-            }
-        }
+        $excluded = $this->exclude->isMatch($path);
 
         if ($excluded) {
             return true;

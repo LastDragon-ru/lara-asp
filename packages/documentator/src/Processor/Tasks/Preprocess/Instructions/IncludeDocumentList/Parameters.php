@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
-use Symfony\Component\Finder\Finder;
 
 readonly class Parameters implements InstructionParameters {
     public function __construct(
@@ -13,15 +12,6 @@ readonly class Parameters implements InstructionParameters {
          * Directory path.
          */
         public string $target,
-        /**
-         * [Directory Depth](https://symfony.com/doc/current/components/finder.html#directory-depth)
-         * (eg the `0` means no nested directories, the `null` removes limits).
-         *
-         * @see Finder::depth()
-         *
-         * @var array<array-key, string|int>|string|int|null
-         */
-        public array|string|int|null $depth = 0,
         /**
          * Blade template. The documents passed in the `$data` ({@see Data})
          * variable. Also, be careful with leading whitespaces.
@@ -42,14 +32,22 @@ readonly class Parameters implements InstructionParameters {
          */
         public ?int $level = null,
         /**
-         * [Rules which filenames must match](https://symfony.com/doc/current/components/finder.html#path)
-         * (only Markdown documents will be listed).
+         * Glob(s) to include (only Markdown documents expected).
          *
-         * @see Finder::path()
+         * @var array<array-key, string>|string
+         */
+        public array|string $include = '*.md',
+        /**
+         * Glob(s) to exclude.
          *
          * @var array<array-key, string>|string|null
          */
-        public array|string|null $include = null,
+        public array|string|null $exclude = null,
+        /**
+         * Maximum depth (eg the `0` means no nested directories, the `null`
+         * removes limits).
+         */
+        public ?int $depth = 0,
     ) {
         // empty
     }

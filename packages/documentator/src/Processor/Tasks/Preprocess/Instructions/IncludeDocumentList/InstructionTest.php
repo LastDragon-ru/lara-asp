@@ -135,26 +135,6 @@ final class InstructionTest extends TestCase {
                 [include:document-list]: . ({"depth": null, "order": "Desc"})
                 MARKDOWN,
             ],
-            'Depth is array'                         => [
-                <<<'MARKDOWN'
-                # [Nested A](<A/Document A.md>)
-
-                Summary [text](../Document.md).
-
-                [Read more](<A/Document A.md>).
-
-                # [Nested B](<B/Document B.md>)
-
-                Summary [text](../Document.md).
-
-                [Read more](<B/Document B.md>).
-
-                MARKDOWN,
-                'nested/Document.md',
-                <<<'MARKDOWN'
-                [include:document-list]: . ({"depth": ["> 0", "< 2"]})
-                MARKDOWN,
-            ],
             'Level `null`'                           => [
                 <<<'MARKDOWN'
                 ## [`<` Document B `>`](<Document B.md>)
