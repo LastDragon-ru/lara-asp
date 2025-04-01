@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
@@ -17,6 +18,7 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\OperatorTests;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
+use Mockery;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -54,8 +56,15 @@ final class NotContainsTest extends TestCase {
     ): void {
         $self           = $this;
         $builderFactory = static function () use ($self, $builderFactory, $grammar): mixed {
+            $connection = Mockery::mock(Connection::class);
+            $connection
+                ->shouldReceive('getTablePrefix')
+                ->atLeast()
+                ->once()
+                ->andReturn('');
+
             $builder = $builderFactory($self);
-            $grammar = new $grammar();
+            $grammar = new $grammar($connection);
 
             if ($builder instanceof EloquentBuilder) {
                 $builder->getQuery()->grammar = $grammar;
