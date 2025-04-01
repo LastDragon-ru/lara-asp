@@ -93,7 +93,7 @@ readonly class Move implements Mutation {
             $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
             $targetValue  = $this->target($document, $document->path, $path, $node->getUrl());
             $targetWrap   = mb_substr(mb_ltrim(mb_ltrim($origin, '(')), 0, 1) === '<';
-            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
+            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap !== false ? true : null);
             $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
             $mutagens[]   = new Replace($location, $text);
         } elseif ($node instanceof ReferenceNode) {
@@ -106,7 +106,7 @@ readonly class Move implements Mutation {
             $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
             $targetValue  = $this->target($document, $document->path, $path, $node->getDestination());
             $targetWrap   = (bool) preg_match('/^\['.preg_quote($node->getLabel(), '/').']:\s+</u', $origin);
-            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap);
+            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap !== false ? true : null);
             $text         = mb_trim("[{$label}]: {$target} {$title}");
 
             if ($location->startLine !== $location->endLine) {

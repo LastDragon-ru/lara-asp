@@ -34,7 +34,7 @@ final class MoveTest extends TestCase {
     public static function dataProviderInvoke(): array {
         return [
             // General
-            'from `null`'    => [
+            'From `null`'                  => [
                 <<<'MARKDOWN'
                 [foo]: relative/path/from "title"
                 MARKDOWN,
@@ -44,7 +44,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 'relative/path/to/file.md',
             ],
-            'same'           => [
+            'Same'                         => [
                 <<<'MARKDOWN'
                 [foo]: /path "title"
                 MARKDOWN,
@@ -54,7 +54,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/file.md',
             ],
-            'empty'          => [
+            'Empty'                        => [
                 <<<'MARKDOWN'
                 [foo]: # "title"
 
@@ -65,7 +65,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/to/file.md',
             ],
-            'query&fragment' => [
+            'Query & Fragment'             => [
                 <<<'MARKDOWN'
                 [foo]: ../from/path?a=123#fragment
                 [bar]: ?a=123#fragment
@@ -78,7 +78,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/to/file.md',
             ],
-            'references'     => [
+            'References'                   => [
                 <<<'MARKDOWN'
                 # General
 
@@ -109,7 +109,7 @@ final class MoveTest extends TestCase {
 
                 ## Target escaping
 
-                [title]: ../from/%3Cfile%3E/%20/a
+                [title]: <../from/\<file\>/ /a>
                 [title]: <../from/file/ /a>
 
                 ## Title escaping
@@ -177,7 +177,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/to/file.md',
             ],
-            'links'          => [
+            'Links'                        => [
                 <<<'MARKDOWN'
                 # General
 
@@ -191,7 +191,7 @@ final class MoveTest extends TestCase {
 
                 ## Target escaping
 
-                Text [title](../from/%3Cfile%3E/%20/a) text [title](<../from/file/ /a>).
+                Text [title](<../from/\<file\>/ /a>) text [title](<../from/file/ /a>).
 
                 ## Title escaping
 
@@ -248,7 +248,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/to/file.md',
             ],
-            'images'         => [
+            'Images'                       => [
                 <<<'MARKDOWN'
                 # General
 
@@ -265,7 +265,7 @@ final class MoveTest extends TestCase {
 
                 ## Target escaping
 
-                ![image](../from/%3Cfile%3E/%20/a)
+                ![image](<../from/\<file\>/ /a>)
 
                 ## Title escaping
 
@@ -323,7 +323,7 @@ final class MoveTest extends TestCase {
                 MARKDOWN,
                 '/path/to/file.md',
             ],
-            'footnotes'      => [
+            'Footnotes'                    => [
                 <<<'MARKDOWN'
                 # General
 
@@ -365,6 +365,65 @@ final class MoveTest extends TestCase {
                     text [absolute](/path/to/file 'title') text [link](file/b)
                 MARKDOWN,
                 '/path/to/file.md',
+            ],
+            'Move to url with white space' => [
+                <<<'MARKDOWN'
+                # Links
+
+                Text text [tel](tel:+70000000000 "title") text [link](../path/from/file/a)
+                text [_`link`_](../path/from/file/b ' <title> ') text [title](<../path/from/file/a> (title))
+                [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
+                text [external](https://example.com/) text [self](#fragment)
+                text [self](#fragment).
+
+                Text [title](<../path/from/\<file\>/ /a>) text [title](<../path/from/file/ /a>).
+
+                # Images
+
+                Text ![external](https://example.com/) text ![image](<../path/from/file/a> (title))
+                text ![image](../path/from/file/b ' <title> ').
+
+                ![image](<../path/from/\<file\>/ /a>)
+
+                # References
+
+                [tel]: tel:+70000000000 "title"
+                [self-fragment]: #fragment
+                [self-file]: #fragment
+                [link]: ../path/from/file/a
+                [link]: ../path/from/file/b ' <title> '
+                [title]: <../path/from/file/a> (title)
+
+                MARKDOWN,
+                '/path/from/file.md',
+                <<<'MARKDOWN'
+                # Links
+
+                Text text [tel](tel:+70000000000 "title") text [link](./file/a)
+                text [_`link`_](file/b ' <title> ') text [title](<./file/a> (title))
+                [mailto](mailto:mail@example.com) text [absolute](/path/to/file 'title')
+                text [external](https://example.com/) text [self](#fragment)
+                text [self](file.md#fragment).
+
+                Text [title](./%3Cfile%3E/%20/a) text [title](<./file/ /a>).
+
+                # Images
+
+                Text ![external](https://example.com/) text ![image](<../from/file/a> (title))
+                text ![image](../from/file/b ' <title> ').
+
+                ![image](../from/%3Cfile%3E/%20/a)
+
+                # References
+
+                [tel]: tel:+70000000000 "title"
+                [self-fragment]: #fragment
+                [self-file]: ./file.md#fragment
+                [link]: ./file/a
+                [link]: file/b ' <title> '
+                [title]: <./file/a> (title)
+                MARKDOWN,
+                '/path with whitespaces/file.md',
             ],
         ];
     }

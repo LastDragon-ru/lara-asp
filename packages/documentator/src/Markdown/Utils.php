@@ -51,7 +51,7 @@ class Utils {
     }
 
     public static function getLinkTarget(Node $container, string $target, ?bool $wrap = null): string {
-        $target = ($wrap ?? preg_match('/\s/u', $target) > 0)
+        $target = ($wrap ?? preg_match('/[\s[:cntrl:]]/u', $target) > 0)
             ? '<'.strtr($target, ['<' => '\\<', '>' => '\\>']).'>'
             : UrlEncoder::unescapeAndEncode($target);
         $target = self::escapeTextInTableCell($container, $target);
