@@ -126,12 +126,7 @@ final class DirectiveTest extends TestCase {
         );
 
         $this->assertGraphQLSchemaEquals(
-            static::getTestData()->file(
-                match (true) {
-                    (new RequiresLaravelScout('>=10.3.0'))->isSatisfied() => 'Scout.expected.v10.3.0.graphql',
-                    default                                               => 'Scout.expected.graphql',
-                },
-            ),
+            static::getTestData()->file('Scout.expected.graphql'),
         );
         $this->assertGraphQLSchemaValid();
     }

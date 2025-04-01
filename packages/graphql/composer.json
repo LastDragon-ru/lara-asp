@@ -36,7 +36,7 @@
   },
   "require-dev": {
     "illuminate/cache": "^12.0.1",
-    "laravel/scout": "^10.8.0",
+    "laravel/scout": "^10.12.2",
     "mockery/mockery": "^1.6.6",
     "phpunit/phpunit": "^10.5.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",

@@ -71,6 +71,12 @@ on
     | INPUT_FIELD_DEFINITION
     | SCALAR
 
+directive @searchByOperatorNotIn
+on
+    | ENUM
+    | INPUT_FIELD_DEFINITION
+    | SCALAR
+
 enum EnumA {
     One
     Two
@@ -542,6 +548,12 @@ input SearchByScoutEnumEnumA {
     """
     in: [EnumA!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -559,6 +571,12 @@ input SearchByScoutEnumEnumAOrNull {
     """
     in: [EnumA!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [EnumA!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -756,6 +774,12 @@ input SearchByScoutScalarFloat {
     """
     in: [Float!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [Float!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -773,6 +797,12 @@ input SearchByScoutScalarFloatOrNull {
     """
     in: [Float!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [Float!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -790,6 +820,12 @@ input SearchByScoutScalarID {
     """
     in: [ID!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -807,6 +843,12 @@ input SearchByScoutScalarIDOrNull {
     """
     in: [ID!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [ID!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -824,6 +866,12 @@ input SearchByScoutScalarInt {
     """
     in: [Int!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [Int!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -841,6 +889,12 @@ input SearchByScoutScalarIntOrNull {
     """
     in: [Int!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [Int!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -869,6 +923,12 @@ input SearchByScoutScalarString {
     """
     in: [String!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
 }
 
 """
@@ -886,6 +946,12 @@ input SearchByScoutScalarStringOrNull {
     """
     in: [String!]
     @searchByOperatorIn
+
+    """
+    Outside a set of values.
+    """
+    notIn: [String!]
+    @searchByOperatorNotIn
 }
 
 interface A
