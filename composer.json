@@ -98,7 +98,7 @@
     "fakerphp/faker": "^1.21.0",
     "illuminate/cache": "^12.0.1",
     "illuminate/config": "^12.0.1",
-    "laravel/scout": "^10.8.0",
+    "laravel/scout": "^10.12.2",
     "larastan/larastan": "^3.1.0",
     "orchestra/testbench": "^10.0.0",
     "phpstan/phpstan": "2.1.11",
