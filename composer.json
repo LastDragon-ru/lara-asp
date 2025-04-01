@@ -99,7 +99,7 @@
     "illuminate/cache": "^12.0.1",
     "illuminate/config": "^12.0.1",
     "laravel/scout": "^10.8.0",
-    "larastan/larastan": "^3.0.2",
+    "larastan/larastan": "^3.1.0",
     "orchestra/testbench": "^10.0.0",
     "phpstan/phpstan": "2.1.11",
     "phpstan/phpstan-mockery": "^2.0.0",
