@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
-         cacheDirectory=".phpunit/result.cache"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+         cacheDirectory=".phpunit/cache"
          executionOrder="random"
          colors="true">
     <testsuites>
@@ -17,5 +17,4 @@
             <directory suffix="Test.php">./src</directory>
         </exclude>
     </source>
-    <coverage cacheDirectory=".phpunit/coverage.cache"/>
 </phpunit>
