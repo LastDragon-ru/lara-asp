@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
-         cacheDirectory=".phpunit/result.cache"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+         cacheDirectory=".phpunit/cache"
          executionOrder="random"
          colors="true">
+    <extensions>
+        <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
+    </extensions>
     <testsuites>
         <testsuite name="package">
             <directory suffix="Test.php">./src</directory>
@@ -20,7 +23,6 @@
             <directory suffix="Test.php">./docs</directory>
         </exclude>
     </source>
-    <coverage cacheDirectory=".phpunit/coverage.cache"/>
     <php>
         <env verbatim="true" name="COLUMNS" value="120"/>
         <env verbatim="true" name="APP_KEY" value="base64:p1DLhQxuhXUCcCJ/CIfo9xKR6zMgnNXDTVstMbkivEc="/>

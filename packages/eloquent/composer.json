@@ -30,7 +30,7 @@
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.6",
     "orchestra/testbench": "^10.0.0",
-    "phpunit/phpunit": "^10.5.0|^11.0.0"
+    "phpunit/phpunit": "^11.0.0"
   },
   "autoload": {
     "files": [
