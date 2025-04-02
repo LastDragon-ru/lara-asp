@@ -45,7 +45,7 @@ readonly class Body implements IteratorAggregate {
                 $location      = LocationData::get($node);
                 $startLine     = $location->startLine;
                 $bodyEndLine   = $location->endLine;
-                $bodyStartLine = (SummaryData::get($document->node) ?? TitleData::get($document->node))?->getEndLine();
+                $bodyStartLine = (SummaryData::get($node) ?? TitleData::get($node))?->getEndLine();
                 $mutagens      = $bodyStartLine !== null && $bodyStartLine + 1 > $startLine
                     ? [new Extract(new Location($bodyStartLine + 1, $bodyEndLine))]
                     : [];
