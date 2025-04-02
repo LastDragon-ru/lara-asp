@@ -51,9 +51,9 @@ final class DirectoryIteratorTest extends TestCase {
             $fs->input->getDirectoryPath('DirectoryIteratorTest/b/b'),
         ]);
 
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs))));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs))));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs))));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs), false)));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs), false)));
+        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs), false)));
     }
 
     public function testInvokeNotFound(): void {
@@ -65,6 +65,7 @@ final class DirectoryIteratorTest extends TestCase {
 
         iterator_to_array(
             (new DirectoryIterator($path))($fs),
+            false,
         );
     }
 }

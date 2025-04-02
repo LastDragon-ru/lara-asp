@@ -23,19 +23,19 @@ final class LocationTest extends TestCase {
             [
                 new Coordinate(1, 0, null, 0),
             ],
-            iterator_to_array(new Location(1, 1)),
+            iterator_to_array(new Location(1, 1), false),
         );
         self::assertEquals(
             [
                 new Coordinate(1, 10, 10, 0),
             ],
-            iterator_to_array(new Location(1, 1, 10, 10)),
+            iterator_to_array(new Location(1, 1, 10, 10), false),
         );
         self::assertEquals(
             [
                 new Coordinate(1, 12, 10, 2),
             ],
-            iterator_to_array(new Location(1, 1, 10, 10, 2, 4)),
+            iterator_to_array(new Location(1, 1, 10, 10, 2, 4), false),
         );
         self::assertEquals(
             [
@@ -43,7 +43,7 @@ final class LocationTest extends TestCase {
                 new Coordinate(2, 2, null, 2),
                 new Coordinate(3, 2, 10, 2),
             ],
-            iterator_to_array(new Location(1, 3, 10, 10, 2, null)),
+            iterator_to_array(new Location(1, 3, 10, 10, 2, null), false),
         );
         self::assertEquals(
             [
@@ -51,7 +51,7 @@ final class LocationTest extends TestCase {
                 new Coordinate(2, 4, null, 4),
                 new Coordinate(3, 4, 10, 4),
             ],
-            iterator_to_array(new Location(1, 3, 10, 10, 2, 4)),
+            iterator_to_array(new Location(1, 3, 10, 10, 2, 4), false),
         );
     }
 

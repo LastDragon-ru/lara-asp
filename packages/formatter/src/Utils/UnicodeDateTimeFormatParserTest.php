@@ -21,7 +21,7 @@ final class UnicodeDateTimeFormatParserTest extends TestCase {
      */
     #[DataProvider('dataProviderGetIterator')]
     public function testGetIterator(array $expected, string $format): void {
-        $actual = iterator_to_array(new UnicodeDateTimeFormatParser($format));
+        $actual = iterator_to_array(new UnicodeDateTimeFormatParser($format), false);
         $actual = array_map(static fn (UnicodeDateTimeFormatToken $token) => [$token->pattern, $token->value], $actual);
 
         self::assertEquals($expected, $actual);
