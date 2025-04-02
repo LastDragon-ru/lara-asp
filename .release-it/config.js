@@ -163,7 +163,7 @@ module.exports = {
                 ],
                 search:  {
                     pattern: '%{VERSION}',
-                    flags: 'g'
+                    flags:   'g',
                 },
                 replace: '{{version}}',
             },
@@ -304,56 +304,19 @@ module.exports = {
                         return null;
                     }
 
-                    // Cleanup scopes
-                    const scopes = getScopes(commit.scope);
-
-                    for (let scope of scopes) {
-                        if ((scope.component || '').startsWith('@')) {
-                            scope.component = `\`${scope.component}\``;
-                        }
-                    }
-
-                    if (scopes.length) {
-                        commit.scope = scopes
-                            .map(s => [s.package, s.component].filter(v => !!v).join('/'))
-                            .join(',');
-                    }
-
-                    // Cleanup subject (github adds #issue on the end of PR message, we are no need it)
-                    commit.subject = commit.subject.trim().replace(/\.+$/, '').trim();
-
-                    for (let i = 0; i < commit.references.length; i++) {
-                        const reference = commit.references[i];
-                        const patterns  = [
-                            `(${reference.prefix}${reference.issue})`,
-                            `(${reference.prefix}${reference.issue},`,
-                            `(${reference.prefix}${reference.issue}`,
-                            `${reference.prefix}${reference.issue})`,
-                            `${reference.prefix}${reference.issue}`,
-                        ];
-
-                        for (let pattern of patterns) {
-                            if (commit.subject.endsWith(pattern)) {
-                                commit.subject = commit.subject.slice(0, -pattern.length).trim();
-                                i              = -1;
-                            }
-                        }
-                    }
-
-                    commit.subject = commit.subject.trim().replace(/\.+$/, '').trim();
-
-                    // Custom
-                    commit.mentions = []; // see https://github.com/conventional-changelog/conventional-changelog/issues/601
-                    commit.section  = type.section;
-                    commit.breaking = breaking;
-                    commit.marks    = breaking ? [breakingMark.icon] : [];
-                    commit.related  = [...new Set([
-                        ...commit.references.map((r) => `${r.prefix}${r.issue}`),
-                        commit.hash,
-                    ])].sort();
-
-                    // Return
-                    return commit;
+                    // Transformations
+                    return {
+                        scope:    getCommitScope(commit),
+                        subject:  getCommitSubject(commit),
+                        mentions: [], // see https://github.com/conventional-changelog/conventional-changelog/issues/601
+                        section:  type.section,
+                        breaking: breaking,
+                        marks:    breaking ? [breakingMark.icon] : [],
+                        related:  [...new Set([
+                            ...commit.references.map((r) => `${r.prefix}${r.issue}`),
+                            commit.hash,
+                        ])].sort(),
+                    };
                 },
             },
         },
@@ -396,4 +359,48 @@ const getScopes = (string) => {
     }
 
     return parsed;
+};
+
+const getCommitScope = (commit) => {
+    let result   = commit.scope;
+    const scopes = getScopes(commit.scope);
+
+    for (let scope of scopes) {
+        if ((scope.component || '').startsWith('@')) {
+            scope.component = `\`${scope.component}\``;
+        }
+    }
+
+    if (scopes.length) {
+        result = scopes
+            .map(s => [s.package, s.component].filter(v => !!v).join('/'))
+            .join(',');
+    }
+
+    return result;
+};
+
+const getCommitSubject = (commit) => {
+    // github adds #issue on the end of PR message, we are no need it
+    let subject = commit.subject.trim().replace(/\.+$/, '').trim();
+
+    for (let i = 0; i < commit.references.length; i++) {
+        const reference = commit.references[i];
+        const patterns  = [
+            `(${reference.prefix}${reference.issue})`,
+            `(${reference.prefix}${reference.issue},`,
+            `(${reference.prefix}${reference.issue}`,
+            `${reference.prefix}${reference.issue})`,
+            `${reference.prefix}${reference.issue}`,
+        ];
+
+        for (let pattern of patterns) {
+            if (subject.endsWith(pattern)) {
+                subject = subject.slice(0, -pattern.length).trim();
+                i       = -1;
+            }
+        }
+    }
+
+    return subject.trim().replace(/\.+$/, '').trim();
 };
