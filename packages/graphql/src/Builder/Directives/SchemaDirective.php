@@ -37,9 +37,9 @@ use function str_starts_with;
 /**
  * Modifies the Schema for Directive.
  *
- * We are using special scalars to add operators. The directive provides a way
- * to add and extend them. Extending is required because Lighthouse (until v6.34.0)
- * doesn't support adding directives from extensions nodes yet.
+ * We are using special (implicit) scalars to add operators. The directive
+ * provides a way to add these implicit types into the schema and to extend
+ * standard scalars (Lighthouse cannot do it).
  *
  * @see https://github.com/nuwave/lighthouse/issues/2509
  * @see https://github.com/nuwave/lighthouse/pull/2512
@@ -80,26 +80,23 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
         $manipulator = $this->manipulatorFactory->create($documentAST);
 
         foreach ($documentAST->typeExtensions as $type => $extensions) {
-            // Supported?
-            // (no way to extend standard types, we are trying to use alias instead)
-            $targetType = ($manipulator->isStandard($type) ? $this->getScalar() : '').$type;
-
-            if (!$this->isScalar($targetType)) {
-                continue;
-            }
-
-            // Create node
-            // (it is required because Lighthouse cannot load custom scalars without `@scalar` directive)
-            // (Failed to find class XXX extends GraphQL\Type\Definition\ScalarType in namespaces [] for the scalar XXX.)
-            $targetNode = $manipulator->addTypeDefinition($this->getScalarDefinitionNode($targetType));
-
-            // Standard?
-            // (custom scalars will be handled by Lighthouse itself)
+            // Custom?
             if (!$manipulator->isStandard($type)) {
+                // Create node for implicit directive's type
+                // (it is required because Lighthouse cannot load custom scalars without `@scalar` directive)
+                // (custom scalars will be handled by Lighthouse itself, so nothing else to do)
+                if ($this->isScalar($type)) {
+                    $manipulator->addTypeDefinition($this->getScalarDefinitionNode($type));
+                }
+
                 continue;
             }
 
             // Extend
+            // (no way to extend standard types, we are trying to use alias instead)
+            $targetType = $this->getScalar().$type;
+            $targetNode = $manipulator->addTypeDefinition($this->getScalarDefinitionNode($targetType));
+
             foreach ($extensions as $key => $extension) {
                 // Valid?
                 if (!($extension instanceof ScalarTypeExtensionNode)) {
@@ -118,7 +115,8 @@ abstract class SchemaDirective extends BaseDirective implements TypeManipulator 
 
                 $extension->directives->reindex();
 
-                // Remove to avoid conflicts with the future Lighthouse version
+                // Remove to avoid conflicts with the future Lighthouse version,
+                // where standard types will be supported.
                 unset($documentAST->typeExtensions[$type][$key]);
 
                 if (count($documentAST->typeExtensions[$type]) === 0) {

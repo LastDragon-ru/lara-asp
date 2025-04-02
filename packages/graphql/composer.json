@@ -26,7 +26,7 @@
     "illuminate/contracts": "^12.0.1",
     "illuminate/database": "^12.0.1",
     "illuminate/support": "^12.0.1",
-    "nuwave/lighthouse": "^6.36.0",
+    "nuwave/lighthouse": "^6.54.0",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-graphql-printer": "self.version",
