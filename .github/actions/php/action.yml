@@ -26,7 +26,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        echo "value=$(jq '"8.1|" + .require."php" | split("|") | map(select(. != "")) | last | sub("^[^\\d]+"; "")' -r -c composer.json)" >> $GITHUB_OUTPUT
+        echo "value=$(jq '"8.3|" + .require."php" | split("|") | map(select(. != "")) | last | sub("^[^\\d]+"; "")' -r -c composer.json)" >> $GITHUB_OUTPUT
 
     - name: Detect required PHP extensions
       id: extensions
