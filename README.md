@@ -121,8 +121,24 @@ Please follow [Upgrade Guide](UPGRADE.md).
 
 1. Fork & clone
 2. `docker compose up`
-3. ...
-4. Enjoy
+3. Write the code
+4. `composer run validate:commit`
+5. `composer run rebuild:docs` (if docs changed)
+6. Push & PR
+7. ...
+8. Enjoy
+
+# Support policy
+
+Project following to the [semver](https://semver.org/) including parameter names, but except code marked as `private`/`@internal`.
+
+* **Lara ASP**
+  * `main` branch - new features and any Breaking Changes (non BC things can be back-ported to the last stable)
+  * current stable - bug fixes
+  * previous stable - PRs with bug fixes will be accepted if no BC
+* **PHP** - last two active versions (eg `8.3` and `8.4`)
+* **Laravel** - last version
+* **Lighthouse** - last version
 
 [include:file]: ./docs/Legend.md
 [//]: # (start: preprocess/5488d85d082e47fb)
