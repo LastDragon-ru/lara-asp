@@ -13,7 +13,7 @@ use Override;
 /**
  * Changes container.
  *
- * @deprecated %{VERSION} Use own {@see Mutation} implementation instead.
+ * @deprecated 8.0.0 Use own {@see Mutation} implementation instead.
  *
  * @implements Mutation<DocumentNode>
  */

@@ -10,7 +10,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.4` |  `HEAD`   |
+|  PHP  | `^8.4` |  `HEAD`  ,  `8.0.0`   |
 |  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `7.2.0 ⋯ 2.0.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
@@ -18,7 +18,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
 |  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
 |  | `>=7.4.0` |   `0.3.0 ⋯ 0.1.0`   |
-|  Laravel  | `^11.0.8` |  `HEAD`   |
+|  Laravel  | `^11.0.8` |  `HEAD`  ,  `8.0.0`   |
 |  | `^11.0.0` |   `7.2.0 ⋯ 6.2.0`   |
 |  | `^10.34.0` |   `7.2.0 ⋯ 6.2.0`   |
 |  | `^10.0.0` |   `6.1.0 ⋯ 2.1.0`   |
@@ -27,7 +27,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 |  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
 |  | `^8.0` |  `0.1.0`   |
 |  PHPUnit  | `^11.0.0` |   `HEAD ⋯ 6.2.0`   |
-|  | `^10.5.0` |  `HEAD`   |
+|  | `^10.5.0` |  `HEAD`  ,  `8.0.0`   |
 |  | `^10.1.0` |   `7.2.0 ⋯ 6.0.0`   |
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)

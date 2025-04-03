@@ -33,13 +33,13 @@ use function usort;
 
 // phpcs:disable PSR1.Files.SideEffects
 
-trigger_deprecation(Package::Name, '%{VERSION}', 'Please use `%s` instead.', IncludeDocumentList::class);
+trigger_deprecation(Package::Name, '8.0.0', 'Please use `%s` instead.', IncludeDocumentList::class);
 
 /**
  * Generates package list from `<target>` directory. The readme file will be
  * used to determine package name and summary.
  *
- * @deprecated %{VERSION} Please use {@see IncludeDocumentList} instead.
+ * @deprecated 8.0.0 Please use {@see IncludeDocumentList} instead.
  *
  * @implements InstructionContract<Parameters>
  */

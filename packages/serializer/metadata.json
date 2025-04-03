@@ -1,9 +1,18 @@
 {
-    "version": "7.1.0",
+    "version": "8.0.0",
     "require": [],
     "merge": null,
     "requirements": {
         "HEAD": {
+            "laravel/framework": [
+                "^11.0.8"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ]
+        },
+        "8.0.0": {
             "laravel/framework": [
                 "^11.0.8"
             ],

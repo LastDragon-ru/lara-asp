@@ -10,7 +10,7 @@ use Throwable;
 use function sprintf;
 
 /**
- * @deprecated %{VERSION}
+ * @deprecated 8.0.0
  */
 class PackageComposerJsonIsMissing extends InstructionFailed {
     public function __construct(

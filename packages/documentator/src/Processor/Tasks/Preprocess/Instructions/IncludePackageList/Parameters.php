@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 
 /**
- * @deprecated %{VERSION}
+ * @deprecated 8.0.0
  */
 readonly class Parameters implements InstructionParameters {
     public function __construct(

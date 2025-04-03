@@ -116,10 +116,10 @@ abstract class Path implements Stringable {
     }
 
     /**
-     * @deprecated %{VERSION} Use `preg_match()` directly.
+     * @deprecated 8.0.0 Use `preg_match()` directly.
      */
     public function isMatch(string $regexp): bool {
-        trigger_deprecation(Package::Name, '%{VERSION}', 'The method should not be used.');
+        trigger_deprecation(Package::Name, '8.0.0', 'The method should not be used.');
 
         return preg_match($regexp, $this->path) > 0;
     }
