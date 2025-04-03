@@ -20,7 +20,6 @@ use LastDragon_ru\LaraASP\GraphQL\SortBy\Exceptions\RelationUnsupported;
 use Override;
 
 use function array_shift;
-use function class_exists;
 
 /**
  * @extends DatabaseSorter<EloquentBuilder<Model>>
@@ -159,12 +158,7 @@ class EloquentSorter extends DatabaseSorter {
                     ? "{$parentAlias}.{$relation->getLocalKeyName()}"
                     : $relation->getQualifiedParentKeyName(),
             );
-        } elseif (
-            $relation instanceof HasManyThrough
-            || ( // Since Laravel v11.15.0
-                class_exists(HasOneOrManyThrough::class) && $relation instanceof HasOneOrManyThrough
-            )
-        ) {
+        } elseif ($relation instanceof HasManyThrough || $relation instanceof HasOneOrManyThrough) {
             $builder->joinSub(
                 $relation->getQuery()->select([
                     "{$relation->getParent()->getQualifiedKeyName()} as {$currentAlias}_key",

@@ -41,7 +41,7 @@ final class ChunkedIteratorTest extends TestCase {
                 $spyAfter(...),
             );
 
-        $actual = iterator_to_array($iterator);
+        $actual = iterator_to_array($iterator, false);
 
         self::assertEquals($expected, $actual);
         self::assertSame(1, count($log) - $count);
@@ -64,7 +64,7 @@ final class ChunkedIteratorTest extends TestCase {
 
         $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
         $iterator = (new ChunkedIterator($query))->setChunkSize(1);
-        $actual   = iterator_to_array($iterator);
+        $actual   = iterator_to_array($iterator, false);
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
@@ -80,7 +80,7 @@ final class ChunkedIteratorTest extends TestCase {
 
         $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
         $iterator = (new ChunkedIterator($query))->setChunkSize(1);
-        $actual   = iterator_to_array($iterator);
+        $actual   = iterator_to_array($iterator, false);
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 
@@ -99,7 +99,7 @@ final class ChunkedIteratorTest extends TestCase {
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
         $iterator = new ChunkedIterator($query->union($second->getQuery()));
-        $actual   = iterator_to_array($iterator);
+        $actual   = iterator_to_array($iterator, false);
         $count    = (clone $query)->count();
         $expected = (clone $query)->get()->all();
 
@@ -118,7 +118,7 @@ final class ChunkedIteratorTest extends TestCase {
         $query    = TestObject::query()->where('value', '<', 4)->limit(2)->orderByDesc('value');
         $second   = TestObject::query()->where('value', '>=', 4)->limit(2)->orderByDesc('value');
         $iterator = new ChunkedIterator($query->union($second->getQuery())->limit(3)->offset(1));
-        $actual   = iterator_to_array($iterator);
+        $actual   = iterator_to_array($iterator, false);
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->get()->all();
 

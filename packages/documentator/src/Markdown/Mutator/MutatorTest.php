@@ -195,7 +195,7 @@ final class MutatorTest extends TestCase {
         ];
 
         foreach ($mutagens->getChanges() as $location => $changes) {
-            $actual['changes'][] = [$location, iterator_to_array($changes)];
+            $actual['changes'][] = [$location, iterator_to_array($changes, false)];
         }
 
         self::assertEquals(

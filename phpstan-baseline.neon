@@ -97,6 +97,18 @@ parameters:
 			path: packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php
 
 		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Models\\User, covariant LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Models\\Concerns\\Model, Illuminate\\Database\\Eloquent\\Relations\\Pivot\> in PHPDoc tag @return specifies 3 template types, but class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany supports only 2\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.moreTypes
+			count: 1
+			path: packages/graphql/src/Testing/Package/Models/Role.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Models\\Role, covariant LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Models\\Concerns\\Model, Illuminate\\Database\\Eloquent\\Relations\\Pivot\> in PHPDoc tag @return specifies 3 template types, but class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany supports only 2\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.moreTypes
+			count: 1
+			path: packages/graphql/src/Testing/Package/Models/User.php
+
+		-
 			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'
 			identifier: argument.type
 			count: 1

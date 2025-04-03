@@ -10,7 +10,6 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function array_values;
 use function iterator_to_array;
 
 use const PHP_INT_MAX;
@@ -107,9 +106,9 @@ final class MutatorTest extends TestCase {
             [new Location(12, 15, 5, 10), 'c'],
         ];
         $expected = [
-            [iterator_to_array(new Location(12, 15, 5, 10)), 'c'],
-            [iterator_to_array(new Location(10, 10, 10, null)), 'b'],
-            [iterator_to_array(new Location(10, 10, 15, 10)), 'a'],
+            [iterator_to_array(new Location(12, 15, 5, 10), false), 'c'],
+            [iterator_to_array(new Location(10, 10, 10, null), false), 'b'],
+            [iterator_to_array(new Location(10, 10, 15, 10), false), 'a'],
         ];
 
         self::assertEquals($expected, $mutator->unpack($changes));
@@ -126,32 +125,32 @@ final class MutatorTest extends TestCase {
             }
         };
         $changes  = [
-            0  => [array_values(iterator_to_array(new Location(18, 18, 5, 10))), 'a'],
-            1  => [array_values(iterator_to_array(new Location(17, 17, 11, 10))), 'b'],
-            2  => [array_values(iterator_to_array(new Location(17, 17, 5, 10))), 'c'],
-            3  => [array_values(iterator_to_array(new Location(14, 15, 5, 10))), 'd'],
-            4  => [array_values(iterator_to_array(new Location(12, 15, 5, 10))), 'e'],
-            5  => [array_values(iterator_to_array(new Location(10, 10, 10, null))), 'f'],
-            6  => [array_values(iterator_to_array(new Location(10, 10, 15, 10))), 'g'],
-            7  => [array_values(iterator_to_array(new Location(9, 9, 39, 11))), 'h'],
-            8  => [array_values(iterator_to_array(new Location(9, 9, 50, null))), 'i'],
-            9  => [array_values(iterator_to_array(new Location(9, 9, 40, 10))), 'j'],
-            10 => [array_values(iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX))), 'k'],
-            11 => [array_values(iterator_to_array(new Append())), 'l'],
-            12 => [array_values(iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN))), 'm'],
-            13 => [array_values(iterator_to_array(new Prepend())), 'n'],
+            0  => [iterator_to_array(new Location(18, 18, 5, 10), false), 'a'],
+            1  => [iterator_to_array(new Location(17, 17, 11, 10), false), 'b'],
+            2  => [iterator_to_array(new Location(17, 17, 5, 10), false), 'c'],
+            3  => [iterator_to_array(new Location(14, 15, 5, 10), false), 'd'],
+            4  => [iterator_to_array(new Location(12, 15, 5, 10), false), 'e'],
+            5  => [iterator_to_array(new Location(10, 10, 10, null), false), 'f'],
+            6  => [iterator_to_array(new Location(10, 10, 15, 10), false), 'g'],
+            7  => [iterator_to_array(new Location(9, 9, 39, 11), false), 'h'],
+            8  => [iterator_to_array(new Location(9, 9, 50, null), false), 'i'],
+            9  => [iterator_to_array(new Location(9, 9, 40, 10), false), 'j'],
+            10 => [iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX), false), 'k'],
+            11 => [iterator_to_array(new Append(), false), 'l'],
+            12 => [iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN), false), 'm'],
+            13 => [iterator_to_array(new Prepend(), false), 'n'],
         ];
         $expected = [
-            12 => [iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN)), 'm'],
-            13 => [iterator_to_array(new Prepend()), 'n'],
-            0  => [iterator_to_array(new Location(18, 18, 5, 10)), 'a'],
-            1  => [iterator_to_array(new Location(17, 17, 11, 10)), 'b'],
-            3  => [iterator_to_array(new Location(14, 15, 5, 10)), 'd'],
-            5  => [iterator_to_array(new Location(10, 10, 10, null)), 'f'],
-            7  => [iterator_to_array(new Location(9, 9, 39, 11)), 'h'],
-            8  => [iterator_to_array(new Location(9, 9, 50, null)), 'i'],
-            10 => [iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX)), 'k'],
-            11 => [iterator_to_array(new Append()), 'l'],
+            12 => [iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN), false), 'm'],
+            13 => [iterator_to_array(new Prepend(), false), 'n'],
+            0  => [iterator_to_array(new Location(18, 18, 5, 10), false), 'a'],
+            1  => [iterator_to_array(new Location(17, 17, 11, 10), false), 'b'],
+            3  => [iterator_to_array(new Location(14, 15, 5, 10), false), 'd'],
+            5  => [iterator_to_array(new Location(10, 10, 10, null), false), 'f'],
+            7  => [iterator_to_array(new Location(9, 9, 39, 11), false), 'h'],
+            8  => [iterator_to_array(new Location(9, 9, 50, null), false), 'i'],
+            10 => [iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX), false), 'k'],
+            11 => [iterator_to_array(new Append(), false), 'l'],
         ];
 
         self::assertEquals($expected, $mutator->cleanup($changes));
@@ -168,14 +167,14 @@ final class MutatorTest extends TestCase {
             }
         };
         $changes  = [
-            [array_values(iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN))), "new line ea\nnew line eb"],
-            [array_values(iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX))), "new line aa\nnew line ab"],
-            [array_values(iterator_to_array(new Location(6, 6, 5, 10, 2))), "text aa\ntext ab"],
-            [array_values(iterator_to_array(new Location(4, 5, 5, 5, 1))), "text ba\ntext bb"],
-            [array_values(iterator_to_array(new Location(2, 3, 5, null))), 'text c'],
-            [array_values(iterator_to_array(new Location(1, 1, 5, 10))), "text da\ntext db\ntext dc"],
-            [array_values(iterator_to_array(new Append())), "new line ba\nnew line bb"],
-            [array_values(iterator_to_array(new Prepend())), "new line fa\nnew line fb"],
+            [iterator_to_array(new Location(PHP_INT_MIN, PHP_INT_MIN), false), "new line ea\nnew line eb"],
+            [iterator_to_array(new Location(PHP_INT_MAX, PHP_INT_MAX), false), "new line aa\nnew line ab"],
+            [iterator_to_array(new Location(6, 6, 5, 10, 2), false), "text aa\ntext ab"],
+            [iterator_to_array(new Location(4, 5, 5, 5, 1), false), "text ba\ntext bb"],
+            [iterator_to_array(new Location(2, 3, 5, null), false), 'text c'],
+            [iterator_to_array(new Location(1, 1, 5, 10), false), "text da\ntext db\ntext dc"],
+            [iterator_to_array(new Append(), false), "new line ba\nnew line bb"],
+            [iterator_to_array(new Prepend(), false), "new line fa\nnew line fb"],
         ];
         $expected = [
             [new Coordinate(6, 7, 10, 2), ['text aa', 'text ab']],

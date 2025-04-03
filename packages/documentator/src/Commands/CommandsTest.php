@@ -51,7 +51,7 @@ final class CommandsTest extends TestCase {
 
         self::assertEquals(Command::SUCCESS, $result);
 
-        $files = iterator_to_array(Finder::create()->in((string) $directory)->files());
+        $files = iterator_to_array(Finder::create()->in((string) $directory)->files(), false);
         $files = array_reduce($files, static function (array $combined, SplFileInfo $file): array {
             return array_merge($combined, [
                 $file->getFilename() => $file->getContents(),
