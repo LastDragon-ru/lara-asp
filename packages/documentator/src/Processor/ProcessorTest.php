@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
@@ -814,7 +815,7 @@ class ProcessorTest__Task implements Task {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(File $file): Generator {
+    public function __invoke(DependencyResolver $resolver, File $file): Generator {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 

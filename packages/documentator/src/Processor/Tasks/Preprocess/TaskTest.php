@@ -190,7 +190,7 @@ final class TaskTest extends TestCase {
                 return $file;
             });
 
-        $result = $this->getProcessorResult($filesystem, ($task)($file));
+        $result = $this->runProcessorTask($task, $filesystem, $file);
 
         self::assertTrue($result);
         self::assertSame(

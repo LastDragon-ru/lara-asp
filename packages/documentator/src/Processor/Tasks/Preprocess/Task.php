@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -140,7 +141,7 @@ class Task implements TaskContract {
      * @return Generator<mixed, Dependency<*>, mixed, bool>
      */
     #[Override]
-    public function __invoke(File $file): Generator {
+    public function __invoke(DependencyResolver $resolver, File $file): Generator {
         // Just in case
         yield from [];
 
