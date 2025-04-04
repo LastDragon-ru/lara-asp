@@ -32,5 +32,5 @@ interface Task {
      *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, bool>|bool`
      *          but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */
-    public function __invoke(File $file): Generator|bool;
+    public function __invoke(DependencyResolver $resolver, File $file): Generator|bool;
 }

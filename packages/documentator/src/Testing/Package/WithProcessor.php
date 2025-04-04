@@ -8,9 +8,14 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
+use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
+
+use function is_bool;
 
 /**
  * @phpstan-require-extends TestCase
@@ -52,17 +57,30 @@ trait WithProcessor {
      *
      * @return T
      */
-    protected function getProcessorResult(FileSystem $filesystem, mixed $result): mixed {
+    protected function getProcessorResult(FileSystem $fs, mixed $result): mixed {
         if ($result instanceof Generator) {
             while ($result->valid()) {
                 $dependency = $result->current();
 
                 if ($dependency instanceof Dependency) {
-                    $result->send(($dependency)($filesystem));
+                    $result->send(($dependency)($fs));
                 }
             }
 
             $result = $result->getReturn();
+        }
+
+        return $result;
+    }
+
+    protected function runProcessorTask(Task $task, FileSystem $fs, File $file): bool {
+        $dispatcher = new Dispatcher();
+        $resolver   = new Resolver($dispatcher, $fs, $file, static fn ($file, $value) => $value);
+        $result     = $task($resolver, $file);
+
+        if (!is_bool($result)) {
+            $result = $this->getProcessorResult($fs, $result);
+            $result = $result === true;
         }
 
         return $result;
