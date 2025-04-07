@@ -633,6 +633,16 @@ final class FileSystemTest extends TestCase {
         $filesystem->write($file, $value);
     }
 
+    public function testWriteHook(): void {
+        self::expectException(FileNotWritable::class);
+
+        $path = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $fs   = $this->getFileSystem($path);
+        $file = $fs->getFile(Hook::Context);
+
+        $fs->write($file, 'hook');
+    }
+
     public function testCache(): void {
         $fs        = $this->getFileSystem(__DIR__);
         $file      = $fs->getFile(__FILE__);
