@@ -25,6 +25,7 @@ use function explode;
 use function is_dir;
 use function is_file;
 use function is_object;
+use function is_string;
 use function sprintf;
 
 class FileSystem {
@@ -267,9 +268,10 @@ class FileSystem {
         if ($path instanceof File) {
             $file = $path;
             $path = $path->getPath();
+        } elseif (is_string($path)) {
+            $path = new FilePath($path);
         } else {
-            $file = $this->isFile($path) ? $this->getFile($path) : null;
-            $path = $path instanceof FilePath ? $path : new FilePath($path);
+            // as is
         }
 
         // Relative?
@@ -278,6 +280,11 @@ class FileSystem {
         // Writable?
         if (!$this->output->isInside($path)) {
             throw new FileNotWritable($path);
+        }
+
+        // File?
+        if ($file === null && $this->isFile($path)) {
+            $file = $this->getFile($path);
         }
 
         // Metadata?
