@@ -256,6 +256,11 @@ class FileSystem {
      * based on {@see self::$output}.
      */
     public function write(File|FilePath|string $path, object|string $content): File {
+        // Hook?
+        if ($path instanceof FileHook) {
+            throw new FileNotWritable($path->getPath());
+        }
+
         // Prepare
         $file = null;
 
