@@ -18,7 +18,7 @@ use function max;
  */
 class Scout extends Stream {
     /**
-     * @var LengthAwarePaginator<object>|null
+     * @var LengthAwarePaginator<array-key, object>|null
      */
     private ?LengthAwarePaginator $paginator = null;
 
@@ -65,7 +65,7 @@ class Scout extends Stream {
     }
 
     /**
-     * @return LengthAwarePaginator<object>
+     * @return LengthAwarePaginator<array-key, object>
      */
     protected function getPaginator(): LengthAwarePaginator {
         if ($this->paginator === null) {

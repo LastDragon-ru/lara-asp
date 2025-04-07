@@ -39,10 +39,7 @@ class ParserStart implements BlockStartParserInterface {
         // Match?
         $matches = [];
 
-        if (
-            !(preg_match('!^\[//]: # \(start: ([^)]+)\)($|\R)!u', $cursor->getRemainder(), $matches) > 0)
-            || $matches[0] === ''
-        ) {
+        if (!(preg_match('!^\[//]: # \(start: ([^)]+)\)($|\R)!u', $cursor->getRemainder(), $matches) > 0)) {
             return BlockStart::none();
         }
 
