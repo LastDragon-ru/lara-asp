@@ -81,6 +81,24 @@ final class FileSystemTest extends TestCase {
         $this->getFileSystem(__DIR__)->getFile('not found');
     }
 
+    public function testGetFileHook(): void {
+        $fs   = $this->getFileSystem(__DIR__);
+        $hook = $fs->getFile(Hook::After);
+
+        $fs->begin();
+
+        self::assertInstanceOf(FileHook::class, $hook);
+        self::assertSame($hook, $fs->getFile(Hook::After));
+        self::assertSame(
+            (string) (new DirectoryPath(__DIR__))->getFilePath('@.'.Hook::After->value),
+            (string) $hook,
+        );
+
+        $fs->commit();
+
+        self::assertSame($hook, $fs->getFile(Hook::After));
+    }
+
     public function testGetDirectory(): void {
         // Prepare
         $fs = $this->getFileSystem(__DIR__.'/..');

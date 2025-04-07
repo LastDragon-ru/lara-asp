@@ -17,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
+use SplObjectStorage;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -29,6 +30,10 @@ use function is_string;
 use function sprintf;
 
 class FileSystem {
+    /**
+     * @var SplObjectStorage<Hook, FileHook>
+     */
+    private SplObjectStorage $hooks;
     /**
      * @var array<string, Directory|File>
      */
@@ -66,6 +71,7 @@ class FileSystem {
             );
         }
 
+        $this->hooks      = new SplObjectStorage();
         $this->filesystem = new SymfonyFilesystem();
     }
 
@@ -107,11 +113,8 @@ class FileSystem {
      */
     public function getFile(FilePath|Hook|string $path): File {
         // Hook?
-        $hook = null;
-
         if ($path instanceof Hook) {
-            $hook = $path;
-            $path = "@.{$hook->value}";
+            return $this->hook($path);
         }
 
         // Cached?
@@ -127,9 +130,7 @@ class FileSystem {
         }
 
         // Create
-        if ($hook !== null) {
-            $file = new FileHook($this->metadata, $path, $hook);
-        } elseif (is_file((string) $path)) {
+        if (is_file((string) $path)) {
             $file = new FileReal($this->metadata, $path);
         } else {
             throw new FileNotFound($path);
@@ -400,5 +401,14 @@ class FileSystem {
         $cached = $this->cache[(string) $path] ?? null;
 
         return $cached;
+    }
+
+    private function hook(Hook $hook): FileHook {
+        if (!isset($this->hooks[$hook])) {
+            $path               = $this->input->getFilePath("@.{$hook->value}");
+            $this->hooks[$hook] = new FileHook($this->metadata, $path, $hook);
+        }
+
+        return $this->hooks[$hook];
     }
 }
