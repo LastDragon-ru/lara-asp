@@ -38,7 +38,7 @@
     "illuminate/cache": "^12.0.1",
     "laravel/scout": "^10.12.2",
     "mockery/mockery": "^1.6.6",
-    "phpunit/phpunit": "^11.0.0",
+    "phpunit/phpunit": "^11.0.0|^12.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^10.0.0"
   },
