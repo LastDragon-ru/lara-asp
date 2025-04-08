@@ -20,14 +20,14 @@
   "require": {
     "php": "^8.3|^8.4",
     "ext-mbstring": "*",
-    "illuminate/collections": "^11.0.8",
-    "illuminate/contracts": "^11.0.8",
-    "illuminate/database": "^11.0.8",
-    "illuminate/http": "^11.0.8",
-    "illuminate/pagination": "^11.0.8",
-    "illuminate/routing": "^11.0.8",
-    "illuminate/support": "^11.0.8",
-    "illuminate/validation": "^11.0.8",
+    "illuminate/collections": "^12.0.1",
+    "illuminate/contracts": "^12.0.1",
+    "illuminate/database": "^12.0.1",
+    "illuminate/http": "^12.0.1",
+    "illuminate/pagination": "^12.0.1",
+    "illuminate/routing": "^12.0.1",
+    "illuminate/support": "^12.0.1",
+    "illuminate/validation": "^12.0.1",
     "guzzlehttp/psr7": "^2.4.5",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/deprecation-contracts": "^3.0.0",
@@ -37,7 +37,7 @@
     "phpunit/phpunit": "^10.5.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.6",
-    "orchestra/testbench": "^9.0.0"
+    "orchestra/testbench": "^10.0.0"
   },
   "autoload": {
     "psr-4": {

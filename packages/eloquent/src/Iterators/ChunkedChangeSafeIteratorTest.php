@@ -90,7 +90,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
 
         $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
         $iterator = (new ChunkedChangeSafeIterator($query, $column))->setChunkSize(1);
-        $actual   = iterator_to_array($iterator);
+        $actual   = iterator_to_array($iterator, false);
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 
@@ -107,7 +107,7 @@ final class ChunkedChangeSafeIteratorTest extends TestCase {
 
         $query    = TestObject::query()->limit(2)->offset(1)->orderByDesc('value');
         $iterator = (new ChunkedChangeSafeIterator($query, $column))->setChunkSize(1);
-        $actual   = iterator_to_array($iterator);
+        $actual   = iterator_to_array($iterator, false);
         $count    = (clone $query)->offset(0)->count();
         $expected = (clone $query)->reorder()->offset(0)->orderBy($column)->limit(2)->get()->all();
 

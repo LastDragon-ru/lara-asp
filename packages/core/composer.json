@@ -20,10 +20,10 @@
   "require": {
     "php": "^8.3|^8.4",
     "ext-mbstring": "*",
-    "illuminate/console": "^11.0.8",
-    "illuminate/container": "^11.0.8",
-    "illuminate/contracts": "^11.0.8",
-    "illuminate/support": "^11.0.8",
+    "illuminate/console": "^12.0.1",
+    "illuminate/container": "^12.0.1",
+    "illuminate/contracts": "^12.0.1",
+    "illuminate/support": "^12.0.1",
     "symfony/deprecation-contracts": "^3.0.0",
     "symfony/filesystem": "^7.0.0",
     "symfony/polyfill-php84": "^1.31"
@@ -32,7 +32,7 @@
     "phpunit/phpunit": "^10.5.0|^11.0.0",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.6",
-    "orchestra/testbench": "^9.0.0"
+    "orchestra/testbench": "^10.0.0"
   },
   "autoload": {
     "psr-4": {

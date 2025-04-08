@@ -34,10 +34,6 @@ class NotIn extends Operator {
         return "[{$source->getTypeName()}!]";
     }
 
-    protected function getScoutVersion(): ?string {
-        return '>=10.3.0';
-    }
-
     #[Override]
     public function call(
         Handler $handler,

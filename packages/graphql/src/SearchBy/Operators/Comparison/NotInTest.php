@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators\Comparison;
 
 use Closure;
-use Composer\InstalledVersions;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Builder as ScoutBuilder;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Context;
@@ -17,12 +16,10 @@ use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function implode;
-use function sprintf;
 
 /**
  * @internal
@@ -79,20 +76,6 @@ final class NotInTest extends TestCase {
         ?Closure $contextFactory,
         ?Closure $resolver,
     ): void {
-        // Supported?
-        $operator = $this->app()->make(NotInTest_Operator::class);
-
-        if (!$operator->isScoutSupported()) {
-            self::markTestSkipped(
-                sprintf(
-                    'Minimum version of `laravel/scout` should be `%s`, `%s` installed.',
-                    $operator->getScoutVersion(),
-                    InstalledVersions::getPrettyVersion('laravel/scout'),
-                ),
-            );
-        }
-
-        // Test
         $this->testScoutOperator(
             Directive::class,
             $expected,
@@ -197,23 +180,4 @@ final class NotInTest extends TestCase {
         ))->getData();
     }
     // </editor-fold>
-}
-
-// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-class NotInTest_Operator extends NotIn {
-    #[Override]
-    public function isScoutSupported(): bool {
-        return parent::isScoutSupported();
-    }
-
-    #[Override]
-    public function getScoutVersion(): ?string {
-        return parent::getScoutVersion();
-    }
 }

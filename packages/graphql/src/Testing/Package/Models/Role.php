@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Models\Concerns\Model;
 
 /**
@@ -49,7 +50,7 @@ class Role extends Model {
     }
 
     /**
-     * @return BelongsToMany<User, covariant Model>
+     * @return BelongsToMany<User, covariant Model, Pivot>
      */
     public function users(): BelongsToMany {
         return $this

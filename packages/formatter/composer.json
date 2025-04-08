@@ -22,15 +22,15 @@
     "ext-bcmath": "*",
     "ext-intl": "*",
     "ext-mbstring": "*",
-    "illuminate/macroable": "^11.0.8",
-    "illuminate/support": "^11.0.8",
+    "illuminate/macroable": "^12.0.1",
+    "illuminate/support": "^12.0.1",
     "lastdragon-ru/lara-asp-core": "self.version",
     "symfony/polyfill-php84": "^1.31"
   },
   "require-dev": {
-    "illuminate/contracts": "^11.0.8",
+    "illuminate/contracts": "^12.0.1",
     "lastdragon-ru/lara-asp-testing": "self.version",
-    "orchestra/testbench": "^9.0.0",
+    "orchestra/testbench": "^10.0.0",
     "phpunit/phpunit": "^10.5.0|^11.0.0"
   },
   "autoload": {

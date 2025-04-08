@@ -75,40 +75,22 @@ final class ScoutTest extends TestCase {
 
         self::assertEquals($expected, [...$items]);
         self::assertQueryLogEquals(
-            match ((new RequiresLaravelScout('>=10.11.8'))->isSatisfied()) {
-                true  => [
-                    [
-                        'query'    => 'select count(*) as aggregate from "test_objects"',
-                        'bindings' => [],
-                    ],
-                    [
-                        'query'    => <<<SQL
+            [
+                [
+                    'query'    => 'select count(*) as aggregate from "test_objects"',
+                    'bindings' => [],
+                ],
+                [
+                    'query'    => <<<SQL
                         select *
                         from "test_objects"
                         order by "id" asc, "test_objects"."id" desc
                         limit {$limit} offset {$offset}
                     SQL
-                        ,
-                        'bindings' => [],
-                    ],
+                    ,
+                    'bindings' => [],
                 ],
-                false => [
-                    [
-                        'query'    => 'select count(*) as aggregate from "test_objects"',
-                        'bindings' => [],
-                    ],
-                    [
-                        'query'    => <<<SQL
-                        select *
-                        from "test_objects"
-                        order by "id" asc, "id" desc
-                        limit {$limit} offset {$offset}
-                    SQL
-                        ,
-                        'bindings' => [],
-                    ],
-                ],
-            },
+            ],
             $query,
         );
     }
@@ -129,40 +111,22 @@ final class ScoutTest extends TestCase {
 
         self::assertEquals($count, $length);
         self::assertQueryLogEquals(
-            match ((new RequiresLaravelScout('>=10.11.8'))->isSatisfied()) {
-                true  => [
-                    [
-                        'query'    => 'select count(*) as aggregate from "test_objects"',
-                        'bindings' => [],
-                    ],
-                    [
-                        'query'    => <<<'SQL'
+            [
+                [
+                    'query'    => 'select count(*) as aggregate from "test_objects"',
+                    'bindings' => [],
+                ],
+                [
+                    'query'    => <<<'SQL'
                         select *
                         from "test_objects"
                         order by "id" asc, "test_objects"."id" desc
                         limit 1 offset 0
                     SQL
-                        ,
-                        'bindings' => [],
-                    ],
+                    ,
+                    'bindings' => [],
                 ],
-                false => [
-                    [
-                        'query'    => 'select count(*) as aggregate from "test_objects"',
-                        'bindings' => [],
-                    ],
-                    [
-                        'query'    => <<<'SQL'
-                        select *
-                        from "test_objects"
-                        order by "id" asc, "id" desc
-                        limit 1 offset 0
-                    SQL
-                        ,
-                        'bindings' => [],
-                    ],
-                ],
-            },
+            ],
             $query,
         );
     }
