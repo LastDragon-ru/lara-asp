@@ -17,13 +17,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context\IndexFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 use function array_map;
 use function array_merge;
-use function array_unshift;
 use function array_values;
 
 /**
@@ -137,10 +134,7 @@ class Processor {
         return $this;
     }
 
-    /**
-     * @param array<array-key, object> $context
-     */
-    public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null, array $context = []): void {
+    public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
         // Prepare
         $depth = match (true) {
             $input instanceof FilePath => 0,
@@ -163,18 +157,9 @@ class Processor {
             $output = $directory;
         }
 
-        // Context
-        if ($input instanceof FilePath) {
-            array_unshift($context, new IndexFile($input));
-        }
-
         // Start
         try {
             $this->dispatcher->notify(new ProcessingStarted());
-
-            if ($context !== []) {
-                $this->addMetadata(new Context($context));
-            }
 
             try {
                 $this->execute($directory, $output, $extensions, $exclude, $depth);
@@ -189,8 +174,6 @@ class Processor {
             $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Failed));
 
             throw $exception;
-        } finally {
-            $this->removeMetadata(Context::class);
         }
     }
 

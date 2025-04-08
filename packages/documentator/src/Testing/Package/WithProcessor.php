@@ -7,9 +7,9 @@ use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 /**
@@ -20,12 +20,15 @@ trait WithProcessor {
     abstract protected function app(): Application;
 
     /**
-     * @param array<array-key, object> $context
+     * @template V of object
+     * @template R of MetadataResolver<V>
+     *
+     * @param array<array-key, R|class-string<R>> $resolvers
      */
     protected function getFileSystem(
         DirectoryPath|string $input,
         DirectoryPath|string|null $output = null,
-        array $context = [],
+        array $resolvers = [],
     ): FileSystem {
         $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
         $output     = $output !== null
@@ -35,7 +38,9 @@ trait WithProcessor {
         $dispatcher = new Dispatcher();
         $filesystem = new FileSystem($dispatcher, $metadata, $input, $output, true);
 
-        $metadata->addResolver(new Context($context));
+        foreach ($resolvers as $resolver) {
+            $metadata->addResolver($resolver);
+        }
 
         return $filesystem;
     }

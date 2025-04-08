@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
@@ -27,13 +26,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailabl
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Context\IndexFile;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 
 use function array_map;
 
@@ -321,45 +317,6 @@ final class ProcessorTest extends TestCase {
                 ],
             ],
             $taskA->processed,
-        );
-    }
-
-    public function testRunContext(): void {
-        $input     = new FilePath('index.md');
-        $context   = new stdClass();
-        $processor = Mockery::mock(Processor::class, [Mockery::mock(ContainerResolver::class)]);
-        $processor->shouldAllowMockingProtectedMethods();
-        $processor->makePartial();
-        $processor
-            ->shouldReceive('execute')
-            ->once()
-            ->andReturn();
-        $processor
-            ->shouldReceive('addMetadata')
-            ->with(
-                Mockery::on(static function (MetadataResolver $resolver) use ($input, $context): bool {
-                    self::assertEquals(
-                        new Context([
-                            new IndexFile($input),
-                            $context,
-                        ]),
-                        $resolver,
-                    );
-
-                    return true;
-                }),
-            )
-            ->once()
-            ->andReturn();
-        $processor
-            ->shouldReceive('removeMetadata')
-            ->with(Context::class)
-            ->once()
-            ->andReturn();
-
-        $processor->run(
-            input  : $input,
-            context: [$context],
         );
     }
 
