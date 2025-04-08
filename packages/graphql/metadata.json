@@ -1,5 +1,5 @@
 {
-    "version": "8.0.0",
+    "version": "8.1.0",
     "require": {
         "php": "PHP",
         "laravel/framework": "Laravel",
@@ -8,6 +8,18 @@
     "merge": null,
     "requirements": {
         "HEAD": {
+            "laravel/framework": [
+                "^11.0.8"
+            ],
+            "nuwave/lighthouse": [
+                "^6.36.0"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ]
+        },
+        "8.1.0": {
             "laravel/framework": [
                 "^11.0.8"
             ],

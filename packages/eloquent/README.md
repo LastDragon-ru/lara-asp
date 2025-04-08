@@ -10,7 +10,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.4` |  `HEAD`  ,  `8.0.0`   |
+|  PHP  | `^8.4` |   `HEAD ⋯ 8.0.0`   |
 |  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
 |  | `^8.2` |   `7.2.0 ⋯ 2.0.0`   |
 |  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
@@ -18,7 +18,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 |  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
 |  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
 |  | `>=7.4.0` |   `0.3.0 ⋯ 0.1.0`   |
-|  Laravel  | `^11.0.8` |  `HEAD`  ,  `8.0.0`   |
+|  Laravel  | `^11.0.8` |   `HEAD ⋯ 8.0.0`   |
 |  | `^11.0.0` |   `7.2.0 ⋯ 6.2.0`   |
 |  | `^10.34.0` |   `7.2.0 ⋯ 6.2.0`   |
 |  | `^10.0.0` |   `6.1.0 ⋯ 2.1.0`   |
