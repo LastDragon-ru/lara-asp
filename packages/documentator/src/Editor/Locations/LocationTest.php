@@ -2,11 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Editor\Locations;
 
+use Exception;
+use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function is_string;
 use function iterator_to_array;
 
 use const PHP_INT_MAX;
@@ -98,6 +101,30 @@ final class LocationTest extends TestCase {
             new Location(3, 3, 20, 0),
             (new Location(3, 3, 15, 5))->after(),
         );
+    }
+
+    /**
+     * @param Location|class-string<Exception> $expected
+     */
+    #[DataProvider('dataProviderWithStartLine')]
+    public function testWithStartLine(Location|string $expected, Location $location, int $startLine): void {
+        if (is_string($expected)) {
+            self::expectException($expected);
+        }
+
+        self::assertEquals($expected, $location->withStartLine($startLine));
+    }
+
+    /**
+     * @param Location|class-string<Exception> $expected
+     */
+    #[DataProvider('dataProviderWithEndLine')]
+    public function testWithEndLine(Location|string $expected, Location $location, int $endLine): void {
+        if (is_string($expected)) {
+            self::expectException($expected);
+        }
+
+        self::assertEquals($expected, $location->withEndLine($endLine));
     }
     // </editor-fold>
 
@@ -213,6 +240,62 @@ final class LocationTest extends TestCase {
                 new Location(1, 2, 10, 5),
                 new Location(1, 2, 10, 10),
                 -5,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{Location|class-string<Exception>, Location, int}>
+     */
+    public static function dataProviderWithStartLine(): array {
+        return [
+            'no move'         => [
+                new Location(1, 10, 2, 3, 4, 5),
+                new Location(1, 10, 2, 3, 4, 5),
+                1,
+            ],
+            'move within'     => [
+                new Location(5, 10, 2, 3, 5, 5),
+                new Location(1, 10, 2, 3, 4, 5),
+                5,
+            ],
+            'move to the end' => [
+                new Location(10, 10, 2, 3, 5, 5),
+                new Location(1, 10, 2, 3, 4, 5),
+                10,
+            ],
+            'move after'      => [
+                InvalidArgumentException::class,
+                new Location(1, 10, 2, 3, 4, 5),
+                11,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{Location|class-string<Exception>, Location, int}>
+     */
+    public static function dataProviderWithEndLine(): array {
+        return [
+            'no move'           => [
+                new Location(1, 10, 2, 3, 4, 5),
+                new Location(1, 10, 2, 3, 4, 5),
+                10,
+            ],
+            'move within'       => [
+                new Location(1, 5, 2, 3, 4, 5),
+                new Location(1, 10, 2, 3, 4, 5),
+                5,
+            ],
+            'move to the start' => [
+                new Location(1, 1, 2, 3, 4, null),
+                new Location(1, 10, 2, 3, 4, 5),
+                1,
+            ],
+            'move before'       => [
+                InvalidArgumentException::class,
+                new Location(1, 10, 2, 3, 4, 5),
+                0,
             ],
         ];
     }

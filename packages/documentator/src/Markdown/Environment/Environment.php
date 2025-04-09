@@ -14,6 +14,7 @@ use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Event\DocumentPreParsedEvent;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\BacktickParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\HtmlInlineParser;
 use League\CommonMark\Extension\ExtensionInterface;
 use League\CommonMark\Extension\Footnote\Parser\FootnoteRefParser;
 use League\CommonMark\Normalizer\TextNormalizerInterface;
@@ -113,6 +114,7 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
                 $parser instanceof CloseBracketParser
                 || $parser instanceof BacktickParser
                 || $parser instanceof FootnoteRefParser
+                || $parser instanceof HtmlInlineParser
             ) {
                 $parser = new InlineParserWrapper($locator, $parser);
             }

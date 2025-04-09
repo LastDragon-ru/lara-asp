@@ -58,6 +58,7 @@ final class MarkdownTest extends TestCase {
             'Tables'    => ['Tables.xml', 'Tables.md'],
             'Headings'  => ['Headings.xml', 'Headings.md'],
             'Footnotes' => ['Footnotes.xml', 'Footnotes.md'],
+            'Html'      => ['Html.xml', 'Html.md'],
         ];
     }
     //</editor-fold>
