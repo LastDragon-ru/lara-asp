@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
+use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Footnote\Node\FootnoteContainer;
@@ -111,6 +112,7 @@ class Locator {
             $node instanceof TableSection   => $this->getDataLocation($node),
             $node instanceof TableRow       => $this->getDataLocation($node),
             $node instanceof TableCell      => $this->getDataLocation($node),
+            $node instanceof HtmlBlock      => $this->getHtmlBlockLocation($node),
             $node instanceof AbstractBlock  => $this->getBlockLocation($node),
             default                         => null
         };
@@ -205,6 +207,26 @@ class Locator {
             $location->startLinePadding,
             $location->internalPadding,
         ));
+
+        // Return
+        return $location;
+    }
+
+    private function getHtmlBlockLocation(HtmlBlock $node): ?Location {
+        // Location?
+        $location = $this->getBlockLocation($node);
+
+        if ($location === null) {
+            return $location;
+        }
+
+        // End line fix
+        $end  = $location->endLine + 1;
+        $line = Lines::get($this->document)[$end] ?? '';
+
+        if ($line === '') {
+            $location = $location->withEndLine($end);
+        }
 
         // Return
         return $location;

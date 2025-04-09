@@ -239,7 +239,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>3</int>
+                                    <int>4</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>
