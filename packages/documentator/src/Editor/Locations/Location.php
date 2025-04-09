@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Editor\Locations;
 
+use InvalidArgumentException;
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Utils\Integer;
@@ -180,6 +181,58 @@ readonly class Location implements IteratorAggregate {
             $length,
             $this->startLinePadding,
             $this->internalPadding,
+        );
+    }
+
+    /**
+     * @return new<self>
+     */
+    public function withStartLine(int $startLine): self {
+        if ($startLine === $this->startLine) {
+            return $this;
+        }
+
+        if ($startLine > $this->endLine) {
+            throw new InvalidArgumentException(
+                'The `$startLine` must be lower than or equal to `Location::$endLine`.',
+            );
+        }
+
+        $startLinePadding = $this->internalPadding ?? $this->startLinePadding;
+
+        return new self(
+            $startLine,
+            $this->endLine,
+            $this->offset,
+            $this->length,
+            $startLinePadding,
+            $this->internalPadding,
+        );
+    }
+
+    /**
+     * @return new<self>
+     */
+    public function withEndLine(int $endLine): self {
+        if ($endLine === $this->endLine) {
+            return $this;
+        }
+
+        if ($endLine < $this->startLine) {
+            throw new InvalidArgumentException(
+                'The `$endLine` must be greater than or equal to `Location::$startLine`.',
+            );
+        }
+
+        $internalPadding = $endLine > $this->startLine ? $this->internalPadding : null;
+
+        return new self(
+            $this->startLine,
+            $endLine,
+            $this->offset,
+            $this->length,
+            $this->startLinePadding,
+            $internalPadding,
         );
     }
 }
