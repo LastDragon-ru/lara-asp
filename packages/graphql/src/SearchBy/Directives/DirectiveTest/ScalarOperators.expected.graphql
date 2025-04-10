@@ -109,6 +109,18 @@ input SearchByConditionA {
     """
     d: SearchByScalarInt
     @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    e: SearchByScalarScalarDefaultOperatorsOrNull
+    @searchByOperatorCondition
+
+    """
+    Field condition.
+    """
+    f: SearchByScalarScalarDefaultOperators
+    @searchByOperatorCondition
 }
 
 """
@@ -214,6 +226,52 @@ input SearchByScalarMixed {
     @searchByOperatorEqual
 }
 
+"""
+Available operators for `scalar ScalarDefaultOperators` (only one operator allowed at a time).
+"""
+input SearchByScalarScalarDefaultOperators {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarDefaultOperators
+    @searchByOperatorEqual
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ScalarDefaultOperators
+    @searchByOperatorNotEqual
+}
+
+"""
+Available operators for `scalar ScalarDefaultOperators` (only one operator allowed at a time).
+"""
+input SearchByScalarScalarDefaultOperatorsOrNull {
+    """
+    Equal (`=`).
+    """
+    equal: ScalarDefaultOperators
+    @searchByOperatorEqual
+
+    """
+    Is NOT NULL?
+    """
+    isNotNull: SearchByTypeFlag
+    @searchByOperatorIsNotNull
+
+    """
+    Is NULL?
+    """
+    isNull: SearchByTypeFlag
+    @searchByOperatorIsNull
+
+    """
+    Not Equal (`!=`).
+    """
+    notEqual: ScalarDefaultOperators
+    @searchByOperatorNotEqual
+}
+
 scalar Date
 @scalar(
     class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date"
@@ -234,6 +292,16 @@ scalar Mixed
     class: "GraphQL\\Type\\Definition\\StringType"
 )
 @searchByOperatorEqual
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar ScalarDefaultOperators
+@scalar(
+    class: "GraphQL\\Type\\Definition\\StringType"
+)
 
 """
 The scalar is used to add builder operators for `@searchBy` directive.

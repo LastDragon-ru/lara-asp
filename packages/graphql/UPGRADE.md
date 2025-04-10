@@ -379,7 +379,7 @@ This section is actual only if you are extending the package. Please review and 
 [code-links/ab92ab72ccf08721]: src/SearchBy/Definitions/SearchByOperatorFieldDirective.php
     "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorFieldDirective"
 
-[code-links/5f93528c6eb9dc8f]: src/SearchBy/Operators.php#L58
+[code-links/5f93528c6eb9dc8f]: src/SearchBy/Operators.php#L59
     "\LastDragon_ru\LaraASP\GraphQL\SearchBy\Operators::Object"
 
 [code-links/b26bb0f7b2034eb1]: src/SortBy/Definitions/SortByOperatorFieldDirective.php

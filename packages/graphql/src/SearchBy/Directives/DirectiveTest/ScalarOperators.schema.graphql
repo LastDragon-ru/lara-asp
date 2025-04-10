@@ -12,7 +12,12 @@ input A {
     b: Date
     c: EnumA
     d: Int!
+    e: ScalarDefaultOperators
+    f: ScalarDefaultOperators!
 }
+
+scalar ScalarDefaultOperators
+@scalar(class: "GraphQL\\Type\\Definition\\StringType")
 
 scalar Date
 @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
