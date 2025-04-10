@@ -56,6 +56,10 @@ class Scalar implements TypeDefinition {
         $operators = $provider->getOperators($manipulator, $type->getTypeName(), $type, $context);
 
         if ($operators === []) {
+            $operators = $provider->getOperators($manipulator, Operators::Scalar, $type, $context);
+        }
+
+        if ($operators === []) {
             return null;
         }
 

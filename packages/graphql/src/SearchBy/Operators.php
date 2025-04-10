@@ -55,6 +55,7 @@ class Operators extends BuilderOperators {
     public const  string Extra    = self::Prefix.'Extra';
     public const  string Number   = self::Prefix.'Number';
     public const  string Enum     = self::Prefix.'Enum';
+    public const  string Scalar   = self::Prefix.'Scalar';
     public const  string Object   = self::Prefix.'Object';
     public const  string Disabled = self::Prefix.'Disabled';
 
@@ -134,6 +135,10 @@ class Operators extends BuilderOperators {
             SearchByOperatorNotEqualDirective::class,
             SearchByOperatorInDirective::class,
             SearchByOperatorNotInDirective::class,
+        ],
+        self::Scalar  => [
+            SearchByOperatorEqualDirective::class,
+            SearchByOperatorNotEqualDirective::class,
         ],
         self::Null    => [
             SearchByOperatorIsNullDirective::class,

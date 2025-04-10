@@ -213,6 +213,7 @@ The package also defines a few own types in addition to the standard GraphQL typ
 * `SearchByOperatorsNull` / [`Operators::Null`](../../src/SearchBy/Operators.php) - Additional operators available for nullable fields.
 * `SearchByOperatorsExtra` / [`Operators::Extra`](../../src/SearchBy/Operators.php) - List of additional extra operators for all types.
 * `SearchByOperatorsEnum` / [`Operators::Enum`](../../src/SearchBy/Operators.php) - Default operators for enums.
+* `SearchByOperatorsScalar` / [`Operators::Scalar`](../../src/SearchBy/Operators.php) - Default operators for scalars.
 * `SearchByOperatorsDisabled` / [`Operators::Disabled`](../../src/SearchBy/Operators.php) - Disabled operators.
 
 ### GraphQL (recommended)
