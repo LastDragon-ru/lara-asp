@@ -1,5 +1,5 @@
 {
-    "version": "8.1.0",
+    "version": "8.1.1",
     "require": {
         "php": "PHP",
         "laravel/framework": "Laravel",
@@ -8,6 +8,32 @@
     "merge": null,
     "requirements": {
         "HEAD": {
+            "laravel/framework": [
+                "^11.0.8"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ],
+            "phpunit/phpunit": [
+                "^11.0.0",
+                "^10.5.0"
+            ]
+        },
+        "9.0.0": {
+            "laravel/framework": [
+                "^12.0.1"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ],
+            "phpunit/phpunit": [
+                "^12.0.0",
+                "^11.0.0"
+            ]
+        },
+        "8.1.1": {
             "laravel/framework": [
                 "^11.0.8"
             ],
