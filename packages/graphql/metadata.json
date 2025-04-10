@@ -1,5 +1,5 @@
 {
-    "version": "9.0.0",
+    "version": "9.1.0",
     "require": {
         "php": "PHP",
         "laravel/framework": "Laravel",
@@ -19,12 +19,48 @@
                 "^8.3"
             ]
         },
+        "9.1.0": {
+            "laravel/framework": [
+                "^12.0.1"
+            ],
+            "nuwave/lighthouse": [
+                "^6.54.0"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ]
+        },
+        "9.0.1": {
+            "laravel/framework": [
+                "^12.0.1"
+            ],
+            "nuwave/lighthouse": [
+                "^6.54.0"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ]
+        },
         "9.0.0": {
             "laravel/framework": [
                 "^12.0.1"
             ],
             "nuwave/lighthouse": [
                 "^6.54.0"
+            ],
+            "php": [
+                "^8.4",
+                "^8.3"
+            ]
+        },
+        "8.1.1": {
+            "laravel/framework": [
+                "^11.0.8"
+            ],
+            "nuwave/lighthouse": [
+                "^6.36.0"
             ],
             "php": [
                 "^8.4",
