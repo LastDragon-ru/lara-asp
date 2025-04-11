@@ -5,9 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use League\CommonMark\Node\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,7 +22,7 @@ use const JSON_THROW_ON_ERROR;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -49,7 +48,7 @@ final class InstructionTest extends TestCase {
         $parameters           = $this->app()->make(Serializer::class)->deserialize(Parameters::class, $parameters);
 
         // Test
-        $context  = new Context($file, $document, $instruction);
+        $context  = $this->getPreprocessInstructionContext($fs, $file, $document, $instruction);
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $parameters));
 

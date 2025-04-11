@@ -3,11 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
-use Mockery;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -20,7 +17,7 @@ use const PATHINFO_EXTENSION;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -29,7 +26,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters(self::getTestData()->path($source));
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));

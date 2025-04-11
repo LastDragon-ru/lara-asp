@@ -3,14 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
-use Mockery;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -25,7 +21,7 @@ use function range;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -36,7 +32,7 @@ final class InstructionTest extends TestCase {
         $file    = $fs->getFile($path);
         $params  = new Parameters(self::getTestData()->path('Example.md'));
         $target  = $params->target;
-        $context = new Context($file, Mockery::mock(Document::class), new Node());
+        $context = $this->getPreprocessInstructionContext($fs, $file);
 
         $this->override(Runner::class, static function (MockInterface $mock) use ($target, $output): void {
             $mock
@@ -61,7 +57,7 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem($path->getDirectoryPath());
         $file     = $fs->getFile($path);
         $params   = new Parameters($file->getName());
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $expected = mb_trim((string) file_get_contents((string) $path));
         $instance = $this->app()->make(Instruction::class);
         $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
