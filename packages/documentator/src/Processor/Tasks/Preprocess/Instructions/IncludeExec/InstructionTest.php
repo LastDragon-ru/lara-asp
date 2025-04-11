@@ -4,12 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
-use Mockery;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -17,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     public function testInvoke(): void {
         $fs       = $this->getFileSystem(__DIR__);
@@ -25,7 +21,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('command to execute');
         $expected = 'result';
         $command  = $params->target;
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $factory  = $this->override(Factory::class, function () use ($command, $expected): Factory {
             $factory = $this->app()->make(Factory::class);
             $factory->preventStrayProcesses();
@@ -37,7 +33,7 @@ final class InstructionTest extends TestCase {
         });
         $instance = $this->app()->make(Instruction::class);
 
-        self::assertSame($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
+        self::assertSame($expected, ($instance)($context, $params));
 
         $factory->assertRan(static function (PendingProcess $process) use ($fs, $command): bool {
             return $process->path === (string) $fs->input

@@ -2,15 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
-use Generator;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
+use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
 
 /**
  * @phpstan-require-extends TestCase
@@ -45,26 +47,14 @@ trait WithProcessor {
         return $filesystem;
     }
 
-    /**
-     * @template T
-     *
-     * @param T|Generator<mixed, Dependency<*>, mixed, T> $result
-     *
-     * @return T
-     */
-    protected function getProcessorResult(FileSystem $filesystem, mixed $result): mixed {
-        if ($result instanceof Generator) {
-            while ($result->valid()) {
-                $dependency = $result->current();
+    protected function runProcessorTask(Task $task, FileSystem $fs, File $file): void {
+        $task($this->getDependencyResolver($fs, $file), $file);
+    }
 
-                if ($dependency instanceof Dependency) {
-                    $result->send(($dependency)($filesystem));
-                }
-            }
+    protected function getDependencyResolver(FileSystem $fs, File $file): DependencyResolver {
+        $dispatcher = new Dispatcher();
+        $resolver   = new Resolver($dispatcher, $fs, $file, static fn ($file, $value) => $value);
 
-            $result = $result->getReturn();
-        }
-
-        return $result;
+        return $resolver;
     }
 }

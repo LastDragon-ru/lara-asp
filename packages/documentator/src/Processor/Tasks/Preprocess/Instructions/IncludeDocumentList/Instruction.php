@@ -2,15 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList;
 
-use Generator;
-use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -58,20 +55,11 @@ readonly class Instruction implements InstructionContract {
         return Parameters::class;
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, string>
-     */
     #[Override]
-    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target    = $context->file->getDirectoryPath($parameters->target);
-        $iterator  = Cast::to(
-            Iterator::class,
-            yield new FileIterator(
-                $target,
-                $parameters->include,
-                $parameters->exclude,
-                $parameters->depth,
-            ),
+        $iterator  = ($context->resolver)(
+            new FileIterator($target, $parameters->include, $parameters->exclude, $parameters->depth),
         );
         $documents = [];
 

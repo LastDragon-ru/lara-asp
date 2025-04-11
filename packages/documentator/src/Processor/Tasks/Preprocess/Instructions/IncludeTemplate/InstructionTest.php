@@ -4,14 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
-use Mockery;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -24,7 +21,7 @@ use const PATHINFO_EXTENSION;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -36,10 +33,10 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters(self::getTestData()->path($source), $data);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         if (pathinfo($source, PATHINFO_EXTENSION) === 'md') {
             self::assertInstanceOf(Document::class, $actual);
@@ -54,14 +51,14 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $params   = new Parameters((string) $file, []);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateDataMissed($context, $params),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testInvokeVariablesUnused(): void {
@@ -74,14 +71,14 @@ final class InstructionTest extends TestCase {
             'c' => 'C',
             'd' => 'D',
         ]);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesUnused($context, $params, ['c', 'd']),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testInvokeVariablesMissed(): void {
@@ -91,14 +88,14 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters((string) $file, [
             'a' => 'A',
         ]);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new TemplateVariablesMissed($context, $params, ['b']),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
     // </editor-fold>
 

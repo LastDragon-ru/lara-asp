@@ -6,11 +6,9 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
-use Mockery;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -21,7 +19,7 @@ use function mb_trim;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -33,7 +31,7 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
         $fs       = $this->getFileSystem($path->getDirectoryPath());
         $file     = $fs->getFile($path);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 
         if ($expected instanceof Closure) {
@@ -42,7 +40,7 @@ final class InstructionTest extends TestCase {
             $expected = mb_trim(self::getTestData()->content($expected));
         }
 
-        $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual = ($instance)($context, $params);
 
         self::assertInstanceOf(Document::class, $actual);
         self::assertSame($expected, mb_trim((string) $actual));

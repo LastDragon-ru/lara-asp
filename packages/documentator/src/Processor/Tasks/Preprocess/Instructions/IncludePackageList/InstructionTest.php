@@ -4,15 +4,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
-use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -22,7 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 #[CoversClass(Instruction::class)]
 final class InstructionTest extends TestCase {
-    use WithProcessor;
+    use WithPreprocess;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -32,9 +27,9 @@ final class InstructionTest extends TestCase {
         $fs       = $this->getFileSystem($path->getDirectoryPath());
         $file     = $fs->getFile($path);
         $params   = new Parameters('packages', template: $template, order: $order);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         self::assertSame(
             self::getTestData()->content($expected),
@@ -52,17 +47,16 @@ final class InstructionTest extends TestCase {
         $file     = $fs->getFile($path);
         $target   = $fs->input->getDirectoryPath('no readme');
         $params   = new Parameters((string) $target);
-        $context  = new Context($file, Mockery::mock(Document::class), new Node());
+        $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 
         self::expectExceptionObject(
             new DependencyUnresolvable(
-                new FileReference($fs->input->getFilePath('no readme/package/README.md')),
                 new Exception(),
             ),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
     //</editor-fold>
 

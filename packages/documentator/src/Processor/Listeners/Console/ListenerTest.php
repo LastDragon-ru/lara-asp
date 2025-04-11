@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
@@ -338,8 +339,8 @@ class ListenerTest__TaskA implements Task {
     }
 
     #[Override]
-    public function __invoke(File $file): bool {
-        return true;
+    public function __invoke(DependencyResolver $resolver, File $file): void {
+        // empty
     }
 }
 
@@ -361,7 +362,7 @@ class ListenerTest__TaskB implements Task {
     }
 
     #[Override]
-    public function __invoke(File $file): bool {
-        return true;
+    public function __invoke(DependencyResolver $resolver, File $file): void {
+        // empty;
     }
 }
