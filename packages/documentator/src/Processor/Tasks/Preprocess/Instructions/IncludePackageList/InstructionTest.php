@@ -6,7 +6,6 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
@@ -57,7 +56,6 @@ final class InstructionTest extends TestCase {
 
         self::expectExceptionObject(
             new DependencyUnresolvable(
-                new FileReference($fs->input->getFilePath('no readme/package/README.md')),
                 new Exception(),
             ),
         );

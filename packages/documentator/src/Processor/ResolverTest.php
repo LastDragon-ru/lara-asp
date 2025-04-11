@@ -283,7 +283,7 @@ final class ResolverTest extends TestCase {
             ->shouldUseProperty('dispatcher')
             ->value($dispatcher);
 
-        $resolvedUnresolvable = new DependencyUnresolvable(Mockery::mock(Dependency::class), new Exception());
+        $resolvedUnresolvable = new DependencyUnresolvable(new Exception());
         $resolvedException    = new Exception();
         $resolvedObject       = Mockery::mock(File::class);
         $resolvedNull         = null;
