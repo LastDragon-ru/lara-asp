@@ -50,7 +50,7 @@ final class InstructionTest extends TestCase {
         // Test
         $context  = $this->getPreprocessInstructionContext($fs, $file, $document, $instruction);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $parameters));
+        $actual   = ($instance)($context, $parameters);
 
         self::assertSame($expected, $actual);
     }

@@ -16,18 +16,6 @@ use Mockery;
 trait WithPreprocess {
     use WithProcessor;
 
-//    protected function runPreprocessorInstruction(Task $task, FileSystem $fs, File $file): bool {
-//        $resolver = $this->getDependencyResolver($fs, $file);
-//        $result   = $task($resolver, $file);
-//
-//        if (!is_bool($result)) {
-//            $result = $this->getProcessorResult($fs, $result);
-//            $result = $result === true;
-//        }
-//
-//        return $result;
-//    }
-
     protected function getPreprocessInstructionContext(
         FileSystem $fs,
         File $file,

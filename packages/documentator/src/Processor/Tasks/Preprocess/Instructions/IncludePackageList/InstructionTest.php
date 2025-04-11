@@ -29,7 +29,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('packages', template: $template, order: $order);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         self::assertSame(
             self::getTestData()->content($expected),
@@ -56,7 +56,7 @@ final class InstructionTest extends TestCase {
             ),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
     //</editor-fold>
 

@@ -45,7 +45,7 @@ final class InstructionTest extends TestCase {
         });
 
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         self::assertSame($expected, $actual);
     }
@@ -60,7 +60,7 @@ final class InstructionTest extends TestCase {
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $expected = mb_trim((string) file_get_contents((string) $path));
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         self::assertSame(
             <<<EXPECTED

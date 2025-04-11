@@ -68,7 +68,7 @@ final class InstructionTest extends TestCase {
                 );
         });
 
-        self::assertSame($expected, $this->getProcessorResult($fs, ($instance)($context, $params)));
+        self::assertSame($expected, ($instance)($context, $params));
     }
 
     public function testInvokeFailed(): void {
@@ -126,7 +126,7 @@ final class InstructionTest extends TestCase {
             ),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testGetCommand(): void {
