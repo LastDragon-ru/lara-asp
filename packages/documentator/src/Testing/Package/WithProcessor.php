@@ -16,8 +16,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
 
-use function is_bool;
-
 /**
  * @phpstan-require-extends TestCase
  * @internal
@@ -77,11 +75,6 @@ trait WithProcessor {
     protected function runProcessorTask(Task $task, FileSystem $fs, File $file): bool {
         $resolver = $this->getDependencyResolver($fs, $file);
         $result   = $task($resolver, $file);
-
-        if (!is_bool($result)) {
-            $result = $this->getProcessorResult($fs, $result);
-            $result = $result === true;
-        }
 
         return $result;
     }
