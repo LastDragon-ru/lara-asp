@@ -36,7 +36,7 @@ final class InstructionTest extends TestCase {
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
         $expected = self::getTestData()->content($expected);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         if (pathinfo($source, PATHINFO_EXTENSION) === 'md') {
             self::assertInstanceOf(Document::class, $actual);
@@ -58,7 +58,7 @@ final class InstructionTest extends TestCase {
             new TemplateDataMissed($context, $params),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testInvokeVariablesUnused(): void {
@@ -78,7 +78,7 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesUnused($context, $params, ['c', 'd']),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testInvokeVariablesMissed(): void {
@@ -95,7 +95,7 @@ final class InstructionTest extends TestCase {
             new TemplateVariablesMissed($context, $params, ['b']),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
     // </editor-fold>
 

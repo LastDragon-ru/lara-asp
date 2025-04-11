@@ -49,7 +49,7 @@ final class InstructionTest extends TestCase {
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
-        $actual   = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual   = ($instance)($context, $params);
 
         self::assertSame(
             <<<MARKDOWN
@@ -80,7 +80,7 @@ final class InstructionTest extends TestCase {
             new DependencyIsMissing($context, $params, PrinterContract::class),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testInvokeNoDirective(): void {
@@ -107,7 +107,7 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context, $params),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 
     public function testInvokeNoDirectiveResolver(): void {
@@ -125,6 +125,6 @@ final class InstructionTest extends TestCase {
             new TargetIsNotDirective($context, $params),
         );
 
-        $this->getProcessorResult($fs, ($instance)($context, $params));
+        ($instance)($context, $params);
     }
 }

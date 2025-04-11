@@ -40,7 +40,7 @@ final class InstructionTest extends TestCase {
             $expected = mb_trim(self::getTestData()->content($expected));
         }
 
-        $actual = $this->getProcessorResult($fs, ($instance)($context, $params));
+        $actual = ($instance)($context, $params);
 
         self::assertInstanceOf(Document::class, $actual);
         self::assertSame($expected, mb_trim((string) $actual));
