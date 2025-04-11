@@ -2,11 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
-use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
@@ -811,26 +809,20 @@ class ProcessorTest__Task implements Task {
         return ['txt', 'md'];
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, bool>
-     */
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): Generator {
+    public function __invoke(DependencyResolver $resolver, File $file): bool {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = yield new FileReference($file->getFilePath($dependency));
+            $resolved[$dependency] = $resolver(new FileReference($file->getFilePath($dependency)));
         }
 
         $this->processed[] = [
             (string) $file,
             array_map(
                 static function (mixed $file): string {
-                    return (string) match (true) {
-                        $file instanceof File => (string) $file,
-                        default               => null,
-                    };
+                    return (string) $file;
                 },
                 $resolved,
             ),

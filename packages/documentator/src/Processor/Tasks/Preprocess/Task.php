@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use Exception;
-use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
@@ -16,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
@@ -137,14 +135,8 @@ class Task implements TaskContract {
         return ['md'];
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, bool>
-     */
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): Generator {
-        // Just in case
-        yield from [];
-
+    public function __invoke(DependencyResolver $resolver, File $file): bool {
         // Process
         $document = $file->as(Document::class);
         $parsed   = $this->parse($resolver, $file, $document);
@@ -208,7 +200,7 @@ class Task implements TaskContract {
 
         // Mutate
         if ($mutated) {
-            yield new FileSave($file, $document);
+            $resolver(new FileSave($file, $document));
         }
 
         // Return

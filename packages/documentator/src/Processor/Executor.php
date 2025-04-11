@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Exception;
-use Generator;
 use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
@@ -137,23 +136,7 @@ class Executor {
 
         try {
             try {
-                // Run
-                $result    = false;
-                $generator = $task($resolver, $file);
-
-                // Dependencies?
-                if ($generator instanceof Generator) {
-                    while ($generator->valid()) {
-                        $dependency = $generator->current();
-                        $resolved   = $resolver($dependency);
-
-                        $generator->send($resolved);
-                    }
-
-                    $result = $generator->getReturn();
-                } else {
-                    $result = $generator;
-                }
+                $result = $task($resolver, $file);
 
                 $resolver->check();
 
