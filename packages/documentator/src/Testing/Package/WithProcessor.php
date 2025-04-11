@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
@@ -74,9 +75,8 @@ trait WithProcessor {
     }
 
     protected function runProcessorTask(Task $task, FileSystem $fs, File $file): bool {
-        $dispatcher = new Dispatcher();
-        $resolver   = new Resolver($dispatcher, $fs, $file, static fn ($file, $value) => $value);
-        $result     = $task($resolver, $file);
+        $resolver = $this->getDependencyResolver($fs, $file);
+        $result   = $task($resolver, $file);
 
         if (!is_bool($result)) {
             $result = $this->getProcessorResult($fs, $result);
@@ -84,5 +84,12 @@ trait WithProcessor {
         }
 
         return $result;
+    }
+
+    protected function getDependencyResolver(FileSystem $fs, File $file): DependencyResolver {
+        $dispatcher = new Dispatcher();
+        $resolver   = new Resolver($dispatcher, $fs, $file, static fn ($file, $value) => $value);
+
+        return $resolver;
     }
 }

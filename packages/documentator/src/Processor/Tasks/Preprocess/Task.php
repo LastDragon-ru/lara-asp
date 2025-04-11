@@ -147,7 +147,7 @@ class Task implements TaskContract {
 
         // Process
         $document = $file->as(Document::class);
-        $parsed   = $this->parse($file, $document);
+        $parsed   = $this->parse($resolver, $file, $document);
         $mutated  = false;
 
         foreach ($parsed as $group) {
@@ -224,7 +224,7 @@ class Task implements TaskContract {
     /**
      * @return array<int, array<string, Token<*>>>
      */
-    protected function parse(File $file, Document $document): array {
+    protected function parse(DependencyResolver $resolver, File $file, Document $document): array {
         // Empty?
         if ($this->instructions->isEmpty()) {
             return [];
@@ -261,7 +261,7 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($file, $document, $node);
+            $context    = new Context($resolver, $file, $document, $node);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 
