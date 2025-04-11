@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList;
 
-use Generator;
-use Iterator;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package as ComposerPackage;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
@@ -12,12 +10,10 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\DirectoryIterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -66,27 +62,24 @@ readonly class Instruction implements InstructionContract {
         return Parameters::class;
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, string>
-     */
     #[Override]
-    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
         $directory   = $context->file->getDirectoryPath($parameters->target);
-        $directories = Cast::to(Iterator::class, yield new DirectoryIterator($directory, null, null, 0));
+        $directories = ($context->resolver)(new DirectoryIterator($directory, null, null, 0));
 
         foreach ($directories as $package) {
             // Prepare
             $package = Cast::to(Directory::class, $package);
 
             // Package?
-            $packageFile = Cast::to(File::class, yield new FileReference($package->getFilePath('composer.json')));
+            $packageFile = ($context->resolver)(new FileReference($package->getFilePath('composer.json')));
             $packageInfo = $packageFile->as(ComposerPackage::class)->json;
 
             // Readme
             $readme  = $package->getFilePath(Cast::toString($packageInfo->readme ?? 'README.md'));
-            $readme  = Cast::to(File::class, yield new FileReference($readme));
+            $readme  = ($context->resolver)(new FileReference($readme));
             $content = $readme->as(Document::class);
 
             // Add
@@ -96,7 +89,7 @@ readonly class Instruction implements InstructionContract {
             $title      = $title === '' ? Text::getPathTitle($package->getName()) : $title;
             $summary    = mb_trim((string) $content->mutate(new Summary())->mutate($move));
             $upgrade    = $package->getFilePath('UPGRADE.md');
-            $upgrade    = Cast::toNullable(File::class, yield new Optional(new FileReference($upgrade)));
+            $upgrade    = ($context->resolver)(new Optional(new FileReference($upgrade)));
             $packages[] = [
                 'path'    => $context->file->getRelativePath($readme),
                 'title'   => $title,
