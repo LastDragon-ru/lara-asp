@@ -47,11 +47,8 @@ trait WithProcessor {
         return $filesystem;
     }
 
-    protected function runProcessorTask(Task $task, FileSystem $fs, File $file): bool {
-        $resolver = $this->getDependencyResolver($fs, $file);
-        $result   = $task($resolver, $file);
-
-        return $result;
+    protected function runProcessorTask(Task $task, FileSystem $fs, File $file): void {
+        $task($this->getDependencyResolver($fs, $file), $file);
     }
 
     protected function getDependencyResolver(FileSystem $fs, File $file): DependencyResolver {

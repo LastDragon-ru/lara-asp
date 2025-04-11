@@ -339,8 +339,8 @@ class ListenerTest__TaskA implements Task {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): bool {
-        return true;
+    public function __invoke(DependencyResolver $resolver, File $file): void {
+        // empty
     }
 }
 
@@ -362,7 +362,7 @@ class ListenerTest__TaskB implements Task {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): bool {
-        return true;
+    public function __invoke(DependencyResolver $resolver, File $file): void {
+        // empty;
     }
 }

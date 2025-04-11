@@ -136,13 +136,9 @@ class Executor {
 
         try {
             try {
-                $result = $task($resolver, $file);
+                $task($resolver, $file);
 
                 $resolver->check();
-
-                if ($result !== true) {
-                    throw new TaskFailed($file, $task);
-                }
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {

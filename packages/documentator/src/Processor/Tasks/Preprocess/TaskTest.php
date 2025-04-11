@@ -196,9 +196,8 @@ final class TaskTest extends TestCase {
                 return $file;
             });
 
-        $result = $this->runProcessorTask($task, $filesystem, $file);
+        $this->runProcessorTask($task, $filesystem, $file);
 
-        self::assertTrue($result);
         self::assertSame(
             <<<'MARKDOWN'
             Bla bla bla [processable]: ./path/to/file should be ignored.
