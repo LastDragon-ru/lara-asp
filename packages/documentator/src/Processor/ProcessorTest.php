@@ -810,7 +810,7 @@ class ProcessorTest__Task implements Task {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): bool {
+    public function __invoke(DependencyResolver $resolver, File $file): void {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
 
@@ -827,7 +827,5 @@ class ProcessorTest__Task implements Task {
                 $resolved,
             ),
         ];
-
-        return true;
     }
 }

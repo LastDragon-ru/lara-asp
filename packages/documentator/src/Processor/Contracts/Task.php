@@ -16,5 +16,5 @@ interface Task {
     /**
      * Performs action on the `$file`.
      */
-    public function __invoke(DependencyResolver $resolver, File $file): bool;
+    public function __invoke(DependencyResolver $resolver, File $file): void;
 }

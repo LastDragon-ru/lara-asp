@@ -71,13 +71,13 @@ class Task implements TaskContract {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): bool {
+    public function __invoke(DependencyResolver $resolver, File $file): void {
         // Composer?
         $composer = $resolver(new Optional(new FileReference('composer.json')));
         $composer = $composer?->as(Package::class);
 
         if (!($composer instanceof Package)) {
-            return true;
+            return;
         }
 
         // Parse
@@ -143,9 +143,6 @@ class Task implements TaskContract {
         if ($changes !== []) {
             $resolver(new FileSave($file, $document->mutate(new Changeset($changes))));
         }
-
-        // Done
-        return true;
     }
 
     /**

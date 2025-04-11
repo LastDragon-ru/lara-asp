@@ -136,7 +136,7 @@ class Task implements TaskContract {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): bool {
+    public function __invoke(DependencyResolver $resolver, File $file): void {
         // Process
         $document = $file->as(Document::class);
         $parsed   = $this->parse($resolver, $file, $document);
@@ -202,9 +202,6 @@ class Task implements TaskContract {
         if ($mutated) {
             $resolver(new FileSave($file, $document));
         }
-
-        // Return
-        return true;
     }
 
     /**

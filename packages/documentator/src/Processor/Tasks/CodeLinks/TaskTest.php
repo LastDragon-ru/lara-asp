@@ -49,9 +49,8 @@ final class TaskTest extends TestCase {
             $expected = self::getTestData()->content($expected);
         }
 
-        $actual = $this->runProcessorTask($task, $fs, $file);
+        $this->runProcessorTask($task, $fs, $file);
 
-        self::assertTrue($actual);
         self::assertEquals($expected, $file->as(Content::class)->content);
     }
 
