@@ -160,12 +160,6 @@ class Task implements TaskContract {
                     // Run
                     $content = ($token->instruction)($token->context, $token->parameters);
 
-                    if ($content instanceof Generator) {
-                        yield from $content;
-
-                        $content = $content->getReturn();
-                    }
-
                     // Markdown?
                     if ($content instanceof Document) {
                         $content = (string) $content

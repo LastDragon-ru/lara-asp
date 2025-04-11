@@ -2,9 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts;
 
-use Generator;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 
 /**
@@ -28,14 +26,9 @@ interface Instruction {
      *
      * The `string` will be placed as is. The `{@see Document}` will be converted
      * to inlinable form to make sure that all related links are valid, and
-     * references/footnotes are not conflicting. And, finally, `Generator`
-     * should be used to resolve any file which the Instruction depends on.
+     * references/footnotes are not conflicting.
      *
      * @param TParameters $parameters
-     *
-     * @return Generator<mixed, Dependency<*>, mixed, Document|string>|Document|string
-     *      fixme(documentator): The correct type is `Generator<mixed, Dependency<V>, V, Document|string>|Document|string`
-     *           but it is not yet supported by phpstan (see https://github.com/phpstan/phpstan/issues/4245)
      */
-    public function __invoke(Context $context, Parameters $parameters): Generator|Document|string;
+    public function __invoke(Context $context, Parameters $parameters): Document|string;
 }
