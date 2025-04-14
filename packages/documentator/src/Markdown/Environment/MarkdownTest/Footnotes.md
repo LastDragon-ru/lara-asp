@@ -6,7 +6,7 @@ text text _[link](https://example.com/)_[^note] text.
 [^note]: Footnote text text text text text [link](https://example.com/)[^1] text
 text text text [link](https://example.com/) text text text.
 
-[^unused]: Text text text text text text text text text[^unused]
+[^unused]: Text text text text text text text text text
 
     Text text text text text text text text text text text text
     text text text text text text text text text text text text.
