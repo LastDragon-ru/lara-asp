@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <markdown>
     <node name="document">
-        <attributes>
-            <attribute name="xmlns">
-                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-            </attribute>
-        </attributes>
         <data>
             <item key="attributes">
                 <array length="0"/>
@@ -107,6 +102,11 @@
                 </array>
             </item>
         </data>
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
         <node name="table">
             <data>
                 <item key="attributes">
@@ -140,11 +140,6 @@
                 </item>
             </data>
             <node name="table_section">
-                <attributes>
-                    <attribute name="type">
-                        <string><![CDATA[head]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -176,6 +171,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="type">
+                        <string><![CDATA[head]]></string>
+                    </attribute>
+                </attributes>
                 <node name="table_row">
                     <data>
                         <item key="attributes">
@@ -209,11 +209,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[header]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -245,6 +240,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[header]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -255,11 +255,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[header]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -291,6 +286,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[header]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -300,14 +300,6 @@
                             <string><![CDATA[Header (]]></string>
                         </node>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com/]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -361,6 +353,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -382,11 +382,6 @@
                 </node>
             </node>
             <node name="table_section">
-                <attributes>
-                    <attribute name="type">
-                        <string><![CDATA[body]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -418,6 +413,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="type">
+                        <string><![CDATA[body]]></string>
+                    </attribute>
+                </attributes>
                 <node name="table_row">
                     <data>
                         <item key="attributes">
@@ -451,11 +451,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -487,6 +482,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -496,14 +496,6 @@
                             <string><![CDATA[Cell ]]></string>
                         </node>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -570,6 +562,14 @@
                                     </object>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -589,11 +589,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -625,6 +620,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -668,11 +668,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -704,6 +699,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -714,11 +714,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -750,6 +745,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -759,14 +759,6 @@
                             <string><![CDATA[Cell cell ]]></string>
                         </node>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com/]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -820,6 +812,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -838,14 +838,6 @@
                             <string><![CDATA[ cell ]]></string>
                         </node>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com/]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -899,6 +891,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -951,11 +951,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -987,6 +982,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -997,11 +997,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1033,6 +1028,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1084,14 +1084,6 @@
                             <string><![CDATA[ | ]]></string>
                         </node>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -1158,6 +1150,14 @@
                                     </object>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -1212,11 +1212,6 @@
                 </item>
             </data>
             <node name="table_section">
-                <attributes>
-                    <attribute name="type">
-                        <string><![CDATA[head]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -1248,6 +1243,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="type">
+                        <string><![CDATA[head]]></string>
+                    </attribute>
+                </attributes>
                 <node name="table_row">
                     <data>
                         <item key="attributes">
@@ -1281,11 +1281,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[header]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1317,6 +1312,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[header]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1327,11 +1327,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[header]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1363,6 +1358,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[header]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1375,11 +1375,6 @@
                 </node>
             </node>
             <node name="table_section">
-                <attributes>
-                    <attribute name="type">
-                        <string><![CDATA[body]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -1411,6 +1406,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="type">
+                        <string><![CDATA[body]]></string>
+                    </attribute>
+                </attributes>
                 <node name="table_row">
                     <data>
                         <item key="attributes">
@@ -1444,11 +1444,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1480,15 +1475,12 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="image">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com/]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -1542,6 +1534,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -1553,11 +1553,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1589,6 +1584,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1632,11 +1632,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1668,6 +1663,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1678,11 +1678,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1714,6 +1709,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1765,14 +1765,6 @@
                             <string><![CDATA[ | ]]></string>
                         </node>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -1839,6 +1831,14 @@
                                     </object>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -1885,11 +1885,6 @@
                 </item>
             </data>
             <node name="table_section">
-                <attributes>
-                    <attribute name="type">
-                        <string><![CDATA[head]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -1921,6 +1916,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="type">
+                        <string><![CDATA[head]]></string>
+                    </attribute>
+                </attributes>
                 <node name="table_row">
                     <data>
                         <item key="attributes">
@@ -1954,11 +1954,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[header]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1990,6 +1985,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[header]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -2000,11 +2000,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[header]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -2036,6 +2031,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[header]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="code">
                             <data>
                                 <item key="attributes">
@@ -2074,11 +2074,6 @@
                 </node>
             </node>
             <node name="table_section">
-                <attributes>
-                    <attribute name="type">
-                        <string><![CDATA[body]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -2110,6 +2105,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="type">
+                        <string><![CDATA[body]]></string>
+                    </attribute>
+                </attributes>
                 <node name="table_row">
                     <data>
                         <item key="attributes">
@@ -2143,11 +2143,6 @@
                         </item>
                     </data>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -2179,6 +2174,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="code">
                             <data>
                                 <item key="attributes">
@@ -2215,11 +2215,6 @@
                         </node>
                     </node>
                     <node name="table_cell">
-                        <attributes>
-                            <attribute name="type">
-                                <string><![CDATA[data]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -2251,6 +2246,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="type">
+                                <string><![CDATA[data]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -2362,11 +2362,6 @@
                     </item>
                 </data>
                 <node name="table_section">
-                    <attributes>
-                        <attribute name="type">
-                            <string><![CDATA[head]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -2398,6 +2393,11 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="type">
+                            <string><![CDATA[head]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="table_row">
                         <data>
                             <item key="attributes">
@@ -2431,11 +2431,6 @@
                             </item>
                         </data>
                         <node name="table_cell">
-                            <attributes>
-                                <attribute name="type">
-                                    <string><![CDATA[header]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -2467,6 +2462,11 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[header]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -2477,11 +2477,6 @@
                             </node>
                         </node>
                         <node name="table_cell">
-                            <attributes>
-                                <attribute name="type">
-                                    <string><![CDATA[header]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -2513,6 +2508,11 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[header]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -2525,11 +2525,6 @@
                     </node>
                 </node>
                 <node name="table_section">
-                    <attributes>
-                        <attribute name="type">
-                            <string><![CDATA[body]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -2561,6 +2556,11 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="type">
+                            <string><![CDATA[body]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="table_row">
                         <data>
                             <item key="attributes">
@@ -2594,11 +2594,6 @@
                             </item>
                         </data>
                         <node name="table_cell">
-                            <attributes>
-                                <attribute name="type">
-                                    <string><![CDATA[data]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -2630,6 +2625,11 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[data]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -2681,14 +2681,6 @@
                                 <string><![CDATA[ | ]]></string>
                             </node>
                             <node name="link">
-                                <attributes>
-                                    <attribute name="destination">
-                                        <string><![CDATA[https://example.com/]]></string>
-                                    </attribute>
-                                    <attribute name="title">
-                                        <string><![CDATA[|]]></string>
-                                    </attribute>
-                                </attributes>
                                 <data>
                                     <item key="attributes">
                                         <array length="0"/>
@@ -2742,6 +2734,14 @@
                                         </array>
                                     </item>
                                 </data>
+                                <attributes>
+                                    <attribute name="destination">
+                                        <string><![CDATA[https://example.com/]]></string>
+                                    </attribute>
+                                    <attribute name="title">
+                                        <string><![CDATA[|]]></string>
+                                    </attribute>
+                                </attributes>
                                 <node name="text">
                                     <data>
                                         <item key="attributes">
@@ -2753,11 +2753,6 @@
                             </node>
                         </node>
                         <node name="table_cell">
-                            <attributes>
-                                <attribute name="type">
-                                    <string><![CDATA[data]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -2789,6 +2784,11 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[data]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -2832,11 +2832,6 @@
                             </item>
                         </data>
                         <node name="table_cell">
-                            <attributes>
-                                <attribute name="type">
-                                    <string><![CDATA[data]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -2868,6 +2863,11 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[data]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -2919,14 +2919,6 @@
                                 <string><![CDATA[ | ]]></string>
                             </node>
                             <node name="link">
-                                <attributes>
-                                    <attribute name="destination">
-                                        <string><![CDATA[https://example.com]]></string>
-                                    </attribute>
-                                    <attribute name="title">
-                                        <string><![CDATA[]]></string>
-                                    </attribute>
-                                </attributes>
                                 <data>
                                     <item key="attributes">
                                         <array length="0"/>
@@ -2993,6 +2985,14 @@
                                         </object>
                                     </item>
                                 </data>
+                                <attributes>
+                                    <attribute name="destination">
+                                        <string><![CDATA[https://example.com]]></string>
+                                    </attribute>
+                                    <attribute name="title">
+                                        <string><![CDATA[]]></string>
+                                    </attribute>
+                                </attributes>
                                 <node name="text">
                                     <data>
                                         <item key="attributes">
@@ -3012,11 +3012,6 @@
                             </node>
                         </node>
                         <node name="table_cell">
-                            <attributes>
-                                <attribute name="type">
-                                    <string><![CDATA[data]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -3048,6 +3043,11 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="type">
+                                    <string><![CDATA[data]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="text">
                                 <data>
                                     <item key="attributes">
@@ -3061,7 +3061,7 @@
                 </node>
             </node>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+        <node name="lara-asp-documentator:reference">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -3093,6 +3093,17 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[link]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[]]></string>
+                </attribute>
+            </attributes>
         </node>
     </node>
 </markdown>

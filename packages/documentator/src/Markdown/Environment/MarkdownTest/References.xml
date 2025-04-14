@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <markdown>
     <node name="document">
-        <attributes>
-            <attribute name="xmlns">
-                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-            </attribute>
-        </attributes>
         <data>
             <item key="attributes">
                 <array length="0"/>
@@ -80,6 +75,11 @@
                 </array>
             </item>
         </data>
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
         <node name="paragraph">
             <data>
                 <item key="attributes">
@@ -121,14 +121,6 @@
                 <string><![CDATA[Text ]]></string>
             </node>
             <node name="link">
-                <attributes>
-                    <attribute name="destination">
-                        <string><![CDATA[https://example.com/]]></string>
-                    </attribute>
-                    <attribute name="title">
-                        <string><![CDATA[reference]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -195,6 +187,14 @@
                         </object>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="destination">
+                        <string><![CDATA[https://example.com/]]></string>
+                    </attribute>
+                    <attribute name="title">
+                        <string><![CDATA[reference]]></string>
+                    </attribute>
+                </attributes>
                 <node name="text">
                     <data>
                         <item key="attributes">
@@ -213,14 +213,6 @@
                 <string><![CDATA[ text text text text ]]></string>
             </node>
             <node name="image">
-                <attributes>
-                    <attribute name="destination">
-                        <string><![CDATA[https://example.com/]]></string>
-                    </attribute>
-                    <attribute name="title">
-                        <string><![CDATA[image]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -287,6 +279,14 @@
                         </object>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="destination">
+                        <string><![CDATA[https://example.com/]]></string>
+                    </attribute>
+                    <attribute name="title">
+                        <string><![CDATA[image]]></string>
+                    </attribute>
+                </attributes>
                 <node name="text">
                     <data>
                         <item key="attributes">
@@ -305,7 +305,7 @@
                 <string><![CDATA[ text text text.]]></string>
             </node>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+        <node name="lara-asp-documentator:reference">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -337,8 +337,19 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com/]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[link]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[reference]]></string>
+                </attribute>
+            </attributes>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+        <node name="lara-asp-documentator:reference">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -370,8 +381,19 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com/]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[image]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[image]]></string>
+                </attribute>
+            </attributes>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+        <node name="lara-asp-documentator:reference">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -403,6 +425,17 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com/]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[unused]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[unused]]></string>
+                </attribute>
+            </attributes>
         </node>
         <node name="block_quote">
             <data>
@@ -477,14 +510,6 @@
                     <string><![CDATA[Text ]]></string>
                 </node>
                 <node name="link">
-                    <attributes>
-                        <attribute name="destination">
-                            <string><![CDATA[https://example.com/]]></string>
-                        </attribute>
-                        <attribute name="title">
-                            <string><![CDATA[quote]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -551,6 +576,14 @@
                             </object>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="destination">
+                            <string><![CDATA[https://example.com/]]></string>
+                        </attribute>
+                        <attribute name="title">
+                            <string><![CDATA[quote]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="text">
                         <data>
                             <item key="attributes">
@@ -561,7 +594,7 @@
                     </node>
                 </node>
             </node>
-            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+            <node name="lara-asp-documentator:reference">
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -593,6 +626,17 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="destination">
+                        <string><![CDATA[https://example.com/]]></string>
+                    </attribute>
+                    <attribute name="label">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                    <attribute name="title">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                </attributes>
             </node>
         </node>
     </node>

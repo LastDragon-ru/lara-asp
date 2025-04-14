@@ -5,17 +5,17 @@
             <?xml version="1.0" encoding="UTF-8"?>
             <markdown>
                 <node name="document">
-                    <attributes>
-                        <attribute name="xmlns">
-                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
                         </item>
                     </data>
-                    <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
+                    <attributes>
+                        <attribute name="xmlns">
+                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                        </attribute>
+                    </attributes>
+                    <node name="lara-asp-documentator:generated">
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -91,6 +91,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="id">
+                                <string><![CDATA[code-links]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="paragraph">
                             <data>
                                 <item key="attributes">
@@ -140,17 +145,17 @@
             <?xml version="1.0" encoding="UTF-8"?>
             <markdown>
                 <node name="document">
-                    <attributes>
-                        <attribute name="xmlns">
-                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
                         </item>
                     </data>
-                    <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
+                    <attributes>
+                        <attribute name="xmlns">
+                            <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                        </attribute>
+                    </attributes>
+                    <node name="lara-asp-documentator:generated">
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -226,7 +231,12 @@
                                 </array>
                             </item>
                         </data>
-                        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+                        <attributes>
+                            <attribute name="id">
+                                <string><![CDATA[code-links]]></string>
+                            </attribute>
+                        </attributes>
+                        <node name="lara-asp-documentator:reference">
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -258,8 +268,19 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="label">
+                                    <string><![CDATA[class]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[App\ClassE]]></string>
+                                </attribute>
+                            </attributes>
                         </node>
-                        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node">
+                        <node name="lara-asp-documentator:reference">
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -291,6 +312,17 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="label">
+                                    <string><![CDATA[method]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[  App\ClassE::method()  ]]></string>
+                                </attribute>
+                            </attributes>
                         </node>
                     </node>
                 </node>
@@ -303,16 +335,16 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="code">
                             <data>
                                 <item key="attributes">
@@ -356,16 +388,16 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="code">
                             <data>
                                 <item key="attributes">
@@ -409,25 +441,17 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[https://example.com/]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -481,6 +505,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="code">
                                 <data>
                                     <item key="attributes">
@@ -525,25 +557,17 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[./class.php]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[App\ClassD]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -597,6 +621,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[App\ClassD]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="code">
                                 <data>
                                     <item key="attributes">
@@ -641,25 +673,17 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[./class.php]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[App\ClassE]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -726,6 +750,14 @@
                                     </object>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[App\ClassE]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="code">
                                 <data>
                                     <item key="attributes">
@@ -768,25 +800,17 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[./class.php]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[App\ClassE]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -853,6 +877,14 @@
                                     </object>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[App\ClassE]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="code">
                                 <data>
                                     <item key="attributes">
@@ -897,16 +929,16 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="code">
                             <data>
                                 <item key="attributes">
@@ -950,16 +982,16 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="code">
                             <data>
                                 <item key="attributes">
@@ -1003,25 +1035,17 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[./class.php]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[App\ClassD::Constant]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -1075,6 +1099,14 @@
                                     </array>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[App\ClassD::Constant]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="code">
                                 <data>
                                     <item key="attributes">
@@ -1119,25 +1151,17 @@
                 <?xml version="1.0" encoding="UTF-8"?>
                 <markdown>
                     <node name="document">
-                        <attributes>
-                            <attribute name="xmlns">
-                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="xmlns">
+                                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="link">
-                            <attributes>
-                                <attribute name="destination">
-                                    <string><![CDATA[./class.php]]></string>
-                                </attribute>
-                                <attribute name="title">
-                                    <string><![CDATA[  App\ClassE::method()  ]]></string>
-                                </attribute>
-                            </attributes>
                             <data>
                                 <item key="attributes">
                                     <array length="0"/>
@@ -1204,6 +1228,14 @@
                                     </object>
                                 </item>
                             </data>
+                            <attributes>
+                                <attribute name="destination">
+                                    <string><![CDATA[./class.php]]></string>
+                                </attribute>
+                                <attribute name="title">
+                                    <string><![CDATA[  App\ClassE::method()  ]]></string>
+                                </attribute>
+                            </attributes>
                             <node name="code">
                                 <data>
                                     <item key="attributes">

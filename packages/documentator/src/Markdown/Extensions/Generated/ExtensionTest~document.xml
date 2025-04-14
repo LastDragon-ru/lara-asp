@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <markdown>
     <node name="document">
-        <attributes>
-            <attribute name="xmlns">
-                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-            </attribute>
-        </attributes>
         <data>
             <item key="attributes">
                 <array length="0"/>
@@ -176,12 +171,12 @@
                 </array>
             </item>
         </data>
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
         <node name="heading">
-            <attributes>
-                <attribute name="level">
-                    <int>1</int>
-                </attribute>
-            </attributes>
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -235,6 +230,11 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="level">
+                    <int>1</int>
+                </attribute>
+            </attributes>
             <node name="text">
                 <data>
                     <item key="attributes">
@@ -356,7 +356,7 @@
                 <string><![CDATA[... nope ...]]></string>
             </node>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
+        <node name="lara-asp-documentator:generated">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -432,6 +432,11 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="id">
+                    <string><![CDATA[block]]></string>
+                </attribute>
+            </attributes>
             <node name="paragraph">
                 <data>
                     <item key="attributes">
@@ -577,7 +582,7 @@
                     </array>
                 </item>
             </data>
-            <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
+            <node name="lara-asp-documentator:generated">
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -653,6 +658,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="id">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                </attributes>
                 <node name="paragraph">
                     <data>
                         <item key="attributes">
@@ -696,7 +706,7 @@
                 </node>
             </node>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
+        <node name="lara-asp-documentator:generated">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -772,6 +782,11 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="id">
+                    <string><![CDATA[block]]></string>
+                </attribute>
+            </attributes>
             <node name="block_quote">
                 <data>
                     <item key="attributes">
@@ -888,7 +903,7 @@
                 </node>
             </node>
         </node>
-        <node class="LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Node">
+        <node name="lara-asp-documentator:generated">
             <data>
                 <item key="attributes">
                     <array length="0"/>
@@ -942,6 +957,11 @@
                     </array>
                 </item>
             </data>
+            <attributes>
+                <attribute name="id">
+                    <string><![CDATA[without end]]></string>
+                </attribute>
+            </attributes>
             <node name="paragraph">
                 <data>
                     <item key="attributes">

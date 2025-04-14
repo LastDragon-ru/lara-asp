@@ -87,12 +87,15 @@ class DocumentRenderer {
 
         if ($renderer !== null) {
             $this->xml->writeAttribute('name', $renderer->getXmlTagName($node));
-            $this->writeAttributes($renderer->getXmlAttributes($node));
         } else {
             $this->xml->writeAttribute('class', $node::class);
         }
 
         $this->writeData($node->data->export());
+
+        if ($renderer !== null) {
+            $this->writeAttributes($renderer->getXmlAttributes($node));
+        }
 
         foreach ($node->children() as $child) {
             $this->writeNode($child);

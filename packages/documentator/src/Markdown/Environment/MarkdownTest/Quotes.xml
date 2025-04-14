@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <markdown>
     <node name="document">
-        <attributes>
-            <attribute name="xmlns">
-                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-            </attribute>
-        </attributes>
         <data>
             <item key="#fn:quote">
                 <array length="1">
@@ -112,6 +107,11 @@
                 </array>
             </item>
         </data>
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
         <node name="block_quote">
             <data>
                 <item key="attributes">
@@ -185,14 +185,6 @@
                     <string><![CDATA[Quote quote ]]></string>
                 </node>
                 <node name="link">
-                    <attributes>
-                        <attribute name="destination">
-                            <string><![CDATA[https://example.com/]]></string>
-                        </attribute>
-                        <attribute name="title">
-                            <string><![CDATA[]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -246,6 +238,14 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="destination">
+                            <string><![CDATA[https://example.com/]]></string>
+                        </attribute>
+                        <attribute name="title">
+                            <string><![CDATA[]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="text">
                         <data>
                             <item key="attributes">
@@ -320,14 +320,6 @@
                     <string><![CDATA[quote quote ]]></string>
                 </node>
                 <node name="link">
-                    <attributes>
-                        <attribute name="destination">
-                            <string><![CDATA[https://example.com/]]></string>
-                        </attribute>
-                        <attribute name="title">
-                            <string><![CDATA[]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -381,6 +373,14 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="destination">
+                            <string><![CDATA[https://example.com/]]></string>
+                        </attribute>
+                        <attribute name="title">
+                            <string><![CDATA[]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="text">
                         <data>
                             <item key="attributes">
@@ -505,14 +505,6 @@
                         <string><![CDATA[Quote quote ]]></string>
                     </node>
                     <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -566,6 +558,14 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -651,14 +651,6 @@
                     </item>
                 </data>
                 <node name="image">
-                    <attributes>
-                        <attribute name="destination">
-                            <string><![CDATA[https://example.com/]]></string>
-                        </attribute>
-                        <attribute name="title">
-                            <string><![CDATA[]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -712,6 +704,14 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="destination">
+                            <string><![CDATA[https://example.com/]]></string>
+                        </attribute>
+                        <attribute name="title">
+                            <string><![CDATA[]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="text">
                         <data>
                             <item key="attributes">
@@ -796,11 +796,6 @@
                     <string><![CDATA[Text text]]></string>
                 </node>
                 <node name="footnote_ref">
-                    <attributes>
-                        <attribute name="reference">
-                            <string><![CDATA[quote]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -832,6 +827,11 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="reference">
+                            <string><![CDATA[quote]]></string>
+                        </attribute>
+                    </attributes>
                 </node>
             </node>
         </node>
@@ -1058,11 +1058,6 @@
                 </item>
             </data>
             <node name="footnote">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[quote]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -1094,6 +1089,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                </attributes>
                 <node name="paragraph">
                     <data>
                         <item key="attributes">
@@ -1135,14 +1135,6 @@
                         <string><![CDATA[Footnote text text text text text ]]></string>
                     </node>
                     <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1196,6 +1188,14 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1221,14 +1221,6 @@
                         <string><![CDATA[text text text text text ]]></string>
                     </node>
                     <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -1282,6 +1274,14 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -1300,16 +1300,16 @@
                         <string><![CDATA[.]]></string>
                     </node>
                     <node name="footnote_backref">
-                        <attributes>
-                            <attribute name="reference">
-                                <string><![CDATA[quote]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="reference">
+                                <string><![CDATA[quote]]></string>
+                            </attribute>
+                        </attributes>
                     </node>
                 </node>
             </node>
