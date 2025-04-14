@@ -53,12 +53,13 @@ final class MarkdownTest extends TestCase {
      */
     public static function dataProviderParse(): array {
         return [
-            'Basic'     => ['Basic.xml', 'Basic.md'],
-            'Quotes'    => ['Quotes.xml', 'Quotes.md'],
-            'Tables'    => ['Tables.xml', 'Tables.md'],
-            'Headings'  => ['Headings.xml', 'Headings.md'],
-            'Footnotes' => ['Footnotes.xml', 'Footnotes.md'],
-            'Html'      => ['Html.xml', 'Html.md'],
+            'Basic'      => ['Basic.xml', 'Basic.md'],
+            'Quotes'     => ['Quotes.xml', 'Quotes.md'],
+            'Tables'     => ['Tables.xml', 'Tables.md'],
+            'Headings'   => ['Headings.xml', 'Headings.md'],
+            'Footnotes'  => ['Footnotes.xml', 'Footnotes.md'],
+            'References' => ['References.xml', 'References.md'],
+            'Html'       => ['Html.xml', 'Html.md'],
         ];
     }
     //</editor-fold>
