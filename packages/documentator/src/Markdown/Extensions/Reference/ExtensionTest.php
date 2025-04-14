@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithMarkdown;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -16,6 +16,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ParserStart::class)]
 #[CoversClass(ParserContinue::class)]
 final class ExtensionTest extends TestCase {
+    use WithMarkdown;
+
     public function testParse(): void {
         $markdown = new class() extends Markdown {
             /**
@@ -29,7 +31,6 @@ final class ExtensionTest extends TestCase {
             }
         };
 
-        $renderer   = $this->app()->make(DocumentRenderer::class);
         $document   = $markdown->parse(self::getTestData()->content('~document.md'));
         $references = [];
 
@@ -53,9 +54,10 @@ final class ExtensionTest extends TestCase {
             ],
             $references,
         );
-        self::assertSame(
+
+        $this->assertMarkdownDocumentEquals(
             self::getTestData()->content('~document.xml'),
-            $renderer->render($document),
+            $document,
         );
     }
 }

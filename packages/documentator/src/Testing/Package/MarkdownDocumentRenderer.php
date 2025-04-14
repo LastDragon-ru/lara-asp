@@ -6,17 +6,13 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Data;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Node\StringContainerInterface;
 use League\CommonMark\Reference\ReferenceInterface;
 use League\CommonMark\Xml\XmlNodeRendererInterface;
-use Override;
-use Psr\EventDispatcher\ListenerProviderInterface;
 use XMLWriter;
 
 use function array_key_exists;
@@ -34,29 +30,27 @@ use function var_export;
 /**
  * @internal
  */
-class DocumentRenderer {
+class MarkdownDocumentRenderer {
     /**
      * @var array<class-string<Node>, ?XmlNodeRendererInterface>
      */
     private array $renderers = [];
+    private XMLWriter $xml;
+
     /**
      * @var Closure(string,string): int
      */
-    private Closure               $sort;
-    private ?EnvironmentInterface $env;
+    private readonly Closure               $sort;
+    private readonly EnvironmentInterface $env;
 
-    private XMLWriter $xml;
-
-    public function __construct(Sorter $sorter) {
+    public function __construct(EnvironmentInterface $environment, Sorter $sorter) {
         $this->sort = $sorter->forString(SortOrder::Asc);
+        $this->env  = $environment;
         $this->xml  = new XMLWriter();
-        $this->env  = null;
     }
 
     public function render(Document $document): string {
         try {
-            $this->env = $this->getEnvironment();
-
             $this->xml->openMemory();
             $this->xml->setIndent(true);
             $this->xml->setIndentString('    ');
@@ -77,7 +71,6 @@ class DocumentRenderer {
     private function reset(): void {
         $this->renderers = [];
         $this->xml       = new XMLWriter();
-        $this->env       = null;
     }
 
     private function writeNode(Node $node): void {
@@ -259,18 +252,6 @@ class DocumentRenderer {
         return $array;
     }
 
-    private function getEnvironment(): EnvironmentInterface {
-        $wrapper     = new class () extends Markdown {
-            #[Override]
-            public function environment(): EnvironmentInterface&EnvironmentBuilderInterface&ListenerProviderInterface {
-                return parent::environment();
-            }
-        };
-        $environment = $wrapper->environment();
-
-        return $environment;
-    }
-
     /**
      * @param class-string<Node> $class
      */
@@ -278,7 +259,7 @@ class DocumentRenderer {
         if (!array_key_exists($class, $this->renderers)) {
             $this->renderers[$class] = null;
 
-            foreach ($this->env?->getRenderersForClass($class) ?? [] as $renderer) {
+            foreach ($this->env->getRenderersForClass($class) as $renderer) {
                 if ($renderer instanceof XmlNodeRendererInterface) {
                     $this->renderers[$class] = $renderer;
                     break;

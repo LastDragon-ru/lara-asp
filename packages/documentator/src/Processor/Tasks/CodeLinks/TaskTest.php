@@ -6,17 +6,14 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\DocumentImpl;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown as MarkdownImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\DocumentRenderer;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithMarkdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
-use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,6 +29,7 @@ use function str_repeat;
 #[CoversClass(Task::class)]
 final class TaskTest extends TestCase {
     use WithProcessor;
+    use WithMarkdown;
 
     // <editor-fold desc="Tests">
     // =========================================================================
@@ -59,44 +57,14 @@ final class TaskTest extends TestCase {
 
     public function testParse(): void {
         $markdown = new MarkdownImpl();
-        $renderer = $this->app()->make(DocumentRenderer::class);
-        $render   = static function (Node $node) use ($renderer): string {
+        $renderer = $this->getMarkdownDocumentRenderer($markdown);
+        $render   = static function (Node $node) use ($markdown, $renderer): string {
+            $document = $markdown->parse('');
+
+            $document->node->appendChild($node);
+
             return mb_trim(
-                $renderer->render(
-                    new class($node) extends DocumentImpl implements DocumentContract {
-                        private DocumentNode $document;
-
-                        public function __construct(Node $node) {
-                            $this->document = new DocumentNode();
-                            $this->document->appendChild($node);
-                        }
-
-                        #[Override]
-                        public function mutate(iterable|Mutation ...$mutations): DocumentContract {
-                            return $this;
-                        }
-
-                        #[Override]
-                        protected function getPath(): ?FilePath {
-                            return null;
-                        }
-
-                        #[Override]
-                        protected function setPath(?FilePath $path): void {
-                            // empty
-                        }
-
-                        #[Override]
-                        protected function getNode(): DocumentNode {
-                            return $this->document;
-                        }
-
-                        #[Override]
-                        public function __toString(): string {
-                            return '';
-                        }
-                    },
-                ),
+                $renderer->render($document),
             );
         };
 

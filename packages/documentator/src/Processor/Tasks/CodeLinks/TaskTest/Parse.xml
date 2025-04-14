@@ -9,6 +9,16 @@
                         <item key="attributes">
                             <array length="0"/>
                         </item>
+                        <item key="lara-asp-documentator">
+                            <array length="2">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                    <object class="League\CommonMark\Input\MarkdownInput"/>
+                                </item>
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                    <array length="0"/>
+                                </item>
+                            </array>
+                        </item>
                     </data>
                     <attributes>
                         <attribute name="xmlns">
@@ -148,6 +158,16 @@
                     <data>
                         <item key="attributes">
                             <array length="0"/>
+                        </item>
+                        <item key="lara-asp-documentator">
+                            <array length="2">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                    <object class="League\CommonMark\Input\MarkdownInput"/>
+                                </item>
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                    <array length="0"/>
+                                </item>
+                            </array>
                         </item>
                     </data>
                     <attributes>
@@ -339,6 +359,16 @@
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
+                            </item>
                         </data>
                         <attributes>
                             <attribute name="xmlns">
@@ -392,6 +422,16 @@
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
+                            </item>
                         </data>
                         <attributes>
                             <attribute name="xmlns">
@@ -444,6 +484,16 @@
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
                             </item>
                         </data>
                         <attributes>
@@ -561,6 +611,16 @@
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
+                            </item>
                         </data>
                         <attributes>
                             <attribute name="xmlns">
@@ -676,6 +736,16 @@
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
                             </item>
                         </data>
                         <attributes>
@@ -803,6 +873,16 @@
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
                             </item>
                         </data>
                         <attributes>
@@ -933,6 +1013,16 @@
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
+                            </item>
                         </data>
                         <attributes>
                             <attribute name="xmlns">
@@ -986,6 +1076,16 @@
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
+                            </item>
                         </data>
                         <attributes>
                             <attribute name="xmlns">
@@ -1038,6 +1138,16 @@
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
                             </item>
                         </data>
                         <attributes>
@@ -1154,6 +1264,16 @@
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                                        <array length="0"/>
+                                    </item>
+                                </array>
                             </item>
                         </data>
                         <attributes>
