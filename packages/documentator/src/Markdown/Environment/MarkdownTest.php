@@ -10,6 +10,8 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithMarkdown;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function mb_trim;
+
 /**
  * @internal
  */
@@ -39,7 +41,7 @@ final class MarkdownTest extends TestCase {
     public function testRender(): void {
         $markdown = $this->app()->make(Markdown::class);
         $document = $markdown->parse(self::getTestData()->content('~document.md'));
-        $actual   = $markdown->render($document);
+        $actual   = mb_trim($markdown->render($document))."\n";
 
         self::assertSame(
             self::getTestData()->content('~document.html'),

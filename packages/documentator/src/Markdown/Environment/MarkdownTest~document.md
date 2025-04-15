@@ -68,8 +68,10 @@ text text text [link](https://example.com/) text text text.
 >
 > [^quote]: Footnote text text text text text [link](https://example.com/)
 >     text text text text text [link](https://example.com/).
+>
+> [^quote-unused]: Unused inside quote.
 
-[^unused]: Text text text text text text text text text[^unused]
+[^unused]: Text text text text text text text text text
 
     Text text text text text text text text text text text text
     text text text text text text text text text text text text.

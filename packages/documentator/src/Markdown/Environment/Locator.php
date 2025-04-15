@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\AstRestorer\Node as AstRestorerNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
@@ -93,7 +94,12 @@ class Locator {
     private function locateNode(Node $node): bool {
         $location = $this->getNodeLocation($node);
 
-        if ($location !== null || $node instanceof AbstractInline || $node instanceof FootnoteContainer) {
+        if (
+            $location !== null
+            || $node instanceof AbstractInline
+            || $node instanceof FootnoteContainer
+            || $node instanceof AstRestorerNode
+        ) {
             for ($child = $node->firstChild(); $child !== null; $child = $child->next()) {
                 $this->locateNode($child);
             }
