@@ -18,6 +18,10 @@ class Node extends AbstractBlock implements ReferenceInterface {
         return $this;
     }
 
+    public function getReference(): ?ReferenceInterface {
+        return $this->reference;
+    }
+
     #[Override]
     public function getLabel(): string {
         return $this->reference?->getLabel() ?? '';

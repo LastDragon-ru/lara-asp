@@ -22,7 +22,7 @@ final class MakeInlinableTest extends TestCase {
             [^1]: footnote 1
             [^2]: footnote 2
 
-            [^unused]: footnote unused
+            [^3]: Footnote unused
 
             # References must be prefixed
 
@@ -31,6 +31,8 @@ final class MakeInlinableTest extends TestCase {
 
             [link]: https://example.com
             [image]: https://example.com
+
+            [unused]: https://example.com (Reference unused)
             MARKDOWN;
 
         $markdown = $this->app()->make(Markdown::class);
