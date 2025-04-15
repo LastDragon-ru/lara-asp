@@ -6,6 +6,7 @@ use Generator;
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\Prefix as FootnotesPrefix;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Footnote\RemoveUnused as FootnotesRemoveUnused;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference\Prefix as ReferencesPrefix;
 use League\CommonMark\Node\Node;
 use Override;
@@ -29,6 +30,7 @@ readonly class MakeInlinable implements IteratorAggregate {
     #[Override]
     public function getIterator(): Generator {
         yield from [
+            new FootnotesRemoveUnused(),
             new FootnotesPrefix($this->prefix),
             new ReferencesPrefix($this->prefix),
         ];

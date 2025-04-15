@@ -22,6 +22,8 @@ final class MakeInlinableTest extends TestCase {
             [^1]: footnote 1
             [^2]: footnote 2
 
+            [^unused]: footnote unused
+
             # References must be prefixed
 
             Text text [link](https://example.com) text text [`link`][link] text
