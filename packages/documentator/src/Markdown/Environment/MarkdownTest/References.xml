@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<markdown>
+    <node name="document">
+        <data>
+            <item key="attributes">
+                <array length="0"/>
+            </item>
+            <item key="lara-asp-documentator">
+                <array length="3">
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
+                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                    </item>
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
+                        <array length="12">
+                            <item key="1">
+                                <string><![CDATA[Text [text][link] text text text text ![image][image] text text text.]]></string>
+                            </item>
+                            <item key="2">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="3">
+                                <string><![CDATA[[link]: https://example.com/ "reference"]]></string>
+                            </item>
+                            <item key="4">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="5">
+                                <string><![CDATA[[image]: https://example.com/ "image"]]></string>
+                            </item>
+                            <item key="6">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="7">
+                                <string><![CDATA[[unused]: https://example.com/ "unused"]]></string>
+                            </item>
+                            <item key="8">
+                                <string><![CDATA[]]></string>
+                            </item>
+                            <item key="9">
+                                <string><![CDATA[> Text [text][quote]]]></string>
+                            </item>
+                            <item key="10">
+                                <string><![CDATA[>]]></string>
+                            </item>
+                            <item key="11">
+                                <string><![CDATA[> [quote]: https://example.com/ "quote"]]></string>
+                            </item>
+                            <item key="12">
+                                <string><![CDATA[>]]></string>
+                            </item>
+                        </array>
+                    </item>
+                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                            <property name="endLine">
+                                <int>12</int>
+                            </property>
+                            <property name="internalPadding">
+                                <null/>
+                            </property>
+                            <property name="length">
+                                <null/>
+                            </property>
+                            <property name="offset">
+                                <int>0</int>
+                            </property>
+                            <property name="startLine">
+                                <int>1</int>
+                            </property>
+                            <property name="startLinePadding">
+                                <int>0</int>
+                            </property>
+                        </object>
+                    </item>
+                </array>
+            </item>
+        </data>
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
+        <node name="paragraph">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                <property name="endLine">
+                                    <int>1</int>
+                                </property>
+                                <property name="internalPadding">
+                                    <null/>
+                                </property>
+                                <property name="length">
+                                    <null/>
+                                </property>
+                                <property name="offset">
+                                    <int>0</int>
+                                </property>
+                                <property name="startLine">
+                                    <int>1</int>
+                                </property>
+                                <property name="startLinePadding">
+                                    <int>0</int>
+                                </property>
+                            </object>
+                        </item>
+                    </array>
+                </item>
+            </data>
+            <node name="text">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <string><![CDATA[Text ]]></string>
+            </node>
+            <node name="link">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="lara-asp-documentator">
+                        <array length="2">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <int>4</int>
+                                    </property>
+                                    <property name="offset">
+                                        <int>6</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>0</int>
+                                    </property>
+                                </object>
+                            </item>
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <int>12</int>
+                                    </property>
+                                    <property name="offset">
+                                        <int>5</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>0</int>
+                                    </property>
+                                </object>
+                            </item>
+                        </array>
+                    </item>
+                    <item key="reference">
+                        <object class="League\CommonMark\Reference\Reference">
+                            <property name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </property>
+                            <property name="label">
+                                <string><![CDATA[link]]></string>
+                            </property>
+                            <property name="title">
+                                <string><![CDATA[reference]]></string>
+                            </property>
+                        </object>
+                    </item>
+                </data>
+                <attributes>
+                    <attribute name="destination">
+                        <string><![CDATA[https://example.com/]]></string>
+                    </attribute>
+                    <attribute name="title">
+                        <string><![CDATA[reference]]></string>
+                    </attribute>
+                </attributes>
+                <node name="text">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                    </data>
+                    <string><![CDATA[text]]></string>
+                </node>
+            </node>
+            <node name="text">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <string><![CDATA[ text text text text ]]></string>
+            </node>
+            <node name="image">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="lara-asp-documentator">
+                        <array length="2">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <int>5</int>
+                                    </property>
+                                    <property name="offset">
+                                        <int>40</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>0</int>
+                                    </property>
+                                </object>
+                            </item>
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <int>15</int>
+                                    </property>
+                                    <property name="offset">
+                                        <int>38</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>1</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>0</int>
+                                    </property>
+                                </object>
+                            </item>
+                        </array>
+                    </item>
+                    <item key="reference">
+                        <object class="League\CommonMark\Reference\Reference">
+                            <property name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </property>
+                            <property name="label">
+                                <string><![CDATA[image]]></string>
+                            </property>
+                            <property name="title">
+                                <string><![CDATA[image]]></string>
+                            </property>
+                        </object>
+                    </item>
+                </data>
+                <attributes>
+                    <attribute name="destination">
+                        <string><![CDATA[https://example.com/]]></string>
+                    </attribute>
+                    <attribute name="title">
+                        <string><![CDATA[image]]></string>
+                    </attribute>
+                </attributes>
+                <node name="text">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                    </data>
+                    <string><![CDATA[image]]></string>
+                </node>
+            </node>
+            <node name="text">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                </data>
+                <string><![CDATA[ text text text.]]></string>
+            </node>
+        </node>
+        <node name="lara-asp-documentator:reference">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                <property name="endLine">
+                                    <int>4</int>
+                                </property>
+                                <property name="internalPadding">
+                                    <null/>
+                                </property>
+                                <property name="length">
+                                    <null/>
+                                </property>
+                                <property name="offset">
+                                    <int>0</int>
+                                </property>
+                                <property name="startLine">
+                                    <int>3</int>
+                                </property>
+                                <property name="startLinePadding">
+                                    <int>0</int>
+                                </property>
+                            </object>
+                        </item>
+                    </array>
+                </item>
+            </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com/]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[link]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[reference]]></string>
+                </attribute>
+            </attributes>
+        </node>
+        <node name="lara-asp-documentator:reference">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                <property name="endLine">
+                                    <int>6</int>
+                                </property>
+                                <property name="internalPadding">
+                                    <null/>
+                                </property>
+                                <property name="length">
+                                    <null/>
+                                </property>
+                                <property name="offset">
+                                    <int>0</int>
+                                </property>
+                                <property name="startLine">
+                                    <int>5</int>
+                                </property>
+                                <property name="startLinePadding">
+                                    <int>0</int>
+                                </property>
+                            </object>
+                        </item>
+                    </array>
+                </item>
+            </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com/]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[image]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[image]]></string>
+                </attribute>
+            </attributes>
+        </node>
+        <node name="lara-asp-documentator:reference">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                <property name="endLine">
+                                    <int>8</int>
+                                </property>
+                                <property name="internalPadding">
+                                    <null/>
+                                </property>
+                                <property name="length">
+                                    <null/>
+                                </property>
+                                <property name="offset">
+                                    <int>0</int>
+                                </property>
+                                <property name="startLine">
+                                    <int>7</int>
+                                </property>
+                                <property name="startLinePadding">
+                                    <int>0</int>
+                                </property>
+                            </object>
+                        </item>
+                    </array>
+                </item>
+            </data>
+            <attributes>
+                <attribute name="destination">
+                    <string><![CDATA[https://example.com/]]></string>
+                </attribute>
+                <attribute name="label">
+                    <string><![CDATA[unused]]></string>
+                </attribute>
+                <attribute name="title">
+                    <string><![CDATA[unused]]></string>
+                </attribute>
+            </attributes>
+        </node>
+        <node name="block_quote">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+                <item key="lara-asp-documentator">
+                    <array length="1">
+                        <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                            <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                <property name="endLine">
+                                    <int>12</int>
+                                </property>
+                                <property name="internalPadding">
+                                    <null/>
+                                </property>
+                                <property name="length">
+                                    <null/>
+                                </property>
+                                <property name="offset">
+                                    <int>0</int>
+                                </property>
+                                <property name="startLine">
+                                    <int>9</int>
+                                </property>
+                                <property name="startLinePadding">
+                                    <int>0</int>
+                                </property>
+                            </object>
+                        </item>
+                    </array>
+                </item>
+            </data>
+            <node name="paragraph">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="lara-asp-documentator">
+                        <array length="1">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>9</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <null/>
+                                    </property>
+                                    <property name="offset">
+                                        <int>2</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>9</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>0</int>
+                                    </property>
+                                </object>
+                            </item>
+                        </array>
+                    </item>
+                </data>
+                <node name="text">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                    </data>
+                    <string><![CDATA[Text ]]></string>
+                </node>
+                <node name="link">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                        <item key="lara-asp-documentator">
+                            <array length="2">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>9</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <int>4</int>
+                                        </property>
+                                        <property name="offset">
+                                            <int>8</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>9</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
+                                </item>
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>9</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <int>13</int>
+                                        </property>
+                                        <property name="offset">
+                                            <int>7</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>9</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
+                                </item>
+                            </array>
+                        </item>
+                        <item key="reference">
+                            <object class="League\CommonMark\Reference\Reference">
+                                <property name="destination">
+                                    <string><![CDATA[https://example.com/]]></string>
+                                </property>
+                                <property name="label">
+                                    <string><![CDATA[quote]]></string>
+                                </property>
+                                <property name="title">
+                                    <string><![CDATA[quote]]></string>
+                                </property>
+                            </object>
+                        </item>
+                    </data>
+                    <attributes>
+                        <attribute name="destination">
+                            <string><![CDATA[https://example.com/]]></string>
+                        </attribute>
+                        <attribute name="title">
+                            <string><![CDATA[quote]]></string>
+                        </attribute>
+                    </attributes>
+                    <node name="text">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
+                        <string><![CDATA[text]]></string>
+                    </node>
+                </node>
+            </node>
+            <node name="lara-asp-documentator:reference">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="lara-asp-documentator">
+                        <array length="1">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>12</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <null/>
+                                    </property>
+                                    <property name="offset">
+                                        <int>0</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>11</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>2</int>
+                                    </property>
+                                </object>
+                            </item>
+                        </array>
+                    </item>
+                </data>
+                <attributes>
+                    <attribute name="destination">
+                        <string><![CDATA[https://example.com/]]></string>
+                    </attribute>
+                    <attribute name="label">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                    <attribute name="title">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                </attributes>
+            </node>
+        </node>
+    </node>
+</markdown>

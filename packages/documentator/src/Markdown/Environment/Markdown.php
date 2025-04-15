@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\AstRestorer\Extension as AstRestorerExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Extension as GeneratedExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Extension as ReferenceExtension;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
@@ -50,6 +51,7 @@ class Markdown implements MarkdownContract {
             new GeneratedExtension(),
             new ReferenceExtension(),
             new FootnoteExtension(),
+            new AstRestorerExtension(),
         ];
     }
 

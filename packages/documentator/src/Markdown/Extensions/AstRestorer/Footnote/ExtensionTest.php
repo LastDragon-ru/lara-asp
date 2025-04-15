@@ -1,10 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated;
+namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\AstRestorer\Footnote;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\AstRestorer\Extension;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithMarkdown;
+use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -12,8 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * @internal
  */
 #[CoversClass(Extension::class)]
-#[CoversClass(ParserStart::class)]
-#[CoversClass(ParserContinue::class)]
+#[CoversClass(Listener::class)]
 final class ExtensionTest extends TestCase {
     use WithMarkdown;
 
@@ -25,6 +26,7 @@ final class ExtensionTest extends TestCase {
             #[Override]
             protected function extensions(): array {
                 return [
+                    new FootnoteExtension(),
                     new Extension(),
                 ];
             }

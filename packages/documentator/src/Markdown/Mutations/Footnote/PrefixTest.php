@@ -53,7 +53,7 @@ final class PrefixTest extends TestCase {
 
             [^prefix-2]: footnote 2
 
-            [^4]: footnote 4
+            [^prefix-4]: footnote 4
 
             [^prefix-bignote]: Text text text text text text text text text text text
                 text text text text text text text text text text text text text

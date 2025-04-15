@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <markdown>
     <node name="document">
-        <attributes>
-            <attribute name="xmlns">
-                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
-            </attribute>
-        </attributes>
         <data>
             <item key="#fn:1">
                 <array length="2">
@@ -65,23 +60,6 @@
                                 <string><![CDATA[quote]]></string>
                             </property>
                             <property name="title">
-                                <string><![CDATA[4]]></string>
-                            </property>
-                        </object>
-                    </item>
-                </array>
-            </item>
-            <item key="#fn:unused">
-                <array length="1">
-                    <item key="0">
-                        <object class="League\CommonMark\Reference\Reference">
-                            <property name="destination">
-                                <string><![CDATA[#fn:unused]]></string>
-                            </property>
-                            <property name="label">
-                                <string><![CDATA[unused]]></string>
-                            </property>
-                            <property name="title">
                                 <string><![CDATA[3]]></string>
                             </property>
                         </object>
@@ -123,7 +101,7 @@
                                 <string><![CDATA[]]></string>
                             </item>
                             <item key="9">
-                                <string><![CDATA[[^unused]: Text text text text text text text text text[^unused]]]></string>
+                                <string><![CDATA[[^unused]: Text text text text text text text text text]]></string>
                             </item>
                             <item key="10">
                                 <string><![CDATA[]]></string>
@@ -176,6 +154,11 @@
                 </array>
             </item>
         </data>
+        <attributes>
+            <attribute name="xmlns">
+                <string><![CDATA[http://commonmark.org/xml/1.0]]></string>
+            </attribute>
+        </attributes>
         <node name="paragraph">
             <data>
                 <item key="attributes">
@@ -217,11 +200,6 @@
                 <string><![CDATA[Text]]></string>
             </node>
             <node name="footnote_ref">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[1]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -253,6 +231,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[1]]></string>
+                    </attribute>
+                </attributes>
             </node>
             <node name="text">
                 <data>
@@ -300,14 +283,6 @@
                     </item>
                 </data>
                 <node name="link">
-                    <attributes>
-                        <attribute name="destination">
-                            <string><![CDATA[https://example.com/]]></string>
-                        </attribute>
-                        <attribute name="title">
-                            <string><![CDATA[]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -361,6 +336,14 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="destination">
+                            <string><![CDATA[https://example.com/]]></string>
+                        </attribute>
+                        <attribute name="title">
+                            <string><![CDATA[]]></string>
+                        </attribute>
+                    </attributes>
                     <node name="text">
                         <data>
                             <item key="attributes">
@@ -372,11 +355,6 @@
                 </node>
             </node>
             <node name="footnote_ref">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[note]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -408,6 +386,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[note]]></string>
+                    </attribute>
+                </attributes>
             </node>
             <node name="text">
                 <data>
@@ -491,11 +474,6 @@
                     <string><![CDATA[Text text]]></string>
                 </node>
                 <node name="footnote_ref">
-                    <attributes>
-                        <attribute name="reference">
-                            <string><![CDATA[quote]]></string>
-                        </attribute>
-                    </attributes>
                     <data>
                         <item key="attributes">
                             <array length="0"/>
@@ -527,6 +505,11 @@
                             </array>
                         </item>
                     </data>
+                    <attributes>
+                        <attribute name="reference">
+                            <string><![CDATA[quote]]></string>
+                        </attribute>
+                    </attributes>
                 </node>
             </node>
         </node>
@@ -537,11 +520,6 @@
                 </item>
             </data>
             <node name="footnote">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[1]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -573,6 +551,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[1]]></string>
+                    </attribute>
+                </attributes>
                 <node name="paragraph">
                     <data>
                         <item key="attributes">
@@ -614,37 +597,32 @@
                         <string><![CDATA[Footnote text text text text]]></string>
                     </node>
                     <node name="footnote_backref">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
                         <attributes>
                             <attribute name="reference">
                                 <string><![CDATA[1]]></string>
                             </attribute>
                         </attributes>
+                    </node>
+                    <node name="footnote_backref">
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
-                    </node>
-                    <node name="footnote_backref">
                         <attributes>
                             <attribute name="reference">
                                 <string><![CDATA[1__2]]></string>
                             </attribute>
                         </attributes>
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
                     </node>
                 </node>
             </node>
             <node name="footnote">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[note]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -676,6 +654,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[note]]></string>
+                    </attribute>
+                </attributes>
                 <node name="paragraph">
                     <data>
                         <item key="attributes">
@@ -717,14 +700,6 @@
                         <string><![CDATA[Footnote text text text text text ]]></string>
                     </node>
                     <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -778,6 +753,14 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -788,11 +771,6 @@
                         </node>
                     </node>
                     <node name="footnote_ref">
-                        <attributes>
-                            <attribute name="reference">
-                                <string><![CDATA[1__2]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -824,6 +802,11 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="reference">
+                                <string><![CDATA[1__2]]></string>
+                            </attribute>
+                        </attributes>
                     </node>
                     <node name="text">
                         <data>
@@ -849,14 +832,6 @@
                         <string><![CDATA[text text text ]]></string>
                     </node>
                     <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
@@ -910,6 +885,14 @@
                                 </array>
                             </item>
                         </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
                         <node name="text">
                             <data>
                                 <item key="attributes">
@@ -928,25 +911,283 @@
                         <string><![CDATA[ text text text.]]></string>
                     </node>
                     <node name="footnote_backref">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
                         <attributes>
                             <attribute name="reference">
                                 <string><![CDATA[note]]></string>
                             </attribute>
                         </attributes>
+                    </node>
+                </node>
+            </node>
+            <node name="footnote">
+                <data>
+                    <item key="attributes">
+                        <array length="0"/>
+                    </item>
+                    <item key="lara-asp-documentator">
+                        <array length="1">
+                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                    <property name="endLine">
+                                        <int>17</int>
+                                    </property>
+                                    <property name="internalPadding">
+                                        <null/>
+                                    </property>
+                                    <property name="length">
+                                        <null/>
+                                    </property>
+                                    <property name="offset">
+                                        <int>0</int>
+                                    </property>
+                                    <property name="startLine">
+                                        <int>16</int>
+                                    </property>
+                                    <property name="startLinePadding">
+                                        <int>2</int>
+                                    </property>
+                                </object>
+                            </item>
+                        </array>
+                    </item>
+                </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[quote]]></string>
+                    </attribute>
+                </attributes>
+                <node name="paragraph">
+                    <data>
+                        <item key="attributes">
+                            <array length="0"/>
+                        </item>
+                        <item key="lara-asp-documentator">
+                            <array length="1">
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>17</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <null/>
+                                        </property>
+                                        <property name="offset">
+                                            <int>0</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>16</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
+                                </item>
+                            </array>
+                        </item>
+                    </data>
+                    <node name="text">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
+                        <string><![CDATA[Footnote text text text text text ]]></string>
+                    </node>
+                    <node name="link">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>16</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>4</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>47</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>16</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>16</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>28</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>46</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>16</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[link]]></string>
+                        </node>
+                    </node>
+                    <node name="softbreak">
                         <data>
                             <item key="attributes">
                                 <array length="0"/>
                             </item>
                         </data>
                     </node>
+                    <node name="text">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
+                        <string><![CDATA[text text text text text ]]></string>
+                    </node>
+                    <node name="link">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                            <item key="lara-asp-documentator">
+                                <array length="2">
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>17</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>4</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>32</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>17</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>17</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <int>28</int>
+                                            </property>
+                                            <property name="offset">
+                                                <int>31</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>17</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
+                                    </item>
+                                </array>
+                            </item>
+                        </data>
+                        <attributes>
+                            <attribute name="destination">
+                                <string><![CDATA[https://example.com/]]></string>
+                            </attribute>
+                            <attribute name="title">
+                                <string><![CDATA[]]></string>
+                            </attribute>
+                        </attributes>
+                        <node name="text">
+                            <data>
+                                <item key="attributes">
+                                    <array length="0"/>
+                                </item>
+                            </data>
+                            <string><![CDATA[link]]></string>
+                        </node>
+                    </node>
+                    <node name="text">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
+                        <string><![CDATA[.]]></string>
+                    </node>
+                    <node name="footnote_backref">
+                        <data>
+                            <item key="attributes">
+                                <array length="0"/>
+                            </item>
+                        </data>
+                        <attributes>
+                            <attribute name="reference">
+                                <string><![CDATA[quote]]></string>
+                            </attribute>
+                        </attributes>
+                    </node>
                 </node>
             </node>
+        </node>
+        <node name="lara-asp-documentator:ast-restorer">
+            <data>
+                <item key="attributes">
+                    <array length="0"/>
+                </item>
+            </data>
             <node name="footnote">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[unused]]></string>
-                    </attribute>
-                </attributes>
                 <data>
                     <item key="attributes">
                         <array length="0"/>
@@ -978,6 +1219,11 @@
                         </array>
                     </item>
                 </data>
+                <attributes>
+                    <attribute name="reference">
+                        <string><![CDATA[unused]]></string>
+                    </attribute>
+                </attributes>
                 <node name="paragraph">
                     <data>
                         <item key="attributes">
@@ -1017,44 +1263,6 @@
                             </item>
                         </data>
                         <string><![CDATA[Text text text text text text text text text]]></string>
-                    </node>
-                    <node name="footnote_ref">
-                        <attributes>
-                            <attribute name="reference">
-                                <string><![CDATA[unused]]></string>
-                            </attribute>
-                        </attributes>
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                            <item key="lara-asp-documentator">
-                                <array length="1">
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>9</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <int>9</int>
-                                            </property>
-                                            <property name="offset">
-                                                <int>55</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>9</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                </array>
-                            </item>
-                        </data>
                     </node>
                 </node>
                 <node name="paragraph">
@@ -1111,274 +1319,6 @@
                             </item>
                         </data>
                         <string><![CDATA[text text text text text text text text text text text text.]]></string>
-                    </node>
-                    <node name="footnote_backref">
-                        <attributes>
-                            <attribute name="reference">
-                                <string><![CDATA[unused]]></string>
-                            </attribute>
-                        </attributes>
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
-                    </node>
-                </node>
-            </node>
-            <node name="footnote">
-                <attributes>
-                    <attribute name="reference">
-                        <string><![CDATA[quote]]></string>
-                    </attribute>
-                </attributes>
-                <data>
-                    <item key="attributes">
-                        <array length="0"/>
-                    </item>
-                    <item key="lara-asp-documentator">
-                        <array length="1">
-                            <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                    <property name="endLine">
-                                        <int>17</int>
-                                    </property>
-                                    <property name="internalPadding">
-                                        <null/>
-                                    </property>
-                                    <property name="length">
-                                        <null/>
-                                    </property>
-                                    <property name="offset">
-                                        <int>0</int>
-                                    </property>
-                                    <property name="startLine">
-                                        <int>16</int>
-                                    </property>
-                                    <property name="startLinePadding">
-                                        <int>2</int>
-                                    </property>
-                                </object>
-                            </item>
-                        </array>
-                    </item>
-                </data>
-                <node name="paragraph">
-                    <data>
-                        <item key="attributes">
-                            <array length="0"/>
-                        </item>
-                        <item key="lara-asp-documentator">
-                            <array length="1">
-                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                        <property name="endLine">
-                                            <int>17</int>
-                                        </property>
-                                        <property name="internalPadding">
-                                            <null/>
-                                        </property>
-                                        <property name="length">
-                                            <null/>
-                                        </property>
-                                        <property name="offset">
-                                            <int>0</int>
-                                        </property>
-                                        <property name="startLine">
-                                            <int>16</int>
-                                        </property>
-                                        <property name="startLinePadding">
-                                            <int>0</int>
-                                        </property>
-                                    </object>
-                                </item>
-                            </array>
-                        </item>
-                    </data>
-                    <node name="text">
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
-                        <string><![CDATA[Footnote text text text text text ]]></string>
-                    </node>
-                    <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                            <item key="lara-asp-documentator">
-                                <array length="2">
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>16</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <int>4</int>
-                                            </property>
-                                            <property name="offset">
-                                                <int>47</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>16</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>16</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <int>28</int>
-                                            </property>
-                                            <property name="offset">
-                                                <int>46</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>16</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                </array>
-                            </item>
-                        </data>
-                        <node name="text">
-                            <data>
-                                <item key="attributes">
-                                    <array length="0"/>
-                                </item>
-                            </data>
-                            <string><![CDATA[link]]></string>
-                        </node>
-                    </node>
-                    <node name="softbreak">
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
-                    </node>
-                    <node name="text">
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
-                        <string><![CDATA[text text text text text ]]></string>
-                    </node>
-                    <node name="link">
-                        <attributes>
-                            <attribute name="destination">
-                                <string><![CDATA[https://example.com/]]></string>
-                            </attribute>
-                            <attribute name="title">
-                                <string><![CDATA[]]></string>
-                            </attribute>
-                        </attributes>
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                            <item key="lara-asp-documentator">
-                                <array length="2">
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>17</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <int>4</int>
-                                            </property>
-                                            <property name="offset">
-                                                <int>32</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>17</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
-                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
-                                            <property name="endLine">
-                                                <int>17</int>
-                                            </property>
-                                            <property name="internalPadding">
-                                                <null/>
-                                            </property>
-                                            <property name="length">
-                                                <int>28</int>
-                                            </property>
-                                            <property name="offset">
-                                                <int>31</int>
-                                            </property>
-                                            <property name="startLine">
-                                                <int>17</int>
-                                            </property>
-                                            <property name="startLinePadding">
-                                                <int>0</int>
-                                            </property>
-                                        </object>
-                                    </item>
-                                </array>
-                            </item>
-                        </data>
-                        <node name="text">
-                            <data>
-                                <item key="attributes">
-                                    <array length="0"/>
-                                </item>
-                            </data>
-                            <string><![CDATA[link]]></string>
-                        </node>
-                    </node>
-                    <node name="text">
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
-                        <string><![CDATA[.]]></string>
-                    </node>
-                    <node name="footnote_backref">
-                        <attributes>
-                            <attribute name="reference">
-                                <string><![CDATA[quote]]></string>
-                            </attribute>
-                        </attributes>
-                        <data>
-                            <item key="attributes">
-                                <array length="0"/>
-                            </item>
-                        </data>
                     </node>
                 </node>
             </node>

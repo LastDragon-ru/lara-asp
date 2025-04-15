@@ -48,8 +48,6 @@ final class RemoveTest extends TestCase {
 
             Text text text.
 
-            [^4]: footnote 4
-
             MARKDOWN,
             $actual,
         );
