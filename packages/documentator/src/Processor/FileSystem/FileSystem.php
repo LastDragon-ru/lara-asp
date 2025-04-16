@@ -377,7 +377,12 @@ class FileSystem {
     }
 
     protected function change(File $path, string $content): void {
-        $this->changes[$this->level][(string) $path] = $content;
+        $path                               = (string) $path;
+        $this->changes[$this->level][$path] = $content;
+
+        for ($level = $this->level - 1; $level >= 0; $level--) {
+            unset($this->changes[$level][$path]);
+        }
     }
 
     protected function save(FilePath|string $path, string $content): void {
