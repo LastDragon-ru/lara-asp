@@ -237,6 +237,11 @@ class Executor {
             new DependencyResolved($this->fs->getPathname($path), $result),
         );
 
+        // Skipped?
+        if ($resolved instanceof File && $this->isSkipped($resolved)) {
+            return $resolved;
+        }
+
         // Process
         if (!$isBeforeHook && $resolved instanceof FileReal && $file !== $resolved) {
             $this->file($resolved);
