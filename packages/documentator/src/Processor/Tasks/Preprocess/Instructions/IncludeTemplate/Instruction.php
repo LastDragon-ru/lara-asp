@@ -62,7 +62,7 @@ readonly class Instruction implements InstructionContract {
         $known   = [];
         $count   = 0;
         $target  = $context->file->getFilePath($parameters->target);
-        $target  = ($context->resolver)(new FileReference($target));
+        $target  = $context->resolver->resolve(new FileReference($target));
         $content = $target->as(Content::class)->content;
 
         do {

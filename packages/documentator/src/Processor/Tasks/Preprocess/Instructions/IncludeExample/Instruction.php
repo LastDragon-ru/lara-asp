@@ -67,7 +67,7 @@ class Instruction implements InstructionContract {
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         // Content
         $target   = $context->file->getFilePath($parameters->target);
-        $target   = ($context->resolver)(new FileReference($target));
+        $target   = $context->resolver->resolve(new FileReference($target));
         $language = $this->getLanguage($context, $target, $parameters);
         $content  = mb_trim($target->as(Content::class)->content);
         $content  = <<<CODE

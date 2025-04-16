@@ -29,7 +29,7 @@ use function iterator_to_array;
  */
 #[CoversClass(Resolver::class)]
 final class ResolverTest extends TestCase {
-    public function testInvoke(): void {
+    public function testResolve(): void {
         $run        = static function (File $file, mixed $resolved): mixed {
             return $resolved;
         };
@@ -53,10 +53,10 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        self::assertSame($resolved, $resolver($dependency));
+        self::assertSame($resolved, $resolver->resolve($dependency));
     }
 
-    public function testInvokeException(): void {
+    public function testResolveException(): void {
         $run        = static function (File $file, mixed $resolved): mixed {
             return $resolved;
         };
@@ -82,10 +82,10 @@ final class ResolverTest extends TestCase {
 
         self::expectExceptionObject($exception);
 
-        $resolver($dependency);
+        $resolver->resolve($dependency);
     }
 
-    public function testInvokeTraversable(): void {
+    public function testResolveTraversable(): void {
         $run        = static function (File $file, mixed $resolved): mixed {
             return $resolved;
         };
@@ -114,7 +114,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        self::assertSame($resolved, $resolver($dependency));
+        self::assertSame($resolved, $resolver->resolve($dependency));
     }
 
     public function testIterate(): void {

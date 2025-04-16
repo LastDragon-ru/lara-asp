@@ -67,19 +67,19 @@ readonly class Instruction implements InstructionContract {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
         $directory   = $context->file->getDirectoryPath($parameters->target);
-        $directories = ($context->resolver)(new DirectoryIterator($directory, null, null, 0));
+        $directories = $context->resolver->resolve(new DirectoryIterator($directory, null, null, 0));
 
         foreach ($directories as $package) {
             // Prepare
             $package = Cast::to(Directory::class, $package);
 
             // Package?
-            $packageFile = ($context->resolver)(new FileReference($package->getFilePath('composer.json')));
+            $packageFile = $context->resolver->resolve(new FileReference($package->getFilePath('composer.json')));
             $packageInfo = $packageFile->as(ComposerPackage::class)->json;
 
             // Readme
             $readme  = $package->getFilePath(Cast::toString($packageInfo->readme ?? 'README.md'));
-            $readme  = ($context->resolver)(new FileReference($readme));
+            $readme  = $context->resolver->resolve(new FileReference($readme));
             $content = $readme->as(Document::class);
 
             // Add
@@ -89,7 +89,7 @@ readonly class Instruction implements InstructionContract {
             $title      = $title === '' ? Text::getPathTitle($package->getName()) : $title;
             $summary    = mb_trim((string) $content->mutate(new Summary())->mutate($move));
             $upgrade    = $package->getFilePath('UPGRADE.md');
-            $upgrade    = ($context->resolver)(new Optional(new FileReference($upgrade)));
+            $upgrade    = $context->resolver->resolve(new Optional(new FileReference($upgrade)));
             $packages[] = [
                 'path'    => $context->file->getRelativePath($readme),
                 'title'   => $title,

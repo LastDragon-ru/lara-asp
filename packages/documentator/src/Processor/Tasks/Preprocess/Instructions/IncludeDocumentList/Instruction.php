@@ -58,7 +58,7 @@ readonly class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target    = $context->file->getDirectoryPath($parameters->target);
-        $iterator  = ($context->resolver)(
+        $iterator  = $context->resolver->resolve(
             new FileIterator($target, $parameters->include, $parameters->exclude, $parameters->depth),
         );
         $documents = [];

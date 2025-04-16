@@ -15,5 +15,5 @@ interface DependencyResolver {
      *
      * @return V
      */
-    public function __invoke(Dependency $dependency): Traversable|Directory|File|null;
+    public function resolve(Dependency $dependency): Traversable|Directory|File|null;
 }

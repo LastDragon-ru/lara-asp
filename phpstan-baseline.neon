@@ -19,7 +19,7 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			message: '#^Method LastDragon_ru\\LaraASP\\Documentator\\Processor\\Resolver\:\:__invoke\(\) should return V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|null but returns Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|\(V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|null\)\.$#'
+			message: '#^Method LastDragon_ru\\LaraASP\\Documentator\\Processor\\Resolver\:\:resolve\(\) should return V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|null but returns Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|\(V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|null\)\.$#'
 			identifier: return.type
 			count: 1
 			path: packages/documentator/src/Processor/Resolver.php

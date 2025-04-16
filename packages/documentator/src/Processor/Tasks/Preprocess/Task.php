@@ -200,7 +200,7 @@ class Task implements TaskContract {
 
         // Mutate
         if ($mutated) {
-            $resolver(new FileSave($file, $document));
+            $resolver->resolve(new FileSave($file, $document));
         }
     }
 

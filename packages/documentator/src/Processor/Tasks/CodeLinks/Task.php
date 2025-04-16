@@ -73,7 +73,7 @@ class Task implements TaskContract {
     #[Override]
     public function __invoke(DependencyResolver $resolver, File $file): void {
         // Composer?
-        $composer = $resolver(new Optional(new FileReference('composer.json')));
+        $composer = $resolver->resolve(new Optional(new FileReference('composer.json')));
         $composer = $composer?->as(Package::class);
 
         if (!($composer instanceof Package)) {
@@ -100,7 +100,7 @@ class Task implements TaskContract {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $source = $resolver(new Optional(new FileReference($path)));
+                $source = $resolver->resolve(new Optional(new FileReference($path)));
 
                 if ($source !== null) {
                     break;
@@ -141,7 +141,7 @@ class Task implements TaskContract {
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            $resolver(new FileSave($file, $document->mutate(new Changeset($changes))));
+            $resolver->resolve(new FileSave($file, $document->mutate(new Changeset($changes))));
         }
     }
 

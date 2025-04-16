@@ -38,7 +38,7 @@ class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target  = $context->file->getFilePath($parameters->target);
-        $target  = ($context->resolver)(new FileReference($target));
+        $target  = $context->resolver->resolve(new FileReference($target));
         $content = $target->getExtension() !== 'md'
             ? $target->as(Content::class)->content
             : $target->as(Document::class);

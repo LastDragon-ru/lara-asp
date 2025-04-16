@@ -36,7 +36,7 @@ class Resolver implements DependencyResolver {
     }
 
     #[Override]
-    public function __invoke(Dependency $dependency): Traversable|Directory|File|null {
+    public function resolve(Dependency $dependency): Traversable|Directory|File|null {
         try {
             $resolved = $dependency($this->fs);
             $resolved = $this->notify($dependency, $resolved);
