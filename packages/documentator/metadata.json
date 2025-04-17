@@ -1,5 +1,5 @@
 {
-    "version": "9.1.0",
+    "version": "9.2.0",
     "require": [],
     "merge": null,
     "requirements": {
@@ -12,7 +12,7 @@
                 "^8.3"
             ]
         },
-        "9.1.0": {
+        "9.2.0": {
             "laravel/framework": [
                 "^12.0.1"
             ],
@@ -21,7 +21,7 @@
                 "^8.3"
             ]
         },
-        "9.0.1": {
+        "9.1.0": {
             "laravel/framework": [
                 "^12.0.1"
             ],
