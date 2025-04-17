@@ -154,19 +154,12 @@ class Executor {
     }
 
     /**
-     * @template V of Traversable<mixed, Directory|File>|Directory|File|null
-     *
-     * @param V $resolved
-     *
-     * @return V
+     * @param Traversable<mixed, Directory|File>|Directory|File|null $resolved
      */
-    private function dependency(
-        File $file,
-        Traversable|Directory|File|null $resolved,
-    ): Traversable|Directory|File|null {
+    private function dependency(File $file, Traversable|Directory|File|null $resolved): void {
         // Skipped?
         if ($resolved instanceof File && $this->isSkipped($resolved)) {
-            return $resolved;
+            return;
         }
 
         // The `:before` hook cannot use files that will be processed because
@@ -181,9 +174,6 @@ class Executor {
         if (!$isBeforeHook && $resolved instanceof FileReal && $file !== $resolved) {
             $this->file($resolved);
         }
-
-        // Return
-        return $resolved;
     }
 
     private function isSkipped(File $file): bool {

@@ -53,7 +53,9 @@ trait WithProcessor {
 
     protected function getDependencyResolver(FileSystem $fs, File $file): DependencyResolver {
         $dispatcher = new Dispatcher();
-        $resolver   = new Resolver($dispatcher, $fs, $file, static fn ($file, $value) => $value);
+        $resolver   = new Resolver($dispatcher, $fs, $file, static function (): void {
+            // empty
+        });
 
         return $resolver;
     }
