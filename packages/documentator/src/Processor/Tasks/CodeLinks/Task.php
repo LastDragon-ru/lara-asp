@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
-use Generator;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
@@ -13,7 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
@@ -72,20 +70,14 @@ class Task implements TaskContract {
         return ['md'];
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, bool>
-     */
     #[Override]
-    public function __invoke(File $file): Generator {
-        // Just in case
-        yield from [];
-
+    public function __invoke(DependencyResolver $resolver, File $file): void {
         // Composer?
-        $composer = Cast::toNullable(File::class, yield new Optional(new FileReference('composer.json')));
+        $composer = $resolver->resolve(new Optional(new FileReference('composer.json')));
         $composer = $composer?->as(Package::class);
 
         if (!($composer instanceof Package)) {
-            return true;
+            return;
         }
 
         // Parse
@@ -108,7 +100,7 @@ class Task implements TaskContract {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $source = Cast::toNullable(File::class, yield new Optional(new FileReference($path)));
+                $source = $resolver->resolve(new Optional(new FileReference($path)));
 
                 if ($source !== null) {
                     break;
@@ -149,11 +141,8 @@ class Task implements TaskContract {
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            yield new FileSave($file, $document->mutate(new Changeset($changes)));
+            $resolver->resolve(new FileSave($file, $document->mutate(new Changeset($changes))));
         }
-
-        // Done
-        return true;
     }
 
     /**

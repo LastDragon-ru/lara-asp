@@ -3,12 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Exception;
-use Generator;
 use Iterator;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
@@ -17,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
@@ -108,13 +103,16 @@ class Executor {
 
         // Process
         $tasks              = $this->tasks->get(...$this->extensions($file));
+        $resolver           = new Resolver($this->dispatcher, $this->fs, $file, $this->dependency(...));
         $this->stack[$path] = $file;
 
         try {
             $this->fs->begin();
 
             foreach ($tasks as $task) {
-                $this->task($file, $task);
+                $this->task($resolver, $file, $task);
+
+                $resolver->check();
             }
 
             $this->fs->commit();
@@ -133,32 +131,14 @@ class Executor {
         unset($this->stack[$path]);
     }
 
-    private function task(File $file, Task $task): void {
+    private function task(Resolver $resolver, File $file, Task $task): void {
         $this->dispatcher->notify(new TaskStarted($task::class));
 
         try {
             try {
-                // Run
-                $result    = false;
-                $generator = $task($file);
+                $task($resolver, $file);
 
-                // Dependencies?
-                if ($generator instanceof Generator) {
-                    while ($generator->valid()) {
-                        $dependency = $generator->current();
-                        $resolved   = $this->resolve($file, $dependency);
-
-                        $generator->send($resolved);
-                    }
-
-                    $result = $generator->getReturn();
-                } else {
-                    $result = $generator;
-                }
-
-                if ($result !== true) {
-                    throw new TaskFailed($file, $task);
-                }
+                $resolver->check();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -174,72 +154,27 @@ class Executor {
     }
 
     /**
-     * @param Dependency<*> $dependency
+     * @template V of Traversable<mixed, Directory|File>|Directory|File|null
      *
-     * @return Traversable<mixed, Directory|File>|Directory|File|null
+     * @param V $resolved
+     *
+     * @return V
      */
-    private function resolve(File $file, Dependency $dependency): Traversable|Directory|File|null {
-        try {
-            $resolved = $dependency($this->fs);
-            $resolved = $this->dependency($file, $dependency, $resolved);
-            $resolved = $resolved instanceof Traversable
-                ? new ExecutorTraversable($file, $dependency, $resolved, $this->dependency(...))
-                : $resolved;
-        } catch (DependencyUnresolvable $exception) {
-            $this->dispatcher->notify(
-                new DependencyResolved(
-                    $this->fs->getPathname($exception->getDependency()->getPath($this->fs)),
-                    DependencyResolvedResult::Missed,
-                ),
-            );
-
-            throw $exception;
-        } catch (Exception $exception) {
-            $this->dispatcher->notify(
-                new DependencyResolved(
-                    $this->fs->getPathname($dependency->getPath($this->fs)),
-                    DependencyResolvedResult::Failed,
-                ),
-            );
-
-            throw $exception;
+    private function dependency(
+        File $file,
+        Traversable|Directory|File|null $resolved,
+    ): Traversable|Directory|File|null {
+        // Skipped?
+        if ($resolved instanceof File && $this->isSkipped($resolved)) {
+            return $resolved;
         }
 
-        return $resolved;
-    }
-
-    /**
-     * @template T
-     *
-     * @param Dependency<*> $dependency
-     * @param T $resolved
-     *
-     * @return T
-     */
-    private function dependency(File $file, Dependency $dependency, mixed $resolved): mixed {
         // The `:before` hook cannot use files that will be processed because
         // the hook should be run before any of the tasks.
         $isBeforeHook = $file instanceof FileHook && $file->hook === Hook::Before;
 
-        if ($isBeforeHook && $resolved instanceof File && !$this->isSkipped($resolved)) {
-            throw new DependencyUnavailable($dependency);
-        }
-
-        // Event
-        $path   = $resolved instanceof File || $resolved instanceof Directory
-            ? $resolved
-            : $dependency->getPath($this->fs);
-        $result = $resolved !== null
-            ? DependencyResolvedResult::Success
-            : DependencyResolvedResult::Null;
-
-        $this->dispatcher->notify(
-            new DependencyResolved($this->fs->getPathname($path), $result),
-        );
-
-        // Skipped?
-        if ($resolved instanceof File && $this->isSkipped($resolved)) {
-            return $resolved;
+        if ($isBeforeHook && $resolved instanceof File) {
+            throw new DependencyUnavailable();
         }
 
         // Process

@@ -27,7 +27,7 @@ readonly class FileReference implements Dependency {
         try {
             return $fs->getFile($this->reference);
         } catch (FileNotFound $exception) {
-            throw new DependencyUnresolvable($this, $exception);
+            throw new DependencyUnresolvable($exception);
         }
     }
 

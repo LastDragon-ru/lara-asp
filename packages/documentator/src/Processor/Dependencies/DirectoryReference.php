@@ -27,7 +27,7 @@ readonly class DirectoryReference implements Dependency {
         try {
             return $fs->getDirectory($this->reference);
         } catch (DirectoryNotFound $exception) {
-            throw new DependencyUnresolvable($this, $exception);
+            throw new DependencyUnresolvable($exception);
         }
     }
 

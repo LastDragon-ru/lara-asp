@@ -19,6 +19,24 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
+			message: '#^Method LastDragon_ru\\LaraASP\\Documentator\\Processor\\Resolver\:\:resolve\(\) should return V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|null but returns Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|\(V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|null\)\.$#'
+			identifier: return.type
+			count: 1
+			path: packages/documentator/src/Processor/Resolver.php
+
+		-
+			message: '#^Method LastDragon_ru\\LaraASP\\Documentator\\Processor\\Resolver\:\:notify\(\) should return R of Exception\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|null but returns R\.$#'
+			identifier: return.type
+			count: 1
+			path: packages/documentator/src/Processor/Resolver.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to method LastDragon_ru\\LaraASP\\Documentator\\Processor\\Resolver\:\:iterate\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: packages/documentator/src/Processor/Resolver.php
+
+		-
 			message: '#^Parameter \#1 \$offset of method LastDragon_ru\\LaraASP\\Eloquent\\Iterators\\IteratorImpl\<TItem of Illuminate\\Database\\Eloquent\\Model\>\:\:setOffset\(\) expects int\|string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1

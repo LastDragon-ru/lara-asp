@@ -2,14 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocBlock;
 
-use Generator;
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Body;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -42,13 +38,10 @@ class Instruction implements InstructionContract {
         return Parameters::class;
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, Document|string>
-     */
     #[Override]
-    public function __invoke(Context $context, InstructionParameters $parameters): Generator {
+    public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target   = $context->file->getFilePath($parameters->target);
-        $target   = Cast::to(File::class, yield new FileReference($target));
+        $target   = $context->resolver->resolve(new FileReference($target));
         $document = $target->as(Document::class);
         $result   = match (true) {
             $parameters->summary && $parameters->description => $document,

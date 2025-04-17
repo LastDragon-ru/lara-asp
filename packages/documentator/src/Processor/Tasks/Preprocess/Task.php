@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use Exception;
-use Generator;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location;
@@ -16,7 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -136,17 +135,11 @@ class Task implements TaskContract {
         return ['md'];
     }
 
-    /**
-     * @return Generator<mixed, Dependency<*>, mixed, bool>
-     */
     #[Override]
-    public function __invoke(File $file): Generator {
-        // Just in case
-        yield from [];
-
+    public function __invoke(DependencyResolver $resolver, File $file): void {
         // Process
         $document = $file->as(Document::class);
-        $parsed   = $this->parse($file, $document);
+        $parsed   = $this->parse($resolver, $file, $document);
         $mutated  = false;
 
         foreach ($parsed as $group) {
@@ -158,12 +151,6 @@ class Task implements TaskContract {
                 try {
                     // Run
                     $content = ($token->instruction)($token->context, $token->parameters);
-
-                    if ($content instanceof Generator) {
-                        yield from $content;
-
-                        $content = $content->getReturn();
-                    }
 
                     // Markdown?
                     if ($content instanceof Document) {
@@ -213,17 +200,14 @@ class Task implements TaskContract {
 
         // Mutate
         if ($mutated) {
-            yield new FileSave($file, $document);
+            $resolver->resolve(new FileSave($file, $document));
         }
-
-        // Return
-        return true;
     }
 
     /**
      * @return array<int, array<string, Token<*>>>
      */
-    protected function parse(File $file, Document $document): array {
+    protected function parse(DependencyResolver $resolver, File $file, Document $document): array {
         // Empty?
         if ($this->instructions->isEmpty()) {
             return [];
@@ -260,7 +244,7 @@ class Task implements TaskContract {
             }
 
             // Parse
-            $context    = new Context($file, $document, $node);
+            $context    = new Context($resolver, $file, $document, $node);
             $parameters = $instruction::getParameters();
             $parameters = $this->serializer->deserialize($parameters, $params, 'json');
 

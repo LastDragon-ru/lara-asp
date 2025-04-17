@@ -50,7 +50,7 @@ readonly class FileIterator implements Dependency {
         try {
             yield from $fs->getFilesIterator($this->directory, $this->include, $this->exclude, $this->depth);
         } catch (DirectoryNotFound $exception) {
-            throw new DependencyUnresolvable($this, $exception);
+            throw new DependencyUnresolvable($exception);
         }
     }
 
