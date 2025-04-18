@@ -95,7 +95,13 @@ class Executor {
 
         // Process
         $tasks              = $this->tasks->get(...$this->extensions($file));
-        $resolver           = new Resolver($this->dispatcher, $this->fs, $file, $this->dependency(...));
+        $resolver           = new Resolver(
+            $this->dispatcher,
+            $this->iterator,
+            $this->fs,
+            $file,
+            $this->dependency(...),
+        );
         $this->stack[$path] = $file;
 
         try {

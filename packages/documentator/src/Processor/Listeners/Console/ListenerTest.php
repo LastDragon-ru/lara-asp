@@ -200,6 +200,7 @@ final class ListenerTest extends TestCase {
                             new FileStarted('↔ c.new'),
                             new FileFinished(FileFinishedResult::Failed),
                         ],
+                        new DependencyResolved('↔ c.next', DependencyResolvedResult::Queued),
                     ],
                     new TaskFinished(TaskFinishedResult::Success),
                     new TaskStarted(ListenerTest__TaskB::class),

@@ -341,6 +341,7 @@ class Listener {
             DependencyResolvedResult::Failed  => 'fg=red',
             DependencyResolvedResult::Missed  => 'fg=yellow',
             DependencyResolvedResult::Null    => 'fg=gray',
+            DependencyResolvedResult::Queued  => null,
             FileSystemModifiedType::Created   => 'fg=green',
             FileSystemModifiedType::Updated   => 'fg=yellow',
             Flag::Mixed                       => 'options=underscore',
@@ -363,6 +364,7 @@ class Listener {
             DependencyResolvedResult::Failed  => 'FAIL',
             DependencyResolvedResult::Missed  => 'MISS',
             DependencyResolvedResult::Null    => 'NULL',
+            DependencyResolvedResult::Queued  => 'NEXT',
             FileSystemModifiedType::Created   => 'C',
             FileSystemModifiedType::Updated   => 'U',
         };

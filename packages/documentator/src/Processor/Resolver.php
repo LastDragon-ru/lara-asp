@@ -14,6 +14,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Traversable;
 
+use function assert;
+
 /**
  * @internal
  */
@@ -22,6 +24,7 @@ class Resolver implements DependencyResolver {
 
     public function __construct(
         protected readonly Dispatcher $dispatcher,
+        protected readonly Iterator $iterator,
         protected readonly FileSystem $fs,
         protected readonly File $file,
         /**
@@ -53,6 +56,35 @@ class Resolver implements DependencyResolver {
         }
 
         return $resolved;
+    }
+
+    #[Override]
+    public function queue(Dependency $dependency): void {
+        try {
+            $resolved = $dependency($this->fs);
+
+            if ($resolved instanceof Traversable) {
+                $this->notify($dependency, Result::Success);
+
+                foreach ($resolved as $file) {
+                    assert($file instanceof File, 'https://github.com/phpstan/phpstan/issues/12894');
+
+                    $this->iterator->push($file->getPath());
+                    $this->notify($file, Result::Queued);
+                }
+            } elseif ($resolved instanceof File) {
+                $this->iterator->push($resolved->getPath());
+                $this->notify($resolved, Result::Queued);
+            } else {
+                $this->notify($dependency, Result::Null);
+            }
+        } catch (Exception $exception) {
+            $this->exception = $exception;
+
+            $this->notify($dependency, Result::Failed);
+
+            throw $exception;
+        }
     }
 
     public function check(): void {

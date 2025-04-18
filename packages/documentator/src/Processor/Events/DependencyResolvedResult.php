@@ -7,4 +7,5 @@ enum DependencyResolvedResult {
     case Missed;
     case Failed;
     case Null;
+    case Queued;
 }
