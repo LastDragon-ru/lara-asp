@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
+use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
@@ -19,6 +20,7 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 use function array_map;
@@ -32,6 +34,8 @@ use function iterator_to_array;
 final class FileSystemTest extends TestCase {
     use WithProcessor;
 
+    // <editor-fold desc="Tests">
+    // =========================================================================
     public function testGetFile(): void {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
@@ -215,7 +219,10 @@ final class FileSystemTest extends TestCase {
                 'b/b.html',
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, exclude: ['*.txt', '**/**/*.txt']), false)),
+            array_map(
+                $map,
+                iterator_to_array($filesystem->getFilesIterator($directory, exclude: ['*.txt', '**/**/*.txt']), false),
+            ),
         );
     }
 
@@ -671,46 +678,114 @@ final class FileSystemTest extends TestCase {
         self::assertSame($directory, $fs->getDirectory(__DIR__));
     }
 
-    public function testGetPathname(): void {
-        $aPath                 = (new DirectoryPath(self::getTestData()->path('a')))->getNormalizedPath();
-        $bPath                 = (new DirectoryPath(self::getTestData()->path('b')))->getNormalizedPath();
-        $fPath                 = (new FilePath(__FILE__))->getNormalizedPath();
-        $dPath                 = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $aFileSystem           = $this->getFileSystem($aPath, $bPath);
-        $aFileSystemAFile      = $aFileSystem->getFile($aPath->getFilePath('a.txt'));
-        $aFileSystemADirectory = $aFileSystem->getDirectory($aPath->getDirectoryPath('a'));
-        $aFileSystemBFile      = $aFileSystem->getFile($bPath->getFilePath('b.txt'));
-        $aFileSystemBDirectory = $aFileSystem->getDirectory($bPath->getDirectoryPath('b'));
-        $aFileSystemFFile      = $aFileSystem->getFile($fPath);
-        $aFileSystemDDirectory = $aFileSystem->getDirectory($dPath);
-        $aFileSystemAHook      = $aFileSystem->getFile(Hook::Before);
-        $bFileSystem           = $this->getFileSystem($aPath, $aPath);
-        $bFileSystemAFile      = $bFileSystem->getFile($aPath->getFilePath('a.txt'));
-        $bFileSystemADirectory = $bFileSystem->getDirectory($aPath->getDirectoryPath('a'));
+    /**
+     * @param Closure(static): FileSystem                                          $fsFactory
+     * @param Closure(static, FileSystem): (Directory|DirectoryPath|File|FilePath) $pathFactory
+     */
+    #[DataProvider('dataProviderGetPathname')]
+    public function testGetPathname(string $expected, Closure $fsFactory, Closure $pathFactory): void {
+        $fs     = $fsFactory($this);
+        $path   = $pathFactory($this, $fs);
+        $actual = $fs->getPathname($path);
 
-        self::assertSame('↔ /', $bFileSystem->getPathname($bFileSystem->input));
-        self::assertSame('↔ /', $bFileSystem->getPathname($bFileSystem->output));
-        self::assertSame('↔ a.txt', $bFileSystem->getPathname($bFileSystemAFile));
-        self::assertSame('↔ a.txt', $bFileSystem->getPathname($bFileSystemAFile->getPath()));
-        self::assertSame('→ /', $aFileSystem->getPathname($aFileSystem->input));
-        self::assertSame('← /', $aFileSystem->getPathname($aFileSystem->output));
-        self::assertSame('→ a.txt', $aFileSystem->getPathname($aFileSystemAFile));
-        self::assertSame('→ a.txt', $aFileSystem->getPathname($aFileSystemAFile->getPath()));
-        self::assertSame('← b.txt', $aFileSystem->getPathname($aFileSystemBFile));
-        self::assertSame('← b.txt', $aFileSystem->getPathname($aFileSystemBFile->getPath()));
-        self::assertSame("! {$fPath}", $aFileSystem->getPathname($aFileSystemFFile));
-        self::assertSame("! {$fPath}", $aFileSystem->getPathname($aFileSystemFFile->getPath()));
-
-        self::assertSame('↔ a/', $bFileSystem->getPathname($bFileSystemADirectory));
-        self::assertSame('↔ a/', $bFileSystem->getPathname($bFileSystemADirectory->getPath()));
-        self::assertSame('→ a/', $aFileSystem->getPathname($aFileSystemADirectory));
-        self::assertSame('→ a/', $aFileSystem->getPathname($aFileSystemADirectory->getPath()));
-        self::assertSame('← b/', $aFileSystem->getPathname($aFileSystemBDirectory));
-        self::assertSame('← b/', $aFileSystem->getPathname($aFileSystemBDirectory->getPath()));
-        self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory));
-        self::assertSame("! {$dPath}/", $aFileSystem->getPathname($aFileSystemDDirectory->getPath()));
-
-        self::assertSame('@ :before', $aFileSystem->getPathname($aFileSystemAHook));
-        self::assertSame('@ :before', $bFileSystem->getPathname($aFileSystemAHook));
+        self::assertSame($expected, $actual);
     }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{
+     *      string,
+     *      Closure(static): FileSystem,
+     *      Closure(static, FileSystem): (Directory|DirectoryPath|File|FilePath),
+     *      }>
+     */
+    public static function dataProviderGetPathname(): array {
+        $fs        = static function (string $input, ?string $output): Closure {
+            return static function (self $test) use ($input, $output): FileSystem {
+                $input      = (new DirectoryPath(self::getTestData()->path($input)))->getNormalizedPath();
+                $output     = $output !== null
+                    ? (new DirectoryPath(self::getTestData()->path($output)))->getNormalizedPath()
+                    : null;
+                $filesystem = $test->getFileSystem($input, $output);
+
+                return $filesystem;
+            };
+        };
+        $file      = static function (FilePath|Hook|string $path): Closure {
+            return static function (self $test, FileSystem $fs) use ($path): File {
+                return $fs->getFile($path);
+            };
+        };
+        $directory = static function (DirectoryPath|FilePath|string $path): Closure {
+            return static function (self $test, FileSystem $fs) use ($path): Directory {
+                return $fs->getDirectory($path);
+            };
+        };
+
+        return [
+            '(a, b): hook'                  => [
+                '@ :before',
+                $fs('a', 'b'),
+                $file(Hook::Before),
+            ],
+            '(a, null): hook'               => [
+                '@ :before',
+                $fs('a', 'null'),
+                $file(Hook::Before),
+            ],
+            '(a, b): in file'               => [
+                '→ a.txt',
+                $fs('a', 'b'),
+                $file('../a/a.txt'),
+            ],
+            '(a, b): out file'              => [
+                '← b.txt',
+                $fs('a', 'b'),
+                $file('../b/b.txt'),
+            ],
+            '(a, b): external file'         => [
+                '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
+                $fs('a', 'b'),
+                $file('../c.txt'),
+            ],
+            '(a, null): in file'            => [
+                '↔ a.txt',
+                $fs('a', null),
+                $file('../a/a.txt'),
+            ],
+            '(a, null): external file'      => [
+                '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
+                $fs('a', null),
+                $file('../c.txt'),
+            ],
+            '(a, b): in directory'          => [
+                '→ a/',
+                $fs('a', 'b'),
+                $directory('../a/a'),
+            ],
+            '(a, b): out directory'         => [
+                '← b/',
+                $fs('a', 'b'),
+                $directory('../b/b'),
+            ],
+            '(a, b): external directory'    => [
+                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath().'/',
+                $fs('a', 'b'),
+                $directory(__DIR__),
+            ],
+            '(a, null): in directory'       => [
+                '↔ a/',
+                $fs('a', null),
+                $directory('../a/a'),
+            ],
+            '(a, null): external directory' => [
+                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath().'/',
+                $fs('a', null),
+                $directory(__DIR__),
+            ],
+        ];
+    }
+    //</editor-fold>
 }

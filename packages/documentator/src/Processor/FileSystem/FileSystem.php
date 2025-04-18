@@ -85,7 +85,7 @@ class FileSystem {
         $name   = match (true) {
             $hook && $path instanceof FilePath
                 => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
-            $this->input->isEqual($this->output),
+            $this->input->isEqual($this->output) && $this->input->isInside($path),
                 => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
             $this->output->isInside($path),
             $this->output->isEqual($path),
