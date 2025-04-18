@@ -189,7 +189,7 @@ class Processor {
         ?int $depth,
     ): void {
         $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output, $this->consistent);
-        $iterator   = $filesystem->getFilesIterator($input, $include, $exclude, $depth);
+        $iterator   = new Iterator($filesystem, $filesystem->getFilesIterator($input, $include, $exclude, $depth));
         $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
 
         $executor->run();

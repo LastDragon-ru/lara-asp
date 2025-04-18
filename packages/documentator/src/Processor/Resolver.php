@@ -6,14 +6,15 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Traversable;
+
+use function assert;
 
 /**
  * @internal
@@ -21,15 +22,14 @@ use Traversable;
 class Resolver implements DependencyResolver {
     protected ?Exception $exception = null;
 
-    /**
-     * @template V of Traversable<mixed, Directory|File>|Directory|File|null
-     *
-     * @param Closure(File, V): V $run
-     */
     public function __construct(
         protected readonly Dispatcher $dispatcher,
+        protected readonly Iterator $iterator,
         protected readonly FileSystem $fs,
         protected readonly File $file,
+        /**
+         * @var Closure(File, Traversable<mixed, Directory|File>|Directory|File|null): void
+         */
         protected readonly Closure $run,
     ) {
         // empty
@@ -39,19 +39,52 @@ class Resolver implements DependencyResolver {
     public function resolve(Dependency $dependency): Traversable|Directory|File|null {
         try {
             $resolved = $dependency($this->fs);
-            $resolved = $this->notify($dependency, $resolved);
-            $resolved = ($this->run)($this->file, $resolved);
+
+            $this->notify($dependency, $this->result($resolved));
+
+            ($this->run)($this->file, $resolved);
 
             if ($resolved instanceof Traversable) {
                 $resolved = $this->iterate($dependency, $resolved);
             }
         } catch (Exception $exception) {
-            $this->exception = $this->notify($dependency, $exception);
+            $this->exception = $exception;
+
+            $this->notify($dependency, Result::Failed);
 
             throw $exception;
         }
 
         return $resolved;
+    }
+
+    #[Override]
+    public function queue(Dependency $dependency): void {
+        try {
+            $resolved = $dependency($this->fs);
+
+            if ($resolved instanceof Traversable) {
+                $this->notify($dependency, Result::Success);
+
+                foreach ($resolved as $file) {
+                    assert($file instanceof File, 'https://github.com/phpstan/phpstan/issues/12894');
+
+                    $this->iterator->push($file->getPath());
+                    $this->notify($file, Result::Queued);
+                }
+            } elseif ($resolved instanceof File) {
+                $this->iterator->push($resolved->getPath());
+                $this->notify($resolved, Result::Queued);
+            } else {
+                $this->notify($dependency, Result::Null);
+            }
+        } catch (Exception $exception) {
+            $this->exception = $exception;
+
+            $this->notify($dependency, Result::Failed);
+
+            throw $exception;
+        }
     }
 
     public function check(): void {
@@ -81,14 +114,18 @@ class Resolver implements DependencyResolver {
             $last = null;
 
             foreach ($resolved as $key => $value) {
-                $last  = $value;
-                $value = $this->notify($value, $value);
-                $value = ($this->run)($this->file, $value);
+                $last = $value;
+
+                $this->notify($value, Result::Success);
+
+                ($this->run)($this->file, $value);
 
                 yield $key => $value;
             }
         } catch (Exception $exception) {
-            $this->exception = $this->notify($last ?? $dependency, $exception);
+            $this->exception = $exception;
+
+            $this->notify($last ?? $dependency, Result::Failed);
 
             throw $exception;
         }
@@ -98,37 +135,29 @@ class Resolver implements DependencyResolver {
     }
 
     /**
-     * @template R of Traversable<mixed, Directory|File>|Directory|File|Exception|null
      * @template V of Traversable<mixed, Directory|File>|Directory|File|null
      * @template D of Dependency<V>
      *
      * @param D|Directory|File $dependency
-     * @param R                $resolved
-     *
-     * @return R
      */
-    protected function notify(
-        Dependency|Directory|File $dependency,
-        Traversable|Directory|File|Exception|null $resolved,
-    ): Traversable|Directory|File|Exception|null {
+    protected function notify(Dependency|Directory|File $dependency, Result $result): void {
         $path = match (true) {
             $dependency instanceof Dependency => $dependency->getPath($this->fs),
             default                           => $dependency,
         };
-        $result = match (true) {
-            $resolved instanceof DependencyUnresolvable => DependencyResolvedResult::Missed,
-            $resolved instanceof Exception              => DependencyResolvedResult::Failed,
-            $resolved !== null                          => DependencyResolvedResult::Success,
-            default                                     => DependencyResolvedResult::Null,
-        };
 
         $this->dispatcher->notify(
-            new DependencyResolved(
+            new Event(
                 $this->fs->getPathname($path),
                 $result,
             ),
         );
+    }
 
-        return $resolved;
+    /**
+     * @see https://github.com/phpstan/phpstan/issues/12894
+     */
+    private function result(mixed $value): Result {
+        return $value === null ? Result::Null : Result::Success;
     }
 }

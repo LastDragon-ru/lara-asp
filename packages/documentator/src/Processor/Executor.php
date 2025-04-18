@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Exception;
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
@@ -44,9 +43,6 @@ class Executor {
         private readonly Dispatcher $dispatcher,
         private readonly Tasks $tasks,
         private readonly FileSystem $fs,
-        /**
-         * @var Iterator<array-key, File>
-         */
         private readonly Iterator $iterator,
         private readonly Globs $exclude,
     ) {
@@ -56,11 +52,7 @@ class Executor {
     public function run(): void {
         $this->file($this->fs->getFile(Hook::Before));
 
-        while ($this->iterator->valid()) {
-            $file = $this->iterator->current();
-
-            $this->iterator->next();
-
+        foreach ($this->iterator as $file) {
             $this->file($file);
         }
 
@@ -103,7 +95,13 @@ class Executor {
 
         // Process
         $tasks              = $this->tasks->get(...$this->extensions($file));
-        $resolver           = new Resolver($this->dispatcher, $this->fs, $file, $this->dependency(...));
+        $resolver           = new Resolver(
+            $this->dispatcher,
+            $this->iterator,
+            $this->fs,
+            $file,
+            $this->dependency(...),
+        );
         $this->stack[$path] = $file;
 
         try {
@@ -154,19 +152,12 @@ class Executor {
     }
 
     /**
-     * @template V of Traversable<mixed, Directory|File>|Directory|File|null
-     *
-     * @param V $resolved
-     *
-     * @return V
+     * @param Traversable<mixed, Directory|File>|Directory|File|null $resolved
      */
-    private function dependency(
-        File $file,
-        Traversable|Directory|File|null $resolved,
-    ): Traversable|Directory|File|null {
+    private function dependency(File $file, Traversable|Directory|File|null $resolved): void {
         // Skipped?
         if ($resolved instanceof File && $this->isSkipped($resolved)) {
-            return $resolved;
+            return;
         }
 
         // The `:before` hook cannot use files that will be processed because
@@ -178,12 +169,9 @@ class Executor {
         }
 
         // Process
-        if (!$isBeforeHook && $resolved instanceof FileReal && $file !== $resolved) {
+        if (!$isBeforeHook && $resolved instanceof FileReal) {
             $this->file($resolved);
         }
-
-        // Return
-        return $resolved;
     }
 
     private function isSkipped(File $file): bool {

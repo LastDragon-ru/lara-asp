@@ -16,4 +16,12 @@ interface DependencyResolver {
      * @return V
      */
     public function resolve(Dependency $dependency): Traversable|Directory|File|null;
+
+    /**
+     * @template V of Traversable<mixed, File>|File|null
+     * @template D of Dependency<V>
+     *
+     * @param D $dependency
+     */
+    public function queue(Dependency $dependency): void;
 }

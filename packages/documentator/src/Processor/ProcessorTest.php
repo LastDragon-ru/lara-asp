@@ -31,12 +31,15 @@ use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
+use function basename;
 
 /**
  * @internal
  */
 #[CoversClass(Processor::class)]
 #[CoversClass(Executor::class)]
+#[CoversClass(Iterator::class)]
+#[CoversClass(Resolver::class)]
 final class ProcessorTest extends TestCase {
     public function testRun(): void {
         $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
@@ -79,6 +82,24 @@ final class ProcessorTest extends TestCase {
                 return [Hook::Before->value];
             }
         };
+        $taskD = new class() extends ProcessorTest__Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getExtensions(): array {
+                return ['htm'];
+            }
+
+            #[Override]
+            public function __invoke(DependencyResolver $resolver, File $file): void {
+                parent::__invoke($resolver, $file);
+
+                $resolver->queue(
+                    new FileReference('../'.basename(__FILE__)),
+                );
+            }
+        };
 
         (new Processor($this->app()->make(ContainerResolver::class)))
             ->consistent()
@@ -86,6 +107,7 @@ final class ProcessorTest extends TestCase {
             ->addTask($taskA)
             ->addTask($taskB)
             ->addTask($taskC)
+            ->addTask($taskD)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
                 static function (Event $event) use (&$events): void {
@@ -141,7 +163,12 @@ final class ProcessorTest extends TestCase {
                 new FileStarted('↔ c.htm'),
                 new TaskStarted($taskA::class),
                 new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
+                new DependencyResolved('↔ ../ProcessorTest.php', DependencyResolvedResult::Queued),
+                new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
+                new FileStarted('↔ ../ProcessorTest.php'),
+                new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
@@ -605,9 +632,9 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependencySelf(): void {
-        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
         $task  = new ProcessorTest__Task([
-            'c.txt' => ['c.txt'],
+            'aa.txt' => ['aa.txt'],
         ]);
 
         self::expectException(DependencyCircularDependency::class);
@@ -615,8 +642,8 @@ final class ProcessorTest extends TestCase {
             <<<MESSAGE
             Circular Dependency detected:
 
-            * {$input}/c.txt
-            ! {$input}/c.txt
+            * {$input}/aa.txt
+            ! {$input}/aa.txt
             MESSAGE,
         );
 
