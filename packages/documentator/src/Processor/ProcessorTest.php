@@ -605,9 +605,9 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependencySelf(): void {
-        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
         $task  = new ProcessorTest__Task([
-            'c.txt' => ['c.txt'],
+            'aa.txt' => ['aa.txt'],
         ]);
 
         self::expectException(DependencyCircularDependency::class);
@@ -615,8 +615,8 @@ final class ProcessorTest extends TestCase {
             <<<MESSAGE
             Circular Dependency detected:
 
-            * {$input}/c.txt
-            ! {$input}/c.txt
+            * {$input}/aa.txt
+            ! {$input}/aa.txt
             MESSAGE,
         );
 

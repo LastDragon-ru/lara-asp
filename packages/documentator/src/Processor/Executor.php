@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Exception;
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
@@ -44,9 +43,6 @@ class Executor {
         private readonly Dispatcher $dispatcher,
         private readonly Tasks $tasks,
         private readonly FileSystem $fs,
-        /**
-         * @var Iterator<array-key, File>
-         */
         private readonly Iterator $iterator,
         private readonly Globs $exclude,
     ) {
@@ -56,11 +52,7 @@ class Executor {
     public function run(): void {
         $this->file($this->fs->getFile(Hook::Before));
 
-        while ($this->iterator->valid()) {
-            $file = $this->iterator->current();
-
-            $this->iterator->next();
-
+        foreach ($this->iterator as $file) {
             $this->file($file);
         }
 
@@ -171,7 +163,7 @@ class Executor {
         }
 
         // Process
-        if (!$isBeforeHook && $resolved instanceof FileReal && $file !== $resolved) {
+        if (!$isBeforeHook && $resolved instanceof FileReal) {
             $this->file($resolved);
         }
     }
