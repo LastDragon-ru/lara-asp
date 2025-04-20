@@ -8,10 +8,10 @@
             <item key="lara-asp-documentator">
                 <array length="3">
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                        <array length="30">
+                        <array length="31">
                             <item key="1">
                                 <string><![CDATA[Text text _**[**_`link`_**](https://example.com/)**_ text [**_`link`](https://example.com/).]]></string>
                             </item>
@@ -102,12 +102,15 @@
                             <item key="30">
                                 <string><![CDATA[[link]: https://example.com]]></string>
                             </item>
+                            <item key="31">
+                                <string><![CDATA[]]></string>
+                            </item>
                         </array>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                             <property name="endLine">
-                                <int>30</int>
+                                <int>31</int>
                             </property>
                             <property name="internalPadding">
                                 <null/>
@@ -2815,7 +2818,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>30</int>
+                                    <int>31</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>

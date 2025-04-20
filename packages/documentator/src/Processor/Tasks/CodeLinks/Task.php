@@ -197,13 +197,8 @@ class Task implements TaskContract {
         if ($references !== []) {
             ksort($references);
 
-            $location = $refsParentLocation ?? new Append();
-            $content  = GeneratedNode::get(static::BlockMarker, implode("\n\n", $references))."\n";
-
-            if ($location instanceof Append) {
-                $content = "\n{$content}";
-            }
-
+            $location  = $refsParentLocation ?? new Append();
+            $content   = GeneratedNode::get(static::BlockMarker, implode("\n\n", $references))."\n";
             $changes[] = new Replace($location, $content);
         }
 

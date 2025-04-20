@@ -72,10 +72,10 @@
             <item key="lara-asp-documentator">
                 <array length="3">
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                        <array length="17">
+                        <array length="18">
                             <item key="1">
                                 <string><![CDATA[Text[^1] text[^2] text text text text text text text]]></string>
                             </item>
@@ -127,12 +127,15 @@
                             <item key="17">
                                 <string><![CDATA[>     text text text text text [link](https://example.com/).]]></string>
                             </item>
+                            <item key="18">
+                                <string><![CDATA[]]></string>
+                            </item>
                         </array>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                             <property name="endLine">
-                                <int>17</int>
+                                <int>18</int>
                             </property>
                             <property name="internalPadding">
                                 <null/>
