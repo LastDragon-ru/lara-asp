@@ -79,16 +79,15 @@ class Mutator {
                 $text = $text->mutate($changes);
             }
 
-            $text = mb_trim((string) $text);
+            $text = mb_trim((string) $text, "\n\r");
 
             if ($text !== '') {
                 $mutated[] = $text;
-                $mutated[] = '';
             }
         }
 
         // Parse
-        $mutated = implode("\n", $mutated);
+        $mutated = implode("\n\n", $mutated).($mutated !== [] ? "\n" : '');
         $mutated = $markdown->parse($mutated, $document->path);
 
         // Finalize
