@@ -646,12 +646,43 @@ final class ProcessorTest extends TestCase {
             'aa.txt' => ['aa.txt'],
         ]);
 
+        (new Processor($this->app()->make(ContainerResolver::class)))
+            ->addTask($task)
+            ->run($input);
+
+        self::assertEquals(
+            [
+                [
+                    (string) $input->getFilePath('aa.txt'),
+                    [
+                        'aa.txt' => (string) $input->getFilePath('aa.txt'),
+                    ],
+                ],
+                [
+                    (string) $input->getFilePath('excluded.txt'),
+                    [
+                        // empty
+                    ],
+                ],
+            ],
+            $task->processed,
+        );
+    }
+
+    public function testRunCircularDependencySelfThrough(): void {
+        $input = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
+        $task  = new ProcessorTest__Task([
+            'aa.txt'       => ['excluded.txt'],
+            'excluded.txt' => ['aa.txt'],
+        ]);
+
         self::expectException(DependencyCircularDependency::class);
         self::expectExceptionMessage(
             <<<MESSAGE
             Circular Dependency detected:
 
             * {$input}/aa.txt
+            * {$input}/excluded.txt
             ! {$input}/aa.txt
             MESSAGE,
         );
