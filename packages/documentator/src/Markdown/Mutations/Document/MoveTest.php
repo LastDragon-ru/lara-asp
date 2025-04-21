@@ -101,7 +101,9 @@ final class MoveTest extends TestCase {
                 123
                 "
 
-                [c]: ../from/file/c (
+                [c]:
+                    ../from/file/c
+                    (
                         title
                     )
 
@@ -122,7 +124,9 @@ final class MoveTest extends TestCase {
 
                 > [quote]: ../file/a
                 >
-                > [quote]: ../from/file/b (title)
+                > [quote]:
+                > ../from/file/b
+                > (title)
 
                 MARKDOWN,
                 '/path/from/file.md',

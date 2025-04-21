@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
@@ -79,6 +80,18 @@ final class UtilsTest extends TestCase {
 
         self::assertTrue($node instanceof Link || $node instanceof Image);
         self::assertEquals($expected, Utils::getLinkDestinationLocation($document, $node));
+    }
+
+    #[DataProvider('dataProviderGetReferenceDestinationLocation')]
+    public function testGetReferenceDestinationLocation(Location $expected, string $definition): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($definition);
+        $node     = (new Query())
+            ->where(Query::type(ReferenceNode::class))
+            ->findOne($document->node);
+
+        self::assertTrue($node instanceof ReferenceNode);
+        self::assertEquals($expected, Utils::getReferenceDestinationLocation($document, $node));
     }
     // </editor-fold>
 
@@ -200,6 +213,73 @@ final class UtilsTest extends TestCase {
             'image: without <> and with title escaping "'      => [
                 new Location(1, 1, 9, 20),
                 '![image](https://example.com/ "title with ( ) and with \' \' and with \" \"")',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{Location, string}>
+     */
+    public static function dataProviderGetReferenceDestinationLocation(): array {
+        return [
+            'one line, no <>, no title'                  => [
+                new Location(1, 1, 8, 20),
+                '[link]: https://example.com/',
+            ],
+            'one line, no <>, with title'                => [
+                new Location(1, 1, 8, 20),
+                '[link]: https://example.com/ "title"',
+            ],
+            'one line, with <>, no title'                => [
+                new Location(1, 1, 8, 22),
+                '[link]: <https://example.com/>',
+            ],
+            'one line, with <>, with title'              => [
+                new Location(1, 1, 8, 22),
+                '[link]: <https://example.com/> "title"',
+            ],
+            'multiline, no padding, no <>, no title'     => [
+                new Location(2, 2, 0, 20),
+                <<<'MARKDOWN'
+                [link]:
+                https://example.com/
+                MARKDOWN,
+            ],
+            'multiline, padding, no <>, no title'        => [
+                new Location(2, 2, 4, 20),
+                <<<'MARKDOWN'
+                [link]:
+                    https://example.com/
+                MARKDOWN,
+            ],
+            'multiline, no padding, no <>, with title'   => [
+                new Location(2, 2, 0, 20),
+                <<<'MARKDOWN'
+                [link]:
+                https://example.com/ "title"
+                MARKDOWN,
+            ],
+            'multiline, padding, no <>, with title'      => [
+                new Location(2, 2, 4, 20),
+                <<<'MARKDOWN'
+                [link]:
+                    https://example.com/ "title"
+                MARKDOWN,
+            ],
+            'multiline, no padding, with <>, with title' => [
+                new Location(2, 2, 0, 22),
+                <<<'MARKDOWN'
+                [link]:
+                <https://example.com/> 'title (with parens)'
+                MARKDOWN,
+            ],
+            'multiline, padding, with <>, with title'    => [
+                new Location(2, 2, 4, 22),
+                <<<'MARKDOWN'
+                [link]:
+                    <https://example.com/>
+                'title (with parens)'
+                MARKDOWN,
             ],
         ];
     }

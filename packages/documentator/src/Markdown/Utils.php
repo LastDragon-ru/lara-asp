@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
@@ -20,9 +21,13 @@ use League\CommonMark\Parser\Cursor;
 use League\CommonMark\Util\LinkParserHelper;
 use League\CommonMark\Util\UrlEncoder;
 
+use function count;
+use function end;
 use function filter_var;
 use function mb_ltrim;
 use function mb_strlen;
+use function mb_strpos;
+use function mb_substr;
 use function mb_trim;
 use function parse_url;
 use function preg_match;
@@ -113,6 +118,47 @@ class Utils {
 
         return $location
             ->withLength($cursor->getPosition() + $length);
+    }
+
+    public static function getReferenceDestinationLocation(Document $document, ReferenceNode $node): Location {
+        $location    = LocationData::get($node);
+        $origin      = (string) $document->mutate(new Text($location));
+        $search      = ']:';
+        $offset      = (int) mb_strpos($origin, $search, mb_strlen($node->getLabel()) + 1) + mb_strlen($search);
+        $origin      = mb_substr($origin, $offset);
+        $trimmed     = mb_ltrim($origin);
+        $trimLength  = mb_strlen($origin) - mb_strlen($trimmed);
+        $beforeLines = TextUtils::getLines(mb_substr($origin, 0, $trimLength));
+        $beforeCount = count($beforeLines) - 1;
+        $cursor      = new Cursor($trimmed);
+
+        LinkParserHelper::parseLinkDestination($cursor);
+
+        $pos   = $cursor->getPosition();
+        $dest  = mb_substr($origin, $trimLength, $pos);
+        $lines = TextUtils::getLines($dest);
+        $count = count($lines) - 1;
+
+        if ($beforeCount > 0) {
+            $beforeLine = (string) end($beforeLines);
+            $location   = $location
+                ->withStartLine($location->startLine + $beforeCount)
+                ->withOffset(
+                    mb_strlen($beforeLine) - mb_strlen(mb_ltrim($beforeLine)),
+                );
+        } else {
+            $location = $location->withOffset($offset + $trimLength);
+        }
+
+        if ($count > 0) {
+            $location = $location
+                ->withEndLine($location->startLine + $count);
+        } else {
+            $location = $location->withEndLine($location->startLine);
+        }
+
+        return $location
+            ->withLength(mb_strlen((string) end($lines)));
     }
 
     public static function escapeTextInTableCell(Node $container, string $text): string {
