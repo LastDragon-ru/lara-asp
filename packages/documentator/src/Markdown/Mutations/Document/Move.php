@@ -75,24 +75,21 @@ readonly class Move implements Mutation {
             // Path already equal to new path -> skip
         } elseif (!$this->isPathRelative($node)) {
             // Path is not relative -> skip
-        } elseif ($node instanceof AbstractWebResource && ReferenceData::get($node) === null) {
-            $location   = Utils::getLinkDestinationLocation($document, $node);
-            $origin     = (string) $document->mutate(new Text($location));
-            $target     = $document->path->getPath($this->path);
-            $value      = $this->target($document, $document->path, $target, $node->getUrl());
-            $wrap       = mb_substr(mb_ltrim($origin), 0, 1) === '<';
-            $text       = Utils::getLinkTarget($node, $value, $wrap !== false ? true : null);
-            $mutagens[] = new Replace($location, $text);
-        } elseif ($node instanceof ReferenceNode) {
-            $location   = Utils::getReferenceDestinationLocation($document, $node);
-            $origin     = (string) $document->mutate(new Text($location));
-            $target     = $document->path->getPath($this->path);
-            $value      = $this->target($document, $document->path, $target, $node->getDestination());
-            $wrap       = mb_substr(mb_ltrim($origin), 0, 1) === '<';
-            $text       = Utils::getLinkTarget($node, $value, $wrap !== false ? true : null);
-            $mutagens[] = new Replace($location, $text);
+        } elseif ($node instanceof AbstractWebResource && ReferenceData::get($node) !== null) {
+            // Nothing to do
         } else {
-            // empty
+            $destination = $node instanceof ReferenceNode
+                ? $node->getDestination()
+                : $node->getUrl();
+            $location    = $node instanceof ReferenceNode
+                ? Utils::getReferenceDestinationLocation($document, $node)
+                : Utils::getLinkDestinationLocation($document, $node);
+            $origin      = (string) $document->mutate(new Text($location));
+            $target      = $document->path->getPath($this->path);
+            $value       = $this->target($document, $document->path, $target, $destination);
+            $wrap        = mb_substr(mb_ltrim($origin), 0, 1) === '<';
+            $text        = Utils::getLinkTarget($node, $value, $wrap !== false ? true : null);
+            $mutagens[]  = new Replace($location, $text);
         }
 
         return $mutagens;
