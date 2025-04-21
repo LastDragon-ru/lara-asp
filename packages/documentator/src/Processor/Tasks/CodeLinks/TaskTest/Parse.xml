@@ -10,12 +10,38 @@
                             <array length="0"/>
                         </item>
                         <item key="lara-asp-documentator">
-                            <array length="2">
+                            <array length="3">
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                    <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                 </item>
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                    <array length="0"/>
+                                    <array length="1">
+                                        <item key="1">
+                                            <string><![CDATA[]]></string>
+                                        </item>
+                                    </array>
+                                </item>
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>1</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <null/>
+                                        </property>
+                                        <property name="offset">
+                                            <int>0</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>1</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
                                 </item>
                             </array>
                         </item>
@@ -160,12 +186,38 @@
                             <array length="0"/>
                         </item>
                         <item key="lara-asp-documentator">
-                            <array length="2">
+                            <array length="3">
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                    <object class="League\CommonMark\Input\MarkdownInput"/>
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                 </item>
                                 <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                    <array length="0"/>
+                                    <array length="1">
+                                        <item key="1">
+                                            <string><![CDATA[]]></string>
+                                        </item>
+                                    </array>
+                                </item>
+                                <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                    <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                        <property name="endLine">
+                                            <int>1</int>
+                                        </property>
+                                        <property name="internalPadding">
+                                            <null/>
+                                        </property>
+                                        <property name="length">
+                                            <null/>
+                                        </property>
+                                        <property name="offset">
+                                            <int>0</int>
+                                        </property>
+                                        <property name="startLine">
+                                            <int>1</int>
+                                        </property>
+                                        <property name="startLinePadding">
+                                            <int>0</int>
+                                        </property>
+                                    </object>
                                 </item>
                             </array>
                         </item>
@@ -360,12 +412,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -423,12 +501,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -486,12 +590,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -612,12 +742,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -738,12 +894,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -875,12 +1057,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -1014,12 +1222,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -1077,12 +1311,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -1140,12 +1400,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>
@@ -1266,12 +1552,38 @@
                                 <array length="0"/>
                             </item>
                             <item key="lara-asp-documentator">
-                                <array length="2">
+                                <array length="3">
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                                     </item>
                                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                                        <array length="0"/>
+                                        <array length="1">
+                                            <item key="1">
+                                                <string><![CDATA[]]></string>
+                                            </item>
+                                        </array>
+                                    </item>
+                                    <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
+                                        <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
+                                            <property name="endLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="internalPadding">
+                                                <null/>
+                                            </property>
+                                            <property name="length">
+                                                <null/>
+                                            </property>
+                                            <property name="offset">
+                                                <int>0</int>
+                                            </property>
+                                            <property name="startLine">
+                                                <int>1</int>
+                                            </property>
+                                            <property name="startLinePadding">
+                                                <int>0</int>
+                                            </property>
+                                        </object>
                                     </item>
                                 </array>
                             </item>

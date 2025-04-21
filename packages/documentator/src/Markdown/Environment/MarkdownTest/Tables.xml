@@ -8,10 +8,10 @@
             <item key="lara-asp-documentator">
                 <array length="3">
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Input">
-                        <object class="League\CommonMark\Input\MarkdownInput"/>
+                        <object class="LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Input"/>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines">
-                        <array length="21">
+                        <array length="22">
                             <item key="1">
                                 <string><![CDATA[| Header                  | Header ([link](https://example.com/))                                     |]]></string>
                             </item>
@@ -75,12 +75,15 @@
                             <item key="21">
                                 <string><![CDATA[[link]: https://example.com]]></string>
                             </item>
+                            <item key="22">
+                                <string><![CDATA[]]></string>
+                            </item>
                         </array>
                     </item>
                     <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                         <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                             <property name="endLine">
-                                <int>21</int>
+                                <int>22</int>
                             </property>
                             <property name="internalPadding">
                                 <null/>
@@ -3071,7 +3074,7 @@
                         <item key="LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location">
                             <object class="LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location">
                                 <property name="endLine">
-                                    <int>21</int>
+                                    <int>22</int>
                                 </property>
                                 <property name="internalPadding">
                                     <null/>

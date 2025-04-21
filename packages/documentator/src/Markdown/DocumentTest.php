@@ -98,6 +98,7 @@ final class DocumentTest extends TestCase {
                 <<<'MARKDOWN'
                 fsdfsdfsdf
                 fsdfsdfsdf
+
                 fsdfsdfsdf
 
                 MARKDOWN,

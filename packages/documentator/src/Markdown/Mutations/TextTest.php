@@ -24,14 +24,10 @@ final class TextTest extends TestCase {
 
         $markdown = $this->app()->make(Markdown::class);
         $document = $markdown->parse($content);
-        $actual   = (string) $document->mutate(new Text(new Location(3, 4, 6, 24)));
+        $actual   = (string) $document->mutate(new Text(new Location(3, 4, 5, 24)));
 
         self::assertSame(
-            <<<'MARKDOWN'
-            12345 12345 12345 12345
-            12345 12345 12345 12345
-
-            MARKDOWN,
+            " 12345 12345 12345 12345\n12345 12345 12345 12345 \n",
             $actual,
         );
     }
