@@ -3,8 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Node\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -63,6 +67,19 @@ final class UtilsTest extends TestCase {
 
         self::assertSame($expected, $actual);
     }
+
+    #[DataProvider('dataProviderGetLinkDestinationLocation')]
+    public function testGetLinkDestinationLocation(Location $expected, string $definition): void {
+        $markdown = $this->app()->make(Markdown::class);
+        $document = $markdown->parse($definition);
+        $node     = (new Query())
+            ->where(Query::type(Link::class))
+            ->orWhere(Query::type(Image::class))
+            ->findOne($document->node);
+
+        self::assertTrue($node instanceof Link || $node instanceof Image);
+        self::assertEquals($expected, Utils::getLinkDestinationLocation($document, $node));
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProviders">
@@ -103,6 +120,86 @@ final class UtilsTest extends TestCase {
                 text
                 MARKDOWN,
                 new FilePath('/path/to/file-name.md'),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{Location, string}>
+     */
+    public static function dataProviderGetLinkDestinationLocation(): array {
+        return [
+            'link: without <> and without title'               => [
+                new Location(1, 1, 7, 20),
+                '[link](https://example.com/)',
+            ],
+            'link: without <>, without title and with spaces'  => [
+                new Location(1, 1, 7, 24),
+                '[link](  https://example.com/  )',
+            ],
+            'link: without <> and with title'                  => [
+                new Location(1, 1, 7, 20),
+                '[link](https://example.com/ "title")',
+            ],
+            'link: without <>, with title and with spaces'     => [
+                new Location(1, 1, 7, 22),
+                '[link](  https://example.com/  "title")',
+            ],
+            'link: without <> and with title escaping \''      => [
+                new Location(1, 1, 7, 20),
+                '[link](https://example.com/ "title with ( ) and with \' \'")',
+            ],
+            'link: without <> and with title escaping ()'      => [
+                new Location(1, 1, 7, 20),
+                '[link](https://example.com/ (title with \( \) and with \' \'))',
+            ],
+            'link: without <> and with title escaping "'       => [
+                new Location(1, 1, 7, 20),
+                '[link](https://example.com/ "title with ( ) and with \' \' and with \" \"")',
+            ],
+            'link: with <> and without title'                  => [
+                new Location(1, 1, 7, 31),
+                '[link](<https://example.com/ /\</path>)',
+            ],
+            'link: with <> and with title'                     => [
+                new Location(1, 1, 7, 31),
+                '[link](<https://example.com/ /\</path> "title")',
+            ],
+            'image: without <> and without title'              => [
+                new Location(1, 1, 9, 20),
+                '![image](https://example.com/)',
+            ],
+            'image: without <>, without title and with spaces' => [
+                new Location(1, 1, 9, 24),
+                '![image](  https://example.com/  )',
+            ],
+            'image: without <> and with title'                 => [
+                new Location(1, 1, 9, 20),
+                '![image](https://example.com/ "title")',
+            ],
+            'image: without <>, with title and with spaces'    => [
+                new Location(1, 1, 9, 22),
+                '![image](  https://example.com/  "title")',
+            ],
+            'image: with <> and without title'                 => [
+                new Location(1, 1, 9, 31),
+                '![image](<https://example.com/ /\</path>)',
+            ],
+            'image: with <> and with title'                    => [
+                new Location(1, 1, 9, 31),
+                '![image](<https://example.com/ /\</path> "title")',
+            ],
+            'image: without <> and with title escaping \''     => [
+                new Location(1, 1, 9, 20),
+                '![image](https://example.com/ "title with ( ) and with \' \'")',
+            ],
+            'image: without <> and with title escaping ()'     => [
+                new Location(1, 1, 9, 20),
+                '![image](https://example.com/ (title with \( \) and with \' \'))',
+            ],
+            'image: without <> and with title escaping "'      => [
+                new Location(1, 1, 9, 20),
+                '![image](https://example.com/ "title with ( ) and with \' \' and with \" \"")',
             ],
         ];
     }

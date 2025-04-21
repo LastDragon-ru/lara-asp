@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
-use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
@@ -22,7 +21,6 @@ use League\CommonMark\Node\Node;
 use Override;
 
 use function mb_ltrim;
-use function mb_rtrim;
 use function mb_strlen;
 use function mb_substr;
 use function mb_trim;
@@ -83,19 +81,13 @@ readonly class Move implements Mutation {
         } elseif (!$this->isPathRelative($node)) {
             // Path is not relative -> skip
         } elseif ($node instanceof AbstractWebResource && ReferenceData::get($node) === null) {
-            $path         = $document->path->getPath($this->path);
-            $content      = ContentData::get($node);
-            $location     = LocationData::get($node);
-            $location     = $location->moveOffset(($content->offset - $location->offset) + (int) $content->length + 1);
-            $origin       = mb_trim((string) $document->mutate(new Text($location)));
-            $titleValue   = (string) $node->getTitle();
-            $titleWrapper = mb_substr(mb_rtrim(mb_substr($origin, 0, -1)), -1, 1);
-            $title        = Utils::getLinkTitle($node, $titleValue, $titleWrapper);
-            $targetValue  = $this->target($document, $document->path, $path, $node->getUrl());
-            $targetWrap   = mb_substr(mb_ltrim(mb_ltrim($origin, '(')), 0, 1) === '<';
-            $target       = Utils::getLinkTarget($node, $targetValue, $targetWrap !== false ? true : null);
-            $text         = $title !== '' ? "({$target} {$title})" : "({$target})";
-            $mutagens[]   = new Replace($location, $text);
+            $location   = Utils::getLinkDestinationLocation($document, $node);
+            $origin     = (string) $document->mutate(new Text($location));
+            $target     = $document->path->getPath($this->path);
+            $value      = $this->target($document, $document->path, $target, $node->getUrl());
+            $wrap       = mb_substr(mb_ltrim($origin), 0, 1) === '<';
+            $text       = Utils::getLinkTarget($node, $value, $wrap !== false ? true : null);
+            $mutagens[] = new Replace($location, $text);
         } elseif ($node instanceof ReferenceNode) {
             $path         = $document->path->getPath($this->path);
             $location     = LocationData::get($node);
@@ -111,13 +103,17 @@ readonly class Move implements Mutation {
 
             if ($location->startLine !== $location->endLine) {
                 $padding = $location->internalPadding ?? $location->startLinePadding;
-                $last    = (string) $document->mutate(new Text(new Location(
-                    $location->endLine,
-                    $location->endLine,
-                    $padding,
-                    $location->length,
-                    $padding,
-                )));
+                $last    = (string) $document->mutate(
+                    new Text(
+                        new Location(
+                            $location->endLine,
+                            $location->endLine,
+                            $padding,
+                            $location->length,
+                            $padding,
+                        ),
+                    ),
+                );
 
                 if ($last === '') {
                     $text .= "\n";

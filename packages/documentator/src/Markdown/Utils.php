@@ -3,16 +3,26 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
-use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
+use LastDragon_ru\LaraASP\Documentator\Utils\Text as TextUtils;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Table\TableCell;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Node;
+use League\CommonMark\Parser\Cursor;
+use League\CommonMark\Util\LinkParserHelper;
 use League\CommonMark\Util\UrlEncoder;
 
 use function filter_var;
+use function mb_ltrim;
+use function mb_strlen;
 use function mb_trim;
 use function parse_url;
 use function preg_match;
@@ -85,6 +95,26 @@ class Utils {
         return $title;
     }
 
+    public static function getLinkDestinationLocation(Document $document, Link|Image $node): Location {
+        $content  = ContentData::get($node);
+        $location = LocationData::get($node);
+        $location = $location->moveOffset(($content->offset - $location->offset) + (int) $content->length + 2);
+
+        if ($node->getTitle() === null) {
+            return $location->moveLength(-1);
+        }
+
+        $origin  = (string) $document->mutate(new Text($location));
+        $trimmed = mb_ltrim($origin);
+        $length  = mb_strlen($origin) - mb_strlen($trimmed);
+        $cursor  = new Cursor($trimmed);
+
+        LinkParserHelper::parseLinkDestination($cursor);
+
+        return $location
+            ->withLength($cursor->getPosition() + $length);
+    }
+
     public static function escapeTextInTableCell(Node $container, string $text): string {
         if (self::getContainer($container) instanceof TableCell) {
             $text = str_replace('|', '\\|', $text);
@@ -146,7 +176,7 @@ class Utils {
     public static function getTitle(Document $document): ?string {
         $title = mb_trim((string) $document->mutate(new Title()));
         $title = mb_trim(str_replace("\n", ' ', $title));
-        $title = $title === '' ? Text::getPathTitle((string) $document->path) : $title;
+        $title = $title === '' ? TextUtils::getPathTitle((string) $document->path) : $title;
         $title = $title === '' ? null : $title;
 
         return $title;

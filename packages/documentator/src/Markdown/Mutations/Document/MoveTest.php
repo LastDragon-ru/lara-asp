@@ -195,7 +195,7 @@ final class MoveTest extends TestCase {
 
                 ## Title escaping
 
-                Text [title](../file/a "title with ( ) and with ' '") text
+                Text [title](../file/a "title with ( ) and with ' '" ) text
                 text [title](../file/a (title with \( \) and with ' ')) text
                 text [title](../file/a "title with ( ) and with ' ' and with \" \"").
 
@@ -269,7 +269,7 @@ final class MoveTest extends TestCase {
 
                 ## Title escaping
 
-                Text ![title](../file/a "title with ( ) and with ' '") text
+                Text ![title](../file/a "title with ( ) and with ' '" ) text
                 text ![title](../file/a (title with \( \) and with ' ')) text
                 text ![title](../file/a "title with ( ) and with ' ' and with \" \"").
 
