@@ -101,8 +101,15 @@ class Utils {
     }
 
     public static function getLinkDestinationLocation(Document $document, Link|Image $node): Location {
-        $content  = ContentData::get($node);
+        // Autolink?
+        $content  = ContentData::optional()->get($node);
         $location = LocationData::get($node);
+
+        if ($content === null) {
+            return $location;
+        }
+
+        // Nope
         $location = $location->moveOffset(($content->offset - $location->offset) + (int) $content->length + 2);
 
         if ($node->getTitle() === null) {

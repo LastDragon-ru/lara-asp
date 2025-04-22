@@ -27,4 +27,6 @@ Text `
 code
 ` text.
 
+Autolink <https://example.com/> link link.
+
 [link]: https://example.com

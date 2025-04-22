@@ -19,11 +19,15 @@ readonly class Unlink extends Base {
     #[Override]
     public function mutagens(Document $document, Node $node): array {
         $location = Location::get($node);
-        $content  = Content::get($node);
+        $content  = Content::optional()->get($node);
 
         return [
             new Delete($location->withLength(1)),
-            new Delete($location->moveOffset(($content->offset - $location->offset) + (int) $content->length)),
+            new Delete(
+                $content !== null
+                    ? $location->moveOffset(($content->offset - $location->offset) + (int) $content->length)
+                    : $location->moveOffset((int) $location->length - 1),
+            ),
         ];
     }
 }

@@ -27,6 +27,10 @@ final class UnlinkTest extends TestCase {
 
             # Special
 
+            ## Autolink
+
+            Autolink <https://example.com/> link link.
+
             ## Inside Quote
 
             > Text text [self][self] text text [self](#fragment) text text text
@@ -56,6 +60,10 @@ final class UnlinkTest extends TestCase {
             [image]: ./#fragment
 
             # Special
+
+            ## Autolink
+
+            Autolink https://example.com/ link link.
 
             ## Inside Quote
 

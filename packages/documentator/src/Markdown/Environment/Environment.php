@@ -12,6 +12,7 @@ use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Event\DocumentPreParsedEvent;
+use League\CommonMark\Extension\CommonMark\Parser\Inline\AutolinkParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\BacktickParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\CloseBracketParser;
 use League\CommonMark\Extension\CommonMark\Parser\Inline\HtmlInlineParser;
@@ -115,6 +116,7 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
 
             if (
                 $parser instanceof CloseBracketParser
+                || $parser instanceof AutolinkParser
                 || $parser instanceof BacktickParser
                 || $parser instanceof FootnoteRefParser
                 || $parser instanceof HtmlInlineParser
