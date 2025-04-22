@@ -282,7 +282,9 @@ class Locator {
         if ($node instanceof Link || $node instanceof Image) {
             $content = $location->withLength($marker - 1)->moveOffset(1 + (int) ($node instanceof Image));
 
-            Content::set($node, $content);
+            if ($content->length > 0) {
+                Content::set($node, $content);
+            }
         }
 
         // Cleanup

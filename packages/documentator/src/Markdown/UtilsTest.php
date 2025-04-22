@@ -178,6 +178,10 @@ final class UtilsTest extends TestCase {
                 new Location(1, 1, 7, 31),
                 '[link](<https://example.com/ /\</path> "title")',
             ],
+            'autolink'                                         => [
+                new Location(1, 1, 0, 22),
+                '<https://example.com/>',
+            ],
             'image: without <> and without title'              => [
                 new Location(1, 1, 9, 20),
                 '![image](https://example.com/)',
