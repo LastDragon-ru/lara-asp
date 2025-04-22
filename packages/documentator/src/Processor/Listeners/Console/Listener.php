@@ -159,34 +159,6 @@ class Listener {
 
         $this->children(1, $file->children);
 
-        // Stats
-        $created = false;
-        $updated = false;
-
-        foreach ($file->changes as $change) {
-            if ($file->path !== $change->path) {
-                continue;
-            }
-
-            if ($change->type === FileSystemModifiedType::Created) {
-                $created = true;
-            } else {
-                $updated = true;
-            }
-
-            if ($created && $updated) {
-                break;
-            }
-        }
-
-        if ($created) {
-            $this->filesCreated++;
-        } elseif ($updated) {
-            $this->filesUpdated++;
-        } else {
-            // skip
-        }
-
         // Clear
         $this->changes = [];
     }
@@ -243,6 +215,12 @@ class Listener {
 
     protected function filesystem(FileSystemModified $event): void {
         $this->changes[] = new Change($event->path, $event->type);
+
+        if ($event->type === FileSystemModifiedType::Created) {
+            $this->filesCreated++;
+        } else {
+            $this->filesUpdated++;
+        }
     }
 
     /**

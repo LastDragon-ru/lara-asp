@@ -7,4 +7,4 @@
 ↔ b/b.txt <fg=gray>..............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=green>↔ c.new</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=red>FAIL</>
 <fg=yellow>↔ c.htm</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=green>C</><fg=yellow>U</> <fg=green>DONE</>
-<fg=green;options=bold>✓</> Files: 12, [<fg=yellow>U</>]pdated: <fg=yellow>2</>, [<fg=green>C</>]reated: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>
+<fg=green;options=bold>✓</> Files: 12, [<fg=yellow>U</>]pdated: <fg=yellow>3</>, [<fg=green>C</>]reated: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>

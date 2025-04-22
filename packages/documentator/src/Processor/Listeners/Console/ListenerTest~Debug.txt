@@ -31,4 +31,4 @@
 <fg=gray>·</> <fg=gray>·</> ↔ c.next <fg=gray>........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> NEXT
 <fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> <fg=yellow>↔ c.new</> <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=gray>NULL</>
-<fg=green;options=bold>✓</> Files: 12, [<fg=yellow>U</>]pdated: <fg=yellow>2</>, [<fg=green>C</>]reated: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>
+<fg=green;options=bold>✓</> Files: 12, [<fg=yellow>U</>]pdated: <fg=yellow>3</>, [<fg=green>C</>]reated: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>
