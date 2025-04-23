@@ -52,13 +52,24 @@ class Executor {
     }
 
     public function run(): void {
-        $this->file($this->fs->getFile(Hook::Before));
+        // Before?
+        $before = $this->fs->getFile(Hook::Before);
 
+        if (!$this->isSkipped($before)) {
+            $this->file($before);
+        }
+
+        // Files
         foreach ($this->iterator as $file) {
             $this->file($file);
         }
 
-        $this->file($this->fs->getFile(Hook::After));
+        // After
+        $after = $this->fs->getFile(Hook::After);
+
+        if (!$this->isSkipped($after)) {
+            $this->file($after);
+        }
     }
 
     private function file(File $file): void {
