@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
 
-use ArrayIterator;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
@@ -12,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
 
@@ -50,15 +48,15 @@ trait WithProcessor {
     }
 
     protected function runProcessorTask(Task $task, FileSystem $fs, File $file): void {
-        $task($this->getDependencyResolver($fs, $file), $file);
+        $task($this->getDependencyResolver($fs), $file);
     }
 
-    protected function getDependencyResolver(FileSystem $fs, File $file): DependencyResolver {
+    protected function getDependencyResolver(FileSystem $fs): DependencyResolver {
         $dispatcher = new Dispatcher();
-        $iterator   = new Iterator($fs, new ArrayIterator([]));
-        $resolver   = new Resolver($dispatcher, $iterator, $fs, $file, static function (): void {
+        $callback   = static function (): void {
             // empty
-        });
+        };
+        $resolver   = new Resolver($dispatcher, $fs, $callback, $callback);
 
         return $resolver;
     }
