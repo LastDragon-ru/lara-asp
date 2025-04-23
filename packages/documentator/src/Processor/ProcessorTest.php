@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
@@ -24,6 +25,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDe
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
@@ -173,8 +175,6 @@ final class ProcessorTest extends TestCase {
                 ),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted('! '.$input->getFilePath('../ProcessorTest.php')),
-                new FileFinished(FileFinishedResult::Skipped),
                 new FileStarted('@ :after'),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
@@ -819,9 +819,8 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunHookBeforeNotSkippedDependency(): void {
-        $events = [];
-        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $task   = new class([
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new class([
             '*' => [
                 'c.txt',
             ],
@@ -842,11 +841,34 @@ final class ProcessorTest extends TestCase {
             ->addTask($task)
             ->addTask(ProcessorTest__Task::class)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->addListener(
-                static function (Event $event) use (&$events): void {
-                    $events[] = $event;
-                },
-            )
+            ->run(
+                $input,
+            );
+    }
+
+    public function testRunHookQueue(): void {
+        $input = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $task  = new class() implements Task {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getExtensions(): array {
+                return ['htm'];
+            }
+
+            #[Override]
+            public function __invoke(DependencyResolver $resolver, File $file): void {
+                $resolver->queue(
+                    new ProcessorTest__DependencyHook(),
+                );
+            }
+        };
+
+        self::expectException(DependencyUnavailable::class);
+
+        (new Processor($this->app()->make(ContainerResolver::class)))
+            ->addTask($task)
             ->run(
                 $input,
             );
@@ -901,5 +923,22 @@ class ProcessorTest__Task implements Task {
                 $resolved,
             ),
         ];
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ * @implements Dependency<File>
+ */
+class ProcessorTest__DependencyHook implements Dependency {
+    #[Override]
+    public function __invoke(FileSystem $fs): File {
+        return $fs->getFile(Hook::Each);
+    }
+
+    #[Override]
+    public function getPath(FileSystem $fs): FilePath {
+        return new FilePath('hook');
     }
 }

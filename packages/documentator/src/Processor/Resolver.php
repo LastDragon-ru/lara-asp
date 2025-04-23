@@ -24,13 +24,15 @@ class Resolver implements DependencyResolver {
 
     public function __construct(
         protected readonly Dispatcher $dispatcher,
-        protected readonly Iterator $iterator,
         protected readonly FileSystem $fs,
-        protected readonly File $file,
         /**
-         * @var Closure(File, Traversable<mixed, Directory|File>|Directory|File|null): void
+         * @var Closure(Directory|File): void
          */
         protected readonly Closure $run,
+        /**
+         * @var Closure(File): void
+         */
+        protected readonly Closure $queue,
     ) {
         // empty
     }
@@ -42,10 +44,12 @@ class Resolver implements DependencyResolver {
 
             $this->notify($dependency, $this->result($resolved));
 
-            ($this->run)($this->file, $resolved);
-
             if ($resolved instanceof Traversable) {
                 $resolved = $this->iterate($dependency, $resolved);
+            } elseif ($resolved !== null) {
+                ($this->run)($resolved);
+            } else {
+                // empty
             }
         } catch (Exception $exception) {
             $this->exception = $exception;
@@ -69,11 +73,13 @@ class Resolver implements DependencyResolver {
                 foreach ($resolved as $file) {
                     assert($file instanceof File, 'https://github.com/phpstan/phpstan/issues/12894');
 
-                    $this->iterator->push($file->getPath());
+                    ($this->queue)($file);
+
                     $this->notify($file, Result::Queued);
                 }
             } elseif ($resolved instanceof File) {
-                $this->iterator->push($resolved->getPath());
+                ($this->queue)($resolved);
+
                 $this->notify($resolved, Result::Queued);
             } else {
                 $this->notify($dependency, Result::Null);
@@ -118,7 +124,7 @@ class Resolver implements DependencyResolver {
 
                 $this->notify($value, Result::Success);
 
-                ($this->run)($this->file, $value);
+                ($this->run)($value);
 
                 yield $key => $value;
             }

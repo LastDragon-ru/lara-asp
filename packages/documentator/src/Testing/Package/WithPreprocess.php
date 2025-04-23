@@ -23,7 +23,7 @@ trait WithPreprocess {
         ?Node $node = null,
     ): Context {
         return new Context(
-            $this->getDependencyResolver($fs, $file),
+            $this->getDependencyResolver($fs),
             $file,
             $document ?? Mockery::mock(Document::class),
             $node ?? new Node(),

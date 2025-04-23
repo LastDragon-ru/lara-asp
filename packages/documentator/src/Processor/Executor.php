@@ -21,14 +21,16 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
-use Traversable;
 
 use function array_values;
+use function end;
 
 /**
  * @internal
  */
 class Executor {
+    private readonly Resolver $resolver;
+
     /**
      * @var array<string, true>
      */
@@ -46,7 +48,7 @@ class Executor {
         private readonly Iterator $iterator,
         private readonly Globs $exclude,
     ) {
-        // empty
+        $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 
     public function run(): void {
@@ -95,22 +97,15 @@ class Executor {
 
         // Process
         $tasks              = $this->tasks->get(...$this->extensions($file));
-        $resolver           = new Resolver(
-            $this->dispatcher,
-            $this->iterator,
-            $this->fs,
-            $file,
-            $this->dependency(...),
-        );
         $this->stack[$path] = $file;
 
         try {
             $this->fs->begin();
 
             foreach ($tasks as $task) {
-                $this->task($resolver, $file, $task);
+                $this->task($file, $task);
 
-                $resolver->check();
+                $this->resolver->check();
             }
 
             $this->fs->commit();
@@ -129,14 +124,14 @@ class Executor {
         unset($this->stack[$path]);
     }
 
-    private function task(Resolver $resolver, File $file, Task $task): void {
+    private function task(File $file, Task $task): void {
         $this->dispatcher->notify(new TaskStarted($task::class));
 
         try {
             try {
-                $task($resolver, $file);
+                $task($this->resolver, $file);
 
-                $resolver->check();
+                $this->resolver->check();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -151,10 +146,7 @@ class Executor {
         }
     }
 
-    /**
-     * @param Traversable<mixed, Directory|File>|Directory|File|null $resolved
-     */
-    private function dependency(File $file, Traversable|Directory|File|null $resolved): void {
+    private function onResolve(Directory|File $resolved): void {
         // Skipped?
         if ($resolved instanceof File && $this->isSkipped($resolved)) {
             return;
@@ -162,6 +154,7 @@ class Executor {
 
         // The `:before` hook cannot use files that will be processed because
         // the hook should be run before any of the tasks.
+        $file         = end($this->stack);
         $isBeforeHook = $file instanceof FileHook && $file->hook === Hook::Before;
 
         if ($isBeforeHook && $resolved instanceof File) {
@@ -172,6 +165,21 @@ class Executor {
         if (!$isBeforeHook && $file !== $resolved && $resolved instanceof FileReal) {
             $this->file($resolved);
         }
+    }
+
+    private function onQueue(File $resolved): void {
+        // Hook?
+        if ($resolved instanceof FileHook) {
+            throw new DependencyUnavailable();
+        }
+
+        // Skipped?
+        if ($this->isSkipped($resolved)) {
+            return;
+        }
+
+        // Queue
+        $this->iterator->push($resolved->getPath());
     }
 
     private function isSkipped(File $file): bool {
