@@ -76,12 +76,15 @@ class FileSystem {
     }
 
     /**
+     * Relative path will be resolved based on {@see self::$input}.
+     *
      * @return non-empty-string
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
         $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
         $hook   = $path instanceof FileHook;
         $path   = $path instanceof Entry ? $path->getPath() : $path;
+        $path   = $this->input->getPath($path);
         $name   = match (true) {
             $hook && $path instanceof FilePath
                 => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
@@ -100,6 +103,9 @@ class FileSystem {
         return $name;
     }
 
+    /**
+     * Relative path will be resolved based on {@see self::$input}.
+     */
     protected function isFile(FilePath|string $path): bool {
         $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
