@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Listener;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
@@ -117,12 +118,16 @@ class Preprocess extends Command {
         $help      = '';
         $heading   = str_repeat('#', $level);
         $default   = '_No description provided_.';
+        $convert   = static function (Hook|string $extension): string {
+            return $extension instanceof Hook ? $extension->value : $extension;
+        };
         $processor = $this->processor();
 
         foreach ($processor->getTasks() as $index => $task) {
             $description = mb_trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
-            $extensions  = '`'.implode('`, `', $task::getExtensions()).'`';
+            $extensions  = array_map($convert, $task::getExtensions());
+            $extensions  = '`'.implode('`, `', $extensions).'`';
             $deprecated  = $this->getDeprecatedMark(new ReflectionClass($task));
             $title       = mb_trim((string) $this->getProcessedHelpTaskTitle($task));
             $title       = $title !== '' ? $title : "Task №{$index}";

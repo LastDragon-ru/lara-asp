@@ -81,7 +81,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Before->value];
+                return [Hook::Before];
             }
         };
         $taskD = new class() extends ProcessorTest__Task {
@@ -281,7 +281,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Each->value];
+                return [Hook::Each];
             }
         };
         $taskC  = new class() extends ProcessorTest__Task {
@@ -290,7 +290,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Each->value];
+                return [Hook::Each];
             }
         };
         $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
@@ -753,7 +753,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Before->value];
+                return [Hook::Before];
             }
         };
 
@@ -806,7 +806,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Before->value];
+                return [Hook::Before];
             }
         };
 
@@ -835,7 +835,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::After->value];
+                return [Hook::After];
             }
         };
 

@@ -3,8 +3,11 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Utils\Instances;
 use Override;
+
+use function array_map;
 
 /**
  * @internal
@@ -16,6 +19,14 @@ class Tasks extends Instances {
      */
     #[Override]
     protected function getInstanceKeys(object|string $instance): array {
-        return $instance::getExtensions();
+        $extensions = $instance::getExtensions();
+        $extensions = array_map(
+            static function (Hook|string $extension): string {
+                return $extension instanceof Hook ? $extension->value : $extension;
+            },
+            $extensions,
+        );
+
+        return $extensions;
     }
 }

@@ -3,13 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 
 interface Task {
     /**
      * Returns the file extensions which task is processing. The `*` can be used
-     * to process any file.
+     * to process all existing files.
      *
-     * @return non-empty-list<string>
+     * @return non-empty-list<string|Hook>
      */
     public static function getExtensions(): array;
 
