@@ -785,6 +785,20 @@ final class FileSystemTest extends TestCase {
                 $fs('a', null),
                 $directory(__DIR__),
             ],
+            '(a, b): relative path'         => [
+                '→ a.txt',
+                $fs('a', 'b'),
+                static function (): FilePath {
+                    return new FilePath('a.txt');
+                },
+            ],
+            '(a, null): relative path'      => [
+                '↔ a.txt',
+                $fs('a', null),
+                static function (): FilePath {
+                    return new FilePath('a.txt');
+                },
+            ],
         ];
     }
     //</editor-fold>
