@@ -7,17 +7,16 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
 
-use function is_dir;
 use function sprintf;
 
 /**
  * @extends Entry<DirectoryPath>
  */
 class Directory extends Entry {
-    public function __construct(DirectoryPath $path) {
-        parent::__construct($path);
+    public function __construct(Adapter $adapter, DirectoryPath $path) {
+        parent::__construct($adapter, $path);
 
-        if (!is_dir((string) $this->path)) {
+        if (!$this->adapter->isDirectory((string) $this->path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `%s` is not a directory.',

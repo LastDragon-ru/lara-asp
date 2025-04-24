@@ -10,10 +10,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
  */
 abstract class File extends Entry {
     public function __construct(
-        private readonly Metadata $metadata,
+        Adapter $adapter,
         FilePath $path,
+        private readonly Metadata $metadata,
     ) {
-        parent::__construct($path);
+        parent::__construct($adapter, $path);
     }
 
     /**
@@ -22,6 +23,8 @@ abstract class File extends Entry {
     public function getExtension(): ?string {
         return $this->path->getExtension();
     }
+
+    abstract public function getContent(): string;
 
     /**
      * @template T of object

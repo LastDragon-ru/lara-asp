@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -20,7 +21,7 @@ final class EntryTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
 
-        new class(new DirectoryPath('/../path')) extends Entry {
+        new class(Mockery::mock(Adapter::class), new DirectoryPath('/../path')) extends Entry {
             // empty
         };
     }
@@ -29,19 +30,20 @@ final class EntryTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
-        new class((new DirectoryPath('../path'))->getNormalizedPath()) extends Entry {
+        new class(Mockery::mock(Adapter::class), (new DirectoryPath('../path'))->getNormalizedPath()) extends Entry {
             // empty
         };
     }
 
     public function testGetRelativePath(): void {
+        $adapter   = Mockery::mock(Adapter::class);
         $fs        = $this->getFileSystem(__DIR__);
         $file      = $fs->getFile(__FILE__);
         $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $parent    = new class($path->getDirectoryPath()) extends Entry {
+        $parent    = new class($adapter, $path->getDirectoryPath()) extends Entry {
             // empty
         };
-        $directory = new class((new DirectoryPath(__DIR__))->getNormalizedPath()) extends Entry {
+        $directory = new class($adapter, (new DirectoryPath(__DIR__))->getNormalizedPath()) extends Entry {
             // empty
         };
 
@@ -51,11 +53,12 @@ final class EntryTest extends TestCase {
     }
 
     public function testIsEqual(): void {
-        $path = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
-        $a    = new class($path) extends Entry {
+        $adapter = Mockery::mock(Adapter::class);
+        $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
+        $a       = new class($adapter, $path) extends Entry {
             // empty
         };
-        $b    = new class($path) extends Entry {
+        $b       = new class($adapter, $path) extends Entry {
             // empty
         };
 

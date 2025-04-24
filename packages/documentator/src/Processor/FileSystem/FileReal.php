@@ -5,18 +5,18 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
+use Override;
 
-use function is_file;
 use function sprintf;
 
 /**
  * @internal
  */
 class FileReal extends File {
-    public function __construct(Metadata $metadata, FilePath $path) {
-        parent::__construct($metadata, $path);
+    public function __construct(Adapter $adapter, FilePath $path, Metadata $metadata) {
+        parent::__construct($adapter, $path, $metadata);
 
-        if (!is_file((string) $this->path)) {
+        if (!$this->adapter->isFile((string) $this->path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `%s` is not a file.',
@@ -24,5 +24,10 @@ class FileReal extends File {
                 ),
             );
         }
+    }
+
+    #[Override]
+    public function getContent(): string {
+        return $this->adapter->read((string) $this->path);
     }
 }

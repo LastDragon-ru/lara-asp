@@ -24,6 +24,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
@@ -31,6 +32,7 @@ use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Symfony\Component\Finder\Finder;
 
 use function array_map;
 use function basename;
@@ -104,7 +106,7 @@ final class ProcessorTest extends TestCase {
         };
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($mock)
             ->addTask($taskA)
             ->addTask($taskB)
@@ -238,7 +240,7 @@ final class ProcessorTest extends TestCase {
         $events = [];
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->addListener(
                 static function (Event $event) use (&$events): void {
@@ -297,7 +299,7 @@ final class ProcessorTest extends TestCase {
         $events = [];
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($taskA)
             ->addTask($taskB)
             ->addTask($taskC, -1)
@@ -366,7 +368,7 @@ final class ProcessorTest extends TestCase {
         };
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($taskA)
             ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
@@ -523,7 +525,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -593,7 +595,7 @@ final class ProcessorTest extends TestCase {
         self::expectExceptionMessage('Dependency not found.');
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->run($input);
     }
@@ -621,7 +623,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->run($input);
     }
@@ -633,7 +635,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->run($input);
 
@@ -675,7 +677,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->run($input);
     }
@@ -689,7 +691,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -813,7 +815,7 @@ final class ProcessorTest extends TestCase {
         self::expectException(DependencyUnavailable::class);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
-            ->consistent()
+            ->setAdapter(new ProcessorTest__Adapter())
             ->addTask($task)
             ->addTask(ProcessorTest__Task::class)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
@@ -970,5 +972,25 @@ class ProcessorTest__DependencyHook implements Dependency {
     #[Override]
     public function getPath(FileSystem $fs): FilePath {
         return new FilePath('hook');
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ProcessorTest__Adapter extends SymfonyAdapter {
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    protected function getFinder(
+        string $directory,
+        array|string|null $include = null,
+        array|string|null $exclude = null,
+        ?int $depth = null,
+    ): Finder {
+        return parent::getFinder($directory, $include, $exclude, $depth)
+            ->sortByName(true);
     }
 }
