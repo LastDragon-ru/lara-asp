@@ -9,10 +9,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
+use Override;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @phpstan-require-extends TestCase
@@ -36,9 +39,24 @@ trait WithProcessor {
         $output     = $output !== null
             ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
             : $input;
+        $adapter    = new class() extends SymfonyAdapter {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            protected function getFinder(
+                string $directory,
+                array|string|null $include = null,
+                array|string|null $exclude = null,
+                ?int $depth = null,
+            ): Finder {
+                return parent::getFinder($directory, $include, $exclude, $depth)
+                    ->sortByName(true);
+            }
+        };
         $metadata   = new Metadata($this->app()->make(ContainerResolver::class));
         $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($dispatcher, $metadata, $input, $output, true);
+        $filesystem = new FileSystem($dispatcher, $metadata, $adapter, $input, $output);
 
         foreach ($resolvers as $resolver) {
             $metadata->addResolver($resolver);

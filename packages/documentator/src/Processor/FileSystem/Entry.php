@@ -16,6 +16,7 @@ use function sprintf;
  */
 abstract class Entry implements Stringable {
     public function __construct(
+        protected readonly Adapter $adapter,
         /**
          * @var TPath
          */

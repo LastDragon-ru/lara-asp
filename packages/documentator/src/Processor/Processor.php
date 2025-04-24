@@ -15,6 +15,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
@@ -34,8 +36,8 @@ class Processor {
     /**
      * @var list<string>
      */
-    private array  $exclude    = [];
-    protected bool $consistent = false;
+    private array      $exclude = [];
+    protected ?Adapter $adapter = null;
 
     public function __construct(
         protected readonly ContainerResolver $container,
@@ -43,19 +45,6 @@ class Processor {
         $this->tasks      = new Tasks($container);
         $this->metadata   = new Metadata($container);
         $this->dispatcher = new Dispatcher();
-    }
-
-    /**
-     * If enabled, the `Processor` will iterate files/directories in a consistent
-     * way (= sort by name). Useful mainly for testing, in all other cases it is
-     * recommended do not change default behavior.
-     *
-     * @internal
-     */
-    public function consistent(): static {
-        $this->consistent = true;
-
-        return $this;
     }
 
     /**
@@ -134,6 +123,12 @@ class Processor {
         return $this;
     }
 
+    public function setAdapter(?Adapter $adapter): static {
+        $this->adapter = $adapter;
+
+        return $this;
+    }
+
     public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
         // Prepare
         $depth = match (true) {
@@ -188,7 +183,8 @@ class Processor {
         array $exclude,
         ?int $depth,
     ): void {
-        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $input, $output, $this->consistent);
+        $adapter    = $this->adapter ?? new SymfonyAdapter();
+        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $adapter, $input, $output);
         $iterator   = new Iterator($filesystem, $filesystem->getFilesIterator($input, $include, $exclude, $depth));
         $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
 

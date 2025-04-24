@@ -7,8 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
-use function file_get_contents;
-
 /**
  * @implements MetadataSerializer<Content>
  */
@@ -32,7 +30,7 @@ readonly class ContentMetadata implements MetadataSerializer {
 
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
-        return new Content((string) file_get_contents((string) $file));
+        return new Content($file->getContent());
     }
 
     #[Override]

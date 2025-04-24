@@ -18,13 +18,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use SplObjectStorage;
-use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
-use Symfony\Component\Finder\Finder;
 
 use function array_reverse;
 use function explode;
-use function is_dir;
-use function is_file;
 use function is_object;
 use function is_string;
 use function sprintf;
@@ -44,14 +40,12 @@ class FileSystem {
     private array $changes = [];
     private int   $level   = 0;
 
-    private readonly SymfonyFilesystem $filesystem;
-
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Metadata $metadata,
+        private readonly Adapter $adapter,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
-        public readonly bool $consistent = false,
     ) {
         if (!$input->isAbsolute()) {
             throw new InvalidArgumentException(
@@ -71,8 +65,7 @@ class FileSystem {
             );
         }
 
-        $this->hooks      = new SplObjectStorage();
-        $this->filesystem = new SymfonyFilesystem();
+        $this->hooks = new SplObjectStorage();
     }
 
     /**
@@ -109,7 +102,7 @@ class FileSystem {
     protected function isFile(FilePath|string $path): bool {
         $path = $this->input->getFilePath((string) $path);
         $file = $this->cached($path);
-        $is   = $file instanceof File || is_file((string) $path);
+        $is   = $file instanceof File || $this->adapter->isFile((string) $path);
 
         return $is;
     }
@@ -136,8 +129,8 @@ class FileSystem {
         }
 
         // Create
-        if (is_file((string) $path)) {
-            $file = new FileReal($this->metadata, $path);
+        if ($this->adapter->isFile((string) $path)) {
+            $file = new FileReal($this->adapter, $path, $this->metadata);
         } else {
             throw new FileNotFound($path);
         }
@@ -163,8 +156,8 @@ class FileSystem {
         }
 
         // Create
-        if (is_dir((string) $path)) {
-            $directory = $this->cache(new Directory($path));
+        if ($this->adapter->isDirectory((string) $path)) {
+            $directory = $this->cache(new Directory($this->adapter, $path));
         } else {
             throw new DirectoryNotFound($path);
         }
@@ -186,10 +179,11 @@ class FileSystem {
         array|string|null $exclude = null,
         ?int $depth = null,
     ): Iterator {
-        $finder = $this->getFinder($directory, $include, $exclude, $depth);
+        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
+        $iterator  = $this->adapter->getFilesIterator((string) $directory, $include, $exclude, $depth);
 
-        foreach ($finder->files() as $info) {
-            yield $this->getFile($info->getPathname());
+        foreach ($iterator as $path) {
+            yield $this->getFile($path);
         }
 
         yield from [];
@@ -209,53 +203,14 @@ class FileSystem {
         array|string|null $exclude = null,
         ?int $depth = null,
     ): Iterator {
-        $finder = $this->getFinder($directory, $include, $exclude, $depth);
+        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
+        $iterator  = $this->adapter->getDirectoriesIterator((string) $directory, $include, $exclude, $depth);
 
-        foreach ($finder->directories() as $info) {
-            yield $this->getDirectory($info->getPathname());
+        foreach ($iterator as $path) {
+            yield $this->getDirectory($path);
         }
 
         yield from [];
-    }
-
-    /**
-     * @param array<array-key, string>|string|null $exclude
-     * @param array<array-key, string>|string|null $include
-     */
-    private function getFinder(
-        Directory|DirectoryPath|string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
-        ?int $depth = null,
-    ): Finder {
-        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
-        $finder    = Finder::create()
-            ->ignoreVCSIgnored(true)
-            ->exclude('node_modules')
-            ->exclude('vendor')
-            ->in((string) $directory);
-
-        if ($this->consistent) {
-            $finder = $finder->sortByName(true);
-        }
-
-        if ($include !== null) {
-            $finder = $finder->name($include);
-        }
-
-        if ($depth !== null) {
-            $finder = $finder->depth("<= {$depth}");
-        }
-
-        if ($exclude !== null) {
-            $exclude = (new Globs((array) $exclude))->regexp;
-
-            if ($exclude !== null) {
-                $finder = $finder->notPath($exclude);
-            }
-        }
-
-        return $finder;
     }
 
     /**
@@ -312,7 +267,7 @@ class FileSystem {
 
         if ($file === null) {
             try {
-                $this->save($path, $content);
+                $this->adapter->write((string) $path, $content);
             } catch (Exception $exception) {
                 throw new FileCreateFailed($path, $exception);
             }
@@ -364,7 +319,7 @@ class FileSystem {
         // Commit
         foreach ($this->changes[$this->level] ?? [] as $path => $content) {
             try {
-                $this->save($path, $content);
+                $this->adapter->write($path, $content);
             } catch (Exception $exception) {
                 throw new FileSaveFailed($path, $exception);
             }
@@ -391,10 +346,6 @@ class FileSystem {
         }
     }
 
-    protected function save(FilePath|string $path, string $content): void {
-        $this->filesystem->dumpFile((string) $path, $content);
-    }
-
     /**
      * @template T of Directory|File
      *
@@ -417,7 +368,7 @@ class FileSystem {
     private function hook(Hook $hook): FileHook {
         if (!isset($this->hooks[$hook])) {
             $path               = $this->input->getFilePath("@.{$hook->value}");
-            $this->hooks[$hook] = new FileHook($this->metadata, $path, $hook);
+            $this->hooks[$hook] = new FileHook($this->adapter, $path, $this->metadata, $hook);
         }
 
         return $this->hooks[$hook];
