@@ -1,0 +1,321 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/brackets.js
+
+# describe('dotfiles', () => {
+## describe('normal', () => {
+### it('should not match dotfiles by default:', () => {
+  [[], [".dotfile"], "*"]
+  [[], [".dotfile"], "**"]
+  [[], ["a/b/c/.dotfile.md"], "*.md"]
+  [["a/b"], ["a/b", "a/.b", ".a/b", ".a/.b"], "**"]
+  [[], ["a/b/c/.dotfile"], "*.*"]
+
+## describe('leading dot', () => {
+### it('should match dotfiles when a leading dot is defined in the path:', () => {
+  [["a/b/c/.dotfile.md"], ["a/b/c/.dotfile.md"], "**/.*"]
+  [["a/b/c/.dotfile.md"], ["a/b/c/.dotfile.md"], "**/.*.md"]
+
+### it('should use negation patterns on dotfiles:', () => {
+  // (2) [["c", "c.md"], [".a", ".b", "c", "c.md"], "!.*"]
+  // (2) [[".a", "c", "c.md"], [".a", ".b", "c", "c.md"], "!.b"]
+
+### it('should match dotfiles when there is a leading dot:', () => {
+  [[".dotfile"], [".dotfile"], "*", { "hidden": true }]
+  [[".dotfile"], [".dotfile"], "**", { "hidden": true }]
+  [["a/b", "a/.b", ".a/b", ".a/.b"], ["a/b", "a/.b", ".a/b", ".a/.b"], "**", { "hidden": true }]
+  // (2) [["a/b", "a/.b"], ["a/b", "a/.b", "a/.b", ".a/.b"], "a/{.*,**}", { "hidden": true }]
+  // (2) [["a/b"], ["a/b", "a/.b", "a/.b", ".a/.b"], "{.*,**}", {}]
+  // (2) [["a/b", "a/.b", ".a/.b"], ["a/b", "a/.b", "a/.b", ".a/.b"], "{.*,**}", { "hidden": true }]
+  [[".dotfile"], [".dotfile"], ".dotfile", { "hidden": true }]
+  [[".dotfile.md"], [".dotfile.md"], ".*.md", { "hidden": true }]
+
+### it('should match dotfiles when there is not a leading dot:', () => {
+  [[".dotfile"], [".dotfile"], "*.*", { "hidden": true }]
+  [[".a", ".b", "c.md"], [".a", ".b", "c", "c.md"], "*.*", { "hidden": true }]
+  [[], [".dotfile"], "*.md", { "hidden": true }]
+  [[], [".verb.txt"], "*.md", { "hidden": true }]
+  [[], ["a/b/c/.dotfile"], "*.md", { "hidden": true }]
+  [[], ["a/b/c/.dotfile.md"], "*.md", { "hidden": true }]
+  [["a/b/c/.verb.md"], ["a/b/c/.verb.md"], "**/*.md", { "hidden": true }]
+  [["foo.md"], ["foo.md"], "*.md", { "hidden": true }]
+
+### it('should use negation patterns on dotfiles:', () => {
+  // (2) [["c", "c.md"], [".a", ".b", "c", "c.md"], "!.*"]
+  // (2) [["c", "c.md"], [".a", ".b", "c", "c.md"], "!(.*)"]
+  // (2) [["c", "c.md"], [".a", ".b", "c", "c.md"], "!(.*)*"]
+  // (2) [[".a", ".b", "c"], [".a", ".b", "c", "c.md"], "!*.*"]
+
+## describe('options.dot', () => {
+### it('should match dotfiles when `options.dot` is true:', () => {
+  [[".dotfile"], [".dotfile"], "*.*", { "hidden": true }]
+  [[], [".dotfile"], "*.md", { "hidden": true }]
+  [[".dotfile"], [".dotfile"], ".dotfile", { "hidden": true }]
+  [[".dotfile.md"], [".dotfile.md"], ".*.md", { "hidden": true }]
+  [[], [".verb.txt"], "*.md", { "hidden": true }]
+  [[], [".verb.txt"], "*.md", { "hidden": true }]
+  [[], ["a/b/c/.dotfile"], "*.md", { "hidden": true }]
+  [["a/b/c/.dotfile.md"], ["a/b/c/.dotfile.md"], "**/*.md", { "hidden": true }]
+  [["a/b/c/.dotfile.md"], ["a/b/c/.dotfile.md"], "**/.*", { "hidden": false }]
+  [["a/b/c/.dotfile.md"], ["a/b/c/.dotfile.md"], "**/.*.md", { "hidden": false }]
+  [[], ["a/b/c/.dotfile.md"], "*.md", { "hidden": false }]
+  [[], ["a/b/c/.dotfile.md"], "*.md", { "hidden": true }]
+  [["a/b/c/.verb.md"], ["a/b/c/.verb.md"], "**/*.md", { "hidden": true }]
+  [["d.md"], ["d.md"], "*.md", { "hidden": true }]
+  [["a/c/b", "a/.d/b"], ["a/./b", "a/../b", "a/c/b", "a/.d/b"], "a/*/b", { "hidden": true }]
+  [["a/.d/b"], ["a/./b", "a/../b", "a/c/b", "a/.d/b"], "a/.*/b"]
+  [["a/.d/b"], ["a/./b", "a/../b", "a/c/b", "a/.d/b"], "a/.*/b", { "hidden": true }]
+
+### it('should match dotfiles when `options.dot` is true', () => {
+  [true, ".dot", "**/*dot", { "hidden": true }]
+  [true, ".dot", "*dot", { "hidden": true }]
+  [true, ".dot", "?dot", { "hidden": true }]
+  [true, ".dotfile.js", ".*.js", { "hidden": true }]
+  [true, "/a/b/.dot", "/**/*dot", { "hidden": true }]
+  [true, "/a/b/.dot", "**/*dot", { "hidden": true }]
+  [true, "/a/b/.dot", "**/.[d]ot", { "hidden": true }]
+  [true, "/a/b/.dot", "**/?dot", { "hidden": true }]
+  [true, "/a/b/.dot", "/**/.[d]ot", { "hidden": true }]
+  [true, "/a/b/.dot", "/**/?dot", { "hidden": true }]
+  [true, "a/b/.dot", "**/*dot", { "hidden": true }]
+  [true, "a/b/.dot", "**/.[d]ot", { "hidden": true }]
+  [true, "a/b/.dot", "**/?dot", { "hidden": true }]
+
+### it('should not match dotfiles when `options.dot` is false', () => {
+  [false, "a/b/.dot", "**/*dot", { "hidden": false }]
+  [false, "a/b/.dot", "**/?dot", { "hidden": false }]
+
+### it('should not match dotfiles when `.dot` is not defined and a dot is not in the glob pattern', () => {
+  [false, "a/b/.dot", "**/*dot"]
+  [false, "a/b/.dot", "**/?dot"]
+
+## describe('valid dotfiles', () => {
+### it('micromatch issue#63 (dots)', () => {
+  [false, "/aaa/.git/foo", "/aaa/**/*"]
+  [false, "/aaa/bbb/.git", "/aaa/bbb/*"]
+  [false, "/aaa/bbb/.git", "/aaa/bbb/**"]
+  [false, "/aaa/bbb/ccc/.git", "/aaa/bbb/**"]
+  [false, "aaa/bbb/.git", "aaa/bbb/**"]
+  [true, "/aaa/bbb/", "/aaa/bbb/**"]
+  [true, "/aaa/bbb/foo", "/aaa/bbb/**"]
+
+  [true, "/aaa/.git/foo", "/aaa/**/*", { "hidden": true }]
+  [true, "/aaa/bbb/.git", "/aaa/bbb/*", { "hidden": true }]
+  [true, "/aaa/bbb/.git", "/aaa/bbb/**", { "hidden": true }]
+  [true, "/aaa/bbb/ccc/.git", "/aaa/bbb/**", { "hidden": true }]
+  [true, "aaa/bbb/.git", "aaa/bbb/**", { "hidden": true }]
+
+### it('should not match dotfiles with single stars by default', () => {
+  [true, "foo", "*"]
+  [true, "foo/bar", "*/*"]
+  [false, ".foo", "*"]
+  [false, ".foo/bar", "*/*"]
+  [false, ".foo/.bar", "*/*"]
+  [false, "foo/.bar", "*/*"]
+  [false, "foo/.bar/baz", "*/*/*"]
+
+### it('should work with dots in the path', () => {
+  [true, "../test.js", "../*.js"]
+  [true, "../.test.js", "../*.js", { "hidden": true }]
+  [false, "../.test.js", "../*.js"]
+
+### it('should not match dotfiles with globstar by default', () => {
+  [false, ".foo", "**/**"]
+  [false, ".foo", "**"]
+  [false, ".foo", "**/*"]
+  [false, "bar/.foo", "**/*"]
+  [false, ".bar", "**/*"]
+  [false, "foo/.bar", "**/*"]
+  [false, "foo/.bar", "**/*a*"]
+
+### it('should match dotfiles when a leading dot is in the pattern', () => {
+  [false, "foo", "**/.*a*"]
+  [true, ".bar", "**/.*a*"]
+  [true, "foo/.bar", "**/.*a*"]
+  [true, ".foo", "**/.*"]
+
+  [false, "foo", ".*a*"]
+  [true, ".bar", ".*a*"]
+  [false, "bar", ".*a*"]
+
+  [false, "foo", ".b*"]
+  [true, ".bar", ".b*"]
+  [false, "bar", ".b*"]
+
+  [false, "foo", ".*r"]
+  [true, ".bar", ".*r"]
+  [false, "bar", ".*r"]
+
+### it('should not match a dot when the dot is not explicitly defined', () => {
+  [false, ".dot", "**/*dot"]
+  [false, ".dot", "**/?dot"]
+  [false, ".dot", "*/*dot"]
+  [false, ".dot", "*/?dot"]
+  [false, ".dot", "*dot"]
+  [false, ".dot", "/*dot"]
+  [false, ".dot", "/?dot"]
+  [false, "/.dot", "**/*dot"]
+  [false, "/.dot", "**/?dot"]
+  [false, "/.dot", "*/*dot"]
+  [false, "/.dot", "*/?dot"]
+  [false, "/.dot", "/*dot"]
+  [false, "/.dot", "/?dot"]
+  [false, "abc/.dot", "*/*dot"]
+  [false, "abc/.dot", "*/?dot"]
+  [false, "abc/.dot", "abc/*dot"]
+  [false, "abc/abc/.dot", "**/*dot"]
+  [false, "abc/abc/.dot", "**/?dot"]
+
+### it('should not match leading dots with question marks', () => {
+  [false, ".dot", "?dot"]
+  [false, "/.dot", "/?dot"]
+  [false, "abc/.dot", "abc/?dot"]
+
+### it('should match double dots when defined in pattern', () => {
+  [false, "../../b", "**/../*"]
+  [false, "../../b", "*/../*"]
+  [false, "../../b", "../*"]
+  [false, "../abc", "*/../*"]
+  [false, "../abc", "*/../*"]
+  [false, "../c/d", "**/../*"]
+  [false, "../c/d", "*/../*"]
+  [false, "../c/d", "../*"]
+  [false, "abc", "**/../*"]
+  [false, "abc", "*/../*"]
+  [false, "abc", "../*"]
+  [false, "abc/../abc", "../*"]
+  [false, "abc/../abc", "../*"]
+  [false, "abc/../", "**/../*"]
+
+  [true, "..", ".."]
+  [true, "../b", "../*"]
+  [true, "../../b", "../../*"]
+  [true, "../../..", "../../.."]
+  [true, "../abc", "**/../*"]
+  [true, "../abc", "../*"]
+  [true, "abc/../abc", "**/../*"]
+  [true, "abc/../abc", "*/../*"]
+  [true, "abc/../abc", "**/../*"]
+  [true, "abc/../abc", "*/../*"]
+
+### it('should not match double dots when not defined in pattern', async () => {
+  [false, "../abc", "**/*"]
+  [false, "../abc", "**/**/**"]
+  [false, "../abc", "**/**/abc"]
+  [false, "../abc", "**/**/abc/**"]
+  [false, "../abc", "**/*/*"]
+  [false, "../abc", "**/abc/**"]
+  [false, "../abc", "*/*"]
+  [false, "../abc", "*/abc/**"]
+  [false, "abc/../abc", "**/*"]
+  [false, "abc/../abc", "**/*/*"]
+  [false, "abc/../abc", "**/*/abc"]
+  [false, "abc/../abc", "*/**/*"]
+  [false, "abc/../abc", "*/*/*"]
+  [false, "abc/../abc", "abc/**/*"]
+  [false, "abc/../abc", "**/**/*"]
+  [false, "abc/../abc", "**/*/*"]
+  [false, "abc/../abc", "*/**/*"]
+  [false, "abc/../abc", "*/*/*"]
+
+  [false, "../abc", "**/**/**", { "hidden": true }]
+  [false, "../abc", "**/**/abc", { "hidden": true }]
+  [false, "../abc", "**/**/abc/**", { "hidden": true }]
+  [false, "../abc", "**/abc/**", { "hidden": true }]
+  [false, "../abc", "*/abc/**", { "hidden": true }]
+
+  [false, "../abc", "**/*/*", { "hidden": true }]
+  [false, "../abc", "*/*", { "hidden": true }]
+  [false, "abc/../abc", "**/*/*", { "hidden": true }]
+  [false, "abc/../abc", "*/*/*", { "hidden": true }]
+  [false, "abc/../abc", "**/*/*", { "hidden": true }]
+  [false, "abc/../abc", "*/*/*", { "hidden": true }]
+  [false, "abc/..", "**/*", { "hidden": true }]
+  [false, "abc/..", "*/*", { "hidden": true }]
+  [false, "abc/abc/..", "*/**/*", { "hidden": true }]
+
+  [false, "abc/../abc", "abc/**/*"]
+  [false, "abc/../abc", "abc/**/*", { "hidden": true }]
+  [false, "abc/../abc", "abc/**/*/*", { "hidden": true }]
+  [false, "abc/../abc", "abc/*/*/*", { "hidden": true }]
+  [false, "abc/../abc", "abc/**/*/*", { "hidden": true }]
+  [false, "abc/../abc", "abc/*/*/*", { "hidden": true }]
+  [false, "abc/..", "abc/**/*", { "hidden": true }]
+  [false, "abc/..", "abc/*/*", { "hidden": true }]
+  [false, "abc/abc/..", "abc/*/**/*", { "hidden": true }]
+
+  [false, "../abc", "**/*/*", { "hidden": true }]
+  [false, "../abc", "*/*", { "hidden": true }]
+  [false, "abc/../abc", "**/*/*", { "hidden": true }]
+  [false, "abc/../abc", "*/*/*", { "hidden": true }]
+  [false, "abc/../abc", "**/*/*", { "hidden": true }]
+  [false, "abc/../abc", "*/*/*", { "hidden": true }]
+  [false, "abc/..", "**/*", { "hidden": true }]
+  [false, "abc/..", "*/*", { "hidden": true }]
+  [false, "abc/abc/..", "*/**/*", { "hidden": true }]
+
+  [false, "abc/../abc", "abc/**/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "abc/**/*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "abc/**/*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "abc/*/*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "abc/**/*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "abc/*/*/*", null, { "strictSlashes": true }]
+  [false, "abc/..", "abc/**/*", null, { "strictSlashes": true }]
+  [false, "abc/..", "abc/*/*", null, { "strictSlashes": true }]
+  [false, "abc/abc/..", "abc/*/**/*", null, { "strictSlashes": true }]
+
+### it('should not match single exclusive dots when not defined in pattern', async () => {
+  [false, ".", "**"]
+  [false, "abc/./abc", "**"]
+  [false, "abc/abc/.", "**"]
+  [false, "abc/abc/./abc", "**"]
+
+  [false, ".", "**", { "hidden": true }]
+  [false, "..", "**", { "hidden": true }]
+  [false, "../", "**", { "hidden": true }]
+  [false, "/../", "**", { "hidden": true }]
+  [false, "/..", "**", { "hidden": true }]
+  [false, "abc/./abc", "**", { "hidden": true }]
+  [false, "abc/abc/.", "**", { "hidden": true }]
+  [false, "abc/abc/./abc", "**", { "hidden": true }]
+
+### it('should match leading dots in root path when glob is prefixed with **/', () => {
+  [false, ".abc/.abc", "**/.abc/**"]
+  // (4.2) [true, ".abc", "**/.abc/**"]
+  [true, ".abc/", "**/.abc/**"]
+  [true, ".abc/abc", "**/.abc/**"]
+  [true, ".abc/abc/b", "**/.abc/**"]
+  [true, "abc/.abc/b", "**/.abc/**"]
+  [true, "abc/abc/.abc", "**/.abc"]
+  // (4.2) [true, "abc/abc/.abc", "**/.abc/**"]
+  [true, "abc/abc/.abc/", "**/.abc/**"]
+  [true, "abc/abc/.abc/abc", "**/.abc/**"]
+  [true, "abc/abc/.abc/c/d", "**/.abc/**"]
+  [true, "abc/abc/.abc/c/d/e", "**/.abc/**"]
+
+### it('should match a dot when the dot is explicitly defined', () => {
+  [true, "/.dot", "**/.dot*"]
+  [true, "aaa/bbb/.dot", "**/.dot*"]
+  [true, "aaa/.dot", "*/.dot*"]
+  [true, ".aaa.bbb", ".*.*"]
+  [true, ".aaa.bbb", ".*.*"]
+  [false, ".aaa.bbb/", ".*.*", null, { "strictSlashes": true }]
+  [false, ".aaa.bbb", ".*.*/"]
+  [true, ".aaa.bbb/", ".*.*/"]
+  // (1) [true, ".aaa.bbb/", ".*.*{,/}"]
+  [true, ".aaa.bbb", ".*.bbb"]
+  [true, ".dotfile.js", ".*.js"]
+  [true, ".dot", ".*ot"]
+  [true, ".dot.bbb.ccc", ".*ot.*.*"]
+  [true, ".dot", ".d?t"]
+  [true, ".dot", ".dot*"]
+  [true, "/.dot", "/.dot*"]
+
+### it('should match dots defined in brackets', () => {
+  [true, "/.dot", "**/.[d]ot"]
+  [true, "aaa/.dot", "**/.[d]ot"]
+  [true, "aaa/bbb/.dot", "**/.[d]ot"]
+  [true, "aaa/.dot", "*/.[d]ot"]
+  [true, ".dot", ".[d]ot"]
+  [true, ".dot", ".[d]ot"]
+  [true, "/.dot", "/.[d]ot"]

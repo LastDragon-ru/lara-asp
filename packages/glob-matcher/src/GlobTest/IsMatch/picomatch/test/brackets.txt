@@ -1,0 +1,20 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/brackets.js
+
+# describe('brackets', () => {
+## describe('trailing stars', () => {
+### it('should support stars following brackets', () => {
+  [true, "a", "[a]*"]
+  [true, "aa", "[a]*"]
+  [true, "aaa", "[a]*"]
+  [true, "az", "[a-z]*"]
+  [true, "zzz", "[a-z]*"]
+
+### it('should match slashes defined in brackets', () => {
+  // (4.7) [true, "foo/bar", "foo[/]bar"]
+  // (4.7) [true, "foo/bar/", "foo[/]bar[/]"]
+  // (4.7) [true, "foo/bar/baz", "foo[/]bar[/]baz"]
+
+### it('should not match slashes following brackets', () => {
+  [false, "a/b", "[a]*"]

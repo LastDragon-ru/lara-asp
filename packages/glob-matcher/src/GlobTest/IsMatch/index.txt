@@ -1,0 +1,121 @@
+# Tests for the Glob.
+#
+# The tests based on the tests from the following libraries:
+#
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+#
+# File format
+# * Leading/Trailing space(s) doesn't matter
+# * Empty line or Line started from `#`, `//` are ignored
+# * The line started from `@` will include specified file
+# * Each other line is a test and should be a valid JSON array with the
+#   following items:
+#
+#   * <expected> (required)
+#     + bool         - match or not
+#     + list<string> - paths which match
+#   * <data> (required)
+#     + string       - path to test
+#     + list<string> - paths to test
+#   * string - (required) pattern
+#   * object - (optional) options
+#
+# Notes:
+# 1. Some features are not supported yet.
+# 2. Some features (like `[..]*` or `(a|b)*`) are strange/not standard and thus
+#    not supported.
+# 3. Some options don't have equivalents, these tests are skipped
+#    * `strictSlashes` - always `true` in our case
+#    * `windows` - windows paths are not supported
+# 4. Differences from "picomatch":
+#    4.1. `/`, `.` and `..` always matches explicitly
+#    4.2. Because of (3) the `a/**` will not match `a`, but will `a/`
+#    4.3. There is no any special processing of quotes inside the pattern
+#    4.4. Path always checks as is (= without any preparation)
+#    4.5. The `\` is always used as an escape character, so `[\b]` will be
+#         treated as `[b]` (use `[\\b]`).
+#    4.6. The `[1]` inside pattern is always character class, so it will not
+#         match to `[1]` in path.
+#    4.7. Slashes inside characters always treated as segments
+#         (`[a/b]` => `[a` `/` `b]`)
+#
+# Picomatch options map:
+# * `dot`           => `hidden`
+# * `noglobstar`    => `globstar`
+# * `strictSlashes` => (3)
+#
+# The following shell can be used to convert js into our tests:
+# sed \
+#    -e 's|^      describe(|#### describe(|' \
+#    -e 's|^    describe(|### describe(|' \
+#    -e 's|^  describe(|## describe(|' \
+#    -e 's|^describe(|# describe(|' \
+#    -e 's|^        it(|##### it(|' \
+#    -e 's|^      it(|#### it(|' \
+#    -e 's|^    it(|### it(|' \
+#    -e 's|^  it(|## it(|' \
+#    -e '/^[ ]*});/d' \
+#    -e 's|^[ ]*// |  // |' \
+#    -e 's|^[ ]*assert(isMatch(|  [true, |' \
+#    -e 's|^[ ]*assert(\!isMatch(|  [false, |' \
+#    -e 's|^[ ]*assert.deepStrictEqual(match(\(.*\), \(.*\)), \(.*\));$|  [\3, \1, \2]|' \
+#    -e 's|));$|]|' \
+#    -e 's|"|__QUOTE__|g' \
+#    -e 's| \x27\([^\x27]*\)\x27| "\1"|g' \
+#    -e 's|\[\x27\([^\x27]*\)\x27|["\1"|g' \
+#    -e 's|__QUOTE__|\\"|g' \
+#    -e 's|, \\"\(.*\)\\", |, "\1", |g' \
+#    -e 's|", \\"\(.*\)\\"]|", "\1"]|g' \
+#    -e 's|{ dot: true }]|{ "hidden": true }]|' \
+#    -e 's|{ dot: false }]|{ "hidden": false }]|' \
+#    -e 's|{ dot: true, strictSlashes: true }]|{ "hidden": false }]|' \
+#    -e 's|{ noglobstar: true }]|{ "globstar": false }]|' \
+#    -e 's|{ strictSlashes: true }]|null, { "strictSlashes": true }]|' \
+#    -e 's|{ bash: true }]|null, { "bash": true }]|' \
+#    -e 's|.*{ regex: true }.*|  // (3) \0|' \
+#    -e 's|.*{ windows: true }.*|  // (3) \0|' \
+#    -e 's|.*{ format }.*|  // (3) \0|' \
+#    -e 's|.*{ relaxSlashes: true }.*|  // (3) \0|' \
+#    -e 's|  // (3)   \[|  // (3) [|' \
+#    /path/to/picomatch/test/<test>.js \
+#    > /path/to/<test>.txt
+
+# Picomatch
+
+@ picomatch/test/api.picomatch.txt
+@ picomatch/test/bash.txt
+@ picomatch/test/brackets.txt
+@ picomatch/test/dotfiles.txt
+@ picomatch/test/dots-invalid.txt
+@ picomatch/test/globstars.txt
+@ picomatch/test/non-globs.txt
+@ picomatch/test/posix-classes.txt
+@ picomatch/test/qmarks.txt
+@ picomatch/test/slashes-posix.txt
+@ picomatch/test/special-characters.txt
+@ picomatch/test/stars.txt
+@ picomatch/test/wildmat.txt
+
+# More
+[false, "ab", "./*", "(4.1)"]
+[false, "ab/", "./*/", "(4.1)"]
+[false, ".", "[[:digit:][:punct:][:space:]]", "(4.1)"]
+[false, ".", "[^[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:lower:][:space:][:upper:][:xdigit:]]", "(4.1)"]
+[false, "a", "a/**", "(4.2)"]
+[true, "a/", "a/**", "(4.2)"]
+[false, "a/b", "**/b/**", "(4.2)"]
+[false, "a/b", "*/b/**", "(4.2)"]
+[false, "abc/abc/.abc", "**/.abc/**", "(4.2)"]
+[true, "abc/abc/.abc/", "**/.abc/**", "(4.2)"]
+[false, ".abc", "**/.abc/**", "(4.2)"]
+[true, ".abc/", "**/.abc/**", "(4.2)"]
+[false, "bdir/", "[a-y]*[^c]", "(4.2)"]
+[true, "foo/\"a\"/bar", "foo/\"*\"/bar", "(4.3)"]
+[false, "***", "\"***\"", "(4.3)"]
+[false, "\\*", "\\*", "(4.4)"]
+[true, "abc", "a[\\b]c", "(4.5)"]
+[false, "foo/bar - copy [1]", "**/*[1]", "(4.6)"]
+
+## (4.7)
+[false, "foo/bar", "foo[/]bar"]
+[false, "foo/bar", "foo[\\/]bar"]

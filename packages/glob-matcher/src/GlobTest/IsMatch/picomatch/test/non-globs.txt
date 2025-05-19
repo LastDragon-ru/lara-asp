@@ -1,0 +1,48 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/non-globs.js
+
+# describe('non-globs', () => {
+## it('should match non-globs', () => {
+  [false, "/ab", "/a"]
+  [false, "a/a", "a/b"]
+  [false, "a/a", "a/c"]
+  [false, "a/b", "a/c"]
+  [false, "a/c", "a/b"]
+  [false, "aaa", "aa"]
+  [false, "ab", "/a"]
+  [false, "ab", "a"]
+
+  [true, "/a", "/a"]
+  [true, "/a/", "/a/"]
+  [true, "/a/a", "/a/a"]
+  [true, "/a/a/", "/a/a/"]
+  [true, "/a/a/a", "/a/a/a"]
+  [true, "/a/a/a/", "/a/a/a/"]
+  [true, "/a/a/a/a", "/a/a/a/a"]
+  [true, "/a/a/a/a/a", "/a/a/a/a/a"]
+
+  [true, "a", "a"]
+  [true, "a/", "a/"]
+  [true, "a/a", "a/a"]
+  [true, "a/a/", "a/a/"]
+  [true, "a/a/a", "a/a/a"]
+  [true, "a/a/a/", "a/a/a/"]
+  [true, "a/a/a/a", "a/a/a/a"]
+  [true, "a/a/a/a/a", "a/a/a/a/a"]
+
+## it('should match literal dots', () => {
+  [true, ".", "."]
+  [true, "..", ".."]
+  [false, "...", ".."]
+  [true, "...", "..."]
+  [true, "....", "...."]
+  [false, "....", "..."]
+
+## it('should handle escaped characters as literals', () => {
+  [false, "abc", "abc\\*"]
+  [true, "abc*", "abc\\*"]
+
+## it('should match windows paths', () => {
+  // (3) [true, "aaa\\bbb", "aaa/bbb", { windows: true }]
+  // (3) [true, "aaa/bbb", "aaa/bbb", { windows: true }]

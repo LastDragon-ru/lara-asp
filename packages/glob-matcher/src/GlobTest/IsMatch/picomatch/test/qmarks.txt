@@ -1,0 +1,108 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/posix-classes.js
+
+# describe('qmarks and stars', () => {
+## it('should match question marks with question marks', () => {
+  [["?"], ["?", "??", "???"], "?"]
+  [["??"], ["?", "??", "???"], "??"]
+  [["???"], ["?", "??", "???"], "???"]
+
+## it('should match question marks and stars with question marks and stars', () => {
+  [["?", "??", "???"], ["?", "??", "???"], "?*"]
+  [["?", "??", "???"], ["?", "??", "???"], "*?"]
+  [["??", "???"], ["?", "??", "???"], "?*?"]
+  [["?*", "?*?", "?*?*?"], ["?*", "?*?", "?*?*?"], "?*"]
+  [["?*", "?*?", "?*?*?"], ["?*", "?*?", "?*?*?"], "*?"]
+  [["?*", "?*?", "?*?*?"], ["?*", "?*?", "?*?*?"], "?*?"]
+
+## it('should support consecutive stars and question marks', () => {
+  [["aac", "abc"], ["aaa", "aac", "abc"], "a*?c"]
+  [["abc", "acc"], ["abc", "abb", "acc"], "a**?c"]
+  [["abc", "aaaabbbbbbccccc"], ["abc", "aaaabbbbbbccccc"], "a*****?c"]
+  [["a", "ab", "abc", "abcd"], ["a", "ab", "abc", "abcd"], "*****?"]
+  [["ab", "abc", "abcd"], ["a", "ab", "abc", "abcd"], "*****??"]
+  [["abc", "abcd"], ["a", "ab", "abc", "abcd"], "?*****??"]
+  [["abc"], ["abc", "abb", "zzz"], "?*****?c"]
+  [["abc", "bbb", "zzz"], ["abc", "bbb", "zzz"], "?***?****?"]
+  [["abc"], ["abc", "bbb", "zzz"], "?***?****c"]
+  [["abc"], ["abc"], "*******?"]
+  [["abc"], ["abc"], "*******c"]
+  [["abc"], ["abc"], "?***?****"]
+  [["abcdecdhjk"], ["abcdecdhjk"], "a****c**?**??*****"]
+  [["abcdecdhjk"], ["abcdecdhjk"], "a**?**cd**?**??***k"]
+  [["abcdecdhjk"], ["abcdecdhjk"], "a**?**cd**?**??***k**"]
+  [["abcdecdhjk"], ["abcdecdhjk"], "a**?**cd**?**??k"]
+  [["abcdecdhjk"], ["abcdecdhjk"], "a**?**cd**?**??k***"]
+  [["abcdecdhjk"], ["abcdecdhjk"], "a*cd**?**??k"]
+
+## it('should match backslashes with question marks when not on windows', () => {
+  [false, "aaa\\\\bbb", "aaa?bbb"]
+  [true, "aaa\\\\bbb", "aaa??bbb"]
+  [true, "aaa\\bbb", "aaa?bbb"]
+
+## it('should match one character per question mark', () => {
+  [["a"], ["a", "aa", "ab", "aaa", "abcdefg"], "?"]
+  [["aa", "ab"], ["a", "aa", "ab", "aaa", "abcdefg"], "??"]
+  [["aaa"], ["a", "aa", "ab", "aaa", "abcdefg"], "???"]
+  [[], ["a/", "/a/", "/a/b/", "/a/b/c/", "/a/b/c/d/"], "??"]
+  [["a/b/c.md"], ["a/b/c.md"], "a/?/c.md"]
+  [[], ["a/bb/c.md"], "a/?/c.md"]
+  [["a/bb/c.md"], ["a/bb/c.md"], "a/??/c.md"]
+  [[], ["a/bbb/c.md"], "a/??/c.md"]
+  [["a/bbb/c.md"], ["a/bbb/c.md"], "a/???/c.md"]
+  [["a/bbbb/c.md"], ["a/bbbb/c.md"], "a/????/c.md"]
+
+## it('should not match slashes question marks', () => {
+  [["/a"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "/?"]
+  [["/aa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "/??"]
+  [["/aaa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "/???"]
+  [["/a/"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "/?/"]
+  [["aa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "??"]
+  [["a/a"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "?/?"]
+  [["aaa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "???"]
+  [["aaa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "a?a"]
+  [["aaa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "aa?"]
+  [["aaa"], ["//", "a/", "/a", "/a/", "aa", "/aa", "a/a", "aaa", "/aaa"], "?aa"]
+
+## it('should support question marks and stars between slashes', () => {
+  [["a/b.bb/c/d/efgh.ijk/e"], ["a/b.bb/c/d/efgh.ijk/e"], "a/*/?/**/e"]
+  [[], ["a/b/c/d/e"], "a/?/c/?/*/e"]
+  [["a/b/c/d/e/e"], ["a/b/c/d/e/e"], "a/?/c/?/*/e"]
+  [["a/b/c/d/efgh.ijk/e"], ["a/b/c/d/efgh.ijk/e"], "a/*/?/**/e"]
+  [["a/b/c/d/efghijk/e"], ["a/b/c/d/efghijk/e"], "a/*/?/**/e"]
+  [["a/b/c/d/efghijk/e"], ["a/b/c/d/efghijk/e"], "a/?/**/e"]
+  [["a/b/c/d/efghijk/e"], ["a/b/c/d/efghijk/e"], "a/?/c/?/*/e"]
+  [[], ["a/bb/e"], "a/?/**/e"]
+  [[], ["a/bb/e"], "a/?/e"]
+  [["a/bbb/c/d/efgh.ijk/e"], ["a/bbb/c/d/efgh.ijk/e"], "a/*/?/**/e"]
+
+## it('should match no more than one character between slashes', () => {
+  [["a/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "?/?"]
+  [["a/aaa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "?/???/?"]
+  [["a/aaaa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "?/????/?"]
+  [["a/aaaaa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "?/?????/?"]
+  [["a/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "a/?"]
+  [["a/a/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "a/?/a"]
+  [["a/aa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "a/??/a"]
+  [["a/aaa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "a/???/a"]
+  [["a/aaaa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "a/????/a"]
+  [["a/aaaaa/a"], ["a/a", "a/a/a", "a/aa/a", "a/aaa/a", "a/aaaa/a", "a/aaaaa/a"], "a/????a/a"]
+
+## it('should not match non-leading dots with question marks', () => {
+  [["a"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "?"]
+  [[".a"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], ".?"]
+  [["aa"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "?a"]
+  [["aa"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "??"]
+  [["aaa"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "?a?"]
+  [["aaa.a", "aaaaa"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "aaa?a"]
+  [["aaa.a", "aaaaa"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "a?a?a"]
+  [["aaa.a", "aaaaa"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "a???a"]
+  [["aaaa.a"], [".", ".a", "a", "aa", "a.a", "aa.a", "aaa", "aaa.a", "aaaa.a", "aaaaa"], "a?????"]
+
+## it('should match non-leading dots with question marks when options.dot is true', () => {
+  [["a"], [".", ".a", "a", "aa", "a.a", "aa.a", ".aa", "aaa.a", "aaaa.a", "aaaaa"], "?", { "hidden": true }, "Original test also match `.`, but see (4.1)"]
+  [[".a"], [".", ".a", "a", "aa", "a.a", "aa.a", ".aa", "aaa.a", "aaaa.a", "aaaaa"], ".?", { "hidden": true }]
+  [[".a", "aa"], [".", ".a", "a", "aa", "a.a", "aa.a", ".aa", "aaa.a", "aaaa.a", "aaaaa"], "?a", { "hidden": true }]
+  [[".a", "aa"], [".", ".a", "a", "aa", "a.a", "aa.a", ".aa", "aaa.a", "aaaa.a", "aaaaa"], "??", { "hidden": true }]
+  [[".aa"], [".", ".a", "a", "aa", "a.a", "aa.a", ".aa", "aaa.a", "aaaa.a", "aaaaa"], "?a?", { "hidden": true }]

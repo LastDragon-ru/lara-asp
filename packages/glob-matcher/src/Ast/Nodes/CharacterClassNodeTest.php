@@ -11,41 +11,26 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * @internal
  */
-#[CoversClass(AsteriskNode::class)]
-final class AsteriskNodeTest extends TestCase {
+#[CoversClass(CharacterClassNode::class)]
+final class CharacterClassNodeTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderToRegex')]
-    public function testToRegex(string $expected, AsteriskNode $node, Options $options): void {
+    public function testToRegex(string $expected, CharacterClassNode $node, Options $options): void {
         self::assertSame($expected, $node::toRegex($options, new Cursor($node)));
-    }
-
-    public function testMerge(): void {
-        $a = new AsteriskNode(1);
-        $b = new AsteriskNode(2);
-        $c = new class(3) extends AsteriskNode {
-            // empty
-        };
-
-        self::assertSame($a, AsteriskNode::merge($a, $b));
-        self::assertSame(3, $a->count);
-
-        self::assertSame($c, AsteriskNode::merge($b, $c));
-        self::assertSame(2, $b->count);
-        self::assertSame(3, $c->count);
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<string, array{string, AsteriskNode, Options}>
+     * @return array<string, array{string, CharacterClassNode, Options}>
      */
     public static function dataProviderToRegex(): array {
         return [
             'default' => [
-                '[^/]*?',
-                new AsteriskNode(),
+                '[:ascii:]',
+                new CharacterClassNode(CharacterClass::Ascii),
                 new Options(),
             ],
         ];

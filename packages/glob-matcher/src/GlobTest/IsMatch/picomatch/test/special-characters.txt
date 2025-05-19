@@ -1,0 +1,603 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/posix-classes.js
+
+# describe('special characters', () => {
+## describe('numbers', () => {
+### it('should match numbers in the input string', () => {
+  [false, "1", "*/*"]
+  [true, "1/1", "*/*"]
+  [true, "1/2", "*/*"]
+  [false, "1/1/1", "*/*"]
+  [false, "1/1/2", "*/*"]
+
+  [false, "1", "*/*/1"]
+  [false, "1/1", "*/*/1"]
+  [false, "1/2", "*/*/1"]
+  [true, "1/1/1", "*/*/1"]
+  [false, "1/1/2", "*/*/1"]
+
+  [false, "1", "*/*/2"]
+  [false, "1/1", "*/*/2"]
+  [false, "1/2", "*/*/2"]
+  [false, "1/1/1", "*/*/2"]
+  [true, "1/1/2", "*/*/2"]
+
+## describe('qmarks', () => {
+### it('should match literal ? in the input string', () => {
+  [true, "?", "*"]
+  [true, "/?", "/*"]
+  [true, "?/?", "*/*"]
+  [true, "?/?/", "*/*/"]
+  [true, "/?", "/?"]
+  [true, "?/?", "?/?"]
+  [true, "foo?/bar?", "*/*"]
+
+### it('should not match slashes with qmarks', () => {
+  [false, "aaa/bbb", "aaa?bbb"]
+
+### it('should match literal ? with qmarks', () => {
+  [false, "?", "??"]
+  [false, "?", "???"]
+  [false, "??", "?"]
+  [false, "??", "???"]
+  [false, "???", "?"]
+  [false, "???", "??"]
+  [false, "ac?", "ab?"]
+  [true, "?", "?*"]
+  [true, "??", "?*"]
+  [true, "???", "?*"]
+  [true, "????", "?*"]
+  [true, "?", "?"]
+  [true, "??", "??"]
+  [true, "???", "???"]
+  [true, "ab?", "ab?"]
+
+### it('should match other non-slash characters with qmarks', () => {
+  [false, "/a/", "?"]
+  [false, "/a/", "??"]
+  [false, "/a/", "???"]
+  [false, "/a/b/", "??"]
+  [false, "aaa/bbb", "aaa?bbb"]
+  [false, "aaa//bbb", "aaa?bbb"]
+  [false, "aaa\\\\bbb", "aaa?bbb"]
+  [true, "acb/", "a?b/"]
+  [true, "acdb/", "a??b/"]
+  [true, "/acb", "/a?b"]
+
+### it('should match non-slash characters when ? is escaped', () => {
+  [false, "acb/", "a\\?b/"]
+  [false, "acdb/", "a\\?\\?b/"]
+  [false, "/acb", "/a\\?b"]
+
+### it('should match one character per question mark', () => {
+  [true, "a", "?"]
+  [false, "aa", "?"]
+  [false, "ab", "?"]
+  [false, "aaa", "?"]
+  [false, "abcdefg", "?"]
+
+  [false, "a", "??"]
+  [true, "aa", "??"]
+  [true, "ab", "??"]
+  [false, "aaa", "??"]
+  [false, "abcdefg", "??"]
+
+  [false, "a", "???"]
+  [false, "aa", "???"]
+  [false, "ab", "???"]
+  [true, "aaa", "???"]
+  [false, "abcdefg", "???"]
+
+  [false, "aaa", "a?c"]
+  [true, "aac", "a?c"]
+  [true, "abc", "a?c"]
+  [false, "a", "ab?"]
+  [false, "aa", "ab?"]
+  [false, "ab", "ab?"]
+  [false, "ac", "ab?"]
+  [false, "abcd", "ab?"]
+  [false, "abbb", "ab?"]
+  [true, "acb", "a?b"]
+
+  [false, "a/bb/c/dd/e.md", "a/?/c/?/e.md"]
+  [true, "a/bb/c/dd/e.md", "a/??/c/??/e.md"]
+  [false, "a/bbb/c.md", "a/??/c.md"]
+  [true, "a/b/c.md", "a/?/c.md"]
+  [true, "a/b/c/d/e.md", "a/?/c/?/e.md"]
+  [false, "a/b/c/d/e.md", "a/?/c/???/e.md"]
+  [true, "a/b/c/zzz/e.md", "a/?/c/???/e.md"]
+  [false, "a/bb/c.md", "a/?/c.md"]
+  [true, "a/bb/c.md", "a/??/c.md"]
+  [true, "a/bbb/c.md", "a/???/c.md"]
+  [true, "a/bbbb/c.md", "a/????/c.md"]
+
+### it('should enforce one character per qmark even when preceded by stars', () => {
+  [false, "a", "*??"]
+  [false, "aa", "*???"]
+  [true, "aaa", "*???"]
+  [false, "a", "*****??"]
+  [false, "aa", "*****???"]
+  [true, "aaa", "*****???"]
+
+### it('should support qmarks and stars', () => {
+  [false, "aaa", "a*?c"]
+  [true, "aac", "a*?c"]
+  [true, "abc", "a*?c"]
+
+  [true, "abc", "a**?c"]
+  [false, "abb", "a**?c"]
+  [true, "acc", "a**?c"]
+  [true, "abc", "a*****?c"]
+
+  [true, "a", "*****?"]
+  [true, "aa", "*****?"]
+  [true, "abc", "*****?"]
+  [true, "zzz", "*****?"]
+  [true, "bbb", "*****?"]
+  [true, "aaaa", "*****?"]
+
+  [false, "a", "*****??"]
+  [true, "aa", "*****??"]
+  [true, "abc", "*****??"]
+  [true, "zzz", "*****??"]
+  [true, "bbb", "*****??"]
+  [true, "aaaa", "*****??"]
+
+  [false, "a", "?*****??"]
+  [false, "aa", "?*****??"]
+  [true, "abc", "?*****??"]
+  [true, "zzz", "?*****??"]
+  [true, "bbb", "?*****??"]
+  [true, "aaaa", "?*****??"]
+
+  [true, "abc", "?*****?c"]
+  [false, "abb", "?*****?c"]
+  [false, "zzz", "?*****?c"]
+
+  [true, "abc", "?***?****c"]
+  [false, "bbb", "?***?****c"]
+  [false, "zzz", "?***?****c"]
+
+  [true, "abc", "?***?****?"]
+  [true, "bbb", "?***?****?"]
+  [true, "zzz", "?***?****?"]
+
+  [true, "abc", "?***?****"]
+  [true, "abc", "*******c"]
+  [true, "abc", "*******?"]
+  [true, "abcdecdhjk", "a*cd**?**??k"]
+  [true, "abcdecdhjk", "a**?**cd**?**??k"]
+  [true, "abcdecdhjk", "a**?**cd**?**??k***"]
+  [true, "abcdecdhjk", "a**?**cd**?**??***k"]
+  [true, "abcdecdhjk", "a**?**cd**?**??***k**"]
+  [true, "abcdecdhjk", "a****c**?**??*****"]
+
+### it('should support qmarks, stars and slashes', () => {
+  [false, "a/b/c/d/e.md", "a/?/c/?/*/e.md"]
+  [true, "a/b/c/d/e/e.md", "a/?/c/?/*/e.md"]
+  [true, "a/b/c/d/efghijk/e.md", "a/?/c/?/*/e.md"]
+  [true, "a/b/c/d/efghijk/e.md", "a/?/**/e.md"]
+  [false, "a/bb/e.md", "a/?/e.md"]
+  [true, "a/bb/e.md", "a/??/e.md"]
+  [false, "a/bb/e.md", "a/?/**/e.md"]
+  [true, "a/b/ccc/e.md", "a/?/**/e.md"]
+  [true, "a/b/c/d/efghijk/e.md", "a/*/?/**/e.md"]
+  [true, "a/b/c/d/efgh.ijk/e.md", "a/*/?/**/e.md"]
+  [true, "a/b.bb/c/d/efgh.ijk/e.md", "a/*/?/**/e.md"]
+  [true, "a/bbb/c/d/efgh.ijk/e.md", "a/*/?/**/e.md"]
+
+### it('should match non-leading dots', () => {
+  [true, "aaa.bbb", "aaa?bbb"]
+
+### it('should not match leading dots', () => {
+  [false, ".aaa/bbb", "?aaa/bbb"]
+  [false, "aaa/.bbb", "aaa/?bbb"]
+
+### it('should match characters preceding a dot', () => {
+  [true, "a/bbb/abcd.md", "a/*/ab??.md"]
+  [true, "a/bbb/abcd.md", "a/bbb/ab??.md"]
+  [true, "a/bbb/abcd.md", "a/bbb/ab???md"]
+
+## describe('parentheses ()', () => {
+### it('should match literal parentheses in the input string', () => {
+  [false, "my/folder (Work, Accts)", "/*"]
+  [true, "my/folder (Work, Accts)", "*/*"]
+  [true, "my/folder (Work, Accts)", "*/*,*"]
+  [true, "my/folder (Work, Accts)", "*/*(W*, *)*"]
+  [true, "my/folder/(Work, Accts)", "**/*(W*, *)*"]
+  [false, "my/folder/(Work, Accts)", "*/*(W*, *)*"]
+  [true, "foo(bar)baz", "foo*baz"]
+
+### it('should match literal parens with brackets', async () => {
+  // (2) [true, "foo(bar)baz", "foo[bar()]+baz"]
+
+## describe('path characters', () => {
+### it('should match windows drives with globstars', () => {
+  [true, "bar/", "**"]
+  [true, "A://", "**"]
+  [true, "B:foo/a/b/c/d", "**"]
+  [true, "C:/Users/", "**"]
+  [true, "c:\\", "**"]
+  [true, "C:\\Users\\", "**"]
+  [true, "C:cwd/another", "**"]
+  [true, "C:cwd\\another", "**"]
+
+### it('should not match multiple windows directories with a single star', () => {
+  // (3) [true, "c:\\", "*{,/}", { windows: true }]
+  // (3) [false, "C:\\Users\\", "*", { windows: true }]
+  // (3) [false, "C:cwd\\another", "*", { windows: true }]
+
+### it('should match mixed slashes on windows', () => {
+  // (3) [true, "//C://user\\docs\\Letter.txt", "**", { windows: true }]
+  // (3) [true, "//C:\\\\user/docs/Letter.txt", "**", { windows: true }]
+  // (3) [true, ":\\", "*{,/}", { windows: true }]
+  // (3) [true, ":\\", ":*{,/}", { windows: true }]
+  // (3) [true, "\\\\foo/bar", "**", { windows: true }]
+  // (3) [true, "\\\\foo/bar", "//*/*", { windows: true }]
+  // (3) [true, "\\\\unc\\admin$", "**", { windows: true }]
+  // (3) [true, "\\\\unc\\admin$", "//*/*$", { windows: true }]
+  // (3) [true, "\\\\unc\\admin$\\system32", "//*/*$/*32", { windows: true }]
+  // (3) [true, "\\\\unc\\share\\foo", "//u*/s*/f*", { windows: true }]
+  // (3) [true, "foo\\bar\\baz", "f*/*/*", { windows: true }]
+
+### it('should match mixed slashes when options.windows is true', () => {
+  // (3) [true, "//C://user\\docs\\Letter.txt", "**", { windows: true }]
+  // (3) [true, "//C:\\\\user/docs/Letter.txt", "**", { windows: true }]
+  // (3) [true, ":\\", "*{,/}", { windows: true }]
+  // (3) [true, ":\\", ":*{,/}", { windows: true }]
+  // (3) [true, "\\\\foo/bar", "**", { windows: true }]
+  // (3) [true, "\\\\foo/bar", "//*/*", { windows: true }]
+  // (3) [true, "\\\\unc\\admin$", "//**", { windows: true }]
+  // (3) [true, "\\\\unc\\admin$", "//*/*$", { windows: true }]
+  // (3) [true, "\\\\unc\\admin$\\system32", "//*/*$/*32", { windows: true }]
+  // (3) [true, "\\\\unc\\share\\foo", "//u*/s*/f*", { windows: true }]
+  // (3) [true, "\\\\\\\\\\\\unc\\share\\foo", "/\\{1,\\}u*/s*/f*", { windows: true, unescape: true }]
+  // (3) [true, "foo\\bar\\baz", "f*/*/*", { windows: true }]
+  [true, "//*:/**", "**"]
+  [false, "//server/file", "//*"]
+  [true, "//server/file", "/**"]
+  [true, "//server/file", "//**"]
+  [true, "//server/file", "**"]
+  [true, "//UNC//Server01//user//docs//Letter.txt", "**"]
+  [true, "/foo", "**"]
+  [true, "/foo/a/b/c/d", "**"]
+  [true, "/foo/bar", "**"]
+  [true, "/home/foo", "**"]
+  [true, "/home/foo/..", "**/.."]
+  [true, "/user/docs/Letter.txt", "**"]
+  [true, "directory\\directory", "**"]
+  [true, "a/b/c.js", "**"]
+  [true, "directory/directory", "**"]
+  [true, "foo/bar", "**"]
+
+### it('should match any character zero or more times, except for /', () => {
+  [false, "foo", "*a*"]
+  [false, "foo", "*r"]
+  [false, "foo", "b*"]
+  [false, "foo/bar", "*"]
+  [true, "foo/bar", "*/*"]
+  [false, "foo/bar/baz", "*/*"]
+  [true, "bar", "*a*"]
+  [true, "bar", "*r"]
+  [true, "bar", "b*"]
+  [true, "foo/bar/baz", "*/*/*"]
+
+### it('should match dashes surrounded by spaces', () => {
+  [true, "my/folder - 1", "*/*"]
+  [true, "my/folder - copy (1)", "*/*"]
+  [true, "my/folder - copy [1]", "*/*"]
+  [true, "my/folder - foo + bar - copy [1]", "*/*"]
+  [false, "my/folder - foo + bar - copy [1]", "*"]
+
+  [true, "my/folder - 1", "*/*-*"]
+  [true, "my/folder - copy (1)", "*/*-*"]
+  [true, "my/folder - copy [1]", "*/*-*"]
+  [true, "my/folder - foo + bar - copy [1]", "*/*-*"]
+
+  [true, "my/folder - 1", "*/*1"]
+  [false, "my/folder - copy (1)", "*/*1"]
+
+## describe('brackets', () => {
+### it('should support square brackets in globs', () => {
+  [true, "foo/bar - 1", "**/*[1]"]
+  [false, "foo/bar - copy (1)", "**/*[1]"]
+  [false, "foo/bar (1)", "**/*[1]"]
+  [false, "foo/bar (4)", "**/*[1]"]
+  [false, "foo/bar (7)", "**/*[1]"]
+  [false, "foo/bar (42)", "**/*[1]"]
+  // (4.6) [true, "foo/bar - copy [1]", "**/*[1]"]
+  // (4.6) [true, "foo/bar - foo + bar - copy [1]", "**/*[1]"]
+
+### it('should match (escaped) bracket literals', () => {
+  [true, "a [b]", "a \\[b\\]"]
+  // (4.6) [true, "a [b] c", "a [b] c"]
+  [true, "a [b]", "a \\[b\\]*"]
+  [true, "a [bc]", "a \\[bc\\]*"]
+  [false, "a [b]", "a \\[b\\].*"]
+  [true, "a [b].js", "a \\[b\\].*"]
+  [false, "foo/bar - 1", "**/*\\[*\\]"]
+  [false, "foo/bar - copy (1)", "**/*\\[*\\]"]
+  [false, "foo/bar (1)", "**/*\\[*\\]"]
+  [false, "foo/bar (4)", "**/*\\[*\\]"]
+  [false, "foo/bar (7)", "**/*\\[*\\]"]
+  [false, "foo/bar (42)", "**/*\\[*\\]"]
+  [true, "foo/bar - copy [1]", "**/*\\[*\\]"]
+  [true, "foo/bar - foo + bar - copy [1]", "**/*\\[*\\]"]
+
+  [false, "foo/bar - 1", "**/*\\[1\\]"]
+  [false, "foo/bar - copy (1)", "**/*\\[1\\]"]
+  [false, "foo/bar (1)", "**/*\\[1\\]"]
+  [false, "foo/bar (4)", "**/*\\[1\\]"]
+  [false, "foo/bar (7)", "**/*\\[1\\]"]
+  [false, "foo/bar (42)", "**/*\\[1\\]"]
+  [true, "foo/bar - copy [1]", "**/*\\[1\\]"]
+  [true, "foo/bar - foo + bar - copy [1]", "**/*\\[1\\]"]
+
+  [false, "foo/bar - 1", "*/*\\[*\\]"]
+  [false, "foo/bar - copy (1)", "*/*\\[*\\]"]
+  [false, "foo/bar (1)", "*/*\\[*\\]"]
+  [false, "foo/bar (4)", "*/*\\[*\\]"]
+  [false, "foo/bar (7)", "*/*\\[*\\]"]
+  [false, "foo/bar (42)", "*/*\\[*\\]"]
+  [true, "foo/bar - copy [1]", "*/*\\[*\\]"]
+  [true, "foo/bar - foo + bar - copy [1]", "*/*\\[*\\]"]
+
+  [true, "a [b]", "a \\[b\\]"]
+  // (4.6) [true, "a [b] c", "a [b] c"]
+  [true, "a [b]", "a \\[b\\]*"]
+  [true, "a [bc]", "a \\[bc\\]*"]
+  [false, "a [b]", "a \\[b\\].*"]
+  [true, "a [b].js", "a \\[b\\].*"]
+
+## describe('star - \"*\"', () => {
+### it('should match literal *', () => {
+  [true, "*", "*"]
+  [true, "*/*", "*/*"]
+  [true, "*/*", "?/?"]
+  [true, "*/*/", "*/*/"]
+  [true, "/*", "/*"]
+  [true, "/*", "/?"]
+  [true, "foo*/bar*", "*/*"]
+
+### it('should support stars following brackets', () => {
+  // (2) [true, "a", "[a]*"]
+  [true, "aa", "[a]*"]
+  // (2) [true, "aaa", "[a]*"]
+  // (2) [true, "az", "[a-z]*"]
+  // (2) [true, "zzz", "[a-z]*"]
+
+### it('should support stars following parens', () => {
+  // (2) [true, "a", "(a)*"]
+  // (2) [true, "ab", "(a|b)*"]
+  // (2) [true, "aa", "(a)*"]
+  // (2) [true, "aaab", "(a|b)*"]
+  // (2) [true, "aaabbb", "(a|b)*"]
+
+### it('should not match slashes with single stars', () => {
+  [false, "a/b", "(a)*"]
+  // (2) [false, "a/b", "[a]*"]
+  [false, "a/b", "a*"]
+  [false, "a/b", "(a|b)*"]
+
+### it('should not match dots with stars by default', () => {
+  [false, ".a", "(a)*"]
+  [false, ".a", "*[a]*"]
+  [false, ".a", "*[a]"]
+  [false, ".a", "*a*"]
+  [false, ".a", "*a"]
+  [false, ".a", "*(a|b)"]
+
+## describe('plus - \"+\"', () => {
+### it('should match literal +', () => {
+  [true, "+", "*"]
+  [true, "/+", "/*"]
+  [true, "+/+", "*/*"]
+  [true, "+/+/", "*/*/"]
+  [true, "/+", "/+"]
+  [true, "/+", "/?"]
+  [true, "+/+", "?/?"]
+  [true, "+/+", "+/+"]
+  [true, "foo+/bar+", "*/*"]
+
+### it('should support plus signs that follow brackets (and not escape them)', () => {
+  // (2) [true, "a", "[a]+"]
+  // (2) [true, "aa", "[a]+"]
+  // (2) [true, "aaa", "[a]+"]
+  // (2) [true, "az", "[a-z]+"]
+  // (2) [true, "zzz", "[a-z]+"]
+
+### it('should not escape plus signs that follow parens', () => {
+  // (2) [true, "a", "(a)+"]
+  // (2) [true, "ab", "(a|b)+"]
+  // (2) [true, "aa", "(a)+"]
+  // (2) [true, "aaab", "(a|b)+"]
+  // (2) [true, "aaabbb", "(a|b)+"]
+
+### it('should escape plus signs to match string literals', () => {
+  [true, "a+b/src/glimini.js", "a+b/src/*.js"]
+  [true, "+b/src/glimini.js", "+b/src/*.js"]
+  [true, "coffee+/src/glimini.js", "coffee+/src/*.js"]
+  [true, "coffee+/src/glimini.js", "coffee+/src/*.js"]
+  [true, "coffee+/src/glimini.js", "coffee+/src/*"]
+
+### it('should not escape + following brackets', () => {
+  // (2) [true, "a", "[a]+"]
+  // (2) [true, "aa", "[a]+"]
+  // (2) [true, "aaa", "[a]+"]
+  // (2) [true, "az", "[a-z]+"]
+  // (2) [true, "zzz", "[a-z]+"]
+
+### it('should not escape + following parens', () => {
+  // (2) [true, "a", "(a)+"]
+  // (2) [true, "ab", "(a|b)+"]
+  // (2) [true, "aa", "(a)+"]
+  // (2) [true, "aaab", "(a|b)+"]
+  // (2) [true, "aaabbb", "(a|b)+"]
+
+## describe('dollar $', () => {
+### it('should match dollar signs', () => {
+  // (1) [false, "$", "!($)"]
+  // (1) [false, "$", "!$"]
+  // (1) [true, "$$", "!$"]
+  // (1) [true, "$$", "!($)"]
+  // (1) [true, "$$$", "!($)"]
+  // (1) [true, "^", "!($)"]
+
+  // (1) [true, "$", "!($$)"]
+  // (1) [false, "$$", "!($$)"]
+  // (1) [true, "$$$", "!($$)"]
+  // (1) [true, "^", "!($$)"]
+
+  // (1) [false, "$", "!($*)"]
+  // (1) [false, "$$", "!($*)"]
+  // (1) [false, "$$$", "!($*)"]
+  // (1) [true, "^", "!($*)"]
+
+  [true, "$", "*"]
+  [true, "$$", "*"]
+  [true, "$$$", "*"]
+  [true, "^", "*"]
+
+  [true, "$", "$*"]
+  [true, "$$", "$*"]
+  [true, "$$$", "$*"]
+  [false, "^", "$*"]
+
+  [true, "$", "*$*"]
+  [true, "$$", "*$*"]
+  [true, "$$$", "*$*"]
+  [false, "^", "*$*"]
+
+  [true, "$", "*$"]
+  [true, "$$", "*$"]
+  [true, "$$$", "*$"]
+  [false, "^", "*$"]
+
+  [false, "$", "?$"]
+  [true, "$$", "?$"]
+  [false, "$$$", "?$"]
+  [false, "^", "?$"]
+
+## describe('caret ^', () => {
+### it('should match carets', () => {
+  [true, "^", "^"]
+  [true, "^/foo", "^/*"]
+  [true, "^/foo", "^/*"]
+  [true, "foo^", "*^"]
+  [true, "^foo/foo", "^foo/*"]
+  [true, "foo^/foo", "foo^/*"]
+
+  // (1) [false, "^", "!(^)"]
+  // (1) [true, "^^", "!(^)"]
+  // (1) [true, "^^^", "!(^)"]
+  // (1) [true, "&", "!(^)"]
+
+  // (1) [true, "^", "!(^^)"]
+  // (1) [false, "^^", "!(^^)"]
+  // (1) [true, "^^^", "!(^^)"]
+  // (1) [true, "&", "!(^^)"]
+
+  // (1) [false, "^", "!(^*)"]
+  // (1) [false, "^^", "!(^*)"]
+  // (1) [false, "^^^", "!(^*)"]
+  // (1) [true, "&", "!(^*)"]
+
+  [true, "^", "*"]
+  [true, "^^", "*"]
+  [true, "^^^", "*"]
+  [true, "&", "*"]
+
+  [true, "^", "^*"]
+  [true, "^^", "^*"]
+  [true, "^^^", "^*"]
+  [false, "&", "^*"]
+
+  [true, "^", "*^*"]
+  [true, "^^", "*^*"]
+  [true, "^^^", "*^*"]
+  [false, "&", "*^*"]
+
+  [true, "^", "*^"]
+  [true, "^^", "*^"]
+  [true, "^^^", "*^"]
+  [false, "&", "*^"]
+
+  [false, "^", "?^"]
+  [true, "^^", "?^"]
+  [false, "^^^", "?^"]
+  [false, "&", "?^"]
+
+## describe('mixed special characters', () => {
+### it('should match special characters in paths', () => {
+  [true, "my/folder +1", "*/*"]
+  [true, "my/folder -1", "*/*"]
+  [true, "my/folder *1", "*/*"]
+  [true, "my/folder", "*/*"]
+  [true, "my/folder+foo+bar&baz", "*/*"]
+  [true, "my/folder - $1.00", "*/*"]
+  [true, "my/folder - ^1.00", "*/*"]
+  [true, "my/folder - %1.00", "*/*"]
+
+  // (2) [true, "my/folder +1", "*/!(*%)*"]
+  // (2) [true, "my/folder -1", "*/!(*%)*"]
+  // (2) [true, "my/folder *1", "*/!(*%)*"]
+  // (2) [true, "my/folder", "*/!(*%)*"]
+  // (2) [true, "my/folder+foo+bar&baz", "*/!(*%)*"]
+  // (2) [true, "my/folder - $1.00", "*/!(*%)*"]
+  // (2) [true, "my/folder - ^1.00", "*/!(*%)*"]
+  // (2) [false, "my/folder - %1.00", "*/!(*%)*"]
+
+  [false, "my/folder +1", "*/*$*"]
+  [false, "my/folder -1", "*/*$*"]
+  [false, "my/folder *1", "*/*$*"]
+  [false, "my/folder", "*/*$*"]
+  [false, "my/folder+foo+bar&baz", "*/*$*"]
+  [true, "my/folder - $1.00", "*/*$*"]
+  [false, "my/folder - ^1.00", "*/*$*"]
+  [false, "my/folder - %1.00", "*/*$*"]
+
+  [false, "my/folder +1", "*/*^*"]
+  [false, "my/folder -1", "*/*^*"]
+  [false, "my/folder *1", "*/*^*"]
+  [false, "my/folder", "*/*^*"]
+  [false, "my/folder+foo+bar&baz", "*/*^*"]
+  [false, "my/folder - $1.00", "*/*^*"]
+  [true, "my/folder - ^1.00", "*/*^*"]
+  [false, "my/folder - %1.00", "*/*^*"]
+
+  [false, "my/folder +1", "*/*&*"]
+  [false, "my/folder -1", "*/*&*"]
+  [false, "my/folder *1", "*/*&*"]
+  [false, "my/folder", "*/*&*"]
+  [true, "my/folder+foo+bar&baz", "*/*&*"]
+  [false, "my/folder - $1.00", "*/*&*"]
+  [false, "my/folder - ^1.00", "*/*&*"]
+  [false, "my/folder - %1.00", "*/*&*"]
+
+  [true, "my/folder +1", "*/*+*"]
+  [false, "my/folder -1", "*/*+*"]
+  [false, "my/folder *1", "*/*+*"]
+  [false, "my/folder", "*/*+*"]
+  [true, "my/folder+foo+bar&baz", "*/*+*"]
+  [false, "my/folder - $1.00", "*/*+*"]
+  [false, "my/folder - ^1.00", "*/*+*"]
+  [false, "my/folder - %1.00", "*/*+*"]
+
+  [false, "my/folder +1", "*/*-*"]
+  [true, "my/folder -1", "*/*-*"]
+  [false, "my/folder *1", "*/*-*"]
+  [false, "my/folder", "*/*-*"]
+  [false, "my/folder+foo+bar&baz", "*/*-*"]
+  [true, "my/folder - $1.00", "*/*-*"]
+  [true, "my/folder - ^1.00", "*/*-*"]
+  [true, "my/folder - %1.00", "*/*-*"]
+
+  [false, "my/folder +1", "*/*\\**"]
+  [false, "my/folder -1", "*/*\\**"]
+  [true, "my/folder *1", "*/*\\**"]
+  [false, "my/folder", "*/*\\**"]
+  [false, "my/folder+foo+bar&baz", "*/*\\**"]
+  [false, "my/folder - $1.00", "*/*\\**"]
+  [false, "my/folder - ^1.00", "*/*\\**"]
+  [false, "my/folder - %1.00", "*/*\\**"]
