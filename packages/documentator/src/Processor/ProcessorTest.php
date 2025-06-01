@@ -240,6 +240,7 @@ final class ProcessorTest extends TestCase {
         $events = [];
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->addListener(
                 static function (Event $event) use (&$events): void {
@@ -302,6 +303,7 @@ final class ProcessorTest extends TestCase {
         $events = [];
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($taskA)
             ->addTask($taskB)
             ->addTask($taskC, -1)
@@ -609,6 +611,7 @@ final class ProcessorTest extends TestCase {
         self::expectExceptionMessage('Dependency not found.');
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->run($input);
     }
@@ -636,6 +639,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->run($input);
     }
@@ -647,6 +651,7 @@ final class ProcessorTest extends TestCase {
         ]);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->run($input);
 
@@ -688,6 +693,7 @@ final class ProcessorTest extends TestCase {
         );
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->run($input);
     }
@@ -832,6 +838,7 @@ final class ProcessorTest extends TestCase {
         self::expectException(DependencyUnavailable::class);
 
         (new Processor($this->app()->make(ContainerResolver::class)))
+            ->consistent()
             ->addTask($task)
             ->addTask(ProcessorTest__Task::class)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
