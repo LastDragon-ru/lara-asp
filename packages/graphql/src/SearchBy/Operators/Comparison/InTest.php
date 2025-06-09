@@ -158,7 +158,6 @@ final class InTest extends TestCase {
                     },
                     null,
                     null,
-                    null,
                 ],
                 'resolver' => [
                     [
@@ -174,7 +173,6 @@ final class InTest extends TestCase {
                     static function (object $builder, Field $field): string {
                         return implode('__', $field->getPath());
                     },
-                    null,
                 ],
             ]),
         ))->getData();
