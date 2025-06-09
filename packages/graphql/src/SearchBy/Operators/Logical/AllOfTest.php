@@ -294,7 +294,6 @@ final class AllOfTest extends TestCase {
                     $factory,
                     null,
                     null,
-                    null,
                 ],
                 'resolver' => [
                     [
@@ -312,7 +311,6 @@ final class AllOfTest extends TestCase {
                     static function (object $builder, Field $field): string {
                         return implode('__', $field->getPath());
                     },
-                    null,
                 ],
             ]),
         ))->getData();

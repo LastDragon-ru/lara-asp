@@ -766,7 +766,6 @@ final class DirectiveTest extends TestCase {
                         // empty
                     ],
                     null,
-                    null,
                 ],
                 'empty operators'          => [
                     [
@@ -777,7 +776,6 @@ final class DirectiveTest extends TestCase {
                             // empty
                         ],
                     ],
-                    null,
                     null,
                 ],
                 'too many fields (fields)' => [
@@ -791,13 +789,11 @@ final class DirectiveTest extends TestCase {
                         ],
                     ],
                     null,
-                    null,
                 ],
                 'null'                     => [
                     [
                         // empty
                     ],
-                    null,
                     null,
                     null,
                 ],
@@ -837,7 +833,6 @@ final class DirectiveTest extends TestCase {
                             ],
                         ],
                     ],
-                    null,
                     null,
                 ],
                 'resolver'                 => [
@@ -879,7 +874,6 @@ final class DirectiveTest extends TestCase {
                     static function (object $builder, Field $field): string {
                         return implode('__', $field->getPath());
                     },
-                    null,
                 ],
             ]),
         ))->getData();
