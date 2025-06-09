@@ -227,7 +227,6 @@ final class SortTest extends TestCase {
                         return new Context();
                     },
                     null,
-                    null,
                 ],
                 'nulls from Context' => [
                     [
@@ -241,7 +240,6 @@ final class SortTest extends TestCase {
                             SortContextNulls::class => new SortContextNulls(Nulls::First),
                         ]);
                     },
-                    null,
                     null,
                 ],
                 'resolver'           => [

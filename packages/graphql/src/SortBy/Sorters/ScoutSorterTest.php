@@ -88,7 +88,6 @@ final class ScoutSorterTest extends TestCase {
                 new Field('c', 'd', 'e'),
                 Direction::Desc,
                 null,
-                null,
             ],
             'resolver' => [
                 [
@@ -104,7 +103,6 @@ final class ScoutSorterTest extends TestCase {
                 static function (object $builder, Field $field): string {
                     return implode('__', $field->getPath());
                 },
-                null,
             ],
         ];
     }

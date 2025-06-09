@@ -25,7 +25,6 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -42,7 +41,6 @@ use function sort;
 final class BlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    #[CoversNothing]
     public function testImplementation(): void {
         $actualMap           = ClassMapGenerator::createMap(__DIR__);
         $actualNodes         = $this->getSupportedClasses(GraphQLAstNode::class, $actualMap);
