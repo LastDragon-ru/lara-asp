@@ -4,14 +4,14 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\FileSystem;
 
 use Override;
 use PHPUnit\Framework\Constraint\Constraint;
-use PHPUnit\Framework\Constraint\IsIdentical;
-use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Util\Exporter;
+use SebastianBergmann\Comparator\ComparisonFailure;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 use function array_keys;
 use function implode;
+use function is_array;
 use function is_string;
 use function ksort;
 use function sprintf;
@@ -21,19 +21,6 @@ class DirectoryMatchesDirectory extends Constraint {
         protected string $expected,
     ) {
         // empty
-    }
-
-    #[Override]
-    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool {
-        try {
-            return parent::evaluate($other, $description, $returnResult);
-        } catch (ExpectationFailedException $exception) {
-            if ($returnResult) {
-                return false;
-            }
-
-            throw $exception;
-        }
     }
 
     #[Override]
@@ -47,10 +34,17 @@ class DirectoryMatchesDirectory extends Constraint {
         $expected = $this->getContent($this->expected);
         $actual   = $this->getContent($other);
 
-        try {
-            (new IsIdentical($this->join($expected)))->evaluate($this->join($actual));
-        } catch (ExpectationFailedException $exception) {
-            $this->fail($other, '', $exception->getComparisonFailure());
+        if (array_keys($expected) !== array_keys($actual)) {
+            $this->fail(
+                $other,
+                '',
+                new ComparisonFailure(
+                    $expected,
+                    $actual,
+                    $this->export($expected),
+                    $this->export($actual),
+                ),
+            );
         }
 
         // Compare files
@@ -61,16 +55,22 @@ class DirectoryMatchesDirectory extends Constraint {
             }
 
             // Equal?
-            try {
-                (new IsIdentical($info->getContents()))->evaluate(($actual[$path] ?? null)?->getContents());
-            } catch (ExpectationFailedException $exception) {
+            $expectedContent = $info->getContents();
+            $actualContent   = ($actual[$path] ?? null)?->getContents();
+
+            if ($expectedContent !== $actualContent) {
                 $this->fail(
                     $other,
                     sprintf(
                         'Content of the %s file is different.',
                         Exporter::export($path),
                     ),
-                    $exception->getComparisonFailure(),
+                    new ComparisonFailure(
+                        $expectedContent,
+                        $actualContent,
+                        $this->export($expectedContent),
+                        $this->export($actualContent),
+                    ),
                 );
             }
         }
@@ -106,12 +106,19 @@ class DirectoryMatchesDirectory extends Constraint {
     }
 
     /**
-     * @param array<string, SplFileInfo> $list
+     * @param array<string, SplFileInfo>|string $value
      */
-    private function join(array $list): string {
-        $list = array_keys($list);
-        $list = implode("\n", $list);
+    private function export(array|string|null $value): string {
+        if (is_array($value)) {
+            $value = implode("\n", array_keys($value));
+        }
 
-        return $list;
+        if (is_string($value)) {
+            $value = "'{$value}'";
+        } else {
+            $value = 'null';
+        }
+
+        return $value;
     }
 }
