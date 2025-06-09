@@ -14,7 +14,7 @@ use PHPUnit\Framework\SkippedWithMessageException;
 #[CoversClass(Listener::class)]
 final class ListenerTest extends TestCase {
     public function testNotify(): void {
-        self::expectException(SkippedWithMessageException::class);
+        self::expectException(SkippedWithMessageException::class); // @phpstan-ignore classConstant.internalClass
         self::expectExceptionMessage('Unknown requirement.');
 
         $event   = Mockery::mock(Event::class);

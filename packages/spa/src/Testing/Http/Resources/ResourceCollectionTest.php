@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
 
+use Exception;
 use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @internal
@@ -30,7 +30,7 @@ final class ResourceCollectionTest extends TestCase {
         try {
             $actual = $constraint->evaluate($json);
             $actual = true;
-        } catch (ExpectationFailedException $exception) {
+        } catch (Exception $exception) {
             $message = $exception->getMessage();
             $actual  = false;
         }

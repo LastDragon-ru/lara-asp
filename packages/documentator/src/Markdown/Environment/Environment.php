@@ -80,7 +80,7 @@ class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, 
                 $parser->setEnvironment($this);
             }
 
-            if (!($parser instanceof SkipLinesStartingWithLettersParser)) {
+            if (!($parser instanceof SkipLinesStartingWithLettersParser)) { // @phpstan-ignore instanceof.internalClass
                 $parser = new BlockStartParserWrapper($locator, $parser);
             }
 

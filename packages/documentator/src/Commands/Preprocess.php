@@ -21,7 +21,6 @@ use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
-use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use Override;
 use ReflectionClass;
 use ReflectionProperty;
@@ -32,7 +31,6 @@ use function array_map;
 use function getcwd;
 use function gettype;
 use function implode;
-use function is_a;
 use function is_scalar;
 use function ksort;
 use function max;
@@ -226,15 +224,8 @@ class Preprocess extends Command {
         string $target,
         int $padding,
     ): ?string {
-        // Serializable?
-        $class = $instruction::getParameters();
-
-        if (!is_a($class, Serializable::class, true)) {
-            return ''; // not yet supported...
-        }
-
         // Extract
-        $class      = new ReflectionClass($class);
+        $class      = new ReflectionClass($instruction::getParameters());
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         $parameters = [];
 

@@ -35,15 +35,11 @@ trait ScheduleAssertions {
 
     // <editor-fold desc="Helpers">
     // =========================================================================
-    /**
-     * @internal
-     */
     private function isScheduledEvent(string $task): bool {
         return count($this->getScheduledEvents($task)) === 1;
     }
 
     /**
-     * @internal
      * @return array<array-key, Event>
      */
     private function getScheduledEvents(string $task): array {

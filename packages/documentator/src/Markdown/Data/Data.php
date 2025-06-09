@@ -61,6 +61,7 @@ abstract readonly class Data {
      * @return T
      */
     public static function set(Node $node, mixed $value): mixed {
+        // @phpstan-ignore new.staticInAbstractClassStaticMethod (yep, but what way is the better?)
         $node->data->set(Package::Name.'.'.static::class, new static($value));
 
         return $value;
