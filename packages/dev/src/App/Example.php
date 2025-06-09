@@ -78,7 +78,7 @@ final class Example implements Runner {
             })();
 
             // Output
-            $dumps  = self::$dumper->getDumps();
+            $dumps  = (array) self::$dumper?->getDumps();
             $output = implode("\n\n", array_map(trim(...), $dumps));
 
             if ($output !== '') {

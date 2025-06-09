@@ -16,7 +16,6 @@ use function array_values;
 use function explode;
 use function implode;
 use function in_array;
-use function is_null;
 use function mb_strtolower;
 use function mb_trim;
 use function str_ends_with;
@@ -59,9 +58,9 @@ class Response extends Constraint {
                         $this->failed = $constraint;
                         break;
                     }
-                } catch (ExpectationFailedException $exception) {
+                } catch (ExpectationFailedException $exception) { // @phpstan-ignore catch.internalClass (any better way?)
                     $success      = false;
-                    $comparison   = $exception->getComparisonFailure();
+                    $comparison   = $exception->getComparisonFailure(); // @phpstan-ignore method.internalClass (any better way?)
                     $this->failed = $constraint;
                     break;
                 }
@@ -86,9 +85,9 @@ class Response extends Constraint {
 
     #[Override]
     public function toString(): string {
-        return is_null($this->failed)
-            ? LogicalAnd::fromConstraints(...array_values($this->getConstraints()))->toString()
-            : $this->failed->toString();
+        // @phpstan-ignore method.internalInterface (any better way?)
+        return $this->failed?->toString()
+            ?? LogicalAnd::fromConstraints(...array_values($this->getConstraints()))->toString();
     }
 
     #[Override]

@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
+use Exception;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @internal
@@ -119,17 +119,15 @@ final class GraphQLAssertionsTest extends TestCase {
         );
 
         // Test
-        $valid   = true;
-        $message = null;
+        $error = null;
 
         try {
             $this->assertGraphQLSchemaValid();
-        } catch (ExpectationFailedException $exception) {
-            $valid   = false;
-            $message = $exception->getMessage();
+        } catch (Exception $exception) {
+            $error = $exception;
         }
 
-        self::assertFalse($valid);
+        self::assertNotNull($error);
         self::assertSame(
             <<<'STRING'
             The schema is not valid.
@@ -137,7 +135,7 @@ final class GraphQLAssertionsTest extends TestCase {
             Directive "@a" argument "a" of type "Int!" is required but not provided.
             Failed asserting that false is true.
             STRING,
-            $message,
+            $error->getMessage(),
         );
     }
 
@@ -158,8 +156,7 @@ final class GraphQLAssertionsTest extends TestCase {
         );
 
         // Test
-        $valid   = true;
-        $message = null;
+        $error = null;
 
         try {
             $this->assertGraphQLSchemaNoBreakingChanges(
@@ -173,12 +170,11 @@ final class GraphQLAssertionsTest extends TestCase {
                 }
                 GRAPHQL,
             );
-        } catch (ExpectationFailedException $exception) {
-            $valid   = false;
-            $message = $exception->getMessage();
+        } catch (Exception $exception) {
+            $error = $exception;
         }
 
-        self::assertFalse($valid);
+        self::assertNotNull($error);
 
         // todo(graphql-php): Strange breaking changes:
         //      - `@a(a)` type was changed but not detected
@@ -202,7 +198,7 @@ final class GraphQLAssertionsTest extends TestCase {
 
             Failed asserting that false is true.
             STRING,
-            $message,
+            $error->getMessage(),
         );
     }
 
@@ -223,8 +219,7 @@ final class GraphQLAssertionsTest extends TestCase {
         );
 
         // Test
-        $valid   = true;
-        $message = null;
+        $error = null;
 
         try {
             $this->assertGraphQLSchemaNoDangerousChanges(
@@ -237,12 +232,11 @@ final class GraphQLAssertionsTest extends TestCase {
                 }
                 GRAPHQL,
             );
-        } catch (ExpectationFailedException $exception) {
-            $valid   = false;
-            $message = $exception->getMessage();
+        } catch (Exception $exception) {
+            $error = $exception;
         }
 
-        self::assertFalse($valid);
+        self::assertNotNull($error);
 
         // todo(graphql-php): Strange breaking changes:
         //      - `@a(a)` default value was changed but not detected
@@ -257,7 +251,7 @@ final class GraphQLAssertionsTest extends TestCase {
 
             Failed asserting that false is true.
             STRING,
-            $message,
+            $error->getMessage(),
         );
     }
 }

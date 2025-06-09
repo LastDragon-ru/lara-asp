@@ -85,7 +85,7 @@ class Commands extends Command {
                 ): void {
                     // Default options?
                     if ($defaults) {
-                        $command->mergeApplicationDefinition();
+                        $command->mergeApplicationDefinition(); // @phpstan-ignore method.internal (this is the way)
                     } else {
                         $command->setDefinition(
                             $command->getNativeDefinition(),

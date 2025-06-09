@@ -28,6 +28,8 @@ parameters:
     checkModelProperties: false
     checkUnusedViews: false
     checkModelAppends: true
+    generalizeEnvReturnType: false
+    checkConfigTypes: false
 
 parametersSchema:
     checkOctaneCompatibility: bool()
@@ -45,6 +47,8 @@ parametersSchema:
     checkModelProperties: bool()
     checkUnusedViews: bool()
     checkModelAppends: bool()
+    generalizeEnvReturnType: bool()
+    checkConfigTypes: bool()
 
 conditionalTags:
     Larastan\Larastan\Rules\NoEnvCallsOutsideOfConfigRule:
@@ -64,6 +68,15 @@ conditionalTags:
 
     Larastan\Larastan\Rules\ModelAppendsRule:
         phpstan.rules.rule: %checkModelAppends%
+
+    Larastan\Larastan\ReturnTypes\Helpers\EnvFunctionDynamicFunctionReturnTypeExtension:
+        phpstan.broker.dynamicFunctionReturnTypeExtension: %generalizeEnvReturnType%
+
+    Larastan\Larastan\ReturnTypes\Helpers\ConfigFunctionDynamicFunctionReturnTypeExtension:
+        phpstan.broker.dynamicFunctionReturnTypeExtension: %checkConfigTypes%
+
+    Larastan\Larastan\ReturnTypes\ConfigGetDynamicMethodReturnTypeExtension:
+        phpstan.broker.dynamicMethodReturnTypeExtension: %checkConfigTypes%
 
 services:
     -
@@ -375,6 +388,22 @@ services:
         tags:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
+        arguments:
+            class: Illuminate\Foundation\Application
+
+    -
+        class: Larastan\Larastan\ReturnTypes\AppEnvironmentReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+
+        arguments:
+            class: Illuminate\Contracts\Foundation\Application
+
+    -
+        class: Larastan\Larastan\ReturnTypes\AppFacadeEnvironmentReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+
     -
         class: Larastan\Larastan\Types\ModelProperty\ModelPropertyTypeNodeResolverExtension
         tags:
@@ -504,6 +533,11 @@ services:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
     -
+        class: Larastan\Larastan\ReturnTypes\LangGetReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicStaticMethodReturnTypeExtension
+
+    -
         class: Larastan\Larastan\ReturnTypes\TransHelperReturnTypeExtension
         tags:
             - phpstan.broker.dynamicFunctionReturnTypeExtension
@@ -524,6 +558,26 @@ services:
 
     -
         class: Larastan\Larastan\Support\HigherOrderCollectionProxyHelper
+
+    -
+        class: Larastan\Larastan\ReturnTypes\Helpers\ConfigFunctionDynamicFunctionReturnTypeExtension
+
+    -
+        class: Larastan\Larastan\ReturnTypes\ConfigGetDynamicMethodReturnTypeExtension
+
+    -
+        class: Larastan\Larastan\Support\ConfigParser
+        arguments:
+            parser: @currentPhpVersionSimpleDirectParser
+            configPaths: %configDirectories%
+
+    -
+        class: Larastan\Larastan\ReturnTypes\Helpers\EnvFunctionDynamicFunctionReturnTypeExtension
+
+    -
+        class: Larastan\Larastan\ReturnTypes\FormRequestSafeDynamicMethodReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
 
 rules:
     - Larastan\Larastan\Rules\UselessConstructs\NoUselessWithFunctionCallsRule

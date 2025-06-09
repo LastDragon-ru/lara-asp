@@ -28,7 +28,7 @@ abstract class Configuration implements ArrayAccess {
      * @param array<string, mixed> $array
      */
     public static function __set_state(array $array): static {
-        return new static(...$array); // @phpstan-ignore new.static (this is developer responsibility)
+        return new static(...$array); // @phpstan-ignore new.static, new.staticInAbstractClassStaticMethod (this is developer responsibility)
     }
 
     #[Override]

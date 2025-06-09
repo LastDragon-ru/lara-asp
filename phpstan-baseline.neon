@@ -115,6 +115,18 @@ parameters:
 			path: packages/serializer/src/Metadata/MetadataFactory.php
 
 		-
+			message: '#^Call to method getName\(\) of internal interface Symfony\\Component\\Serializer\\Mapping\\AttributeMetadataInterface from outside its root namespace Symfony\.$#'
+			identifier: method.internalInterface
+			count: 1
+			path: packages/serializer/src/Normalizers/SerializableNormalizer.php
+
+		-
+			message: '#^Return type of method LastDragon_ru\\LaraASP\\Serializer\\Normalizers\\SerializableNormalizer\:\:getAllowedAttributes\(\) has typehint with internal interface Symfony\\Component\\Serializer\\Mapping\\AttributeMetadataInterface\.$#'
+			identifier: return.internalInterface
+			count: 1
+			path: packages/serializer/src/Normalizers/SerializableNormalizer.php
+
+		-
 			message: '#^Parameter \#3 \$path of method LastDragon_ru\\LaraASP\\Spa\\Http\\Resources\\Resource\:\:mapResourceValue\(\) expects array\<string\>, array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1

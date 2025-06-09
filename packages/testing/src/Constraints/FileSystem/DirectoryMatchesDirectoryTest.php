@@ -4,11 +4,12 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\FileSystem;
 
 use ArrayIterator;
 use Closure;
+use Exception;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\ExpectationFailedException;
+use SebastianBergmann\Comparator\ComparisonFailure;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -20,9 +21,9 @@ final class DirectoryMatchesDirectoryTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param true|array{string, array{string, string, string}} $expected
-     * @param Closure(): array<string, SplFileInfo>             $expectedContentFactory
-     * @param Closure(): array<string, SplFileInfo>             $actualContentFactory
+     * @param true|array{string, array{string, string}} $expected
+     * @param Closure(): array<string, SplFileInfo>     $expectedContentFactory
+     * @param Closure(): array<string, SplFileInfo>     $actualContentFactory
      */
     #[DataProvider('dataProviderEvaluate')]
     public function testEvaluate(
@@ -47,26 +48,38 @@ final class DirectoryMatchesDirectoryTest extends TestCase {
         if ($expected === true) {
             self::assertTrue($constraint->evaluate('/path/to/actual', '', true));
         } else {
-            $exception = null;
+            $actual = null;
+
+            $constraint
+                ->shouldReceive('fail')
+                ->once()
+                ->andReturnUsing(
+                    static function (
+                        mixed $other,
+                        string $description,
+                        ?ComparisonFailure $failure = null,
+                    ) use (
+                        &$actual,
+                    ): never {
+                        $actual = [
+                            $description,
+                            [
+                                $failure?->getExpectedAsString(),
+                                $failure?->getActualAsString(),
+                            ],
+                        ];
+
+                        throw new Exception();
+                    },
+                );
 
             try {
                 $constraint->evaluate('/path/to/actual');
-            } catch (ExpectationFailedException $exception) {
+            } catch (Exception $exception) {
                 // empty
             }
 
-            self::assertInstanceOf(ExpectationFailedException::class, $exception);
-            self::assertEquals(
-                $expected,
-                [
-                    $exception->getMessage(),
-                    [
-                        $exception->getComparisonFailure()?->getMessage(),
-                        $exception->getComparisonFailure()?->getExpectedAsString(),
-                        $exception->getComparisonFailure()?->getActualAsString(),
-                    ],
-                ],
-            );
+            self::assertEquals($expected, $actual);
         }
     }
 
@@ -117,7 +130,7 @@ final class DirectoryMatchesDirectoryTest extends TestCase {
     // =========================================================================
     /**
      * @return array<string, array{
-     *      true|array{string, array{string, string, string}},
+     *      true|array{string, array{string, string}},
      *      Closure(): array<string, SplFileInfo>,
      *      Closure(): array<string, SplFileInfo>,
      *      }>
@@ -140,9 +153,8 @@ final class DirectoryMatchesDirectoryTest extends TestCase {
             ],
             'more files'      => [
                 [
-                    "Failed asserting that '/path/to/actual' matches directory '/path/to/expected'.",
+                    '',
                     [
-                        '',
                         <<<'TXT'
                         'a.txt'
                         TXT,
@@ -162,9 +174,8 @@ final class DirectoryMatchesDirectoryTest extends TestCase {
             ],
             'less files'      => [
                 [
-                    "Failed asserting that '/path/to/actual' matches directory '/path/to/expected'.",
+                    '',
                     [
-                        '',
                         <<<'TXT'
                         'a.txt
                         b.txt'
@@ -186,10 +197,8 @@ final class DirectoryMatchesDirectoryTest extends TestCase {
                 [
                     <<<'TXT'
                     Content of the 'a.txt' file is different.
-                    Failed asserting that '/path/to/actual' matches directory '/path/to/expected'.
                     TXT,
                     [
-                        '',
                         "'a'",
                         "'b'",
                     ],
