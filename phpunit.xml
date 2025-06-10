@@ -60,6 +60,10 @@
             <directory suffix="Test.php">./packages/documentator/src</directory>
             <directory suffix="Test.php">./packages/documentator/docs</directory>
         </testsuite>
+        <testsuite name="diy-parser">
+            <directory suffix="Test.php">./packages/diy-parser/src</directory>
+            <directory suffix="Test.php">./packages/diy-parser/docs</directory>
+        </testsuite>
     </testsuites>
     <source ignoreIndirectDeprecations="true">
         <include>
@@ -89,6 +93,8 @@
             <directory suffix=".php">./packages/serializer/docs</directory>
             <directory suffix=".php">./packages/documentator/src</directory>
             <directory suffix=".php">./packages/documentator/docs</directory>
+            <directory suffix=".php">./packages/diy-parser/src</directory>
+            <directory suffix=".php">./packages/diy-parser/docs</directory>
         </include>
         <exclude>
             <directory suffix="Test.php">./packages/core/src</directory>
@@ -117,6 +123,8 @@
             <directory suffix="Test.php">./packages/serializer/docs</directory>
             <directory suffix="Test.php">./packages/documentator/src</directory>
             <directory suffix="Test.php">./packages/documentator/docs</directory>
+            <directory suffix="Test.php">./packages/diy-parser/src</directory>
+            <directory suffix="Test.php">./packages/diy-parser/docs</directory>
         </exclude>
     </source>
     <php>
