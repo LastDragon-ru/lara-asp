@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\DiyParser\Streams;
 
+use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
-use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;
@@ -144,7 +144,7 @@ final class BufferedStreamTest extends TestCase {
     }
 
     public function testSeekOutOfBounds(): void {
-        self::expectException(OutOfBoundsException::class);
+        self::expectExceptionObject(new OffsetOutOfBounds(123));
 
         $items  = [0, 1, 2];
         $stream = new BufferedStream($items, 2, 2);

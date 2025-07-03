@@ -5,7 +5,7 @@ namespace LastDragon_ru\DiyParser\Ast;
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
-use LogicException;
+use LastDragon_ru\DiyParser\Exceptions\OffsetReadonly;
 use Override;
 use Traversable;
 
@@ -90,11 +90,11 @@ readonly class Cursor implements IteratorAggregate, ArrayAccess, Countable {
 
     #[Override]
     public function offsetSet(mixed $offset, mixed $value): void {
-        throw new LogicException('Not supported.');
+        throw new OffsetReadonly($offset);
     }
 
     #[Override]
     public function offsetUnset(mixed $offset): void {
-        throw new LogicException('Not supported.');
+        throw new OffsetReadonly($offset);
     }
 }

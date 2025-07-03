@@ -4,7 +4,7 @@ namespace LastDragon_ru\DiyParser\Streams;
 
 use ArrayAccess;
 use Iterator;
-use OutOfBoundsException;
+use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
 use Override;
 
 use function array_pop;
@@ -90,7 +90,7 @@ class TransactionalStream implements Iterator, ArrayAccess {
     #[Override]
     public function offsetGet(mixed $offset): mixed {
         if (($offset > 0 && $offset > $this->next) || ($offset < 0 && -$offset > $this->previous)) {
-            throw new OutOfBoundsException('The `$offset` is out of bounds.');
+            throw new OffsetOutOfBounds($offset);
         }
 
         return $this->source[$offset] ?? null;

@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\DiyParser\Ast;
 
+use LastDragon_ru\DiyParser\Exceptions\OffsetReadonly;
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
-use LogicException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Traversable;
@@ -97,14 +97,14 @@ final class CursorTest extends TestCase {
     }
 
     public function testOffsetSet(): void {
-        self::expectException(LogicException::class);
+        self::expectExceptionObject(new OffsetReadonly(null));
 
         $cursor   = new Cursor(new CursorTest_ParentNode([]));
         $cursor[] = new Cursor(new CursorTest_LeafNode());
     }
 
     public function testOffsetUnset(): void {
-        self::expectException(LogicException::class);
+        self::expectExceptionObject(new OffsetReadonly(0));
 
         $cursor = new Cursor(new CursorTest_LeafNode());
 

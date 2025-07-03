@@ -6,8 +6,8 @@ use ArrayAccess;
 use ArrayIterator;
 use Iterator;
 use IteratorIterator;
-use LogicException;
-use OutOfBoundsException;
+use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
+use LastDragon_ru\DiyParser\Exceptions\OffsetReadonly;
 use Override;
 use SeekableIterator;
 use SplDoublyLinkedList;
@@ -104,7 +104,7 @@ class BufferedStream implements Iterator, SeekableIterator, ArrayAccess {
         $cursor = $this->cursor + $diff;
 
         if (!isset($this->buffer[$cursor])) {
-            throw new OutOfBoundsException();
+            throw new OffsetOutOfBounds($offset);
         }
 
         $this->key    = $this->key + $diff;
@@ -122,7 +122,7 @@ class BufferedStream implements Iterator, SeekableIterator, ArrayAccess {
     #[Override]
     public function offsetGet(mixed $offset): mixed {
         if (!$this->offsetExists($offset)) {
-            throw new OutOfBoundsException();
+            throw new OffsetOutOfBounds($offset);
         }
 
         return $this->buffer[$this->cursor + $offset];
@@ -130,12 +130,12 @@ class BufferedStream implements Iterator, SeekableIterator, ArrayAccess {
 
     #[Override]
     public function offsetSet(mixed $offset, mixed $value): void {
-        throw new LogicException('Not supported.');
+        throw new OffsetReadonly($offset);
     }
 
     #[Override]
     public function offsetUnset(mixed $offset): void {
-        throw new LogicException('Not supported.');
+        throw new OffsetReadonly($offset);
     }
 
     private function fill(): void {

@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\DiyParser\Streams;
 
+use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
+use LastDragon_ru\DiyParser\Exceptions\OffsetReadonly;
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
-use LogicException;
-use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -121,7 +121,7 @@ final class TransactionalStreamTest extends TestCase {
     }
 
     public function testOffsetGetNegativeOutOfBoundsException(): void {
-        self::expectException(OutOfBoundsException::class);
+        self::expectExceptionObject(new OffsetOutOfBounds(-6));
 
         $source = ['a', 'b'];
         $stream = new TransactionalStream($source, 5, 5);
@@ -130,7 +130,7 @@ final class TransactionalStreamTest extends TestCase {
     }
 
     public function testOffsetGetPositiveOutOfBoundsException(): void {
-        self::expectException(OutOfBoundsException::class);
+        self::expectExceptionObject(new OffsetOutOfBounds(6));
 
         $source = ['a', 'b'];
         $stream = new TransactionalStream($source, 5, 5);
@@ -139,7 +139,7 @@ final class TransactionalStreamTest extends TestCase {
     }
 
     public function testOffsetSet(): void {
-        self::expectExceptionObject(new LogicException('Not supported.'));
+        self::expectExceptionObject(new OffsetReadonly(0));
 
         $source = ['a', 'b'];
         $stream = new TransactionalStream($source, 5, 5);
@@ -148,7 +148,7 @@ final class TransactionalStreamTest extends TestCase {
     }
 
     public function testOffsetUnset(): void {
-        self::expectExceptionObject(new LogicException('Not supported.'));
+        self::expectExceptionObject(new OffsetReadonly(0));
 
         $source = ['a', 'b'];
         $stream = new TransactionalStream($source, 5, 5);
