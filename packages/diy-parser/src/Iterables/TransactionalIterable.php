@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use ArrayAccess;
 use Iterator;
@@ -10,18 +10,18 @@ use Override;
 use function array_pop;
 
 /**
- * Provides "transaction" support for the stream.
+ * Provides "transaction" support for the iterable.
  *
  * @template TValue
  *
  * @implements Iterator<int, TValue>
  * @implements ArrayAccess<int, TValue>
  */
-class TransactionalStream implements Iterator, ArrayAccess {
+class TransactionalIterable implements Iterator, ArrayAccess {
     /**
-     * @var BufferedStream<TValue>
+     * @var BufferedIterable<TValue>
      */
-    private BufferedStream $source;
+    private BufferedIterable $source;
 
     /**
      * @var list<int>
@@ -33,7 +33,7 @@ class TransactionalStream implements Iterator, ArrayAccess {
         /**
          * @var iterable<mixed, TValue>
          */
-        protected readonly iterable $stream,
+        protected readonly iterable $iterable,
         /**
          * @var positive-int
          */
@@ -43,7 +43,7 @@ class TransactionalStream implements Iterator, ArrayAccess {
          */
         protected readonly int $next,
     ) {
-        $this->source = new BufferedStream($this->stream, 2 * $this->previous, $this->next);
+        $this->source = new BufferedIterable($this->iterable, 2 * $this->previous, $this->next);
 
         $this->source->rewind();
     }

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
 use Override;
@@ -12,13 +12,13 @@ use function iterator_to_array;
 /**
  * @internal
  */
-#[CoversClass(StringifyStream::class)]
-final class StringifyStreamTest extends TestCase {
+#[CoversClass(StringifyIterable::class)]
+final class StringifyIterableTest extends TestCase {
     public function testGetIterator(): void {
         $tokens = [
             1     => 'a',
-            2     => StringifyStreamTest_Enum::B,
-            3     => StringifyStreamTest_Enum::C,
+            2     => StringifyIterableTest_Enum::B,
+            3     => StringifyIterableTest_Enum::C,
             4     => 'd',
             5     => null,
             'key' => new class() implements Stringable {
@@ -41,7 +41,7 @@ final class StringifyStreamTest extends TestCase {
                 10    => '123',
             ],
             iterator_to_array(
-                new StringifyStream($tokens),
+                new StringifyIterable($tokens),
             ),
         );
     }
@@ -50,7 +50,7 @@ final class StringifyStreamTest extends TestCase {
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 
-enum StringifyStreamTest_Enum: string {
+enum StringifyIterableTest_Enum: string {
     case B = 'B';
     case C = 'C';
 }

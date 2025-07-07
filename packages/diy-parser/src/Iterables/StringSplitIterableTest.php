@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -11,8 +11,8 @@ use function iterator_to_array;
 /**
  * @internal
  */
-#[CoversClass(StringSplitStream::class)]
-final class StringSplitStreamTest extends TestCase {
+#[CoversClass(StringSplitIterable::class)]
+final class StringSplitIterableTest extends TestCase {
     public function testGetIterator(): void {
         // Prepare
         $separators = ['[', '!!!', ']['];
@@ -26,7 +26,7 @@ final class StringSplitStreamTest extends TestCase {
 
         // Long buffer
         $long = iterator_to_array(
-            new StringSplitStream($strings, $separators),
+            new StringSplitIterable($strings, $separators),
         );
 
         self::assertSame($string, implode('', $long));
@@ -47,7 +47,7 @@ final class StringSplitStreamTest extends TestCase {
 
         // Short buffer
         $short = iterator_to_array(
-            new StringSplitStream($strings, $separators, 2),
+            new StringSplitIterable($strings, $separators, 2),
         );
 
         self::assertSame($string, implode('', $short));
@@ -75,7 +75,7 @@ final class StringSplitStreamTest extends TestCase {
         self::assertSame(
             $expected,
             iterator_to_array(
-                new StringSplitStream($input, $separators, caseSensitive: false),
+                new StringSplitIterable($input, $separators, caseSensitive: false),
             ),
         );
     }

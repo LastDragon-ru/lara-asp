@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -27,7 +27,7 @@ use Traversable;
  * @implements ArrayAccess<int, TValue>
  * @implements SeekableIterator<int, TValue>
  */
-class BufferedStream implements Iterator, SeekableIterator, ArrayAccess {
+class BufferedIterable implements Iterator, SeekableIterator, ArrayAccess {
     /**
      * @var SplDoublyLinkedList<TValue>
      */
@@ -43,7 +43,7 @@ class BufferedStream implements Iterator, SeekableIterator, ArrayAccess {
         /**
          * @var iterable<mixed, TValue>
          */
-        protected readonly iterable $stream,
+        protected readonly iterable $iterable,
         /**
          * @var positive-int
          */
@@ -57,9 +57,9 @@ class BufferedStream implements Iterator, SeekableIterator, ArrayAccess {
         $this->cursor   = 0;
         $this->buffer   = new SplDoublyLinkedList();
         $this->iterator = match (true) {
-            $this->stream instanceof Iterator    => $this->stream,
-            $this->stream instanceof Traversable => new IteratorIterator($this->stream),
-            default                              => new ArrayIterator($this->stream),
+            $this->iterable instanceof Iterator    => $this->iterable,
+            $this->iterable instanceof Traversable => new IteratorIterator($this->iterable),
+            default                                => new ArrayIterator($this->iterable),
         };
     }
 

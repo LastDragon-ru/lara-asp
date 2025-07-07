@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
@@ -11,20 +11,20 @@ use function iterator_to_array;
 /**
  * @internal
  */
-#[CoversClass(BufferedStream::class)]
-final class BufferedStreamTest extends TestCase {
+#[CoversClass(BufferedIterable::class)]
+final class BufferedIterableTest extends TestCase {
     public function testIterator(): void {
-        $items  = [0, 1, 2, 3, 4, 5];
-        $stream = new BufferedStream($items, 2, 2);
-        $actual = iterator_to_array($stream, false);
+        $items    = [0, 1, 2, 3, 4, 5];
+        $iterable = new BufferedIterable($items, 2, 2);
+        $actual   = iterator_to_array($iterable, false);
 
         self::assertSame($items, $actual);
     }
 
     public function testBuffer(): void {
-        $stream = new BufferedStreamTest__Stream([0, 1, 2, 3, 4, 5], 2, 2);
+        $iterable = new BufferedIterableTest__Iterable([0, 1, 2, 3, 4, 5], 2, 2);
 
-        $stream->rewind();
+        $iterable->rewind();
 
         self::assertSame(
             [
@@ -33,10 +33,10 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 0,
                 'buffer' => [0, 1, 2],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->next();
+        $iterable->next();
 
         self::assertSame(
             [
@@ -45,10 +45,10 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 1,
                 'buffer' => [0, 1, 2, 3],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->next();
+        $iterable->next();
 
         self::assertSame(
             [
@@ -57,10 +57,10 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 2,
                 'buffer' => [0, 1, 2, 3, 4],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->next();
+        $iterable->next();
 
         self::assertSame(
             [
@@ -69,10 +69,10 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 2,
                 'buffer' => [1, 2, 3, 4, 5],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->next();
+        $iterable->next();
 
         self::assertSame(
             [
@@ -81,10 +81,10 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 2,
                 'buffer' => [2, 3, 4, 5],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->next();
+        $iterable->next();
 
         self::assertSame(
             [
@@ -93,14 +93,14 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 2,
                 'buffer' => [3, 4, 5],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->next();
+        $iterable->next();
 
-        self::assertFalse($stream->valid());
+        self::assertFalse($iterable->valid());
 
-        $stream->rewind();
+        $iterable->rewind();
 
         self::assertSame(
             [
@@ -109,16 +109,16 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 0,
                 'buffer' => [0, 1, 2],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
     }
 
     public function testSeek(): void {
-        $stream = new BufferedStreamTest__Stream([0, 1, 2, 3, 4, 5], 2, 2);
+        $iterable = new BufferedIterableTest__Iterable([0, 1, 2, 3, 4, 5], 2, 2);
 
-        $stream->rewind();
-        $stream->next();
-        $stream->next();
+        $iterable->rewind();
+        $iterable->next();
+        $iterable->next();
 
         self::assertSame(
             [
@@ -127,10 +127,10 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 2,
                 'buffer' => [0, 1, 2, 3, 4],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
 
-        $stream->seek($stream->key() - 1);
+        $iterable->seek($iterable->key() - 1);
 
         self::assertSame(
             [
@@ -139,33 +139,33 @@ final class BufferedStreamTest extends TestCase {
                 'cursor' => 1,
                 'buffer' => [0, 1, 2, 3, 4],
             ],
-            $stream->debug(),
+            $iterable->debug(),
         );
     }
 
     public function testSeekOutOfBounds(): void {
         self::expectExceptionObject(new OffsetOutOfBounds(123));
 
-        $items  = [0, 1, 2];
-        $stream = new BufferedStream($items, 2, 2);
+        $items    = [0, 1, 2];
+        $iterable = new BufferedIterable($items, 2, 2);
 
-        $stream->seek(123);
+        $iterable->seek(123);
     }
 
     public function testArrayAccessImplementation(): void {
-        $stream = new BufferedStream([0, 1, 2, 3, 4], 2, 2);
+        $iterable = new BufferedIterable([0, 1, 2, 3, 4], 2, 2);
 
-        $stream->rewind();
-        $stream->next();
+        $iterable->rewind();
+        $iterable->next();
 
-        self::assertSame(1, $stream->current());
-        self::assertTrue(isset($stream[2]));
-        self::assertSame(3, $stream[2]);
-        self::assertTrue(isset($stream[0]));
-        self::assertSame(1, $stream[0]);
-        self::assertFalse(isset($stream[10]));
-        self::assertTrue(isset($stream[-1]));
-        self::assertSame(0, $stream[-1]);
+        self::assertSame(1, $iterable->current());
+        self::assertTrue(isset($iterable[2]));
+        self::assertSame(3, $iterable[2]);
+        self::assertTrue(isset($iterable[0]));
+        self::assertSame(1, $iterable[0]);
+        self::assertFalse(isset($iterable[10]));
+        self::assertTrue(isset($iterable[-1]));
+        self::assertSame(0, $iterable[-1]);
     }
 }
 
@@ -175,9 +175,9 @@ final class BufferedStreamTest extends TestCase {
 /**
  * @internal
  * @template TValue
- * @extends BufferedStream<TValue>
+ * @extends BufferedIterable<TValue>
  */
-class BufferedStreamTest__Stream extends BufferedStream {
+class BufferedIterableTest__Iterable extends BufferedIterable {
     /**
      * @return array{key: int, value: TValue, cursor: int, buffer: list<TValue>}
      */

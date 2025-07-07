@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use BackedEnum;
 use IteratorAggregate;
@@ -16,19 +16,19 @@ use Traversable;
  *
  * @implements IteratorAggregate<TKey, string>
  */
-readonly class StringifyStream implements IteratorAggregate {
+readonly class StringifyIterable implements IteratorAggregate {
     public function __construct(
         /**
          * @var iterable<TKey, TValue>
          */
-        protected iterable $stream,
+        protected iterable $iterable,
     ) {
         // empty
     }
 
     #[Override]
     public function getIterator(): Traversable {
-        foreach ($this->stream as $key => $value) {
+        foreach ($this->iterable as $key => $value) {
             yield $key => match (true) {
                 $value instanceof BackedEnum => (string) $value->value,
                 default                      => (string) $value,

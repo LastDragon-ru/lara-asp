@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use BackedEnum;
 use IteratorAggregate;
@@ -12,13 +12,13 @@ use UnitEnum;
 use function array_keys;
 
 /**
- * Searches tokens inside the stream of strings.
+ * Searches tokens inside the iterable of strings.
  *
  * @template TToken of BackedEnum
  *
  * @implements IteratorAggregate<int, Token<TToken>>
  */
-readonly class TokenStream implements IteratorAggregate {
+readonly class StringTokenizeIterable implements IteratorAggregate {
     /**
      * @var array<array-key, TToken>
      */
@@ -28,7 +28,7 @@ readonly class TokenStream implements IteratorAggregate {
         /**
          * @var iterable<mixed, string>
          */
-        protected iterable $stream,
+        protected iterable $iterable,
         /**
          * @var list<class-string<TToken>>|class-string<TToken>
          */
@@ -50,9 +50,9 @@ readonly class TokenStream implements IteratorAggregate {
 
     #[Override]
     public function getIterator(): Traversable {
-        $stream = new StringSplitStream($this->stream, array_keys($this->map), $this->buffer, $this->offset, true);
+        $iterable = new StringSplitIterable($this->iterable, array_keys($this->map), $this->buffer, $this->offset, true);
 
-        foreach ($stream as $offset => $value) {
+        foreach ($iterable as $offset => $value) {
             yield new Token($this->map[$value] ?? $this->string, $value, $offset);
         }
     }

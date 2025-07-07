@@ -3,8 +3,8 @@
 namespace LastDragon_ru\DiyParser\Tokenizer;
 
 use BackedEnum;
-use LastDragon_ru\DiyParser\Streams\TokenStream;
-use LastDragon_ru\DiyParser\Streams\TokenUnescapeStream;
+use LastDragon_ru\DiyParser\Iterables\StringTokenizeIterable;
+use LastDragon_ru\DiyParser\Iterables\TokenUnescapeIterable;
 
 /**
  * @template TToken of BackedEnum
@@ -28,17 +28,17 @@ readonly class Tokenizer {
     }
 
     /**
-     * @param iterable<mixed, string> $stream
+     * @param iterable<mixed, string> $iterable
      *
      * @return iterable<mixed, Token<TToken>>
      */
-    public function tokenize(iterable $stream, int $offset = 0): iterable {
-        $stream = new TokenStream($stream, $this->tokens, $this->string, offset: $offset);
+    public function tokenize(iterable $iterable, int $offset = 0): iterable {
+        $iterable = new StringTokenizeIterable($iterable, $this->tokens, $this->string, offset: $offset);
 
         if ($this->escape !== null) {
-            $stream = new TokenUnescapeStream($stream, $this->string, $this->escape);
+            $iterable = new TokenUnescapeIterable($iterable, $this->string, $this->escape);
         }
 
-        return $stream;
+        return $iterable;
     }
 }

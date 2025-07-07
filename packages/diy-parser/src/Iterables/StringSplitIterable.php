@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use Generator;
 use IteratorAggregate;
@@ -27,12 +27,12 @@ use const PREG_SPLIT_NO_EMPTY;
 use const PREG_SPLIT_OFFSET_CAPTURE;
 
 /**
- * Splits stream of strings by the separator(s) where the key is an offset of
+ * Splits iterable of strings by the separator(s) where the key is an offset of
  * the string/separator.
  *
  * @implements IteratorAggregate<int, string>
  */
-readonly class StringSplitStream implements IteratorAggregate {
+readonly class StringSplitIterable implements IteratorAggregate {
     protected string $regexp;
     protected int    $longest;
 
@@ -40,7 +40,7 @@ readonly class StringSplitStream implements IteratorAggregate {
         /**
          * @var iterable<mixed, string>
          */
-        protected iterable $stream,
+        protected iterable $iterable,
         /**
          * @var list<string|int>
          */
@@ -63,7 +63,7 @@ readonly class StringSplitStream implements IteratorAggregate {
         $offset = $this->offset;
         $limit  = max($this->buffer ?? Package::BufferCharacters, 2 * $this->longest);
 
-        foreach ($this->stream as $string) {
+        foreach ($this->iterable as $string) {
             $buffer .= $string;
 
             if (mb_strlen($buffer, Package::Encoding) >= $limit) {

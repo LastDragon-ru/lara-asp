@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\DiyParser\Streams;
+namespace LastDragon_ru\DiyParser\Iterables;
 
 use BackedEnum;
 use IteratorAggregate;
@@ -16,12 +16,12 @@ use UnitEnum;
  *
  * @implements IteratorAggregate<int, Token<TToken>>
  */
-readonly class TokenEscapeStream implements IteratorAggregate {
+readonly class TokenEscapeIterable implements IteratorAggregate {
     public function __construct(
         /**
          * @var iterable<mixed, Token<TToken>>
          */
-        protected iterable $stream,
+        protected iterable $iterable,
         /**
          * @var TToken
          */
@@ -36,7 +36,7 @@ readonly class TokenEscapeStream implements IteratorAggregate {
 
     #[Override]
     public function getIterator(): Traversable {
-        foreach ($this->stream as $item) {
+        foreach ($this->iterable as $item) {
             if ($item->name !== $this->string) {
                 yield new Token(
                     $this->escape,
