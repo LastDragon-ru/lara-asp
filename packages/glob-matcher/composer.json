@@ -15,7 +15,8 @@
     "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
   },
   "require": {
-    "php": "^8.3|^8.4"
+    "php": "^8.3|^8.4",
+    "lastdragon-ru/diy-parser": "self.version"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",
