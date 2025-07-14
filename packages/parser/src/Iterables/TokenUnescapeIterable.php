@@ -39,7 +39,7 @@ readonly class TokenUnescapeIterable implements IteratorAggregate {
 
         foreach ($this->iterable as $token) {
             if ($escaped !== null) {
-                if ($token->name !== $this->string) {
+                if ($this->isEscapable($token)) {
                     yield new Token($this->string, $token->value, $token->offset);
                 } else {
                     yield $token;
@@ -52,5 +52,12 @@ readonly class TokenUnescapeIterable implements IteratorAggregate {
                 yield $token;
             }
         }
+    }
+
+    /**
+     * @param Token<TToken> $token
+     */
+    protected function isEscapable(Token $token): bool {
+        return $token->name !== $this->string;
     }
 }
