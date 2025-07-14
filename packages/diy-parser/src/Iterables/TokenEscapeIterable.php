@@ -36,16 +36,23 @@ readonly class TokenEscapeIterable implements IteratorAggregate {
 
     #[Override]
     public function getIterator(): Traversable {
-        foreach ($this->iterable as $item) {
-            if ($item->name !== $this->string) {
+        foreach ($this->iterable as $token) {
+            if ($this->isEscapable($token)) {
                 yield new Token(
                     $this->escape,
                     $this->escape instanceof BackedEnum ? (string) $this->escape->value : '',
-                    $item->offset,
+                    $token->offset,
                 );
             }
 
-            yield $item;
+            yield $token;
         }
+    }
+
+    /**
+     * @param Token<TToken> $token
+     */
+    protected function isEscapable(Token $token): bool {
+        return $token->name !== $this->string;
     }
 }

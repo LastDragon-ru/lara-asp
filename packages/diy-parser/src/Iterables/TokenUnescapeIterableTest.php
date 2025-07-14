@@ -4,6 +4,7 @@ namespace LastDragon_ru\DiyParser\Iterables;
 
 use LastDragon_ru\DiyParser\Testing\Package\TestCase;
 use LastDragon_ru\DiyParser\Tokenizer\Token;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;
@@ -46,6 +47,38 @@ final class TokenUnescapeIterableTest extends TestCase {
                 ),
                 false,
             ),
+        );
+    }
+
+    public function testGetIteratorUnescapable(): void {
+        $tokens   = [
+            new Token(TokenUnescapeIterableTest_Token::String, 'a', 0),
+            new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
+            new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 2),
+            new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 3),
+            new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 4),
+            new Token(TokenUnescapeIterableTest_Token::Slash, '/', 5),
+        ];
+        $iterable = new readonly class(
+            $tokens,
+            TokenUnescapeIterableTest_Token::String,
+            TokenUnescapeIterableTest_Token::Backslash,
+        ) extends TokenUnescapeIterable {
+            #[Override]
+            protected function isEscapable(Token $token): bool {
+                return parent::isEscapable($token)
+                    && $token->name !== TokenUnescapeIterableTest_Token::Asterisk;
+            }
+        };
+
+        self::assertEquals(
+            [
+                new Token(TokenUnescapeIterableTest_Token::String, 'a', 0),
+                new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
+                new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 3),
+                new Token(TokenUnescapeIterableTest_Token::String, '/', 5),
+            ],
+            iterator_to_array($iterable, false),
         );
     }
 }
