@@ -25,10 +25,6 @@ readonly class TokenEscapeIterable implements IteratorAggregate {
         /**
          * @var TToken
          */
-        protected UnitEnum $string,
-        /**
-         * @var TToken
-         */
         protected UnitEnum $escape,
     ) {
         // empty
@@ -53,6 +49,6 @@ readonly class TokenEscapeIterable implements IteratorAggregate {
      * @param Token<TToken> $token
      */
     protected function isEscapable(Token $token): bool {
-        return $token->name !== $this->string;
+        return $token->name !== null;
     }
 }

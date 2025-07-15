@@ -18,10 +18,6 @@ readonly class Tokenizer {
         /**
          * @var TToken
          */
-        protected BackedEnum $string,
-        /**
-         * @var TToken
-         */
         protected ?BackedEnum $escape = null,
     ) {
         // empty
@@ -33,10 +29,10 @@ readonly class Tokenizer {
      * @return iterable<mixed, Token<TToken>>
      */
     public function tokenize(iterable $iterable, int $offset = 0): iterable {
-        $iterable = new StringTokenizeIterable($iterable, $this->tokens, $this->string, offset: $offset);
+        $iterable = new StringTokenizeIterable($iterable, $this->tokens, offset: $offset);
 
         if ($this->escape !== null) {
-            $iterable = new TokenUnescapeIterable($iterable, $this->string, $this->escape);
+            $iterable = new TokenUnescapeIterable($iterable, $this->escape);
         }
 
         return $iterable;
