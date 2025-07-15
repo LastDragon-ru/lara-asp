@@ -2,12 +2,16 @@
 
 namespace LastDragon_ru\GlobMatcher\Parser;
 
+use Closure;
 use LastDragon_ru\DiyParser\Iterables\TransactionalIterable;
 use LastDragon_ru\DiyParser\Tokenizer\Token;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\AsteriskNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterClass;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterClassNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterCollatingSymbolNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterEquivalenceClassNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterNodeChild;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobNodeChild;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobstarNode;
@@ -30,7 +34,6 @@ class Parser {
 
     public function parse(string $pattern): ?GlobNode {
         // TODO(documentator/glob): Better limits (count/max length/etc)
-        // TODO(documentator/glob): [=c=] support
         $iterable = (new Tokenizer())->tokenize([$pattern]);
         $glob     = $this->parseGlob($iterable);
 
@@ -233,7 +236,10 @@ class Parser {
 
             // Child
             $factory->push(
-                $this->parseCharacterClass($iterable) ?? $this->parseString($iterable),
+                $this->parseCharacterClass($iterable)
+                ?? $this->parseCharacterCollatingSymbol($iterable)
+                ?? $this->parseCharacterCharacterEquivalenceClass($iterable)
+                ?? $this->parseString($iterable),
             );
         }
 
@@ -248,8 +254,63 @@ class Parser {
      * @param TransactionalIterable<Token<Name>> $iterable
      */
     protected function parseCharacterClass(TransactionalIterable $iterable): ?CharacterClassNode {
+        return $this->parseCharacterBrackets(
+            $iterable,
+            Name::Colon,
+            static function (string $class): ?CharacterClassNode {
+                $class = CharacterClass::tryFrom($class);
+                $node  = $class !== null
+                    ? new CharacterClassNode($class)
+                    : null;
+
+                return $node;
+            },
+        );
+    }
+
+    /**
+     * @param TransactionalIterable<Token<Name>> $iterable
+     */
+    protected function parseCharacterCollatingSymbol(TransactionalIterable $iterable): ?CharacterCollatingSymbolNode {
+        return $this->parseCharacterBrackets(
+            $iterable,
+            Name::Dot,
+            static function (string $symbol): CharacterCollatingSymbolNode {
+                return new CharacterCollatingSymbolNode($symbol);
+            },
+        );
+    }
+
+    /**
+     * @param TransactionalIterable<Token<Name>> $iterable
+     */
+    protected function parseCharacterCharacterEquivalenceClass(
+        TransactionalIterable $iterable,
+    ): ?CharacterEquivalenceClassNode {
+        return $this->parseCharacterBrackets(
+            $iterable,
+            Name::Equal,
+            static function (string $class): CharacterEquivalenceClassNode {
+                return new CharacterEquivalenceClassNode($class);
+            },
+        );
+    }
+
+    /**
+     * @template T of CharacterNodeChild
+     *
+     * @param TransactionalIterable<Token<Name>> $iterable
+     * @param Closure(string): ?T                $factory
+     *
+     * @return T
+     */
+    private function parseCharacterBrackets(
+        TransactionalIterable $iterable,
+        Name $name,
+        Closure $factory,
+    ): ?CharacterNodeChild {
         // Match?
-        if (!($iterable[0]?->is(Name::LeftSquareBracket) === true && $iterable[1]?->is(Name::Colon) === true)) {
+        if (!($iterable[0]?->is(Name::LeftSquareBracket) === true && $iterable[1]?->is($name) === true)) {
             return null;
         }
 
@@ -261,7 +322,7 @@ class Parser {
         $string = '';
 
         while ($iterable->valid()) {
-            if (!($iterable[0]?->is(Name::Colon) === true && $iterable[1]?->is(Name::RightSquareBracket) === true)) {
+            if (!($iterable[0]?->is($name) === true && $iterable[1]?->is(Name::RightSquareBracket) === true)) {
                 $string .= $iterable[0];
 
                 $iterable->next();
@@ -272,20 +333,16 @@ class Parser {
             }
         }
 
-        // Cannot be the last node in the stream
-        if (!$iterable->valid()) {
+        // Cannot be empty and/or the last node in the stream
+        if ($string === '' || !$iterable->valid()) {
             $iterable->rollback();
 
             return null;
         }
 
-        // Class?
-        $class = CharacterClass::tryFrom($string);
-        $node  = $class !== null
-            ? new CharacterClassNode($class)
-            : null;
-
         // End
+        $node = $factory($string);
+
         $iterable->end($node);
 
         // Return

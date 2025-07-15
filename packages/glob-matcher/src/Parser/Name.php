@@ -12,4 +12,6 @@ enum Name: string {
     case ExclamationMark    = '!';
     case Circumflex         = '^';
     case Colon              = ':';
+    case Dot                = '.';
+    case Equal              = '=';
 }

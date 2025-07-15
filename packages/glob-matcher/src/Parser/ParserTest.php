@@ -5,6 +5,8 @@ namespace LastDragon_ru\GlobMatcher\Parser;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\AsteriskNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterClass;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterClassNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterCollatingSymbolNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterEquivalenceClassNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobstarNode;
@@ -366,6 +368,28 @@ final class ParserTest extends TestCase {
                 ]),
                 new Options(),
                 '[:alpha:]',
+            ],
+            'character collating symbol'                 => [
+                new GlobNode([
+                    new NameNode([
+                        new CharacterNode(false, [
+                            new CharacterCollatingSymbolNode('ch'),
+                        ]),
+                    ]),
+                ]),
+                new Options(),
+                '[[.ch.]]',
+            ],
+            'character equivalence class'                => [
+                new GlobNode([
+                    new NameNode([
+                        new CharacterNode(false, [
+                            new CharacterEquivalenceClassNode('a'),
+                        ]),
+                    ]),
+                ]),
+                new Options(),
+                '[[=a=]]',
             ],
             '/./'                                        => [
                 new GlobNode([
