@@ -7,7 +7,6 @@ use IteratorAggregate;
 use LastDragon_ru\DiyParser\Tokenizer\Token;
 use Override;
 use Traversable;
-use UnitEnum;
 
 use function array_keys;
 
@@ -34,10 +33,6 @@ readonly class StringTokenizeIterable implements IteratorAggregate {
          */
         protected array|string $tokens,
         /**
-         * @var TToken
-         */
-        protected UnitEnum $string,
-        /**
          * Internal buffer size in characters (not bytes!).
          *
          * @var positive-int|null
@@ -53,7 +48,7 @@ readonly class StringTokenizeIterable implements IteratorAggregate {
         $iterable = new StringSplitIterable($this->iterable, array_keys($this->map), $this->buffer, $this->offset, true);
 
         foreach ($iterable as $offset => $value) {
-            yield new Token($this->map[$value] ?? $this->string, $value, $offset);
+            yield new Token($this->map[$value] ?? null, $value, $offset);
         }
     }
 

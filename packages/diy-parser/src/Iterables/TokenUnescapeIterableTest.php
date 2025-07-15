@@ -15,44 +15,41 @@ use function iterator_to_array;
 #[CoversClass(TokenUnescapeIterable::class)]
 final class TokenUnescapeIterableTest extends TestCase {
     public function testGetIterator(): void {
-        $tokens = [
-            new Token(TokenUnescapeIterableTest_Token::String, 'a', 0),
+        $tokens   = [
+            new Token(null, 'a', 0),
             new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
             new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 2),
             new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 3),
-            new Token(TokenUnescapeIterableTest_Token::String, 'b', 4),
+            new Token(null, 'b', 4),
             new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 5),
             new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 6),
             new Token(TokenUnescapeIterableTest_Token::Slash, '/', 7),
             new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 8),
-            new Token(TokenUnescapeIterableTest_Token::String, 'c', 9),
+            new Token(null, 'c', 9),
             new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 10),
         ];
+        $iterable = new TokenUnescapeIterable(
+            $tokens,
+            TokenUnescapeIterableTest_Token::Backslash,
+        );
 
         self::assertEquals(
             [
-                new Token(TokenUnescapeIterableTest_Token::String, 'a', 0),
+                new Token(null, 'a', 0),
                 new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
-                new Token(TokenUnescapeIterableTest_Token::String, '*', 3),
-                new Token(TokenUnescapeIterableTest_Token::String, 'b', 4),
-                new Token(TokenUnescapeIterableTest_Token::String, '\\', 6),
+                new Token(null, '*', 3),
+                new Token(null, 'b', 4),
+                new Token(null, '\\', 6),
                 new Token(TokenUnescapeIterableTest_Token::Slash, '/', 7),
-                new Token(TokenUnescapeIterableTest_Token::String, 'c', 9),
+                new Token(null, 'c', 9),
             ],
-            iterator_to_array(
-                new TokenUnescapeIterable(
-                    $tokens,
-                    TokenUnescapeIterableTest_Token::String,
-                    TokenUnescapeIterableTest_Token::Backslash,
-                ),
-                false,
-            ),
+            iterator_to_array($iterable, false),
         );
     }
 
     public function testGetIteratorUnescapable(): void {
         $tokens   = [
-            new Token(TokenUnescapeIterableTest_Token::String, 'a', 0),
+            new Token(null, 'a', 0),
             new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
             new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 2),
             new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 3),
@@ -61,7 +58,6 @@ final class TokenUnescapeIterableTest extends TestCase {
         ];
         $iterable = new readonly class(
             $tokens,
-            TokenUnescapeIterableTest_Token::String,
             TokenUnescapeIterableTest_Token::Backslash,
         ) extends TokenUnescapeIterable {
             #[Override]
@@ -73,10 +69,10 @@ final class TokenUnescapeIterableTest extends TestCase {
 
         self::assertEquals(
             [
-                new Token(TokenUnescapeIterableTest_Token::String, 'a', 0),
+                new Token(null, 'a', 0),
                 new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
                 new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 3),
-                new Token(TokenUnescapeIterableTest_Token::String, '/', 5),
+                new Token(null, '/', 5),
             ],
             iterator_to_array($iterable, false),
         );

@@ -19,37 +19,35 @@ final class StringTokenizeIterableTest extends TestCase {
 
         self::assertEquals(
             [
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, 'aaaa', 0),
+                new Token(null, 'aaaa', 0),
                 new Token(StringTokenizeIterableTest_EnumAlpha::A, 'A', 4),
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, 'BBBB', 5),
+                new Token(null, 'BBBB', 5),
                 new Token(StringTokenizeIterableTest_EnumAlpha::B, 'b', 9),
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, '[]aaaa ! B * BBB', 10),
+                new Token(null, '[]aaaa ! B * BBB', 10),
             ],
             iterator_to_array(
                 new StringTokenizeIterable(
                     $source,
                     StringTokenizeIterableTest_EnumAlpha::class,
-                    StringTokenizeIterableTest_EnumAlpha::String,
                 ),
                 false,
             ),
         );
         self::assertEquals(
             [
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, 'aaaa', 0),
+                new Token(null, 'aaaa', 0),
                 new Token(StringTokenizeIterableTest_EnumAlpha::A, 'A', 4),
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, 'BBBB', 5),
+                new Token(null, 'BBBB', 5),
                 new Token(StringTokenizeIterableTest_EnumAlpha::B, 'b', 9),
                 new Token(StringTokenizeIterableTest_EnumSpecial::Brackets, '[]', 10),
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, 'aaaa ! B ', 12),
+                new Token(null, 'aaaa ! B ', 12),
                 new Token(StringTokenizeIterableTest_EnumSpecial::Asterisk, '*', 21),
-                new Token(StringTokenizeIterableTest_EnumAlpha::String, ' BBB', 22),
+                new Token(null, ' BBB', 22),
             ],
             iterator_to_array(
                 new StringTokenizeIterable(
                     $source,
                     [StringTokenizeIterableTest_EnumAlpha::class, StringTokenizeIterableTest_EnumSpecial::class],
-                    StringTokenizeIterableTest_EnumAlpha::String,
                 ),
                 false,
             ),
@@ -61,7 +59,6 @@ final class StringTokenizeIterableTest extends TestCase {
         $iterable = new StringTokenizeIterable(
             $source,
             StringTokenizeIterableTest_EnumAlpha::class,
-            StringTokenizeIterableTest_EnumAlpha::String,
         );
         $iterator = new IteratorIterator($iterable->getIterator());
 
@@ -75,9 +72,8 @@ final class StringTokenizeIterableTest extends TestCase {
 // @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 
 enum StringTokenizeIterableTest_EnumAlpha: string {
-    case String = '';
-    case A      = 'A';
-    case B      = 'b';
+    case A = 'A';
+    case B = 'b';
 }
 
 enum StringTokenizeIterableTest_EnumSpecial: string {

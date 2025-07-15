@@ -14,17 +14,13 @@ use function iterator_to_array;
 final class TokenizerTest extends TestCase {
     public function testTokenize(): void {
         $source    = ['abc*cd\\*e'];
-        $tokenizer = new Tokenizer(
-            TokenizerTest_Token::class,
-            TokenizerTest_Token::String,
-            TokenizerTest_Token::Backslash,
-        );
+        $tokenizer = new Tokenizer(TokenizerTest_Token::class, TokenizerTest_Token::Backslash);
         $expected  = [
-            new Token(TokenizerTest_Token::String, 'abc', 0),
+            new Token(null, 'abc', 0),
             new Token(TokenizerTest_Token::Asterisk, '*', 3),
-            new Token(TokenizerTest_Token::String, 'cd', 4),
-            new Token(TokenizerTest_Token::String, '*', 7),
-            new Token(TokenizerTest_Token::String, 'e', 8),
+            new Token(null, 'cd', 4),
+            new Token(null, '*', 7),
+            new Token(null, 'e', 8),
         ];
 
         self::assertEquals($expected, iterator_to_array($tokenizer->tokenize($source), false));
@@ -33,14 +29,14 @@ final class TokenizerTest extends TestCase {
     public function testTokenizeNoEscape(): void {
         $source    = ['abc*cd\\*e'];
         $offset    = 2;
-        $tokenizer = new Tokenizer(TokenizerTest_Token::class, TokenizerTest_Token::String);
+        $tokenizer = new Tokenizer(TokenizerTest_Token::class);
         $expected  = [
-            new Token(TokenizerTest_Token::String, 'abc', $offset + 0),
+            new Token(null, 'abc', $offset + 0),
             new Token(TokenizerTest_Token::Asterisk, '*', $offset + 3),
-            new Token(TokenizerTest_Token::String, 'cd', $offset + 4),
+            new Token(null, 'cd', $offset + 4),
             new Token(TokenizerTest_Token::Backslash, '\\', $offset + 6),
             new Token(TokenizerTest_Token::Asterisk, '*', $offset + 7),
-            new Token(TokenizerTest_Token::String, 'e', $offset + 8),
+            new Token(null, 'e', $offset + 8),
         ];
 
         self::assertEquals($expected, iterator_to_array($tokenizer->tokenize($source, $offset), false));

@@ -24,10 +24,6 @@ readonly class TokenUnescapeIterable implements IteratorAggregate {
         /**
          * @var TToken
          */
-        protected UnitEnum $string,
-        /**
-         * @var TToken
-         */
         protected UnitEnum $escape,
     ) {
         // empty
@@ -40,7 +36,8 @@ readonly class TokenUnescapeIterable implements IteratorAggregate {
         foreach ($this->iterable as $token) {
             if ($escaped !== null) {
                 if ($this->isEscapable($token)) {
-                    yield new Token($this->string, $token->value, $token->offset);
+                    /** @phpstan-ignore generator.valueType (`null` is fine) */
+                    yield new Token(null, $token->value, $token->offset);
                 } else {
                     yield $token;
                 }
@@ -58,6 +55,6 @@ readonly class TokenUnescapeIterable implements IteratorAggregate {
      * @param Token<TToken> $token
      */
     protected function isEscapable(Token $token): bool {
-        return $token->name !== $this->string;
+        return $token->name !== null;
     }
 }

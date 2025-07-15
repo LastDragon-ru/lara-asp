@@ -12,16 +12,16 @@ use UnitEnum;
 readonly class Token implements Stringable {
     public function __construct(
         /**
-         * @var TName
+         * @var TName|null
          */
-        public UnitEnum $name,
+        public ?UnitEnum $name,
         public string $value,
         public int $offset,
     ) {
         // empty
     }
 
-    public function is(UnitEnum $name): bool {
+    public function is(?UnitEnum $name): bool {
         return $this->name === $name;
     }
 
