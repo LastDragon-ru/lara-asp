@@ -14,4 +14,9 @@ enum Name: string {
     case Colon              = ':';
     case Dot                = '.';
     case Equal              = '=';
+    case Plus               = '+';
+    case At                 = '@';
+    case LeftParenthesis    = '(';
+    case RightParenthesis   = ')';
+    case VerticalLine       = '|';
 }

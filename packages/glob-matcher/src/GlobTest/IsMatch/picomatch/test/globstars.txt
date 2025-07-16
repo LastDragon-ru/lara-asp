@@ -30,10 +30,10 @@
   // (1) [true, "a/b/c/d/e/z/foo.md", "a/**{,(/x|/z)}/*.md"]
 
 ### it('should support globstars followed by braces with nested extglobs', () => {
-  // (1) [true, "/x/foo.md", "@(/x|/z)/*.md"]
-  // (1) [true, "/z/foo.md", "@(/x|/z)/*.md"]
-  // (1) [true, "a/b/c/d/e/z/foo.md", "a/**/c/**@(/z|/x)/*.md"]
-  // (1) [true, "a/b/c/d/e/z/foo.md", "a/**@(/x|/z)/*.md"]
+  // (4.8) [true, "/x/foo.md", "@(/x|/z)/*.md"]
+  // (4.8) [true, "/z/foo.md", "@(/x|/z)/*.md"]
+  // (4.8) [true, "a/b/c/d/e/z/foo.md", "a/**/c/**@(/z|/x)/*.md"]
+  // (4.8) [true, "a/b/c/d/e/z/foo.md", "a/**@(/x|/z)/*.md"]
 
 ### it('should support multiple globstars in one pattern', () => {
   [false, "a/b/c/d/e/z/foo.md", "a/**/j/**/z/*.md"]

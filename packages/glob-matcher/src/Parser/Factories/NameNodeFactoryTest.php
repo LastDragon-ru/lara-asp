@@ -16,6 +16,8 @@ final class NameNodeFactoryTest extends TestCase {
         $child   = new StringNode('node');
         $factory = new NameNodeFactory();
 
+        self::assertNull($factory->create());
+
         $factory->push($child);
 
         self::assertEquals(

@@ -39,22 +39,22 @@ final class NameNodeTest extends TestCase {
                 new Options(),
             ],
             'hidden = default'                => [
-                '(?!\.)(?:(?=.)(?:abc))',
+                '(?!\.)(?:(?=.)abc)',
                 new NameNode([new StringNode('abc')]),
                 new Options(),
             ],
             'hidden = false'                  => [
-                '(?!\.)(?:(?=.)(?:abc))',
+                '(?!\.)(?:(?=.)abc)',
                 new NameNode([new StringNode('abc')]),
                 new Options(hidden: false),
             ],
             'hidden = true'                   => [
-                '(?!\.{1,2}(?:/|$))(?:(?=.)(?:abc))',
+                '(?!\.{1,2}(?:/|$))(?:(?=.)abc)',
                 new NameNode([new StringNode('abc')]),
                 new Options(hidden: true),
             ],
             'hidden = explicit'               => [
-                '(?!\.{1,2}(?:/|$))(?:(?=.)(?:\.abc))',
+                '(?!\.{1,2}(?:/|$))(?:(?=.)\.abc)',
                 new NameNode([new StringNode('.abc')]),
                 new Options(hidden: false),
             ],

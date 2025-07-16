@@ -2,26 +2,26 @@
 
 namespace LastDragon_ru\GlobMatcher\Parser\Factories;
 
-use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobNode;
-use LastDragon_ru\GlobMatcher\Ast\Nodes\SegmentNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\PatternNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\StringNode;
 use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @internal
  */
-#[CoversClass(GlobNodeFactory::class)]
-final class GlobNodeFactoryTest extends TestCase {
+#[CoversClass(PatternNodeFactory::class)]
+final class PatternNodeFactoryTest extends TestCase {
     public function testCreate(): void {
-        $child   = new SegmentNode();
-        $factory = new GlobNodeFactory();
+        $child   = new StringNode('node');
+        $factory = new PatternNodeFactory();
 
         self::assertNull($factory->create());
 
         $factory->push($child);
 
         self::assertEquals(
-            new GlobNode([$child]),
+            new PatternNode([$child]),
             $factory->create(),
         );
     }

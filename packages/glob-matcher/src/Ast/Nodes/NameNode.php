@@ -3,10 +3,9 @@
 namespace LastDragon_ru\GlobMatcher\Ast\Nodes;
 
 use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Iterables\TransformIterable;
-use LastDragon_ru\DiyParser\Utils;
 use LastDragon_ru\GlobMatcher\Ast\Node;
 use LastDragon_ru\GlobMatcher\Ast\ParentNode;
+use LastDragon_ru\GlobMatcher\Ast\Utils;
 use LastDragon_ru\GlobMatcher\Options;
 use Override;
 
@@ -25,13 +24,7 @@ class NameNode extends ParentNode implements GlobNodeChild {
         }
 
         // Regex
-        $children = new TransformIterable($cursor, static function (Cursor $child) use ($options): string {
-            $regex = $child->node::toRegex($options, $child);
-            $regex = $regex !== '' ? "(?:{$regex})" : '';
-
-            return $regex;
-        });
-        $regex    = '(?=.)'.Utils::toString($children);
+        $regex = '(?=.)'.Utils::toRegex($options, $cursor);
 
         // By default, the `.` at the start of a path or immediately
         // following a slash must be matched explicitly.

@@ -16,6 +16,8 @@ final class CharacterNodeFactoryTest extends TestCase {
         $child   = new StringNode('node');
         $factory = new CharacterNodeFactory(true);
 
+        self::assertNull($factory->create());
+
         $factory->push($child);
 
         self::assertEquals(

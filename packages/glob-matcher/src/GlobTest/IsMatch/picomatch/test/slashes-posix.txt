@@ -322,12 +322,12 @@
   // (1) [true, "b/b", "!a/(b)"]
   // (1) [true, "b/c", "!a/(b)"]
 
-  // (1) [true, "a/a", "!(a/b)"]
-  // (1) [false, "a/b", "!(a/b)"]
-  // (1) [true, "a/c", "!(a/b)"]
-  // (1) [true, "b/a", "!(a/b)"]
-  // (1) [true, "b/b", "!(a/b)"]
-  // (1) [true, "b/c", "!(a/b)"]
+  // (4.8) [true, "a/a", "!(a/b)"]
+  // (4.8) [false, "a/b", "!(a/b)"]
+  // (4.8) [true, "a/c", "!(a/b)"]
+  // (4.8) [true, "b/a", "!(a/b)"]
+  // (4.8) [true, "b/b", "!(a/b)"]
+  // (4.8) [true, "b/c", "!(a/b)"]
 
 ## it('should work with file extensions', () => {
   [false, "a.txt", "a/**/*.txt"]

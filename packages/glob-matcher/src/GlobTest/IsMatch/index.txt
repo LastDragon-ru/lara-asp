@@ -26,11 +26,12 @@
 #    not supported.
 # 3. Some options don't have equivalents, these tests are skipped
 #    * `strictSlashes` - always `true` in our case
-#    * `windows` - windows paths are not supported
+#    * `keepQuotes`    - always `true` in our case
+#    * `windows`       - windows paths are not supported
 # 4. Differences from "picomatch":
 #    4.1. `/`, `.` and `..` always matches explicitly
-#    4.2. Because of (3) the `a/**` will not match `a`, but will `a/`
-#    4.3. There is no any special processing of quotes inside the pattern
+#    4.2. Because of `strictSlashes` (3) the `a/**` will not match `a`, but will `a/`
+#    4.3. There is no any special processing of quotes/parentheses inside the pattern
 #    4.4. Path always checks as is (= without any preparation)
 #    4.5. The `\` is always used as an escape character, so `[\b]` will be
 #         treated as `[b]` (use `[\\b]`).
@@ -38,45 +39,54 @@
 #         match to `[1]` in path.
 #    4.7. Slashes inside characters always treated as segments
 #         (`[a/b]` => `[a` `/` `b]`)
+#    4.8. Slashes inside extglob not supported.
 #
 # Picomatch options map:
 # * `dot`           => `hidden`
+# * `nocase`        => `matchCase`
 # * `noglobstar`    => `globstar`
+# * `noextglob`     => `extended`
+# * `keepQuotes`    => (4.3)
 # * `strictSlashes` => (3)
 #
 # The following shell can be used to convert js into our tests:
 # sed \
-#    -e 's|^      describe(|#### describe(|' \
-#    -e 's|^    describe(|### describe(|' \
-#    -e 's|^  describe(|## describe(|' \
-#    -e 's|^describe(|# describe(|' \
-#    -e 's|^        it(|##### it(|' \
-#    -e 's|^      it(|#### it(|' \
-#    -e 's|^    it(|### it(|' \
-#    -e 's|^  it(|## it(|' \
-#    -e '/^[ ]*});/d' \
-#    -e 's|^[ ]*// |  // |' \
-#    -e 's|^[ ]*assert(isMatch(|  [true, |' \
-#    -e 's|^[ ]*assert(\!isMatch(|  [false, |' \
-#    -e 's|^[ ]*assert.deepStrictEqual(match(\(.*\), \(.*\)), \(.*\));$|  [\3, \1, \2]|' \
-#    -e 's|));$|]|' \
-#    -e 's|"|__QUOTE__|g' \
-#    -e 's| \x27\([^\x27]*\)\x27| "\1"|g' \
-#    -e 's|\[\x27\([^\x27]*\)\x27|["\1"|g' \
-#    -e 's|__QUOTE__|\\"|g' \
-#    -e 's|, \\"\(.*\)\\", |, "\1", |g' \
-#    -e 's|", \\"\(.*\)\\"]|", "\1"]|g' \
-#    -e 's|{ dot: true }]|{ "hidden": true }]|' \
-#    -e 's|{ dot: false }]|{ "hidden": false }]|' \
-#    -e 's|{ dot: true, strictSlashes: true }]|{ "hidden": false }]|' \
-#    -e 's|{ noglobstar: true }]|{ "globstar": false }]|' \
-#    -e 's|{ strictSlashes: true }]|null, { "strictSlashes": true }]|' \
-#    -e 's|{ bash: true }]|null, { "bash": true }]|' \
-#    -e 's|.*{ regex: true }.*|  // (3) \0|' \
-#    -e 's|.*{ windows: true }.*|  // (3) \0|' \
-#    -e 's|.*{ format }.*|  // (3) \0|' \
-#    -e 's|.*{ relaxSlashes: true }.*|  // (3) \0|' \
-#    -e 's|  // (3)   \[|  // (3) [|' \
+#   -e 's|^      describe(|#### describe(|' \
+#   -e 's|^    describe(|### describe(|' \
+#   -e 's|^  describe(|## describe(|' \
+#   -e 's|^describe(|# describe(|' \
+#   -e 's|^        it(|##### it(|' \
+#   -e 's|^      it(|#### it(|' \
+#   -e 's|^    it(|### it(|' \
+#   -e 's|^  it(|## it(|' \
+#   -e '/^[ ]*});/d' \
+#   -e 's|^[ ]*// |  // |' \
+#   -e 's|^[ ]*assert(isMatch(|  [true, |' \
+#   -e 's|^[ ]*assert(\!isMatch(|  [false, |' \
+#   -e 's|^[ ]*assert.deepStrictEqual(match(\(.*\), \(.*\)), \(.*\));$|  [\3, \1, \2]|' \
+#   -e 's|));$|]|' \
+#   -e 's|"|__QUOTE__|g' \
+#   -e 's| \x27\([^\x27]*\)\x27| "\1"|g' \
+#   -e 's|\[\x27\([^\x27]*\)\x27|["\1"|g' \
+#   -e 's|__QUOTE__|\\"|g' \
+#   -e 's|, \\"\(.*\)\\", |, "\1", |g' \
+#   -e 's|", \\"\(.*\)\\"]|", "\1"]|g' \
+#   -e 's|{ dot: true }]|{ "hidden": true }]|' \
+#   -e 's|{ dot: false }]|{ "hidden": false }]|' \
+#   -e 's|{ dot: true, strictSlashes: true }]|{ "hidden": false }, { "strictSlashes": true }]|' \
+#   -e 's|{ noglobstar: true }]|{ "globstar": false }]|' \
+#   -e 's|{ nocase: true }]|{ "matchCase": false }]|' \
+#   -e 's|{ strictSlashes: true }]|null, { "strictSlashes": true }]|' \
+#   -e 's|{ bash: true }]|null, { "bash": true }]|' \
+#   -e 's|{ windows: true }|null, { "windows": true }|' \
+#   -e 's|{ keepQuotes: true }|null, { "keepQuotes": true }|' \
+#   -e 's|{ noext: true }|{ "extended": false }|' \
+#   -e 's|{ noextglob: true }|{ "extended": false }|' \
+#   -e 's|{ noextglob: true, windows: true }|{ "extended": false }, { "windows": true }|' \
+#   -e 's|.*{ regex: true }.*|  // (3) \0|' \
+#   -e 's|.*{ format }.*|  // (3) \0|' \
+#   -e 's|.*{ relaxSlashes: true }.*|  // (3) \0|' \
+#   -e 's|  // (3)   \[|  // (3) [|' \
 #    /path/to/picomatch/test/<test>.js \
 #    > /path/to/<test>.txt
 
@@ -87,8 +97,14 @@
 @ picomatch/test/brackets.txt
 @ picomatch/test/dotfiles.txt
 @ picomatch/test/dots-invalid.txt
+@ picomatch/test/extglobs.txt
+@ picomatch/test/extglobs-minimatch.txt
+@ picomatch/test/extglobs-temp.txt
 @ picomatch/test/globstars.txt
+@ picomatch/test/minimatch.txt
+@ picomatch/test/negation.txt
 @ picomatch/test/non-globs.txt
+@ picomatch/test/options.noextglob.txt
 @ picomatch/test/posix-classes.txt
 @ picomatch/test/qmarks.txt
 @ picomatch/test/slashes-posix.txt
@@ -97,25 +113,91 @@
 @ picomatch/test/wildmat.txt
 
 # More
-[false, "ab", "./*", "(4.1)"]
-[false, "ab/", "./*/", "(4.1)"]
-[false, ".", "[[:digit:][:punct:][:space:]]", "(4.1)"]
-[false, ".", "[^[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:lower:][:space:][:upper:][:xdigit:]]", "(4.1)"]
-[false, "a", "a/**", "(4.2)"]
-[true, "a/", "a/**", "(4.2)"]
-[false, "a/b", "**/b/**", "(4.2)"]
-[false, "a/b", "*/b/**", "(4.2)"]
-[false, "abc/abc/.abc", "**/.abc/**", "(4.2)"]
-[true, "abc/abc/.abc/", "**/.abc/**", "(4.2)"]
-[false, ".abc", "**/.abc/**", "(4.2)"]
-[true, ".abc/", "**/.abc/**", "(4.2)"]
-[false, "bdir/", "[a-y]*[^c]", "(4.2)"]
-[true, "foo/\"a\"/bar", "foo/\"*\"/bar", "(4.3)"]
-[false, "***", "\"***\"", "(4.3)"]
-[false, "\\*", "\\*", "(4.4)"]
-[true, "abc", "a[\\b]c", "(4.5)"]
-[false, "foo/bar - copy [1]", "**/*[1]", "(4.6)"]
-
+## (2)
+  [false, "abc",  "!!(abc)"]
+    [true, "!bc",  "!!(abc)"]
+  [false, "ab", "(a+|b)*", null, { "windows": true }]
+  [false, "a.b", "(a|d).(a|b)*", null, { "windows": true }]
+    [true, "a.b", "+(a|d).*(a|b)"]
+  [false, "1", "0|[1-6]*([0-9])", null, { "windows": true }]
+    [true, "1", "+(0|[1-6]*([0-9]))", null, { "windows": true }]
+  [false, "foo", "*(a|b\\[)|f*", null, { "windows": true }]
+    [true, "foo", "@(*(a|b\\[)|f*)"]
+  [false, "abcfefg", "(a+|b)*", null, { "windows": true }]
+    [true, "abcfefg", "*(+(a)|b)*"]
+  [false, "1", "0|[1-9]*([0-9])", null, { "windows": true }]
+    [true, "1", "@(0|[1-9]*([0-9]))"]
+  [false, "12", "0|[1-9]*([0-9])", null, { "windows": true }]
+    [true, "12", "+(0|[1-9]*([0-9]))"]
+  [false, "12", "0|[1-6]*([0-9])", null, { "windows": true }]
+    [true, "12", "@(0|[1-6]*([0-9]))"]
+  [false, "abd", "a(b*(foo|bar))d", null, { "windows": true }]
+    [true, "abd", "a+(b*(foo|bar))d"]
+  [false, "0", "0|[1-6]*([0-9])", null, { "windows": true }]
+    [true, "0", "@(0|[1-6]*([0-9]))"]
+  [false, "a.a", "*.(a|b|@(ab|a*@(b))*(c)d)", null, { "windows": true }]
+    [true, "a.a", "*.@(a|b|@(ab|a*@(b))*(c)d)"]
+    [true, "a.b", "*.@(a|b|@(ab|a*@(b))*(c)d)"]
+    [true, "a.abcd", "*.@(a|b|@(ab|a*@(b))*(c)d)"]
+## (3)
+  [true, "b/cc.txt", "b/!(c).txt", null, { "windows": true }]
+  [true, "a/b/cc.txt", "*/b/!(c).txt", null, { "windows": true }]
+## (4.1)
+  [false, "ab", "./*"]
+  [false, "ab/", "./*/"]
+  [false, ".", "[[:digit:][:punct:][:space:]]"]
+  [false, ".", "[^[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:lower:][:space:][:upper:][:xdigit:]]"]
+  [false, ".md", "?(a|b).md"]
+    [true, ".md", "?(a|b).md", {"hidden": true}]
+  [false, ".md", "*(a|b).md"]
+    [true, ".md", "*(a|b).md", {"hidden": true}]
+## (4.2)
+  [false, "a", "a/**"]
+  [true, "a/", "a/**"]
+  [false, "a/b", "**/b/**"]
+  [false, "a/b", "*/b/**"]
+  [false, "abc/abc/.abc", "**/.abc/**"]
+  [true, "abc/abc/.abc/", "**/.abc/**"]
+  [false, ".abc", "**/.abc/**"]
+  [true, ".abc/", "**/.abc/**"]
+  [false, "bdir/", "[a-y]*[^c]"]
+  [false, "a/a", "a/!(b*)/**"]
+    [true, "a/a/", "a/!(b*)/**"]
+  [false, "a/c", "a/!(b*)/**"]
+    [true, "a/c/", "a/!(b*)/**"]
+## (4.3)
+  [true, "foo/\"a\"/bar", "foo/\"*\"/bar"]
+  [false, "***", "\"***\""]
+  [false, "bar", "!(f(o))", null, { "windows": true }]
+  [false, "abcdef", "(a+|b)*", null, { "windows": true }]
+    [true, "abcdef", "*(a|b)*"]
+## (4.4)
+  [false, "\\*", "\\*"]
+## (4.5)
+  [true, "abc", "a[\\b]c", "(4.5)"]
+  [false, "a\\\\z", "a\\\\z", null, { "windows": true }]
+    [true, "a\\\\z", "a\\\\\\\\z"]
+## (4.6)
+  [false, "foo/bar - copy [1]", "**/*[1]", "(4.6)"]
 ## (4.7)
-[false, "foo/bar", "foo[/]bar"]
-[false, "foo/bar", "foo[\\/]bar"]
+  [false, "foo/bar", "foo[/]bar"]
+  [false, "foo/bar", "foo[\\/]bar"]
+## (4.8)
+  [false, "c/b/z", "c!(/z)z"]
+  [false, "a", "!(*/*)"]
+  [false, "a.b", "!(*/*)"]
+  [false, "a", "!(*/b)"]
+  [false, "a.b", "!(*/b)"]
+  [false, "a/a", "!(*/b)"]
+  [false, "a/c", "!(*/b)"]
+  [false, "b/a", "!(*/b)"]
+  [false, "b/c", "!(*/b)"]
+  [false, "a", "!(a/b)"]
+  [false, "a.b", "!(a/b)"]
+  [false, "a/a", "!(a/b)"]
+  [false, "a/c", "!(a/b)"]
+  [false, "b/a", "!(a/b)"]
+  [false, "b/b", "!(a/b)"]
+  [false, "b/c", "!(a/b)"]
+  [false, "b", "!(a/**)"]
+  [false, "b/c", "!(a/**)"]

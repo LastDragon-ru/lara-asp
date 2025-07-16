@@ -11,6 +11,7 @@ use function array_diff_key;
 use function array_keys;
 use function assert;
 use function basename;
+use function count;
 use function dirname;
 use function file;
 use function implode;
@@ -61,8 +62,10 @@ final class GlobTest extends TestCase {
         $data    = [];
         $default = new Options();
         $allowed = [
-            'globstar' => true,
-            'hidden'   => true,
+            'matchCase' => true,
+            'globstar'  => true,
+            'extended'  => true,
+            'hidden'    => true,
         ];
 
         try {
@@ -91,16 +94,21 @@ final class GlobTest extends TestCase {
                         }
 
                         $test[3] += [
-                            'globstar' => $options->globstar,
-                            'hidden'   => $options->hidden,
+                            'matchCase' => $options->matchCase,
+                            'globstar'  => $options->globstar,
+                            'extended'  => $options->extended,
+                            'hidden'    => $options->hidden,
                         ];
                         $options  = new Options(
-                            globstar: (bool) $test[3]['globstar'],
-                            hidden  : (bool) $test[3]['hidden'],
+                            globstar : (bool) $test[3]['globstar'],
+                            extended : (bool) $test[3]['extended'],
+                            hidden   : (bool) $test[3]['hidden'],
+                            matchCase: (bool) $test[3]['matchCase'],
                         );
                     }
 
-                    $path           = json_encode($paths, JSON_THROW_ON_ERROR);
+                    $path           = json_encode(count($paths) > 1 ? $paths : $paths[0], JSON_THROW_ON_ERROR);
+                    $path           = mb_trim($path, '"');
                     $negated        = $expected === [] ? 'not ' : '';
                     $message        = "Path `{$path}` should {$negated}match `{$pattern}` ({$line})";
                     $data[$message] = [

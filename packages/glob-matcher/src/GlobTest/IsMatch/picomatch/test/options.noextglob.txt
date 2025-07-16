@@ -1,0 +1,16 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/dots-invalid.js
+
+# describe('options.noextglob', () => {
+## it('should disable extglob support when options.noextglob is true', () => {
+  // (4.3) [true, "a+z", "a+(z)", { "extended": false }]
+  [false, "az", "a+(z)", { "extended": false }]
+  [false, "azz", "a+(z)", { "extended": false }]
+  [false, "azzz", "a+(z)", { "extended": false }]
+
+## it('should work with noext alias to support minimatch', () => {
+  // (4.3) [true, "a+z", "a+(z)", { "extended": false }]
+  [false, "az", "a+(z)", { "extended": false }]
+  [false, "azz", "a+(z)", { "extended": false }]
+  [false, "azzz", "a+(z)", { "extended": false }]

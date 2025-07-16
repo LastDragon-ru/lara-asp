@@ -35,22 +35,22 @@ final class GlobNodeTest extends TestCase {
     public static function dataProviderToRegex(): array {
         return [
             'default'         => [
-                '(?:(?!\.)(?:(?=.)(?:file\.txt)))',
+                '(?!\.)(?:(?=.)file\.txt)',
                 'file.txt',
                 new Options(),
             ],
             'hidden: true'    => [
-                '(?:(?!\.{1,2}(?:/|$))(?:(?=.)(?:file\.txt)))',
+                '(?!\.{1,2}(?:/|$))(?:(?=.)file\.txt)',
                 'file.txt',
                 new Options(hidden: true),
             ],
             'hidden: false'   => [
-                '(?:(?!\.)(?:(?=.)(?:file\.txt)))',
+                '(?!\.)(?:(?=.)file\.txt)',
                 'file.txt',
                 new Options(hidden: false),
             ],
             'starts with dot' => [
-                '(?:(?!\.{1,2}(?:/|$))(?:(?=.)(?:\.txt)))',
+                '(?!\.{1,2}(?:/|$))(?:(?=.)\.txt)',
                 '.txt',
                 new Options(),
             ],
@@ -60,7 +60,7 @@ final class GlobNodeTest extends TestCase {
                 new Options(),
             ],
             '*/.*'            => [
-                '(?:(?!\.{1,2}(?:/|$))(?:(?=.)(?:[^/]*?)))(?:/)(?:(?!\.{1,2}(?:/|$))(?:(?=.)(?:\.)(?:[^/]*?)))',
+                '(?:(?!\.{1,2}(?:/|$))(?:(?=.)[^/]*?))(?:/)(?:(?!\.{1,2}(?:/|$))(?:(?=.)(?:\.)(?:[^/]*?)))',
                 '*/.*',
                 new Options(hidden: true),
             ],

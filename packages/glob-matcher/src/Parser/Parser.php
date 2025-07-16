@@ -17,6 +17,8 @@ use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobNodeChild;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobstarNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\NameNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\NameNodeChild;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\PatternListNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\PatternListQuantifier;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\QuestionNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\SegmentNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\StringNode;
@@ -24,6 +26,8 @@ use LastDragon_ru\GlobMatcher\Options;
 use LastDragon_ru\GlobMatcher\Parser\Factories\CharacterNodeFactory;
 use LastDragon_ru\GlobMatcher\Parser\Factories\GlobNodeFactory;
 use LastDragon_ru\GlobMatcher\Parser\Factories\NameNodeFactory;
+use LastDragon_ru\GlobMatcher\Parser\Factories\PatternListNodeFactory;
+use LastDragon_ru\GlobMatcher\Parser\Factories\PatternNodeFactory;
 
 class Parser {
     public function __construct(
@@ -143,7 +147,8 @@ class Parser {
      * @param TransactionalIterable<Token<Name>> $iterable
      */
     protected function parseNameChild(TransactionalIterable $iterable): ?NameNodeChild {
-        return $this->parseCharacter($iterable)
+        return $this->parsePatternList($iterable)
+            ?? $this->parseCharacter($iterable)
             ?? $this->parseAsterisk($iterable)
             ?? $this->parseQuestion($iterable)
             ?? $this->parseString($iterable);
@@ -343,6 +348,65 @@ class Parser {
         // End
         $node = $factory($string);
 
+        $iterable->end($node);
+
+        // Return
+        return $node;
+    }
+
+    /**
+     * @param TransactionalIterable<Token<Name>> $iterable
+     */
+    protected function parsePatternList(TransactionalIterable $iterable): ?PatternListNode {
+        // Enabled?
+        if (!$this->options->extended) {
+            return null;
+        }
+
+        // List?
+        $quantifier = match ($iterable[0]->name ?? null) {
+            Name::ExclamationMark => PatternListQuantifier::Not,
+            Name::Question        => PatternListQuantifier::ZeroOrOne,
+            Name::Asterisk        => PatternListQuantifier::ZeroOrMore,
+            Name::Plus            => PatternListQuantifier::OneOrMore,
+            Name::At              => PatternListQuantifier::OneOf,
+            default               => null,
+        };
+
+        if ($quantifier === null || $iterable[1]?->is(Name::LeftParenthesis) !== true) {
+            return null;
+        }
+
+        // Begin
+        $iterable->begin();
+        $iterable->next(2);
+
+        // Parse
+        $node           = null;
+        $listFactory    = new PatternListNodeFactory($quantifier);
+        $patternFactory = new PatternNodeFactory();
+
+        while ($iterable->valid()) {
+            switch (true) {
+                case $iterable[0]?->is(Name::RightParenthesis):
+                    $listFactory->push($patternFactory->create());
+                    $iterable->next();
+
+                    $node = $listFactory->create();
+
+                    break 2;
+                case $iterable[0]?->is(Name::VerticalLine):
+                    $listFactory->push($patternFactory->create());
+
+                    $iterable->next();
+                    break;
+                default:
+                    $patternFactory->push($this->parseNameChild($iterable));
+                    break;
+            }
+        }
+
+        // Commit
         $iterable->end($node);
 
         // Return

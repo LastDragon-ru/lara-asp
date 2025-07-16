@@ -9,9 +9,9 @@ use LastDragon_ru\GlobMatcher\Options;
 use Override;
 
 /**
- * @extends ParentNode<GlobNodeChild>
+ * @extends ParentNode<NameNodeChild>
  */
-class GlobNode extends ParentNode {
+class PatternNode extends ParentNode implements PatternListNodeChild {
     #[Override]
     public static function toRegex(Options $options, Cursor $cursor): string {
         return Utils::toRegex($options, $cursor);

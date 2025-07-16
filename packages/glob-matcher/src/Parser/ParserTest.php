@@ -11,6 +11,9 @@ use LastDragon_ru\GlobMatcher\Ast\Nodes\CharacterNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\GlobstarNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\NameNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\PatternListNode;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\PatternListQuantifier;
+use LastDragon_ru\GlobMatcher\Ast\Nodes\PatternNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\QuestionNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\SegmentNode;
 use LastDragon_ru\GlobMatcher\Ast\Nodes\StringNode;
@@ -433,6 +436,106 @@ final class ParserTest extends TestCase {
                 new Options(),
                 '[^',
             ],
+            'extglob = off'                              => [
+                new GlobNode([new NameNode([new StringNode('+(a|b|c)')])]),
+                new Options(extended: false),
+                '+(a|b|c)',
+            ],
+            'extglob'                                    => [
+                new GlobNode([
+                    new SegmentNode(),
+                    new NameNode([
+                        new StringNode('a'),
+                    ]),
+                    new SegmentNode(),
+                    new NameNode([
+                        new PatternListNode(
+                            PatternListQuantifier::OneOrMore,
+                            [
+                                new PatternNode([
+                                    new StringNode('b'),
+                                ]),
+                                new PatternNode([
+                                    new StringNode('c'),
+                                ]),
+                                new PatternNode([
+                                    new PatternListNode(
+                                        PatternListQuantifier::ZeroOrMore,
+                                        [
+                                            new PatternNode([
+                                                new StringNode('d'),
+                                            ]),
+                                            new PatternNode([
+                                                new StringNode('e'),
+                                            ]),
+                                        ],
+                                    ),
+                                ]),
+                                new PatternNode([
+                                    new PatternListNode(
+                                        PatternListQuantifier::ZeroOrOne,
+                                        [
+                                            new PatternNode([
+                                                new StringNode('f'),
+                                            ]),
+                                        ],
+                                    ),
+                                ]),
+                            ],
+                        ),
+                    ]),
+                ]),
+                new Options(),
+                '/a/+(b|c|*(d|e)|?(f))',
+            ],
+            'extglob (empty)'                            => [
+                new GlobNode([
+                    new NameNode([
+                        new PatternListNode(
+                            PatternListQuantifier::OneOrMore,
+                            [
+                                // empty
+                            ],
+                        ),
+                    ]),
+                ]),
+                new Options(),
+                '+()',
+            ],
+            'extglob (unclosed)'                         => [
+                new GlobNode([
+                    new NameNode([
+                        new StringNode('+(b|'),
+                        new PatternListNode(
+                            PatternListQuantifier::ZeroOrMore,
+                            [
+                                new PatternNode([
+                                    new StringNode('d'),
+                                ]),
+                            ],
+                        ),
+                    ]),
+                ]),
+                new Options(),
+                '+(b|*(d)',
+            ],
+            'extglob cannot contain `/`'                 => [
+                new GlobNode([
+                    new NameNode([
+                        new StringNode('@(a'),
+                    ]),
+                    new SegmentNode(),
+                    new NameNode([
+                        new StringNode('b|c'),
+                    ]),
+                    new SegmentNode(),
+                    new NameNode([
+                        new StringNode('d)'),
+                    ]),
+                ]),
+                new Options(),
+                '@(a/b|c\\/d)',
+            ],
             '(...)*'                                     => [
                 new GlobNode([
                     new NameNode([
@@ -474,6 +577,42 @@ final class ParserTest extends TestCase {
                 ]),
                 new Options(),
                 'a\\/b//[c/d]/[e\\/f]\\/**',
+            ],
+            'x**(x)'                                     => [
+                new GlobNode([
+                    new NameNode([
+                        new StringNode('x'),
+                        new AsteriskNode(),
+                        new PatternListNode(
+                            PatternListQuantifier::ZeroOrMore,
+                            [
+                                new PatternNode([
+                                    new StringNode('x'),
+                                ]),
+                            ],
+                        ),
+                    ]),
+                ]),
+                new Options(),
+                'x**(x)',
+            ],
+            'x***(x)'                                    => [
+                new GlobNode([
+                    new NameNode([
+                        new StringNode('x'),
+                        new AsteriskNode(2),
+                        new PatternListNode(
+                            PatternListQuantifier::ZeroOrMore,
+                            [
+                                new PatternNode([
+                                    new StringNode('x'),
+                                ]),
+                            ],
+                        ),
+                    ]),
+                ]),
+                new Options(),
+                'x***(x)',
             ],
         ];
     }
