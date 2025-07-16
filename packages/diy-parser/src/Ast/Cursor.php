@@ -38,10 +38,16 @@ readonly class Cursor implements IteratorAggregate, ArrayAccess, Countable {
         // empty
     }
 
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
     public function __isset(string $name): bool {
         return $this->__get($name) !== null;
     }
 
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
     public function __get(string $name): mixed {
         return match ($name) {
             'previous' => $this->index !== null ? ($this->parent[$this->index - 1] ?? null) : null,

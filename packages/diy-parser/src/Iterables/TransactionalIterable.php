@@ -144,6 +144,9 @@ class TransactionalIterable implements Iterator, ArrayAccess {
         // Not supported.
     }
 
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
     public function __get(mixed $name): mixed {
         return match ($name) {
             'level' => count($this->stack),
