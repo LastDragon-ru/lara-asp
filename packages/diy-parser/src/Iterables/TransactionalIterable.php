@@ -8,9 +8,14 @@ use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
 use Override;
 
 use function array_pop;
+use function count;
 
 /**
  * Provides "transaction" support for the iterable.
+ *
+ *
+ * @property-read int<0, max> $level
+ * @property-read mixed       $name
  *
  * @template TValue
  *
@@ -24,7 +29,7 @@ class TransactionalIterable implements Iterator, ArrayAccess {
     private BufferedIterable $source;
 
     /**
-     * @var list<int>
+     * @var list<array{int, mixed}>
      */
     private array $stack = [];
     private ?int  $eos   = null;
@@ -48,18 +53,23 @@ class TransactionalIterable implements Iterator, ArrayAccess {
         $this->source->rewind();
     }
 
-    public function begin(): void {
+    public function begin(mixed $name = null): void {
         $offset        = $this->source->key();
         $this->eos   ??= $offset + $this->previous;
-        $this->stack[] = $offset;
+        $this->stack[] = [$offset, $name];
     }
 
-    public function end(mixed $result): void {
-        if ($result === null || $result === false) {
-            $this->rollback();
-        } else {
+    public function end(mixed $result, mixed $name = null): bool {
+        $commited = !($result === null || $result === false)
+            && ($name === null || $name === ($this->stack[count($this->stack) - 1][1] ?? null));
+
+        if ($commited) {
             $this->commit();
+        } else {
+            $this->rollback();
         }
+
+        return $commited;
     }
 
     public function commit(): void {
@@ -71,7 +81,7 @@ class TransactionalIterable implements Iterator, ArrayAccess {
     }
 
     public function rollback(): void {
-        $offset = array_pop($this->stack);
+        [$offset] = (array) array_pop($this->stack) + [null];
 
         if ($offset !== null) {
             $this->source->seek($offset);
@@ -132,5 +142,26 @@ class TransactionalIterable implements Iterator, ArrayAccess {
     #[Override]
     public function rewind(): void {
         // Not supported.
+    }
+
+    public function __get(mixed $name): mixed {
+        return match ($name) {
+            'level' => count($this->stack),
+            'name'  => $this->stack[count($this->stack) - 1][1] ?? null,
+            default => null,
+        };
+    }
+
+    public function isInside(mixed $name): bool {
+        $inside = false;
+
+        for ($i = count($this->stack) - 2; $i >= 0; $i--) {
+            if ($this->stack[$i][1] === $name) {
+                $inside = true;
+                break;
+            }
+        }
+
+        return $inside;
     }
 }
