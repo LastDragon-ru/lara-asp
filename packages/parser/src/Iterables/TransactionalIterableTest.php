@@ -216,4 +216,63 @@ final class TransactionalIterableTest extends TestCase {
         self::assertSame(['d', 'e', 'f', 'g'], $rest);
         self::assertFalse($iterable->valid());
     }
+
+    public function testInside(): void {
+        $iterable = new TransactionalIterable([1, 2, 3], 1, 1);
+
+        self::assertFalse($iterable->isInside(null));
+        self::assertFalse($iterable->isInside(__METHOD__));
+
+        $iterable->begin(null);
+
+        self::assertFalse($iterable->isInside(null));
+        self::assertFalse($iterable->isInside(__METHOD__));
+
+        $iterable->begin(__METHOD__);
+
+        self::assertTrue($iterable->isInside(null));
+        self::assertFalse($iterable->isInside(__METHOD__));
+
+        $iterable->begin(__METHOD__);
+
+        self::assertTrue($iterable->isInside(null));
+        self::assertTrue($iterable->isInside(__METHOD__));
+
+        $iterable->commit();
+
+        self::assertTrue($iterable->isInside(null));
+        self::assertFalse($iterable->isInside(__METHOD__));
+
+        $iterable->rollback();
+
+        self::assertFalse($iterable->isInside(null));
+        self::assertFalse($iterable->isInside(__METHOD__));
+    }
+
+    public function testProperties(): void {
+        $iterable = new TransactionalIterable([1, 2, 3], 1, 1);
+
+        self::assertSame(0, $iterable->level);
+        self::assertNull($iterable->name);
+
+        $iterable->begin(null);
+
+        self::assertSame(1, $iterable->level);
+        self::assertNull($iterable->name);
+
+        $iterable->begin(__METHOD__);
+
+        self::assertSame(2, $iterable->level);
+        self::assertSame(__METHOD__, $iterable->name);
+
+        $iterable->commit();
+
+        self::assertSame(1, $iterable->level);
+        self::assertNull($iterable->name);
+
+        $iterable->rollback();
+
+        self::assertSame(0, $iterable->level);
+        self::assertNull($iterable->name);
+    }
 }
