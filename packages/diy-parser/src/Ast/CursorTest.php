@@ -19,7 +19,7 @@ use function iterator_to_array;
 #[CoversClass(Cursor::class)]
 final class CursorTest extends TestCase {
     public function testProperties(): void {
-        $cursor = new Cursor(new CursorTest_LeafNode());
+        $cursor = new Cursor(new CursorTest_ChildNode());
 
         self::assertNull($cursor->parent);
         self::assertNull($cursor->index);
@@ -28,9 +28,9 @@ final class CursorTest extends TestCase {
     }
 
     public function testPropertiesParent(): void {
-        $a      = new CursorTest_LeafNode();
-        $b      = new CursorTest_LeafNode();
-        $c      = new CursorTest_LeafNode();
+        $a      = new CursorTest_ChildNode();
+        $b      = new CursorTest_ChildNode();
+        $c      = new CursorTest_ChildNode();
         $cursor = new Cursor(new CursorTest_ParentNode([$a, $b, $c]));
         $child  = $cursor[1];
 
@@ -43,22 +43,22 @@ final class CursorTest extends TestCase {
     }
 
     public function testCountLeaf(): void {
-        self::assertCount(0, new Cursor(new CursorTest_LeafNode()));
+        self::assertCount(0, new Cursor(new CursorTest_ChildNode()));
     }
 
     public function testCountParent(): void {
-        self::assertCount(1, new Cursor(new CursorTest_ParentNode([new CursorTest_LeafNode()])));
+        self::assertCount(1, new Cursor(new CursorTest_ParentNode([new CursorTest_ChildNode()])));
     }
 
     public function testGetIteratorLeaf(): void {
-        $cursor = new Cursor(new CursorTest_LeafNode());
+        $cursor = new Cursor(new CursorTest_ChildNode());
         $actual = iterator_to_array($cursor, false);
 
         self::assertSame([], $actual);
     }
 
     public function testGetIteratorParent(): void {
-        $node   = new CursorTest_LeafNode();
+        $node   = new CursorTest_ChildNode();
         $cursor = new Cursor(new CursorTest_ParentNode([$node]));
         $actual = iterator_to_array($cursor, false);
         $actual = array_map(static fn ($c) => $c->node, $actual);
@@ -67,14 +67,14 @@ final class CursorTest extends TestCase {
     }
 
     public function testOffsetExistsLeaf(): void {
-        $cursor = new Cursor(new CursorTest_LeafNode());
+        $cursor = new Cursor(new CursorTest_ChildNode());
         $actual = isset($cursor[0]);
 
         self::assertFalse($actual);
     }
 
     public function testOffsetExistsParent(): void {
-        $child  = new CursorTest_LeafNode();
+        $child  = new CursorTest_ChildNode();
         $cursor = new Cursor(new CursorTest_ParentNode([$child]));
         $actual = isset($cursor[0]);
 
@@ -82,14 +82,14 @@ final class CursorTest extends TestCase {
     }
 
     public function testOffsetGetLeaf(): void {
-        $cursor = new Cursor(new CursorTest_LeafNode());
+        $cursor = new Cursor(new CursorTest_ChildNode());
         $actual = $cursor[0] ?? null;
 
-        self::assertNull($actual);
+        self::assertNull($actual); // @phpstan-ignore staticMethod.alreadyNarrowedType (for test)
     }
 
     public function testOffsetGetParent(): void {
-        $child  = new CursorTest_LeafNode();
+        $child  = new CursorTest_ChildNode();
         $cursor = new Cursor(new CursorTest_ParentNode([$child]));
         $actual = $cursor[0]->node ?? null;
 
@@ -100,13 +100,13 @@ final class CursorTest extends TestCase {
         self::expectExceptionObject(new OffsetReadonly(null));
 
         $cursor   = new Cursor(new CursorTest_ParentNode([]));
-        $cursor[] = new Cursor(new CursorTest_LeafNode());
+        $cursor[] = new Cursor(new CursorTest_ChildNode());
     }
 
     public function testOffsetUnset(): void {
         self::expectExceptionObject(new OffsetReadonly(0));
 
-        $cursor = new Cursor(new CursorTest_LeafNode());
+        $cursor = new Cursor(new CursorTest_ChildNode());
 
         unset($cursor[0]);
     }
@@ -117,19 +117,20 @@ final class CursorTest extends TestCase {
 
 /**
  * @internal
+ * @implements NodeChild<CursorTest_ParentNode>
  */
-class CursorTest_LeafNode {
+class CursorTest_ChildNode implements NodeChild {
     // empty
 }
 
 /**
  * @internal
- * @implements ParentNode<CursorTest_LeafNode>
+ * @implements NodeParent<CursorTest_ChildNode>
  */
-class CursorTest_ParentNode implements ParentNode {
+class CursorTest_ParentNode implements NodeParent {
     public function __construct(
         /**
-         * @var list<CursorTest_LeafNode>
+         * @var list<CursorTest_ChildNode>
          */
         public array $children,
     ) {

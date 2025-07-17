@@ -12,6 +12,6 @@ use IteratorAggregate;
  * @extends IteratorAggregate<int, TChild>
  * @extends ArrayAccess<int<0, max>, ?TChild>
  */
-interface ParentNode extends IteratorAggregate, ArrayAccess, Countable {
+interface NodeParent extends IteratorAggregate, ArrayAccess, Countable {
     // empty
 }
