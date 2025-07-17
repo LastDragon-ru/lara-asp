@@ -13,15 +13,16 @@ use function assert;
 use function is_object;
 
 /**
- * @see ParentNode
+ * @see NodeParent
+ * @see NodeChild
  *
  * @template TNode of object
  *
  * @property-read ?$this $previous
  * @property-read ?$this $next
  *
- * @implements IteratorAggregate<int, self<(TNode is ParentNode<covariant object> ? template-type<TNode, ParentNode, 'TChild'> : object)>>
- * @implements ArrayAccess<int<0, max>, self<(TNode is ParentNode<covariant object> ? template-type<TNode, ParentNode, 'TChild'> : object)>>
+ * @implements IteratorAggregate<int, (TNode is NodeParent<covariant object> ? self<template-type<TNode, NodeParent, 'TChild'>> : null)>
+ * @implements ArrayAccess<int<0, max>, (TNode is NodeParent<covariant object> ? self<template-type<TNode, NodeParent, 'TChild'>> : null)>
  */
 readonly class Cursor implements IteratorAggregate, ArrayAccess, Countable {
     final public function __construct(
@@ -30,7 +31,7 @@ readonly class Cursor implements IteratorAggregate, ArrayAccess, Countable {
          */
         public object $node,
         /**
-         * @var self<ParentNode<TNode>>|null
+         * @var (TNode is NodeChild<object> ? self<template-type<TNode, NodeChild, 'TParent'>>|null : null)
          */
         public ?self $parent = null,
         public ?int $index = null,
@@ -58,14 +59,14 @@ readonly class Cursor implements IteratorAggregate, ArrayAccess, Countable {
 
     #[Override]
     public function count(): int {
-        return $this->node instanceof ParentNode
+        return $this->node instanceof NodeParent
             ? $this->node->count()
             : 0;
     }
 
     #[Override]
     public function getIterator(): Traversable {
-        if ($this->node instanceof ParentNode) {
+        if ($this->node instanceof NodeParent) {
             foreach ($this->node as $key => $child) {
                 assert(is_object($child), 'https://github.com/phpstan/phpstan/issues/13204');
 
@@ -78,13 +79,13 @@ readonly class Cursor implements IteratorAggregate, ArrayAccess, Countable {
 
     #[Override]
     public function offsetExists(mixed $offset): bool {
-        return $this->node instanceof ParentNode
+        return $this->node instanceof NodeParent
             && $this->node->offsetExists($offset);
     }
 
     #[Override]
     public function offsetGet(mixed $offset): mixed {
-        $child = $this->node instanceof ParentNode
+        $child = $this->node instanceof NodeParent
             ? $this->node->offsetGet($offset)
             : null;
         $child = $child !== null && is_object($child)
