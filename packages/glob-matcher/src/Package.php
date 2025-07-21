@@ -3,5 +3,5 @@
 namespace LastDragon_ru\GlobMatcher;
 
 final class Package {
-    public const string Name = 'lara-asp-glob-matcher';
+    public const string Name = 'glob-matcher';
 }

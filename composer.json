@@ -270,6 +270,7 @@
   },
   "replace": {
     "lastdragon-ru/diy-parser": "self.version",
+    "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/graphql-printer": "self.version",
     "lastdragon-ru/graphql-printer-testing": "self.version",
     "lastdragon-ru/lara-asp-core": "self.version",
@@ -277,7 +278,6 @@
     "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-eloquent": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
-    "lastdragon-ru/lara-asp-glob": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",
     "lastdragon-ru/lara-asp-migrator": "self.version",
     "lastdragon-ru/lara-asp-serializer": "self.version",

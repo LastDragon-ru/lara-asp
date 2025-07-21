@@ -37,7 +37,8 @@ class Parser {
     }
 
     public function parse(string $pattern): ?GlobNode {
-        // TODO(documentator/glob): Better limits (count/max length/etc)
+        // TODO(glob-matcher): Better limits (count/max length/etc)
+        // TODO(glob-matcher): Error if transaction is not finished?
         $iterable = (new Tokenizer())->tokenize([$pattern]);
         $glob     = $this->parseGlob($iterable);
 

@@ -4,7 +4,7 @@ Independent from Laravel package that provides full-featured well-tested glob pa
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "glob"}})
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "glob-matcher"}})
 
 # Upgrading
 

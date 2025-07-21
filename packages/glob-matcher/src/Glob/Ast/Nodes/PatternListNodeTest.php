@@ -85,7 +85,7 @@ final class PatternListNodeTest extends TestCase {
                 ),
                 new Options(),
             ],
-            // todo(glob): Not not
+            // todo(glob-matcher): Not not
             '(empty)'    => [
                 '',
                 new PatternListNode(PatternListQuantifier::Not, []),

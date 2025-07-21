@@ -1,7 +1,7 @@
 {
-  "name": "lastdragon-ru/lara-asp-glob",
+  "name": "lastdragon-ru/glob-matcher",
   "homepage": "https://github.com/LastDragon-ru/lara-asp",
-  "description": "The Awesome Set of Packages for Laravel - The Glob.",
+  "description": "The Awesome Set of Packages for Laravel - The Glob Matcher.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
