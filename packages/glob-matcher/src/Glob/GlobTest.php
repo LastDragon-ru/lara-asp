@@ -3,6 +3,7 @@
 namespace LastDragon_ru\GlobMatcher\Glob;
 
 use Exception;
+use LastDragon_ru\DiyParser\Package as ParserPackage;
 use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -108,7 +109,7 @@ final class GlobTest extends TestCase {
                     }
 
                     $path           = json_encode(count($paths) > 1 ? $paths : $paths[0], JSON_THROW_ON_ERROR);
-                    $path           = mb_trim($path, '"');
+                    $path           = mb_trim($path, '"', ParserPackage::Encoding);
                     $negated        = $expected === [] ? 'not ' : '';
                     $message        = "Path `{$path}` should {$negated}match `{$pattern}` ({$line})";
                     $data[$message] = [
@@ -148,7 +149,7 @@ final class GlobTest extends TestCase {
         foreach ($lines as $line => $string) {
             // Prepare
             $line   = $line + 1;
-            $string = mb_trim($string);
+            $string = mb_trim($string, encoding: ParserPackage::Encoding);
 
             // Ignored?
             if ($string === '' || str_starts_with($string, '#') || str_starts_with($string, '//')) {
@@ -159,8 +160,11 @@ final class GlobTest extends TestCase {
             $key = ($prefix !== '' ? "{$prefix}#L" : '').$line;
 
             if (str_starts_with($string, '@')) {
+                $include = mb_substr($string, 1, encoding: ParserPackage::Encoding);
+                $include = mb_trim($include, encoding: ParserPackage::Encoding);
+
                 yield from self::getIsMatchIterator(
-                    dirname($file).'/'.mb_trim(mb_substr($string, 1)),
+                    dirname($file).'/'.$include,
                     $key.' / '.$string,
                 );
             } else {

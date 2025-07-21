@@ -5,6 +5,7 @@ namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 use LastDragon_ru\DiyParser\Ast\Cursor;
 use LastDragon_ru\DiyParser\Iterables\StringifyIterable;
 use LastDragon_ru\DiyParser\Iterables\TokenEscapeIterable;
+use LastDragon_ru\DiyParser\Package as ParserPackage;
 use LastDragon_ru\DiyParser\Tokenizer\Tokenizer;
 use LastDragon_ru\DiyParser\Utils;
 use LastDragon_ru\GlobMatcher\Glob\Options;
@@ -37,7 +38,7 @@ class CharacterNode extends ParentNode implements NameNodeChild {
             };
         }
 
-        if ($cursor->node->negated && mb_strpos($regex, '/') === false) {
+        if ($cursor->node->negated && mb_strpos($regex, '/', encoding: ParserPackage::Encoding) === false) {
             $regex .= '/';
         }
 
