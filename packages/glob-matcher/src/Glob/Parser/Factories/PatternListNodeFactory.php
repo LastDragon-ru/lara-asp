@@ -3,9 +3,9 @@
 namespace LastDragon_ru\GlobMatcher\Glob\Parser\Factories;
 
 use LastDragon_ru\DiyParser\Ast\NodeParentFactory;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\PatternListNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\PatternListNodeChild;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\PatternListQuantifier;
+use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNodeChild;
+use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListQuantifier;
 use Override;
 
 /**

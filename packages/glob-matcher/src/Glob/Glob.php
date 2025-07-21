@@ -4,7 +4,7 @@ namespace LastDragon_ru\GlobMatcher\Glob;
 
 use InvalidArgumentException;
 use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\GlobNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\GlobNode;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Parser;
 
 use function preg_match;

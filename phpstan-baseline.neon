@@ -67,16 +67,16 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			message: '#^Parameter \#2 \$cursor of static method LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\:\:toRegex\(\) expects LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Nodes\\CharacterNodeChild\>, LastDragon_ru\\DiyParser\\Ast\\Cursor\<LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Nodes\\CharacterNodeChild\> given\.$#'
+			message: '#^Parameter \#2 \$cursor of static method LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\:\:toRegex\(\) expects LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant LastDragon_ru\\GlobMatcher\\Glob\\Ast\\CharacterNodeChild\>, LastDragon_ru\\DiyParser\\Ast\\Cursor\<LastDragon_ru\\GlobMatcher\\Glob\\Ast\\CharacterNodeChild\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: packages/glob-matcher/src/Glob/Ast/Nodes/CharacterNode.php
+			path: packages/glob-matcher/src/Glob/Ast/CharacterNode.php
 
 		-
-			message: '#^Parameter \#2 \$cursor of static method LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\:\:toRegex\(\) expects LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\>, LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant static\(LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Nodes\\PatternListNode\)\>\|LastDragon_ru\\DiyParser\\Ast\\Cursor\<LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\> given\.$#'
+			message: '#^Parameter \#2 \$cursor of static method LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\:\:toRegex\(\) expects LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\>, LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant static\(LastDragon_ru\\GlobMatcher\\Glob\\Ast\\PatternListNode\)\>\|LastDragon_ru\\DiyParser\\Ast\\Cursor\<LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: packages/glob-matcher/src/Glob/Ast/Nodes/PatternListNode.php
+			path: packages/glob-matcher/src/Glob/Ast/PatternListNode.php
 
 		-
 			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'

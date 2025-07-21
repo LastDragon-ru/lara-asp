@@ -3,8 +3,8 @@
 namespace LastDragon_ru\GlobMatcher\Glob\Parser\Factories;
 
 use LastDragon_ru\DiyParser\Ast\NodeParentFactory;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterNodeChild;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild;
 use Override;
 
 /**

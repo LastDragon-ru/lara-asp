@@ -2,21 +2,21 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Parser;
 
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\AsteriskNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterClass;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterClassNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterCollatingSymbolNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterEquivalenceClassNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\CharacterNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\GlobNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\GlobstarNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\NameNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\PatternListNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\PatternListQuantifier;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\PatternNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\QuestionNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\SegmentNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\StringNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\AsteriskNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterClass;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterClassNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterCollatingSymbolNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterEquivalenceClassNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\GlobNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\GlobstarNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\NameNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListQuantifier;
+use LastDragon_ru\GlobMatcher\Glob\Ast\PatternNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\QuestionNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\SegmentNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\StringNode;
 use LastDragon_ru\GlobMatcher\Glob\Options;
 use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Parser\Factories;
 
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\GlobNode;
-use LastDragon_ru\GlobMatcher\Glob\Ast\Nodes\SegmentNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\GlobNode;
+use LastDragon_ru\GlobMatcher\Glob\Ast\SegmentNode;
 use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
