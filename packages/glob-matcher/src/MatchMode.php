@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GlobMatcher\Glob;
+namespace LastDragon_ru\GlobMatcher;
 
 enum MatchMode {
     case Match;

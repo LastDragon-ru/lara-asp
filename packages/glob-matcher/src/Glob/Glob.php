@@ -6,8 +6,7 @@ use InvalidArgumentException;
 use LastDragon_ru\DiyParser\Ast\Cursor;
 use LastDragon_ru\GlobMatcher\Glob\Ast\GlobNode;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Parser;
-
-use function preg_match;
+use LastDragon_ru\GlobMatcher\Regex;
 
 /**
  * Yet another glob implementation.
@@ -17,7 +16,7 @@ use function preg_match;
  */
 readonly class Glob {
     public GlobNode $node;
-    public string   $regex;
+    public Regex    $regex;
 
     public function __construct(string $pattern, ?Options $options = null) {
         $options   ??= new Options();
@@ -26,7 +25,7 @@ readonly class Glob {
     }
 
     public function isMatch(string $path): bool {
-        return (bool) preg_match($this->regex, $path);
+        return $this->regex->isMatch($path);
     }
 
     private function parse(Options $options, string $pattern): GlobNode {
@@ -39,18 +38,9 @@ readonly class Glob {
         return $node;
     }
 
-    private function regex(Options $options, GlobNode $node): string {
-        $prefix = match ($options->matchMode) {
-            MatchMode::Match, MatchMode::Starts => '^',
-            default                             => '',
-        };
-        $suffix = match ($options->matchMode) {
-            MatchMode::Match, MatchMode::Ends => '$',
-            default                           => '',
-        };
-        $flags = $options->matchCase ? '' : 'i';
+    private function regex(Options $options, GlobNode $node): Regex {
         $regex = $node::toRegex($options, new Cursor($node));
-        $regex = "#{$prefix}(?:{$regex}){$suffix}#us{$flags}";
+        $regex = new Regex($regex, $options->matchMode, $options->matchCase);
 
         return $regex;
     }

@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob;
 
+use LastDragon_ru\GlobMatcher\MatchMode;
+
 readonly class Options {
     public function __construct(
         public bool $globstar = true,
