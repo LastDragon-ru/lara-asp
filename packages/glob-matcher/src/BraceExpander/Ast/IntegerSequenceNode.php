@@ -3,7 +3,7 @@
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Ast;
 
 use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Package as ParserPackage;
+use LastDragon_ru\GlobMatcher\Package;
 use Override;
 
 use function abs;
@@ -45,21 +45,21 @@ class IntegerSequenceNode extends IncrementalSequenceNode {
         $steps  = abs(($end - $start) / $inc);
         $length = $cursor->node->start !== (string) $start || $cursor->node->end !== (string) $end
             ? max(
-                mb_strlen($cursor->node->start, ParserPackage::Encoding),
-                mb_strlen($cursor->node->end, ParserPackage::Encoding),
+                mb_strlen($cursor->node->start, Package::Encoding),
+                mb_strlen($cursor->node->end, Package::Encoding),
             )
             : 0;
 
         for ($value = $start, $step = 0; $step <= $steps; $step++, $value += $inc) {
             yield $value < 0
-                ? '-'.mb_str_pad((string) abs($value), $length - 1, '0', STR_PAD_LEFT, ParserPackage::Encoding)
-                : mb_str_pad((string) $value, $length, '0', STR_PAD_LEFT, ParserPackage::Encoding);
+                ? '-'.mb_str_pad((string) abs($value), $length - 1, '0', STR_PAD_LEFT, Package::Encoding)
+                : mb_str_pad((string) $value, $length, '0', STR_PAD_LEFT, Package::Encoding);
         }
     }
 
     protected static function parse(string $string): int {
-        $negative = mb_strpos($string, '-', 0, ParserPackage::Encoding) === 0;
-        $trimmed  = mb_ltrim($string, '-0', ParserPackage::Encoding);
+        $negative = mb_strpos($string, '-', 0, Package::Encoding) === 0;
+        $trimmed  = mb_ltrim($string, '-0', Package::Encoding);
         $trimmed  = ($negative ? '-' : '').($trimmed !== '' ? $trimmed : '0');
         $integer  = (int) filter_var($trimmed, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 

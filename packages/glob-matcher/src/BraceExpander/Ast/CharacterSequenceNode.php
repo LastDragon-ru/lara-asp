@@ -3,7 +3,7 @@
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Ast;
 
 use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Package as ParserPackage;
+use LastDragon_ru\GlobMatcher\Package;
 use Override;
 
 use function abs;
@@ -30,14 +30,14 @@ class CharacterSequenceNode extends IncrementalSequenceNode {
      */
     #[Override]
     public static function toIterable(Cursor $cursor): iterable {
-        $start = mb_ord($cursor->node->start, ParserPackage::Encoding);
-        $end   = mb_ord($cursor->node->end, ParserPackage::Encoding);
+        $start = mb_ord($cursor->node->start, Package::Encoding);
+        $end   = mb_ord($cursor->node->end, Package::Encoding);
         $inc   = abs($cursor->node->increment ?? 1);
         $inc   = $start < $end ? $inc : -$inc;
         $steps = abs(($end - $start) / $inc);
 
         for ($code = $start, $step = 0; $step <= $steps; $step++, $code += $inc) {
-            yield mb_chr($code, ParserPackage::Encoding);
+            yield mb_chr($code, Package::Encoding);
         }
     }
 }

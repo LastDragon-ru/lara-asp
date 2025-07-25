@@ -3,7 +3,6 @@
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Parser;
 
 use LastDragon_ru\DiyParser\Iterables\TransactionalIterable;
-use LastDragon_ru\DiyParser\Package as ParserPackage;
 use LastDragon_ru\DiyParser\Tokenizer\Token;
 use LastDragon_ru\DiyParser\Tokenizer\Tokenizer;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNode;
@@ -15,6 +14,7 @@ use LastDragon_ru\GlobMatcher\BraceExpander\Ast\SequenceNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\StringNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Parser\Factories\BraceExpansionNodeFactory;
 use LastDragon_ru\GlobMatcher\BraceExpander\Parser\Factories\SequenceNodeFactory;
+use LastDragon_ru\GlobMatcher\Package;
 
 use function filter_var;
 use function mb_ltrim;
@@ -107,7 +107,7 @@ class Parser {
 
         if ($iterable[0]?->is(Name::DoubleDot) === true) {
             $increment = $iterable[1]?->is(null) === true ? (string) $iterable[1] : '';
-            $increment = mb_ltrim($increment, '0', ParserPackage::Encoding);
+            $increment = mb_ltrim($increment, '0', Package::Encoding);
             $increment = $increment !== '' ? $increment : '0';
             $increment = filter_var($increment, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
@@ -237,10 +237,10 @@ class Parser {
             return false;
         }
 
-        $string = mb_strpos($string, '-', 0, ParserPackage::Encoding) === 0
-            ? mb_substr($string, 1, null, ParserPackage::Encoding)
+        $string = mb_strpos($string, '-', 0, Package::Encoding) === 0
+            ? mb_substr($string, 1, null, Package::Encoding)
             : $string;
-        $string = mb_ltrim($string, '0', ParserPackage::Encoding);
+        $string = mb_ltrim($string, '0', Package::Encoding);
         $string = $string !== '' ? $string : '0';
         $string = filter_var($string, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
@@ -251,6 +251,6 @@ class Parser {
      * @phpstan-assert-if-true non-empty-string $string
      */
     private function isCharacter(string $string): bool {
-        return mb_strlen($string, ParserPackage::Encoding) === 1;
+        return mb_strlen($string, Package::Encoding) === 1;
     }
 }
