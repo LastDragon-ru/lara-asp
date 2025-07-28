@@ -6,8 +6,8 @@
 /**/.gitignore                                      export-ignore
 /metadata.json                                      export-ignore
 /phpunit.xml                                        export-ignore
-/src/Testing                                        export-ignore
 /src/**/*Test                                       export-ignore
 /src/**/*Test.php                                   export-ignore
 /src/**/*Test~*                                     export-ignore
 /src/**/*Test*/**/*                                 export-ignore
+/src/Testing/Package                                export-ignore
