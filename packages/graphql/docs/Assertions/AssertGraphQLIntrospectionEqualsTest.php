@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
+use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -43,6 +44,7 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
     /**
      * Assertion test.
      */
+    #[RequiresComposerPackage('webonyx/graphql-php', '>=15.22.0')]
     public function testAssertion(): void {
         // Prepare
         $this->app()->make(DirectiveLocator::class)
@@ -108,6 +110,13 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
                 | FIELD
                 | FRAGMENT_SPREAD
                 | INLINE_FRAGMENT
+
+            """
+            Indicates that an Input Object is a OneOf Input Object (and thus requires exactly one of its fields be provided).
+            """
+            directive @oneOf
+            on
+                | INPUT_OBJECT
 
             """
             Directs the executor to skip this field or fragment when the `if` argument is true.
@@ -311,7 +320,10 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
             In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
             """
             type __Directive {
-                args: [__InputValue!]!
+                args(
+                    includeDeprecated: Boolean! = false
+                ): [__InputValue!]!
+
                 description: String
                 isRepeatable: Boolean!
                 locations: [__DirectiveLocation!]!
@@ -333,7 +345,7 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
             """
             type __Field {
                 args(
-                    includeDeprecated: Boolean = false
+                    includeDeprecated: Boolean! = false
                 ): [__InputValue!]!
 
                 deprecationReason: String
@@ -398,18 +410,19 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
                 description: String
 
                 enumValues(
-                    includeDeprecated: Boolean = false
+                    includeDeprecated: Boolean! = false
                 ): [__EnumValue!]
 
                 fields(
-                    includeDeprecated: Boolean = false
+                    includeDeprecated: Boolean! = false
                 ): [__Field!]
 
                 inputFields(
-                    includeDeprecated: Boolean = false
+                    includeDeprecated: Boolean! = false
                 ): [__InputValue!]
 
                 interfaces: [__Type!]
+                isOneOf: Boolean
                 kind: __TypeKind!
                 name: String
                 ofType: __Type

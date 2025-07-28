@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use Illuminate\Cache\Repository as CacheContract;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
+use Illuminate\Filesystem\Filesystem;
 use LastDragon_ru\LaraASP\GraphQL\Package;
 use Nuwave\Lighthouse\Schema\AST\ASTCache;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -11,13 +12,17 @@ use Override;
 
 use function implode;
 
+/**
+ * @internal
+ */
 class SchemaCache extends ASTCache {
     public function __construct(
         ConfigContract $config,
+        Filesystem $filesystem,
         protected CacheContract $cache,
         protected string $key,
     ) {
-        parent::__construct($config);
+        parent::__construct($config, $filesystem);
     }
 
     // <editor-fold desc="Getters / Setters">
