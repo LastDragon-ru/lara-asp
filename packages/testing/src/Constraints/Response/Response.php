@@ -58,9 +58,9 @@ class Response extends Constraint {
                         $this->failed = $constraint;
                         break;
                     }
-                } catch (ExpectationFailedException $exception) { // @phpstan-ignore catch.internalClass (any better way?)
+                } catch (ExpectationFailedException $exception) {
                     $success      = false;
-                    $comparison   = $exception->getComparisonFailure(); // @phpstan-ignore method.internalClass (any better way?)
+                    $comparison   = $exception->getComparisonFailure();
                     $this->failed = $constraint;
                     break;
                 }

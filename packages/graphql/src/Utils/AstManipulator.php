@@ -233,15 +233,15 @@ class AstManipulator {
         $types      = $this->getTypes();
         $definition = $this->getDocument()->types[$name] ?? null;
 
-        if (!$definition) {
+        if ($definition === null) {
             $definition = Type::getStandardTypes()[$name] ?? null;
         }
 
-        if (!$definition && $types->has($name)) {
+        if ($definition === null && $types->has($name)) {
             $definition = $types->get($name);
         }
 
-        if (!$definition) {
+        if ($definition === null) {
             throw new TypeDefinitionUnknown($name);
         }
 

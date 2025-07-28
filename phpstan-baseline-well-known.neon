@@ -78,13 +78,6 @@ parameters:
             paths:
                 - packages/testing/src/Mixins/TestResponseMixin.php
 
-        # ArrayAccess&array gives mixed
-        # https://github.com/phpstan/phpstan/issues/12125
-        -
-            message: "#^Method LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Utils\\\\AstManipulator::getTypeDefinition\\(\\) should return \\(GraphQL\\\\Language\\\\AST\\\\Node&GraphQL\\\\Language\\\\AST\\\\TypeDefinitionNode\\)\\|GraphQL\\\\Type\\\\Definition\\\\Type but returns mixed\\.$#"
-            paths:
-                - packages/graphql/src/Utils/AstManipulator.php
-
         # Closure parameters cannot be inferred from return type yet
         # https://github.com/phpstan/phpstan/issues/11317
         -
