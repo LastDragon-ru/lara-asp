@@ -28,9 +28,9 @@ use function array_slice;
 use function debug_backtrace;
 use function end;
 use function implode;
+use function mb_trim;
 use function sprintf;
 use function str_contains;
-use function trim;
 
 use const DEBUG_BACKTRACE_IGNORE_ARGS;
 
@@ -79,7 +79,7 @@ final class Example implements Runner {
 
             // Output
             $dumps  = (array) self::$dumper?->getDumps();
-            $output = implode("\n\n", array_map(trim(...), $dumps));
+            $output = implode("\n\n", array_map(mb_trim(...), $dumps));
 
             if ($output !== '') {
                 $result = "<markdown>{$output}</markdown>";
