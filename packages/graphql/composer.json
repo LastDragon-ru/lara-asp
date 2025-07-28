@@ -36,6 +36,7 @@
   },
   "require-dev": {
     "illuminate/cache": "^12.0.1",
+    "illuminate/filesystem": "^12.0.1",
     "laravel/scout": "^10.12.2",
     "mockery/mockery": "^1.6.6",
     "phpunit/phpunit": "^11.1.0|^12.0.0",
