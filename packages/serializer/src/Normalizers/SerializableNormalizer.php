@@ -125,6 +125,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
         $attributes = parent::getAllowedAttributes($classOrObject, $context, $attributesAsString);
 
         if (is_array($attributes)) {
+            // Cache
             $class                    = is_object($classOrObject) ? $classOrObject::class : $classOrObject;
             $mapping                  = $this->classDiscriminatorResolver?->getMappingForMappedObject($classOrObject);
             $properties               = array_map(
@@ -135,12 +136,38 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
             );
             $this->attributes[$class] = array_fill_keys($properties, true);
 
+            /**
+             * Prior to `symfony/serializer:7.3.1` the discriminator property
+             * was not added to `$attributes` if `$classOrObject` doesn't have
+             * it. But it is required. So we are fixing it here.
+             *
+             * todo(serializer): [update] Drop when `symfony/serializer:7.3.1`
+             *      will not be supported anymore.
+             *
+             * @see https://github.com/symfony/symfony/pull/60511
+             */
             if ($mapping !== null) {
                 $property                     = $mapping->getTypeProperty();
                 $this->discriminators[$class] = $property;
 
                 if (!isset($this->attributes[$class][$property])) {
                     array_unshift($attributes, $attributesAsString ? $property : new AttributeMetadata($property));
+                }
+            }
+
+            /**
+             * Since `symfony/serializer:7.3.1` the discriminator property will
+             * be always in `$attributes` even if `$classOrObject` doesn't have
+             * it.
+             *
+             * @see https://github.com/symfony/symfony/pull/60511
+             */
+            if ($mapping !== null) {
+                $property = $mapping->getTypeProperty();
+                $metadata = $this->classMetadataFactory?->getMetadataFor($classOrObject)->getAttributesMetadata();
+
+                if (!isset($metadata[$property])) {
+                    unset($this->attributes[$class][$property]);
                 }
             }
         }
