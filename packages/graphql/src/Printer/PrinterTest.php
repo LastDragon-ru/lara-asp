@@ -3,6 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Printer;
 
 use Closure;
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Exception;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
@@ -36,6 +38,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use SplFileInfo;
 
 use function in_array;
+use function str_replace;
 use function str_starts_with;
 
 /**
@@ -113,9 +116,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'Schema'                                        => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-DefaultSettings.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-DefaultSettings.graphql')
                     ->setUsedTypes([
                         'Query',
                         'String',
@@ -153,9 +154,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-DefaultSettings'                        => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-DefaultSettings.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-DefaultSettings.graphql')
                     ->setUsedTypes([
                         'Query',
                         'String',
@@ -193,9 +192,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-GraphQLSettings'                        => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-GraphQLSettings.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-GraphQLSettings.graphql')
                     ->setUsedTypes([
                         'Query',
                         'String',
@@ -230,9 +227,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-TestSettings'                           => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-TestSettings.graphql')
                     ->setUsedTypes([
                         'Int',
                         'Query',
@@ -270,9 +265,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-TestSettings-NoDirectivesDefinitions'   => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-NoDirectivesDefinitions.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-TestSettings-NoDirectivesDefinitions.graphql')
                     ->setUsedTypes([
                         'Query',
                         'String',
@@ -306,9 +299,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-TestSettings-NoNormalization'           => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-NoNormalization.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-TestSettings-NoNormalization.graphql')
                     ->setUsedTypes([
                         'Int',
                         'Query',
@@ -357,9 +348,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-TestSettings-DirectiveDefinitionFilter' => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-DirectiveDefinitionFilter.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-TestSettings-DirectiveDefinitionFilter.graphql')
                     ->setUsedTypes([
                         'Query',
                         'String',
@@ -398,9 +387,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-TestSettings-TypeDefinitionFilter'      => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-TypeDefinitionFilter.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-TestSettings-TypeDefinitionFilter.graphql')
                     ->setUsedTypes([
                         'Boolean',
                         'CodeDirectiveEnum',
@@ -443,9 +430,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-TestSettings-Everything'                => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-Everything.graphql'),
-                ))
+                self::getSchemaExpected('~print-Schema-TestSettings-Everything.graphql')
                     ->setUsedTypes([
                         'Int',
                         'Query',
@@ -496,9 +481,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'CodeUnion'  => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~export-CodeUnion.graphql'),
-                ))
+                self::getSchemaExpected('~export-CodeUnion.graphql')
                     ->setUsedTypes([
                         'String',
                         'Boolean',
@@ -529,9 +512,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'CodeInput'  => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~export-CodeInput.graphql'),
-                ))
+                self::getSchemaExpected('~export-CodeInput.graphql')
                     ->setUsedTypes([
                         'String',
                         'Boolean',
@@ -553,9 +534,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'SchemaType' => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~export-SchemaType.graphql'),
-                ))
+                self::getSchemaExpected('~export-SchemaType.graphql')
                     ->setUsedTypes([
                         'Boolean',
                         'SchemaInterfaceB',
@@ -781,9 +760,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'UnionTypeDefinitionNode'   => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~export-UnionTypeDefinitionNode.graphql'),
-                ))
+                self::getSchemaExpected('~export-UnionTypeDefinitionNode.graphql')
                     ->setUsedTypes([
                         'String',
                         'CodeType',
@@ -804,9 +781,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectTypeDefinition' => [
-                (new GraphQLExpected(
-                    self::getTestData()->file('~export-InputObjectTypeDefinition.graphql'),
-                ))
+                self::getSchemaExpected('~export-InputObjectTypeDefinition.graphql')
                     ->setUsedTypes([
                         'String',
                         'CodeInput',
@@ -938,6 +913,23 @@ final class PrinterTest extends TestCase {
             // Schema
             return self::getTestData()->file('~schema.graphql');
         };
+    }
+
+    private static function getSchemaExpected(string $path): GraphQLExpected {
+        $expected      = self::getTestData()->file($path);
+        static $legacy = InstalledVersions::satisfies(new VersionParser(), 'nuwave/lighthouse', '<6.59.0');
+
+        if ($legacy) {
+            // @see https://github.com/nuwave/lighthouse/commit/52962f5366b7774315d7024162798edee109f93b
+            $expected = self::getTestData()->content($path);
+            $expected = str_replace(
+                'Reference to a class that extends `GraphQL\Type\Definition\ScalarType`.',
+                'Reference to a class that extends `\\GraphQL\\Type\\Definition\\ScalarType`.',
+                $expected,
+            );
+        }
+
+        return new GraphQLExpected($expected);
     }
     // </editor-fold>
 }
