@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutator;
 
+use Closure;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
@@ -137,6 +138,17 @@ final class MutatorTest extends TestCase {
         );
         $aMutation = new class() implements Mutation {
             /**
+             * @var Closure(): void
+             */
+            public Closure $finalizer;
+
+            public function __construct() {
+                $this->finalizer = static function (): void {
+                    // empty
+                };
+            }
+
+            /**
              * @inheritDoc
              */
             #[Override]
@@ -152,9 +164,7 @@ final class MutatorTest extends TestCase {
             #[Override]
             public function mutagens(Document $document, Node $node): array {
                 return [
-                    new Finalize(static function (): void {
-                        // empty
-                    }),
+                    new Finalize($this->finalizer),
                     new Extract(new Location(1, 6)),
                     new Extract(new Location(9, 9)),
                 ];
@@ -217,9 +227,7 @@ final class MutatorTest extends TestCase {
                     ],
                 ],
                 'finalizers' => [
-                    new Finalize(static function (): void {
-                        // empty
-                    }),
+                    new Finalize($aMutation->finalizer),
                 ],
             ],
             $actual,
