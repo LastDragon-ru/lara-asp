@@ -118,7 +118,7 @@ class CommandsTest_CommandA extends Command {
 class CommandsTest_CommandB extends Command {
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     * @var string|null
+     * @var string
      */
     protected $description = 'Command B description.';
 
