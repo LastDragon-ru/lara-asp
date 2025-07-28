@@ -12,7 +12,7 @@
     "@j-ulrich/release-it-regex-bumper": "^5.1.0",
     "@release-it/bumper": "^7.0.2",
     "@release-it/conventional-changelog": "^10.0.0",
-    "markdownlint-cli2": "^0.17.2",
+    "markdownlint-cli2": "^0.18.1",
     "markdownlint-rule-relative-links": "^4.0.0",
     "minimist": "^1.2.8",
     "release-it": "^19.0.4"

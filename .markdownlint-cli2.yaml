@@ -287,3 +287,12 @@ config:
       "include:docblock",
       "include:graphql-directive"
     ]
+
+  # MD056/table-column-count - Table column count
+  MD056: true
+
+  # MD058/blanks-around-tables - Tables should be surrounded by blank lines
+  MD058: true
+
+  # MD059/descriptive-link-text - Link text should be descriptive
+  MD059: true
