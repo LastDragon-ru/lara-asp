@@ -68,19 +68,19 @@ $files = Finder::create()
 $parse = static function (string $line): string {
     // Simplified parser
     // https://git-scm.com/docs/gitattributes
-    $line = mb_trim($line);
+    $line   = mb_trim($line);
+    $marker = ' export-ignore';
 
     if (str_starts_with($line, '#')) {
-        $line = '';
+        return '';
     }
 
-    if (str_ends_with($line, ' export-ignore')) {
-        $line = mb_trim(explode(' ', $line, 2)[0] ?? '');
-    } else {
-        $line = '';
+    if (!str_ends_with($line, $marker)) {
+        return '';
     }
 
     // File?
+    $line = mb_trim(mb_substr($line, 0, - mb_strlen($marker)));
     $line = match (pathinfo($line, PATHINFO_EXTENSION)) {
         ''      => "{$line}/*.php",
         'php'   => $line,
@@ -104,7 +104,9 @@ $parse = static function (string $line): string {
 foreach ($files as $file) {
     // Parse
     $attributes = file($file->getPathname());
-    $attributes = array_filter(array_map($parse, $attributes));
+    $attributes = array_filter(array_map($parse, array_merge($attributes, [
+        '/src/Testing       export-ignore',
+    ])));
 
     if (!$attributes) {
         continue;
