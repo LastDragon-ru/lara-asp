@@ -61,6 +61,7 @@
             <property name="nullPosition" value="last"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
         <properties>
             <property name="declareOnFirstLine" value="true"/>
@@ -148,11 +149,12 @@
             <property name="linesCount" value="0"/>
         </properties>
     </rule>
-    <rule ref="SlevomatCodingStandard.Attributes.AttributesOrder">
-        <properties>
-            <property name="orderAlphabetically" value="true"/>
-        </properties>
-    </rule>
+    <!-- Temporary disabled: https://github.com/slevomat/coding-standard/issues/1767 -->
+    <!-- <rule ref="SlevomatCodingStandard.Attributes.AttributesOrder">-->
+    <!--    <properties>-->
+    <!--         <property name="orderAlphabetically" value="true"/>-->
+    <!--     </properties>-->
+    <!-- </rule>-->
     <rule ref="SlevomatCodingStandard.Attributes.DisallowAttributesJoining"/>
     <rule ref="SlevomatCodingStandard.Attributes.DisallowMultipleAttributesPerLine"/>
     <rule ref="SlevomatCodingStandard.Attributes.RequireAttributeAfterDocComment"/>
@@ -165,4 +167,5 @@
     <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
     <rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
     <rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/>
 </ruleset>
