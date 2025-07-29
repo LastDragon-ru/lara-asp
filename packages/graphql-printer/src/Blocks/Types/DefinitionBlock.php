@@ -12,6 +12,7 @@ use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionNode;
 use GraphQL\Language\AST\TypeSystemExtensionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumValueDefinition;
@@ -30,6 +31,7 @@ use Override;
 
 use function is_iterable;
 use function is_string;
+use function json_encode;
 use function mb_strlen;
 use function mb_strrpos;
 use function mb_substr;
@@ -267,16 +269,7 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
     }
 
     protected function directives(bool $multiline): ?Block {
-        $definition = $this->getDefinition();
-        $directives = new Directives(
-            $this->getContext(),
-            $this->getDefinitionDirectives(),
-            property_exists($definition, 'deprecationReason') && is_string($definition->deprecationReason)
-                ? $definition->deprecationReason
-                : null,
-        );
-
-        return $directives;
+        return new Directives($this->getContext(), $this->getDefinitionDirectives());
     }
 
     protected function description(): ?Block {
@@ -372,6 +365,34 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
                         $directives[] = $directive;
                     }
                 }
+            }
+        }
+
+        // Some directives converted into type/object property
+        if (property_exists($definition, 'deprecationReason') && is_string($definition->deprecationReason)) {
+            $deprecatedName      = Directive::DEPRECATED_NAME;
+            $deprecatedReason    = $definition->deprecationReason;
+            $deprecatedDirective = null;
+
+            // todo(graphql): Is there a better way to create directive node?
+            if ($deprecatedReason !== Directive::DEFAULT_DEPRECATION_REASON && $deprecatedReason !== '') {
+                $deprecatedAttr      = Directive::REASON_ARGUMENT_NAME;
+                $deprecatedReason    = json_encode($deprecatedReason);
+                $deprecatedDirective = Parser::directive("@{$deprecatedName}({$deprecatedAttr}: {$deprecatedReason})");
+            } else {
+                $deprecatedDirective = Parser::directive("@{$deprecatedName}");
+            }
+
+            foreach ($directives as $key => $directive) {
+                if ($directive->name->value === $deprecatedName) {
+                    $directives[$key]    = $deprecatedDirective;
+                    $deprecatedDirective = null;
+                    break;
+                }
+            }
+
+            if ($deprecatedDirective !== null) {
+                $directives[] = $deprecatedDirective;
             }
         }
 

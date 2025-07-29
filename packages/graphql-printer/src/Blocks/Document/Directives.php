@@ -7,10 +7,12 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive as GraphQLDirective;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\LaraASP\GraphQLPrinter\Package;
 use Override;
 
 use function array_unshift;
 use function json_encode;
+use function trigger_deprecation;
 
 /**
  * @internal
@@ -26,6 +28,8 @@ class Directives extends ListBlock {
         ?string $deprecationReason = null,
     ) {
         if ($deprecationReason !== null) {
+            trigger_deprecation(Package::Name, '%{VERSION}', 'The `$deprecationReason` should not be used and will be removed in the future.');
+
             $list       = [];
             $name       = GraphQLDirective::DEPRECATED_NAME;
             $default    = GraphQLDirective::DEFAULT_DEPRECATION_REASON;
