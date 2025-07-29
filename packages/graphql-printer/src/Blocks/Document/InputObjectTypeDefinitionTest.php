@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
+use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -39,6 +40,18 @@ final class InputObjectTypeDefinitionTest extends TestCase {
         }
 
         self::assertSame($expected, $actual);
+    }
+
+    #[DataProvider('dataProviderSerializeOneOf')]
+    #[RequiresComposerPackage('webonyx/graphql-php', '>=15.21.0')]
+    public function testSerializeOneOf(
+        string $expected,
+        Settings $settings,
+        int $level,
+        int $used,
+        InputObjectTypeDefinitionNode|InputObjectType $definition,
+    ): void {
+        $this->testSerialize($expected, $settings, $level, $used, $definition);
     }
 
     public function testStatistics(): void {
@@ -250,6 +263,119 @@ final class InputObjectTypeDefinitionTest extends TestCase {
                 0,
                 Parser::inputObjectTypeDefinition(
                     'input Test @a { a: String }',
+                ),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string,array{string, Settings, int, int, InputObjectTypeDefinitionNode|InputObjectType}>
+     */
+    public static function dataProviderSerializeOneOf(): array {
+        $settings = (new TestSettings())
+            ->setNormalizeFields(false);
+
+        return [
+            'isOneOf = true'                               => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                input Test
+                @a
+                @oneOf
+                GRAPHQL,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new InputObjectType([
+                    'name'        => 'Test',
+                    'fields'      => [],
+                    'astNode'     => Parser::inputObjectTypeDefinition('input Test @a'),
+                    'isOneOf'     => true,
+                    'description' => 'Description',
+                ]),
+            ],
+            'isOneOf = false'                              => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                input Test
+                GRAPHQL,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new InputObjectType([
+                    'name'        => 'Test',
+                    'fields'      => [],
+                    'astNode'     => Parser::inputObjectTypeDefinition('input Test'),
+                    'isOneOf'     => false,
+                    'description' => 'Description',
+                ]),
+            ],
+            'isOneOf = false but @oneOf'                   => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                input Test
+                @oneOf
+                GRAPHQL,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new InputObjectType([
+                    'name'        => 'Test',
+                    'fields'      => [],
+                    'astNode'     => Parser::inputObjectTypeDefinition('input Test @oneOf'),
+                    'isOneOf'     => false,
+                    'description' => 'Description',
+                ]),
+            ],
+            'isOneOf = false but @oneOf in extension node' => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                input Test
+                @oneOf
+                GRAPHQL,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                new InputObjectType([
+                    'name'              => 'Test',
+                    'fields'            => [],
+                    'astNode'           => Parser::inputObjectTypeDefinition('input Test'),
+                    'isOneOf'           => false,
+                    'description'       => 'Description',
+                    'extensionASTNodes' => [
+                        Parser::inputObjectTypeExtension('extend input Test @oneOf'),
+                    ],
+                ]),
+            ],
+            'ast'                                          => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                input Test
+                @oneOf
+                {
+                    a: String
+                }
+                GRAPHQL,
+                $settings
+                    ->setPrintDirectives(true),
+                0,
+                0,
+                Parser::inputObjectTypeDefinition(
+                    '"Description" input Test @oneOf { a: String }',
                 ),
             ],
         ];
