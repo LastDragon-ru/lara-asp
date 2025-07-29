@@ -19,6 +19,7 @@
   "require": {
     "php": "^8.3|^8.4",
     "ext-mbstring": "*",
+    "symfony/deprecation-contracts": "^3.0.0",
     "symfony/polyfill-php84": "^1.31",
     "webonyx/graphql-php": "^15.4.0"
   },
