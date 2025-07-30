@@ -28,7 +28,7 @@ class Directives extends ListBlock {
         ?string $deprecationReason = null,
     ) {
         if ($deprecationReason !== null) {
-            trigger_deprecation(Package::Name, '%{VERSION}', 'The `$deprecationReason` should not be used and will be removed in the future.');
+            trigger_deprecation(Package::Name, '9.3.0', 'The `$deprecationReason` should not be used and will be removed in the future.');
 
             $list       = [];
             $name       = GraphQLDirective::DEPRECATED_NAME;
