@@ -173,9 +173,6 @@ module.exports = {
                 name:  'conventionalcommits',
                 types: types,
             },
-            commitsOpts: {
-                merges: true,
-            },
             gitRawCommitsOpts: {
                 merges: null,
             },
