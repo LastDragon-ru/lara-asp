@@ -56,7 +56,7 @@ jobs:
       - name: Configure package repo
         working-directory: package
         run: |
-          git remote add origin "git@github.com:${{ github.repository }}-${{ matrix.package }}.git"
+          git remote add origin "git@github.com:$(jq -r '.name' "${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json").git"
 
       # Update package
       #
