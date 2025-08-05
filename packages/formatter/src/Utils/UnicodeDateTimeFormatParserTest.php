@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Formatter\Utils;
 
-use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Formatter\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

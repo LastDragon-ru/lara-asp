@@ -15,7 +15,7 @@ use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\IntlNumber\IntlNumberOptions;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretFormat;
 use LastDragon_ru\LaraASP\Formatter\Formats\Secret\SecretOptions;
-use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Formatter\Package\TestCase;
 use NumberFormatter;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
