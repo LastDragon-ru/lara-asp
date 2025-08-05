@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToCast;
-use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Serializer\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 

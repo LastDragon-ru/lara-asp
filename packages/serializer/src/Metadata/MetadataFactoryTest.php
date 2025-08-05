@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Serializer\Metadata;
 
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Serializer\Attributes\VersionMap;
-use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Serializer\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\PropertyInfo\Type;
