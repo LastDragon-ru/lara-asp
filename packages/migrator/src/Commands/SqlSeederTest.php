@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
 use LastDragon_ru\LaraASP\Migrator\Package;
-use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Migrator\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Finder\Finder;

@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 use Illuminate\Database\Connection;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Migrator\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
