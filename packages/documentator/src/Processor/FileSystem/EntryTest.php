@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 

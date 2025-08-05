@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

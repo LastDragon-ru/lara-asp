@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;

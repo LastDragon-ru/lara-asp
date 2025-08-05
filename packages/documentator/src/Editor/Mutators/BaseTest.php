@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Editor\Mutators;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

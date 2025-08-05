@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

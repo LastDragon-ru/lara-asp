@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use Mockery;
 use Override;
 use PhpParser\Node;

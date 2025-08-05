@@ -6,7 +6,7 @@ use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Append;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Prepend;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 

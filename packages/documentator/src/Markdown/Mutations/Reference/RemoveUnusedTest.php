@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Reference;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

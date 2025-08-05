@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\BlockStartParserWrapper;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Parsers\InlineParserWrapper;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithMarkdown;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithMarkdown;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

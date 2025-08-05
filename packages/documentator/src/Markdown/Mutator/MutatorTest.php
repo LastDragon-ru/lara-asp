@@ -14,7 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\List\Mutagens;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading as HeadingNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use League\CommonMark\Node\Block\AbstractBlock;

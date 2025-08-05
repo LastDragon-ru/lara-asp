@@ -6,9 +6,9 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

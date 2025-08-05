@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Attribute\AsCommand;

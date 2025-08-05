@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

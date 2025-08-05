@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

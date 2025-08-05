@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Editor\Locations;
 use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Editor\Coordinate;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Testing\Package;
+namespace LastDragon_ru\LaraASP\Documentator\Package;
 
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;

@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use Illuminate\Console\Parser;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Input\InputArgument;

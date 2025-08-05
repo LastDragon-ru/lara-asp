@@ -6,6 +6,8 @@ use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
@@ -16,8 +18,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithProcessor;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -136,10 +136,10 @@ final class FileSystemTest extends TestCase {
         self::assertSame($internalPath, (string) $internal);
 
         // External
-        $external = $fs->getDirectory('../Testing');
+        $external = $fs->getDirectory('../Package');
 
         self::assertSame(
-            (string) (new DirectoryPath(__DIR__))->getDirectoryPath('../../Testing'),
+            (string) (new DirectoryPath(__DIR__))->getDirectoryPath('../../Package'),
             (string) $external,
         );
 
