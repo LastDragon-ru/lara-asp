@@ -8,7 +8,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Schema\Builder;
 use LastDragon_ru\LaraASP\Core\Application\ConfigResolver;
-use LastDragon_ru\LaraASP\Migrator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Migrator\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
