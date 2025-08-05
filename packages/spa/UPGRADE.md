@@ -27,6 +27,13 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] Following classes were moved to [`lara-asp-testing`](../testing/README.md) package:
+
+  * `💀\LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\PaginatedCollection` => [`PaginatedCollection`][code-links/32df9255eaeaa037]
+  * `💀\LastDragon_ru\LaraASP\Spa\Testing\Http\Resources\ResourceCollection` => [`ResourceCollection`][code-links/a6cbd3cf46442a70]
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -72,5 +79,11 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/15f480832d63e0d6]: src/Provider.php
     "\LastDragon_ru\LaraASP\Spa\Provider"
+
+[code-links/32df9255eaeaa037]: ../testing/src/Responses/Laravel/Resources/PaginatedCollection.php
+    "\LastDragon_ru\LaraASP\Testing\Responses\Laravel\Resources\PaginatedCollection"
+
+[code-links/a6cbd3cf46442a70]: ../testing/src/Responses/Laravel/Resources/ResourceCollection.php
+    "\LastDragon_ru\LaraASP\Testing\Responses\Laravel\Resources\ResourceCollection"
 
 [//]: # (end: code-links)
