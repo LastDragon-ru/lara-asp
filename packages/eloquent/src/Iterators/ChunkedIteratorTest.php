@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 
 use Illuminate\Database\ConnectionResolverInterface;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Package\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\Eloquent\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
