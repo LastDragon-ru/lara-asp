@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa;
 
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Spa\Config\Config;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

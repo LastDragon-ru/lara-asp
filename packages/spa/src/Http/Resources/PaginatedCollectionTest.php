@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Spa\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function get_class;

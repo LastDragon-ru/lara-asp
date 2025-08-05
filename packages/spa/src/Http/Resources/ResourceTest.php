@@ -14,7 +14,7 @@ use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use LastDragon_ru\LaraASP\Spa\Package;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use LogicException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;

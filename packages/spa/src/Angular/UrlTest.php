@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Spa\Angular;
 
 use Exception;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
