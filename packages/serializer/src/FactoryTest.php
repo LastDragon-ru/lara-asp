@@ -8,7 +8,7 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizer;
-use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Serializer\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;

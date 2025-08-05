@@ -15,7 +15,7 @@ use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToDeserialize;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\FailedToSerialize;
 use LastDragon_ru\LaraASP\Serializer\Exceptions\PartialUnserializable;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
-use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Serializer\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

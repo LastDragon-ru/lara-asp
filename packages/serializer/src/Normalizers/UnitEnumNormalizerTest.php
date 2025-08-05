@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Serializer\Normalizers;
 
-use LastDragon_ru\LaraASP\Serializer\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Serializer\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
