@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
+namespace LastDragon_ru\GraphQLPrinter\Misc;
 
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\NamedType;

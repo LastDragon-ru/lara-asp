@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
+namespace LastDragon_ru\GraphQLPrinter\Testing;
 
 use Closure;
 use GraphQL\Language\AST\Node;
@@ -12,11 +12,11 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer as PrinterContract;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Result;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Statistics;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
+use LastDragon_ru\GraphQLPrinter\Contracts\Printer as PrinterContract;
+use LastDragon_ru\GraphQLPrinter\Contracts\Result;
+use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Contracts\Statistics;
+use LastDragon_ru\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;

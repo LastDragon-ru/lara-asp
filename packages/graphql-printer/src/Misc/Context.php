@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Misc;
+namespace LastDragon_ru\GraphQLPrinter\Misc;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\AST\DirectiveNode;
@@ -23,13 +23,13 @@ use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveResolver;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveArgumentNotFound;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldArgumentNotFound;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\FieldNotFound;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\TypeNotFound;
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveResolver;
+use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Exceptions\DirectiveArgumentNotFound;
+use LastDragon_ru\GraphQLPrinter\Exceptions\DirectiveDefinitionNotFound;
+use LastDragon_ru\GraphQLPrinter\Exceptions\FieldArgumentNotFound;
+use LastDragon_ru\GraphQLPrinter\Exceptions\FieldNotFound;
+use LastDragon_ru\GraphQLPrinter\Exceptions\TypeNotFound;
 
 use function array_key_exists;
 use function array_merge;

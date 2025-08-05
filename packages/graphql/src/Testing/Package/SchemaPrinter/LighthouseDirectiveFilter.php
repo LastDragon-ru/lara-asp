@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package\SchemaPrinter;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;
 use Nuwave\Lighthouse\Exceptions\DirectiveException;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;

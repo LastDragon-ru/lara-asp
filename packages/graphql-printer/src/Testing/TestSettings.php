@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
+namespace LastDragon_ru\GraphQLPrinter\Testing;
 
 use Closure;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\TypeFilter;
+use LastDragon_ru\GraphQLPrinter\Settings\ImmutableSettings;
 use Override;
 
 class TestSettings extends ImmutableSettings {

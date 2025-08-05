@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\Dev\App\Example;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 
 $schema   = app()->make(SchemaBuilder::class)->schema();

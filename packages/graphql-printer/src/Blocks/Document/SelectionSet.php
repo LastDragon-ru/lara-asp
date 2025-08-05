@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Document;
 
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\FragmentSpreadNode;
@@ -10,12 +10,12 @@ use GraphQL\Language\AST\SelectionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Exceptions\Unsupported;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
+use LastDragon_ru\GraphQLPrinter\Exceptions\Unsupported;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
 use Override;
 
 /**

@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Filters;
+namespace LastDragon_ru\GraphQLPrinter\Filters;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\TypeFilter;
 use Override;
 
 /**

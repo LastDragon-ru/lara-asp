@@ -1,5 +1,5 @@
 {
-  "name": "lastdragon-ru/lara-asp-graphql-printer",
+  "name": "lastdragon-ru/graphql-printer",
   "homepage": "https://github.com/LastDragon-ru/lara-asp",
   "description": "The Awesome Set of Packages for Laravel - The GraphQL Printer.",
   "readme": "README.md",
@@ -32,12 +32,12 @@
   },
   "autoload": {
     "psr-4": {
-      "LastDragon_ru\\LaraASP\\GraphQLPrinter\\": "src/"
+      "LastDragon_ru\\GraphQLPrinter\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "LastDragon_ru\\LaraASP\\GraphQLPrinter\\Docs\\": "docs"
+      "LastDragon_ru\\GraphQLPrinter\\Docs\\": "docs"
     },
     "exclude-from-classmap": [
       "docs/"

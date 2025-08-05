@@ -21,17 +21,11 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql-printer"}})
-[//]: # (start: preprocess/09a52ea0ed33d00a)
-[//]: # (warning: Generated automatically. Do not edit.)
-
 # Installation
 
 ```shell
-composer require lastdragon-ru/lara-asp-graphql-printer
+composer require lastdragon-ru/graphql-printer
 ```
-
-[//]: # (end: preprocess/09a52ea0ed33d00a)
 
 # Usage
 
@@ -45,9 +39,9 @@ There are two primary methods: `Printer::print()` and `Printer::export()`. The `
 <?php declare(strict_types = 1);
 
 use GraphQL\Utils\BuildSchema;
+use LastDragon_ru\GraphQLPrinter\Printer;
+use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\Dev\App\Example;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 $schema   = BuildSchema::build(
     <<<'GRAPHQL'
@@ -141,11 +135,11 @@ The Printer allows filter out types and directives. This may be useful to exclud
 
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\TypeFilter;
+use LastDragon_ru\GraphQLPrinter\Printer;
+use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\Dev\App\Example;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 $typeFilter      = new class() implements TypeFilter {
     #[Override]
@@ -245,6 +239,11 @@ Prints and compares two GraphQL schemas/types/nodes/etc.
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
+
+# Migration from `lastdragon-ru/lara-asp-graphql-printer`
+
+* [ ] Use `lastdragon-ru/graphql-printer` instead of `lastdragon-ru/lara-asp-graphql-printer` in `composer.json`
+* [ ] Use `LastDragon_ru\GraphQLPrinter\*` instead of `LastDragon_ru\LaraASP\GraphQLPrinter\*` in code.
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: preprocess/c4ba75080f5a48b7)

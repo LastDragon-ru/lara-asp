@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter;
+namespace LastDragon_ru\GraphQLPrinter;
 
 final class Package {
-    public const string Name = 'lara-asp-graphql-printer';
+    public const string Name = 'graphql-printer';
 }

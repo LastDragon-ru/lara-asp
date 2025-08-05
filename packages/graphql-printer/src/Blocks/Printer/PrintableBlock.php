@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Printer;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
@@ -11,11 +11,11 @@ use GraphQL\Type\Definition\FieldDefinition as GraphQLFieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\GraphQLPrinter\Blocks\Factory;
+use LastDragon_ru\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\GraphQLPrinter\Misc\Collector;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use Override;
 
 /**

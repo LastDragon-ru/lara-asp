@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Types;
 
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\AST\UnionTypeExtensionNode;
 use GraphQL\Type\Definition\UnionType;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document\UnionMemberTypes;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\GraphQLPrinter\Blocks\Document\UnionMemberTypes;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use Override;
 
 /**

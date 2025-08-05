@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package;
+namespace LastDragon_ru\GraphQLPrinter\Testing\Package;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions;
+use LastDragon_ru\GraphQLPrinter\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\StrictAssertEquals;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;

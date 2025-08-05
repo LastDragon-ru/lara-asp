@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Settings;
+namespace LastDragon_ru\GraphQLPrinter\Settings;
 
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
+use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;

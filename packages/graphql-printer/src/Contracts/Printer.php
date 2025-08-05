@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Contracts;
+namespace LastDragon_ru\GraphQLPrinter\Contracts;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
