@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Formatter\Formats\Duration;
 
 use DateInterval;
-use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Formatter\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

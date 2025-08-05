@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Formatter;
 
 use Exception;
 use Illuminate\Contracts\Config\Repository;
-use LastDragon_ru\LaraASP\Formatter\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Formatter\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
