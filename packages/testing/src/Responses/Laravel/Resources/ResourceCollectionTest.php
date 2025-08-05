@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Spa\Testing\Http\Resources;
+namespace LastDragon_ru\LaraASP\Testing\Responses\Laravel\Resources;
 
 use Exception;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonMatchesSchema;
+use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -16,8 +16,6 @@ final class ResourceCollectionTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @coversNothing
-     *
      * @param array<array-key, mixed> $json
      */
     #[DataProvider('dataProviderSchema')]
