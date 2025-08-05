@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use LastDragon_ru\LaraASP\Eloquent\Exceptions\PropertyIsNotRelation;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\UnknownValue;

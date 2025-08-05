@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use JsonSerializable;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

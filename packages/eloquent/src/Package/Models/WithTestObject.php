@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models;
+namespace LastDragon_ru\LaraASP\Eloquent\Package\Models;
 
 use Illuminate\Database\Schema\Blueprint;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Package\TestCase;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
 

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedChangeSafeIterator;
 use LastDragon_ru\LaraASP\Eloquent\Iterators\ChunkedIterator;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\TestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\Models\WithTestObject;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Package\Models\TestObject;
+use LastDragon_ru\LaraASP\Eloquent\Package\Models\WithTestObject;
+use LastDragon_ru\LaraASP\Eloquent\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

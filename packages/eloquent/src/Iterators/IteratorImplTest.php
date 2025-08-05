@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Eloquent\Iterators;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
-use LastDragon_ru\LaraASP\Eloquent\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Eloquent\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
