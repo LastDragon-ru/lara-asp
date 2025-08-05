@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithMarkdown;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithMarkdown;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 

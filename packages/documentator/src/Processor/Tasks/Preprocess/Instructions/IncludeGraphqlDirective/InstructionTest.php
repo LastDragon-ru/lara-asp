@@ -7,10 +7,10 @@ use GraphQL\Language\Parser;
 use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\GraphQLPrinter\Printer;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\WithPreprocess;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 

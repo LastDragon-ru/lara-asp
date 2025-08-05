@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Editor;
 
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
-use LastDragon_ru\LaraASP\Documentator\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use const PHP_INT_MAX;
