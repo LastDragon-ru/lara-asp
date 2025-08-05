@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective;
 
+use LastDragon_ru\GraphQLPrinter\Contracts\Printer;
+use LastDragon_ru\GraphQLPrinter\Settings\ImmutableSettings;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\ImmutableSettings;
 use Override;
 
 use function mb_substr;

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter;
+namespace LastDragon_ru\GraphQLPrinter;
 
 use Exception;
 use Throwable;

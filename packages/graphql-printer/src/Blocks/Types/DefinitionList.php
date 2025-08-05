@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Types;
 
 use Closure;
 use GraphQL\Language\AST\DefinitionNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\TypeNode;
 use GraphQL\Type\Definition\Type;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Factory;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\GraphQLPrinter\Blocks\Factory;
+use LastDragon_ru\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use Override;
 
 /**

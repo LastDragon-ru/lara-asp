@@ -2,11 +2,11 @@
 
 use GraphQL\Language\Parser;
 use GraphQL\Utils\BuildSchema;
+use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;
+use LastDragon_ru\GraphQLPrinter\Contracts\TypeFilter;
+use LastDragon_ru\GraphQLPrinter\Printer;
+use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\Dev\App\Example;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\DirectiveFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\TypeFilter;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 $typeFilter      = new class() implements TypeFilter {
     #[Override]

@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Values;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Values;
 
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
+use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Misc\Collector;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\TestCase;
+use LastDragon_ru\GraphQLPrinter\Testing\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

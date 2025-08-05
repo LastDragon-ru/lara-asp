@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Printer;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Printer;
 
 use ArrayAccess;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Block;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\ListBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\NamedBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Blocks\Block;
+use LastDragon_ru\GraphQLPrinter\Blocks\ListBlock;
+use LastDragon_ru\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\GraphQLPrinter\Misc\Collector;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use Override;
 
 /**

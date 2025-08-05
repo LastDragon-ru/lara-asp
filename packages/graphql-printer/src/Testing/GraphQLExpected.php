@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Testing;
+namespace LastDragon_ru\GraphQLPrinter\Testing;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\Argument;
@@ -10,7 +10,7 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
 class GraphQLExpected {

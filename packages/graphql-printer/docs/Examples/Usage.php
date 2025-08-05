@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
 use GraphQL\Utils\BuildSchema;
+use LastDragon_ru\GraphQLPrinter\Printer;
+use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\LaraASP\Dev\App\Example;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Printer;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Settings\DefaultSettings;
 
 $schema   = BuildSchema::build(
     <<<'GRAPHQL'

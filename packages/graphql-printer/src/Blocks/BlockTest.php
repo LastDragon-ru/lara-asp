@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks;
+namespace LastDragon_ru\GraphQLPrinter\Blocks;
 
 use Attribute;
 use Composer\ClassMapGenerator\ClassMapGenerator;
@@ -14,14 +14,14 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnresolvedFieldDefinition;
 use GraphQL\Type\Schema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Collector;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLMarker;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\TestSettings;
+use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Misc\Collector;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLMarker;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\TestCase;
+use LastDragon_ru\GraphQLPrinter\Testing\TestSettings;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

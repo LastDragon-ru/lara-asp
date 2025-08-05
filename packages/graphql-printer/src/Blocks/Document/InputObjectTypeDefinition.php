@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Document;
+namespace LastDragon_ru\GraphQLPrinter\Blocks\Document;
 
 use Composer\InstalledVersions;
 use Composer\Semver\VersionParser;
@@ -9,10 +9,10 @@ use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InputObjectType;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Blocks\Types\InputObjectDefinitionBlock;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use LastDragon_ru\GraphQLPrinter\Blocks\Types\InputObjectDefinitionBlock;
+use LastDragon_ru\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLDefinition;
 use Override;
 
 /**

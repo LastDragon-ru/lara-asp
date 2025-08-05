@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQLPrinter\Docs\Assertions;
+namespace LastDragon_ru\GraphQLPrinter\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLAssertions;
-use LastDragon_ru\LaraASP\GraphQLPrinter\Testing\GraphQLExpected;
+use LastDragon_ru\GraphQLPrinter\Testing\GraphQLAssertions;
+use LastDragon_ru\GraphQLPrinter\Testing\GraphQLExpected;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
