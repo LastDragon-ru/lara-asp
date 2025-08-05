@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Controllers;
 
 use LastDragon_ru\LaraASP\Spa\Config\Config;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use LastDragon_ru\LaraASP\Spa\PackageConfig;
 use LastDragon_ru\LaraASP\Spa\PackageProvider;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Constraints\Json\JsonSchemaFile;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\NotFound;

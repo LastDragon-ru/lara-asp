@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Spa\Http\Resources\Scalar;
 
 use Illuminate\Contracts\Routing\Registrar;
-use LastDragon_ru\LaraASP\Spa\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Spa\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Responses\Laravel\Json\OkResponse;
 use PHPUnit\Framework\Attributes\CoversClass;
 
