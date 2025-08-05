@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Core\Helpers;
 use Illuminate\Contracts\Translation\Translator;
 use LastDragon_ru\LaraASP\Core\Helpers\Translator as PackageTranslator;
 use LastDragon_ru\LaraASP\Core\Package;
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
