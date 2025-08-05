@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Core\Helpers;
 
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View as ViewContract;
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

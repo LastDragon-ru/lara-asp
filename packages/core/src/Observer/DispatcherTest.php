@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core\Observer;
 
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;

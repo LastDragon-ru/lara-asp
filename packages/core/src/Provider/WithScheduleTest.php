@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Core\Provider;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use LastDragon_ru\LaraASP\Core\Utils\Scheduler;
 use Mockery;
 use Mockery\MockInterface;

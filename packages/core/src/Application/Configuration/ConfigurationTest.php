@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core\Application\Configuration;
 
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 

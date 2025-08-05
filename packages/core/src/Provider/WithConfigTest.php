@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\ConfigurationResolver;
 use LastDragon_ru\LaraASP\Core\Package;
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

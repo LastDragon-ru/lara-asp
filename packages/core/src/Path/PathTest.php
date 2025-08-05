@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Core\Path;
 
-use LastDragon_ru\LaraASP\Core\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Core\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 

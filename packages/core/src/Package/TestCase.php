@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Testing\Package;
+namespace LastDragon_ru\LaraASP\Core\Package;
 
 use LastDragon_ru\LaraASP\Core\PackageProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
