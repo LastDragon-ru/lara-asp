@@ -719,7 +719,7 @@ type Query {
         page: Int
     ): StringPaginator!
     @paginate(
-        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
     )
 }
 
@@ -728,7 +728,7 @@ A paginated list of String items.
 """
 type StringPaginator
 @model(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
 )
 {
     """

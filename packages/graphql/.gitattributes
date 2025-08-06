@@ -10,4 +10,5 @@
 /src/**/*Test.php                                   export-ignore
 /src/**/*Test~*                                     export-ignore
 /src/**/*Test*/**/*                                 export-ignore
-/src/Testing/Package                                export-ignore
+/src/Package                                        export-ignore
+/src/Testing                                        export-ignore

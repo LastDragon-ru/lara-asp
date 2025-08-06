@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Utils;
 
 use GraphQL\Type\Definition\PhpEnumType;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

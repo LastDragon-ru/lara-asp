@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Directives;
 
 use Exception;
 use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Exceptions\Client\CursorInvalidPath;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset as StreamOffset;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Execution\ResolveInfo;
 use PHPUnit\Framework\Attributes\CoversClass;

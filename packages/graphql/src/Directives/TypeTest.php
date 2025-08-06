@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Directives;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Type\Definition\PhpEnumType;
 use GraphQL\Type\Definition\StringType;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Utils\PhpEnumTypeHelper;
 use Nuwave\Lighthouse\Exceptions\DefinitionException;
 use Nuwave\Lighthouse\Schema\TypeRegistry;

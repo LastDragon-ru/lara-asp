@@ -1054,7 +1054,7 @@ interface C {
     @stream(
         sortable: false
         builder: {
-            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
         }
     )
     @validate
@@ -1197,7 +1197,7 @@ type A {
     @stream(
         sortable: false
         builder: {
-            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
         }
     )
     @validate
@@ -1208,7 +1208,7 @@ A paginated list of A items.
 """
 type APaginator
 @model(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
 )
 {
     """
@@ -1346,7 +1346,7 @@ type Query {
         page: Int
     ): APaginator!
     @paginate(
-        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
     )
 
     c(

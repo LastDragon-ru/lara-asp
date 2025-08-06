@@ -117,7 +117,7 @@ A paginated list of ID items.
 """
 type IDPaginator
 @model(
-    class: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+    class: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
 )
 {
     """
@@ -204,6 +204,6 @@ type Query {
         page: Int
     ): IDPaginator!
     @paginate(
-        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
     )
 }
