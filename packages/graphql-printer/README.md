@@ -214,27 +214,11 @@ query {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lara-asp-graphql`](../graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lastdragon-ru/lara-asp-graphql`](../graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
 
 # Testing Assertions
 
-[include:document-list]: ./docs/Assertions
-[//]: # (start: preprocess/c79a463462fd8331)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-## [`assertGraphQLExportableEquals`](<docs/Assertions/AssertGraphQLExportableEquals.md>)
-
-Exports and compares two GraphQL schemas/types/nodes/etc.
-
-[Read more](<docs/Assertions/AssertGraphQLExportableEquals.md>).
-
-## [`assertGraphQLPrintableEquals`](<docs/Assertions/AssertGraphQLPrintableEquals.md>)
-
-Prints and compares two GraphQL schemas/types/nodes/etc.
-
-[Read more](<docs/Assertions/AssertGraphQLPrintableEquals.md>).
-
-[//]: # (end: preprocess/c79a463462fd8331)
+There are also a few useful assertions for PHPUnit to check printed/exported type/queries, please see the [`lastdragon-ru/graphql-printer-testing`](../graphql-printer-testing/README.md) package.
 
 # Upgrading
 
@@ -243,6 +227,7 @@ Please follow [Upgrade Guide](UPGRADE.md).
 # Migration from `lastdragon-ru/lara-asp-graphql-printer`
 
 * [ ] Use `lastdragon-ru/graphql-printer` instead of `lastdragon-ru/lara-asp-graphql-printer` in `composer.json`
+* [ ] Use [`lastdragon-ru/graphql-printer-testing`](../graphql-printer-testing/README.md) package if you use PHPUnit assertions.
 * [ ] Use `LastDragon_ru\GraphQLPrinter\*` instead of `LastDragon_ru\LaraASP\GraphQLPrinter\*` in code.
 
 [include:file]: ../../docs/Shared/Contributing.md

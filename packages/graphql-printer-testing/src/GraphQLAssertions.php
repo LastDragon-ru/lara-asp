@@ -18,15 +18,12 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\GraphQLPrinter\Printer;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Assert;
 use SplFileInfo;
 
 use function array_combine;
 use function is_string;
 
-/**
- * @mixin TestCase
- */
 trait GraphQLAssertions {
     // <editor-fold desc="Assertions">
     // =========================================================================
@@ -122,7 +119,7 @@ trait GraphQLAssertions {
             // empty
         }
 
-        self::assertSame($output, (string) $actual, $message);
+        Assert::assertSame($output, (string) $actual, $message);
 
         return $actual;
     }
@@ -135,7 +132,7 @@ trait GraphQLAssertions {
         $usedTypes = $expected->getUsedTypes();
 
         if ($usedTypes !== null) {
-            self::assertEquals(
+            Assert::assertEquals(
                 array_combine($usedTypes, $usedTypes),
                 $actual->getUsedTypes(),
                 'Used Types not match.',
@@ -146,7 +143,7 @@ trait GraphQLAssertions {
         $usedDirectives = $expected->getUsedDirectives();
 
         if ($usedDirectives !== null) {
-            self::assertEquals(
+            Assert::assertEquals(
                 array_combine($usedDirectives, $usedDirectives),
                 $actual->getUsedDirectives(),
                 'Used Directives not match.',

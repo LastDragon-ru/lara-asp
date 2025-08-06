@@ -27,6 +27,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] Assertions for PHPUnit extracted into [`lastdragon-ru/graphql-printer-testing`](../graphql-printer-testing/README.md) package (class names are the same).
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md

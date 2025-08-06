@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Docs\Assertions;
+namespace LastDragon_ru\GraphQLPrinter\Testing\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\GraphQLPrinter\Testing\GraphQLAssertions;
