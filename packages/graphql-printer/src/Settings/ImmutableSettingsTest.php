@@ -3,7 +3,7 @@
 namespace LastDragon_ru\GraphQLPrinter\Settings;
 
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\TestCase;
+use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;

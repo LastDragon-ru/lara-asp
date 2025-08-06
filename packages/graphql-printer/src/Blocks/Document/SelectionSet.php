@@ -15,7 +15,7 @@ use LastDragon_ru\GraphQLPrinter\Blocks\ListBlock;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\ExecutableDefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use Override;
 
 /**

@@ -6,7 +6,7 @@ use GraphQL\Language\AST\UnionTypeExtensionNode;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\ExtensionDefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\UnionDefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use Override;
 
 /**

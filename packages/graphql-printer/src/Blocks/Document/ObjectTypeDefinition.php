@@ -6,8 +6,8 @@ use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Type\Definition\ObjectType;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\ObjectDefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
 use Override;
 
 /**

@@ -7,8 +7,8 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\PhpEnumType;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\EnumDefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
 use Override;
 
 /**

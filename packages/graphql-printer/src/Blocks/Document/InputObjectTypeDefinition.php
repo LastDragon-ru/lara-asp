@@ -11,8 +11,8 @@ use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\InputObjectDefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
 use Override;
 
 /**

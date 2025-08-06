@@ -11,7 +11,7 @@ use LastDragon_ru\GraphQLPrinter\Blocks\NamedBlock;
 use LastDragon_ru\GraphQLPrinter\Blocks\PropertyBlock;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use Override;
 
 /**

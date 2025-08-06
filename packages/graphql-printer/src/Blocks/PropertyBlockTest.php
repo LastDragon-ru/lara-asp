@@ -4,7 +4,7 @@ namespace LastDragon_ru\GraphQLPrinter\Blocks;
 
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\TestCase;
+use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Testing\TestSettings;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
