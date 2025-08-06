@@ -6,8 +6,8 @@ use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Type\Definition\EnumValueDefinition as GraphQLEnumValueDefinition;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\DefinitionBlock;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLDefinition;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
 
 /**
  * @internal

@@ -24,7 +24,7 @@ use LastDragon_ru\GraphQLPrinter\Blocks\Values\VariableValue;
 use LastDragon_ru\GraphQLPrinter\Exceptions\Unsupported;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\GraphQLAstNode;
+use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use Override;
 
 use function json_encode;

@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Testing\Package;
+namespace LastDragon_ru\GraphQLPrinter\Package;
 
 use Attribute;
 
@@ -8,6 +8,6 @@ use Attribute;
  * @internal
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
-class GraphQLAstNode extends GraphQLMarker {
+class GraphQLDefinition extends GraphQLMarker {
     // empty
 }
