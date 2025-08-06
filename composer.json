@@ -119,6 +119,8 @@
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
+      "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
+      "LastDragon_ru\\GraphQLPrinter\\Testing\\": "packages/graphql-printer-testing/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
       "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/",
@@ -134,6 +136,7 @@
       "packages/eloquent/docs/",
       "packages/formatter/docs/",
       "packages/graphql-printer/docs/",
+      "packages/graphql-printer-testing/docs/",
       "packages/graphql/docs/",
       "packages/migrator/docs/",
       "packages/migrator/src/Migrations/MigratorTest/raw/",
@@ -149,6 +152,8 @@
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
       "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
+      "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
+      "LastDragon_ru\\GraphQLPrinter\\Testing\\Docs\\": "packages/graphql-printer-testing/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/graphql/docs",
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/migrator/docs",
       "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/serializer/docs",
@@ -256,6 +261,8 @@
     }
   },
   "replace": {
+    "lastdragon-ru/graphql-printer": "self.version",
+    "lastdragon-ru/graphql-printer-testing": "self.version",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
@@ -265,7 +272,6 @@
     "lastdragon-ru/lara-asp-migrator": "self.version",
     "lastdragon-ru/lara-asp-serializer": "self.version",
     "lastdragon-ru/lara-asp-spa": "self.version",
-    "lastdragon-ru/lara-asp-testing": "self.version",
-    "lastdragon-ru/graphql-printer": "self.version"
+    "lastdragon-ru/lara-asp-testing": "self.version"
   }
 }
