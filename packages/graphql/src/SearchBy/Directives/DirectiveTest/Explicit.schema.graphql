@@ -1,7 +1,7 @@
 type Query {
     a(where: A @searchBy): ID! @all
     b(where: A @searchBy): [String!]! @paginate(
-        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
     )
 }
 

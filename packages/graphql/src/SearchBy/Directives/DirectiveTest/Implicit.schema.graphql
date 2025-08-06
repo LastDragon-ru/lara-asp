@@ -1,7 +1,7 @@
 type Query {
     a(where: _ @searchBy): [A!]! @all
     b(where: _ @searchBy): [A!]! @paginate(
-        model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+        model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
     )
     c(where: _ @searchBy): [C!]! @all
 }
@@ -30,7 +30,7 @@ type A {
     stream: [A!]! @stream(
         sortable: false
         builder: {
-            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
         }
     )
     renamedObject: B @rename(attribute: "internal")
@@ -69,7 +69,7 @@ interface C {
     stream: [A!]! @stream(
         sortable: false
         builder: {
-            model: "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+            model: "LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
         }
     )
     renamedObject: B @rename(attribute: "internal")

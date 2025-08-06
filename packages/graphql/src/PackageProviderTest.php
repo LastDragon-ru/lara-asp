@@ -4,11 +4,11 @@ namespace LastDragon_ru\LaraASP\GraphQL;
 
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\GraphQL\Config\Config;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorBetweenDirective;
 use LastDragon_ru\LaraASP\GraphQL\SearchBy\Definitions\SearchByOperatorEqualDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Definitions\SortByOperatorRandomDirective;
 use LastDragon_ru\LaraASP\GraphQL\SortBy\Operators as SortByOperators;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use Nuwave\Lighthouse\Schema\Directives\RenameDirective;
 use Nuwave\Lighthouse\Validation\ValidateDirective;
 use PHPUnit\Framework\Attributes\CoversClass;

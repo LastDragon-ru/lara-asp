@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
 use Exception;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Package\Directives\TestDirective;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use PHPUnit\Framework\Attributes\CoversClass;
 

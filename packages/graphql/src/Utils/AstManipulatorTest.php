@@ -25,7 +25,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\ArgumentAlreadyDefined;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\NotImplemented;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
@@ -1255,7 +1255,7 @@ final class AstManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
                         type: PAGINATOR
                     )
                 }
@@ -1271,7 +1271,7 @@ final class AstManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
                         type: SIMPLE
                     )
                 }
@@ -1287,7 +1287,7 @@ final class AstManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @paginate(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
                         type: CONNECTION
                     )
                 }
@@ -1303,7 +1303,7 @@ final class AstManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @hasOne(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
                     )
                 }
 
@@ -1318,7 +1318,7 @@ final class AstManipulatorTest extends TestCase {
                 type Query {
                     field: [Test!]
                     @hasMany(
-                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                        model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
                         type: PAGINATOR
                     )
                 }
@@ -1338,7 +1338,7 @@ final class AstManipulatorTest extends TestCase {
                         searchable: false
                         sortable: false
                         builder: {
-                            model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Data\\Models\\TestObject"
+                            model: "\\LastDragon_ru\\LaraASP\\GraphQL\\Package\\Data\\Models\\TestObject"
                         }
                     )
                 }

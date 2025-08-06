@@ -12,10 +12,10 @@ Checks that no dangerous changes in the default internal schema (with all direct
 namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
 
 use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
+use LastDragon_ru\LaraASP\GraphQL\Package\Directives\TestDirective;
+use LastDragon_ru\LaraASP\GraphQL\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Directives\TestDirective;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;

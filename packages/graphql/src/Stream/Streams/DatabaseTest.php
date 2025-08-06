@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use Illuminate\Support\Collection;
+use LastDragon_ru\LaraASP\GraphQL\Package\Data\Models\TestObject;
+use LastDragon_ru\LaraASP\GraphQL\Package\Data\Models\WithTestObject;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObject;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;

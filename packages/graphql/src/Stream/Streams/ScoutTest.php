@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\GraphQL\Stream\Streams;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use LastDragon_ru\LaraASP\GraphQL\Package\Data\Models\TestObjectSearchable;
+use LastDragon_ru\LaraASP\GraphQL\Package\Data\Models\WithTestObject;
+use LastDragon_ru\LaraASP\GraphQL\Package\Requirements\RequiresLaravelScout;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Offset;
 use LastDragon_ru\LaraASP\GraphQL\Stream\Utils\Page;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\TestObjectSearchable;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Data\Models\WithTestObject;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Requirements\RequiresLaravelScout;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog;
 use Mockery;
 use Override;

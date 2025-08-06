@@ -103,10 +103,10 @@ parameters:
 			path: packages/graphql/src/Stream/Streams/Database.php
 
 		-
-			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'
+			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: packages/graphql/src/Testing/Package/Directives/ExposeBuilderDirective.php
+			path: packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
 
 		-
 			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'

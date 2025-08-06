@@ -13,7 +13,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\GraphQL\Builder\ManipulatorFactory;
 use LastDragon_ru\LaraASP\GraphQL\Builder\Scalars\Internal;
 use LastDragon_ru\LaraASP\GraphQL\Exceptions\TypeDefinitionAlreadyDefined;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use Mockery;
 use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;

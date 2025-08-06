@@ -9,7 +9,7 @@ use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\ValueNode;
-use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
