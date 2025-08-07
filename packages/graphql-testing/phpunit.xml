@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.2/phpunit.xsd"
+         cacheDirectory=".phpunit/cache"
+         executionOrder="random"
+         colors="true">
+    <extensions>
+        <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
+    </extensions>
+    <testsuites>
+        <testsuite name="package">
+            <directory suffix="Test.php">./src</directory>
+            <directory suffix="Test.php">./docs</directory>
+        </testsuite>
+    </testsuites>
+    <source ignoreIndirectDeprecations="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">./docs</directory>
+        </include>
+        <exclude>
+            <directory suffix="Test.php">./src</directory>
+            <directory suffix="Test.php">./docs</directory>
+        </exclude>
+    </source>
+    <php>
+        <env verbatim="true" name="COLUMNS" value="120"/>
+    </php>
+</phpunit>

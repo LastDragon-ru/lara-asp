@@ -561,41 +561,7 @@ type User {
 
 # Testing Assertions
 
-[include:document-list]: ./docs/Assertions
-[//]: # (start: preprocess/c79a463462fd8331)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-## [`assertGraphQLIntrospectionEquals`](<docs/Assertions/AssertGraphQLIntrospectionEquals.md>)
-
-Compares default public schema (as the client sees it through introspection).
-
-[Read more](<docs/Assertions/AssertGraphQLIntrospectionEquals.md>).
-
-## [`assertGraphQLSchemaEquals`](<docs/Assertions/AssertGraphQLSchemaEquals.md>)
-
-Compares default internal schema (with all directives).
-
-[Read more](<docs/Assertions/AssertGraphQLSchemaEquals.md>).
-
-## [`assertGraphQLSchemaNoBreakingChanges`](<docs/Assertions/AssertGraphQLSchemaNoBreakingChanges.md>)
-
-Checks that no breaking changes in the default internal schema (with all directives).
-
-[Read more](<docs/Assertions/AssertGraphQLSchemaNoBreakingChanges.md>).
-
-## [`assertGraphQLSchemaNoDangerousChanges`](<docs/Assertions/AssertGraphQLSchemaNoDangerousChanges.md>)
-
-Checks that no dangerous changes in the default internal schema (with all directives).
-
-[Read more](<docs/Assertions/AssertGraphQLSchemaNoDangerousChanges.md>).
-
-## [`assertGraphQLSchemaValid`](<docs/Assertions/AssertGraphQLSchemaValid.md>)
-
-Validates default internal schema (with all directives). Faster than `lighthouse:validate-schema` command because loads only used directives.
-
-[Read more](<docs/Assertions/AssertGraphQLSchemaValid.md>).
-
-[//]: # (end: preprocess/c79a463462fd8331)
+There are also a few useful assertions for PHPUnit to check printed/exported type/queries and more, please see the [`lastdragon-ru/lara-asp-graphql-testing`](../graphql-testing/README.md) package.
 
 # Upgrading
 

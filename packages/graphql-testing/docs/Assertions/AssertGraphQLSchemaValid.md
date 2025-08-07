@@ -1,21 +1,21 @@
-# `assertGraphQLSchemaNoBreakingChanges`
+# `assertGraphQLSchemaValid`
 
-Checks that no breaking changes in the default internal schema (with all directives).
+Validates default internal schema (with all directives). Faster than `lighthouse:validate-schema` command because loads only used directives.
 
-[include:example]: ./AssertGraphQLSchemaNoBreakingChangesTest.php
-[//]: # (start: preprocess/f6f137ef61ef41f2)
+[include:example]: ./AssertGraphQLSchemaValidTest.php
+[//]: # (start: preprocess/991ba34d32d6768f)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
+namespace LastDragon_ru\LaraASP\GraphQL\Testing\Docs\Assertions;
 
-use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
-use LastDragon_ru\LaraASP\GraphQL\Package\Directives\TestDirective;
-use LastDragon_ru\LaraASP\GraphQL\Package\Provider as TestProvider;
-use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
+use LastDragon_ru\LaraASP\Core\PackageProvider as CorePackageProvider;
+use LastDragon_ru\LaraASP\GraphQL\PackageProvider as GraphQLPackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestDirective;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -28,7 +28,7 @@ use function array_merge;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
+final class AssertGraphQLSchemaValidTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -42,9 +42,9 @@ final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
     #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
-            PackageProvider::class,
-            CoreProvider::class,
             TestProvider::class,
+            CorePackageProvider::class,
+            GraphQLPackageProvider::class,
             LighthouseServiceProvider::class,
         ]);
     }
@@ -55,29 +55,23 @@ final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
     public function testAssertion(): void {
         // Prepare
         $this->app()->make(DirectiveLocator::class)
+            ->setResolved('a', TestDirective::class)
             ->setResolved('test', TestDirective::class);
 
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
-            type Query {
+            directive @a(a: Int!) on OBJECT
+
+            type Query @a(a: 123) {
                 a: String @test
-                b: Int! @test
             }
             GRAPHQL,
         );
 
         // Test
-        $this->assertGraphQLSchemaNoBreakingChanges(
-            <<<'GRAPHQL'
-            directive @test on FIELD_DEFINITION
-
-            type Query {
-                a: String @test
-            }
-            GRAPHQL,
-        );
+        $this->assertGraphQLSchemaValid();
     }
 }
 ```
 
-[//]: # (end: preprocess/f6f137ef61ef41f2)
+[//]: # (end: preprocess/991ba34d32d6768f)

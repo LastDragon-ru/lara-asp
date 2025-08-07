@@ -1,0 +1,59 @@
+{
+  "name": "lastdragon-ru/lara-asp-graphql-testing",
+  "homepage": "https://github.com/LastDragon-ru/lara-asp",
+  "description": "The Awesome Set of Packages for Laravel - The GraphQL Testing Assertions for Laravel/Lighthouse",
+  "readme": "README.md",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "laravel-package",
+    "laravel",
+    "GraphQL",
+    "GraphQL Printer",
+    "GraphQL Schema Printer",
+    "lighthouse-php",
+    "PHPUnit",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp",
+    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+  },
+  "require": {
+    "php": "^8.3|^8.4",
+    "ext-mbstring": "*",
+    "illuminate/contracts": "^12.0.1",
+    "illuminate/filesystem": "^12.0.1",
+    "lastdragon-ru/graphql-printer": "self.version",
+    "lastdragon-ru/graphql-printer-testing": "self.version",
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "nuwave/lighthouse": "^6.54.0",
+    "phpunit/phpunit": "^11.1.0|^12.0.0",
+    "webonyx/graphql-php": "^15.4.0"
+  },
+  "require-dev": {
+    "illuminate/database": "^12.0.1",
+    "illuminate/support": "^12.0.1",
+    "lastdragon-ru/lara-asp-core": "self.version",
+    "lastdragon-ru/lara-asp-graphql": "self.version",
+    "orchestra/testbench": "^10.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Docs\\": "docs/"
+    },
+    "exclude-from-classmap": [
+      "docs/"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
