@@ -27,6 +27,7 @@
     "ext-mbstring": "*",
     "composer/semver": "^3.2",
     "doctrine/sql-formatter": "^1.1",
+    "fakerphp/faker": "^1.21.0",
     "illuminate/collections": "^12.0.1",
     "illuminate/console": "^12.0.1",
     "illuminate/contracts": "^12.0.1",
@@ -48,7 +49,6 @@
     "symfony/psr-http-message-bridge": "^7.0.0"
   },
   "require-dev": {
-    "fakerphp/faker": "^1.21.0",
     "illuminate/http": "^12.0.1",
     "laravel/scout": "^10.12.2",
     "orchestra/testbench": "^10.0.0",

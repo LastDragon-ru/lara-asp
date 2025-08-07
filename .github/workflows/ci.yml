@@ -33,12 +33,15 @@ jobs:
       - name: Prepare
         run: |
           # Unwanted
-          # (because will install whole "laravel/framework")
+          # (because it will install whole "laravel/framework")
           composer remove --no-interaction --no-progress --ansi --no-update "orchestra/testbench"
           composer remove --no-interaction --no-progress --ansi --no-update --dev "orchestra/testbench"
 
+          # PHPStan
           # (because it used only to run phpstan and will give false-positive)
-          composer remove --no-interaction --no-progress --ansi --no-update --dev "phpstan/phpstan"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "phpstan/*"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "larastan/larastan"
+          composer remove --no-interaction --no-progress --ansi --no-update --dev "spaze/phpstan-disallowed-calls"
       - name: Install dependencies
         uses: ramsey/composer-install@v3
 
@@ -81,7 +84,7 @@ jobs:
         working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
         run: |
           # Unwanted
-          # (because will install whole "laravel/framework")
+          # (because it will install whole "laravel/framework")
           composer remove --no-interaction --no-progress --ansi --no-update "orchestra/testbench"
           composer remove --no-interaction --no-progress --ansi --no-update --dev "orchestra/testbench"
 

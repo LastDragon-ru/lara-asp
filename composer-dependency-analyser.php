@@ -21,14 +21,7 @@ $config = (new Configuration())
 $path = Path::realpath(getopt('', ['composer-json:'])['composer-json'] ?? 'composer.json');
 $root = Path::realpath(dirname(__FILE__).'/composer.json') === $path;
 
-if ($root) {
-    $config
-        ->ignoreErrorsOnPackage('larastan/larastan', [ErrorType::UNUSED_DEPENDENCY])
-        ->ignoreErrorsOnPackage('phpstan/phpstan-mockery', [ErrorType::UNUSED_DEPENDENCY])
-        ->ignoreErrorsOnPackage('phpstan/phpstan-phpunit', [ErrorType::UNUSED_DEPENDENCY])
-        ->ignoreErrorsOnPackage('phpstan/phpstan-strict-rules', [ErrorType::UNUSED_DEPENDENCY])
-        ->ignoreErrorsOnPackage('spaze/phpstan-disallowed-calls', [ErrorType::UNUSED_DEPENDENCY]);
-} else {
+if (!$root) {
     $config->disableReportingUnmatchedIgnores();
 
     // fixme: Hotfix for https://github.com/shipmonk-rnd/composer-dependency-analyser/issues/216
@@ -51,84 +44,30 @@ if ($root) {
 }
 
 // Configure paths
-//
-// In our case, tests located inside the same directory with class and
-// `.gitattributes` is used to exclude them from the release. So we need
-// to mark these excluded files as "dev".
 $files = Finder::create()
-    ->ignoreDotFiles(false)
+    ->in(dirname($path))
     ->ignoreVCSIgnored(true)
+    ->ignoreDotFiles(true)
     ->exclude('node_modules')
     ->exclude('vendor-bin')
     ->exclude('vendor')
     ->exclude('dev')
-    ->in(dirname($path))
-    ->name('.gitattributes')
+    ->path(Glob::toRegex('*Test.php'))
+    ->path(Glob::toRegex('*/**/*Test.php'))
+    ->path(Glob::toRegex('*Test~*.php'))
+    ->path(Glob::toRegex('*/**/*Test~*.php'))
+    ->path(Glob::toRegex('*Test/*.php'))
+    ->path(Glob::toRegex('*/**/*Test/*.php'))
+    ->path(Glob::toRegex('*Test/**/*.php'))
+    ->path(Glob::toRegex('*/**/*Test/**/*.php'))
+    ->path(Glob::toRegex('src/Package/*.php'))
+    ->path(Glob::toRegex('src/Package/**/*.php'))
+    ->path(Glob::toRegex('packages/*/src/Package/*.php'))
+    ->path(Glob::toRegex('packages/*/src/Package/**/*.php'))
     ->files();
-$parse = static function (string $line): string {
-    // Simplified parser
-    // https://git-scm.com/docs/gitattributes
-    $line   = mb_trim($line);
-    $marker = ' export-ignore';
-
-    if (str_starts_with($line, '#')) {
-        return '';
-    }
-
-    if (!str_ends_with($line, $marker)) {
-        return '';
-    }
-
-    // File?
-    $line = mb_trim(mb_substr($line, 0, - mb_strlen($marker)));
-    $line = match (pathinfo($line, PATHINFO_EXTENSION)) {
-        ''      => "{$line}/*.php",
-        'php'   => $line,
-        default => '',
-    };
-
-    if (!str_contains($line, '*')) {
-        $line = '';
-    }
-
-    // Convert
-    if ($line) {
-        $line = mb_ltrim($line, '/');
-        $line = Glob::toRegex($line);
-    }
-
-    // Return
-    return $line;
-};
 
 foreach ($files as $file) {
-    // Parse
-    $attributes = file($file->getPathname());
-    $attributes = array_filter(array_map($parse, array_merge($attributes, [
-        '/src/Testing       export-ignore',
-    ])));
-
-    if (!$attributes) {
-        continue;
-    }
-
-    // Add as dev
-    $dependencies = Finder::create()
-        ->ignoreVCSIgnored(true)
-        ->notName('composer-dependency-analyser.php')
-        ->notName('monorepo-builder.php')
-        ->exclude('node_modules')
-        ->exclude('vendor-bin')
-        ->exclude('vendor')
-        ->exclude('dev')
-        ->in($file->getPath())
-        ->path($attributes)
-        ->name('*.php')
-        ->files();
-
-    foreach ($dependencies as $dependency) {
-        $config->addPathToScan($dependency->getPathname(), true);
-    }
+    $config->addPathToScan($file->getPathname(), true);
 }
 
 // Return
