@@ -96,7 +96,6 @@
     "bamarni/composer-bin-plugin": "^1.8",
     "composer/class-map-generator": "^1.0",
     "fakerphp/faker": "^1.21.0",
-    "illuminate/cache": "^12.0.1",
     "illuminate/config": "^12.0.1",
     "laravel/scout": "^10.12.2",
     "larastan/larastan": "^3.1.0",
@@ -113,7 +112,6 @@
       "packages/testing/src/mixins.php"
     ],
     "psr-4": {
-      "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
       "LastDragon_ru\\LaraASP\\Core\\": "packages/core/src/",
       "LastDragon_ru\\LaraASP\\Dev\\": "packages/dev/src/",
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/",
@@ -122,6 +120,7 @@
       "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
       "LastDragon_ru\\GraphQLPrinter\\Testing\\": "packages/graphql-printer-testing/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
+      "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\": "packages/graphql-testing/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
       "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
@@ -146,7 +145,6 @@
       "packages/**/*Test/"
     ],
     "psr-4": {
-      "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/core/docs",
       "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/dev/docs",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
@@ -155,6 +153,7 @@
       "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
       "LastDragon_ru\\GraphQLPrinter\\Testing\\Docs\\": "packages/graphql-printer-testing/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/graphql/docs",
+      "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Docs\\": "packages/graphql-testing/docs",
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/migrator/docs",
       "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/serializer/docs",
       "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/spa/docs",

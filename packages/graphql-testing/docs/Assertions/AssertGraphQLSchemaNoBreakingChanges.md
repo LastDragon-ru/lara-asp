@@ -1,21 +1,21 @@
-# `assertGraphQLSchemaNoDangerousChanges`
+# `assertGraphQLSchemaNoBreakingChanges`
 
-Checks that no dangerous changes in the default internal schema (with all directives).
+Checks that no breaking changes in the default internal schema (with all directives).
 
-[include:example]: ./AssertGraphQLSchemaNoDangerousChangesTest.php
-[//]: # (start: preprocess/afffe5cc30a9637b)
+[include:example]: ./AssertGraphQLSchemaNoBreakingChangesTest.php
+[//]: # (start: preprocess/f6f137ef61ef41f2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ```php
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
+namespace LastDragon_ru\LaraASP\GraphQL\Testing\Docs\Assertions;
 
-use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
-use LastDragon_ru\LaraASP\GraphQL\Package\Directives\TestDirective;
-use LastDragon_ru\LaraASP\GraphQL\Package\Provider as TestProvider;
-use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
+use LastDragon_ru\LaraASP\Core\PackageProvider as CorePackageProvider;
+use LastDragon_ru\LaraASP\GraphQL\PackageProvider as GraphQLPackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestDirective;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -28,7 +28,7 @@ use function array_merge;
  * @internal
  */
 #[CoversNothing]
-final class AssertGraphQLSchemaNoDangerousChangesTest extends TestCase {
+final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
@@ -42,9 +42,9 @@ final class AssertGraphQLSchemaNoDangerousChangesTest extends TestCase {
     #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
-            PackageProvider::class,
-            CoreProvider::class,
             TestProvider::class,
+            CorePackageProvider::class,
+            GraphQLPackageProvider::class,
             LighthouseServiceProvider::class,
         ]);
     }
@@ -60,18 +60,19 @@ final class AssertGraphQLSchemaNoDangerousChangesTest extends TestCase {
         $this->useGraphQLSchema(
             <<<'GRAPHQL'
             type Query {
-                a(a: Int = 123): String @test
+                a: String @test
+                b: Int! @test
             }
             GRAPHQL,
         );
 
         // Test
-        $this->assertGraphQLSchemaNoDangerousChanges(
+        $this->assertGraphQLSchemaNoBreakingChanges(
             <<<'GRAPHQL'
             directive @test on FIELD_DEFINITION
 
             type Query {
-                a(a: Int = 123): String @test
+                a: String @test
             }
             GRAPHQL,
         );
@@ -79,4 +80,4 @@ final class AssertGraphQLSchemaNoDangerousChangesTest extends TestCase {
 }
 ```
 
-[//]: # (end: preprocess/afffe5cc30a9637b)
+[//]: # (end: preprocess/f6f137ef61ef41f2)

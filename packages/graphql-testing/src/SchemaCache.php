@@ -2,10 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
-use Illuminate\Cache\Repository as CacheContract;
+use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Filesystem\Filesystem;
-use LastDragon_ru\LaraASP\GraphQL\Package;
 use Nuwave\Lighthouse\Schema\AST\ASTCache;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Override;

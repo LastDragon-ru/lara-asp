@@ -72,6 +72,12 @@ This package provides highly powerful [`@searchBy`](packages/graphql/docs/Direct
 
 [Read more](<packages/graphql/README.md>).
 
+## [(Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝](<packages/graphql-testing/README.md>)
+
+Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](packages/graphql/README.md) package
+
+[Read more](<packages/graphql-testing/README.md>).
+
 ## [(Laravel) Intl Formatter](<packages/formatter/README.md>)
 
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining own.

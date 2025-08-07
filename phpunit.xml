@@ -40,6 +40,10 @@
             <directory suffix="Test.php">./packages/graphql/src</directory>
             <directory suffix="Test.php">./packages/graphql/docs</directory>
         </testsuite>
+        <testsuite name="graphql">
+            <directory suffix="Test.php">./packages/graphql-testing/src</directory>
+            <directory suffix="Test.php">./packages/graphql-testing/docs</directory>
+        </testsuite>
         <testsuite name="graphql-printer">
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/docs</directory>
@@ -75,6 +79,8 @@
             <directory suffix=".php">./packages/spa/docs</directory>
             <directory suffix=".php">./packages/graphql/src</directory>
             <directory suffix=".php">./packages/graphql/docs</directory>
+            <directory suffix=".php">./packages/graphql-testing/src</directory>
+            <directory suffix=".php">./packages/graphql-testing/docs</directory>
             <directory suffix=".php">./packages/graphql-printer/src</directory>
             <directory suffix=".php">./packages/graphql-printer/docs</directory>
             <directory suffix=".php">./packages/graphql-printer-testing/src</directory>
@@ -101,6 +107,8 @@
             <directory suffix="Test.php">./packages/spa/docs</directory>
             <directory suffix="Test.php">./packages/graphql/src</directory>
             <directory suffix="Test.php">./packages/graphql/docs</directory>
+            <directory suffix="Test.php">./packages/graphql-testing/src</directory>
+            <directory suffix="Test.php">./packages/graphql-testing/docs</directory>
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/docs</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>

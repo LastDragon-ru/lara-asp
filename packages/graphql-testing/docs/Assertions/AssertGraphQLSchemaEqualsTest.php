@@ -1,21 +1,12 @@
-# `assertGraphQLSchemaEquals`
-
-Compares default internal schema (with all directives).
-
-[include:example]: ./AssertGraphQLSchemaEqualsTest.php
-[//]: # (start: preprocess/1b519b1d12211a30)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-```php
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\GraphQL\Docs\Assertions;
+namespace LastDragon_ru\LaraASP\GraphQL\Testing\Docs\Assertions;
 
-use LastDragon_ru\LaraASP\Core\PackageProvider as CoreProvider;
-use LastDragon_ru\LaraASP\GraphQL\Package\Directives\TestDirective;
-use LastDragon_ru\LaraASP\GraphQL\Package\Provider as TestProvider;
-use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
+use LastDragon_ru\LaraASP\Core\PackageProvider as CorePackageProvider;
+use LastDragon_ru\LaraASP\GraphQL\PackageProvider as GraphQLPackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestDirective;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -42,9 +33,9 @@ final class AssertGraphQLSchemaEqualsTest extends TestCase {
     #[Override]
     protected function getPackageProviders(mixed $app): array {
         return array_merge(parent::getPackageProviders($app), [
-            PackageProvider::class,
-            CoreProvider::class,
             TestProvider::class,
+            CorePackageProvider::class,
+            GraphQLPackageProvider::class,
             LighthouseServiceProvider::class,
         ]);
     }
@@ -108,6 +99,3 @@ final class AssertGraphQLSchemaEqualsTest extends TestCase {
         );
     }
 }
-```
-
-[//]: # (end: preprocess/1b519b1d12211a30)

@@ -28,9 +28,8 @@ use LastDragon_ru\GraphQLPrinter\Testing\TestSettings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
-use Nuwave\Lighthouse\Testing\MocksResolvers;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Assert;
 use SplFileInfo;
 
 use function assert;
@@ -40,11 +39,8 @@ use function mb_trim;
 
 /**
  * @phpstan-import-type Change from BreakingChangesFinder
- *
- * @mixin TestCase
  */
 trait GraphQLAssertions {
-    use MocksResolvers;
     use PrinterGraphQLAssertions {
         assertGraphQLResult as private printerAssertGraphQLResult;
     }
@@ -123,7 +119,7 @@ trait GraphQLAssertions {
             $message = "{$message}\n\n{$exception->getMessage()}";
         }
 
-        self::assertTrue($valid, $message);
+        Assert::assertTrue($valid, $message);
     }
 
     /**
@@ -139,7 +135,7 @@ trait GraphQLAssertions {
         $changes   = $this->getGraphQLChanges($changes);
         $message   = ($message ?? 'The breaking changes found!')."\n\n{$changes}\n";
 
-        self::assertTrue($changes === '', $message);
+        Assert::assertTrue($changes === '', $message);
     }
 
     /**
@@ -155,7 +151,7 @@ trait GraphQLAssertions {
         $changes   = $this->getGraphQLChanges($changes);
         $message   = ($message ?? 'The dangerous changes found!')."\n\n{$changes}\n";
 
-        self::assertTrue($changes === '', $message);
+        Assert::assertTrue($changes === '', $message);
     }
 
     /**

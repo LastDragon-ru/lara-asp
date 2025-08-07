@@ -35,11 +35,10 @@
     "webonyx/graphql-php": "^15.4.0"
   },
   "require-dev": {
-    "illuminate/cache": "^12.0.1",
-    "illuminate/filesystem": "^12.0.1",
     "laravel/scout": "^10.12.2",
     "mockery/mockery": "^1.6.6",
     "phpunit/phpunit": "^11.1.0|^12.0.0",
+    "lastdragon-ru/lara-asp-graphql-testing": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "orchestra/testbench": "^10.0.0"
   },
