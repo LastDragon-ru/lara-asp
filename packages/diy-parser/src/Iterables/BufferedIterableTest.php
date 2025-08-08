@@ -3,7 +3,7 @@
 namespace LastDragon_ru\DiyParser\Iterables;
 
 use LastDragon_ru\DiyParser\Exceptions\OffsetOutOfBounds;
-use LastDragon_ru\DiyParser\Testing\Package\TestCase;
+use LastDragon_ru\DiyParser\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;

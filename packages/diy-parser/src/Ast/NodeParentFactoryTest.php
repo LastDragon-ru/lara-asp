@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\DiyParser\Ast;
 
-use LastDragon_ru\DiyParser\Testing\Package\TestCase;
+use LastDragon_ru\DiyParser\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

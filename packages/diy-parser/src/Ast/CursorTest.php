@@ -3,7 +3,7 @@
 namespace LastDragon_ru\DiyParser\Ast;
 
 use LastDragon_ru\DiyParser\Exceptions\OffsetReadonly;
-use LastDragon_ru\DiyParser\Testing\Package\TestCase;
+use LastDragon_ru\DiyParser\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Traversable;
