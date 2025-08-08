@@ -5,6 +5,7 @@
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
+  "abandoned": "lastdragon-ru/graphql-printer",
   "keywords": [
     "GraphQL",
     "GraphQL Printer",
