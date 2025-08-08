@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Parser\Tokenizer;
 
-use LastDragon_ru\LaraASP\Parser\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Parser\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;

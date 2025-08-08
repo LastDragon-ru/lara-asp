@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Parser\Iterables;
 
 use LastDragon_ru\LaraASP\Parser\Exceptions\OffsetOutOfBounds;
-use LastDragon_ru\LaraASP\Parser\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Parser\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;

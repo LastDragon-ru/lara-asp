@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Parser\Iterables;
 
 use IteratorIterator;
-use LastDragon_ru\LaraASP\Parser\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Parser\Package\TestCase;
 use LastDragon_ru\LaraASP\Parser\Tokenizer\Token;
 use PHPUnit\Framework\Attributes\CoversClass;
 

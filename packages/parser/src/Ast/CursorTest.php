@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Parser\Ast;
 
 use LastDragon_ru\LaraASP\Parser\Exceptions\OffsetReadonly;
-use LastDragon_ru\LaraASP\Parser\Testing\Package\TestCase;
+use LastDragon_ru\LaraASP\Parser\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Traversable;
