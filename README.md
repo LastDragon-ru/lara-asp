@@ -108,8 +108,6 @@ Various internal tools and helpers to develop the package itself.
 
 ## [GraphQL Printer](<packages/graphql-printer/README.md>)
 
-Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
-
 [Read more](<packages/graphql-printer/README.md>).
 
 [//]: # (end: preprocess/46988a763d0c2d97)
