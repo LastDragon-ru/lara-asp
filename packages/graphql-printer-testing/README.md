@@ -13,7 +13,7 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 |  PHP  | `^8.4` |  `HEAD`   |
 |  | `^8.3` |  `HEAD`   |
 |  PHPUnit  | `^12.0.0` |  `HEAD`   |
-|  | `^11.1.0` |  `HEAD`   |
+|  | `^11.2.0` |  `HEAD`   |
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 

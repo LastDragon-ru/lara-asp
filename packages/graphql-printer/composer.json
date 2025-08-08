@@ -29,7 +29,7 @@
   },
   "require-dev": {
     "composer/class-map-generator": "^1.0",
-    "phpunit/phpunit": "^11.1.0|^12.0.0",
+    "phpunit/phpunit": "^11.2.0|^12.0.0",
     "lastdragon-ru/graphql-printer-testing": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "mockery/mockery": "^1.6.6"
