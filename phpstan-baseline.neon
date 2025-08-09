@@ -109,10 +109,10 @@ parameters:
 			path: packages/graphql/src/Stream/Streams/Database.php
 
 		-
-			message: '#^Property LastDragon_ru\\LaraASP\\Parser\\Iterables\\BufferedIterable\<TValue\>\:\:\$iterator \(Iterator\<mixed, TValue\>\) does not accept \(iterable\<TValue\>&Iterator\)\|IteratorIterator\<mixed, mixed, Traversable\<TKey, TValue\>\>\.$#'
+			message: '#^Property LastDragon_ru\\DiyParser\\Iterables\\BufferedIterable\<TValue\>\:\:\$iterator \(Iterator\<mixed, TValue\>\) does not accept \(iterable\<TValue\>&Iterator\)\|IteratorIterator\<mixed, mixed, Traversable\<TKey, TValue\>\>\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: packages/parser/src/Iterables/BufferedIterable.php
+			path: packages/diy-parser/src/Iterables/BufferedIterable.php
 
 		-
 			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'
