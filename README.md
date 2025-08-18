@@ -112,6 +112,12 @@ Various internal tools and helpers to develop the package itself.
 
 [Read more](<packages/dev/README.md>).
 
+## [DIY Parser](<packages/diy-parser/README.md>)
+
+There are several tools to generate full-featured parsers even for PHP. They are overkill when you just need to parse something simple. In such cases, you might decide to create your own parser. There are a lot of articles/examples on the web, and actually it is not too difficult as you may think. This is yet another package to simplify writing fast and memory-effective parsers that can parse infinite strings.
+
+[Read more](<packages/diy-parser/README.md>).
+
 ## [GraphQL Printer](<packages/graphql-printer/README.md>)
 
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.

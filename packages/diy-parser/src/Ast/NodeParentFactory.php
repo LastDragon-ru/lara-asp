@@ -6,6 +6,8 @@ use function array_key_last;
 use function end;
 
 /**
+ * @see NodeMergeable
+ *
  * @template TParent of NodeParent<covariant TChild>
  * @template TChild of NodeChild
  */

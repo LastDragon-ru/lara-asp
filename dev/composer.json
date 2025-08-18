@@ -3,6 +3,7 @@
     "php": "^8.3|^8.4",
     "laravel/framework": "^12.0",
     "laravel/tinker": "^2.9",
+    "lastdragon-ru/diy-parser": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
@@ -13,7 +14,8 @@
     "psr-4": {
       "App\\": "app/",
       "Database\\Factories\\": "database/factories/",
-      "Database\\Seeders\\": "database/seeders/"
+      "Database\\Seeders\\": "database/seeders/",
+      "LastDragon_ru\\DiyParser\\Docs\\": "vendor/lastdragon-ru/diy-parser/docs/"
     }
   },
   "scripts": {

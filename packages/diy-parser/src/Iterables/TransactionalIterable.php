@@ -13,7 +13,6 @@ use function count;
 /**
  * Provides "transaction" support for the iterable.
  *
- *
  * @property-read int<0, max> $level
  * @property-read mixed       $name
  *
