@@ -2,6 +2,10 @@
 
 namespace LastDragon_ru\DiyParser\Ast;
 
+/**
+ * If two nodes have the same class and implement this interface,
+ * the {@see NodeParentFactory} will merge them together.
+ */
 interface NodeMergeable {
     /**
      * @param ($this) $previous

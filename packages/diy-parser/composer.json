@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/diy-parser",
   "homepage": "https://github.com/LastDragon-ru/lara-asp",
-  "description": "Package with useful helpers to create you own parser(s).",
+  "description": "Yet another package to simplify writing fast and memory-effective parsers that can parse infinite strings.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -31,7 +31,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "LastDragon_ru\\DiyParser\\Docs\\": "docs"
+      "LastDragon_ru\\DiyParser\\Docs\\": "docs/"
     },
     "exclude-from-classmap": [
       "docs/"
