@@ -398,7 +398,7 @@ This section is actual only if you are extending the package. Please review and 
 [code-links/a6029821bb9d8f2e]: ../graphql-testing/src/GraphQLAssertions.php
     "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions"
 
-[code-links/c84a35ff75f6a95e]: ../graphql-testing/src/GraphQLAssertions.php#L88-L100
+[code-links/c84a35ff75f6a95e]: ../graphql-testing/src/GraphQLAssertions.php#L86-L98
     "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions::assertGraphQLSchemaEquals()"
 
 [code-links/947cddaaef5e3f1b]: src/Utils/AstManipulator.php#L298-L339
