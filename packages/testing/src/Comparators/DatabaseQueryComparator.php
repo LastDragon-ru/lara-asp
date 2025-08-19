@@ -6,8 +6,9 @@ use Doctrine\SqlFormatter\NullHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
 use LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query;
 use Override;
+use SebastianBergmann\Comparator\Comparator;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use SebastianBergmann\Comparator\ObjectComparator;
+use stdClass;
 
 use function array_column;
 use function array_flip;
@@ -29,16 +30,13 @@ use const PREG_SET_ORDER;
  * * Renumber `laravel_reserved_*` (it will always start from `0` and will not contain gaps)
  * * Format the query by [`doctrine/sql-formatter`](https://github.com/doctrine/sql-formatter) package
  */
-class DatabaseQueryComparator extends ObjectComparator {
+class DatabaseQueryComparator extends Comparator {
     #[Override]
     public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Query
             && $actual instanceof Query;
     }
 
-    /**
-     * @param array<array-key, mixed> $processed
-     */
     #[Override]
     public function assertEquals(
         mixed $expected,
@@ -46,11 +44,15 @@ class DatabaseQueryComparator extends ObjectComparator {
         float $delta = 0.0,
         bool $canonicalize = false,
         bool $ignoreCase = false,
-        array &$processed = [],
     ): void {
+        // Comparator
+        $comparator = $this->factory()->getComparatorFor(new stdClass(), new stdClass());
+
         // If classes different we just call parent to fail
         if (!($actual instanceof Query) || !($expected instanceof Query) || $actual::class !== $expected::class) {
-            parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
+            $comparator->assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase);
+
+            return;
         }
 
         // Normalize queries and compare
@@ -58,21 +60,14 @@ class DatabaseQueryComparator extends ObjectComparator {
         $normalizedActual   = $this->normalize($actual);
 
         try {
-            parent::assertEquals(
-                $normalizedExpected,
-                $normalizedActual,
-                $delta,
-                $canonicalize,
-                $ignoreCase,
-                $processed,
-            );
+            $comparator->assertEquals($normalizedExpected, $normalizedActual, $delta, $canonicalize, $ignoreCase);
         } catch (ComparisonFailure $exception) {
             throw new ComparisonFailure(
-                expected        : $normalizedExpected,
-                actual          : $normalizedActual,
-                expectedAsString: $exception->getExpectedAsString(),
-                actualAsString  : $exception->getActualAsString(),
-                message         : 'Failed asserting that two database queries are equal.',
+                $expected,
+                $actual,
+                $exception->getExpectedAsString(),
+                $exception->getActualAsString(),
+                'Failed asserting that two database queries are equal.',
             );
         }
     }

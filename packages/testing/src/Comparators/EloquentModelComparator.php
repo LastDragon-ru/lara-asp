@@ -4,8 +4,9 @@ namespace LastDragon_ru\LaraASP\Testing\Comparators;
 
 use Illuminate\Database\Eloquent\Model;
 use Override;
+use SebastianBergmann\Comparator\Comparator;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use SebastianBergmann\Comparator\ObjectComparator;
+use stdClass;
 
 use function substr_replace;
 
@@ -20,16 +21,13 @@ use function substr_replace;
  *
  * @see https://github.com/laravel/ideas/issues/1914
  */
-class EloquentModelComparator extends ObjectComparator {
+class EloquentModelComparator extends Comparator {
     #[Override]
     public function accepts(mixed $expected, mixed $actual): bool {
         return $expected instanceof Model
             && $actual instanceof Model;
     }
 
-    /**
-     * @param array<array-key, mixed> $processed
-     */
     #[Override]
     public function assertEquals(
         mixed $expected,
@@ -37,11 +35,13 @@ class EloquentModelComparator extends ObjectComparator {
         float $delta = 0.0,
         bool $canonicalize = false,
         bool $ignoreCase = false,
-        array &$processed = [],
     ): void {
+        // Comparator
+        $comparator = $this->factory()->getComparatorFor(new stdClass(), new stdClass());
+
         // If classes different we just call parent to fail
         if (!($actual instanceof Model) || !($expected instanceof Model) || $actual::class !== $expected::class) {
-            parent::assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase, $processed);
+            $comparator->assertEquals($expected, $actual, $delta, $canonicalize, $ignoreCase);
 
             return;
         }
@@ -51,21 +51,14 @@ class EloquentModelComparator extends ObjectComparator {
         $normalizedActual   = $this->normalize($actual);
 
         try {
-            parent::assertEquals(
-                $normalizedExpected,
-                $normalizedActual,
-                $delta,
-                $canonicalize,
-                $ignoreCase,
-                $processed,
-            );
+            $comparator->assertEquals($normalizedExpected, $normalizedActual, $delta, $canonicalize, $ignoreCase);
         } catch (ComparisonFailure $e) {
             throw new ComparisonFailure(
-                expected        : $expected,
-                actual          : $actual,
-                expectedAsString: substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
-                actualAsString  : substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
-                message         : 'Failed asserting that two models are equal.',
+                $expected,
+                $actual,
+                substr_replace($e->getExpectedAsString(), $expected::class.' Model', 0, 5),
+                substr_replace($e->getActualAsString(), $actual::class.' Model', 0, 5),
+                'Failed asserting that two models are equal.',
             );
         }
     }

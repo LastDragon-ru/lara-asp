@@ -145,12 +145,6 @@ parameters:
 			path: packages/spa/src/Validation/Rules/DateTimeRule.php
 
 		-
-			message: '#^Parameter \#1 \$query of method LastDragon_ru\\LaraASP\\Testing\\Comparators\\DatabaseQueryComparator\:\:normalize\(\) expects LastDragon_ru\\LaraASP\\Testing\\Database\\QueryLog\\Query, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: packages/testing/src/Comparators/DatabaseQueryComparator.php
-
-		-
 			message: '#^Parameter \#1 \$json of static method LastDragon_ru\\LaraASP\\Testing\\Utils\\Args\:\:getJson\(\) expects array\<mixed\>\|bool\|float\|int\|JsonSerializable\|SplFileInfo\|stdClass\|string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
