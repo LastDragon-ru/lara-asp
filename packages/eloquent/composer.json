@@ -48,6 +48,9 @@
       "docs/"
     ]
   },
+  "conflict": {
+    "thecodingmachine/safe": "<3.0.0"
+  },
   "extra": {
     "laravel": {
       "providers": [

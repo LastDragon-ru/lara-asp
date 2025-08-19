@@ -160,6 +160,9 @@
       "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
     }
   },
+  "conflict": {
+    "thecodingmachine/safe": "<3.0.0"
+  },
   "extra": {
     "bamarni-bin": {
       "bin-links": false,

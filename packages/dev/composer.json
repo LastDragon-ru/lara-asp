@@ -39,6 +39,9 @@
       "LastDragon_ru\\LaraASP\\Dev\\": "src/"
     }
   },
+  "conflict": {
+    "thecodingmachine/safe": "<3.0.0"
+  },
   "extra": {
     "laravel": {
       "providers": [

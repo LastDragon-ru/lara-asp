@@ -47,6 +47,9 @@
       "docs/"
     ]
   },
+  "conflict": {
+    "thecodingmachine/safe": "<3.0.0"
+  },
   "config": {
     "sort-packages": true,
     "optimize-autoloader": true
