@@ -61,6 +61,12 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
+			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
+
+		-
 			message: '#^Method Nuwave\\Lighthouse\\Scout\\ScoutEnhancer@anonymous/packages/graphql/src/Stream/Directives/Directive\.php\:471\:\:enhanceEloquentBuilder\(\) return type with generic class Laravel\\Scout\\Builder does not specify its types\: TModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -103,10 +109,10 @@ parameters:
 			path: packages/graphql/src/Stream/Streams/Database.php
 
 		-
-			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'
+			message: '#^Property LastDragon_ru\\DiyParser\\Iterables\\BufferedIterable\<TValue\>\:\:\$iterator \(Iterator\<mixed, TValue\>\) does not accept \(iterable\<TValue\>&Iterator\)\|IteratorIterator\<mixed, mixed, Traversable\<TKey, TValue\>\>\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
+			path: packages/diy-parser/src/Iterables/BufferedIterable.php
 
 		-
 			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'
