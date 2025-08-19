@@ -6,6 +6,7 @@ use Override;
 use PHPStan\Rules\Rule as RuleContract;
 use PHPStan\Testing\RuleTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
 
 use function sprintf;
 
@@ -14,6 +15,7 @@ use function sprintf;
  * @extends RuleTestCase<Rule>
  */
 #[CoversClass(Rule::class)]
+#[RunClassInSeparateProcess]
 final class RuleTest extends RuleTestCase {
     #[Override]
     protected function getRule(): RuleContract {
@@ -26,7 +28,7 @@ final class RuleTest extends RuleTestCase {
         $this->analyse([__FILE__], [
             [
                 sprintf('Class `%s` must be `final`.', RuleTest_MustBeFinal::class),
-                50,
+                52,
             ],
         ]);
     }
