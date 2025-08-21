@@ -41,6 +41,7 @@ final class TokenUnescapeIterableTest extends TestCase {
                 new Token(null, 'b', 4),
                 new Token(null, '\\', 6),
                 new Token(TokenUnescapeIterableTest_Token::Slash, '/', 7),
+                new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 8),
                 new Token(null, 'c', 9),
             ],
             iterator_to_array($iterable, false),
@@ -71,6 +72,7 @@ final class TokenUnescapeIterableTest extends TestCase {
             [
                 new Token(null, 'a', 0),
                 new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 1),
+                new Token(TokenUnescapeIterableTest_Token::Backslash, '\\', 2),
                 new Token(TokenUnescapeIterableTest_Token::Asterisk, '*', 3),
                 new Token(null, '/', 5),
             ],

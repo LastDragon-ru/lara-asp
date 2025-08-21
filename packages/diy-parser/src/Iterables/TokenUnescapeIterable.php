@@ -39,6 +39,7 @@ readonly class TokenUnescapeIterable implements IteratorAggregate {
                     /** @phpstan-ignore generator.valueType (`null` is fine) */
                     yield new Token(null, $token->value, $token->offset);
                 } else {
+                    yield $escaped;
                     yield $token;
                 }
 

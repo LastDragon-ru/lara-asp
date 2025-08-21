@@ -809,6 +809,14 @@ The `iterator_to_array($tokens)` is:
     +offset: 4
   },
   LastDragon_ru\DiyParser\Tokenizer\Token {
+    +name: LastDragon_ru\DiyParser\Docs\Examples\Name {
+      +name: "Backslash"
+      +value: "\"
+    }
+    +value: "\"
+    +offset: 5
+  },
+  LastDragon_ru\DiyParser\Tokenizer\Token {
     +name: null
     +value: "c"
     +offset: 6
