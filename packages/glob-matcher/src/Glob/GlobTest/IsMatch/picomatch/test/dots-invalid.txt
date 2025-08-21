@@ -1,0 +1,1583 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/dots-invalid.js
+
+# describe('invalid (exclusive) dots', () => {
+## describe('double dots', () => {
+### describe('no options', () => {
+#### describe('should not match leading double-dots', () => {
+##### it('with single star', () => {
+  [false, "../abc", "*/*"]
+  [false, "../abc", "*/abc"]
+  [false, "../abc", "*/abc/*"]
+
+##### it('with dot + single star', () => {
+  [false, "../abc", ".*/*"]
+  [false, "../abc", ".*/abc"]
+
+  [false, "../abc", "*./*"]
+  [false, "../abc", "*./abc"]
+
+##### it('with globstar', () => {
+  [false, "../abc", "**"]
+  [false, "../abc", "**/**"]
+  [false, "../abc", "**/**/**"]
+
+  [false, "../abc", "**/abc"]
+  [false, "../abc", "**/abc/**"]
+
+  [false, "../abc", "abc/**"]
+  [false, "../abc", "abc/**/**"]
+  [false, "../abc", "abc/**/**/**"]
+
+  [false, "../abc", "**/abc"]
+  [false, "../abc", "**/abc/**"]
+  [false, "../abc", "**/abc/**/**"]
+
+  [false, "../abc", "**/**/abc/**"]
+  [false, "../abc", "**/**/abc/**/**"]
+
+##### it('with dot + globstar', () => {
+  [false, "../abc", ".**"]
+  [false, "../abc", ".**/**"]
+  [false, "../abc", ".**/abc"]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "../abc", "*.*/**"]
+  [false, "../abc", "*.*/abc"]
+
+##### it('with globstar + dot', () => {
+  [false, "../abc", "**./**"]
+  [false, "../abc", "**./abc"]
+
+#### describe('should not match nested double-dots', () => {
+##### it('with star', () => {
+  [false, "/../abc", "*/*"]
+  [false, "/../abc", "/*/*"]
+  [false, "/../abc", "*/*/*"]
+
+  [false, "abc/../abc", "*/*/*"]
+  [false, "abc/../abc/abc", "*/*/*/*"]
+
+##### it('with dot + star', () => {
+  [false, "/../abc", "*/.*/*"]
+  [false, "/../abc", "/.*/*"]
+
+  [false, "/../abc", "*/*.*/*"]
+  [false, "/../abc", "/*.*/*"]
+
+  [false, "/../abc", "*/*./*"]
+  [false, "/../abc", "/*./*"]
+
+  [false, "abc/../abc", "*/.*/*"]
+  [false, "abc/../abc", "*/*.*/*"]
+  [false, "abc/../abc", "*/*./*"]
+
+##### it('with globstar', () => {
+  [false, "/../abc", "**"]
+  [false, "/../abc", "**/**"]
+  [false, "/../abc", "/**/**"]
+  [false, "/../abc", "**/**/**"]
+
+  [false, "abc/../abc", "**/**/**"]
+  [false, "abc/../abc/abc", "**/**/**/**"]
+
+##### it('with dot + globstar', () => {
+  [false, "/../abc", "**/.**/**"]
+  [false, "/../abc", "/.**/**"]
+
+  [false, "abc/../abc", "**/.**/**"]
+  [false, "abc/../abc", "/.**/**"]
+
+##### it('with globstar + dot', () => {
+  [false, "/../abc", "**/**./**"]
+  [false, "/../abc", "/**./**"]
+
+  [false, "abc/../abc", "**/**./**"]
+  [false, "abc/../abc", "/**./**"]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/../abc", "**/**.**/**"]
+  [false, "/../abc", "**/*.*/**"]
+
+  [false, "/../abc", "/**.**/**"]
+  [false, "/../abc", "/*.*/**"]
+
+  [false, "abc/../abc", "**/**.**/**"]
+  [false, "abc/../abc", "**/*.*/**"]
+
+  [false, "abc/../abc", "/**.**/**"]
+  [false, "abc/../abc", "/*.*/**"]
+
+#### describe('should not match trailing double-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/..", "*/*"]
+  [false, "abc/..", "*/*/"]
+  [false, "abc/..", "*/*/*"]
+
+  [false, "abc/../", "*/*"]
+  [false, "abc/../", "*/*/"]
+  [false, "abc/../", "*/*/*"]
+
+  [false, "abc/../abc/../", "*/*/*/*"]
+  [false, "abc/../abc/../", "*/*/*/*/"]
+  [false, "abc/../abc/abc/../", "*/*/*/*/*"]
+
+##### it('with dot + star', () => {
+  [false, "abc/..", "*/.*"]
+  [false, "abc/..", "*/.*/"]
+  [false, "abc/..", "*/.*/*"]
+
+  [false, "abc/../", "*/.*"]
+  [false, "abc/../", "*/.*/"]
+  [false, "abc/../", "*/.*/*"]
+
+  [false, "abc/../abc/../", "*/.*/*/.*"]
+  [false, "abc/../abc/../", "*/.*/*/.*/"]
+  [false, "abc/../abc/abc/../", "*/.*/*/.*/*"]
+
+##### it('with star + dot', () => {
+  [false, "abc/..", "*/*."]
+  [false, "abc/..", "*/*./"]
+  [false, "abc/..", "*/*./*"]
+
+  [false, "abc/../", "*/*."]
+  [false, "abc/../", "*/*./"]
+  [false, "abc/../", "*/*./*"]
+
+  [false, "abc/../abc/../", "*/*./*/*."]
+  [false, "abc/../abc/../", "*/*./*/*./"]
+  [false, "abc/../abc/abc/../", "*/*./*/*./*"]
+
+##### it('with globstar', () => {
+  [false, "abc/..", "**/**"]
+  [false, "abc/..", "**/**/"]
+  [false, "abc/..", "**/**/**"]
+
+  [false, "abc/../", "**/**"]
+  [false, "abc/../", "**/**/"]
+  [false, "abc/../", "**/**/**"]
+
+  [false, "abc/../abc/../", "**/**/**/**"]
+  [false, "abc/../abc/../", "**/**/**/**/"]
+  [false, "abc/../abc/abc/../", "**/**/**/**/**"]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/..", "**/.**"]
+  [false, "abc/..", "**/.**/"]
+  [false, "abc/..", "**/.**/**"]
+
+  [false, "abc/../", "**/.**"]
+  [false, "abc/../", "**/.**/"]
+  [false, "abc/../", "**/.**/**"]
+
+  [false, "abc/../abc/../", "**/.**/**/.**"]
+  [false, "abc/../abc/../", "**/.**/**/.**/"]
+  [false, "abc/../abc/abc/../", "**/.**/**/.**/**"]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/..", "**/**.**"]
+  [false, "abc/..", "**/**.**/"]
+  [false, "abc/..", "**/**.**/**"]
+
+  [false, "abc/../", "**/**.**"]
+  [false, "abc/../", "**/**.**/"]
+  [false, "abc/../", "**/**.**/**"]
+
+  [false, "abc/../abc/../", "**/**.**/**/**.**"]
+  [false, "abc/../abc/../", "**/**.**/**/**.**/"]
+  [false, "abc/../abc/abc/../", "**/**.**/**/.**/**"]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/..", "**/**."]
+  [false, "abc/..", "**/**./"]
+  [false, "abc/..", "**/**./**"]
+
+  [false, "abc/../", "**/**."]
+  [false, "abc/../", "**/**./"]
+  [false, "abc/../", "**/**./**"]
+
+  [false, "abc/../abc/../", "**/**./**/**."]
+  [false, "abc/../abc/../", "**/**./**/**./"]
+  [false, "abc/../abc/abc/../", "**/**./**/**./**"]
+
+### describe('options = { dot: true }', () => {
+#### describe('should not match leading double-dots', () => {
+##### it('with single star', () => {
+  [false, "../abc", "*/*", { "hidden": true }]
+  [false, "../abc", "*/abc", { "hidden": true }]
+  [false, "../abc", "*/abc/*", { "hidden": true }]
+
+##### it('with dot + single star', () => {
+  [false, "../abc", ".*/*", { "hidden": true }]
+  [false, "../abc", ".*/abc", { "hidden": true }]
+
+  [false, "../abc", "*./*", { "hidden": true }]
+  [false, "../abc", "*./abc", { "hidden": true }]
+
+##### it('with globstar', () => {
+  [false, "../abc", "**", { "hidden": true }]
+  [false, "../abc", "**/**", { "hidden": true }]
+  [false, "../abc", "**/**/**", { "hidden": true }]
+
+  [false, "../abc", "**/abc", { "hidden": true }]
+  [false, "../abc", "**/abc/**", { "hidden": true }]
+
+  [false, "../abc", "abc/**", { "hidden": true }]
+  [false, "../abc", "abc/**/**", { "hidden": true }]
+  [false, "../abc", "abc/**/**/**", { "hidden": true }]
+
+  [false, "../abc", "**/abc", { "hidden": true }]
+  [false, "../abc", "**/abc/**", { "hidden": true }]
+  [false, "../abc", "**/abc/**/**", { "hidden": true }]
+
+  [false, "../abc", "**/**/abc/**", { "hidden": true }]
+  [false, "../abc", "**/**/abc/**/**", { "hidden": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "../abc", ".**", { "hidden": true }]
+  [false, "../abc", ".**/**", { "hidden": true }]
+  [false, "../abc", ".**/abc", { "hidden": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "../abc", "*.*/**", { "hidden": true }]
+  [false, "../abc", "*.*/abc", { "hidden": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "../abc", "**./**", { "hidden": true }]
+  [false, "../abc", "**./abc", { "hidden": true }]
+
+#### describe('should not match nested double-dots', () => {
+##### it('with star', () => {
+  [false, "/../abc", "*/*", { "hidden": true }]
+  [false, "/../abc", "/*/*", { "hidden": true }]
+  [false, "/../abc", "*/*/*", { "hidden": true }]
+
+  [false, "abc/../abc", "*/*/*", { "hidden": true }]
+  [false, "abc/../abc/abc", "*/*/*/*", { "hidden": true }]
+
+##### it('with dot + star', () => {
+  [false, "/../abc", "*/.*/*", { "hidden": true }]
+  [false, "/../abc", "/.*/*", { "hidden": true }]
+
+  [false, "/../abc", "*/*.*/*", { "hidden": true }]
+  [false, "/../abc", "/*.*/*", { "hidden": true }]
+
+  [false, "/../abc", "*/*./*", { "hidden": true }]
+  [false, "/../abc", "/*./*", { "hidden": true }]
+
+  [false, "abc/../abc", "*/.*/*", { "hidden": true }]
+  [false, "abc/../abc", "*/*.*/*", { "hidden": true }]
+  [false, "abc/../abc", "*/*./*", { "hidden": true }]
+
+##### it('with globstar', () => {
+  [false, "/../abc", "**", { "hidden": true }]
+  [false, "/../abc", "**/**", { "hidden": true }]
+  [false, "/../abc", "/**/**", { "hidden": true }]
+  [false, "/../abc", "**/**/**", { "hidden": true }]
+
+  [false, "abc/../abc", "**/**/**", { "hidden": true }]
+  [false, "abc/../abc/abc", "**/**/**/**", { "hidden": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "/../abc", "**/.**/**", { "hidden": true }]
+  [false, "/../abc", "/.**/**", { "hidden": true }]
+
+  [false, "abc/../abc", "**/.**/**", { "hidden": true }]
+  [false, "abc/../abc", "/.**/**", { "hidden": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "/../abc", "**/**./**", { "hidden": true }]
+  [false, "/../abc", "/**./**", { "hidden": true }]
+
+  [false, "abc/../abc", "**/**./**", { "hidden": true }]
+  [false, "abc/../abc", "/**./**", { "hidden": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/../abc", "**/**.**/**", { "hidden": true }]
+  [false, "/../abc", "**/*.*/**", { "hidden": true }]
+
+  [false, "/../abc", "/**.**/**", { "hidden": true }]
+  [false, "/../abc", "/*.*/**", { "hidden": true }]
+
+  [false, "abc/../abc", "**/**.**/**", { "hidden": true }]
+  [false, "abc/../abc", "**/*.*/**", { "hidden": true }]
+
+  [false, "abc/../abc", "/**.**/**", { "hidden": true }]
+  [false, "abc/../abc", "/*.*/**", { "hidden": true }]
+
+#### describe('should not match trailing double-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/..", "*/*", { "hidden": true }]
+  [false, "abc/..", "*/*/", { "hidden": true }]
+  [false, "abc/..", "*/*/*", { "hidden": true }]
+
+  [false, "abc/../", "*/*", { "hidden": true }]
+  [false, "abc/../", "*/*/", { "hidden": true }]
+  [false, "abc/../", "*/*/*", { "hidden": true }]
+
+  [false, "abc/../abc/../", "*/*/*/*", { "hidden": true }]
+  [false, "abc/../abc/../", "*/*/*/*/", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "*/*/*/*/*", { "hidden": true }]
+
+##### it('with dot + star', () => {
+  [false, "abc/..", "*/.*", { "hidden": true }]
+  [false, "abc/..", "*/.*/", { "hidden": true }]
+  [false, "abc/..", "*/.*/*", { "hidden": true }]
+
+  [false, "abc/../", "*/.*", { "hidden": true }]
+  [false, "abc/../", "*/.*/", { "hidden": true }]
+  [false, "abc/../", "*/.*/*", { "hidden": true }]
+
+  [false, "abc/../abc/../", "*/.*/*/.*", { "hidden": true }]
+  [false, "abc/../abc/../", "*/.*/*/.*/", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "*/.*/*/.*/*", { "hidden": true }]
+
+##### it('with star + dot', () => {
+  [false, "abc/..", "*/*.", { "hidden": true }]
+  [false, "abc/..", "*/*./", { "hidden": true }]
+  [false, "abc/..", "*/*./*", { "hidden": true }]
+
+  [false, "abc/../", "*/*.", { "hidden": true }]
+  [false, "abc/../", "*/*./", { "hidden": true }]
+  [false, "abc/../", "*/*./*", { "hidden": true }]
+
+  [false, "abc/../abc/../", "*/*./*/*.", { "hidden": true }]
+  [false, "abc/../abc/../", "*/*./*/*./", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "*/*./*/*./*", { "hidden": true }]
+
+##### it('with globstar', () => {
+  [false, "abc/..", "**/**", { "hidden": true }]
+  [false, "abc/..", "**/**/", { "hidden": true }]
+  [false, "abc/..", "**/**/**", { "hidden": true }]
+
+  [false, "abc/../", "**/**", { "hidden": true }]
+  [false, "abc/../", "**/**/", { "hidden": true }]
+  [false, "abc/../", "**/**/**", { "hidden": true }]
+
+  [false, "abc/../abc/../", "**/**/**/**", { "hidden": true }]
+  [false, "abc/../abc/../", "**/**/**/**/", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "**/**/**/**/**", { "hidden": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/..", "**/.**", { "hidden": true }]
+  [false, "abc/..", "**/.**/", { "hidden": true }]
+  [false, "abc/..", "**/.**/**", { "hidden": true }]
+
+  [false, "abc/../", "**/.**", { "hidden": true }]
+  [false, "abc/../", "**/.**/", { "hidden": true }]
+  [false, "abc/../", "**/.**/**", { "hidden": true }]
+
+  [false, "abc/../abc/../", "**/.**/**/.**", { "hidden": true }]
+  [false, "abc/../abc/../", "**/.**/**/.**/", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "**/.**/**/.**/**", { "hidden": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/..", "**/**.**", { "hidden": true }]
+  [false, "abc/..", "**/**.**/", { "hidden": true }]
+  [false, "abc/..", "**/**.**/**", { "hidden": true }]
+
+  [false, "abc/../", "**/**.**", { "hidden": true }]
+  [false, "abc/../", "**/**.**/", { "hidden": true }]
+  [false, "abc/../", "**/**.**/**", { "hidden": true }]
+
+  [false, "abc/../abc/../", "**/**.**/**/**.**", { "hidden": true }]
+  [false, "abc/../abc/../", "**/**.**/**/**.**/", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "**/**.**/**/.**/**", { "hidden": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/..", "**/**.", { "hidden": true }]
+  [false, "abc/..", "**/**./", { "hidden": true }]
+  [false, "abc/..", "**/**./**", { "hidden": true }]
+
+  [false, "abc/../", "**/**.", { "hidden": true }]
+  [false, "abc/../", "**/**./", { "hidden": true }]
+  [false, "abc/../", "**/**./**", { "hidden": true }]
+
+  [false, "abc/../abc/../", "**/**./**/**.", { "hidden": true }]
+  [false, "abc/../abc/../", "**/**./**/**./", { "hidden": true }]
+  [false, "abc/../abc/abc/../", "**/**./**/**./**", { "hidden": true }]
+
+### describe('options = { strictSlashes: true }', () => {
+#### describe('should not match leading double-dots', () => {
+##### it('with single star', () => {
+  [false, "../abc", "*/*", null, { "strictSlashes": true }]
+  [false, "../abc", "*/abc", null, { "strictSlashes": true }]
+  [false, "../abc", "*/abc/*", null, { "strictSlashes": true }]
+
+##### it('with dot + single star', () => {
+  [false, "../abc", ".*/*", null, { "strictSlashes": true }]
+  [false, "../abc", ".*/abc", null, { "strictSlashes": true }]
+
+  [false, "../abc", "*./*", null, { "strictSlashes": true }]
+  [false, "../abc", "*./abc", null, { "strictSlashes": true }]
+
+##### it('with globstar', () => {
+  [false, "../abc", "**", null, { "strictSlashes": true }]
+  [false, "../abc", "**/**", null, { "strictSlashes": true }]
+  [false, "../abc", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "../abc", "**/abc", null, { "strictSlashes": true }]
+  [false, "../abc", "**/abc/**", null, { "strictSlashes": true }]
+
+  [false, "../abc", "abc/**", null, { "strictSlashes": true }]
+  [false, "../abc", "abc/**/**", null, { "strictSlashes": true }]
+  [false, "../abc", "abc/**/**/**", null, { "strictSlashes": true }]
+
+  [false, "../abc", "**/abc", null, { "strictSlashes": true }]
+  [false, "../abc", "**/abc/**", null, { "strictSlashes": true }]
+  [false, "../abc", "**/abc/**/**", null, { "strictSlashes": true }]
+
+  [false, "../abc", "**/**/abc/**", null, { "strictSlashes": true }]
+  [false, "../abc", "**/**/abc/**/**", null, { "strictSlashes": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "../abc", ".**", null, { "strictSlashes": true }]
+  [false, "../abc", ".**/**", null, { "strictSlashes": true }]
+  [false, "../abc", ".**/abc", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "../abc", "*.*/**", null, { "strictSlashes": true }]
+  [false, "../abc", "*.*/abc", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "../abc", "**./**", null, { "strictSlashes": true }]
+  [false, "../abc", "**./abc", null, { "strictSlashes": true }]
+
+#### describe('should not match nested double-dots', () => {
+##### it('with star', () => {
+  [false, "/../abc", "*/*", null, { "strictSlashes": true }]
+  [false, "/../abc", "/*/*", null, { "strictSlashes": true }]
+  [false, "/../abc", "*/*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "*/*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc", "*/*/*/*", null, { "strictSlashes": true }]
+
+##### it('with dot + star', () => {
+  [false, "/../abc", "*/.*/*", null, { "strictSlashes": true }]
+  [false, "/../abc", "/.*/*", null, { "strictSlashes": true }]
+
+  [false, "/../abc", "*/*.*/*", null, { "strictSlashes": true }]
+  [false, "/../abc", "/*.*/*", null, { "strictSlashes": true }]
+
+  [false, "/../abc", "*/*./*", null, { "strictSlashes": true }]
+  [false, "/../abc", "/*./*", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "*/.*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "*/*.*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "*/*./*", null, { "strictSlashes": true }]
+
+##### it('with globstar', () => {
+  [false, "/../abc", "**", null, { "strictSlashes": true }]
+  [false, "/../abc", "**/**", null, { "strictSlashes": true }]
+  [false, "/../abc", "/**/**", null, { "strictSlashes": true }]
+  [false, "/../abc", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "**/**/**", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc", "**/**/**/**", null, { "strictSlashes": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "/../abc", "**/.**/**", null, { "strictSlashes": true }]
+  [false, "/../abc", "/.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "**/.**/**", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "/.**/**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "/../abc", "**/**./**", null, { "strictSlashes": true }]
+  [false, "/../abc", "/**./**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "**/**./**", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "/**./**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/../abc", "**/**.**/**", null, { "strictSlashes": true }]
+  [false, "/../abc", "**/*.*/**", null, { "strictSlashes": true }]
+
+  [false, "/../abc", "/**.**/**", null, { "strictSlashes": true }]
+  [false, "/../abc", "/*.*/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "**/**.**/**", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "**/*.*/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc", "/**.**/**", null, { "strictSlashes": true }]
+  [false, "abc/../abc", "/*.*/**", null, { "strictSlashes": true }]
+
+#### describe('should not match trailing double-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/..", "*/*", null, { "strictSlashes": true }]
+  [false, "abc/..", "*/*/", null, { "strictSlashes": true }]
+  [false, "abc/..", "*/*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "*/*", null, { "strictSlashes": true }]
+  [false, "abc/../", "*/*/", null, { "strictSlashes": true }]
+  [false, "abc/../", "*/*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "*/*/*/*", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "*/*/*/*/", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "*/*/*/*/*", null, { "strictSlashes": true }]
+
+##### it('with dot + star', () => {
+  [false, "abc/..", "*/.*", null, { "strictSlashes": true }]
+  [false, "abc/..", "*/.*/", null, { "strictSlashes": true }]
+  [false, "abc/..", "*/.*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "*/.*", null, { "strictSlashes": true }]
+  [false, "abc/../", "*/.*/", null, { "strictSlashes": true }]
+  [false, "abc/../", "*/.*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "*/.*/*/.*", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "*/.*/*/.*/", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "*/.*/*/.*/*", null, { "strictSlashes": true }]
+
+##### it('with star + dot', () => {
+  [false, "abc/..", "*/*.", null, { "strictSlashes": true }]
+  [false, "abc/..", "*/*./", null, { "strictSlashes": true }]
+  [false, "abc/..", "*/*./*", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "*/*.", null, { "strictSlashes": true }]
+  [false, "abc/../", "*/*./", null, { "strictSlashes": true }]
+  [false, "abc/../", "*/*./*", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "*/*./*/*.", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "*/*./*/*./", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "*/*./*/*./*", null, { "strictSlashes": true }]
+
+##### it('with globstar', () => {
+  [false, "abc/..", "**/**", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/**/", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "**/**", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/**/", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "**/**/**/**", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "**/**/**/**/", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "**/**/**/**/**", null, { "strictSlashes": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/..", "**/.**", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/.**/", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "**/.**", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/.**/", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "**/.**/**/.**", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "**/.**/**/.**/", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "**/.**/**/.**/**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/..", "**/**.**", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/**.**/", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/**.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "**/**.**", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/**.**/", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/**.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "**/**.**/**/**.**", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "**/**.**/**/**.**/", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "**/**.**/**/.**/**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/..", "**/**.", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/**./", null, { "strictSlashes": true }]
+  [false, "abc/..", "**/**./**", null, { "strictSlashes": true }]
+
+  [false, "abc/../", "**/**.", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/**./", null, { "strictSlashes": true }]
+  [false, "abc/../", "**/**./**", null, { "strictSlashes": true }]
+
+  [false, "abc/../abc/../", "**/**./**/**.", null, { "strictSlashes": true }]
+  [false, "abc/../abc/../", "**/**./**/**./", null, { "strictSlashes": true }]
+  [false, "abc/../abc/abc/../", "**/**./**/**./**", null, { "strictSlashes": true }]
+
+### describe('options = { dot: true, strictSlashes: true }', () => {
+#### describe('should not match leading double-dots', () => {
+##### it('with single star', () => {
+  [false, "../abc", "*/*", { "hidden": false }]
+  [false, "../abc", "*/abc", { "hidden": false }]
+  [false, "../abc", "*/abc/*", { "hidden": false }]
+
+##### it('with dot + single star', () => {
+  [false, "../abc", ".*/*", { "hidden": false }]
+  [false, "../abc", ".*/abc", { "hidden": false }]
+
+  [false, "../abc", "*./*", { "hidden": false }]
+  [false, "../abc", "*./abc", { "hidden": false }]
+
+##### it('with globstar', () => {
+  [false, "../abc", "**", { "hidden": false }]
+  [false, "../abc", "**/**", { "hidden": false }]
+  [false, "../abc", "**/**/**", { "hidden": false }]
+
+  [false, "../abc", "**/abc", { "hidden": false }]
+  [false, "../abc", "**/abc/**", { "hidden": false }]
+
+  [false, "../abc", "abc/**", { "hidden": false }]
+  [false, "../abc", "abc/**/**", { "hidden": false }]
+  [false, "../abc", "abc/**/**/**", { "hidden": false }]
+
+  [false, "../abc", "**/abc", { "hidden": false }]
+  [false, "../abc", "**/abc/**", { "hidden": false }]
+  [false, "../abc", "**/abc/**/**", { "hidden": false }]
+
+  [false, "../abc", "**/**/abc/**", { "hidden": false }]
+  [false, "../abc", "**/**/abc/**/**", { "hidden": false }]
+
+##### it('with dot + globstar', () => {
+  [false, "../abc", ".**", { "hidden": false }]
+  [false, "../abc", ".**/**", { "hidden": false }]
+  [false, "../abc", ".**/abc", { "hidden": false }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "../abc", "*.*/**", { "hidden": false }]
+  [false, "../abc", "*.*/abc", { "hidden": false }]
+
+##### it('with globstar + dot', () => {
+  [false, "../abc", "**./**", { "hidden": false }]
+  [false, "../abc", "**./abc", { "hidden": false }]
+
+#### describe('should not match nested double-dots', () => {
+##### it('with star', () => {
+  [false, "/../abc", "*/*", { "hidden": false }]
+  [false, "/../abc", "/*/*", { "hidden": false }]
+  [false, "/../abc", "*/*/*", { "hidden": false }]
+
+  [false, "abc/../abc", "*/*/*", { "hidden": false }]
+  [false, "abc/../abc/abc", "*/*/*/*", { "hidden": false }]
+
+##### it('with dot + star', () => {
+  [false, "/../abc", "*/.*/*", { "hidden": false }]
+  [false, "/../abc", "/.*/*", { "hidden": false }]
+
+  [false, "/../abc", "*/*.*/*", { "hidden": false }]
+  [false, "/../abc", "/*.*/*", { "hidden": false }]
+
+  [false, "/../abc", "*/*./*", { "hidden": false }]
+  [false, "/../abc", "/*./*", { "hidden": false }]
+
+  [false, "abc/../abc", "*/.*/*", { "hidden": false }]
+  [false, "abc/../abc", "*/*.*/*", { "hidden": false }]
+  [false, "abc/../abc", "*/*./*", { "hidden": false }]
+
+##### it('with globstar', () => {
+  [false, "/../abc", "**", { "hidden": false }]
+  [false, "/../abc", "**/**", { "hidden": false }]
+  [false, "/../abc", "/**/**", { "hidden": false }]
+  [false, "/../abc", "**/**/**", { "hidden": false }]
+
+  [false, "abc/../abc", "**/**/**", { "hidden": false }]
+  [false, "abc/../abc/abc", "**/**/**/**", { "hidden": false }]
+
+##### it('with dot + globstar', () => {
+  [false, "/../abc", "**/.**/**", { "hidden": false }]
+  [false, "/../abc", "/.**/**", { "hidden": false }]
+
+  [false, "abc/../abc", "**/.**/**", { "hidden": false }]
+  [false, "abc/../abc", "/.**/**", { "hidden": false }]
+
+##### it('with globstar + dot', () => {
+  [false, "/../abc", "**/**./**", { "hidden": false }]
+  [false, "/../abc", "/**./**", { "hidden": false }]
+
+  [false, "abc/../abc", "**/**./**", { "hidden": false }]
+  [false, "abc/../abc", "/**./**", { "hidden": false }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/../abc", "**/**.**/**", { "hidden": false }]
+  [false, "/../abc", "**/*.*/**", { "hidden": false }]
+
+  [false, "/../abc", "/**.**/**", { "hidden": false }]
+  [false, "/../abc", "/*.*/**", { "hidden": false }]
+
+  [false, "abc/../abc", "**/**.**/**", { "hidden": false }]
+  [false, "abc/../abc", "**/*.*/**", { "hidden": false }]
+
+  [false, "abc/../abc", "/**.**/**", { "hidden": false }]
+  [false, "abc/../abc", "/*.*/**", { "hidden": false }]
+
+#### describe('should not match trailing double-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/..", "*/*", { "hidden": false }]
+  [false, "abc/..", "*/*/", { "hidden": false }]
+  [false, "abc/..", "*/*/*", { "hidden": false }]
+
+  [false, "abc/../", "*/*", { "hidden": false }]
+  [false, "abc/../", "*/*/", { "hidden": false }]
+  [false, "abc/../", "*/*/*", { "hidden": false }]
+
+  [false, "abc/../abc/../", "*/*/*/*", { "hidden": false }]
+  [false, "abc/../abc/../", "*/*/*/*/", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "*/*/*/*/*", { "hidden": false }]
+
+##### it('with dot + star', () => {
+  [false, "abc/..", "*/.*", { "hidden": false }]
+  [false, "abc/..", "*/.*/", { "hidden": false }]
+  [false, "abc/..", "*/.*/*", { "hidden": false }]
+
+  [false, "abc/../", "*/.*", { "hidden": false }]
+  [false, "abc/../", "*/.*/", { "hidden": false }]
+  [false, "abc/../", "*/.*/*", { "hidden": false }]
+
+  [false, "abc/../abc/../", "*/.*/*/.*", { "hidden": false }]
+  [false, "abc/../abc/../", "*/.*/*/.*/", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "*/.*/*/.*/*", { "hidden": false }]
+
+##### it('with star + dot', () => {
+  [false, "abc/..", "*/*.", { "hidden": false }]
+  [false, "abc/..", "*/*./", { "hidden": false }]
+  [false, "abc/..", "*/*./*", { "hidden": false }]
+
+  [false, "abc/../", "*/*.", { "hidden": false }]
+  [false, "abc/../", "*/*./", { "hidden": false }]
+  [false, "abc/../", "*/*./*", { "hidden": false }]
+
+  [false, "abc/../abc/../", "*/*./*/*.", { "hidden": false }]
+  [false, "abc/../abc/../", "*/*./*/*./", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "*/*./*/*./*", { "hidden": false }]
+
+##### it('with globstar', () => {
+  [false, "abc/..", "**/**", { "hidden": false }]
+  [false, "abc/..", "**/**/", { "hidden": false }]
+  [false, "abc/..", "**/**/**", { "hidden": false }]
+
+  [false, "abc/../", "**/**", { "hidden": false }]
+  [false, "abc/../", "**/**/", { "hidden": false }]
+  [false, "abc/../", "**/**/**", { "hidden": false }]
+
+  [false, "abc/../abc/../", "**/**/**/**", { "hidden": false }]
+  [false, "abc/../abc/../", "**/**/**/**/", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "**/**/**/**/**", { "hidden": false }]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/..", "**/.**", { "hidden": false }]
+  [false, "abc/..", "**/.**/", { "hidden": false }]
+  [false, "abc/..", "**/.**/**", { "hidden": false }]
+
+  [false, "abc/../", "**/.**", { "hidden": false }]
+  [false, "abc/../", "**/.**/", { "hidden": false }]
+  [false, "abc/../", "**/.**/**", { "hidden": false }]
+
+  [false, "abc/../abc/../", "**/.**/**/.**", { "hidden": false }]
+  [false, "abc/../abc/../", "**/.**/**/.**/", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "**/.**/**/.**/**", { "hidden": false }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/..", "**/**.**", { "hidden": false }]
+  [false, "abc/..", "**/**.**/", { "hidden": false }]
+  [false, "abc/..", "**/**.**/**", { "hidden": false }]
+
+  [false, "abc/../", "**/**.**", { "hidden": false }]
+  [false, "abc/../", "**/**.**/", { "hidden": false }]
+  [false, "abc/../", "**/**.**/**", { "hidden": false }]
+
+  [false, "abc/../abc/../", "**/**.**/**/**.**", { "hidden": false }]
+  [false, "abc/../abc/../", "**/**.**/**/**.**/", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "**/**.**/**/.**/**", { "hidden": false }]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/..", "**/**.", { "hidden": false }]
+  [false, "abc/..", "**/**./", { "hidden": false }]
+  [false, "abc/..", "**/**./**", { "hidden": false }]
+
+  [false, "abc/../", "**/**.", { "hidden": false }]
+  [false, "abc/../", "**/**./", { "hidden": false }]
+  [false, "abc/../", "**/**./**", { "hidden": false }]
+
+  [false, "abc/../abc/../", "**/**./**/**.", { "hidden": false }]
+  [false, "abc/../abc/../", "**/**./**/**./", { "hidden": false }]
+  [false, "abc/../abc/abc/../", "**/**./**/**./**", { "hidden": false }]
+
+## describe('single dots', () => {
+### describe('no options', () => {
+#### describe('should not match leading single-dots', () => {
+##### it('with single star', () => {
+  [false, "./abc", "*"]
+  [false, "./abc", "*/*"]
+  [false, "./abc", "*/abc"]
+  [false, "./abc", "*/abc/*"]
+
+##### it('with dot + single star', () => {
+  [false, "./abc", ".*/*"]
+  [false, "./abc", ".*/abc"]
+
+  [false, "./abc", "*./*"]
+  [false, "./abc", "*./abc"]
+
+##### it('with globstar', () => {
+  [false, "./abc", "**"]
+  [false, "./abc", "**/**"]
+  [false, "./abc", "**/**/**"]
+
+  [false, "./abc", "**/abc"]
+  [false, "./abc", "**/abc/**"]
+
+  [false, "./abc", "abc/**"]
+  [false, "./abc", "abc/**/**"]
+  [false, "./abc", "abc/**/**/**"]
+
+  [false, "./abc", "**/abc"]
+  [false, "./abc", "**/abc/**"]
+  [false, "./abc", "**/abc/**/**"]
+
+  [false, "./abc", "**/**/abc/**"]
+  [false, "./abc", "**/**/abc/**/**"]
+
+##### it('with dot + globstar', () => {
+  [false, "./abc", ".**"]
+  [false, "./abc", ".**/**"]
+  [false, "./abc", ".**/abc"]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "./abc", "*.*/**"]
+  [false, "./abc", "*.*/abc"]
+
+##### it('with globstar + dot', () => {
+  [false, "./abc", "**./**"]
+  [false, "./abc", "**./abc"]
+
+#### describe('should not match nested single-dots', () => {
+##### it('with star', () => {
+  [false, "/./abc", "*/*"]
+  [false, "/./abc", "/*/*"]
+  [false, "/./abc", "*/*/*"]
+
+  [false, "abc/./abc", "*/*/*"]
+  [false, "abc/./abc/abc", "*/*/*/*"]
+
+##### it('with dot + star', () => {
+  [false, "/./abc", "*/.*/*"]
+  [false, "/./abc", "/.*/*"]
+
+  [false, "/./abc", "*/*.*/*"]
+  [false, "/./abc", "/*.*/*"]
+
+  [false, "/./abc", "*/*./*"]
+  [false, "/./abc", "/*./*"]
+
+  [false, "abc/./abc", "*/.*/*"]
+  [false, "abc/./abc", "*/*.*/*"]
+  [false, "abc/./abc", "*/*./*"]
+
+##### it('with globstar', () => {
+  [false, "/./abc", "**"]
+  [false, "/./abc", "**/**"]
+  [false, "/./abc", "/**/**"]
+  [false, "/./abc", "**/**/**"]
+
+  [false, "abc/./abc", "**/**/**"]
+  [false, "abc/./abc/abc", "**/**/**/**"]
+
+##### it('with dot + globstar', () => {
+  [false, "/./abc", "**/.**/**"]
+  [false, "/./abc", "/.**/**"]
+
+  [false, "abc/./abc", "**/.**/**"]
+  [false, "abc/./abc", "/.**/**"]
+
+##### it('with globstar + dot', () => {
+  [false, "/./abc", "**/**./**"]
+  [false, "/./abc", "/**./**"]
+
+  [false, "abc/./abc", "**/**./**"]
+  [false, "abc/./abc", "/**./**"]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/./abc", "**/**.**/**"]
+  [false, "/./abc", "**/*.*/**"]
+
+  [false, "/./abc", "/**.**/**"]
+  [false, "/./abc", "/*.*/**"]
+
+  [false, "abc/./abc", "**/**.**/**"]
+  [false, "abc/./abc", "**/*.*/**"]
+
+  [false, "abc/./abc", "/**.**/**"]
+  [false, "abc/./abc", "/*.*/**"]
+
+#### describe('should not match trailing single-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/.", "*/*"]
+  [false, "abc/.", "*/*/"]
+  [false, "abc/.", "*/*/*"]
+
+  [false, "abc/./", "*/*"]
+  [false, "abc/./", "*/*/"]
+  [false, "abc/./", "*/*/*"]
+
+  [false, "abc/./abc/./", "*/*/*/*"]
+  [false, "abc/./abc/./", "*/*/*/*/"]
+  [false, "abc/./abc/abc/./", "*/*/*/*/*"]
+
+##### it('with dot + star', () => {
+  [false, "abc/.", "*/.*"]
+  [false, "abc/.", "*/.*/"]
+  [false, "abc/.", "*/.*/*"]
+
+  [false, "abc/./", "*/.*"]
+  [false, "abc/./", "*/.*/"]
+  [false, "abc/./", "*/.*/*"]
+
+  [false, "abc/./abc/./", "*/.*/*/.*"]
+  [false, "abc/./abc/./", "*/.*/*/.*/"]
+  [false, "abc/./abc/abc/./", "*/.*/*/.*/*"]
+
+##### it('with star + dot', () => {
+  [false, "abc/.", "*/*."]
+  [false, "abc/.", "*/*./"]
+  [false, "abc/.", "*/*./*"]
+
+  [false, "abc/./", "*/*."]
+  [false, "abc/./", "*/*./"]
+  [false, "abc/./", "*/*./*"]
+
+  [false, "abc/./abc/./", "*/*./*/*."]
+  [false, "abc/./abc/./", "*/*./*/*./"]
+  [false, "abc/./abc/abc/./", "*/*./*/*./*"]
+
+##### it('with globstar', () => {
+  [false, "abc/.", "**/**"]
+  [false, "abc/.", "**/**/"]
+  [false, "abc/.", "**/**/**"]
+
+  [false, "abc/./", "**/**"]
+  [false, "abc/./", "**/**/"]
+  [false, "abc/./", "**/**/**"]
+
+  [false, "abc/./abc/./", "**/**/**/**"]
+  [false, "abc/./abc/./", "**/**/**/**/"]
+  [false, "abc/./abc/abc/./", "**/**/**/**/**"]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/.", "**/.**"]
+  [false, "abc/.", "**/.**/"]
+  [false, "abc/.", "**/.**/**"]
+
+  [false, "abc/./", "**/.**"]
+  [false, "abc/./", "**/.**/"]
+  [false, "abc/./", "**/.**/**"]
+
+  [false, "abc/./abc/./", "**/.**/**/.**"]
+  [false, "abc/./abc/./", "**/.**/**/.**/"]
+  [false, "abc/./abc/abc/./", "**/.**/**/.**/**"]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/.", "**/**.**"]
+  [false, "abc/.", "**/**.**/"]
+  [false, "abc/.", "**/**.**/**"]
+
+  [false, "abc/./", "**/**.**"]
+  [false, "abc/./", "**/**.**/"]
+  [false, "abc/./", "**/**.**/**"]
+
+  [false, "abc/./abc/./", "**/**.**/**/**.**"]
+  [false, "abc/./abc/./", "**/**.**/**/**.**/"]
+  [false, "abc/./abc/abc/./", "**/**.**/**/.**/**"]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/.", "**/**."]
+  [false, "abc/.", "**/**./"]
+  [false, "abc/.", "**/**./**"]
+
+  [false, "abc/./", "**/**."]
+  [false, "abc/./", "**/**./"]
+  [false, "abc/./", "**/**./**"]
+
+  [false, "abc/./abc/./", "**/**./**/**."]
+  [false, "abc/./abc/./", "**/**./**/**./"]
+  [false, "abc/./abc/abc/./", "**/**./**/**./**"]
+
+### describe('options = { dot: true }', () => {
+#### describe('should not match leading single-dots', () => {
+##### it('with single star', () => {
+  [false, "./abc", "*/*", { "hidden": true }]
+  [false, "./abc", "*/abc", { "hidden": true }]
+  [false, "./abc", "*/abc/*", { "hidden": true }]
+
+##### it('with dot + single star', () => {
+  [false, "./abc", ".*/*", { "hidden": true }]
+  [false, "./abc", ".*/abc", { "hidden": true }]
+
+  [false, "./abc", "*./*", { "hidden": true }]
+  [false, "./abc", "*./abc", { "hidden": true }]
+
+##### it('with globstar', () => {
+  [false, "./abc", "**", { "hidden": true }]
+  [false, "./abc", "**/**", { "hidden": true }]
+  [false, "./abc", "**/**/**", { "hidden": true }]
+
+  [false, "./abc", "**/abc", { "hidden": true }]
+  [false, "./abc", "**/abc/**", { "hidden": true }]
+
+  [false, "./abc", "abc/**", { "hidden": true }]
+  [false, "./abc", "abc/**/**", { "hidden": true }]
+  [false, "./abc", "abc/**/**/**", { "hidden": true }]
+
+  [false, "./abc", "**/abc", { "hidden": true }]
+  [false, "./abc", "**/abc/**", { "hidden": true }]
+  [false, "./abc", "**/abc/**/**", { "hidden": true }]
+
+  [false, "./abc", "**/**/abc/**", { "hidden": true }]
+  [false, "./abc", "**/**/abc/**/**", { "hidden": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "./abc", ".**", { "hidden": true }]
+  [false, "./abc", ".**/**", { "hidden": true }]
+  [false, "./abc", ".**/abc", { "hidden": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "./abc", "*.*/**", { "hidden": true }]
+  [false, "./abc", "*.*/abc", { "hidden": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "./abc", "**./**", { "hidden": true }]
+  [false, "./abc", "**./abc", { "hidden": true }]
+
+#### describe('should not match nested single-dots', () => {
+##### it('with star', () => {
+  [false, "/./abc", "*/*", { "hidden": true }]
+  [false, "/./abc", "/*/*", { "hidden": true }]
+  [false, "/./abc", "*/*/*", { "hidden": true }]
+
+  [false, "abc/./abc", "*/*/*", { "hidden": true }]
+  [false, "abc/./abc/abc", "*/*/*/*", { "hidden": true }]
+
+##### it('with dot + star', () => {
+  [false, "/./abc", "*/.*/*", { "hidden": true }]
+  [false, "/./abc", "/.*/*", { "hidden": true }]
+
+  [false, "/./abc", "*/*.*/*", { "hidden": true }]
+  [false, "/./abc", "/*.*/*", { "hidden": true }]
+
+  [false, "/./abc", "*/*./*", { "hidden": true }]
+  [false, "/./abc", "/*./*", { "hidden": true }]
+
+  [false, "abc/./abc", "*/.*/*", { "hidden": true }]
+  [false, "abc/./abc", "*/*.*/*", { "hidden": true }]
+  [false, "abc/./abc", "*/*./*", { "hidden": true }]
+
+##### it('with globstar', () => {
+  [false, "/./abc", "**", { "hidden": true }]
+  [false, "/./abc", "**/**", { "hidden": true }]
+  [false, "/./abc", "/**/**", { "hidden": true }]
+  [false, "/./abc", "**/**/**", { "hidden": true }]
+
+  [false, "abc/./abc", "**/**/**", { "hidden": true }]
+  [false, "abc/./abc/abc", "**/**/**/**", { "hidden": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "/./abc", "**/.**/**", { "hidden": true }]
+  [false, "/./abc", "/.**/**", { "hidden": true }]
+
+  [false, "abc/./abc", "**/.**/**", { "hidden": true }]
+  [false, "abc/./abc", "/.**/**", { "hidden": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "/./abc", "**/**./**", { "hidden": true }]
+  [false, "/./abc", "/**./**", { "hidden": true }]
+
+  [false, "abc/./abc", "**/**./**", { "hidden": true }]
+  [false, "abc/./abc", "/**./**", { "hidden": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/./abc", "**/**.**/**", { "hidden": true }]
+  [false, "/./abc", "**/*.*/**", { "hidden": true }]
+
+  [false, "/./abc", "/**.**/**", { "hidden": true }]
+  [false, "/./abc", "/*.*/**", { "hidden": true }]
+
+  [false, "abc/./abc", "**/**.**/**", { "hidden": true }]
+  [false, "abc/./abc", "**/*.*/**", { "hidden": true }]
+
+  [false, "abc/./abc", "/**.**/**", { "hidden": true }]
+  [false, "abc/./abc", "/*.*/**", { "hidden": true }]
+
+#### describe('should not match trailing single-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/.", "*/*", { "hidden": true }]
+  [false, "abc/.", "*/*/", { "hidden": true }]
+  [false, "abc/.", "*/*/*", { "hidden": true }]
+
+  [false, "abc/./", "*/*", { "hidden": true }]
+  [false, "abc/./", "*/*/", { "hidden": true }]
+  [false, "abc/./", "*/*/*", { "hidden": true }]
+
+  [false, "abc/./abc/./", "*/*/*/*", { "hidden": true }]
+  [false, "abc/./abc/./", "*/*/*/*/", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "*/*/*/*/*", { "hidden": true }]
+
+##### it('with dot + star', () => {
+  [false, "abc/.", "*/.*", { "hidden": true }]
+  [false, "abc/.", "*/.*/", { "hidden": true }]
+  [false, "abc/.", "*/.*/*", { "hidden": true }]
+
+  [false, "abc/./", "*/.*", { "hidden": true }]
+  [false, "abc/./", "*/.*/", { "hidden": true }]
+  [false, "abc/./", "*/.*/*", { "hidden": true }]
+
+  [false, "abc/./abc/./", "*/.*/*/.*", { "hidden": true }]
+  [false, "abc/./abc/./", "*/.*/*/.*/", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "*/.*/*/.*/*", { "hidden": true }]
+
+##### it('with star + dot', () => {
+  [false, "abc/.", "*/*.", { "hidden": true }]
+  [false, "abc/.", "*/*./", { "hidden": true }]
+  [false, "abc/.", "*/*./*", { "hidden": true }]
+
+  [false, "abc/./", "*/*.", { "hidden": true }]
+  [false, "abc/./", "*/*./", { "hidden": true }]
+  [false, "abc/./", "*/*./*", { "hidden": true }]
+
+  [false, "abc/./abc/./", "*/*./*/*.", { "hidden": true }]
+  [false, "abc/./abc/./", "*/*./*/*./", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "*/*./*/*./*", { "hidden": true }]
+
+##### it('with globstar', () => {
+  [false, "abc/.", "**/**", { "hidden": true }]
+  [false, "abc/.", "**/**/", { "hidden": true }]
+  [false, "abc/.", "**/**/**", { "hidden": true }]
+
+  [false, "abc/./", "**/**", { "hidden": true }]
+  [false, "abc/./", "**/**/", { "hidden": true }]
+  [false, "abc/./", "**/**/**", { "hidden": true }]
+
+  [false, "abc/./abc/./", "**/**/**/**", { "hidden": true }]
+  [false, "abc/./abc/./", "**/**/**/**/", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "**/**/**/**/**", { "hidden": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/.", "**/.**", { "hidden": true }]
+  [false, "abc/.", "**/.**/", { "hidden": true }]
+  [false, "abc/.", "**/.**/**", { "hidden": true }]
+
+  [false, "abc/./", "**/.**", { "hidden": true }]
+  [false, "abc/./", "**/.**/", { "hidden": true }]
+  [false, "abc/./", "**/.**/**", { "hidden": true }]
+
+  [false, "abc/./abc/./", "**/.**/**/.**", { "hidden": true }]
+  [false, "abc/./abc/./", "**/.**/**/.**/", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "**/.**/**/.**/**", { "hidden": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/.", "**/**.**", { "hidden": true }]
+  [false, "abc/.", "**/**.**/", { "hidden": true }]
+  [false, "abc/.", "**/**.**/**", { "hidden": true }]
+
+  [false, "abc/./", "**/**.**", { "hidden": true }]
+  [false, "abc/./", "**/**.**/", { "hidden": true }]
+  [false, "abc/./", "**/**.**/**", { "hidden": true }]
+
+  [false, "abc/./abc/./", "**/**.**/**/**.**", { "hidden": true }]
+  [false, "abc/./abc/./", "**/**.**/**/**.**/", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "**/**.**/**/.**/**", { "hidden": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/.", "**/**.", { "hidden": true }]
+  [false, "abc/.", "**/**./", { "hidden": true }]
+  [false, "abc/.", "**/**./**", { "hidden": true }]
+
+  [false, "abc/./", "**/**.", { "hidden": true }]
+  [false, "abc/./", "**/**./", { "hidden": true }]
+  [false, "abc/./", "**/**./**", { "hidden": true }]
+
+  [false, "abc/./abc/./", "**/**./**/**.", { "hidden": true }]
+  [false, "abc/./abc/./", "**/**./**/**./", { "hidden": true }]
+  [false, "abc/./abc/abc/./", "**/**./**/**./**", { "hidden": true }]
+
+### describe('options = { strictSlashes: true }', () => {
+#### describe('should not match leading single-dots', () => {
+##### it('with single star', () => {
+  [false, "./abc", "*/*", null, { "strictSlashes": true }]
+  [false, "./abc", "*/abc", null, { "strictSlashes": true }]
+  [false, "./abc", "*/abc/*", null, { "strictSlashes": true }]
+
+##### it('with dot + single star', () => {
+  [false, "./abc", ".*/*", null, { "strictSlashes": true }]
+  [false, "./abc", ".*/abc", null, { "strictSlashes": true }]
+
+  [false, "./abc", "*./*", null, { "strictSlashes": true }]
+  [false, "./abc", "*./abc", null, { "strictSlashes": true }]
+
+##### it('with globstar', () => {
+  [false, "./abc", "**", null, { "strictSlashes": true }]
+  [false, "./abc", "**/**", null, { "strictSlashes": true }]
+  [false, "./abc", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "./abc", "**/abc", null, { "strictSlashes": true }]
+  [false, "./abc", "**/abc/**", null, { "strictSlashes": true }]
+
+  [false, "./abc", "abc/**", null, { "strictSlashes": true }]
+  [false, "./abc", "abc/**/**", null, { "strictSlashes": true }]
+  [false, "./abc", "abc/**/**/**", null, { "strictSlashes": true }]
+
+  [false, "./abc", "**/abc", null, { "strictSlashes": true }]
+  [false, "./abc", "**/abc/**", null, { "strictSlashes": true }]
+  [false, "./abc", "**/abc/**/**", null, { "strictSlashes": true }]
+
+  [false, "./abc", "**/**/abc/**", null, { "strictSlashes": true }]
+  [false, "./abc", "**/**/abc/**/**", null, { "strictSlashes": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "./abc", ".**", null, { "strictSlashes": true }]
+  [false, "./abc", ".**/**", null, { "strictSlashes": true }]
+  [false, "./abc", ".**/abc", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "./abc", "*.*/**", null, { "strictSlashes": true }]
+  [false, "./abc", "*.*/abc", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "./abc", "**./**", null, { "strictSlashes": true }]
+  [false, "./abc", "**./abc", null, { "strictSlashes": true }]
+
+#### describe('should not match nested single-dots', () => {
+##### it('with star', () => {
+  [false, "/./abc", "*/*", null, { "strictSlashes": true }]
+  [false, "/./abc", "/*/*", null, { "strictSlashes": true }]
+  [false, "/./abc", "*/*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "*/*/*", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc", "*/*/*/*", null, { "strictSlashes": true }]
+
+##### it('with dot + star', () => {
+  [false, "/./abc", "*/.*/*", null, { "strictSlashes": true }]
+  [false, "/./abc", "/.*/*", null, { "strictSlashes": true }]
+
+  [false, "/./abc", "*/*.*/*", null, { "strictSlashes": true }]
+  [false, "/./abc", "/*.*/*", null, { "strictSlashes": true }]
+
+  [false, "/./abc", "*/*./*", null, { "strictSlashes": true }]
+  [false, "/./abc", "/*./*", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "*/.*/*", null, { "strictSlashes": true }]
+  [false, "abc/./abc", "*/*.*/*", null, { "strictSlashes": true }]
+  [false, "abc/./abc", "*/*./*", null, { "strictSlashes": true }]
+
+##### it('with globstar', () => {
+  [false, "/./abc", "**", null, { "strictSlashes": true }]
+  [false, "/./abc", "**/**", null, { "strictSlashes": true }]
+  [false, "/./abc", "/**/**", null, { "strictSlashes": true }]
+  [false, "/./abc", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "**/**/**", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc", "**/**/**/**", null, { "strictSlashes": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "/./abc", "**/.**/**", null, { "strictSlashes": true }]
+  [false, "/./abc", "/.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "**/.**/**", null, { "strictSlashes": true }]
+  [false, "abc/./abc", "/.**/**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "/./abc", "**/**./**", null, { "strictSlashes": true }]
+  [false, "/./abc", "/**./**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "**/**./**", null, { "strictSlashes": true }]
+  [false, "abc/./abc", "/**./**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/./abc", "**/**.**/**", null, { "strictSlashes": true }]
+  [false, "/./abc", "**/*.*/**", null, { "strictSlashes": true }]
+
+  [false, "/./abc", "/**.**/**", null, { "strictSlashes": true }]
+  [false, "/./abc", "/*.*/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "**/**.**/**", null, { "strictSlashes": true }]
+  [false, "abc/./abc", "**/*.*/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc", "/**.**/**", null, { "strictSlashes": true }]
+  [false, "abc/./abc", "/*.*/**", null, { "strictSlashes": true }]
+
+#### describe('should not match trailing single-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/.", "*/*", null, { "strictSlashes": true }]
+  [false, "abc/.", "*/*/", null, { "strictSlashes": true }]
+  [false, "abc/.", "*/*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "*/*", null, { "strictSlashes": true }]
+  [false, "abc/./", "*/*/", null, { "strictSlashes": true }]
+  [false, "abc/./", "*/*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "*/*/*/*", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "*/*/*/*/", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "*/*/*/*/*", null, { "strictSlashes": true }]
+
+##### it('with dot + star', () => {
+  [false, "abc/.", "*/.*", null, { "strictSlashes": true }]
+  [false, "abc/.", "*/.*/", null, { "strictSlashes": true }]
+  [false, "abc/.", "*/.*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "*/.*", null, { "strictSlashes": true }]
+  [false, "abc/./", "*/.*/", null, { "strictSlashes": true }]
+  [false, "abc/./", "*/.*/*", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "*/.*/*/.*", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "*/.*/*/.*/", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "*/.*/*/.*/*", null, { "strictSlashes": true }]
+
+##### it('with star + dot', () => {
+  [false, "abc/.", "*/*.", null, { "strictSlashes": true }]
+  [false, "abc/.", "*/*./", null, { "strictSlashes": true }]
+  [false, "abc/.", "*/*./*", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "*/*.", null, { "strictSlashes": true }]
+  [false, "abc/./", "*/*./", null, { "strictSlashes": true }]
+  [false, "abc/./", "*/*./*", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "*/*./*/*.", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "*/*./*/*./", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "*/*./*/*./*", null, { "strictSlashes": true }]
+
+##### it('with globstar', () => {
+  [false, "abc/.", "**/**", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/**/", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "**/**", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/**/", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "**/**/**/**", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "**/**/**/**/", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "**/**/**/**/**", null, { "strictSlashes": true }]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/.", "**/.**", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/.**/", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "**/.**", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/.**/", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "**/.**/**/.**", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "**/.**/**/.**/", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "**/.**/**/.**/**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/.", "**/**.**", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/**.**/", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/**.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "**/**.**", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/**.**/", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/**.**/**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "**/**.**/**/**.**", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "**/**.**/**/**.**/", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "**/**.**/**/.**/**", null, { "strictSlashes": true }]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/.", "**/**.", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/**./", null, { "strictSlashes": true }]
+  [false, "abc/.", "**/**./**", null, { "strictSlashes": true }]
+
+  [false, "abc/./", "**/**.", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/**./", null, { "strictSlashes": true }]
+  [false, "abc/./", "**/**./**", null, { "strictSlashes": true }]
+
+  [false, "abc/./abc/./", "**/**./**/**.", null, { "strictSlashes": true }]
+  [false, "abc/./abc/./", "**/**./**/**./", null, { "strictSlashes": true }]
+  [false, "abc/./abc/abc/./", "**/**./**/**./**", null, { "strictSlashes": true }]
+
+### describe('options = { dot: true, strictSlashes: true }', () => {
+#### describe('should not match leading single-dots', () => {
+##### it('with single star', () => {
+  [false, "./abc", "*/*", { "hidden": false }]
+  [false, "./abc", "*/abc", { "hidden": false }]
+  [false, "./abc", "*/abc/*", { "hidden": false }]
+
+##### it('with dot + single star', () => {
+  [false, "./abc", ".*/*", { "hidden": false }]
+  [false, "./abc", ".*/abc", { "hidden": false }]
+
+  [false, "./abc", "*./*", { "hidden": false }]
+  [false, "./abc", "*./abc", { "hidden": false }]
+
+##### it('with globstar', () => {
+  [false, "./abc", "**", { "hidden": false }]
+  [false, "./abc", "**/**", { "hidden": false }]
+  [false, "./abc", "**/**/**", { "hidden": false }]
+
+  [false, "./abc", "**/abc", { "hidden": false }]
+  [false, "./abc", "**/abc/**", { "hidden": false }]
+
+  [false, "./abc", "abc/**", { "hidden": false }]
+  [false, "./abc", "abc/**/**", { "hidden": false }]
+  [false, "./abc", "abc/**/**/**", { "hidden": false }]
+
+  [false, "./abc", "**/abc", { "hidden": false }]
+  [false, "./abc", "**/abc/**", { "hidden": false }]
+  [false, "./abc", "**/abc/**/**", { "hidden": false }]
+
+  [false, "./abc", "**/**/abc/**", { "hidden": false }]
+  [false, "./abc", "**/**/abc/**/**", { "hidden": false }]
+
+##### it('with dot + globstar', () => {
+  [false, "./abc", ".**", { "hidden": false }]
+  [false, "./abc", ".**/**", { "hidden": false }]
+  [false, "./abc", ".**/abc", { "hidden": false }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "./abc", "*.*/**", { "hidden": false }]
+  [false, "./abc", "*.*/abc", { "hidden": false }]
+
+##### it('with globstar + dot', () => {
+  [false, "./abc", "**./**", { "hidden": false }]
+  [false, "./abc", "**./abc", { "hidden": false }]
+
+#### describe('should not match nested single-dots', () => {
+##### it('with star', () => {
+  [false, "/./abc", "*/*", { "hidden": false }]
+  [false, "/./abc", "/*/*", { "hidden": false }]
+  [false, "/./abc", "*/*/*", { "hidden": false }]
+
+  [false, "abc/./abc", "*/*/*", { "hidden": false }]
+  [false, "abc/./abc/abc", "*/*/*/*", { "hidden": false }]
+
+##### it('with dot + star', () => {
+  [false, "/./abc", "*/.*/*", { "hidden": false }]
+  [false, "/./abc", "/.*/*", { "hidden": false }]
+
+  [false, "/./abc", "*/*.*/*", { "hidden": false }]
+  [false, "/./abc", "/*.*/*", { "hidden": false }]
+
+  [false, "/./abc", "*/*./*", { "hidden": false }]
+  [false, "/./abc", "/*./*", { "hidden": false }]
+
+  [false, "abc/./abc", "*/.*/*", { "hidden": false }]
+  [false, "abc/./abc", "*/*.*/*", { "hidden": false }]
+  [false, "abc/./abc", "*/*./*", { "hidden": false }]
+
+##### it('with globstar', () => {
+  [false, "/./abc", "**", { "hidden": false }]
+  [false, "/./abc", "**/**", { "hidden": false }]
+  [false, "/./abc", "/**/**", { "hidden": false }]
+  [false, "/./abc", "**/**/**", { "hidden": false }]
+
+  [false, "abc/./abc", "**/**/**", { "hidden": false }]
+  [false, "abc/./abc/abc", "**/**/**/**", { "hidden": false }]
+
+##### it('with dot + globstar', () => {
+  [false, "/./abc", "**/.**/**", { "hidden": false }]
+  [false, "/./abc", "/.**/**", { "hidden": false }]
+
+  [false, "abc/./abc", "**/.**/**", { "hidden": false }]
+  [false, "abc/./abc", "/.**/**", { "hidden": false }]
+
+##### it('with globstar + dot', () => {
+  [false, "/./abc", "**/**./**", { "hidden": false }]
+  [false, "/./abc", "/**./**", { "hidden": false }]
+
+  [false, "abc/./abc", "**/**./**", { "hidden": false }]
+  [false, "abc/./abc", "/**./**", { "hidden": false }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "/./abc", "**/**.**/**", { "hidden": false }]
+  [false, "/./abc", "**/*.*/**", { "hidden": false }]
+
+  [false, "/./abc", "/**.**/**", { "hidden": false }]
+  [false, "/./abc", "/*.*/**", { "hidden": false }]
+
+  [false, "abc/./abc", "**/**.**/**", { "hidden": false }]
+  [false, "abc/./abc", "**/*.*/**", { "hidden": false }]
+
+  [false, "abc/./abc", "/**.**/**", { "hidden": false }]
+  [false, "abc/./abc", "/*.*/**", { "hidden": false }]
+
+#### describe('should not match trailing single-dots', () => {
+##### it('with single star', () => {
+  [false, "abc/.", "*/*", { "hidden": false }]
+  [false, "abc/.", "*/*/", { "hidden": false }]
+  [false, "abc/.", "*/*/*", { "hidden": false }]
+
+  [false, "abc/./", "*/*", { "hidden": false }]
+  [false, "abc/./", "*/*/", { "hidden": false }]
+  [false, "abc/./", "*/*/*", { "hidden": false }]
+
+  [false, "abc/./abc/./", "*/*/*/*", { "hidden": false }]
+  [false, "abc/./abc/./", "*/*/*/*/", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "*/*/*/*/*", { "hidden": false }]
+
+##### it('with dot + star', () => {
+  [false, "abc/.", "*/.*", { "hidden": false }]
+  [false, "abc/.", "*/.*/", { "hidden": false }]
+  [false, "abc/.", "*/.*/*", { "hidden": false }]
+
+  [false, "abc/./", "*/.*", { "hidden": false }]
+  [false, "abc/./", "*/.*/", { "hidden": false }]
+  [false, "abc/./", "*/.*/*", { "hidden": false }]
+
+  [false, "abc/./abc/./", "*/.*/*/.*", { "hidden": false }]
+  [false, "abc/./abc/./", "*/.*/*/.*/", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "*/.*/*/.*/*", { "hidden": false }]
+
+##### it('with star + dot', () => {
+  [false, "abc/.", "*/*.", { "hidden": false }]
+  [false, "abc/.", "*/*./", { "hidden": false }]
+  [false, "abc/.", "*/*./*", { "hidden": false }]
+
+  [false, "abc/./", "*/*.", { "hidden": false }]
+  [false, "abc/./", "*/*./", { "hidden": false }]
+  [false, "abc/./", "*/*./*", { "hidden": false }]
+
+  [false, "abc/./abc/./", "*/*./*/*.", { "hidden": false }]
+  [false, "abc/./abc/./", "*/*./*/*./", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "*/*./*/*./*", { "hidden": false }]
+
+##### it('with globstar', () => {
+  [false, "abc/.", "**/**", { "hidden": false }]
+  [false, "abc/.", "**/**/", { "hidden": false }]
+  [false, "abc/.", "**/**/**", { "hidden": false }]
+
+  [false, "abc/./", "**/**", { "hidden": false }]
+  [false, "abc/./", "**/**/", { "hidden": false }]
+  [false, "abc/./", "**/**/**", { "hidden": false }]
+
+  [false, "abc/./abc/./", "**/**/**/**", { "hidden": false }]
+  [false, "abc/./abc/./", "**/**/**/**/", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "**/**/**/**/**", { "hidden": false }]
+
+##### it('with dot + globstar', () => {
+  [false, "abc/.", "**/.**", { "hidden": false }]
+  [false, "abc/.", "**/.**/", { "hidden": false }]
+  [false, "abc/.", "**/.**/**", { "hidden": false }]
+
+  [false, "abc/./", "**/.**", { "hidden": false }]
+  [false, "abc/./", "**/.**/", { "hidden": false }]
+  [false, "abc/./", "**/.**/**", { "hidden": false }]
+
+  [false, "abc/./abc/./", "**/.**/**/.**", { "hidden": false }]
+  [false, "abc/./abc/./", "**/.**/**/.**/", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "**/.**/**/.**/**", { "hidden": false }]
+
+##### it('with globstar + dot + globstar', () => {
+  [false, "abc/.", "**/**.**", { "hidden": false }]
+  [false, "abc/.", "**/**.**/", { "hidden": false }]
+  [false, "abc/.", "**/**.**/**", { "hidden": false }]
+
+  [false, "abc/./", "**/**.**", { "hidden": false }]
+  [false, "abc/./", "**/**.**/", { "hidden": false }]
+  [false, "abc/./", "**/**.**/**", { "hidden": false }]
+
+  [false, "abc/./abc/./", "**/**.**/**/**.**", { "hidden": false }]
+  [false, "abc/./abc/./", "**/**.**/**/**.**/", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "**/**.**/**/.**/**", { "hidden": false }]
+
+##### it('with globstar + dot', () => {
+  [false, "abc/.", "**/**.", { "hidden": false }]
+  [false, "abc/.", "**/**./", { "hidden": false }]
+  [false, "abc/.", "**/**./**", { "hidden": false }]
+
+  [false, "abc/./", "**/**.", { "hidden": false }]
+  [false, "abc/./", "**/**./", { "hidden": false }]
+  [false, "abc/./", "**/**./**", { "hidden": false }]
+
+  [false, "abc/./abc/./", "**/**./**/**.", { "hidden": false }]
+  [false, "abc/./abc/./", "**/**./**/**./", { "hidden": false }]
+  [false, "abc/./abc/abc/./", "**/**./**/**./**", { "hidden": false }]

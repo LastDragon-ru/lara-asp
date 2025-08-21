@@ -1,0 +1,282 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/posix-classes.js
+
+# describe('posix classes', () => {
+
+## describe('.isMatch', () => {
+### it('should support POSIX.2 character classes', () => {
+  [true, "e", "[[:xdigit:]]"]
+
+  [true, "a", "[[:alpha:]123]"]
+  [true, "1", "[[:alpha:]123]"]
+  [false, "5", "[[:alpha:]123]"]
+  [true, "A", "[[:alpha:]123]"]
+
+  [true, "A", "[[:alpha:]]"]
+  [false, "9", "[[:alpha:]]"]
+  [true, "b", "[[:alpha:]]"]
+
+  [false, "A", "[![:alpha:]]"]
+  [true, "9", "[![:alpha:]]"]
+  [false, "b", "[![:alpha:]]"]
+
+  [false, "A", "[^[:alpha:]]"]
+  [true, "9", "[^[:alpha:]]"]
+  [false, "b", "[^[:alpha:]]"]
+
+  [false, "A", "[[:digit:]]"]
+  [true, "9", "[[:digit:]]"]
+  [false, "b", "[[:digit:]]"]
+
+  [true, "A", "[^[:digit:]]"]
+  [false, "9", "[^[:digit:]]"]
+  [true, "b", "[^[:digit:]]"]
+
+  [true, "A", "[![:digit:]]"]
+  [false, "9", "[![:digit:]]"]
+  [true, "b", "[![:digit:]]"]
+
+  [true, "a", "[[:lower:]]"]
+  [false, "A", "[[:lower:]]"]
+  [false, "9", "[[:lower:]]"]
+
+  // [true, "a", "[:alpha:]'), "invalid posix bracket, but valid char class"]
+  // [true, "l", "[:alpha:]'), "invalid posix bracket, but valid char class"]
+  // [true, "p", "[:alpha:]'), "invalid posix bracket, but valid char class"]
+  // [true, "h", "[:alpha:]'), "invalid posix bracket, but valid char class"]
+  // [true, ":", "[:alpha:]'), "invalid posix bracket, but valid char class"]
+  // [false, "b", "[:alpha:]'), "invalid posix bracket, but valid char class"]
+
+### it('should support multiple posix brackets in one character class', () => {
+  [true, "9", "[[:lower:][:digit:]]"]
+  [true, "a", "[[:lower:][:digit:]]"]
+  [false, "A", "[[:lower:][:digit:]]"]
+  [false, "aa", "[[:lower:][:digit:]]"]
+  [false, "99", "[[:lower:][:digit:]]"]
+  [false, "a9", "[[:lower:][:digit:]]"]
+  [false, "9a", "[[:lower:][:digit:]]"]
+  [false, "aA", "[[:lower:][:digit:]]"]
+  [false, "9A", "[[:lower:][:digit:]]"]
+  // (2) [true, "aa", "[[:lower:][:digit:]]+"]
+  // (2) [true, "99", "[[:lower:][:digit:]]+"]
+  // (2) [true, "a9", "[[:lower:][:digit:]]+"]
+  // (2) [true, "9a", "[[:lower:][:digit:]]+"]
+  // (2) [false, "aA", "[[:lower:][:digit:]]+"]
+  // (2) [false, "9A", "[[:lower:][:digit:]]+"]
+  // (2) [true, "a", "[[:lower:][:digit:]]*"]
+  // (2) [false, "A", "[[:lower:][:digit:]]*"]
+  // (2) [false, "AA", "[[:lower:][:digit:]]*"]
+  // (2) [true, "aa", "[[:lower:][:digit:]]*"]
+  // (2) [true, "aaa", "[[:lower:][:digit:]]*"]
+  // (2) [true, "999", "[[:lower:][:digit:]]*"]
+
+### it('should match word characters', () => {
+  // (2) [false, "a c", "a[[:word:]]+c"]
+  // (2) [false, "a.c", "a[[:word:]]+c"]
+  // (2) [false, "a.xy.zc", "a[[:word:]]+c"]
+  // (2) [false, "a.zc", "a[[:word:]]+c"]
+  // (2) [false, "abq", "a[[:word:]]+c"]
+  // (2) [false, "axy zc", "a[[:word:]]+c"]
+  // (2) [false, "axy", "a[[:word:]]+c"]
+  // (2) [false, "axy.zc", "a[[:word:]]+c"]
+  // (2) [true, "a123c", "a[[:word:]]+c"]
+  // (2) [true, "a1c", "a[[:word:]]+c"]
+  // (2) [true, "abbbbc", "a[[:word:]]+c"]
+  // (2) [true, "abbbc", "a[[:word:]]+c"]
+  // (2) [true, "abbc", "a[[:word:]]+c"]
+  // (2) [true, "abc", "a[[:word:]]+c"]
+
+  // (2) [false, "a c", "a[[:word:]]+"]
+  // (2) [false, "a.c", "a[[:word:]]+"]
+  // (2) [false, "a.xy.zc", "a[[:word:]]+"]
+  // (2) [false, "a.zc", "a[[:word:]]+"]
+  // (2) [false, "axy zc", "a[[:word:]]+"]
+  // (2) [false, "axy.zc", "a[[:word:]]+"]
+  // (2) [true, "a123c", "a[[:word:]]+"]
+  // (2) [true, "a1c", "a[[:word:]]+"]
+  // (2) [true, "abbbbc", "a[[:word:]]+"]
+  // (2) [true, "abbbc", "a[[:word:]]+"]
+  // (2) [true, "abbc", "a[[:word:]]+"]
+  // (2) [true, "abc", "a[[:word:]]+"]
+  // (2) [true, "abq", "a[[:word:]]+"]
+  // (2) [true, "axy", "a[[:word:]]+"]
+  // (2) [true, "axyzc", "a[[:word:]]+"]
+  // (2) [true, "axyzc", "a[[:word:]]+"]
+
+### it('should return `true` when the pattern matches:', () => {
+  [true, "a", "[[:lower:]]"]
+  [true, "A", "[[:upper:]]"]
+  [true, "A", "[[:digit:][:upper:][:space:]]"]
+  [true, "1", "[[:digit:][:upper:][:space:]]"]
+  [true, " ", "[[:digit:][:upper:][:space:]]"]
+  [true, "5", "[[:xdigit:]]"]
+  [true, "f", "[[:xdigit:]]"]
+  [true, "D", "[[:xdigit:]]"]
+  [true, "_", "[[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:graph:][:lower:][:print:][:punct:][:space:][:upper:][:xdigit:]]"]
+  [true, "_", "[[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:graph:][:lower:][:print:][:punct:][:space:][:upper:][:xdigit:]]"]
+  // (4.1) [true, ".", "[^[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:lower:][:space:][:upper:][:xdigit:]]"]
+  [true, "5", "[a-c[:digit:]x-z]"]
+  [true, "b", "[a-c[:digit:]x-z]"]
+  [true, "y", "[a-c[:digit:]x-z]"]
+
+### it('should return `false` when the pattern does not match:', () => {
+  [false, "A", "[[:lower:]]"]
+  [true, "A", "[![:lower:]]"]
+  [false, "a", "[[:upper:]]"]
+  [false, "a", "[[:digit:][:upper:][:space:]]"]
+  [false, ".", "[[:digit:][:upper:][:space:]]"]
+  [false, ".", "[[:alnum:][:alpha:][:blank:][:cntrl:][:digit:][:lower:][:space:][:upper:][:xdigit:]]"]
+  [false, "q", "[a-c[:digit:]x-z]"]
+
+## describe('literals', () => {
+### it('should match literal brackets when escaped', () => {
+  // (2) [true, "a [b]", "a [b]"]
+  [true, "a b", "a [b]"]
+
+  // (2) [true, "a [b] c", "a [b] c"]
+  [true, "a b c", "a [b] c"]
+
+  [true, "a [b]", "a \\[b\\]"]
+  [false, "a b", "a \\[b\\]"]
+
+  // (2) [true, "a [b]", "a ([b])"]
+  // (2) [true, "a b", "a ([b])"]
+
+  // (2) [true, "a b", "a (\\[b\\]|[b])"]
+  // (2) [true, "a [b]", "a (\\[b\\]|[b])"]
+
+## describe('POSIX: From the test suite for the POSIX.2 (BRE) pattern matching code:', () => {
+### it('First, test POSIX.2 character classes', () => {
+  [true, "e", "[[:xdigit:]]"]
+  [true, "1", "[[:xdigit:]]"]
+  [true, "a", "[[:alpha:]123]"]
+  [true, "1", "[[:alpha:]123]"]
+
+### it('should match using POSIX.2 negation patterns', () => {
+  [true, "9", "[![:alpha:]]"]
+  [true, "9", "[^[:alpha:]]"]
+
+### it('should match word characters', () => {
+  [true, "A", "[[:word:]]"]
+  [true, "B", "[[:word:]]"]
+  [true, "a", "[[:word:]]"]
+  [true, "b", "[[:word:]]"]
+
+### it('should match digits with word class', () => {
+  [true, "1", "[[:word:]]"]
+  [true, "2", "[[:word:]]"]
+
+### it('should not digits', () => {
+  [true, "1", "[[:digit:]]"]
+  [true, "2", "[[:digit:]]"]
+
+### it('should not match word characters with digit class', () => {
+  [false, "a", "[[:digit:]]"]
+  [false, "A", "[[:digit:]]"]
+
+### it('should match uppercase alpha characters', () => {
+  [true, "A", "[[:upper:]]"]
+  [true, "B", "[[:upper:]]"]
+
+### it('should not match lowercase alpha characters', () => {
+  [false, "a", "[[:upper:]]"]
+  [false, "b", "[[:upper:]]"]
+
+### it('should not match digits with upper class', () => {
+  [false, "1", "[[:upper:]]"]
+  [false, "2", "[[:upper:]]"]
+
+### it('should match lowercase alpha characters', () => {
+  [true, "a", "[[:lower:]]"]
+  [true, "b", "[[:lower:]]"]
+
+### it('should not match uppercase alpha characters', () => {
+  [false, "A", "[[:lower:]]"]
+  [false, "B", "[[:lower:]]"]
+
+### it('should match one lower and one upper character', () => {
+  [true, "aA", "[[:lower:]][[:upper:]]"]
+  [false, "AA", "[[:lower:]][[:upper:]]"]
+  [false, "Aa", "[[:lower:]][[:upper:]]"]
+
+### it('should match hexadecimal digits', () => {
+  // (2) [true, "ababab", "[[:xdigit:]]*"]
+  // (2) [true, "020202", "[[:xdigit:]]*"]
+  // (2) [true, "900", "[[:xdigit:]]*"]
+
+### it('should match punctuation characters (\\-!\"#$%&\'()\\*+,./:;<=>?@[\\]^_`{|}~)', () => {
+  [true, "!", "[[:punct:]]"]
+  [true, "?", "[[:punct:]]"]
+  [true, "#", "[[:punct:]]"]
+  [true, "&", "[[:punct:]]"]
+  [true, "@", "[[:punct:]]"]
+  [true, "+", "[[:punct:]]"]
+  [true, "*", "[[:punct:]]"]
+  [true, ":", "[[:punct:]]"]
+  [true, "=", "[[:punct:]]"]
+  [true, "|", "[[:punct:]]"]
+  // (2) [true, "|++", "[[:punct:]]*"]
+
+### it('should only match one character', () => {
+  [false, "?*+", "[[:punct:]]"]
+
+### it('should only match zero or more punctuation characters', () => {
+  // (2) [true, "?*+", "[[:punct:]]*"]
+  // (2) [true, "foo", "foo[[:punct:]]*"]
+  // (2) [true, "foo?*+", "foo[[:punct:]]*"]
+
+### it('invalid character class expressions are just characters to be matched', () => {
+  [true, "a", "[:al:]"]
+  [true, "a", "[[:al:]"]
+  [true, "!", "[abc[:punct:][0-9]"]
+
+### it('should match the start of a valid sh identifier', () => {
+  // (2) [true, "PATH", "[_[:alpha:]]*"]
+
+### it('should match the first two characters of a valid sh identifier', () => {
+  // (2) [true, "PATH", "[_[:alpha:]][_[:alnum:]]*"]
+
+### it('should match multiple posix classses', () => {
+  [true, "a1B", "[[:alpha:]][[:digit:]][[:upper:]]"]
+  [false, "a1b", "[[:alpha:]][[:digit:]][[:upper:]]"]
+  // (4.1) [true, ".", "[[:digit:][:punct:][:space:]]"]
+  [false, "a", "[[:digit:][:punct:][:space:]]"]
+  [true, "!", "[[:digit:][:punct:][:space:]]"]
+  [false, "!", "[[:digit:]][[:punct:]][[:space:]]"]
+  [true, "1! ", "[[:digit:]][[:punct:]][[:space:]]"]
+  [false, "1!  ", "[[:digit:]][[:punct:]][[:space:]]"]
+
+  //  /**
+  //   * Some of these tests (and their descriptions) were ported directly
+  //   * from the Bash 4.3 unit tests.
+  //   */
+
+### it('how about A?', () => {
+  [true, "9", "[[:digit:]]"]
+  [false, "X", "[[:digit:]]"]
+  [true, "aB", "[[:lower:]][[:upper:]]"]
+  [true, "a", "[[:alpha:][:digit:]]"]
+  [true, "3", "[[:alpha:][:digit:]]"]
+  [false, "aa", "[[:alpha:][:digit:]]"]
+  [false, "a3", "[[:alpha:][:digit:]]"]
+  [false, "a", "[[:alpha:]\\]"]
+  [false, "b", "[[:alpha:]\\]"]
+
+### it('OK, what\'s a tab?  is it a blank? a space?', () => {
+  [true, "\t", "[[:blank:]]"]
+  [true, "\t", "[[:space:]]"]
+  [true, " ", "[[:space:]]"]
+
+### it('let\'s check out characters in the ASCII range', () => {
+  [false, "\\377", "[[:ascii:]]"]
+  [false, "9", "[1[:alpha:]123]"]
+
+### it('punctuation', () => {
+  [false, " ", "[[:punct:]]"]
+
+### it('graph', () => {
+  [true, "A", "[[:graph:]]"]
+  [false, "\\b", "[[:graph:]]"]
+  [false, "\\n", "[[:graph:]]"]
+  [false, "\\s", "[[:graph:]]"]

@@ -19,6 +19,12 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
+			message: '#^Property LastDragon_ru\\DiyParser\\Iterables\\BufferedIterable\<TValue\>\:\:\$iterator \(Iterator\<mixed, TValue\>\) does not accept \(iterable\<TValue\>&Iterator\)\|IteratorIterator\<mixed, mixed, Traversable\<TKey, TValue\>\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: packages/diy-parser/src/Iterables/BufferedIterable.php
+
+		-
 			message: '#^Method LastDragon_ru\\LaraASP\\Documentator\\Processor\\Resolver\:\:resolve\(\) should return V of LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\|Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|null but returns Traversable\<mixed, LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\Directory\|LastDragon_ru\\LaraASP\\Documentator\\Processor\\FileSystem\\File\>\|V\.$#'
 			identifier: return.type
 			count: 1
@@ -59,6 +65,18 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: packages/formatter/src/Formatter.php
+
+		-
+			message: '#^Parameter \#2 \$cursor of static method LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\:\:toRegex\(\) expects LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant LastDragon_ru\\GlobMatcher\\Glob\\Ast\\CharacterNodeChild\>, LastDragon_ru\\DiyParser\\Ast\\Cursor\<LastDragon_ru\\GlobMatcher\\Glob\\Ast\\CharacterNodeChild\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: packages/glob-matcher/src/Glob/Ast/CharacterNode.php
+
+		-
+			message: '#^Parameter \#2 \$cursor of static method LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\:\:toRegex\(\) expects LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\>, LastDragon_ru\\DiyParser\\Ast\\Cursor\<covariant static\(LastDragon_ru\\GlobMatcher\\Glob\\Ast\\PatternListNode\)\>\|LastDragon_ru\\DiyParser\\Ast\\Cursor\<LastDragon_ru\\GlobMatcher\\Glob\\Ast\\Node\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: packages/glob-matcher/src/Glob/Ast/PatternListNode.php
 
 		-
 			message: '#^Static property LastDragon_ru\\LaraASP\\GraphQL\\Package\\Directives\\ExposeBuilderDirective\:\:\$result \(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model, covariant Illuminate\\Database\\Eloquent\\Model, mixed\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|null\) does not accept Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Relations\\Relation\<Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Query\\Builder\|Laravel\\Scout\\Builder\.$#'
@@ -107,12 +125,6 @@ parameters:
 			identifier: property.unusedType
 			count: 1
 			path: packages/graphql/src/Stream/Streams/Database.php
-
-		-
-			message: '#^Property LastDragon_ru\\DiyParser\\Iterables\\BufferedIterable\<TValue\>\:\:\$iterator \(Iterator\<mixed, TValue\>\) does not accept \(iterable\<TValue\>&Iterator\)\|IteratorIterator\<mixed, mixed, Traversable\<TKey, TValue\>\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: packages/diy-parser/src/Iterables/BufferedIterable.php
 
 		-
 			message: '#^Parameter \#2 \$typesMapping of class Symfony\\Component\\Serializer\\Mapping\\ClassDiscriminatorMapping constructor expects array\<string, string\>, array given\.$#'

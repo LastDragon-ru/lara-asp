@@ -1,0 +1,51 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/dots-invalid.js
+
+# describe('minimatch parity:', () => {
+## describe('minimatch issues (as of 12/7/2016)', () => {
+### it('https://github.com/isaacs/minimatch/issues/29', () => {
+  [true, "foo/bar.txt", "foo/**/*.txt"]
+  [false, "n/!(axios)/**", "n/axios/a.js"]
+
+### it('https://github.com/isaacs/minimatch/issues/30', () => {
+  // (3) [true, "foo/bar.js", "**/foo/**", { format }]
+  // (3) [true, "./foo/bar.js", "./**/foo/**", { format }]
+  // (3) [true, "./foo/bar.js", "**/foo/**", { format }]
+  // (3) [true, "./foo/bar.txt", "foo/**/*.txt", { format }]
+  // (3) [false, "./foo/!(bar)/**", "foo/bar/a.js", { format }]
+
+### it('https://github.com/isaacs/minimatch/issues/50', () => {
+  [true, "foo/bar-[ABC].txt", "foo/**/*-\\[ABC\\].txt"]
+  [false, "foo/bar-[ABC].txt", "foo/**/*-\\[abc\\].txt"]
+  [true, "foo/bar-[ABC].txt", "foo/**/*-\\[abc\\].txt", { "matchCase": false }]
+
+### it('https://github.com/isaacs/minimatch/issues/67 (should work consistently with `makeRe` and matcher functions)', () => {
+  [true, "node_modules/foobar/foo.bar", "node_modules/foobar/**/*.bar"]
+
+### it('https://github.com/isaacs/minimatch/issues/75', () => {
+  [true, "foo/baz.qux.js", "foo/@(baz.qux).js"]
+  [true, "foo/baz.qux.js", "foo/+(baz.qux).js"]
+  [true, "foo/baz.qux.js", "foo/*(baz.qux).js"]
+  [false, "foo/baz.qux.js", "foo/!(baz.qux).js"]
+  [false, "foo/bar/baz.qux.js", "foo/*/!(baz.qux).js"]
+  [false, "foo/bar/bazqux.js", "**/!(bazqux).js"]
+  [false, "foo/bar/bazqux.js", "**/bar/!(bazqux).js"]
+  [false, "foo/bar/bazqux.js", "foo/**/!(bazqux).js"]
+  [false, "foo/bar/bazqux.js", "foo/**/!(bazqux)*.js"]
+  [false, "foo/bar/baz.qux.js", "foo/**/!(baz.qux)*.js"]
+  [false, "foo/bar/baz.qux.js", "foo/**/!(baz.qux).js"]
+  [false, "foobar.js", "!(foo)*.js"]
+  [false, "foo.js", "!(foo).js"]
+  [false, "foo.js", "!(foo)*.js"]
+
+### it('https://github.com/isaacs/minimatch/issues/78', () => {
+  // (3) [true, "a\\b\\c.txt", "a/**/*.txt", null, { "windows": true }]
+  // (3) [true, "a/b/c.txt", "a/**/*.txt", null, { "windows": true }]
+
+### it('https://github.com/isaacs/minimatch/issues/82', () => {
+  // (3) [true, "./src/test/a.js", "**/test/**", { format }]
+  [true, "src/test/a.js", "**/test/**"]
+
+### it('https://github.com/isaacs/minimatch/issues/83', () => {
+  [false, "foo/!(bar)/**", "foo/bar/a.js"]

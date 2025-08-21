@@ -1,0 +1,712 @@
+# Source:
+# * https://github.com/micromatch/picomatch (bf6a33bd3db990edfbfd20b3b160eed926cd07dd)
+# * picomatch/test/dots-invalid.js
+
+# /**
+# * Ported from Bash 4.3 and 4.4 unit tests
+# */
+
+# describe('extglobs', () => {
+
+## it('should escape special characters immediately following opening parens', () => {
+  // (2) [true, "cbz", "c!(.)z"]
+  // (2) [false, "cbz", "c!(*)z"]
+  // (2) [true, "cccz", "c!(b*)z"]
+  // (2) [true, "cbz", "c!(+)z"]
+  // (2) [true, "cbz", "c!(?)z"]
+  // (2) [true, "cbz", "c!(@)z"]
+
+## it('should not convert capture groups to extglobs', () => {
+  // (2) [false, "c/z", "c!(?:foo)?z"]
+  // (2) [true, "c!fooz", "c!(?:foo)?z"]
+  // (2) [true, "c!z", "c!(?:foo)?z"]
+
+## describe('negation', () => {
+### it('should support negation extglobs as the entire pattern', () => {
+  [false, "abc", "!(abc)"]
+  [false, "a", "!(a)"]
+  [true, "aa", "!(a)"]
+  [true, "b", "!(a)"]
+
+### it('should support negation extglobs as part of a pattern', () => {
+  [true, "aac", "a!(b)c"]
+  [false, "abc", "a!(b)c"]
+  [true, "acc", "a!(b)c"]
+  [true, "abz", "a!(z)"]
+  [false, "az", "a!(z)"]
+
+### it('should support excluding dots with negation extglobs', () => {
+  [false, "a.", "a!(.)"]
+  [false, ".a", "!(.)a"]
+  [false, "a.c", "a!(.)c"]
+  [true, "abc", "a!(.)c"]
+
+  // See https://github.com/micromatch/picomatch/issues/83
+### it('should support stars in negation extglobs', () => {
+  [false, "/file.d.ts", "/!(*.d).ts"]
+  [true, "/file.ts", "/!(*.d).ts"]
+  [true, "/file.something.ts", "/!(*.d).ts"]
+  [true, "/file.d.something.ts", "/!(*.d).ts"]
+  [true, "/file.dhello.ts", "/!(*.d).ts"]
+
+  [false, "/file.d.ts", "**/!(*.d).ts"]
+  [true, "/file.ts", "**/!(*.d).ts"]
+  [true, "/file.something.ts", "**/!(*.d).ts"]
+  [true, "/file.d.something.ts", "**/!(*.d).ts"]
+  [true, "/file.dhello.ts", "**/!(*.d).ts"]
+
+  // See https://github.com/micromatch/picomatch/issues/93
+### it('should support stars in negation extglobs with expression after closing parenthesis', () => {
+  // Nested expression after closing parenthesis
+  // (1) [false, "/file.d.ts", "/!(*.d).{ts,tsx}"]
+  // (1) [true, "/file.ts", "/!(*.d).{ts,tsx}"]
+  // (1) [true, "/file.something.ts", "/!(*.d).{ts,tsx}"]
+  // (1) [true, "/file.d.something.ts", "/!(*.d).{ts,tsx}"]
+  // (1) [true, "/file.dhello.ts", "/!(*.d).{ts,tsx}"]
+
+  // Extglob after closing parenthesis
+  [false, "/file.d.ts", "/!(*.d).@(ts)"]
+  [true, "/file.ts", "/!(*.d).@(ts)"]
+  [true, "/file.something.ts", "/!(*.d).@(ts)"]
+  [true, "/file.d.something.ts", "/!(*.d).@(ts)"]
+  [true, "/file.dhello.ts", "/!(*.d).@(ts)"]
+
+### it('should support negation extglobs in patterns with slashes', () => {
+  [false, "foo/abc", "foo/!(abc)"]
+  [true, "foo/bar", "foo/!(abc)"]
+
+  [false, "a/z", "a/!(z)"]
+  [true, "a/b", "a/!(z)"]
+
+  [false, "c/z/v", "c/!(z)/v"]
+  [true, "c/a/v", "c/!(z)/v"]
+
+  // (4.8) [true, "a/a", "!(b/a)"]
+  [false, "b/a", "!(b/a)"]
+
+  [false, "foo/bar", "!(!(foo))*"]
+  // (4.8) [true, "a/a", "!(b/a)"]
+  [false, "b/a", "!(b/a)"]
+
+  // (2) (4.3) (4.8) [true, "a/a", "(!(b/a))"]
+  // (2) (4.3) (4.8) [true, "a/a", "!((b/a))"]
+  [false, "b/a", "!((b/a))"]
+
+  [false, "a/a", "(!(?:b/a))"]
+  [false, "b/a", "!((?:b/a))"]
+
+  // (2) (4.3) (4.8) [true, "a/a", "!(b/(a))"]
+  [false, "b/a", "!(b/(a))"]
+
+  // (4.8) [true, "a/a", "!(b/a)"]
+  [false, "b/a", "!(b/a)"]
+
+### it('should not match slashes with extglobs that do not have slashes', () => {
+  [false, "c/z", "c!(z)"]
+  [false, "c/z", "c!(z)z"]
+  [false, "c/z", "c!(.)z"]
+  [false, "c/z", "c!(*)z"]
+  [false, "c/z", "c!(+)z"]
+  [false, "c/z", "c!(?)z"]
+  [false, "c/z", "c!(@)z"]
+
+### it('should support matching slashes with extglobs that have slashes', () => {
+  [false, "c/z", "a!(z)"]
+  [false, "c/z", "c!(.)z"]
+  [false, "c/z", "c!(/)z"]
+  [false, "c/z", "c!(/z)z"]
+  [false, "c/b", "c!(/z)z"]
+  // (4.8) [true, "c/b/z", "c!(/z)z"]
+
+### it('should support negation extglobs following !', () => {
+  // (2) [true, "abc",  "!!(abc)"]
+  // (2) [false, "abc", "!!!(abc)"]
+  // (2) [true, "abc",  "!!!!(abc)"]
+  // (2) [false, "abc", "!!!!!(abc)"]
+  // (2) [true, "abc",  "!!!!!!(abc)"]
+  // (2) [false, "abc", "!!!!!!!(abc)"]
+  // (2) [true, "abc",  "!!!!!!!!(abc)"]
+
+### it('should support nested negation extglobs', () => {
+  [true, "abc",  "!(!(abc))"]
+  [false, "abc", "!(!(!(abc)))"]
+  [true, "abc",  "!(!(!(!(abc))))"]
+  [false, "abc", "!(!(!(!(!(abc)))))"]
+  [true, "abc",  "!(!(!(!(!(!(abc))))))"]
+  [false, "abc", "!(!(!(!(!(!(!(abc)))))))"]
+  [true, "abc",  "!(!(!(!(!(!(!(!(abc))))))))"]
+
+  [true, "foo/abc",  "foo/!(!(abc))"]
+  [false, "foo/abc", "foo/!(!(!(abc)))"]
+  [true, "foo/abc",  "foo/!(!(!(!(abc))))"]
+  [false, "foo/abc", "foo/!(!(!(!(!(abc)))))"]
+  [true, "foo/abc",  "foo/!(!(!(!(!(!(abc))))))"]
+  [false, "foo/abc", "foo/!(!(!(!(!(!(!(abc)))))))"]
+  [true, "foo/abc",  "foo/!(!(!(!(!(!(!(!(abc))))))))"]
+
+### it('should support multiple !(...) extglobs in a pattern', () => {
+  [false, "moo.cow", "!(moo).!(cow)"]
+  [false, "foo.cow", "!(moo).!(cow)"]
+  [false, "moo.bar", "!(moo).!(cow)"]
+  [true, "foo.bar", "!(moo).!(cow)"]
+
+  [false, "a   ", "@(!(a) )*"]
+  [false, "a   b", "@(!(a) )*"]
+  [false, "a  b", "@(!(a) )*"]
+  [false, "a  ", "@(!(a) )*"]
+  [false, "a ", "@(!(a) )*"]
+  [false, "a", "@(!(a) )*"]
+  [false, "aa", "@(!(a) )*"]
+  [false, "b", "@(!(a) )*"]
+  [false, "bb", "@(!(a) )*"]
+  [true, " a ", "@(!(a) )*"]
+  [true, "b  ", "@(!(a) )*"]
+  [true, "b ", "@(!(a) )*"]
+
+  [false, "c/z", "a*!(z)"]
+  [true, "abz", "a*!(z)"]
+  [true, "az", "a*!(z)"]
+
+  [false, "a", "!(a*)"]
+  [false, "aa", "!(a*)"]
+  [false, "ab", "!(a*)"]
+  [true, "b", "!(a*)"]
+
+  [false, "a", "!(*a*)"]
+  [false, "aa", "!(*a*)"]
+  [false, "ab", "!(*a*)"]
+  [false, "ac", "!(*a*)"]
+  [true, "b", "!(*a*)"]
+
+  [false, "a", "!(*a)"]
+  [false, "aa", "!(*a)"]
+  [false, "bba", "!(*a)"]
+  [true, "ab", "!(*a)"]
+  [true, "ac", "!(*a)"]
+  [true, "b", "!(*a)"]
+
+  [false, "a", "!(*a)*"]
+  [false, "aa", "!(*a)*"]
+  [false, "bba", "!(*a)*"]
+  [false, "ab", "!(*a)*"]
+  [false, "ac", "!(*a)*"]
+  [true, "b", "!(*a)*"]
+
+  [false, "a", "!(a)*"]
+  // (2) [false, "abb", "!(a)*"]
+  [true, "ba", "!(a)*"]
+
+  [true, "aa", "a!(b)*"]
+  [false, "ab", "a!(b)*"]
+  [false, "aba", "a!(b)*"]
+  [true, "ac", "a!(b)*"]
+
+### it('should multiple nested negation extglobs', () => {
+  [true, "moo.cow", "!(!(moo)).!(!(cow))"]
+
+### it('should support logical-or inside negation !(...) extglobs', () => {
+  [false, "ac", "!(a|b)c"]
+  [false, "bc", "!(a|b)c"]
+  [true, "cc", "!(a|b)c"]
+
+### it('should support multiple logical-ors negation extglobs', () => {
+  [false, "ac.d", "!(a|b)c.!(d|e)"]
+  [false, "bc.d", "!(a|b)c.!(d|e)"]
+  [false, "cc.d", "!(a|b)c.!(d|e)"]
+  [false, "ac.e", "!(a|b)c.!(d|e)"]
+  [false, "bc.e", "!(a|b)c.!(d|e)"]
+  [false, "cc.e", "!(a|b)c.!(d|e)"]
+  [false, "ac.f", "!(a|b)c.!(d|e)"]
+  [false, "bc.f", "!(a|b)c.!(d|e)"]
+  [true, "cc.f", "!(a|b)c.!(d|e)"]
+  [true, "dc.g", "!(a|b)c.!(d|e)"]
+
+### it('should support nested logical-ors inside negation extglobs', () => {
+  [true, "ac.d", "!(!(a|b)c.!(d|e))"]
+  [true, "bc.d", "!(!(a|b)c.!(d|e))"]
+  [false, "cc.d", "!(a|b)c.!(d|e)"]
+  [true, "cc.d", "!(!(a|b)c.!(d|e))"]
+  [true, "cc.d", "!(!(a|b)c.!(d|e))"]
+  [true, "ac.e", "!(!(a|b)c.!(d|e))"]
+  [true, "bc.e", "!(!(a|b)c.!(d|e))"]
+  [true, "cc.e", "!(!(a|b)c.!(d|e))"]
+  [true, "ac.f", "!(!(a|b)c.!(d|e))"]
+  [true, "bc.f", "!(!(a|b)c.!(d|e))"]
+  [false, "cc.f", "!(!(a|b)c.!(d|e))"]
+  [false, "dc.g", "!(!(a|b)c.!(d|e))"]
+
+## describe('file extensions', () => {
+### it('should support matching file extensions with @(...)', () => {
+  [false, ".md", "@(a|b).md"]
+  [false, "a.js", "@(a|b).md"]
+  [false, "c.md", "@(a|b).md"]
+  [true, "a.md", "@(a|b).md"]
+  [true, "b.md", "@(a|b).md"]
+
+### it('should support matching file extensions with +(...)', () => {
+  [false, ".md", "+(a|b).md"]
+  [false, "a.js", "+(a|b).md"]
+  [false, "c.md", "+(a|b).md"]
+  [true, "a.md", "+(a|b).md"]
+  [true, "aa.md", "+(a|b).md"]
+  [true, "ab.md", "+(a|b).md"]
+  [true, "b.md", "+(a|b).md"]
+  [true, "bb.md", "+(a|b).md"]
+
+### it('should support matching file extensions with *(...)', () => {
+  [false, "a.js", "*(a|b).md"]
+  [false, "c.md", "*(a|b).md"]
+  // (4.1) [true, ".md", "*(a|b).md"]
+  [true, "a.md", "*(a|b).md"]
+  [true, "aa.md", "*(a|b).md"]
+  [true, "ab.md", "*(a|b).md"]
+  [true, "b.md", "*(a|b).md"]
+  [true, "bb.md", "*(a|b).md"]
+
+### it('should support matching file extensions with ?(...)', () => {
+  [false, "a.js", "?(a|b).md"]
+  [false, "bb.md", "?(a|b).md"]
+  [false, "c.md", "?(a|b).md"]
+  // (4.1) [true, ".md", "?(a|b).md"]
+  [true, "a.md", "?(a|ab|b).md"]
+  [true, "a.md", "?(a|b).md"]
+  [true, "aa.md", "?(a|aa|b).md"]
+  [true, "ab.md", "?(a|ab|b).md"]
+  [true, "b.md", "?(a|ab|b).md"]
+
+  // See https://github.com/micromatch/micromatch/issues/186
+  [true, "ab", "+(a)?(b)"]
+  [true, "aab", "+(a)?(b)"]
+  [true, "aa", "+(a)?(b)"]
+  [true, "a", "+(a)?(b)"]
+
+## describe('statechar', () => {
+### it('should support ?(...) extglobs ending with statechar', () => {
+  [false, "ax", "a?(b*)"]
+  [true, "ax", "?(a*|b)"]
+
+### it('should support *(...) extglobs ending with statechar', () => {
+  [false, "ax", "a*(b*)"]
+  [true, "ax", "*(a*|b)"]
+
+### it('should support @(...) extglobs ending with statechar', () => {
+  [false, "ax", "a@(b*)"]
+  [true, "ax", "@(a*|b)"]
+
+### it('should support ?(...) extglobs ending with statechar', () => {
+  [false, "ax", "a?(b*)"]
+  [true, "ax", "?(a*|b)"]
+
+### it('should support !(...) extglobs ending with statechar', () => {
+  [true, "ax", "a!(b*)"]
+  [false, "ax", "!(a*|b)"]
+
+## it('should match nested directories with negation extglobs', () => {
+  // (4.8) [true, "a", "!(a/**)"]
+  // (4.8) [false, "a/", "!(a/**)"]
+  // (4.8) [false, "a/b", "!(a/**)"]
+  // (4.8) [false, "a/b/c", "!(a/**)"]
+  // (4.8) [true, "b", "!(a/**)"]
+  // (4.8) [true, "b/c", "!(a/**)"]
+
+  [true, "a/a", "a/!(b*)"]
+  [false, "a/b", "a/!(b*)"]
+  [false, "a/b/c", "a/!(b/*)"]
+  [false, "a/b/c", "a/!(b*)"]
+  [true, "a/c", "a/!(b*)"]
+
+  [true, "a/a/", "a/!(b*)/**"]
+  [true, "a/a", "a/!(b*)"]
+  // (4.2) [true, "a/a", "a/!(b*)/**"]
+  [false, "a/b", "a/!(b*)/**"]
+  [false, "a/b/c", "a/!(b*)/**"]
+  // (4.2) [true, "a/c", "a/!(b*)/**"]
+  [true, "a/c", "a/!(b*)"]
+  [true, "a/c/", "a/!(b*)/**"]
+
+## it('should support *(...)', () => {
+  [true, "a", "a*(z)"]
+  [true, "az", "a*(z)"]
+  [true, "azz", "a*(z)"]
+  [true, "azzz", "a*(z)"]
+  [false, "abz", "a*(z)"]
+  [false, "cz", "a*(z)"]
+
+  // (4.8) [false, "a/a", "*(b/a)"]
+  // (4.8) [false, "a/b", "*(b/a)"]
+  // (4.8) [false, "a/c", "*(b/a)"]
+  // (4.8) [true, "b/a", "*(b/a)"]
+  // (4.8) [false, "b/b", "*(b/a)"]
+  // (4.8) [false, "b/c", "*(b/a)"]
+
+  [false, "cz", "a**(z)"]
+  [true, "abz", "a**(z)"]
+  [true, "az", "a**(z)"]
+
+  [false, "c/z/v", "*(z)"]
+  [true, "z", "*(z)"]
+  [false, "zf", "*(z)"]
+  [false, "fz", "*(z)"]
+
+  [false, "c/a/v", "c/*(z)/v"]
+  [true, "c/z/v", "c/*(z)/v"]
+
+  [false, "a.md.js", "*.*(js).js"]
+  [true, "a.js.js", "*.*(js).js"]
+
+## it('should support +(...) extglobs', () => {
+  [false, "a", "a+(z)"]
+  [true, "az", "a+(z)"]
+  [false, "cz", "a+(z)"]
+  [false, "abz", "a+(z)"]
+  [false, "a+z", "a+(z)"]
+  [true, "a+z", "a++(z)"]
+  [false, "c+z", "a+(z)"]
+  [false, "a+bz", "a+(z)"]
+  [false, "az", "+(z)"]
+  [false, "cz", "+(z)"]
+  [false, "abz", "+(z)"]
+  [false, "fz", "+(z)"]
+  [true, "z", "+(z)"]
+  [true, "zz", "+(z)"]
+  [true, "c/z/v", "c/+(z)/v"]
+  [true, "c/zz/v", "c/+(z)/v"]
+  [false, "c/a/v", "c/+(z)/v"]
+
+## it('should support ?(...) extglobs', () => {
+  [true, "a?z", "a??(z)"]
+  [true, "a.z", "a??(z)"]
+  [false, "a/z", "a??(z)"]
+  [true, "a?", "a??(z)"]
+  [true, "ab", "a??(z)"]
+  [false, "a/", "a??(z)"]
+
+  [false, "a?z", "a?(z)"]
+  [false, "abz", "a?(z)"]
+  [false, "z", "a?(z)"]
+  [true, "a", "a?(z)"]
+  [true, "az", "a?(z)"]
+
+  [false, "abz", "?(z)"]
+  [false, "az", "?(z)"]
+  [false, "cz", "?(z)"]
+  [false, "fz", "?(z)"]
+  [false, "zz", "?(z)"]
+  [true, "z", "?(z)"]
+
+  [false, "c/a/v", "c/?(z)/v"]
+  [false, "c/zz/v", "c/?(z)/v"]
+  [true, "c/z/v", "c/?(z)/v"]
+
+## it('should support @(...) extglobs', () => {
+  [true, "c/z/v", "c/@(z)/v"]
+  [false, "c/a/v", "c/@(z)/v"]
+  [true, "moo.cow", "@(*.*)"]
+
+  [false, "cz", "a*@(z)"]
+  [true, "abz", "a*@(z)"]
+  [true, "az", "a*@(z)"]
+
+  [false, "cz", "a@(z)"]
+  [false, "abz", "a@(z)"]
+  [true, "az", "a@(z)"]
+
+## it('should match exactly one of the given pattern:', () => {
+  // (4.3) [false, "aa.aa", "(b|a).(a)"]
+  // (4.3) [false, "a.bb", "(b|a).(a)"]
+  // (4.3) [false, "a.aa.a", "(b|a).(a)"]
+  // (4.3) [false, "cc.a", "(b|a).(a)"]
+  // (4.3) [true, "a.a", "(b|a).(a)"]
+  // (4.3) [false, "c.a", "(b|a).(a)"]
+  // (4.3) [false, "dd.aa.d", "(b|a).(a)"]
+  // (4.3) [true, "b.a", "(b|a).(a)"]
+
+  [false, "aa.aa", "@(b|a).@(a)"]
+  [false, "a.bb", "@(b|a).@(a)"]
+  [false, "a.aa.a", "@(b|a).@(a)"]
+  [false, "cc.a", "@(b|a).@(a)"]
+  [true, "a.a", "@(b|a).@(a)"]
+  [false, "c.a", "@(b|a).@(a)"]
+  [false, "dd.aa.d", "@(b|a).@(a)"]
+  [true, "b.a", "@(b|a).@(a)"]
+
+## it('should pass tests from rosenblatt\'s korn shell book', () => {
+  // This one is the only difference, since picomatch does not match empty strings.
+  [false, "", "*(0|1|3|5|7|9)"]
+
+  [true, "137577991", "*(0|1|3|5|7|9)"]
+  [false, "2468", "*(0|1|3|5|7|9)"]
+
+  [true, "file.c", "*.c?(c)"]
+  [false, "file.C", "*.c?(c)"]
+  [true, "file.cc", "*.c?(c)"]
+  [false, "file.ccc", "*.c?(c)"]
+
+  [true, "parse.y", "!(*.c|*.h|Makefile.in|config*|README)"]
+  [false, "shell.c", "!(*.c|*.h|Makefile.in|config*|README)"]
+  [true, "Makefile", "!(*.c|*.h|Makefile.in|config*|README)"]
+  [false, "Makefile.in", "!(*.c|*.h|Makefile.in|config*|README)"]
+
+  [false, "VMS.FILE;", "*\\;[1-9]*([0-9])"]
+  [false, "VMS.FILE;0", "*\\;[1-9]*([0-9])"]
+  [true, "VMS.FILE;1", "*\\;[1-9]*([0-9])"]
+  [true, "VMS.FILE;139", "*\\;[1-9]*([0-9])"]
+  [false, "VMS.FILE;1N", "*\\;[1-9]*([0-9])"]
+
+## it('tests derived from the pd-ksh test suite', () => {
+  [true, "abcx", "!([*)*"]
+  [true, "abcz", "!([*)*"]
+  [true, "bbc", "!([*)*"]
+
+  [true, "abcx", "!([[*])*"]
+  [true, "abcz", "!([[*])*"]
+  [true, "bbc", "!([[*])*"]
+
+  [true, "abcx", "+(a|b\\[)*"]
+  [true, "abcz", "+(a|b\\[)*"]
+  [false, "bbc", "+(a|b\\[)*"]
+
+  [true, "abcx", "+(a|b[)*"]
+  [true, "abcz", "+(a|b[)*"]
+  [false, "bbc", "+(a|b[)*"]
+
+  [false, "abcx", "[a*(]*z"]
+  [true, "abcz", "[a*(]*z"]
+  [false, "bbc", "[a*(]*z"]
+  [true, "aaz", "[a*(]*z"]
+  [true, "aaaz", "[a*(]*z"]
+
+  [false, "abcx", "[a*(]*)z"]
+  [false, "abcz", "[a*(]*)z"]
+  [false, "bbc", "[a*(]*)z"]
+
+  [false, "abc", "+()c"]
+  [false, "abc", "+()x"]
+  [true, "abc", "+(*)c"]
+  [false, "abc", "+(*)x"]
+  [false, "abc", "no-file+(a|b)stuff"]
+  [false, "abc", "no-file+(a*(c)|b)stuff"]
+
+  [true, "abd", "a+(b|c)d"]
+  [true, "acd", "a+(b|c)d"]
+
+  [false, "abc", "a+(b|c)d"]
+
+  [true, "abd", "a!(b|B)"]
+  [true, "acd", "a!(@(b|B))"]
+  [true, "ac", "a!(@(b|B))"]
+  [false, "ab", "a!(@(b|B))"]
+
+  [false, "abc", "a!(@(b|B))d"]
+  [false, "abd", "a!(@(b|B))d"]
+  [true, "acd", "a!(@(b|B))d"]
+
+  [true, "abd", "a[b*(foo|bar)]d"]
+  [false, "abc", "a[b*(foo|bar)]d"]
+  [false, "acd", "a[b*(foo|bar)]d"]
+
+## it('stuff from korn\'s book', () => {
+  [false, "para", "para+([0-9])"]
+  [false, "para381", "para?([345]|99)1"]
+  [false, "paragraph", "para*([0-9])"]
+  [false, "paramour", "para@(chute|graph)"]
+  [true, "para", "para*([0-9])"]
+  [true, "para.38", "para!(*.[0-9])"]
+  [true, "para.38", "para!(*.[00-09])"]
+  [true, "para.graph", "para!(*.[0-9])"]
+  [true, "para13829383746592", "para*([0-9])"]
+  [true, "para39", "para!(*.[0-9])"]
+  [true, "para987346523", "para+([0-9])"]
+  [true, "para991", "para?([345]|99)1"]
+  [true, "paragraph", "para!(*.[0-9])"]
+  [true, "paragraph", "para@(chute|graph)"]
+
+## it('simple kleene star tests', () => {
+  [false, "foo", "*(a|b[)"]
+  [false, "(", "*(a|b[)"]
+  [false, ")", "*(a|b[)"]
+  [false, "|", "*(a|b[)"]
+  [true, "a", "*(a|b)"]
+  [true, "b", "*(a|b)"]
+  [true, "b[", "*(a|b\\[)"]
+  [true, "ab[", "+(a|b\\[)"]
+  [false, "ab[cde", "+(a|b\\[)"]
+  [true, "ab[cde", "+(a|b\\[)*"]
+
+  [true, "foo", "*(a|b|f)*"]
+  [true, "foo", "*(a|b|o)*"]
+  [true, "foo", "*(a|b|f|o)"]
+  [true, "*(a|b[)", "\\*\\(a\\|b\\[\\)"]
+  [false, "foo", "*(a|b)"]
+  [false, "foo", "*(a|b\\[)"]
+  // (2) [true, "foo", "*(a|b\\[)|f*"]
+
+## it('should support multiple extglobs:', () => {
+  [true, "moo.cow", "@(*).@(*)"]
+  [true, "a.a", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [true, "a.b", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "a.c", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "a.c.d", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "c.c", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "a.", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "d.d", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "e.e", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [false, "f.f", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+  [true, "a.abcd", "*.@(a|b|@(ab|a*@(b))*@(c)d)"]
+
+  [false, "a.a", "!(*.a|*.b|*.c)"]
+  [false, "a.b", "!(*.a|*.b|*.c)"]
+  [false, "a.c", "!(*.a|*.b|*.c)"]
+  [true, "a.c.d", "!(*.a|*.b|*.c)"]
+  [false, "c.c", "!(*.a|*.b|*.c)"]
+  [true, "a.", "!(*.a|*.b|*.c)"]
+  [true, "d.d", "!(*.a|*.b|*.c)"]
+  [true, "e.e", "!(*.a|*.b|*.c)"]
+  [true, "f.f", "!(*.a|*.b|*.c)"]
+  [true, "a.abcd", "!(*.a|*.b|*.c)"]
+
+  [true, "a.a", "!(*.[^a-c])"]
+  [true, "a.b", "!(*.[^a-c])"]
+  [true, "a.c", "!(*.[^a-c])"]
+  [false, "a.c.d", "!(*.[^a-c])"]
+  [true, "c.c", "!(*.[^a-c])"]
+  [true, "a.", "!(*.[^a-c])"]
+  [false, "d.d", "!(*.[^a-c])"]
+  [false, "e.e", "!(*.[^a-c])"]
+  [false, "f.f", "!(*.[^a-c])"]
+  [true, "a.abcd", "!(*.[^a-c])"]
+
+  [false, "a.a", "!(*.[a-c])"]
+  [false, "a.b", "!(*.[a-c])"]
+  [false, "a.c", "!(*.[a-c])"]
+  [true, "a.c.d", "!(*.[a-c])"]
+  [false, "c.c", "!(*.[a-c])"]
+  [true, "a.", "!(*.[a-c])"]
+  [true, "d.d", "!(*.[a-c])"]
+  [true, "e.e", "!(*.[a-c])"]
+  [true, "f.f", "!(*.[a-c])"]
+  [true, "a.abcd", "!(*.[a-c])"]
+
+  [false, "a.a", "!(*.[a-c]*)"]
+  [false, "a.b", "!(*.[a-c]*)"]
+  [false, "a.c", "!(*.[a-c]*)"]
+  [false, "a.c.d", "!(*.[a-c]*)"]
+  [false, "c.c", "!(*.[a-c]*)"]
+  [true, "a.", "!(*.[a-c]*)"]
+  [true, "d.d", "!(*.[a-c]*)"]
+  [true, "e.e", "!(*.[a-c]*)"]
+  [true, "f.f", "!(*.[a-c]*)"]
+  [false, "a.abcd", "!(*.[a-c]*)"]
+
+  [false, "a.a", "*.!(a|b|c)"]
+  [false, "a.b", "*.!(a|b|c)"]
+  [false, "a.c", "*.!(a|b|c)"]
+  [true, "a.c.d", "*.!(a|b|c)"]
+  [false, "c.c", "*.!(a|b|c)"]
+  [true, "a.", "*.!(a|b|c)"]
+  [true, "d.d", "*.!(a|b|c)"]
+  [true, "e.e", "*.!(a|b|c)"]
+  [true, "f.f", "*.!(a|b|c)"]
+  [true, "a.abcd", "*.!(a|b|c)"]
+
+  [true, "a.a", "*!(.a|.b|.c)"]
+  [true, "a.b", "*!(.a|.b|.c)"]
+  [true, "a.c", "*!(.a|.b|.c)"]
+  [true, "a.c.d", "*!(.a|.b|.c)"]
+  [true, "c.c", "*!(.a|.b|.c)"]
+  [true, "a.", "*!(.a|.b|.c)"]
+  [true, "d.d", "*!(.a|.b|.c)"]
+  [true, "e.e", "*!(.a|.b|.c)"]
+  [true, "f.f", "*!(.a|.b|.c)"]
+  [true, "a.abcd", "*!(.a|.b|.c)"]
+
+  [false, "a.a", "!(*.[a-c])*"]
+  [false, "a.b", "!(*.[a-c])*"]
+  [false, "a.c", "!(*.[a-c])*"]
+  [false, "a.c.d", "!(*.[a-c])*"]
+  [false, "c.c", "!(*.[a-c])*"]
+  [true, "a.", "!(*.[a-c])*"]
+  [true, "d.d", "!(*.[a-c])*"]
+  [true, "e.e", "!(*.[a-c])*"]
+  [true, "f.f", "!(*.[a-c])*"]
+  [false, "a.abcd", "!(*.[a-c])*"]
+
+  [true, "a.a", "*!(.a|.b|.c)*"]
+  [true, "a.b", "*!(.a|.b|.c)*"]
+  [true, "a.c", "*!(.a|.b|.c)*"]
+  [true, "a.c.d", "*!(.a|.b|.c)*"]
+  [true, "c.c", "*!(.a|.b|.c)*"]
+  [true, "a.", "*!(.a|.b|.c)*"]
+  [true, "d.d", "*!(.a|.b|.c)*"]
+  [true, "e.e", "*!(.a|.b|.c)*"]
+  [true, "f.f", "*!(.a|.b|.c)*"]
+  [true, "a.abcd", "*!(.a|.b|.c)*"]
+
+  [false, "a.a", "*.!(a|b|c)*"]
+  [false, "a.b", "*.!(a|b|c)*"]
+  [false, "a.c", "*.!(a|b|c)*"]
+  [true, "a.c.d", "*.!(a|b|c)*"]
+  [false, "c.c", "*.!(a|b|c)*"]
+  [true, "a.", "*.!(a|b|c)*"]
+  [true, "d.d", "*.!(a|b|c)*"]
+  [true, "e.e", "*.!(a|b|c)*"]
+  [true, "f.f", "*.!(a|b|c)*"]
+  [false, "a.abcd", "*.!(a|b|c)*"]
+
+## it('should correctly match empty parens', () => {
+  [false, "def", "@()ef"]
+  [true, "ef", "@()ef"]
+
+  // (2) [false, "def", "()ef"]
+  // (2) [true, "ef", "()ef"]
+
+## it('should match escaped parens', () => {
+  [true, "a\\(b", "a\\\\\\(b"]
+  [true, "a(b", "a(b"]
+  [true, "a(b", "a\\(b"]
+  [false, "a((b", "a(b"]
+  [false, "a((((b", "a(b"]
+  [false, "ab", "a(b"]
+
+  [true, "a(b", "a\\(b"]
+  [false, "a((b", "a\\(b"]
+  [false, "a((((b", "a\\(b"]
+  [false, "ab", "a\\(b"]
+
+  [true, "a(b", "a(*b"]
+  [true, "a(ab", "a\\(*b"]
+  [true, "a((b", "a(*b"]
+  [true, "a((((b", "a(*b"]
+  [false, "ab", "a(*b"]
+
+## it('should match escaped backslashes', () => {
+  [true, "a(b", "a\\(b"]
+  [true, "a((b", "a\\(\\(b"]
+  [true, "a((((b", "a\\(\\(\\(\\(b"]
+
+  [false, "a(b", "a\\\\(b"]
+  [false, "a((b", "a\\\\(b"]
+  [false, "a((((b", "a\\\\(b"]
+  [false, "ab", "a\\\\(b"]
+
+  [false, "a/b", "a\\\\b"]
+  [false, "ab", "a\\\\b"]
+
+  // these are not extglobs, and do not need to pass, but they are included
+  // to test integration with other features
+## it('should support regex characters', () => {
+  [["a/b"], ["a\\b", "a/b", "ab"], "a/b"]
+  [["a/b"], ["a/b", "ab"], "a/b"]
+  [["abbbc"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "ab?bc"]
+  [["abbbbc", "abbbc", "abbc", "abc"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "ab*c"]
+  [["abbbbc", "abbbc", "abbc"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a+(b)bc"]
+  [[], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "^abc$"]
+  [["a.c"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a.c"]
+  [["a.c", "a.xy.zc", "a.zc"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a.*c"]
+  [["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "axy zc", "axy.zc", "axyzc"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a*c"]
+  // (2) [["a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "axyzc"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a[\\w]+c", "Should match word characters"]
+  // (2) [["a c", "a.c"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a[\\W]+c", "Should match non-word characters"]
+  // (2) [["a123c", "a1c"], ["a c", "a.c", "a.xy.zc", "a.zc", "a123c", "a1c", "abbbbc", "abbbc", "abbc", "abc", "abq", "axy zc", "axy", "axy.zc", "axyzc"], "a[\\d]+c", "Should match numbers"]
+  // (2) [["123"], ["foo@#$%123ASD #$$%^&", "foo!@#$asdfl;", "123"], "[\\d]+"]
+  // (2) [["abbbc"], ["a123c", "abbbc"], "a[\\D]+c", "Should match non-numbers"]
+  // (2) [["foo"], ["foo", " foo "], "(f|o)+\\b", "Should match word boundaries"]

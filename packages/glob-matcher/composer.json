@@ -1,0 +1,45 @@
+{
+  "name": "lastdragon-ru/glob-matcher",
+  "homepage": "https://github.com/LastDragon-ru/lara-asp",
+  "description": "Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, `*`), globstar (`**`), extglob (`?(pattern-list)`, `*(pattern-list)`, `+(pattern-list)`, `@(pattern-list)`, `!(pattern-list)`), brace expansion (`{a,b,c}.txt`, `{1..3}.txt`, etc), dotglob, nocasematch, POSIX Named character classes (`[:alnum:]`, etc), POSIX Collating symbols (`[.ch.]`, etc), POSIX Equivalence class expressions (`[=a=]`, etc), and escaping.",
+  "readme": "README.md",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "glob",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp",
+    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+  },
+  "require": {
+    "php": "^8.3|^8.4",
+    "ext-filter": "*",
+    "ext-mbstring": "*",
+    "lastdragon-ru/diy-parser": "self.version"
+  },
+  "require-dev": {
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "mockery/mockery": "^1.6.6",
+    "phpunit/phpunit": "^11.2.0|^12.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\GlobMatcher\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\GlobMatcher\\Docs\\": "docs"
+    },
+    "exclude-from-classmap": [
+      "docs/"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
