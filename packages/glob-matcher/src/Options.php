@@ -8,7 +8,7 @@ use LastDragon_ru\GlobMatcher\Glob\Options as GlobOptions;
 readonly class Options {
     public function __construct(
         /**
-         * Expand Brace Expansion?
+         * Expand braces?
          *
          * @see BraceExpander
          */

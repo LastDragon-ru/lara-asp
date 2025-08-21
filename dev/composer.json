@@ -4,6 +4,7 @@
     "laravel/framework": "^12.0",
     "laravel/tinker": "^2.9",
     "lastdragon-ru/diy-parser": "self.version",
+    "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",

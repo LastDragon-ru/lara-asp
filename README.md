@@ -118,6 +118,12 @@ There are several tools to generate full-featured parsers even for PHP. They are
 
 [Read more](<packages/diy-parser/README.md>).
 
+## [Glob](<packages/glob-matcher/README.md>)
+
+Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, `*`), globstar (`**`), extglob (`?(pattern-list)`, `*(pattern-list)`, `+(pattern-list)`, `@(pattern-list)`, `!(pattern-list)`), brace expansion (`{a,b,c}.txt`, `{1..3}.txt`, etc), dotglob, nocasematch, POSIX Named character classes (`[:alnum:]`, etc), POSIX Collating symbols (`[.ch.]`, etc), POSIX Equivalence class expressions (`[=a=]`, etc), and escaping. Everything supported 😎
+
+[Read more](<packages/glob-matcher/README.md>).
+
 ## [GraphQL Printer](<packages/graphql-printer/README.md>)
 
 Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.

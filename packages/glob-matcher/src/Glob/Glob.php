@@ -9,10 +9,9 @@ use LastDragon_ru\GlobMatcher\Glob\Parser\Parser;
 use LastDragon_ru\GlobMatcher\Regex;
 
 /**
- * Yet another glob implementation.
+ * Parse/Match glob pattern.
  *
- * Why? Because I cannot find a library that supports "globstar" that is needed
- * to simplify patterns.
+ * @see https://en.wikipedia.org/wiki/Glob_(programming)
  */
 readonly class Glob {
     public GlobNode $node;
