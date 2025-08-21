@@ -3,7 +3,7 @@
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Ast;
 
 use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
+use LastDragon_ru\GlobMatcher\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\GlobMatcher;
 
-use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
+use LastDragon_ru\GlobMatcher\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

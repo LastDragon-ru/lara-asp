@@ -7,7 +7,7 @@ use LastDragon_ru\GlobMatcher\BraceExpander\Ast\CharacterSequenceNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\IntegerSequenceNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\SequenceNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\StringNode;
-use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
+use LastDragon_ru\GlobMatcher\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

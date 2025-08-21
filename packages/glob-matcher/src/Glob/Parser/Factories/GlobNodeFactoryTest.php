@@ -4,7 +4,7 @@ namespace LastDragon_ru\GlobMatcher\Glob\Parser\Factories;
 
 use LastDragon_ru\GlobMatcher\Glob\Ast\GlobNode;
 use LastDragon_ru\GlobMatcher\Glob\Ast\SegmentNode;
-use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
+use LastDragon_ru\GlobMatcher\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**

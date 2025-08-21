@@ -4,7 +4,7 @@ namespace LastDragon_ru\GlobMatcher\Glob;
 
 use Exception;
 use LastDragon_ru\GlobMatcher\Package;
-use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
+use LastDragon_ru\GlobMatcher\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

@@ -6,7 +6,7 @@ use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNode;
 use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListQuantifier;
 use LastDragon_ru\GlobMatcher\Glob\Ast\PatternNode;
 use LastDragon_ru\GlobMatcher\Glob\Ast\StringNode;
-use LastDragon_ru\GlobMatcher\Testing\Package\TestCase;
+use LastDragon_ru\GlobMatcher\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
