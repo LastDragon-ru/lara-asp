@@ -66,6 +66,17 @@ final class SymfonyAdapterTest extends TestCase {
             ],
             $this->asArray($path, $adapter->getFilesIterator($path, include: 'a.txt')),
         );
+        self::assertSame(
+            [
+                'a.txt',
+                'a/aa.txt',
+                'a/aa/aaa.txt',
+                'b.txt',
+                'b/bb.txt',
+                'b/bb/bbb.txt',
+            ],
+            $this->asArray($path, $adapter->getFilesIterator($path, include: '**/*.txt')),
+        );
     }
 
     public function testGetDirectoriesIterator(): void {

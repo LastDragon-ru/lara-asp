@@ -2,53 +2,65 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
+use LastDragon_ru\GlobMatcher\GlobMatcher;
+use LastDragon_ru\GlobMatcher\MatchMode;
+use LastDragon_ru\GlobMatcher\Options;
+use LastDragon_ru\GlobMatcher\Regex;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use Symfony\Component\Finder\Glob;
+use Symfony\Component\Finder\SplFileInfo;
 
-use function array_filter;
-use function array_map;
 use function implode;
-use function mb_substr;
-use function preg_match;
 
 /**
  * @internal
  */
 class Globs {
-    public readonly ?string $regexp;
+    private ?Regex $regex;
 
-    public function __construct(
-        /**
-         * @var array<array-key, string>
-         */
-        public readonly array $globs,
-    ) {
-        $this->regexp = $this->toRegexp($this->globs);
+    /**
+     * @param array<array-key, string>|string|null $patterns
+     */
+    public function __construct(array|string|null $patterns) {
+        $this->regex = $this->regex((array) $patterns);
     }
 
-    public function isMatch(FilePath $file): bool {
-        return $this->regexp !== null && preg_match($this->regexp, (string) $file) > 0;
+    public function isEmpty(): bool {
+        return $this->regex === null;
+    }
+
+    public function isMatch(DirectoryPath|FilePath|SplFileInfo|string $path): bool {
+        return (bool) $this->regex?->isMatch($this->path($path));
+    }
+
+    public function isNotMatch(DirectoryPath|FilePath|SplFileInfo|string $path): bool {
+        return !$this->isMatch($path);
     }
 
     /**
-     * @param array<array-key, string> $globs
+     * @param array<array-key, string> $patterns
      */
-    protected function toRegexp(array $globs): ?string {
-        $delimiter = '#';
-        $regexps   = array_map(
-            static function (string $glob) use ($delimiter): string {
-                $regexp = Glob::toRegex($glob, delimiter: $delimiter);
-                $regexp = mb_substr($regexp, 1, -1);
-
-                return $regexp;
-            },
-            $globs,
+    protected function regex(array $patterns): ?Regex {
+        $regex   = [];
+        $options = new Options(
+            matchMode: MatchMode::Match,
+            matchCase: true,
         );
-        $regexps   = array_filter($regexps, static fn ($s) => $s !== '');
-        $regexp    = $regexps !== []
-            ? $delimiter.'('.implode(')|(', $regexps).')'.$delimiter.'u'
-            : null;
 
-        return $regexp;
+        foreach ($patterns as $pattern) {
+            if ($pattern !== '') {
+                $regex[] = (new GlobMatcher($pattern, $options))->regex->pattern;
+            }
+        }
+
+        return $regex !== []
+            ? new Regex('(?:'.implode('|', $regex).')', $options->matchMode, $options->matchCase)
+            : null;
+    }
+
+    protected function path(DirectoryPath|FilePath|SplFileInfo|string $path): string {
+        return $path instanceof SplFileInfo
+            ? $path->getRelativePathname()
+            : (string) $path;
     }
 }

@@ -75,8 +75,8 @@ class SymfonyAdapter implements Adapter {
     }
 
     /**
-     * @param array<array-key, string>|string|null $exclude
      * @param array<array-key, string>|string|null $include
+     * @param array<array-key, string>|string|null $exclude
      */
     protected function getFinder(
         string $directory,
@@ -94,16 +94,16 @@ class SymfonyAdapter implements Adapter {
             $finder = $finder->depth("<= {$depth}");
         }
 
-        if ($include !== null) {
-            $finder = $finder->name($include);
+        $include = new Globs($include);
+
+        if (!$include->isEmpty()) {
+            $finder = $finder->filter($include->isMatch(...));
         }
 
-        if ($exclude !== null) {
-            $exclude = (new Globs((array) $exclude))->regexp;
+        $exclude = new Globs($exclude);
 
-            if ($exclude !== null) {
-                $finder = $finder->notPath($exclude);
-            }
+        if (!$exclude->isEmpty()) {
+            $finder = $finder->filter($exclude->isNotMatch(...), true);
         }
 
         return $finder;
