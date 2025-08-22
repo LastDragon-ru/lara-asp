@@ -682,7 +682,7 @@ final class FileSystemTest extends TestCase {
 
         $path = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $fs   = $this->getFileSystem($path);
-        $file = $fs->getFile(Hook::Context);
+        $file = $fs->getFile(Hook::Before);
 
         $fs->write($file, 'hook');
     }
