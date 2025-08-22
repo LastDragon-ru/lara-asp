@@ -36,7 +36,7 @@ readonly class Parameters implements InstructionParameters {
          *
          * @var array<array-key, string>|string
          */
-        public array|string $include = '*.md',
+        public array|string $include = '**/*.md',
         /**
          * Glob(s) to exclude.
          *

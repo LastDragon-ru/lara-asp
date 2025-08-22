@@ -191,8 +191,6 @@ final class FileSystemTest extends TestCase {
 
         self::assertEquals(
             [
-                'a/a.html',
-                'b/b.html',
                 'c.html',
             ],
             array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '*.html'), false)),
@@ -208,9 +206,18 @@ final class FileSystemTest extends TestCase {
 
         self::assertEquals(
             [
+                'a/a.html',
+                'b/b.html',
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '*.html', null, 0), false)),
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '**/*.html'), false)),
+        );
+
+        self::assertEquals(
+            [
+                'c.html',
+            ],
+            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, '**/*.html', null, 0), false)),
         );
 
         self::assertEquals(

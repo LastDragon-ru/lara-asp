@@ -137,7 +137,7 @@ class Processor {
         };
         $extensions = match (true) {
             $input instanceof FilePath => $input->getName(),
-            !$this->tasks->has('*')    => array_map(static fn ($e) => "*.{$e}", $this->tasks->getKeys()),
+            !$this->tasks->has('*')    => array_map(static fn ($e) => "**/*.{$e}", $this->tasks->getKeys()),
             default                    => null,
         };
         $exclude   = $this->exclude;

@@ -73,7 +73,7 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
   * `depth`: `?int` = `0` - Maximum depth (eg the `0` means no nested directories, the `null`
     removes limits).
   * `exclude`: `array|string|null` = `null` - Glob(s) to exclude.
-  * `include`: `array|string` = `'*.md'` - Glob(s) to include (only Markdown documents expected).
+  * `include`: `array|string` = `'**/*.md'` - Glob(s) to include (only Markdown documents expected).
   * `level`: `?int` = `null` - Headings level. Possible values are
 
     * `null`: `<current level> + 1`
