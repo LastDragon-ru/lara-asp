@@ -19,10 +19,10 @@ class Globs {
     private ?Regex $regex;
 
     /**
-     * @param array<array-key, string>|string|null $patterns
+     * @param list<string> $patterns
      */
-    public function __construct(array|string|null $patterns) {
-        $this->regex = $this->regex((array) $patterns);
+    public function __construct(array $patterns) {
+        $this->regex = $this->regex($patterns);
     }
 
     public function isEmpty(): bool {
@@ -38,7 +38,7 @@ class Globs {
     }
 
     /**
-     * @param array<array-key, string> $patterns
+     * @param list<string> $patterns
      */
     protected function regex(array $patterns): ?Regex {
         $regex   = [];

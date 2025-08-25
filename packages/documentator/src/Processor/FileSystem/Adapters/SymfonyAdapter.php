@@ -36,8 +36,8 @@ class SymfonyAdapter implements Adapter {
     #[Override]
     public function getFilesIterator(
         string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): iterable {
         foreach ($this->getFinder($directory, $include, $exclude, $depth)->files() as $file) {
@@ -53,8 +53,8 @@ class SymfonyAdapter implements Adapter {
     #[Override]
     public function getDirectoriesIterator(
         string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): iterable {
         foreach ($this->getFinder($directory, $include, $exclude, $depth)->directories() as $file) {
@@ -75,13 +75,13 @@ class SymfonyAdapter implements Adapter {
     }
 
     /**
-     * @param array<array-key, string>|string|null $include
-     * @param array<array-key, string>|string|null $exclude
+     * @param list<string> $include
+     * @param list<string> $exclude
      */
     protected function getFinder(
         string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): Finder {
         $finder = Finder::create()

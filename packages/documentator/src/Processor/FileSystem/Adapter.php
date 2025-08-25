@@ -8,28 +8,28 @@ interface Adapter {
     public function isDirectory(string $path): bool;
 
     /**
-     * @param array<array-key, string>|string|null $exclude
-     * @param array<array-key, string>|string|null $include
+     * @param list<string> $exclude
+     * @param list<string> $include
      *
      * @return iterable<array-key, string>
      */
     public function getFilesIterator(
         string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): iterable;
 
     /**
-     * @param array<array-key, string>|string|null $exclude
-     * @param array<array-key, string>|string|null $include
+     * @param list<string> $exclude
+     * @param list<string> $include
      *
      * @return iterable<array-key, string>
      */
     public function getDirectoriesIterator(
         string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): iterable;
 
