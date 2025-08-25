@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -21,7 +22,7 @@ final class EntryTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
 
-        new class(Mockery::mock(Adapter::class), new DirectoryPath('/../path')) extends Entry {
+        new class(Mockery::mock(FileSystemAdapter::class), new DirectoryPath('/../path')) extends Entry {
             // empty
         };
     }
@@ -30,13 +31,13 @@ final class EntryTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
-        new class(Mockery::mock(Adapter::class), (new DirectoryPath('../path'))->getNormalizedPath()) extends Entry {
+        new class(Mockery::mock(FileSystemAdapter::class), (new DirectoryPath('../path'))->getNormalizedPath()) extends Entry {
             // empty
         };
     }
 
     public function testGetRelativePath(): void {
-        $adapter   = Mockery::mock(Adapter::class);
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
         $fs        = $this->getFileSystem(__DIR__);
         $file      = $fs->getFile(__FILE__);
         $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
@@ -53,7 +54,7 @@ final class EntryTest extends TestCase {
     }
 
     public function testIsEqual(): void {
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
         $a       = new class($adapter, $path) extends Entry {
             // empty

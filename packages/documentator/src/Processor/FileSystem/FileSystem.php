@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
@@ -43,7 +44,7 @@ class FileSystem {
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Metadata $metadata,
-        private readonly Adapter $adapter,
+        private readonly FileSystemAdapter $adapter,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {

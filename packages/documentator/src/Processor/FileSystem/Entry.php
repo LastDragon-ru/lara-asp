@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Path\Path;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use Override;
 use Stringable;
 
@@ -16,7 +17,7 @@ use function sprintf;
  */
 abstract class Entry implements Stringable {
     public function __construct(
-        protected readonly Adapter $adapter,
+        protected readonly FileSystemAdapter $adapter,
         /**
          * @var TPath
          */

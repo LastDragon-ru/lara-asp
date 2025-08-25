@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Listener;
@@ -77,6 +78,7 @@ class Preprocess extends Command {
 
     public function __construct(
         protected readonly ContainerResolver $container,
+        protected readonly FileSystemAdapter $adapter,
     ) {
         parent::__construct();
     }
@@ -93,7 +95,7 @@ class Preprocess extends Command {
     }
 
     protected function processor(): Processor {
-        $processor = new Processor($this->container);
+        $processor = new Processor($this->container, $this->adapter);
 
         $processor->addTask(PreprocessTask::class, 100);
         $processor->addTask(CodeLinksTask::class, 200);

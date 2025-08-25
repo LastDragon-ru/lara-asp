@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,7 +19,7 @@ use function sprintf;
 final class FileRealTest extends TestCase {
     public function testConstruct(): void {
         $path    = (new FilePath(__FILE__))->getNormalizedPath();
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('isFile')
             ->once()
@@ -32,7 +33,7 @@ final class FileRealTest extends TestCase {
 
     public function testConstructNotFile(): void {
         $path    = (new FilePath(__DIR__))->getNormalizedPath();
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('isFile')
             ->once()
@@ -46,7 +47,7 @@ final class FileRealTest extends TestCase {
 
     public function testGetContent(): void {
         $path    = (new FilePath(__DIR__))->getNormalizedPath();
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('isFile')
             ->once()

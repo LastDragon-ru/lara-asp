@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use Override;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,7 +13,7 @@ use Symfony\Component\Finder\Finder;
 use function is_dir;
 use function is_file;
 
-class SymfonyAdapter implements Adapter {
+class SymfonyFileSystemAdapter implements FileSystemAdapter {
     protected readonly Filesystem $filesystem;
 
     public function __construct() {

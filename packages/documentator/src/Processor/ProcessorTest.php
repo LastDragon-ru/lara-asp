@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
@@ -25,7 +26,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyAdapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
@@ -105,8 +106,10 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($mock)
             ->addTask($taskA)
             ->addTask($taskB)
@@ -239,8 +242,10 @@ final class ProcessorTest extends TestCase {
         $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $events = [];
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->addListener(
                 static function (Event $event) use (&$events): void {
@@ -298,8 +303,10 @@ final class ProcessorTest extends TestCase {
         $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $events = [];
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($taskA)
             ->addTask($taskB)
             ->addTask($taskC, -1)
@@ -367,8 +374,10 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($taskA)
             ->addTask($taskB)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
@@ -524,8 +533,10 @@ final class ProcessorTest extends TestCase {
             ],
         ]);
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -594,8 +605,10 @@ final class ProcessorTest extends TestCase {
         self::expectException(DependencyUnresolvable::class);
         self::expectExceptionMessage('Dependency not found.');
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->run($input);
     }
@@ -622,8 +635,10 @@ final class ProcessorTest extends TestCase {
             MESSAGE,
         );
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->run($input);
     }
@@ -634,8 +649,10 @@ final class ProcessorTest extends TestCase {
             'aa.txt' => ['aa.txt'],
         ]);
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->run($input);
 
@@ -676,8 +693,10 @@ final class ProcessorTest extends TestCase {
             MESSAGE,
         );
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->run($input);
     }
@@ -690,8 +709,10 @@ final class ProcessorTest extends TestCase {
             'aa.txt' => ['../a.txt'],
         ]);
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -759,7 +780,10 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            $this->app()->make(FileSystemAdapter::class),
+        ))
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -814,8 +838,10 @@ final class ProcessorTest extends TestCase {
 
         self::expectException(DependencyUnavailable::class);
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
-            ->setAdapter(new ProcessorTest__Adapter())
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__FileSystemAdapter(),
+        ))
             ->addTask($task)
             ->addTask(ProcessorTest__Task::class)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
@@ -841,7 +867,10 @@ final class ProcessorTest extends TestCase {
             }
         };
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            $this->app()->make(FileSystemAdapter::class),
+        ))
             ->addTask($task)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -899,7 +928,10 @@ final class ProcessorTest extends TestCase {
 
         self::expectException(DependencyUnavailable::class);
 
-        (new Processor($this->app()->make(ContainerResolver::class)))
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            $this->app()->make(FileSystemAdapter::class),
+        ))
             ->addTask($task)
             ->run(
                 $input,
@@ -979,7 +1011,7 @@ class ProcessorTest__DependencyHook implements Dependency {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ProcessorTest__Adapter extends SymfonyAdapter {
+class ProcessorTest__FileSystemAdapter extends SymfonyFileSystemAdapter {
     /**
      * @inheritDoc
      */

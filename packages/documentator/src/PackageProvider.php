@@ -9,6 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\Commands\Preprocess;
 use LastDragon_ru\LaraASP\Documentator\Commands\Requirements;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory as LinkFactoryContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links\Factory as LinkFactory;
 use Override;
@@ -22,6 +24,7 @@ class PackageProvider extends ServiceProvider {
 
         $this->app->scopedIf(LinkFactoryContract::class, LinkFactory::class);
         $this->app->scopedIf(MarkdownContract::class, Markdown::class);
+        $this->app->bindIf(FileSystemAdapter::class, SymfonyFileSystemAdapter::class);
     }
 
     public function boot(): void {

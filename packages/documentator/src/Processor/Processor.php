@@ -8,6 +8,7 @@ use LastDragon_ru\GlobMatcher\GlobUtils;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -16,8 +17,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
@@ -37,11 +36,11 @@ class Processor {
     /**
      * @var list<string>
      */
-    private array      $exclude = [];
-    protected ?Adapter $adapter = null;
+    private array $exclude = [];
 
     public function __construct(
         protected readonly ContainerResolver $container,
+        protected readonly FileSystemAdapter $adapter,
     ) {
         $this->tasks      = new Tasks($container);
         $this->metadata   = new Metadata($container);
@@ -124,12 +123,6 @@ class Processor {
         return $this;
     }
 
-    public function setAdapter(?Adapter $adapter): static {
-        $this->adapter = $adapter;
-
-        return $this;
-    }
-
     public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
         // Prepare
         $depth = match (true) {
@@ -185,8 +178,7 @@ class Processor {
         array $exclude,
         ?int $depth,
     ): void {
-        $adapter    = $this->adapter ?? new SymfonyAdapter();
-        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $adapter, $input, $output);
+        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $this->adapter, $input, $output);
         $iterator   = new Iterator($filesystem, $filesystem->getFilesIterator($input, $include, $exclude, $depth));
         $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
 
