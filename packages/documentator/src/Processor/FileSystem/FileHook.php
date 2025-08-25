@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LogicException;
 use Override;
@@ -12,7 +13,7 @@ use Override;
  */
 class FileHook extends File {
     public function __construct(
-        Adapter $adapter,
+        FileSystemAdapter $adapter,
         FilePath $path,
         Metadata $metadata,
         public readonly Hook $hook,

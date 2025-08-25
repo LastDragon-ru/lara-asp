@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 /**
@@ -10,7 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
  */
 abstract class File extends Entry {
     public function __construct(
-        Adapter $adapter,
+        FileSystemAdapter $adapter,
         FilePath $path,
         private readonly Metadata $metadata,
     ) {

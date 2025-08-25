@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Mockery;
 use Override;
@@ -18,7 +19,7 @@ use stdClass;
 final class FileTest extends TestCase {
     public function testAs(): void {
         $metadata = Mockery::mock(Metadata::class);
-        $adapter  = Mockery::mock(Adapter::class);
+        $adapter  = Mockery::mock(FileSystemAdapter::class);
         $value    = new stdClass();
         $path     = (new FilePath(__FILE__))->getNormalizedPath();
         $file     = new class($adapter, $path, $metadata) extends File {

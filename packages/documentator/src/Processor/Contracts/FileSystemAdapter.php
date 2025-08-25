@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-interface Adapter {
+interface FileSystemAdapter {
     public function isFile(string $path): bool;
 
     public function isDirectory(string $path): bool;

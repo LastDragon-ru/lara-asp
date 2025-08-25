@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
@@ -294,7 +295,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('write')
             ->never();
@@ -353,7 +354,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('notify')
             ->never();
 
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('write')
             ->never();
@@ -422,7 +423,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('write')
             ->with((string) $path, $content)
@@ -486,7 +487,7 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path       = $input->getFilePath('file.md');
         $content    = 'content';
-        $adapter    = Mockery::mock(Adapter::class);
+        $adapter    = Mockery::mock(FileSystemAdapter::class);
         $metadata   = Mockery::mock(Metadata::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $metadata, $adapter, $input, $input]);
@@ -546,7 +547,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('write')
             ->never();
@@ -629,7 +630,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('write')
             ->never();

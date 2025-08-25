@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -21,7 +22,7 @@ final class DirectoryTest extends TestCase {
 
     public function testConstruct(): void {
         $path    = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('isDirectory')
             ->once()
@@ -34,7 +35,7 @@ final class DirectoryTest extends TestCase {
 
     public function testConstructNotDirectory(): void {
         $path    = (new DirectoryPath(__FILE__))->getNormalizedPath();
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
         $adapter
             ->shouldReceive('isDirectory')
             ->once()

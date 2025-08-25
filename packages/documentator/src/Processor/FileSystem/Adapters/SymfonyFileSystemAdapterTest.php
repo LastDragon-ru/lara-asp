@@ -13,17 +13,17 @@ use function sort;
 /**
  * @internal
  */
-#[CoversClass(SymfonyAdapter::class)]
-final class SymfonyAdapterTest extends TestCase {
+#[CoversClass(SymfonyFileSystemAdapter::class)]
+final class SymfonyFileSystemAdapterTest extends TestCase {
     public function testIsFile(): void {
-        $adapter = new SymfonyAdapter();
+        $adapter = new SymfonyFileSystemAdapter();
 
         self::assertTrue($adapter->isFile(__FILE__));
         self::assertFalse($adapter->isFile(__DIR__));
     }
 
     public function testIsDirectory(): void {
-        $adapter = new SymfonyAdapter();
+        $adapter = new SymfonyFileSystemAdapter();
 
         self::assertFalse($adapter->isDirectory(__FILE__));
         self::assertTrue($adapter->isDirectory(__DIR__));
@@ -31,7 +31,7 @@ final class SymfonyAdapterTest extends TestCase {
 
     public function testGetFilesIterator(): void {
         $path    = self::getTestData()->path('');
-        $adapter = new SymfonyAdapter();
+        $adapter = new SymfonyFileSystemAdapter();
 
         self::assertSame(
             [
@@ -81,7 +81,7 @@ final class SymfonyAdapterTest extends TestCase {
 
     public function testGetDirectoriesIterator(): void {
         $path    = self::getTestData()->path('');
-        $adapter = new SymfonyAdapter();
+        $adapter = new SymfonyFileSystemAdapter();
 
         self::assertSame(
             [
@@ -117,7 +117,7 @@ final class SymfonyAdapterTest extends TestCase {
 
     public function testRead(): void {
         $path     = self::getTestData()->path('a/aa.txt');
-        $adapter  = new SymfonyAdapter();
+        $adapter  = new SymfonyFileSystemAdapter();
         $expected = "a\na\n";
 
         self::assertSame($expected, $adapter->read($path));
@@ -125,7 +125,7 @@ final class SymfonyAdapterTest extends TestCase {
 
     public function testWrite(): void {
         $path     = self::getTempFile()->getPathname();
-        $adapter  = new SymfonyAdapter();
+        $adapter  = new SymfonyFileSystemAdapter();
         $expected = 'content';
 
         $adapter->write($path, $expected);
