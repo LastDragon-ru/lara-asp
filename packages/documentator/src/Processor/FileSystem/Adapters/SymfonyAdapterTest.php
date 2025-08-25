@@ -58,13 +58,13 @@ final class SymfonyAdapterTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, exclude: 'a/**/*.txt')),
+            $this->asArray($path, $adapter->getFilesIterator($path, exclude: ['a/**/*.txt'])),
         );
         self::assertSame(
             [
                 'a.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: 'a.txt')),
+            $this->asArray($path, $adapter->getFilesIterator($path, include: ['a.txt'])),
         );
         self::assertSame(
             [
@@ -75,7 +75,7 @@ final class SymfonyAdapterTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: '**/*.txt')),
+            $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'])),
         );
     }
 
@@ -105,13 +105,13 @@ final class SymfonyAdapterTest extends TestCase {
                 'b',
                 'b/bb',
             ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, exclude: 'a/*')),
+            $this->asArray($path, $adapter->getDirectoriesIterator($path, exclude: ['a/*'])),
         );
         self::assertSame(
             [
                 'a',
             ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, include: 'a')),
+            $this->asArray($path, $adapter->getDirectoriesIterator($path, include: ['a'])),
         );
     }
 

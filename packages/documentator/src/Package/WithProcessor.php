@@ -46,8 +46,8 @@ trait WithProcessor {
             #[Override]
             protected function getFinder(
                 string $directory,
-                array|string|null $include = null,
-                array|string|null $exclude = null,
+                array $include = [],
+                array $exclude = [],
                 ?int $depth = null,
             ): Finder {
                 return parent::getFinder($directory, $include, $exclude, $depth)

@@ -137,10 +137,11 @@ class Processor {
             default                    => null,
         };
         $extensions = match (true) {
-            $input instanceof FilePath => $input->getName(),
+            $input instanceof FilePath => [$input->getName()],
             !$this->tasks->has('*')    => array_map(static fn ($e) => "**/*.{$e}", $this->tasks->getKeys()),
-            default                    => null,
+            default                    => [],
         };
+        $include   = $extensions;
         $exclude   = $this->exclude;
         $directory = $input->getDirectoryPath('.');
 
@@ -158,7 +159,7 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $this->execute($directory, $output, $extensions, $exclude, $depth);
+                $this->execute($directory, $output, $include, $exclude, $depth);
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -174,13 +175,13 @@ class Processor {
     }
 
     /**
-     * @param list<string>|string|null $include
-     * @param list<string>             $exclude
+     * @param list<string> $include
+     * @param list<string> $exclude
      */
     protected function execute(
         DirectoryPath $input,
         DirectoryPath $output,
-        array|string|null $include,
+        array $include,
         array $exclude,
         ?int $depth,
     ): void {

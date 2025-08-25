@@ -67,7 +67,7 @@ readonly class Instruction implements InstructionContract {
         /** @var list<array{path: string, title: string, summary: ?string, readme: string}> $packages */
         $packages    = [];
         $directory   = $context->file->getDirectoryPath($parameters->target);
-        $directories = $context->resolver->resolve(new DirectoryIterator($directory, null, null, 0));
+        $directories = $context->resolver->resolve(new DirectoryIterator($directory, depth: 0));
 
         foreach ($directories as $package) {
             // Prepare

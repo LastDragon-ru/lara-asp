@@ -34,15 +34,15 @@ readonly class Parameters implements InstructionParameters {
         /**
          * Glob(s) to include (only Markdown documents expected).
          *
-         * @var array<array-key, string>|string
+         * @var list<string>
          */
-        public array|string $include = '**/*.md',
+        public array $include = ['**/*.md'],
         /**
          * Glob(s) to exclude.
          *
-         * @var array<array-key, string>|string|null
+         * @var list<string>
          */
-        public array|string|null $exclude = null,
+        public array $exclude = [],
         /**
          * Maximum depth (eg the `0` means no nested directories, the `null`
          * removes limits).

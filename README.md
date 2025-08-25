@@ -44,8 +44,8 @@ composer require lastdragon-ru/lara-asp-<package>
 | 🐝 | Package intended to use in dev. |
 |:--:|---------------------------------|
 
-[include:document-list]: ./packages ({"include": "*/README.md", "depth": 1})
-[//]: # (start: preprocess/b776a88376975b62)
+[include:document-list]: ./packages ({"include": ["*/README.md"], "depth": 1})
+[//]: # (start: preprocess/f3f343cc508e884a)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## [(Laravel) Core](<packages/core/README.md>)
@@ -136,7 +136,7 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 
 [Read more](<packages/graphql-printer-testing/README.md>).
 
-[//]: # (end: preprocess/b776a88376975b62)
+[//]: # (end: preprocess/f3f343cc508e884a)
 
 # Upgrading
 

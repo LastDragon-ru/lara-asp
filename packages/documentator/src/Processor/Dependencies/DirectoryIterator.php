@@ -22,15 +22,15 @@ readonly class DirectoryIterator implements Dependency {
         /**
          * Glob(s) to include.
          *
-         * @var array<array-key, string>|string|null
+         * @var list<string>
          */
-        protected array|string|null $include = null,
+        protected array $include = [],
         /**
          * Glob(s) to exclude.
          *
-         * @var array<array-key, string>|string|null
+         * @var list<string>
          */
-        protected array|string|null $exclude = null,
+        protected array $exclude = [],
         /**
          * Maximum depth.
          */

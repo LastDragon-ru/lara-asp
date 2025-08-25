@@ -34,7 +34,7 @@ final class FileIteratorTest extends TestCase {
     public function testInvoke(): void {
         $fs        = $this->getFileSystem(__DIR__);
         $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $include   = '**/*.txt';
+        $include   = ['**/*.txt'];
         $absolute  = new FileIterator($path, $include);
         $relative  = new FileIterator(basename((string) $path), $include);
         $directory = new FileIterator($fs->getDirectory($path), $include);

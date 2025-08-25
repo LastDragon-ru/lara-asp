@@ -168,15 +168,15 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      *
-     * @param array<array-key, string>|string|null $include
-     * @param array<array-key, string>|string|null $exclude
+     * @param list<string> $include
+     * @param list<string> $exclude
      *
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
         Directory|DirectoryPath|string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): Iterator {
         $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
@@ -192,15 +192,15 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      *
-     * @param array<array-key, string>|string|null $exclude
-     * @param array<array-key, string>|string|null $include
+     * @param list<string> $exclude
+     * @param list<string> $include
      *
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
         Directory|DirectoryPath|string $directory,
-        array|string|null $include = null,
-        array|string|null $exclude = null,
+        array $include = [],
+        array $exclude = [],
         ?int $depth = null,
     ): Iterator {
         $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
