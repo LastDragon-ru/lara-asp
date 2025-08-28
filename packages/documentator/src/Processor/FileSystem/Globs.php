@@ -29,11 +29,11 @@ class Globs {
         return $this->regex === null;
     }
 
-    public function isMatch(DirectoryPath|FilePath|SplFileInfo|string $path): bool {
+    public function isMatch(DirectoryPath|FilePath|SplFileInfo $path): bool {
         return (bool) $this->regex?->isMatch($this->path($path));
     }
 
-    public function isNotMatch(DirectoryPath|FilePath|SplFileInfo|string $path): bool {
+    public function isNotMatch(DirectoryPath|FilePath|SplFileInfo $path): bool {
         return !$this->isMatch($path);
     }
 
@@ -58,9 +58,15 @@ class Globs {
             : null;
     }
 
-    protected function path(DirectoryPath|FilePath|SplFileInfo|string $path): string {
-        return $path instanceof SplFileInfo
-            ? $path->getRelativePathname()
-            : (string) $path;
+    protected function path(DirectoryPath|FilePath|SplFileInfo $path): string {
+        if ($path instanceof SplFileInfo) {
+            $relative = $path->getRelativePathname();
+            $path     = $path->isDir() ? new DirectoryPath($relative) : new FilePath($relative);
+        }
+
+        $path = $path->getNormalizedPath();
+        $path = (string) $path;
+
+        return $path;
     }
 }
