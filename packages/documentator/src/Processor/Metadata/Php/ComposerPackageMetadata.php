@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJsonFactory;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
@@ -35,5 +36,10 @@ readonly class ComposerPackageMetadata implements MetadataResolver {
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
         return new Package($this->factory->createFromJson($file->as(Content::class)->content));
+    }
+
+    #[Override]
+    public function serialize(FilePath $path, object $value): ?string {
+        return null;
     }
 }

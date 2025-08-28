@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 /**
@@ -31,4 +32,11 @@ interface MetadataResolver {
      * @return TValue
      */
     public function resolve(File $file, string $metadata): mixed;
+
+    /**
+     * Serialize metadata back to the string.
+     *
+     * @param TValue $value
+     */
+    public function serialize(FilePath $path, object $value): ?string;
 }

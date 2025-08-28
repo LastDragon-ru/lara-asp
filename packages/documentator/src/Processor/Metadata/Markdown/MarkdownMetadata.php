@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
@@ -13,9 +13,9 @@ use Override;
 use function is_a;
 
 /**
- * @implements MetadataSerializer<Document>
+ * @implements MetadataResolver<Document>
  */
-readonly class MarkdownMetadata implements MetadataSerializer {
+readonly class MarkdownMetadata implements MetadataResolver {
     public function __construct(
         protected Markdown $markdown,
     ) {
@@ -41,7 +41,7 @@ readonly class MarkdownMetadata implements MetadataSerializer {
     }
 
     #[Override]
-    public function serialize(FilePath $path, object $value): string {
+    public function serialize(FilePath $path, object $value): ?string {
         return (string) $value;
     }
 }

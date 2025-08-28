@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Serializer;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -13,9 +13,9 @@ use Override;
 use function is_a;
 
 /**
- * @implements MetadataSerializer<Serializable>
+ * @implements MetadataResolver<Serializable>
  */
-readonly class SerializableMetadata implements MetadataSerializer {
+readonly class SerializableMetadata implements MetadataResolver {
     public function __construct(
         protected Serializer $serializer,
     ) {
@@ -41,7 +41,7 @@ readonly class SerializableMetadata implements MetadataSerializer {
     }
 
     #[Override]
-    public function serialize(FilePath $path, object $value): string {
+    public function serialize(FilePath $path, object $value): ?string {
         return $this->serializer->serialize($value, $path->getExtension());
     }
 }

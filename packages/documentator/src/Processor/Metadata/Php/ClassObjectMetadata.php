@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
@@ -46,6 +47,11 @@ readonly class ClassObjectMetadata implements MetadataResolver {
         }
 
         return new ClassObject($class, $resolver->getNameContext());
+    }
+
+    #[Override]
+    public function serialize(FilePath $path, object $value): ?string {
+        return null;
     }
 
     /**

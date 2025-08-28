@@ -27,6 +27,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer` merged with [`MetadataResolver`][code-links/490ffb0a93f7303c]. Implementations of [`MetadataResolver`][code-links/490ffb0a93f7303c] should be updated.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -88,6 +92,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
+
+[code-links/490ffb0a93f7303c]: src/Processor/Contracts/MetadataResolver.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver"
 
 [code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L17-L20
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"

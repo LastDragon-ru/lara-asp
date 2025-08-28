@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -39,5 +40,10 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
         $document = ($this->factory)($comment->comment, $file->getPath(), $comment->context);
 
         return $document;
+    }
+
+    #[Override]
+    public function serialize(FilePath $path, object $value): ?string {
+        return null;
     }
 }

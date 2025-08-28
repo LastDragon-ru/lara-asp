@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -18,7 +17,6 @@ use RuntimeException;
 use stdClass;
 use UnexpectedValueException;
 
-use function assert;
 use function is_a;
 use function sprintf;
 
@@ -307,11 +305,9 @@ final class MetadataTest extends TestCase {
         // Prepare
         $path      = new FilePath(__FILE__);
         $value     = new MetadataTest__Value(__METHOD__);
-        $resolver  = new class() extends MetadataTest__Resolver implements MetadataSerializer {
+        $resolver  = new class() extends MetadataTest__Resolver {
             #[Override]
             public function serialize(FilePath $path, object $value): string {
-                assert($value instanceof MetadataTest__Value);
-
                 return $value->value;
             }
         };
@@ -407,6 +403,11 @@ class MetadataTest__Resolver implements MetadataResolver {
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
         return new MetadataTest__Value($this::class);
+    }
+
+    #[Override]
+    public function serialize(FilePath $path, object $value): ?string {
+        return null;
     }
 }
 

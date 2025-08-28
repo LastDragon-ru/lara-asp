@@ -3,14 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
 /**
- * @implements MetadataSerializer<Content>
+ * @implements MetadataResolver<Content>
  */
-readonly class ContentMetadata implements MetadataSerializer {
+readonly class ContentMetadata implements MetadataResolver {
     public function __construct() {
         // empty
     }
@@ -34,7 +34,7 @@ readonly class ContentMetadata implements MetadataSerializer {
     }
 
     #[Override]
-    public function serialize(FilePath $path, object $value): string {
+    public function serialize(FilePath $path, object $value): ?string {
         return $value->content;
     }
 }

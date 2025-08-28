@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
@@ -35,5 +36,10 @@ class ClassCommentMetadata implements MetadataResolver {
         $comment = new ClassComment($class->class, $class->context, $comment);
 
         return $comment;
+    }
+
+    #[Override]
+    public function serialize(FilePath $path, object $value): ?string {
+        return null;
     }
 }

@@ -6,7 +6,6 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -119,16 +118,17 @@ class Metadata {
 
     public function serialize(FilePath $path, object $value): string {
         try {
-            $resolver = $this->getResolver($path, $value::class);
+            $resolver   = $this->getResolver($path, $value::class);
+            $serialized = $resolver->serialize($path, $value);
 
-            if (!($resolver instanceof MetadataSerializer)) {
+            if ($serialized === null) {
                 throw new RuntimeException('Serializer not found.');
             }
         } catch (Exception $exception) {
             throw new MetadataUnserializable($path, $value, $exception);
         }
 
-        return $resolver->serialize($path, $value);
+        return $serialized;
     }
 
     /**
