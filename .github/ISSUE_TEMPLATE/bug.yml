@@ -1,0 +1,48 @@
+name: Bug report
+description: Something doesn't work as it should?
+labels: ["bug"]
+body:
+  - type: dropdown
+    attributes:
+      label: Package
+      description: "Please choose a package, leave blank if it is general or if you are not sure."
+      options:
+        - core
+        - dev
+        - diy-parser
+        - documentator
+        - eloquent
+        - formatter
+        - glob-matcher
+        - graphql
+        - graphql-printer
+        - graphql-printer-testing
+        - migrator
+        - serializer
+        - spa
+        - testing
+  - type: input
+    attributes:
+      label: Affected version
+      description: What version are you using?
+      placeholder: eg 9.5.0 or main
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Description
+      placeholder: Please describe your problem here.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behaviour
+      placeholder: How should it work? What is the expected result/output?
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      placeholder: Please provide steps/code examples/etc that will show/help to reproduce the problem.
+  - type: textarea
+    attributes:
+      label: Additional info
+      placeholder: Any additional information, logs, thoughts, screenshots, ect, that can help to understand/solve the problem?

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Bug report
+    url: https://github.com/LastDragon-ru/lara-asp/issues/new?template=bug.yml
+    about: Something doesn't work as it should?
+  - name: Feature request
+    url: https://github.com/LastDragon-ru/lara-asp/issues/new?template=feat.yml
+    about: New feature wanted!
+  - name: Question/help wanted/etc
+    url: https://github.com/LastDragon-ru/lara-asp/discussions/new/choose
+    about: For all other stuff.

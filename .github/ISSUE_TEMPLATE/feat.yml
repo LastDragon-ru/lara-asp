@@ -1,0 +1,29 @@
+name: Feature request
+description: New feature wanted!
+labels: ["scope: feat"]
+body:
+  - type: dropdown
+    attributes:
+      label: Package
+      description: "Please choose a package, leave blank if it is general or if you are not sure."
+      options:
+        - core
+        - dev
+        - diy-parser
+        - documentator
+        - eloquent
+        - formatter
+        - glob-matcher
+        - graphql
+        - graphql-printer
+        - graphql-printer-testing
+        - migrator
+        - serializer
+        - spa
+        - testing
+  - type: textarea
+    attributes:
+      label: Description
+      placeholder: Type your idea/suggestion here…
+    validations:
+      required: true
