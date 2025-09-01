@@ -25,8 +25,8 @@ class ClassCommentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
-        return $metadata === ClassComment::class;
+    public function isSupported(FilePath $path, string $metadata): bool {
+        return $path->getExtension() === 'php' && $metadata === ClassComment::class;
     }
 
     #[Override]

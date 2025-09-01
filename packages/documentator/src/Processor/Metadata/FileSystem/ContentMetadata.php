@@ -24,7 +24,7 @@ readonly class ContentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
+    public function isSupported(FilePath $path, string $metadata): bool {
         return $metadata === Content::class;
     }
 

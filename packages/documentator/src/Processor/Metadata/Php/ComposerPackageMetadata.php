@@ -29,8 +29,8 @@ readonly class ComposerPackageMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
-        return $metadata === Package::class;
+    public function isSupported(FilePath $path, string $metadata): bool {
+        return $path->getExtension() === 'json' && $metadata === Package::class;
     }
 
     #[Override]

@@ -31,7 +31,7 @@ readonly class SerializableMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
+    public function isSupported(FilePath $path, string $metadata): bool {
         return is_a($metadata, Serializable::class, true);
     }
 

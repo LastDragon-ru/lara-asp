@@ -31,8 +31,8 @@ readonly class ClassObjectMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
-        return $metadata === ClassObject::class;
+    public function isSupported(FilePath $path, string $metadata): bool {
+        return $path->getExtension() === 'php' && $metadata === ClassObject::class;
     }
 
     #[Override]

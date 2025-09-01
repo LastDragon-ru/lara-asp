@@ -60,12 +60,19 @@ final class MetadataTest extends TestCase {
         $metadata->addResolver($bResolver::class, 200);
 
         // Wildcard
-        $aFile = Mockery::mock(File::class);
-        $aFile
+        $aPath = Mockery::mock(FilePath::class);
+        $aPath
             ->shouldReceive('getExtension')
             ->atLeast()
             ->once()
             ->andReturn('extension-a');
+
+        $aFile = Mockery::mock(File::class);
+        $aFile
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($aPath);
 
         $aActual = $metadata->get($aFile, MetadataTest__Value::class);
 
@@ -73,12 +80,20 @@ final class MetadataTest extends TestCase {
         self::assertSame($aActual, $metadata->get($aFile, MetadataTest__Value::class));
 
         // Extension
-        $bFile = Mockery::mock(File::class);
-        $bFile
+        $bPath = Mockery::mock(FilePath::class);
+        $bPath
             ->shouldReceive('getExtension')
             ->atLeast()
             ->once()
             ->andReturn('extension-b');
+
+        $bFile = Mockery::mock(File::class);
+        $bFile
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($bPath);
+
         $bActual = $metadata->get($bFile, MetadataTest__Value::class);
 
         self::assertEquals(new MetadataTest__Value($bResolver::class), $bActual);
@@ -99,7 +114,7 @@ final class MetadataTest extends TestCase {
             ->atLeast()
             ->once()
             ->andReturnUsing(
-                static function (string $metadata): bool {
+                static function (FilePath $path, string $metadata): bool {
                     return is_a($metadata, stdClass::class, true);
                 },
             );
@@ -119,12 +134,19 @@ final class MetadataTest extends TestCase {
         $metadata->addResolver($resolver);
 
         // Test
-        $file = Mockery::mock(File::class);
-        $file
+        $path = Mockery::mock(FilePath::class);
+        $path
             ->shouldReceive('getExtension')
             ->atLeast()
             ->once()
             ->andReturn('extension');
+
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
 
         $aActual = $metadata->get($file, $resolved::class);
         $bActual = $metadata->get($file, $resolved::class);
@@ -144,11 +166,19 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn(new stdClass());
 
-        $file = Mockery::mock(File::class);
-        $file
+        $path = Mockery::mock(FilePath::class);
+        $path
             ->shouldReceive('getExtension')
+            ->atLeast()
             ->once()
             ->andReturn('extension');
+
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
 
         $container = Mockery::mock(ContainerResolver::class);
         $metadata  = new class($container) extends Metadata {
@@ -190,11 +220,20 @@ final class MetadataTest extends TestCase {
                 // empty
             }
         };
-        $file      = Mockery::mock(File::class);
-        $file
+
+        $path = Mockery::mock(FilePath::class);
+        $path
             ->shouldReceive('getExtension')
+            ->atLeast()
             ->once()
             ->andReturn('extension');
+
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
 
         // Test
         $previous = null;
@@ -210,12 +249,19 @@ final class MetadataTest extends TestCase {
     }
 
     public function testHas(): void {
-        $file = Mockery::mock(File::class);
-        $file
+        $path = Mockery::mock(FilePath::class);
+        $path
             ->shouldReceive('getExtension')
             ->atLeast()
             ->once()
             ->andReturn('extension');
+
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
 
         $value     = new class(__METHOD__) extends MetadataTest__Value {
             // empty
@@ -240,12 +286,19 @@ final class MetadataTest extends TestCase {
     }
 
     public function testSet(): void {
-        $file = Mockery::mock(File::class);
-        $file
+        $path = Mockery::mock(FilePath::class);
+        $path
             ->shouldReceive('getExtension')
             ->atLeast()
             ->once()
             ->andReturn('extension');
+
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
 
         $value     = new class(__METHOD__) extends MetadataTest__Value {
             // empty
@@ -267,12 +320,19 @@ final class MetadataTest extends TestCase {
     }
 
     public function testReset(): void {
-        $file = Mockery::mock(File::class);
-        $file
+        $path = Mockery::mock(FilePath::class);
+        $path
             ->shouldReceive('getExtension')
             ->atLeast()
             ->once()
             ->andReturn('extension');
+
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->atLeast()
+            ->once()
+            ->andReturn($path);
 
         $value     = new class(__METHOD__) extends MetadataTest__Value {
             // empty
@@ -396,7 +456,7 @@ class MetadataTest__Resolver implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
+    public function isSupported(FilePath $path, string $metadata): bool {
         return is_a($metadata, MetadataTest__Value::class, true);
     }
 

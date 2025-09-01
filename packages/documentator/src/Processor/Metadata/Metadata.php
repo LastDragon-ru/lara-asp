@@ -57,7 +57,7 @@ class Metadata {
      */
     public function get(File $file, string $metadata): mixed {
         try {
-            $resolver = $this->getResolver($file, $metadata);
+            $resolver = $this->getResolver($file->getPath(), $metadata);
             $resolved = $this->cache[$file][$resolver::class] ?? null;
 
             if ($resolved === null) {
@@ -88,7 +88,7 @@ class Metadata {
      */
     public function has(File $file, string $metadata): bool {
         try {
-            $resolver = $this->getResolver($file, $metadata);
+            $resolver = $this->getResolver($file->getPath(), $metadata);
             $exists   = isset($this->cache[$file][$resolver::class]);
 
             return $exists;
@@ -104,7 +104,7 @@ class Metadata {
      */
     public function set(File $file, object $metadata): void {
         try {
-            $resolver                             = $this->getResolver($file, $metadata::class);
+            $resolver                             = $this->getResolver($file->getPath(), $metadata::class);
             $this->cache[$file]                 ??= [];
             $this->cache[$file][$resolver::class] = $metadata;
         } catch (Exception $exception) {
@@ -158,12 +158,12 @@ class Metadata {
      *
      * @return MetadataResolver<T>
      */
-    private function getResolver(File|FilePath $path, string $metadata): MetadataResolver {
+    private function getResolver(FilePath $path, string $metadata): MetadataResolver {
         $resolver  = null;
         $resolvers = $this->resolvers->get($path->getExtension(), '*');
 
         foreach ($resolvers as $instance) {
-            if ($instance->isSupported($metadata)) {
+            if ($instance->isSupported($path, $metadata)) {
                 $resolver = $instance;
                 break;
             }

@@ -31,8 +31,8 @@ readonly class MarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
-        return is_a($metadata, Document::class, true);
+    public function isSupported(FilePath $path, string $metadata): bool {
+        return $path->getExtension() === 'md' && is_a($metadata, Document::class, true);
     }
 
     #[Override]
