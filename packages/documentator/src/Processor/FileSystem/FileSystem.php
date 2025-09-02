@@ -246,8 +246,10 @@ class FileSystem {
         }
 
         // File?
-        if ($file === null && $this->isFile($path)) {
-            $file = $this->getFile($path);
+        if ($file === null) {
+            $file = !$this->isFile($path)
+                ? new FileVirtual($this->adapter, $path, $this->metadata)
+                : $this->getFile($path);
         }
 
         // Metadata?
@@ -255,18 +257,18 @@ class FileSystem {
 
         if (is_object($content)) {
             $metadata = $content;
-            $content  = $this->metadata->serialize($path, $metadata);
+            $content  = $this->metadata->serialize($file, $metadata);
         }
 
         // Content
         if (!($metadata instanceof Content)) {
-            $content = $this->metadata->serialize($path, new Content($content));
+            $content = $this->metadata->serialize($file, new Content($content));
         }
 
         // File?
         $created = false;
 
-        if ($file === null) {
+        if ($file instanceof FileVirtual) {
             try {
                 $this->adapter->write((string) $path, $content);
             } catch (Exception $exception) {

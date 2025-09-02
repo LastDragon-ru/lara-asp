@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -30,8 +29,8 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(FilePath $path, string $metadata): bool {
-        return $path->getExtension() === 'php' && is_a($metadata, Document::class, true);
+    public function isSupported(File $file, string $metadata): bool {
+        return $file->getExtension() === 'php' && is_a($metadata, Document::class, true);
     }
 
     #[Override]
@@ -43,7 +42,7 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function serialize(FilePath $path, object $value): ?string {
+    public function serialize(File $file, object $value): ?string {
         return null;
     }
 }

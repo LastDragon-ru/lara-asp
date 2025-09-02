@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Serializer;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
@@ -45,18 +44,24 @@ final class SerializableMetadataTest extends TestCase {
     }
 
     public function testSerialize(): void {
+        $ext  = 'json';
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->once()
+            ->andReturn($ext);
+
         $object     = Mockery::mock(Serializable::class);
         $content    = 'content';
-        $extension  = 'json';
         $serializer = Mockery::mock(Serializer::class);
         $serializer
             ->shouldReceive('serialize')
-            ->with($object, $extension)
+            ->with($object, $ext)
             ->once()
             ->andReturn($content);
 
         $metadata = new SerializableMetadata($serializer);
-        $actual   = $metadata->serialize(new FilePath("file.{$extension}"), $object);
+        $actual   = $metadata->serialize($file, $object);
 
         self::assertSame($content, $actual);
     }

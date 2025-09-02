@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Throwable;
 
 use function sprintf;
 
 class MetadataUnserializable extends MetadataError {
     public function __construct(
-        protected readonly FilePath $target,
+        protected readonly File $target,
         protected readonly object $metadata,
         ?Throwable $previous = null,
     ) {
@@ -23,7 +23,7 @@ class MetadataUnserializable extends MetadataError {
         );
     }
 
-    public function getTarget(): FilePath {
+    public function getTarget(): File {
         return $this->target;
     }
 

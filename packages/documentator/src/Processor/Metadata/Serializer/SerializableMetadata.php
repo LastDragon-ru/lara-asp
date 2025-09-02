@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Serializer;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
@@ -31,7 +30,7 @@ readonly class SerializableMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(FilePath $path, string $metadata): bool {
+    public function isSupported(File $file, string $metadata): bool {
         return is_a($metadata, Serializable::class, true);
     }
 
@@ -41,7 +40,7 @@ readonly class SerializableMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function serialize(FilePath $path, object $value): ?string {
-        return $this->serializer->serialize($value, $path->getExtension());
+    public function serialize(File $file, object $value): ?string {
+        return $this->serializer->serialize($value, $file->getExtension());
     }
 }

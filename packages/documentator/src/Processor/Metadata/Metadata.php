@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
@@ -57,7 +56,7 @@ class Metadata {
      */
     public function get(File $file, string $metadata): mixed {
         try {
-            $resolver = $this->getResolver($file->getPath(), $metadata);
+            $resolver = $this->getResolver($file, $metadata);
             $resolved = $this->cache[$file][$resolver::class] ?? null;
 
             if ($resolved === null) {
@@ -88,7 +87,7 @@ class Metadata {
      */
     public function has(File $file, string $metadata): bool {
         try {
-            $resolver = $this->getResolver($file->getPath(), $metadata);
+            $resolver = $this->getResolver($file, $metadata);
             $exists   = isset($this->cache[$file][$resolver::class]);
 
             return $exists;
@@ -104,7 +103,7 @@ class Metadata {
      */
     public function set(File $file, object $metadata): void {
         try {
-            $resolver                             = $this->getResolver($file->getPath(), $metadata::class);
+            $resolver                             = $this->getResolver($file, $metadata::class);
             $this->cache[$file]                 ??= [];
             $this->cache[$file][$resolver::class] = $metadata;
         } catch (Exception $exception) {
@@ -116,16 +115,16 @@ class Metadata {
         $this->cache[$file] = [];
     }
 
-    public function serialize(FilePath $path, object $value): string {
+    public function serialize(File $file, object $value): string {
         try {
-            $resolver   = $this->getResolver($path, $value::class);
-            $serialized = $resolver->serialize($path, $value);
+            $resolver   = $this->getResolver($file, $value::class);
+            $serialized = $resolver->serialize($file, $value);
 
             if ($serialized === null) {
                 throw new RuntimeException('Serializer not found.');
             }
         } catch (Exception $exception) {
-            throw new MetadataUnserializable($path, $value, $exception);
+            throw new MetadataUnserializable($file, $value, $exception);
         }
 
         return $serialized;
@@ -158,12 +157,12 @@ class Metadata {
      *
      * @return MetadataResolver<T>
      */
-    private function getResolver(FilePath $path, string $metadata): MetadataResolver {
+    private function getResolver(File $file, string $metadata): MetadataResolver {
         $resolver  = null;
-        $resolvers = $this->resolvers->get($path->getExtension(), '*');
+        $resolvers = $this->resolvers->get($file->getExtension(), '*');
 
         foreach ($resolvers as $instance) {
-            if ($instance->isSupported($path, $metadata)) {
+            if ($instance->isSupported($file, $metadata)) {
                 $resolver = $instance;
                 break;
             }

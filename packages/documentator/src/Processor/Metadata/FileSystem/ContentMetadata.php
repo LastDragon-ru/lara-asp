@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
@@ -24,7 +23,7 @@ readonly class ContentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(FilePath $path, string $metadata): bool {
+    public function isSupported(File $file, string $metadata): bool {
         return $metadata === Content::class;
     }
 
@@ -34,7 +33,7 @@ readonly class ContentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function serialize(FilePath $path, object $value): ?string {
+    public function serialize(File $file, object $value): ?string {
         return $value->content;
     }
 }

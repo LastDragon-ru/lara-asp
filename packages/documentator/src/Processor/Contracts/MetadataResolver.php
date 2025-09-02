@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 /**
@@ -20,9 +19,9 @@ interface MetadataResolver {
     /**
      * @phpstan-assert-if-true class-string<TValue> $metadata
      *
-     * @param class-string $metadata
+     * @param class-string                          $metadata
      */
-    public function isSupported(FilePath $path, string $metadata): bool;
+    public function isSupported(File $file, string $metadata): bool;
 
     /**
      * Resolves the metadata.
@@ -38,5 +37,5 @@ interface MetadataResolver {
      *
      * @param TValue $value
      */
-    public function serialize(FilePath $path, object $value): ?string;
+    public function serialize(File $file, object $value): ?string;
 }

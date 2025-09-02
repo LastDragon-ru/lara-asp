@@ -331,7 +331,7 @@ final class FileSystemTest extends TestCase {
             ->andReturns();
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, Mockery::type(Content::class))
+            ->with($file, Mockery::type(Content::class))
             ->once()
             ->andReturn($content);
 
@@ -392,7 +392,7 @@ final class FileSystemTest extends TestCase {
             ->never();
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, Mockery::type(Content::class))
+            ->with($file, Mockery::type(Content::class))
             ->once()
             ->andReturn($content);
 
@@ -469,7 +469,7 @@ final class FileSystemTest extends TestCase {
             ->andReturns();
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, Mockery::type(Content::class))
+            ->with(Mockery::type(FileVirtual::class), Mockery::type(Content::class))
             ->once()
             ->andReturn($content);
 
@@ -504,7 +504,7 @@ final class FileSystemTest extends TestCase {
 
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, Mockery::type(Content::class))
+            ->with(Mockery::type(FileVirtual::class), Mockery::type(Content::class))
             ->once()
             ->andReturn($content);
 
@@ -593,12 +593,12 @@ final class FileSystemTest extends TestCase {
             ->andReturns();
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, $value)
+            ->with($file, $value)
             ->once()
             ->andReturn($content);
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, Mockery::type(Content::class))
+            ->with($file, Mockery::type(Content::class))
             ->once()
             ->andReturn($content);
 
@@ -666,7 +666,7 @@ final class FileSystemTest extends TestCase {
             ->andReturns();
         $metadata
             ->shouldReceive('serialize')
-            ->with($path, $value)
+            ->with($file, $value)
             ->once()
             ->andReturn($content);
 
