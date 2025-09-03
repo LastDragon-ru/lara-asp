@@ -110,7 +110,7 @@ class Task implements TaskContract {
      * @param I|class-string<I> $instruction
      */
     public function addInstruction(Instruction|string $instruction): static {
-        $this->instructions->add($instruction);
+        $this->instructions->add($instruction, [$instruction::getName()]);
 
         return $this;
     }

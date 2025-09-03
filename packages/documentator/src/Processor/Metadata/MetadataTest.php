@@ -92,7 +92,7 @@ final class MetadataTest extends TestCase {
         $resolver = Mockery::mock(MetadataResolver::class);
         $resolver
             ->shouldReceive('getExtensions')
-            ->twice()
+            ->once()
             ->andReturn(['*']);
         $resolver
             ->shouldReceive('isSupported')

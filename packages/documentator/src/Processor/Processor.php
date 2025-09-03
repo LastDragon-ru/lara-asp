@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 use function array_map;
@@ -63,7 +64,15 @@ class Processor {
      * @param T|class-string<T> $task
      */
     public function addTask(Task|string $task, ?int $priority = null): static {
-        $this->tasks->add($task, $priority);
+        $extensions = $task::getExtensions();
+        $extensions = array_map(
+            static function (Hook|string $extension): string {
+                return $extension instanceof Hook ? $extension->value : $extension;
+            },
+            $extensions,
+        );
+
+        $this->tasks->add($task, $extensions, $priority);
 
         return $this;
     }
@@ -131,7 +140,7 @@ class Processor {
         };
         $extensions = match (true) {
             $input instanceof FilePath => [$input->getName()],
-            !$this->tasks->has('*')    => array_map(static fn ($e) => "**/*.{$e}", $this->tasks->getKeys()),
+            !$this->tasks->has('*')    => array_map(static fn ($e) => "**/*.{$e}", $this->tasks->getTags()),
             default                    => [],
         };
         $include   = $extensions;

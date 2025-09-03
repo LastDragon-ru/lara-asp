@@ -53,7 +53,7 @@ final class ProcessorTest extends TestCase {
         $mock = Mockery::mock(Task::class);
         $mock
             ->shouldReceive('getExtensions')
-            ->twice()
+            ->once()
             ->andReturns(['php']);
 
         $taskA = new class() extends ProcessorTest__Task {

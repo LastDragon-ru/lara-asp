@@ -2,25 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Utils\Instances;
-use Override;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 
 /**
  * @internal
  * @extends Instances<MetadataResolver<object>>
  */
 class Resolvers extends Instances {
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getInstanceKeys(object|string $instance): array {
-        return $instance::getExtensions();
-    }
-
-    #[Override]
-    protected function isHighPriorityFirst(): bool {
-        return true;
+    public function __construct(ContainerResolver $container) {
+        parent::__construct($container, SortOrder::Desc);
     }
 }

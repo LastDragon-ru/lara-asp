@@ -137,7 +137,7 @@ class Metadata {
      * @param R|class-string<R> $metadata
      */
     public function addResolver(MetadataResolver|string $metadata, ?int $priority = null): void {
-        $this->resolvers->add($metadata, $priority);
+        $this->resolvers->add($metadata, $metadata::getExtensions(), $priority);
     }
 
     /**

@@ -4,17 +4,16 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 
+use function array_filter;
 use function array_keys;
+use function array_map;
 use function array_merge;
 use function array_search;
 use function array_unique;
-use function array_values;
-use function end;
 use function is_object;
 use function is_string;
 use function max;
 use function min;
-use function reset;
 use function usort;
 
 use const PHP_INT_MAX;
@@ -32,43 +31,43 @@ abstract class Instances {
     private array $priorities = [];
 
     /**
-     * @var array<class-string<TInstance>, TInstance>
+     * @var array<class-string<TInstance>, ?TInstance>
      */
     private array $resolved = [];
 
     /**
      * @var array<string, array<array-key, class-string<TInstance>>>
      */
-    private array $map = [];
+    private array $tags = [];
+
+    /**
+     * @var array<class-string<TInstance>, array<array-key, string>>
+     */
+    private array $classes = [];
 
     public function __construct(
         protected readonly ContainerResolver $container,
+        protected readonly SortOrder $order,
     ) {
         // empty
     }
 
     public function isEmpty(): bool {
-        return $this->map === [];
+        return $this->tags === [];
     }
 
     /**
      * @return list<string>
      */
-    public function getKeys(): array {
-        return array_keys($this->map);
+    public function getTags(): array {
+        return array_keys($this->tags);
     }
 
     /**
      * @return list<class-string<TInstance>>
      */
     public function getClasses(): array {
-        $classes = [];
-
-        foreach ($this->map as $list) {
-            $classes = array_merge($classes, $list);
-        }
-
-        $classes = array_values(array_unique($classes));
+        $classes = array_keys($this->resolved);
 
         usort($classes, $this->compare(...));
 
@@ -79,20 +78,14 @@ abstract class Instances {
      * @return list<TInstance>
      */
     public function getInstances(): array {
-        $instances = [];
-
-        foreach ($this->getClasses() as $class) {
-            $instances[] = $this->resolve($class);
-        }
-
-        return $instances;
+        return array_map($this->resolve(...), $this->getClasses());
     }
 
-    public function has(?string ...$key): bool {
+    public function has(?string ...$tags): bool {
         $exists = false;
 
-        foreach ($key as $k) {
-            if ($k !== null && isset($this->map[$k]) && $this->map[$k] !== []) {
+        foreach ($tags as $tag) {
+            if (isset($this->tags[$tag])) {
                 $exists = true;
                 break;
             }
@@ -102,66 +95,56 @@ abstract class Instances {
     }
 
     /**
-     * @return list<TInstance>
+     * @return iterable<array-key, TInstance>
      */
-    public function get(?string ...$key): array {
-        $instances = [];
+    public function get(?string ...$tags): iterable {
+        $classes = [];
 
-        foreach ($key as $k) {
-            if ($k !== null && isset($this->map[$k])) {
-                foreach ($this->map[$k] as $class) {
-                    $instances[$class] ??= $this->resolve($class);
-                }
-            }
+        foreach ($tags as $tag) {
+            $classes = array_merge($classes, $this->tags[$tag] ?? []);
         }
 
-        $instances = array_values($instances);
+        $classes = array_unique($classes);
 
-        usort($instances, $this->compare(...));
+        usort($classes, $this->compare(...));
 
-        return $instances;
+        foreach ($classes as $class) {
+            yield $this->resolve($class);
+        }
+
+        yield from [];
     }
 
     /**
      * @return ?TInstance
      */
-    public function first(?string ...$key): ?object {
-        $instances = $this->get(...$key);
-        $instance  = reset($instances);
-        $instance  = $instance !== false ? $instance : null;
+    public function first(?string ...$tags): ?object {
+        $first = null;
 
-        return $instance;
-    }
+        foreach ($this->get(...$tags) as $instance) {
+            $first = $instance;
+            break;
+        }
 
-    /**
-     * @return ?TInstance
-     */
-    public function last(?string ...$key): ?object {
-        $instances = $this->get(...$key);
-        $instance  = end($instances);
-        $instance  = $instance !== false ? $instance : null;
-
-        return $instance;
+        return $first;
     }
 
     /**
      * @param TInstance|class-string<TInstance> $instance
+     * @param non-empty-list<?string>           $tags
      */
-    public function add(object|string $instance, ?int $priority = null): static {
-        // Remove
-        $this->remove($instance);
-
-        // Add
-        $keys                     = $this->getInstanceKeys($instance);
+    public function add(object|string $instance, array $tags, ?int $priority = null): static {
+        $tags                     = array_filter($tags, static fn (?string $tag): bool => $tag !== null);
         $class                    = is_string($instance) ? $instance : $instance::class;
-        $this->priorities[$class] = $priority ?? $this->getInstancePriority($instance);
+        $this->classes[$class]    = array_unique(array_merge($this->classes[$class] ?? [], $tags));
+        $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->getPriority();
 
         if (is_object($instance)) {
             $this->resolved[$class] = $instance;
         }
 
-        foreach ($keys as $key) {
-            $this->map[$key][] = $class;
+        foreach ($tags as $tag) {
+            $this->tags[$tag] = array_unique(array_merge($this->tags[$tag] ?? [], [$class]));
         }
 
         return $this;
@@ -172,20 +155,20 @@ abstract class Instances {
      */
     public function remove(object|string $instance): static {
         $class = is_string($instance) ? $instance : $instance::class;
-        $keys  = $this->getInstanceKeys($instance);
+        $tags  = $this->classes[$class] ?? [];
 
         unset($this->priorities[$class]);
         unset($this->resolved[$class]);
 
-        foreach ($keys as $key) {
-            $index = array_search($class, $this->map[$key] ?? [], true);
+        foreach ($tags as $tag) {
+            $index = array_search($class, $this->tags[$tag] ?? [], true);
 
             if ($index !== false) {
-                unset($this->map[$key][$index]);
+                unset($this->tags[$tag][$index]);
             }
 
-            if (($this->map[$key] ?? []) === []) {
-                unset($this->map[$key]);
+            if (($this->tags[$tag] ?? []) === []) {
+                unset($this->tags[$tag]);
             }
         }
 
@@ -198,24 +181,12 @@ abstract class Instances {
      * @return TInstance
      */
     protected function resolve(string $class): object {
-        if (!isset($this->resolved[$class])) {
-            $this->resolved[$class] = $this->container->getInstance()->make($class);
-        }
+        $this->resolved[$class] ??= $this->container->getInstance()->make($class);
 
         return $this->resolved[$class];
     }
 
-    /**
-     * @param TInstance|class-string<TInstance> $instance
-     *
-     * @return list<string>
-     */
-    abstract protected function getInstanceKeys(object|string $instance): array;
-
-    /**
-     * @param TInstance|class-string<TInstance> $instance
-     */
-    protected function getInstancePriority(object|string $instance): int {
+    private function getPriority(): int {
         $priority = max($this->priorities + [0]);
         $priority = min($priority, PHP_INT_MAX - 1);
         $priority = max($priority, PHP_INT_MIN + 1);
@@ -223,21 +194,17 @@ abstract class Instances {
         return $priority + 1;
     }
 
-    protected function isHighPriorityFirst(): bool {
-        return false;
-    }
-
     /**
-     * @param TInstance|class-string<TInstance> $a
-     * @param TInstance|class-string<TInstance> $b
+     * @param class-string<TInstance> $a
+     * @param class-string<TInstance> $b
      */
-    private function compare(object|string $a, object|string $b): int {
-        $a = $this->priorities[is_object($a) ? $a::class : $a] ?? null;
-        $b = $this->priorities[is_object($b) ? $b::class : $b] ?? null;
+    private function compare(string $a, string $b): int {
+        $a = $this->priorities[$a] ?? null;
+        $b = $this->priorities[$b] ?? null;
         $c = $a <=> $b;
 
-        if ($this->isHighPriorityFirst()) {
-            $c = - $c;
+        if ($this->order === SortOrder::Desc) {
+            $c = -$c;
         }
 
         return $c;
