@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 
 use function array_filter;
 use function array_keys;
-use function array_map;
 use function array_merge;
 use function array_search;
 use function array_unique;
@@ -52,10 +51,6 @@ abstract class Instances {
         // empty
     }
 
-    public function isEmpty(): bool {
-        return $this->tags === [];
-    }
-
     /**
      * @return list<string>
      */
@@ -74,15 +69,8 @@ abstract class Instances {
         return $classes;
     }
 
-    /**
-     * @return list<TInstance>
-     */
-    public function getInstances(): array {
-        return array_map($this->resolve(...), $this->getClasses());
-    }
-
     public function has(?string ...$tags): bool {
-        $exists = false;
+        $exists = $tags === [] && $this->tags !== [];
 
         foreach ($tags as $tag) {
             if (isset($this->tags[$tag])) {
@@ -95,10 +83,10 @@ abstract class Instances {
     }
 
     /**
-     * @return iterable<array-key, TInstance>
+     * @return iterable<int, TInstance>
      */
     public function get(?string ...$tags): iterable {
-        $classes = [];
+        $classes = $tags === [] ? $this->getClasses() : [];
 
         foreach ($tags as $tag) {
             $classes = array_merge($classes, $this->tags[$tag] ?? []);
@@ -131,17 +119,14 @@ abstract class Instances {
 
     /**
      * @param TInstance|class-string<TInstance> $instance
-     * @param non-empty-list<?string>           $tags
+     * @param list<?string>                     $tags
      */
-    public function add(object|string $instance, array $tags, ?int $priority = null): static {
+    public function add(object|string $instance, array $tags = [], ?int $priority = null): static {
         $tags                     = array_filter($tags, static fn (?string $tag): bool => $tag !== null);
         $class                    = is_string($instance) ? $instance : $instance::class;
         $this->classes[$class]    = array_unique(array_merge($this->classes[$class] ?? [], $tags));
+        $this->resolved[$class]   = is_object($instance) ? $instance : null;
         $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->getPriority();
-
-        if (is_object($instance)) {
-            $this->resolved[$class] = $instance;
-        }
 
         foreach ($tags as $tag) {
             $this->tags[$tag] = array_unique(array_merge($this->tags[$tag] ?? [], [$class]));

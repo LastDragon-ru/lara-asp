@@ -16,21 +16,7 @@ use function iterator_to_array;
  */
 #[CoversClass(Instances::class)]
 final class InstancesTest extends TestCase {
-    public function testIsEmpty(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
-        $aInstance = new class() extends stdClass {
-            // empty
-        };
-
-        self::assertTrue($instances->isEmpty());
-
-        $instances->add($aInstance, ['a']);
-
-        self::assertFalse($instances->isEmpty());
-    }
-
-    public function testGetKeys(): void {
+    public function testGetTags(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container, SortOrder::Desc);
         $aInstance = new class() extends stdClass {
@@ -46,7 +32,7 @@ final class InstancesTest extends TestCase {
         self::assertEquals(['aa', 'ab', 'b'], $instances->getTags());
     }
 
-    public function testGetClassesAndInstances(): void {
+    public function testGetClasses(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container, SortOrder::Asc);
         $aInstance = new class() extends stdClass {
@@ -61,7 +47,7 @@ final class InstancesTest extends TestCase {
 
         $instances->add($aInstance, ['aa', 'ab'], 200);
         $instances->add($bInstance, ['b'], 100);
-        $instances->add($cInstance, ['c']);
+        $instances->add($cInstance::class, ['c']);
 
         self::assertEquals(
             [
@@ -70,15 +56,6 @@ final class InstancesTest extends TestCase {
                 $cInstance::class,
             ],
             $instances->getClasses(),
-        );
-
-        self::assertSame(
-            [
-                $bInstance,
-                $aInstance,
-                $cInstance,
-            ],
-            $instances->getInstances(),
         );
     }
 
@@ -92,8 +69,12 @@ final class InstancesTest extends TestCase {
             // empty
         };
 
+        self::assertFalse($instances->has());
+
         $instances->add($aInstance, ['aa', 'ab']);
         $instances->add($bInstance, ['b']);
+
+        self::assertTrue($instances->has());
 
         self::assertTrue($instances->has('aa'));
         self::assertTrue($instances->has('ab'));

@@ -50,10 +50,10 @@ class Processor {
 
     /**
      * @internal
-     * @return list<Task>
+     * @return iterable<array-key, Task>
      */
-    public function getTasks(): array {
-        return $this->tasks->getInstances();
+    public function getTasks(): iterable {
+        return $this->tasks->get();
     }
 
     /**

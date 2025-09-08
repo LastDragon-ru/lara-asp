@@ -209,7 +209,7 @@ class Task implements TaskContract {
      */
     protected function parse(DependencyResolver $resolver, File $file, Document $document): array {
         // Empty?
-        if ($this->instructions->isEmpty()) {
+        if (!$this->instructions->has()) {
             return [];
         }
 
