@@ -114,7 +114,9 @@ class Extension {
         ];
 
         foreach ($extension['services'] as $index => $service) {
-            $class = is_array($service) && isset($service['class']) ? $service['class'] : '';
+            $class = is_array($service) && isset($service['class']) && is_string($service['class'])
+                ? $service['class']
+                : '';
 
             if (isset($disabled[$class])) {
                 unset($extension['services'][$index]);

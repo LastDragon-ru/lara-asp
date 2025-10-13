@@ -159,7 +159,7 @@ class CursorTest_ParentNode implements NodeParent {
 
     #[Override]
     public function offsetSet(mixed $offset, mixed $value): void {
-        array_splice($this->children, $offset ?? count($this->children), 1, [$value]);
+        array_splice($this->children, $offset ?? count($this->children), 1, $value !== null ? [$value] : []);
     }
 
     #[Override]

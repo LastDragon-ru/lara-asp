@@ -24,8 +24,6 @@ readonly class Base {
     }
 
     /**
-     * @phpstan-assert-if-true int               $key
-     *
      * @param array<int, array<int, Coordinate>> $coordinates
      */
     protected function isOverlapped(array $coordinates, Coordinate $coordinate, ?int &$key = null): bool {

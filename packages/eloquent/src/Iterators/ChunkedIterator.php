@@ -27,11 +27,11 @@ use function count;
 class ChunkedIterator extends IteratorImpl {
     #[Override]
     protected function getChunk(Builder $builder, int $chunk): Collection {
-        $builder
+        // @phpstan-ignore return.type (T is lost, not sure why...)
+        return $builder
             ->offset($this->getOffset())
-            ->limit($chunk);
-
-        return $builder->get();
+            ->limit($chunk)
+            ->get();
     }
 
     #[Override]

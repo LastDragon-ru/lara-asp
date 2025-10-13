@@ -56,9 +56,8 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
 
     #[Override]
     protected function getChunk(Builder $builder, int $chunk): Collection {
-        $column = $this->getColumn();
-
-        $builder
+        $column  = $this->getColumn();
+        $builder = $builder
             ->reorder()
             ->orderBy($column)
             ->limit($chunk)
@@ -67,9 +66,10 @@ class ChunkedChangeSafeIterator extends IteratorImpl {
                 static function (Builder $builder, string|int|null $offset) use ($column): void {
                     $builder->where($column, '>', $offset);
                 },
-            );
+            )
+            ->get();
 
-        return $builder->get();
+        return $builder; // @phpstan-ignore return.type (T is lost, not sure why...)
     }
 
     #[Override]

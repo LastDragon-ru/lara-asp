@@ -68,7 +68,7 @@ readonly class Extractor extends Base {
         $lines = [];
 
         foreach ($coordinates as $coordinate) {
-            if ($this->isOverlapped($lines, $coordinate, $key)) {
+            if ($this->isOverlapped($lines, $coordinate, $key) && $key !== null) {
                 // Coordinates are overlapped -> merge
                 $overlapped                     = $lines[$coordinate->line][$key] ?? $coordinate;
                 $lines[$coordinate->line][$key] = $this->merge($overlapped, $coordinate);

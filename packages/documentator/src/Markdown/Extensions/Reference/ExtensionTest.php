@@ -8,6 +8,9 @@ use LastDragon_ru\LaraASP\Documentator\Package\WithMarkdown;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function array_map;
+use function iterator_to_array;
+
 /**
  * @internal
  */
@@ -32,11 +35,8 @@ final class ExtensionTest extends TestCase {
         };
 
         $document   = $markdown->parse(self::getTestData()->content('~document.md'));
-        $references = [];
-
-        foreach ($document->node->getReferenceMap() as $label => $reference) {
-            $references[$label] = $reference->getLabel();
-        }
+        $references = iterator_to_array($document->node->getReferenceMap());
+        $references = array_map(static fn($reference) => $reference->getLabel(), $references);
 
         self::assertEquals(
             [

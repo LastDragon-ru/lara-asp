@@ -68,7 +68,7 @@ abstract class NodeParentFactory {
 
         // Push
         if ($key !== null && isset($this->children[$key])) {
-            $this->children[$key] = $node; // @phpstan-ignore assign.propertyType (https://github.com/phpstan/phpstan/issues/13035)
+            $this->children[$key] = $node;
         } else {
             $this->children[] = $node;
         }
