@@ -25,8 +25,6 @@ abstract class File extends Entry {
         return $this->path->getExtension();
     }
 
-    abstract public function getContent(): string;
-
     /**
      * @template T of object
      *

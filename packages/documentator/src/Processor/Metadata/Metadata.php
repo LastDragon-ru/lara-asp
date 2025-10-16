@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
@@ -30,6 +31,7 @@ class Metadata {
 
     public function __construct(
         protected readonly ContainerResolver $container,
+        protected readonly FileSystemAdapter $adapter,
     ) {
         $this->cache     = new WeakMap();
         $this->resolvers = new Resolvers($container);
@@ -44,7 +46,7 @@ class Metadata {
         $this->addResolver(ClassObjectMetadata::class);
         $this->addResolver(SerializableMetadata::class);
         $this->addResolver(MarkdownMetadata::class);
-        $this->addResolver(ContentMetadata::class);
+        $this->addResolver(new ContentMetadata($this->adapter));
     }
 
     /**

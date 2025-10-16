@@ -44,21 +44,4 @@ final class FileRealTest extends TestCase {
 
         new FileReal($adapter, $path, Mockery::mock(Metadata::class));
     }
-
-    public function testGetContent(): void {
-        $path    = (new FilePath(__DIR__))->getNormalizedPath();
-        $adapter = Mockery::mock(FileSystemAdapter::class);
-        $adapter
-            ->shouldReceive('isFile')
-            ->once()
-            ->andReturn(true);
-        $adapter
-            ->shouldReceive('read')
-            ->once()
-            ->andReturn('content');
-
-        $file = new FileReal($adapter, $path, Mockery::mock(Metadata::class));
-
-        self::assertSame('content', $file->getContent());
-    }
 }

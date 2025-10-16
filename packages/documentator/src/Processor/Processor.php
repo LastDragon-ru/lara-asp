@@ -44,7 +44,7 @@ class Processor {
         protected readonly FileSystemAdapter $adapter,
     ) {
         $this->tasks      = new Tasks($container);
-        $this->metadata   = new Metadata($container);
+        $this->metadata   = new Metadata($container, $this->adapter);
         $this->dispatcher = new Dispatcher();
     }
 

@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
@@ -48,7 +49,8 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn($bResolver);
 
-        $metadata = new class($resolver) extends Metadata {
+        $adapter  = Mockery::mock(FileSystemAdapter::class);
+        $metadata = new class($resolver, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -109,7 +111,8 @@ final class MetadataTest extends TestCase {
             ->andReturn($resolved);
 
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -152,7 +155,8 @@ final class MetadataTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -185,7 +189,8 @@ final class MetadataTest extends TestCase {
     public function testGetNoResolver(): void {
         // Prepare
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -224,7 +229,8 @@ final class MetadataTest extends TestCase {
             // empty
         };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -254,7 +260,8 @@ final class MetadataTest extends TestCase {
             // empty
         };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -281,7 +288,8 @@ final class MetadataTest extends TestCase {
             // empty
         };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -321,7 +329,8 @@ final class MetadataTest extends TestCase {
             }
         };
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -345,7 +354,8 @@ final class MetadataTest extends TestCase {
 
         $value     = new MetadataTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty
@@ -376,7 +386,8 @@ final class MetadataTest extends TestCase {
 
         $value     = new MetadataTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
-        $metadata  = new class($container) extends Metadata {
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
             #[Override]
             protected function addBuiltInResolvers(): void {
                 // empty

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
@@ -10,7 +11,9 @@ use Override;
  * @implements MetadataResolver<Content>
  */
 readonly class ContentMetadata implements MetadataResolver {
-    public function __construct() {
+    public function __construct(
+        protected FileSystemAdapter $adapter,
+    ) {
         // empty
     }
 
@@ -29,7 +32,7 @@ readonly class ContentMetadata implements MetadataResolver {
 
     #[Override]
     public function resolve(File $file, string $metadata): mixed {
-        return new Content($file->getContent());
+        return new Content($this->adapter->read((string) $file));
     }
 
     #[Override]

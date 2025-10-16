@@ -46,7 +46,7 @@ trait WithProcessor {
                     ->sortByName(true);
             }
         };
-        $metadata   = new Metadata($this->app()->make(ContainerResolver::class));
+        $metadata   = new Metadata($this->app()->make(ContainerResolver::class), $adapter);
         $dispatcher = new Dispatcher();
         $filesystem = new FileSystem($dispatcher, $metadata, $adapter, $input, $output);
 

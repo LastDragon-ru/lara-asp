@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
-use Override;
 
 use function sprintf;
 
@@ -25,10 +24,5 @@ class FileReal extends File {
                 ),
             );
         }
-    }
-
-    #[Override]
-    public function getContent(): string {
-        return $this->adapter->read((string) $this->path);
     }
 }

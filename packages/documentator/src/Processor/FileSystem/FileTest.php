@@ -2,13 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Mockery;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
@@ -23,10 +21,7 @@ final class FileTest extends TestCase {
         $value    = new stdClass();
         $path     = (new FilePath(__FILE__))->getNormalizedPath();
         $file     = new class($adapter, $path, $metadata) extends File {
-            #[Override]
-            public function getContent(): string {
-                throw new Exception('Should not be called.');
-            }
+            // empty
         };
 
         $metadata
