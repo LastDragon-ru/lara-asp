@@ -35,17 +35,15 @@ readonly class ClassObjectMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         $resolver = new NameResolver();
         $stmts    = $this->parse($resolver, $file->as(Content::class)->content);
         $finder   = new NodeFinder();
         $class    = $finder->findFirstInstanceOf($stmts, ClassLike::class);
 
-        if ($class === null) {
-            throw new ClassObjectNotFound();
-        }
-
-        return new ClassObject($class, $resolver->getNameContext());
+        return $class !== null
+            ? new ClassObject($class, $resolver->getNameContext())
+            : null;
     }
 
     #[Override]

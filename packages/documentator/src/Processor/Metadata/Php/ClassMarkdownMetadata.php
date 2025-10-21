@@ -32,7 +32,7 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         $comment  = $file->as(ClassComment::class);
         $document = ($this->factory)($comment->comment, $file->getPath(), $comment->context);
 

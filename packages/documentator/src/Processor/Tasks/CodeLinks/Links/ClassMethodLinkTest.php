@@ -62,7 +62,9 @@ final class ClassMethodLinkTest extends TestCase {
 
         $resolver = $this->app()->make(ClassObjectMetadata::class);
         $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(ClassMethod::class, $actual);
         self::assertSame('method', $actual->name->name);

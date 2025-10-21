@@ -29,7 +29,7 @@ class ClassCommentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         $class   = $file->as(ClassObject::class);
         $comment = new PhpDoc($class->class->getDocComment()?->getText());
         $comment = new ClassComment($class->class, $class->context, $comment);

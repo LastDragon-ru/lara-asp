@@ -20,6 +20,7 @@ final class ClassObjectMetadataTest extends TestCase {
         $factory  = new ClassObjectMetadata();
         $resolved = $factory->resolve($file, ClassObject::class);
 
+        self::assertNotNull($resolved);
         self::assertSame(
             (new ReflectionClass($this::class))->getShortName(),
             (string) $resolved->class->name,
@@ -27,12 +28,11 @@ final class ClassObjectMetadataTest extends TestCase {
     }
 
     public function testResolveNotFound(): void {
-        self::expectException(ClassObjectNotFound::class);
+        $fs       = $this->getFileSystem(__DIR__);
+        $file     = $fs->getFile('../../../../README.md');
+        $factory  = new ClassObjectMetadata();
+        $resolved = $factory->resolve($file, ClassObject::class);
 
-        $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile('../../../../README.md');
-        $factory = new ClassObjectMetadata();
-
-        $factory->resolve($file, ClassObject::class);
+        self::assertNull($resolved);
     }
 }

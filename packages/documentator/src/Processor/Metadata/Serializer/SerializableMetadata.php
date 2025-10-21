@@ -33,7 +33,7 @@ readonly class SerializableMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         return $this->serializer->deserialize($metadata, $file->as(Content::class)->content, $file->getExtension());
     }
 

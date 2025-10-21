@@ -469,7 +469,7 @@ class MetadataTest__Resolver implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         return new MetadataTest__Value($this::class);
     }
 

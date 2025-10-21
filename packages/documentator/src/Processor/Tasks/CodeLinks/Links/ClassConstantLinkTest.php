@@ -70,7 +70,9 @@ final class ClassConstantLinkTest extends TestCase {
 
         $resolver = $this->app()->make(ClassObjectMetadata::class);
         $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(ClassConst::class, $actual);
         self::assertEquals(
@@ -110,7 +112,9 @@ final class ClassConstantLinkTest extends TestCase {
 
         $resolver = $this->app()->make(ClassObjectMetadata::class);
         $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(EnumCase::class, $actual);
         self::assertSame('A', (string) $actual->name);

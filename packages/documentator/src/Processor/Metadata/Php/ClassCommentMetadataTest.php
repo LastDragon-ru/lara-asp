@@ -36,6 +36,7 @@ final class ClassCommentMetadataTest extends TestCase {
         $metadata = new ClassCommentMetadata();
         $resolved = $metadata->resolve($file, ClassComment::class);
 
+        self::assertNotNull($resolved);
         self::assertSame(
             <<<'MARKDOWN'
             Description.

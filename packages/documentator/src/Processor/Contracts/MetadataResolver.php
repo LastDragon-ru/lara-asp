@@ -26,9 +26,9 @@ interface MetadataResolver {
      *
      * @param class-string<TValue> $metadata
      *
-     * @return TValue
+     * @return ?TValue
      */
-    public function resolve(File $file, string $metadata): object;
+    public function resolve(File $file, string $metadata): ?object;
 
     /**
      * Serialize metadata back to the string.

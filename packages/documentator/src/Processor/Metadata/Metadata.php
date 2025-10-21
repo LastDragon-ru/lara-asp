@@ -72,7 +72,7 @@ class Metadata {
                         sprintf(
                             'Expected `%s`, got `%s` (resolver `%s`).',
                             $metadata,
-                            $resolved::class,
+                            ($resolved !== null ? $resolved::class : 'null'),
                             $resolver::class,
                         ),
                     );

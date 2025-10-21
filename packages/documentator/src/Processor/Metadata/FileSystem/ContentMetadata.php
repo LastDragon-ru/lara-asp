@@ -31,7 +31,7 @@ readonly class ContentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         return new Content($this->adapter->read((string) $file));
     }
 

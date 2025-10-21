@@ -33,7 +33,7 @@ readonly class ComposerPackageMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         return new Package($this->factory->createFromJson($file->as(Content::class)->content));
     }
 

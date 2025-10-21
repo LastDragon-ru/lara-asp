@@ -33,7 +33,7 @@ readonly class MarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): object {
+    public function resolve(File $file, string $metadata): ?object {
         return $this->markdown->parse($file->as(Content::class)->content, $file->getPath());
     }
 

@@ -71,7 +71,9 @@ final class ClassPropertyLinkTest extends TestCase {
 
         $resolver = $this->app()->make(ClassObjectMetadata::class);
         $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(Property::class, $actual);
         self::assertEquals(
@@ -115,7 +117,9 @@ final class ClassPropertyLinkTest extends TestCase {
 
         $resolver = $this->app()->make(ClassObjectMetadata::class);
         $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(Param::class, $actual);
         self::assertInstanceOf(Variable::class, $actual->var);
