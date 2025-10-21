@@ -174,7 +174,7 @@ abstract class Instances {
     private function getPriority(): int {
         $priority = max($this->priorities + [0]);
         $priority = min($priority, PHP_INT_MAX - 1);
-        $priority = max($priority, PHP_INT_MIN + 1);
+        $priority = max($priority, PHP_INT_MIN);
 
         return $priority + 1;
     }
