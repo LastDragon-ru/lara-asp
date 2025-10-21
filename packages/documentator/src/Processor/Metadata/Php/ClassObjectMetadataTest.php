@@ -18,11 +18,11 @@ final class ClassObjectMetadataTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(__FILE__);
         $factory  = new ClassObjectMetadata();
-        $metadata = $factory->resolve($file, ClassObject::class);
+        $resolved = $factory->resolve($file, ClassObject::class);
 
         self::assertSame(
             (new ReflectionClass($this::class))->getShortName(),
-            (string) $metadata->class->name,
+            (string) $resolved->class->name,
         );
     }
 

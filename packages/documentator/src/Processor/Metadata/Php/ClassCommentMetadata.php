@@ -15,6 +15,11 @@ class ClassCommentMetadata implements MetadataResolver {
         // empty
     }
 
+    #[Override]
+    public static function getClass(): string {
+        return ClassComment::class;
+    }
+
     /**
      * @inheritDoc
      */
@@ -24,12 +29,7 @@ class ClassCommentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return $file->getExtension() === 'php' && $metadata === ClassComment::class;
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         $class   = $file->as(ClassObject::class);
         $comment = new PhpDoc($class->class->getDocComment()?->getText());
         $comment = new ClassComment($class->class, $class->context, $comment);

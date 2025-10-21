@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 
-use function is_a;
-
 /**
  * @implements MetadataResolver<Serializable>
  */
@@ -19,6 +17,11 @@ readonly class SerializableMetadata implements MetadataResolver {
         protected Serializer $serializer,
     ) {
         // empty
+    }
+
+    #[Override]
+    public static function getClass(): string {
+        return Serializable::class;
     }
 
     /**
@@ -30,12 +33,7 @@ readonly class SerializableMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return is_a($metadata, Serializable::class, true);
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         return $this->serializer->deserialize($metadata, $file->as(Content::class)->content, $file->getExtension());
     }
 

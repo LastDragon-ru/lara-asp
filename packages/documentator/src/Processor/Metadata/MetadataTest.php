@@ -17,7 +17,6 @@ use RuntimeException;
 use stdClass;
 use UnexpectedValueException;
 
-use function is_a;
 use function sprintf;
 
 /**
@@ -88,23 +87,16 @@ final class MetadataTest extends TestCase {
 
     public function testGetCached(): void {
         // Prepare
-        $resolved = new class() extends stdClass {
-            // empty
-        };
+        $resolved = new stdClass();
         $resolver = Mockery::mock(MetadataResolver::class);
+        $resolver
+            ->shouldReceive('getClass')
+            ->once()
+            ->andReturn(stdClass::class);
         $resolver
             ->shouldReceive('getExtensions')
             ->once()
             ->andReturn(['*']);
-        $resolver
-            ->shouldReceive('isSupported')
-            ->atLeast()
-            ->once()
-            ->andReturnUsing(
-                static function (File $file, string $metadata): bool {
-                    return is_a($metadata, stdClass::class, true);
-                },
-            );
         $resolver
             ->shouldReceive('resolve')
             ->once()
@@ -225,9 +217,7 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new class(__METHOD__) extends MetadataTest__Value {
-            // empty
-        };
+        $value     = new MetadataTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
         $metadata  = new class($container, $adapter) extends Metadata {
@@ -256,9 +246,7 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new class(__METHOD__) extends MetadataTest__Value {
-            // empty
-        };
+        $value     = new MetadataTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
         $metadata  = new class($container, $adapter) extends Metadata {
@@ -284,9 +272,7 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new class(__METHOD__) extends MetadataTest__Value {
-            // empty
-        };
+        $value     = new MetadataTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
         $metadata  = new class($container, $adapter) extends Metadata {
@@ -408,6 +394,56 @@ final class MetadataTest extends TestCase {
         self::assertInstanceOf(RuntimeException::class, $previous);
         self::assertSame('Serializer not found.', $previous->getMessage());
     }
+
+    public function testGetTags(): void {
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->atLeast()
+            ->once()
+            ->andReturn('extension');
+
+        $container = Mockery::mock(ContainerResolver::class);
+        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $metadata  = new class($container, $adapter) extends Metadata {
+            #[Override]
+            protected function addBuiltInResolvers(): void {
+                // empty
+            }
+
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public function getTags(File $file, string $metadata): array {
+                return parent::getTags($file, $metadata);
+            }
+        };
+
+        self::assertSame(
+            [
+                'stdClass:extension',
+                'stdClass:*',
+            ],
+            $metadata->getTags($file, stdClass::class),
+        );
+        self::assertSame(
+            [
+                MetadataResolver::class.':extension',
+                MetadataResolver::class.':*',
+            ],
+            $metadata->getTags($file, MetadataResolver::class),
+        );
+        self::assertSame(
+            [
+                MetadataTest__Resolver::class.':extension',
+                MetadataTest__Resolver::class.':*',
+                MetadataResolver::class.':extension',
+                MetadataResolver::class.':*',
+            ],
+            $metadata->getTags($file, MetadataTest__Resolver::class),
+        );
+    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -419,6 +455,11 @@ final class MetadataTest extends TestCase {
  * @implements MetadataResolver<MetadataTest__Value>
  */
 class MetadataTest__Resolver implements MetadataResolver {
+    #[Override]
+    public static function getClass(): string {
+        return MetadataTest__Value::class;
+    }
+
     /**
      * @inheritDoc
      */
@@ -428,12 +469,7 @@ class MetadataTest__Resolver implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return is_a($metadata, MetadataTest__Value::class, true);
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         return new MetadataTest__Value($this::class);
     }
 

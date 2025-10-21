@@ -21,6 +21,11 @@ readonly class ClassObjectMetadata implements MetadataResolver {
         // empty
     }
 
+    #[Override]
+    public static function getClass(): string {
+        return ClassObject::class;
+    }
+
     /**
      * @inheritDoc
      */
@@ -30,12 +35,7 @@ readonly class ClassObjectMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return $file->getExtension() === 'php' && $metadata === ClassObject::class;
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         $resolver = new NameResolver();
         $stmts    = $this->parse($resolver, $file->as(Content::class)->content);
         $finder   = new NodeFinder();

@@ -20,20 +20,22 @@ use RuntimeException;
 use UnexpectedValueException;
 use WeakMap;
 
+use function class_exists;
+use function class_implements;
 use function sprintf;
 
 class Metadata {
     /**
      * @var WeakMap<File, array<class-string<object>, object>>
      */
-    private WeakMap            $cache;
+    private WeakMap            $files;
     private readonly Resolvers $resolvers;
 
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly FileSystemAdapter $adapter,
     ) {
-        $this->cache     = new WeakMap();
+        $this->files     = new WeakMap();
         $this->resolvers = new Resolvers($container);
 
         $this->addBuiltInResolvers();
@@ -57,15 +59,14 @@ class Metadata {
      * @return T
      */
     public function get(File $file, string $metadata): mixed {
-        try {
-            $resolver = $this->getResolver($file, $metadata);
-            $resolved = $this->cache[$file][$resolver::class] ?? null;
-
-            if ($resolved === null) {
+        if (!isset($this->files[$file][$metadata])) {
+            try {
+                $resolver = $this->getResolver($file, $metadata);
                 $resolved = $resolver->resolve($file, $metadata);
 
                 if ($resolved instanceof $metadata) {
-                    $this->set($file, $resolved);
+                    $this->files[$file]          ??= [];
+                    $this->files[$file][$metadata] = $resolved;
                 } else {
                     throw new UnexpectedValueException(
                         sprintf(
@@ -76,26 +77,19 @@ class Metadata {
                         ),
                     );
                 }
+            } catch (Exception $exception) {
+                throw new MetadataUnresolvable($file, $metadata, $exception);
             }
-        } catch (Exception $exception) {
-            throw new MetadataUnresolvable($file, $metadata, $exception);
         }
 
-        return $resolved; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
+        return $this->files[$file][$metadata]; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
     }
 
     /**
      * @param class-string $metadata
      */
     public function has(File $file, string $metadata): bool {
-        try {
-            $resolver = $this->getResolver($file, $metadata);
-            $exists   = isset($this->cache[$file][$resolver::class]);
-
-            return $exists;
-        } catch (Exception) {
-            return false;
-        }
+        return isset($this->files[$file][$metadata]);
     }
 
     /**
@@ -105,16 +99,16 @@ class Metadata {
      */
     public function set(File $file, object $metadata): void {
         try {
-            $resolver                             = $this->getResolver($file, $metadata::class);
-            $this->cache[$file]                 ??= [];
-            $this->cache[$file][$resolver::class] = $metadata;
+            $resolver                                  = $this->getResolver($file, $metadata::class);
+            $this->files[$file]                      ??= [];
+            $this->files[$file][$resolver::getClass()] = $metadata;
         } catch (Exception $exception) {
             throw new MetadataUnresolvable($file, $metadata::class, $exception);
         }
     }
 
     public function reset(File $file): void {
-        $this->cache[$file] = [];
+        $this->files[$file] = [];
     }
 
     public function serialize(File $file, object $value): string {
@@ -139,7 +133,15 @@ class Metadata {
      * @param R|class-string<R> $metadata
      */
     public function addResolver(MetadataResolver|string $metadata, ?int $priority = null): void {
-        $this->resolvers->add($metadata, $metadata::getExtensions(), $priority);
+        $tags       = [];
+        $class      = $metadata::getClass();
+        $extensions = $metadata::getExtensions();
+
+        foreach ($extensions as $extension) {
+            $tags[] = "{$class}:{$extension}";
+        }
+
+        $this->resolvers->add($metadata, $tags, $priority);
     }
 
     /**
@@ -159,21 +161,33 @@ class Metadata {
      *
      * @return MetadataResolver<T>
      */
-    private function getResolver(File $file, string $metadata): MetadataResolver {
-        $resolver  = null;
-        $resolvers = $this->resolvers->get($file->getExtension(), '*');
-
-        foreach ($resolvers as $instance) {
-            if ($instance->isSupported($file, $metadata)) {
-                $resolver = $instance;
-                break;
-            }
-        }
+    protected function getResolver(File $file, string $metadata): MetadataResolver {
+        $tags     = $this->getTags($file, $metadata);
+        $resolver = $this->resolvers->first(...$tags);
 
         if (!($resolver instanceof MetadataResolver)) {
             throw new RuntimeException('Resolver not found.');
         }
 
         return $resolver; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
+    }
+
+    /**
+     * @param class-string $metadata
+     *
+     * @return list<string>
+     */
+    protected function getTags(File $file, string $metadata): array {
+        $tags       = [];
+        $extensions = [$file->getExtension(), '*'];
+        $implements = [$metadata, ...(class_exists($metadata) ? (array) class_implements($metadata) : [])];
+
+        foreach ($implements as $interface) {
+            foreach ($extensions as $extension) {
+                $tags[] = "{$interface}:{$extension}";
+            }
+        }
+
+        return $tags;
     }
 }

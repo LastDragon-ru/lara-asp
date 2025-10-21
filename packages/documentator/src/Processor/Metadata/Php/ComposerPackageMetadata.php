@@ -19,6 +19,11 @@ readonly class ComposerPackageMetadata implements MetadataResolver {
         // empty
     }
 
+    #[Override]
+    public static function getClass(): string {
+        return Package::class;
+    }
+
     /**
      * @inheritDoc
      */
@@ -28,12 +33,7 @@ readonly class ComposerPackageMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return $file->getExtension() === 'json' && $metadata === Package::class;
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         return new Package($this->factory->createFromJson($file->as(Content::class)->content));
     }
 

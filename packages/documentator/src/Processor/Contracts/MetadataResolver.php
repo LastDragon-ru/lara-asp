@@ -9,6 +9,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
  */
 interface MetadataResolver {
     /**
+     * @return class-string<TValue>
+     */
+    public static function getClass(): string;
+
+    /**
      * Returns the file extensions which the resolver can use to create metadata.
      * The `*` can be used for any file.
      *
@@ -17,20 +22,13 @@ interface MetadataResolver {
     public static function getExtensions(): array;
 
     /**
-     * @phpstan-assert-if-true class-string<TValue> $metadata
-     *
-     * @param class-string                          $metadata
-     */
-    public function isSupported(File $file, string $metadata): bool;
-
-    /**
      * Resolves the metadata.
      *
      * @param class-string<TValue> $metadata
      *
      * @return TValue
      */
-    public function resolve(File $file, string $metadata): mixed;
+    public function resolve(File $file, string $metadata): object;
 
     /**
      * Serialize metadata back to the string.

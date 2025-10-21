@@ -17,6 +17,11 @@ readonly class ContentMetadata implements MetadataResolver {
         // empty
     }
 
+    #[Override]
+    public static function getClass(): string {
+        return Content::class;
+    }
+
     /**
      * @inheritDoc
      */
@@ -26,12 +31,7 @@ readonly class ContentMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return $metadata === Content::class;
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         return new Content($this->adapter->read((string) $file));
     }
 

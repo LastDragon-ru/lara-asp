@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
 
-use function is_a;
-
 /**
  * @implements MetadataResolver<Document>
  */
@@ -18,6 +16,11 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
         protected PhpDocumentFactory $factory,
     ) {
         // empty
+    }
+
+    #[Override]
+    public static function getClass(): string {
+        return Document::class;
     }
 
     /**
@@ -29,12 +32,7 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return $file->getExtension() === 'php' && is_a($metadata, Document::class, true);
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         $comment  = $file->as(ClassComment::class);
         $document = ($this->factory)($comment->comment, $file->getPath(), $comment->context);
 

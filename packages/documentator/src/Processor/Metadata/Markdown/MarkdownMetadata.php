@@ -9,8 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
 
-use function is_a;
-
 /**
  * @implements MetadataResolver<Document>
  */
@@ -19,6 +17,11 @@ readonly class MarkdownMetadata implements MetadataResolver {
         protected Markdown $markdown,
     ) {
         // empty
+    }
+
+    #[Override]
+    public static function getClass(): string {
+        return Document::class;
     }
 
     /**
@@ -30,12 +33,7 @@ readonly class MarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(File $file, string $metadata): bool {
-        return $file->getExtension() === 'md' && is_a($metadata, Document::class, true);
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function resolve(File $file, string $metadata): object {
         return $this->markdown->parse($file->as(Content::class)->content, $file->getPath());
     }
 
