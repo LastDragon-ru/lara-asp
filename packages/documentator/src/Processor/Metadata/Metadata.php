@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\ContentMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Markdown\MarkdownMetadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassCommentMetadata;
@@ -28,14 +29,16 @@ class Metadata {
     /**
      * @var WeakMap<File, array<class-string<object>, object>>
      */
-    private WeakMap            $files;
-    private readonly Resolvers $resolvers;
+    private WeakMap                  $files;
+    private readonly Resolvers       $resolvers;
+    private readonly ContentMetadata $content;
 
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly FileSystemAdapter $adapter,
     ) {
         $this->files     = new WeakMap();
+        $this->content   = new ContentMetadata($this->adapter);
         $this->resolvers = new Resolvers($container);
 
         $this->addBuiltInResolvers();
@@ -48,7 +51,6 @@ class Metadata {
         $this->addResolver(ClassObjectMetadata::class);
         $this->addResolver(SerializableMetadata::class);
         $this->addResolver(MarkdownMetadata::class);
-        $this->addResolver(new ContentMetadata($this->adapter));
     }
 
     /**
@@ -162,8 +164,10 @@ class Metadata {
      * @return MetadataResolver<T>
      */
     protected function getResolver(File $file, string $metadata): MetadataResolver {
-        $tags     = $this->getTags($file, $metadata);
-        $resolver = $this->resolvers->first(...$tags);
+        $resolver = match (true) {
+            $metadata === Content::class => $this->content,
+            default                      => $this->resolvers->first(...$this->getTags($file, $metadata)),
+        };
 
         if (!($resolver instanceof MetadataResolver)) {
             throw new RuntimeException('Resolver not found.');
