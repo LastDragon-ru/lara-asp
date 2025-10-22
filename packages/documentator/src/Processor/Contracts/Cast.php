@@ -7,33 +7,32 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 /**
  * @template TValue of object
  */
-interface MetadataResolver {
+interface Cast {
     /**
      * @return class-string<TValue>
      */
     public static function getClass(): string;
 
     /**
-     * Returns the file extensions which the resolver can use to create metadata.
-     * The `*` can be used for any file.
+     * Returns the castable file extensions. The `*` can be used for any file.
      *
      * @return non-empty-list<string>
      */
     public static function getExtensions(): array;
 
     /**
-     * Resolves the metadata.
+     * Cast file into object.
      *
-     * @param class-string<TValue> $metadata
+     * @param class-string<TValue> $class
      *
      * @return ?TValue
      */
-    public function resolve(File $file, string $metadata): ?object;
+    public function castTo(File $file, string $class): ?object;
 
     /**
-     * Serialize metadata back to the string.
+     * Cast object back to string.
      *
      * @param TValue $value
      */
-    public function serialize(File $file, object $value): ?string;
+    public function castFrom(File $file, object $value): ?string;
 }

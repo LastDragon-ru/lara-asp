@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
@@ -9,17 +9,17 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(ClassCommentMetadata::class)]
-final class ClassCommentMetadataTest extends TestCase {
+#[CoversClass(ClassCommentCast::class)]
+final class ClassCommentCastTest extends TestCase {
     use WithProcessor;
 
-    public function testResolve(): void {
-        $content  = <<<'PHP'
+    public function testCastTo(): void {
+        $content = <<<'PHP'
         <?php declare(strict_types = 1);
 
         namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
 
-        use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
+        use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObject;
         use stdClass;
 
         /**
@@ -31,19 +31,19 @@ final class ClassCommentMetadataTest extends TestCase {
             // empty
         }
         PHP;
-        $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(self::getTempFile($content, '.php')->getPathname());
-        $metadata = new ClassCommentMetadata();
-        $resolved = $metadata->resolve($file, ClassComment::class);
+        $fs      = $this->getFileSystem(__DIR__);
+        $file    = $fs->getFile(self::getTempFile($content, '.php')->getPathname());
+        $cast    = new ClassCommentCast();
+        $value   = $cast->castTo($file, ClassComment::class);
 
-        self::assertNotNull($resolved);
+        self::assertNotNull($value);
         self::assertSame(
             <<<'MARKDOWN'
             Description.
 
             Summary {@see stdClass} and {@see ClassObject}, {@see https://example.com/}.
             MARKDOWN,
-            $resolved->comment->getText(),
+            $value->comment->getText(),
         );
     }
 }

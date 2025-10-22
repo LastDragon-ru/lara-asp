@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
 use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
@@ -14,9 +14,9 @@ use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\ParserFactory;
 
 /**
- * @implements MetadataResolver<ClassObject>
+ * @implements Cast<ClassObject>
  */
-readonly class ClassObjectMetadata implements MetadataResolver {
+readonly class ClassObjectCast implements Cast {
     public function __construct() {
         // empty
     }
@@ -35,7 +35,7 @@ readonly class ClassObjectMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): ?object {
+    public function castTo(File $file, string $class): ?object {
         $resolver = new NameResolver();
         $stmts    = $this->parse($resolver, $file->as(Content::class)->content);
         $finder   = new NodeFinder();
@@ -47,7 +47,7 @@ readonly class ClassObjectMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function serialize(File $file, object $value): ?string {
+    public function castFrom(File $file, object $value): ?string {
         return null;
     }
 

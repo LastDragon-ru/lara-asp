@@ -7,16 +7,16 @@ use Throwable;
 
 use function sprintf;
 
-class MetadataUnserializable extends MetadataError {
+class CastFromFailed extends CastError {
     public function __construct(
         protected readonly File $target,
-        protected readonly object $metadata,
+        protected readonly object $object,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to resolve `%s` metadata for `%s` file.',
-                $this->metadata::class,
+                'Cast from `%s` failed for `%s` file.',
+                $this->object::class,
                 $this->target,
             ),
             $previous,
@@ -27,7 +27,7 @@ class MetadataUnserializable extends MetadataError {
         return $this->target;
     }
 
-    public function getMetadata(): object {
-        return $this->metadata;
+    public function getObject(): object {
+        return $this->object;
     }
 }

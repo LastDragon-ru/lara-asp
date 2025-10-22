@@ -7,6 +7,8 @@ use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
@@ -16,8 +18,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use SplObjectStorage;
 
 use function array_reverse;
@@ -43,7 +43,7 @@ class FileSystem {
 
     public function __construct(
         private readonly Dispatcher $dispatcher,
-        private readonly Metadata $metadata,
+        private readonly Caster $caster,
         private readonly FileSystemAdapter $adapter,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
@@ -131,7 +131,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->isFile((string) $path)) {
-            $file = new FileReal($this->adapter, $path, $this->metadata);
+            $file = new FileReal($this->adapter, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
         }
@@ -248,21 +248,21 @@ class FileSystem {
         // File?
         if ($file === null) {
             $file = !$this->isFile($path)
-                ? new FileVirtual($this->adapter, $path, $this->metadata)
+                ? new FileVirtual($this->adapter, $path, $this->caster)
                 : $this->getFile($path);
         }
 
-        // Metadata?
+        // Caster?
         $metadata = null;
 
         if (is_object($content)) {
             $metadata = $content;
-            $content  = $this->metadata->serialize($file, $metadata);
+            $content  = $this->caster->serialize($file, $metadata);
         }
 
         // Content
         if (!($metadata instanceof Content)) {
-            $content = $this->metadata->serialize($file, new Content($content));
+            $content = $this->caster->serialize($file, new Content($content));
         }
 
         // File?
@@ -280,21 +280,21 @@ class FileSystem {
         }
 
         // Changed?
-        $updated = !$this->metadata->has($file, Content::class)
-            || $this->metadata->get($file, Content::class)->content !== $content;
+        $updated = !$this->caster->has($file, Content::class)
+            || $this->caster->get($file, Content::class)->content !== $content;
 
         if ($updated) {
-            $this->metadata->reset($file);
-            $this->metadata->set($file, new Content($content));
+            $this->caster->reset($file);
+            $this->caster->set($file, new Content($content));
 
             if (!$created) {
                 $this->change($file, $content);
             }
         }
 
-        // Metadata
+        // Caster
         if ($metadata !== null && !($metadata instanceof Content)) {
-            $this->metadata->set($file, $metadata);
+            $this->caster->set($file, $metadata);
         }
 
         // Event
@@ -371,7 +371,7 @@ class FileSystem {
     private function hook(Hook $hook): FileHook {
         if (!isset($this->hooks[$hook])) {
             $path               = $this->input->getFilePath("@.{$hook->value}");
-            $this->hooks[$hook] = new FileHook($this->adapter, $path, $this->metadata, $hook);
+            $this->hooks[$hook] = new FileHook($this->adapter, $path, $this->caster, $hook);
         }
 
         return $this->hooks[$hook];

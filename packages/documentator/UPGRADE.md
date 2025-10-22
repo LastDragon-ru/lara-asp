@@ -29,7 +29,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v9
 
-* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer` merged with [`MetadataResolver`][code-links/490ffb0a93f7303c]. Implementations of [`MetadataResolver`][code-links/490ffb0a93f7303c] should be updated.
+* [ ] Metadata renamed to cast. The [`Cast`][code-links/6a213cdb7ed49c73] should be used instead of `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver` and `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer`.
 
 # Upgrade from v7
 
@@ -90,11 +90,11 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/bddbc83c8cbd0c67]: src/PackageProvider.php
     "\LastDragon_ru\LaraASP\Documentator\PackageProvider"
 
+[code-links/6a213cdb7ed49c73]: src/Processor/Contracts/Cast.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast"
+
 [code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
-
-[code-links/490ffb0a93f7303c]: src/Processor/Contracts/MetadataResolver.php
-    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver"
 
 [code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L17-L20
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"

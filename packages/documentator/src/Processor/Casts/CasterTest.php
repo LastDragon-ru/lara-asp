@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\MetadataUnserializable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastFromFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastToFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Mockery;
 use Override;
@@ -22,12 +22,12 @@ use function sprintf;
 /**
  * @internal
  */
-#[CoversClass(Metadata::class)]
-final class MetadataTest extends TestCase {
+#[CoversClass(Caster::class)]
+final class CasterTest extends TestCase {
     public function testGet(): void {
         // Prepare
-        $aResolver = new MetadataTest__Resolver();
-        $bResolver = new class() extends MetadataTest__Resolver {
+        $aCast     = new CasterTest__Cast();
+        $bCast     = new class() extends CasterTest__Cast {
             /**
              * @inheritDoc
              */
@@ -44,20 +44,20 @@ final class MetadataTest extends TestCase {
             ->andReturn($container);
         $container
             ->shouldReceive('make')
-            ->with($bResolver::class)
+            ->with($bCast::class)
             ->once()
-            ->andReturn($bResolver);
+            ->andReturn($bCast);
 
-        $adapter  = Mockery::mock(FileSystemAdapter::class);
-        $metadata = new class($resolver, $adapter) extends Metadata {
+        $adapter = Mockery::mock(FileSystemAdapter::class);
+        $caster  = new class($resolver, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver($aResolver, 100);
-        $metadata->addResolver($bResolver::class, 200);
+        $caster->addCast($aCast, 100);
+        $caster->addCast($bCast::class, 200);
 
         // Wildcard
         $aFile = Mockery::mock(File::class);
@@ -67,10 +67,10 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension-a');
 
-        $aActual = $metadata->get($aFile, MetadataTest__Value::class);
+        $aActual = $caster->get($aFile, CasterTest__Value::class);
 
-        self::assertEquals(new MetadataTest__Value($aResolver::class), $aActual);
-        self::assertSame($aActual, $metadata->get($aFile, MetadataTest__Value::class));
+        self::assertEquals(new CasterTest__Value($aCast::class), $aActual);
+        self::assertSame($aActual, $caster->get($aFile, CasterTest__Value::class));
 
         // Extension
         $bFile = Mockery::mock(File::class);
@@ -80,38 +80,38 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension-b');
 
-        $bActual = $metadata->get($bFile, MetadataTest__Value::class);
+        $bActual = $caster->get($bFile, CasterTest__Value::class);
 
-        self::assertEquals(new MetadataTest__Value($bResolver::class), $bActual);
+        self::assertEquals(new CasterTest__Value($bCast::class), $bActual);
     }
 
     public function testGetCached(): void {
         // Prepare
-        $resolved = new stdClass();
-        $resolver = Mockery::mock(MetadataResolver::class);
-        $resolver
+        $value = new stdClass();
+        $cast  = Mockery::mock(Cast::class);
+        $cast
             ->shouldReceive('getClass')
             ->once()
             ->andReturn(stdClass::class);
-        $resolver
+        $cast
             ->shouldReceive('getExtensions')
             ->once()
             ->andReturn(['*']);
-        $resolver
-            ->shouldReceive('resolve')
+        $cast
+            ->shouldReceive('castTo')
             ->once()
-            ->andReturn($resolved);
+            ->andReturn($value);
 
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver($resolver);
+        $caster->addCast($cast);
 
         // Test
         $file = Mockery::mock(File::class);
@@ -121,21 +121,21 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $aActual = $metadata->get($file, $resolved::class);
-        $bActual = $metadata->get($file, $resolved::class);
-        $cActual = $metadata->get($file, stdClass::class);
+        $aActual = $caster->get($file, $value::class);
+        $bActual = $caster->get($file, $value::class);
+        $cActual = $caster->get($file, stdClass::class);
 
-        self::assertSame($resolved, $aActual);
-        self::assertSame($resolved, $bActual);
-        self::assertSame($resolved, $cActual);
+        self::assertSame($value, $aActual);
+        self::assertSame($value, $bActual);
+        self::assertSame($value, $cActual);
     }
 
     public function testGetUnexpected(): void {
         // Prepare
-        $resolver = Mockery::mock(MetadataTest__Resolver::class);
-        $resolver->makePartial();
-        $resolver
-            ->shouldReceive('resolve')
+        $cast = Mockery::mock(CasterTest__Cast::class);
+        $cast->makePartial();
+        $cast
+            ->shouldReceive('castTo')
             ->once()
             ->andReturn(new stdClass());
 
@@ -148,31 +148,31 @@ final class MetadataTest extends TestCase {
 
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver($resolver);
+        $caster->addCast($cast);
 
         // Test
         $previous = null;
 
         try {
-            $metadata->get($file, MetadataTest__Value::class);
-        } catch (MetadataUnresolvable $exception) {
+            $caster->get($file, CasterTest__Value::class);
+        } catch (CastToFailed $exception) {
             $previous = $exception->getPrevious();
         }
 
         self::assertInstanceOf(UnexpectedValueException::class, $previous);
         self::assertSame(
             sprintf(
-                'Expected `%s`, got `%s` (resolver `%s`).',
-                MetadataTest__Value::class,
+                'Expected `%s`, got `%s` (cast `%s`).',
+                CasterTest__Value::class,
                 stdClass::class,
-                $resolver::class,
+                $cast::class,
             ),
             $previous->getMessage(),
         );
@@ -182,9 +182,9 @@ final class MetadataTest extends TestCase {
         // Prepare
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
@@ -200,13 +200,13 @@ final class MetadataTest extends TestCase {
         $previous = null;
 
         try {
-            $metadata->get($file, MetadataTest__Value::class);
-        } catch (MetadataUnresolvable $exception) {
+            $caster->get($file, CasterTest__Value::class);
+        } catch (CastToFailed $exception) {
             $previous = $exception->getPrevious();
         }
 
         self::assertInstanceOf(RuntimeException::class, $previous);
-        self::assertSame('Resolver not found.', $previous->getMessage());
+        self::assertSame('Cast not found.', $previous->getMessage());
     }
 
     public function testHas(): void {
@@ -217,25 +217,25 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new MetadataTest__Value(__METHOD__);
+        $value     = new CasterTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver(new MetadataTest__Resolver());
+        $caster->addCast(new CasterTest__Cast());
 
-        self::assertFalse($metadata->has($file, MetadataTest__Value::class));
-        self::assertFalse($metadata->has($file, $value::class));
+        self::assertFalse($caster->has($file, CasterTest__Value::class));
+        self::assertFalse($caster->has($file, $value::class));
 
-        $metadata->set($file, $value);
+        $caster->set($file, $value);
 
-        self::assertTrue($metadata->has($file, MetadataTest__Value::class));
-        self::assertTrue($metadata->has($file, $value::class));
+        self::assertTrue($caster->has($file, CasterTest__Value::class));
+        self::assertTrue($caster->has($file, $value::class));
     }
 
     public function testSet(): void {
@@ -246,22 +246,22 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new MetadataTest__Value(__METHOD__);
+        $value     = new CasterTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver(new MetadataTest__Resolver());
+        $caster->addCast(new CasterTest__Cast());
 
-        $metadata->set($file, $value);
+        $caster->set($file, $value);
 
-        self::assertSame($value, $metadata->get($file, MetadataTest__Value::class));
-        self::assertSame($value, $metadata->get($file, $value::class));
+        self::assertSame($value, $caster->get($file, CasterTest__Value::class));
+        self::assertSame($value, $caster->get($file, $value::class));
     }
 
     public function testReset(): void {
@@ -272,30 +272,30 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new MetadataTest__Value(__METHOD__);
+        $value     = new CasterTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver(new MetadataTest__Resolver());
+        $caster->addCast(new CasterTest__Cast());
 
-        self::assertFalse($metadata->has($file, MetadataTest__Value::class));
-        self::assertFalse($metadata->has($file, $value::class));
+        self::assertFalse($caster->has($file, CasterTest__Value::class));
+        self::assertFalse($caster->has($file, $value::class));
 
-        $metadata->set($file, $value);
+        $caster->set($file, $value);
 
-        self::assertTrue($metadata->has($file, MetadataTest__Value::class));
-        self::assertTrue($metadata->has($file, $value::class));
+        self::assertTrue($caster->has($file, CasterTest__Value::class));
+        self::assertTrue($caster->has($file, $value::class));
 
-        $metadata->reset($file);
+        $caster->reset($file);
 
-        self::assertFalse($metadata->has($file, MetadataTest__Value::class));
-        self::assertFalse($metadata->has($file, $value::class));
+        self::assertFalse($caster->has($file, CasterTest__Value::class));
+        self::assertFalse($caster->has($file, $value::class));
     }
 
     public function testSerialize(): void {
@@ -307,26 +307,26 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new MetadataTest__Value(__METHOD__);
-        $resolver  = new class() extends MetadataTest__Resolver {
+        $value     = new CasterTest__Value(__METHOD__);
+        $cast      = new class() extends CasterTest__Cast {
             #[Override]
-            public function serialize(File $file, object $value): string {
+            public function castFrom(File $file, object $value): string {
                 return $value->value;
             }
         };
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver($resolver);
+        $caster->addCast($cast);
 
         // Test
-        self::assertSame($value->value, $metadata->serialize($file, $value));
+        self::assertSame($value->value, $caster->serialize($file, $value));
     }
 
     public function testSerializeNoResolver(): void {
@@ -338,12 +338,12 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new MetadataTest__Value(__METHOD__);
+        $value     = new CasterTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
@@ -352,16 +352,16 @@ final class MetadataTest extends TestCase {
         $previous = null;
 
         try {
-            $metadata->serialize($file, $value);
-        } catch (MetadataUnserializable $exception) {
+            $caster->serialize($file, $value);
+        } catch (CastFromFailed $exception) {
             $previous = $exception->getPrevious();
         }
 
         self::assertInstanceOf(RuntimeException::class, $previous);
-        self::assertSame('Resolver not found.', $previous->getMessage());
+        self::assertSame('Cast not found.', $previous->getMessage());
     }
 
-    public function testSerializeNoSerializer(): void {
+    public function testSerializeNoCast(): void {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
@@ -370,29 +370,29 @@ final class MetadataTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $value     = new MetadataTest__Value(__METHOD__);
+        $value     = new CasterTest__Value(__METHOD__);
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
         };
 
-        $metadata->addResolver(new MetadataTest__Resolver());
+        $caster->addCast(new CasterTest__Cast());
 
         // Test
         $previous = null;
 
         try {
-            $metadata->serialize($file, $value);
-        } catch (MetadataUnserializable $exception) {
+            $caster->serialize($file, $value);
+        } catch (CastFromFailed $exception) {
             $previous = $exception->getPrevious();
         }
 
         self::assertInstanceOf(RuntimeException::class, $previous);
-        self::assertSame('Serializer not found.', $previous->getMessage());
+        self::assertSame('Cast not found.', $previous->getMessage());
     }
 
     public function testGetTags(): void {
@@ -405,9 +405,9 @@ final class MetadataTest extends TestCase {
 
         $container = Mockery::mock(ContainerResolver::class);
         $adapter   = Mockery::mock(FileSystemAdapter::class);
-        $metadata  = new class($container, $adapter) extends Metadata {
+        $caster    = new class($container, $adapter) extends Caster {
             #[Override]
-            protected function addBuiltInResolvers(): void {
+            protected function addBuiltInCasts(): void {
                 // empty
             }
 
@@ -415,8 +415,8 @@ final class MetadataTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function getTags(File $file, string $metadata): array {
-                return parent::getTags($file, $metadata);
+            public function getTags(File $file, string $class): array {
+                return parent::getTags($file, $class);
             }
         };
 
@@ -425,23 +425,23 @@ final class MetadataTest extends TestCase {
                 'stdClass:extension',
                 'stdClass:*',
             ],
-            $metadata->getTags($file, stdClass::class),
+            $caster->getTags($file, stdClass::class),
         );
         self::assertSame(
             [
-                MetadataResolver::class.':extension',
-                MetadataResolver::class.':*',
+                Cast::class.':extension',
+                Cast::class.':*',
             ],
-            $metadata->getTags($file, MetadataResolver::class),
+            $caster->getTags($file, Cast::class),
         );
         self::assertSame(
             [
-                MetadataTest__Resolver::class.':extension',
-                MetadataTest__Resolver::class.':*',
-                MetadataResolver::class.':extension',
-                MetadataResolver::class.':*',
+                CasterTest__Cast::class.':extension',
+                CasterTest__Cast::class.':*',
+                Cast::class.':extension',
+                Cast::class.':*',
             ],
-            $metadata->getTags($file, MetadataTest__Resolver::class),
+            $caster->getTags($file, CasterTest__Cast::class),
         );
     }
 }
@@ -452,12 +452,12 @@ final class MetadataTest extends TestCase {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
- * @implements MetadataResolver<MetadataTest__Value>
+ * @implements Cast<CasterTest__Value>
  */
-class MetadataTest__Resolver implements MetadataResolver {
+class CasterTest__Cast implements Cast {
     #[Override]
     public static function getClass(): string {
-        return MetadataTest__Value::class;
+        return CasterTest__Value::class;
     }
 
     /**
@@ -469,12 +469,12 @@ class MetadataTest__Resolver implements MetadataResolver {
     }
 
     #[Override]
-    public function resolve(File $file, string $metadata): ?object {
-        return new MetadataTest__Value($this::class);
+    public function castTo(File $file, string $class): ?object {
+        return new CasterTest__Value($this::class);
     }
 
     #[Override]
-    public function serialize(File $file, object $value): ?string {
+    public function castFrom(File $file, object $value): ?string {
         return null;
     }
 }
@@ -483,7 +483,7 @@ class MetadataTest__Resolver implements MetadataResolver {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class MetadataTest__Value {
+class CasterTest__Value {
     public function __construct(
         public readonly string $value,
     ) {

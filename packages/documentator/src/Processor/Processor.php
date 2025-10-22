@@ -8,8 +8,9 @@ use LastDragon_ru\GlobMatcher\GlobUtils;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
@@ -20,7 +21,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 use function array_map;
 use function array_merge;
@@ -31,7 +31,7 @@ use function array_values;
  */
 class Processor {
     private readonly Tasks        $tasks;
-    private readonly Metadata     $metadata;
+    private readonly Caster       $caster;
     protected readonly Dispatcher $dispatcher;
 
     /**
@@ -44,7 +44,7 @@ class Processor {
         protected readonly FileSystemAdapter $adapter,
     ) {
         $this->tasks      = new Tasks($container);
-        $this->metadata   = new Metadata($container, $this->adapter);
+        $this->caster     = new Caster($container, $this->adapter);
         $this->dispatcher = new Dispatcher();
     }
 
@@ -92,24 +92,24 @@ class Processor {
      * The last added resolvers have a bigger priority.
      *
      * @template V of object
-     * @template R of MetadataResolver<V>
+     * @template R of Cast<V>
      *
-     * @param R|class-string<R> $metadata
+     * @param R|class-string<R> $cast
      */
-    public function addMetadata(MetadataResolver|string $metadata, ?int $priority = null): static {
-        $this->metadata->addResolver($metadata, $priority);
+    public function addCast(Cast|string $cast, ?int $priority = null): static {
+        $this->caster->addCast($cast, $priority);
 
         return $this;
     }
 
     /**
      * @template V of object
-     * @template R of MetadataResolver<V>
+     * @template R of Cast<V>
      *
-     * @param R|class-string<R> $metadata
+     * @param R|class-string<R> $cast
      */
-    public function removeMetadata(MetadataResolver|string $metadata): static {
-        $this->metadata->removeResolver($metadata);
+    public function removeCast(Cast|string $cast): static {
+        $this->caster->removeCast($cast);
 
         return $this;
     }
@@ -187,7 +187,7 @@ class Processor {
         array $exclude,
         ?int $depth,
     ): void {
-        $filesystem = new FileSystem($this->dispatcher, $this->metadata, $this->adapter, $input, $output);
+        $filesystem = new FileSystem($this->dispatcher, $this->caster, $this->adapter, $input, $output);
         $iterator   = new Iterator($filesystem, $filesystem->getFilesIterator($input, $include, $exclude, $depth));
         $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
 

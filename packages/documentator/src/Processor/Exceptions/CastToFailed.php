@@ -7,19 +7,19 @@ use Throwable;
 
 use function sprintf;
 
-class MetadataUnresolvable extends MetadataError {
+class CastToFailed extends CastError {
     public function __construct(
         protected readonly File $target,
         /**
          * @var class-string
          */
-        protected readonly string $metadata,
+        protected readonly string $class,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Failed to resolve `%s` metadata for `%s` file.',
-                $this->metadata,
+                'Cast to `%s` failed for `%s` file.',
+                $this->class,
                 $this->target,
             ),
             $previous,
@@ -33,7 +33,7 @@ class MetadataUnresolvable extends MetadataError {
     /**
      * @return class-string
      */
-    public function getMetadata(): string {
-        return $this->metadata;
+    public function getClass(): string {
+        return $this->class;
     }
 }
