@@ -22,7 +22,6 @@ use SplObjectStorage;
 
 use function array_reverse;
 use function explode;
-use function is_object;
 use function is_string;
 use function sprintf;
 
@@ -246,68 +245,39 @@ class FileSystem {
         }
 
         // File?
-        if ($file === null) {
-            $file = !$this->isFile($path)
-                ? new FileVirtual($this->adapter, $path, $this->caster)
-                : $this->getFile($path);
+        $file ??= $this->isFile($path) ? $this->getFile($path) : null;
+        $exists = $file !== null;
+        $file ??= $this->cache(new FileReal($this->adapter, $path, $this->caster));
+
+        // Changed?
+        $content = is_string($content)
+            ? $this->caster->castFrom($file, new Content($content))
+            : $this->caster->castFrom($file, $content);
+
+        if ($content === null) {
+            return $file;
         }
 
-        // Caster?
-        $metadata = null;
-
-        if (is_object($content)) {
-            $metadata = $content;
-            $content  = $this->caster->serialize($file, $metadata);
-        }
-
-        // Content
-        if (!($metadata instanceof Content)) {
-            $content = $this->caster->serialize($file, new Content($content));
-        }
-
-        // File?
-        $created = false;
-
-        if ($file instanceof FileVirtual) {
+        // Update
+        if ($exists) {
+            $this->change($file, $content);
+        } else {
             try {
                 $this->adapter->write((string) $path, $content);
             } catch (Exception $exception) {
                 throw new FileCreateFailed($path, $exception);
             }
-
-            $file    = $this->getFile($path);
-            $created = true;
-        }
-
-        // Changed?
-        $updated = !$this->caster->has($file, Content::class)
-            || $this->caster->get($file, Content::class)->content !== $content;
-
-        if ($updated) {
-            $this->caster->reset($file);
-            $this->caster->set($file, new Content($content));
-
-            if (!$created) {
-                $this->change($file, $content);
-            }
-        }
-
-        // Caster
-        if ($metadata !== null && !($metadata instanceof Content)) {
-            $this->caster->set($file, $metadata);
         }
 
         // Event
-        if ($updated || $created) {
-            $this->dispatcher->notify(
-                new FileSystemModified(
-                    $this->getPathname($file),
-                    $created
-                        ? FileSystemModifiedType::Created
-                        : FileSystemModifiedType::Updated,
-                ),
-            );
-        }
+        $this->dispatcher->notify(
+            new FileSystemModified(
+                $this->getPathname($file),
+                $exists
+                    ? FileSystemModifiedType::Updated
+                    : FileSystemModifiedType::Created,
+            ),
+        );
 
         // Return
         return $file;

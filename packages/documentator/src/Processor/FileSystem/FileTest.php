@@ -25,7 +25,7 @@ final class FileTest extends TestCase {
         };
 
         $caster
-            ->shouldReceive('get')
+            ->shouldReceive('castTo')
             ->with($file, $value::class)
             ->once()
             ->andReturn($value);

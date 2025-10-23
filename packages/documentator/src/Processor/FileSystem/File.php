@@ -33,6 +33,6 @@ abstract class File extends Entry {
      * @return T
      */
     public function as(string $class): object {
-        return $this->caster->get($this, $class);
+        return $this->caster->castTo($this, $class);
     }
 }

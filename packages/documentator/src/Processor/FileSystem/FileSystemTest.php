@@ -277,11 +277,27 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteFile(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $content    = 'content';
-        $caster     = Mockery::mock(Caster::class);
+        $content = 'content';
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path    = $input->getFilePath('file.md');
+        $file    = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->twice()
+            ->andReturn($path);
+
+        $caster = Mockery::mock(Caster::class);
+        $caster
+            ->shouldReceive('castFrom')
+            ->with(
+                $file,
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
+            ->once()
+            ->andReturns($content);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -309,46 +325,25 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $caster
-            ->shouldReceive('reset')
-            ->with($file)
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('has')
-            ->with($file, Content::class)
-            ->once()
-            ->andReturn(false);
-        $caster
-            ->shouldReceive('set')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('serialize')
-            ->with($file, Mockery::type(Content::class))
-            ->once()
-            ->andReturn($content);
-
-        $file
-            ->shouldReceive('getPath')
-            ->twice()
-            ->andReturn($path);
-
         $filesystem->write($file, $content);
     }
 
     public function testWriteFileNoChanges(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $content    = 'content';
-        $caster     = Mockery::mock(Caster::class);
+        $content = 'content';
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path    = $input->getFilePath('file.md');
+        $file    = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->once()
+            ->andReturn($path);
+        $caster = Mockery::mock(Caster::class);
+        $caster
+            ->shouldReceive('castFrom')
+            ->with($file, Mockery::type(Content::class))
+            ->once()
+            ->andReturn(null);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -364,52 +359,27 @@ final class FileSystemTest extends TestCase {
         $filesystem->makePartial();
         $filesystem
             ->shouldReceive('change')
-            ->with($file, $content)
             ->never();
-
-        $caster
-            ->shouldReceive('reset')
-            ->with($file)
-            ->never();
-        $caster
-            ->shouldReceive('has')
-            ->with($file, Content::class)
-            ->once()
-            ->andReturn(true);
-        $caster
-            ->shouldReceive('get')
-            ->with($file, Content::class)
-            ->once()
-            ->andReturn(new Content($content));
-        $caster
-            ->shouldReceive('set')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->never();
-        $caster
-            ->shouldReceive('serialize')
-            ->with($file, Mockery::type(Content::class))
-            ->once()
-            ->andReturn($content);
-
-        $file
-            ->shouldReceive('getPath')
-            ->once()
-            ->andReturn($path);
 
         $filesystem->write($file, $content);
     }
 
     public function testWriteCreate(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $content    = 'content';
-        $caster     = Mockery::mock(Caster::class);
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path    = $input->getFilePath('file.md');
+        $content = 'content';
+        $caster  = Mockery::mock(Caster::class);
+        $caster
+            ->shouldReceive('castFrom')
+            ->with(
+                Mockery::type(File::class),
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
+            ->once()
+            ->andReturns($content);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -424,6 +394,11 @@ final class FileSystemTest extends TestCase {
             ->andReturns();
 
         $adapter = Mockery::mock(FileSystemAdapter::class);
+        $adapter
+            ->shouldReceive('isFile')
+            ->with((string) $path)
+            ->once()
+            ->andReturn(true);
         $adapter
             ->shouldReceive('write')
             ->with((string) $path, $content)
@@ -440,43 +415,10 @@ final class FileSystemTest extends TestCase {
             ->andReturn(false);
         $filesystem
             ->shouldReceive('getFile')
-            ->with($path)
-            ->once()
-            ->andReturn($file);
+            ->never();
         $filesystem
             ->shouldReceive('change')
             ->never();
-
-        $caster
-            ->shouldReceive('reset')
-            ->with($file)
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('has')
-            ->with($file, Content::class)
-            ->once()
-            ->andReturn(false);
-        $caster
-            ->shouldReceive('set')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('serialize')
-            ->with(Mockery::type(FileVirtual::class), Mockery::type(Content::class))
-            ->once()
-            ->andReturn($content);
-
-        $file
-            ->shouldReceive('getPath')
-            ->once()
-            ->andReturn($path);
 
         $filesystem->write($path, $content);
     }
@@ -484,11 +426,33 @@ final class FileSystemTest extends TestCase {
     public function testWriteCreateFailed(): void {
         self::expectException(FileCreateFailed::class);
 
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $content    = 'content';
-        $adapter    = Mockery::mock(FileSystemAdapter::class);
-        $caster     = Mockery::mock(Caster::class);
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path    = $input->getFilePath('file.md');
+        $content = 'content';
+        $adapter = Mockery::mock(FileSystemAdapter::class);
+        $adapter
+            ->shouldReceive('isFile')
+            ->with((string) $path)
+            ->once()
+            ->andReturn(true);
+        $adapter
+            ->shouldReceive('write')
+            ->with((string) $path, $content)
+            ->once()
+            ->andThrow(Exception::class);
+
+        $caster = Mockery::mock(Caster::class);
+        $caster
+            ->shouldReceive('castFrom')
+            ->with(
+                Mockery::type(File::class),
+                Mockery::on(static function (mixed $value) use ($content): bool {
+                    return $value instanceof Content && $value->content === $content;
+                }),
+            )
+            ->once()
+            ->andReturns($content);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
@@ -499,20 +463,11 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturn(false);
         $filesystem
+            ->shouldReceive('getFile')
+            ->never();
+        $filesystem
             ->shouldReceive('change')
             ->never();
-
-        $caster
-            ->shouldReceive('serialize')
-            ->with(Mockery::type(FileVirtual::class), Mockery::type(Content::class))
-            ->once()
-            ->andReturn($content);
-
-        $adapter
-            ->shouldReceive('write')
-            ->with((string) $path, $content)
-            ->once()
-            ->andThrow(Exception::class);
 
         $filesystem->write($path, $content);
     }
@@ -527,13 +482,24 @@ final class FileSystemTest extends TestCase {
         $fs->write($file, 'outside output');
     }
 
-    public function testWriteMetadata(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $value      = new stdClass();
-        $content    = 'content';
-        $caster     = Mockery::mock(Caster::class);
+    public function testWriteObject(): void {
+        $content = 'content';
+        $value   = new stdClass();
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path    = $input->getFilePath('file.md');
+        $file    = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->twice()
+            ->andReturn($path);
+
+        $caster = Mockery::mock(Caster::class);
+        $caster
+            ->shouldReceive('castFrom')
+            ->with($file, $value)
+            ->once()
+            ->andReturn($content);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -560,63 +526,28 @@ final class FileSystemTest extends TestCase {
             ->with($file, $content)
             ->once()
             ->andReturns();
-
-        $caster
-            ->shouldReceive('reset')
-            ->with($file)
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('has')
-            ->with($file, Content::class)
-            ->once()
-            ->andReturn(false);
-        $caster
-            ->shouldReceive('set')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('set')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $object) use ($value): bool {
-                    return $value === $object;
-                }),
-            )
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('serialize')
-            ->with($file, $value)
-            ->once()
-            ->andReturn($content);
-        $caster
-            ->shouldReceive('serialize')
-            ->with($file, Mockery::type(Content::class))
-            ->once()
-            ->andReturn($content);
-
-        $file
-            ->shouldReceive('getPath')
-            ->twice()
-            ->andReturn($path);
 
         $filesystem->write($file, $value);
     }
 
-    public function testWriteMetadataContent(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $path       = $input->getFilePath('file.md');
-        $file       = Mockery::mock(File::class);
-        $value      = new Content('content');
-        $content    = $value->content;
-        $caster     = Mockery::mock(Caster::class);
+    public function testWriteContent(): void {
+        $content = 'content';
+        $value   = new Content($content);
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path    = $input->getFilePath('file.md');
+        $file    = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getPath')
+            ->twice()
+            ->andReturn($path);
+
+        $caster = Mockery::mock(Caster::class);
+        $caster
+            ->shouldReceive('castFrom')
+            ->with($file, $value)
+            ->once()
+            ->andReturn($content);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -643,37 +574,6 @@ final class FileSystemTest extends TestCase {
             ->with($file, $content)
             ->once()
             ->andReturns();
-
-        $caster
-            ->shouldReceive('reset')
-            ->with($file)
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('has')
-            ->with($file, Content::class)
-            ->once()
-            ->andReturn(false);
-        $caster
-            ->shouldReceive('set')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns();
-        $caster
-            ->shouldReceive('serialize')
-            ->with($file, $value)
-            ->once()
-            ->andReturn($content);
-
-        $file
-            ->shouldReceive('getPath')
-            ->twice()
-            ->andReturn($path);
 
         $filesystem->write($file, $value);
     }

@@ -60,7 +60,7 @@ class Caster {
      *
      * @return T
      */
-    public function get(File $file, string $class): mixed {
+    public function castTo(File $file, string $class): mixed {
         if (!isset($this->files[$file][$class])) {
             try {
                 $cast  = $this->getCast($file, $class);
@@ -87,33 +87,15 @@ class Caster {
         return $this->files[$file][$class]; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
     }
 
-    /**
-     * @param class-string $class
-     */
-    public function has(File $file, string $class): bool {
-        return isset($this->files[$file][$class]);
-    }
+    public function castFrom(File $file, object $value): ?string {
+        // Same?
+        $class = $value::class;
 
-    /**
-     * @template T of object
-     *
-     * @param T $value
-     */
-    public function set(File $file, object $value): void {
-        try {
-            $cast                                  = $this->getCast($file, $value::class);
-            $this->files[$file]                  ??= [];
-            $this->files[$file][$cast::getClass()] = $value;
-        } catch (Exception $exception) {
-            throw new CastToFailed($file, $value::class, $exception);
+        if (($this->files[$file][$class] ?? null) === $value) {
+            return null;
         }
-    }
 
-    public function reset(File $file): void {
-        $this->files[$file] = [];
-    }
-
-    public function serialize(File $file, object $value): string {
+        // Cast
         try {
             $cast   = $this->getCast($file, $value::class);
             $string = $cast->castFrom($file, $value);
@@ -125,6 +107,22 @@ class Caster {
             throw new CastFromFailed($file, $value, $exception);
         }
 
+        // Changed?
+        $content = ($this->files[$file][Content::class] ?? null);
+
+        if ($content instanceof Content && $content->content === $string) {
+            return null;
+        }
+
+        // Update
+        $this->files[$file]                 = [];
+        $this->files[$file][Content::class] = new Content($string);
+
+        if (!($value instanceof Content)) {
+            $this->files[$file][$cast::getClass()] = $value;
+        }
+
+        // Return
         return $string;
     }
 
