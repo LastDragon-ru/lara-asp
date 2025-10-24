@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Utils;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 
 use function array_filter;
+use function array_key_exists;
 use function array_keys;
 use function array_merge;
 use function array_search;
@@ -67,6 +68,16 @@ abstract class Instances {
         usort($classes, $this->compare(...));
 
         return $classes;
+    }
+
+    /**
+     * @param TInstance|class-string<TInstance> $instance
+     */
+    public function is(object|string $instance): bool {
+        return array_key_exists(
+            is_object($instance) ? $instance::class : $instance,
+            $this->resolved,
+        );
     }
 
     public function has(?string ...$tags): bool {

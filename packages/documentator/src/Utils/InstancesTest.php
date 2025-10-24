@@ -59,6 +59,28 @@ final class InstancesTest extends TestCase {
         );
     }
 
+    public function testIs(): void {
+        $container = Mockery::mock(ContainerResolver::class);
+        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $aInstance = new class() extends stdClass {
+            // empty
+        };
+        $bInstance = new class() extends stdClass {
+            // empty
+        };
+
+        self::assertFalse($instances->is($aInstance::class));
+        self::assertFalse($instances->is($bInstance::class));
+
+        $instances->add($aInstance, ['a']);
+        $instances->add($bInstance, ['b']);
+
+        self::assertTrue($instances->is($aInstance::class));
+        self::assertTrue($instances->is($bInstance::class));
+        self::assertTrue($instances->is($aInstance));
+        self::assertTrue($instances->is($bInstance));
+    }
+
     public function testHas(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container, SortOrder::Desc);
