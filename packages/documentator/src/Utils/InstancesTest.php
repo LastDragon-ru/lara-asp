@@ -6,96 +6,48 @@ use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use Mockery;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
+
+use function iterator_to_array;
 
 /**
  * @internal
  */
 #[CoversClass(Instances::class)]
 final class InstancesTest extends TestCase {
-    public function testIsEmpty(): void {
+    public function testGetTags(): void {
         $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['a'];
-            }
+        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $aInstance = new class() extends stdClass {
+            // empty
+        };
+        $bInstance = new class() extends stdClass {
+            // empty
         };
 
-        self::assertTrue($instances->isEmpty());
+        $instances->add($aInstance, ['aa', 'ab'], 200);
+        $instances->add($bInstance, ['b'], 100);
 
-        $instances->add($aInstance);
-
-        self::assertFalse($instances->isEmpty());
+        self::assertEquals(['aa', 'ab', 'b'], $instances->getTags());
     }
 
-    public function testGetKeys(): void {
+    public function testGetClasses(): void {
         $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
+        $instances = new InstancesTest__Instances($container, SortOrder::Asc);
+        $aInstance = new class() extends stdClass {
+            // empty
         };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
+        $bInstance = new class() extends stdClass {
+            // empty
+        };
+        $cInstance = new class() extends stdClass {
+            // empty
         };
 
-        $instances->add($aInstance, 200);
-        $instances->add($bInstance, 100);
-
-        self::assertEquals(['aa', 'ab', 'b'], $instances->getKeys());
-    }
-
-    public function testGetClassesAndInstances(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
-        };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
-        };
-        $cInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['c'];
-            }
-        };
-
-        $instances->add($aInstance, 200);
-        $instances->add($bInstance, 100);
-        $instances->add($cInstance);
+        $instances->add($aInstance, ['aa', 'ab'], 200);
+        $instances->add($bInstance, ['b'], 100);
+        $instances->add($cInstance::class, ['c']);
 
         self::assertEquals(
             [
@@ -105,41 +57,46 @@ final class InstancesTest extends TestCase {
             ],
             $instances->getClasses(),
         );
+    }
 
-        self::assertSame(
-            [
-                $bInstance,
-                $aInstance,
-                $cInstance,
-            ],
-            $instances->getInstances(),
-        );
+    public function testIs(): void {
+        $container = Mockery::mock(ContainerResolver::class);
+        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $aInstance = new class() extends stdClass {
+            // empty
+        };
+        $bInstance = new class() extends stdClass {
+            // empty
+        };
+
+        self::assertFalse($instances->is($aInstance::class));
+        self::assertFalse($instances->is($bInstance::class));
+
+        $instances->add($aInstance, ['a']);
+        $instances->add($bInstance, ['b']);
+
+        self::assertTrue($instances->is($aInstance::class));
+        self::assertTrue($instances->is($bInstance::class));
+        self::assertTrue($instances->is($aInstance));
+        self::assertTrue($instances->is($bInstance));
     }
 
     public function testHas(): void {
         $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
+        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $aInstance = new class() extends stdClass {
+            // empty
         };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
+        $bInstance = new class() extends stdClass {
+            // empty
         };
 
-        $instances->add($aInstance);
-        $instances->add($bInstance);
+        self::assertFalse($instances->has());
+
+        $instances->add($aInstance, ['aa', 'ab']);
+        $instances->add($bInstance, ['b']);
+
+        self::assertTrue($instances->has());
 
         self::assertTrue($instances->has('aa'));
         self::assertTrue($instances->has('ab'));
@@ -156,24 +113,12 @@ final class InstancesTest extends TestCase {
             ->once()
             ->andReturn($container);
 
-        $instances = new InstancesTest__Instances($resolver);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
+        $instances = new InstancesTest__Instances($resolver, SortOrder::Asc);
+        $aInstance = new class() extends stdClass {
+            // empty
         };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
+        $bInstance = new class() extends stdClass {
+            // empty
         };
 
         $container
@@ -182,16 +127,15 @@ final class InstancesTest extends TestCase {
             ->once()
             ->andReturn($bInstance);
 
-        $instances->add($aInstance);
-        $instances->add($bInstance::class);
+        $instances->add($aInstance, ['aa', 'ab']);
+        $instances->add($bInstance::class, ['b']);
 
-        self::assertSame([$aInstance], $instances->get('aa'));
-        self::assertSame([$aInstance, $bInstance], $instances->get('b', 'ab'));
-        self::assertSame([$bInstance], $instances->get('b'));
-        self::assertSame([$bInstance], $instances->get('b'));
+        self::assertSame([$aInstance], iterator_to_array($instances->get('aa'), false));
+        self::assertSame([$aInstance, $bInstance], iterator_to_array($instances->get('b', 'ab'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
 
         self::assertSame($aInstance, $instances->first('b', 'aa'));
-        self::assertSame($bInstance, $instances->last('b', 'aa'));
     }
 
     public function testGetReverse(): void {
@@ -202,24 +146,12 @@ final class InstancesTest extends TestCase {
             ->once()
             ->andReturn($container);
 
-        $instances = new InstancesTest__Instances($resolver, true);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
+        $instances = new InstancesTest__Instances($resolver, SortOrder::Desc);
+        $aInstance = new class() extends stdClass {
+            // empty
         };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
+        $bInstance = new class() extends stdClass {
+            // empty
         };
 
         $container
@@ -228,88 +160,65 @@ final class InstancesTest extends TestCase {
             ->once()
             ->andReturn($bInstance);
 
-        $instances->add($aInstance);
-        $instances->add($bInstance::class);
+        $instances->add($aInstance, ['aa', 'ab']);
+        $instances->add($bInstance::class, ['b']);
 
-        self::assertSame([$aInstance], $instances->get('aa'));
-        self::assertSame([$bInstance, $aInstance], $instances->get('b', 'ab'));
-        self::assertSame([$bInstance], $instances->get('b'));
-        self::assertSame([$bInstance], $instances->get('b'));
+        self::assertSame([$aInstance], iterator_to_array($instances->get('aa'), false));
+        self::assertSame([$bInstance, $aInstance], iterator_to_array($instances->get('b', 'ab'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
 
         self::assertSame($bInstance, $instances->first('b', 'aa'));
-        self::assertSame($aInstance, $instances->last('b', 'aa'));
     }
 
     public function testAdd(): void {
         $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
+        $instances = new InstancesTest__Instances($container, SortOrder::Asc);
+        $aInstance = new class() extends stdClass {
+            // empty
         };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
+        $bInstance = new class() extends stdClass {
+            // empty
         };
 
-        self::assertEquals([], $instances->getKeys());
+        self::assertEquals([], $instances->getTags());
         self::assertEquals([], $instances->getClasses());
 
-        $instances->add($aInstance, 200);
+        $instances->add($aInstance, ['aa', 'ab'], 200);
+        $instances->add($aInstance, ['ac'], merge: true);
 
-        self::assertEquals(['aa', 'ab'], $instances->getKeys());
+        self::assertEquals(['aa', 'ab', 'ac'], $instances->getTags());
         self::assertEquals([$aInstance::class], $instances->getClasses());
 
-        $instances->add($bInstance, 100);
+        $instances->add($bInstance, ['b'], 100);
+        $instances->add($bInstance, ['bb'], 100);
 
-        self::assertEquals(['aa', 'ab', 'b'], $instances->getKeys());
+        self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->getTags());
         self::assertEquals([$bInstance::class, $aInstance::class], $instances->getClasses());
     }
 
     public function testRemove(): void {
         $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container);
-        $aInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['aa', 'ab'];
-            }
+        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $aInstance = new class() extends stdClass {
+            // empty
         };
-        $bInstance = new class() implements InstancesTest__Instance {
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public static function getKeys(): array {
-                return ['b'];
-            }
+        $bInstance = new class() extends stdClass {
+            // empty
         };
 
-        $instances->add($aInstance);
-        $instances->add($bInstance);
+        $instances->add($aInstance, ['aa', 'ab']);
+        $instances->add($bInstance, ['b']);
 
-        self::assertEquals(['aa', 'ab', 'b'], $instances->getKeys());
+        self::assertEquals(['aa', 'ab', 'b'], $instances->getTags());
 
         $instances->remove($aInstance);
 
-        self::assertEquals(['b'], $instances->getKeys());
+        self::assertEquals(['b'], $instances->getTags());
 
         $instances->remove($bInstance);
 
-        self::assertEquals([], $instances->getKeys());
+        self::assertEquals([], $instances->getTags());
     }
 }
 
@@ -319,37 +228,8 @@ final class InstancesTest extends TestCase {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
- * @extends Instances<InstancesTest__Instance>
+ * @extends Instances<stdClass>
  */
 class InstancesTest__Instances extends Instances {
-    public function __construct(
-        ContainerResolver $container,
-        private readonly bool $reverse = false,
-    ) {
-        parent::__construct($container);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getInstanceKeys(object|string $instance): array {
-        return $instance::getKeys();
-    }
-
-    #[Override]
-    protected function isHighPriorityFirst(): bool {
-        return $this->reverse;
-    }
-}
-
-/**
- * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
- */
-interface InstancesTest__Instance {
-    /**
-     * @return list<string>
-     */
-    public static function getKeys(): array;
+    // empty
 }

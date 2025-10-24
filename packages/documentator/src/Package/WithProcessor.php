@@ -5,14 +5,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
 use Override;
 use Symfony\Component\Finder\Finder;
@@ -24,16 +23,9 @@ use Symfony\Component\Finder\Finder;
 trait WithProcessor {
     abstract protected function app(): Application;
 
-    /**
-     * @template V of object
-     * @template R of MetadataResolver<V>
-     *
-     * @param array<array-key, R|class-string<R>> $resolvers
-     */
     protected function getFileSystem(
         DirectoryPath|string $input,
         DirectoryPath|string|null $output = null,
-        array $resolvers = [],
     ): FileSystem {
         $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
         $output     = $output !== null
@@ -54,13 +46,9 @@ trait WithProcessor {
                     ->sortByName(true);
             }
         };
-        $metadata   = new Metadata($this->app()->make(ContainerResolver::class));
+        $caster     = new Caster($this->app()->make(ContainerResolver::class), $adapter);
         $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($dispatcher, $metadata, $adapter, $input, $output);
-
-        foreach ($resolvers as $resolver) {
-            $metadata->addResolver($resolver);
-        }
+        $filesystem = new FileSystem($dispatcher, $caster, $adapter, $input, $output);
 
         return $filesystem;
     }

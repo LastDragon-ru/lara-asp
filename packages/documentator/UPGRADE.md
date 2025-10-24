@@ -27,6 +27,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] Metadata renamed to cast. The [`Cast`][code-links/6a213cdb7ed49c73] should be used instead of `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver` and `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer`.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -85,6 +89,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/bddbc83c8cbd0c67]: src/PackageProvider.php
     "\LastDragon_ru\LaraASP\Documentator\PackageProvider"
+
+[code-links/6a213cdb7ed49c73]: src/Processor/Contracts/Cast.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast"
 
 [code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"

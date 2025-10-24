@@ -1,23 +1,26 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
 
-use function is_a;
-
 /**
- * @implements MetadataResolver<Document>
+ * @implements Cast<Document>
  */
-readonly class ClassMarkdownMetadata implements MetadataResolver {
+readonly class ClassMarkdownCast implements Cast {
     public function __construct(
         protected PhpDocumentFactory $factory,
     ) {
         // empty
+    }
+
+    #[Override]
+    public static function getClass(): string {
+        return Document::class;
     }
 
     /**
@@ -29,15 +32,15 @@ readonly class ClassMarkdownMetadata implements MetadataResolver {
     }
 
     #[Override]
-    public function isSupported(string $metadata): bool {
-        return is_a($metadata, Document::class, true);
-    }
-
-    #[Override]
-    public function resolve(File $file, string $metadata): mixed {
+    public function castTo(File $file, string $class): ?object {
         $comment  = $file->as(ClassComment::class);
         $document = ($this->factory)($comment->comment, $file->getPath(), $comment->context);
 
         return $document;
+    }
+
+    #[Override]
+    public function castFrom(File $file, object $value): ?string {
+        return null;
     }
 }

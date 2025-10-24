@@ -110,7 +110,7 @@ class Task implements TaskContract {
      * @param I|class-string<I> $instruction
      */
     public function addInstruction(Instruction|string $instruction): static {
-        $this->instructions->add($instruction);
+        $this->instructions->add($instruction, [$instruction::getName()]);
 
         return $this;
     }
@@ -209,7 +209,7 @@ class Task implements TaskContract {
      */
     protected function parse(DependencyResolver $resolver, File $file, Document $document): array {
         // Empty?
-        if ($this->instructions->isEmpty()) {
+        if (!$this->instructions->has()) {
             return [];
         }
 

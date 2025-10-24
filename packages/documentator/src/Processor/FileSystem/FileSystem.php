@@ -7,6 +7,8 @@ use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
@@ -16,13 +18,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use SplObjectStorage;
 
 use function array_reverse;
 use function explode;
-use function is_object;
 use function is_string;
 use function sprintf;
 
@@ -43,7 +42,7 @@ class FileSystem {
 
     public function __construct(
         private readonly Dispatcher $dispatcher,
-        private readonly Metadata $metadata,
+        private readonly Caster $caster,
         private readonly FileSystemAdapter $adapter,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
@@ -131,7 +130,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->isFile((string) $path)) {
-            $file = new FileReal($this->adapter, $path, $this->metadata);
+            $file = new FileReal($this->adapter, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
         }
@@ -246,66 +245,39 @@ class FileSystem {
         }
 
         // File?
-        if ($file === null && $this->isFile($path)) {
-            $file = $this->getFile($path);
+        $file ??= $this->isFile($path) ? $this->getFile($path) : null;
+        $exists = $file !== null;
+        $file ??= $this->cache(new FileReal($this->adapter, $path, $this->caster));
+
+        // Changed?
+        $content = is_string($content)
+            ? $this->caster->castFrom($file, new Content($content))
+            : $this->caster->castFrom($file, $content);
+
+        if ($content === null) {
+            return $file;
         }
 
-        // Metadata?
-        $metadata = null;
-
-        if (is_object($content)) {
-            $metadata = $content;
-            $content  = $this->metadata->serialize($path, $metadata);
-        }
-
-        // Content
-        if (!($metadata instanceof Content)) {
-            $content = $this->metadata->serialize($path, new Content($content));
-        }
-
-        // File?
-        $created = false;
-
-        if ($file === null) {
+        // Update
+        if ($exists) {
+            $this->change($file, $content);
+        } else {
             try {
                 $this->adapter->write((string) $path, $content);
             } catch (Exception $exception) {
                 throw new FileCreateFailed($path, $exception);
             }
-
-            $file    = $this->getFile($path);
-            $created = true;
-        }
-
-        // Changed?
-        $updated = !$this->metadata->has($file, Content::class)
-            || $this->metadata->get($file, Content::class)->content !== $content;
-
-        if ($updated) {
-            $this->metadata->reset($file);
-            $this->metadata->set($file, new Content($content));
-
-            if (!$created) {
-                $this->change($file, $content);
-            }
-        }
-
-        // Metadata
-        if ($metadata !== null && !($metadata instanceof Content)) {
-            $this->metadata->set($file, $metadata);
         }
 
         // Event
-        if ($updated || $created) {
-            $this->dispatcher->notify(
-                new FileSystemModified(
-                    $this->getPathname($file),
-                    $created
-                        ? FileSystemModifiedType::Created
-                        : FileSystemModifiedType::Updated,
-                ),
-            );
-        }
+        $this->dispatcher->notify(
+            new FileSystemModified(
+                $this->getPathname($file),
+                $exists
+                    ? FileSystemModifiedType::Updated
+                    : FileSystemModifiedType::Created,
+            ),
+        );
 
         // Return
         return $file;
@@ -369,7 +341,7 @@ class FileSystem {
     private function hook(Hook $hook): FileHook {
         if (!isset($this->hooks[$hook])) {
             $path               = $this->input->getFilePath("@.{$hook->value}");
-            $this->hooks[$hook] = new FileHook($this->adapter, $path, $this->metadata, $hook);
+            $this->hooks[$hook] = new FileHook($this->adapter, $path, $this->caster, $hook);
         }
 
         return $this->hooks[$hook];

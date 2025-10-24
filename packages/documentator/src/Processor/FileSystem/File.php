@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 
 /**
  * @extends Entry<FilePath>
@@ -13,7 +13,7 @@ abstract class File extends Entry {
     public function __construct(
         FileSystemAdapter $adapter,
         FilePath $path,
-        private readonly Metadata $metadata,
+        private readonly Caster $caster,
     ) {
         parent::__construct($adapter, $path);
     }
@@ -25,16 +25,14 @@ abstract class File extends Entry {
         return $this->path->getExtension();
     }
 
-    abstract public function getContent(): string;
-
     /**
      * @template T of object
      *
-     * @param class-string<T> $metadata
+     * @param class-string<T> $class
      *
      * @return T
      */
-    public function as(string $metadata): object {
-        return $this->metadata->get($this, $metadata);
+    public function as(string $class): object {
+        return $this->caster->castTo($this, $class);
     }
 }

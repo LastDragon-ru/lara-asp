@@ -3,10 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObject;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObject;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Php\ClassObjectMetadata;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
@@ -68,9 +68,11 @@ final class ClassConstantLinkTest extends TestCase {
             }
         };
 
-        $resolver = $this->app()->make(ClassObjectMetadata::class);
-        $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $resolver = $this->app()->make(ClassObjectCast::class);
+        $class    = $resolver->castTo($file, ClassObject::class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(ClassConst::class, $actual);
         self::assertEquals(
@@ -108,9 +110,11 @@ final class ClassConstantLinkTest extends TestCase {
             }
         };
 
-        $resolver = $this->app()->make(ClassObjectMetadata::class);
-        $class    = $resolver->resolve($file, ClassObject::class);
-        $actual   = $link->getTargetNode($class->class);
+        $resolver = $this->app()->make(ClassObjectCast::class);
+        $class    = $resolver->castTo($file, ClassObject::class);
+        $actual   = $class !== null
+            ? $link->getTargetNode($class->class)
+            : null;
 
         self::assertInstanceOf(EnumCase::class, $actual);
         self::assertSame('A', (string) $actual->name);

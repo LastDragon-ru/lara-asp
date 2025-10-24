@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Metadata\FileSystem;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem;
 
 use Override;
 use Stringable;

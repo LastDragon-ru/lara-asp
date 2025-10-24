@@ -2,31 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 use LastDragon_ru\LaraASP\Documentator\Utils\Instances;
-use Override;
-
-use function array_map;
+use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 
 /**
  * @internal
  * @extends Instances<Task>
  */
 class Tasks extends Instances {
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    protected function getInstanceKeys(object|string $instance): array {
-        $extensions = $instance::getExtensions();
-        $extensions = array_map(
-            static function (Hook|string $extension): string {
-                return $extension instanceof Hook ? $extension->value : $extension;
-            },
-            $extensions,
-        );
-
-        return $extensions;
+    public function __construct(ContainerResolver $container) {
+        parent::__construct($container, SortOrder::Asc);
     }
 }

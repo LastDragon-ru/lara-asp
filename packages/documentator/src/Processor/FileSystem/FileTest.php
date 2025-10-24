@@ -2,13 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Exception;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\Metadata\Metadata;
 use Mockery;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
@@ -18,19 +16,16 @@ use stdClass;
 #[CoversClass(File::class)]
 final class FileTest extends TestCase {
     public function testAs(): void {
-        $metadata = Mockery::mock(Metadata::class);
-        $adapter  = Mockery::mock(FileSystemAdapter::class);
-        $value    = new stdClass();
-        $path     = (new FilePath(__FILE__))->getNormalizedPath();
-        $file     = new class($adapter, $path, $metadata) extends File {
-            #[Override]
-            public function getContent(): string {
-                throw new Exception('Should not be called.');
-            }
+        $caster  = Mockery::mock(Caster::class);
+        $adapter = Mockery::mock(FileSystemAdapter::class);
+        $value   = new stdClass();
+        $path    = (new FilePath(__FILE__))->getNormalizedPath();
+        $file    = new class($adapter, $path, $caster) extends File {
+            // empty
         };
 
-        $metadata
-            ->shouldReceive('get')
+        $caster
+            ->shouldReceive('castTo')
             ->with($file, $value::class)
             ->once()
             ->andReturn($value);
