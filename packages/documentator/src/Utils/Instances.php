@@ -132,7 +132,11 @@ abstract class Instances {
      * @param TInstance|class-string<TInstance> $instance
      * @param list<?string>                     $tags
      */
-    public function add(object|string $instance, array $tags = [], ?int $priority = null): static {
+    public function add(object|string $instance, array $tags = [], ?int $priority = null, bool $merge = false): static {
+        if (!$merge) {
+            $this->remove($instance);
+        }
+
         $tags                     = array_filter($tags, static fn (?string $tag): bool => $tag !== null);
         $class                    = is_string($instance) ? $instance : $instance::class;
         $this->classes[$class]    = array_unique(array_merge($this->classes[$class] ?? [], $tags));

@@ -185,14 +185,15 @@ final class InstancesTest extends TestCase {
         self::assertEquals([], $instances->getClasses());
 
         $instances->add($aInstance, ['aa', 'ab'], 200);
-        $instances->add($aInstance, ['ac']);
+        $instances->add($aInstance, ['ac'], merge: true);
 
         self::assertEquals(['aa', 'ab', 'ac'], $instances->getTags());
         self::assertEquals([$aInstance::class], $instances->getClasses());
 
         $instances->add($bInstance, ['b'], 100);
+        $instances->add($bInstance, ['bb'], 100);
 
-        self::assertEquals(['aa', 'ab', 'ac', 'b'], $instances->getTags());
+        self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->getTags());
         self::assertEquals([$bInstance::class, $aInstance::class], $instances->getClasses());
     }
 
