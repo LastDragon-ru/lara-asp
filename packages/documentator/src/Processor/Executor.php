@@ -229,7 +229,6 @@ class Executor {
 
         if ($file instanceof FileReal) {
             $extensions[] = '*';
-            $extensions[] = Hook::Each->value;
         }
 
         return $extensions;

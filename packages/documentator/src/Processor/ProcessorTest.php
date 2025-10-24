@@ -288,7 +288,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Each];
+                return ['*'];
             }
         };
         $taskC  = new class() extends ProcessorTest__Task {
@@ -297,7 +297,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function getExtensions(): array {
-                return [Hook::Each];
+                return ['*'];
             }
         };
         $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
@@ -998,7 +998,7 @@ class ProcessorTest__Task implements Task {
 class ProcessorTest__DependencyHook implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): File {
-        return $fs->getFile(Hook::Each);
+        return $fs->getFile(Hook::Before);
     }
 
     #[Override]
