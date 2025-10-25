@@ -24,7 +24,7 @@ use const PHP_INT_MIN;
  *
  * @internal
  */
-abstract class Instances {
+class Instances {
     /**
      * @var array<class-string<TInstance>, int>
      */
