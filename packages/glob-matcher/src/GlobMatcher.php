@@ -28,7 +28,7 @@ readonly class GlobMatcher implements Matcher {
         return $this->regex->match($string);
     }
 
-    protected function regex(): Regex {
+    private function regex(): Regex {
         $regex    = [];
         $options  = new GlobOptions(
             globstar: $this->options->globstar,
