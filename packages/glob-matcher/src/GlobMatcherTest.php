@@ -10,29 +10,29 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(GlobMatcher::class)]
 final class GlobMatcherTest extends TestCase {
-    public function testIsMatch(): void {
-        self::assertTrue((new GlobMatcher('path/to/file'))->isMatch('path/to/file'));
-        self::assertTrue((new GlobMatcher('path/to/file-{0..2}.txt'))->isMatch('path/to/file-1.txt'));
+    public function testMatch(): void {
+        self::assertTrue((new GlobMatcher('path/to/file'))->match('path/to/file'));
+        self::assertTrue((new GlobMatcher('path/to/file-{0..2}.txt'))->match('path/to/file-1.txt'));
         self::assertFalse(
-            (new GlobMatcher('path/to/file-{0..2}.txt', new Options(braces: false)))->isMatch('path/to/file-1.txt'),
+            (new GlobMatcher('path/to/file-{0..2}.txt', new Options(braces: false)))->match('path/to/file-1.txt'),
         );
         self::assertTrue(
-            (new GlobMatcher('**/file-{0..2}.txt'))->isMatch('path/to/file-1.txt'),
+            (new GlobMatcher('**/file-{0..2}.txt'))->match('path/to/file-1.txt'),
         );
         self::assertFalse(
-            (new GlobMatcher('**/file-{0..2}.txt', new Options(globstar: false)))->isMatch('path/to/file-1.txt'),
+            (new GlobMatcher('**/file-{0..2}.txt', new Options(globstar: false)))->match('path/to/file-1.txt'),
         );
         self::assertFalse(
-            (new GlobMatcher('**/*.txt'))->isMatch('path/to/.hidden.txt'),
+            (new GlobMatcher('**/*.txt'))->match('path/to/.hidden.txt'),
         );
         self::assertTrue(
-            (new GlobMatcher('**/*.txt', new Options(hidden: true)))->isMatch('path/to/.hidden.txt'),
+            (new GlobMatcher('**/*.txt', new Options(hidden: true)))->match('path/to/.hidden.txt'),
         );
         self::assertFalse(
-            (new GlobMatcher('\\*.txt'))->isMatch('a.txt'),
+            (new GlobMatcher('\\*.txt'))->match('a.txt'),
         );
         self::assertTrue(
-            (new GlobMatcher('\\*.txt'))->isMatch('*.txt'),
+            (new GlobMatcher('\\*.txt'))->match('*.txt'),
         );
     }
 }

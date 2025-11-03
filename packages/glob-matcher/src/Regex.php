@@ -2,12 +2,13 @@
 
 namespace LastDragon_ru\GlobMatcher;
 
+use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use Override;
 use Stringable;
 
 use function preg_match;
 
-readonly class Regex implements Stringable {
+readonly class Regex implements Matcher, Stringable {
     protected string $regex;
 
     public function __construct(
@@ -18,8 +19,9 @@ readonly class Regex implements Stringable {
         $this->regex = $this->regex();
     }
 
-    public function isMatch(string $string): bool {
-        return (bool) preg_match($this->regex, $string);
+    #[Override]
+    public function match(Stringable|string $string): bool {
+        return (bool) preg_match($this->regex, (string) $string);
     }
 
     protected function regex(): string {

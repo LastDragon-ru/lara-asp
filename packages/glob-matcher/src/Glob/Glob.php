@@ -4,16 +4,19 @@ namespace LastDragon_ru\GlobMatcher\Glob;
 
 use InvalidArgumentException;
 use LastDragon_ru\DiyParser\Ast\Cursor;
+use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\Glob\Ast\GlobNode;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Parser;
 use LastDragon_ru\GlobMatcher\Regex;
+use Override;
+use Stringable;
 
 /**
  * Parse/Match glob pattern.
  *
  * @see https://en.wikipedia.org/wiki/Glob_(programming)
  */
-readonly class Glob {
+readonly class Glob implements Matcher {
     public GlobNode $node;
     public Regex    $regex;
 
@@ -23,8 +26,9 @@ readonly class Glob {
         $this->regex = $this->regex($options, $this->node);
     }
 
-    public function isMatch(string $path): bool {
-        return $this->regex->isMatch($path);
+    #[Override]
+    public function match(Stringable|string $string): bool {
+        return $this->regex->match($string);
     }
 
     private function parse(Options $options, string $pattern): GlobNode {

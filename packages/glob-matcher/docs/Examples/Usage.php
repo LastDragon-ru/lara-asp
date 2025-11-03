@@ -9,18 +9,18 @@ use LastDragon_ru\LaraASP\Dev\App\Example;
 // Full-featured
 $fullGlob = new GlobMatcher('/**/{a,b,c}.txt');
 
-Example::dump($fullGlob->isMatch('/a.txt'));
-Example::dump($fullGlob->isMatch('/a/b/c.txt'));
-Example::dump($fullGlob->isMatch('/a/b/d.txt'));
+Example::dump($fullGlob->match('/a.txt'));
+Example::dump($fullGlob->match('/a/b/c.txt'));
+Example::dump($fullGlob->match('/a/b/d.txt'));
 
 // Without `globstar`
 $noGlobstar = new GlobMatcher('/**/{a,b,c}.txt', new Options(globstar: false));
 
-Example::dump($noGlobstar->isMatch('/a.txt'));
-Example::dump($noGlobstar->isMatch('/**/a.txt'));
+Example::dump($noGlobstar->match('/a.txt'));
+Example::dump($noGlobstar->match('/**/a.txt'));
 
 // Escaping
 $escaped = new GlobMatcher('/\\*.txt');
 
-Example::dump($escaped->isMatch('/a.txt'));
-Example::dump($escaped->isMatch('/*.txt'));
+Example::dump($escaped->match('/a.txt'));
+Example::dump($escaped->match('/*.txt'));

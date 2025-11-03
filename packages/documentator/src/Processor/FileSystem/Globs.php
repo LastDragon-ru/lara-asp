@@ -30,7 +30,7 @@ class Globs {
     }
 
     public function isMatch(DirectoryPath|FilePath|SplFileInfo $path): bool {
-        return (bool) $this->regex?->isMatch($this->path($path));
+        return (bool) $this->regex?->match($this->path($path));
     }
 
     public function isNotMatch(DirectoryPath|FilePath|SplFileInfo $path): bool {

@@ -3,12 +3,15 @@
 namespace LastDragon_ru\GlobMatcher;
 
 use LastDragon_ru\GlobMatcher\BraceExpander\BraceExpander;
+use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\Glob\Glob;
 use LastDragon_ru\GlobMatcher\Glob\Options as GlobOptions;
+use Override;
+use Stringable;
 
 use function implode;
 
-readonly class GlobMatcher {
+readonly class GlobMatcher implements Matcher {
     public Regex $regex;
 
     public function __construct(
@@ -18,8 +21,9 @@ readonly class GlobMatcher {
         $this->regex = $this->regex();
     }
 
-    public function isMatch(string $path): bool {
-        return $this->regex->isMatch($path);
+    #[Override]
+    public function match(Stringable|string $string): bool {
+        return $this->regex->match($string);
     }
 
     protected function regex(): Regex {

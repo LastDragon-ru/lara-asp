@@ -10,16 +10,16 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Regex::class)]
 final class RegexTest extends TestCase {
-    public function testIsMatch(): void {
-        self::assertTrue((new Regex('abc', matchCase: false))->isMatch('ABC'));
-        self::assertFalse((new Regex('b'))->isMatch('abc'));
-        self::assertTrue((new Regex('b', MatchMode::Contains))->isMatch('abc'));
-        self::assertFalse((new Regex('b', MatchMode::Starts))->isMatch('abc'));
-        self::assertFalse((new Regex('b', MatchMode::Ends))->isMatch('abc'));
-        self::assertFalse((new Regex('b'))->isMatch('abc'));
-        self::assertTrue((new Regex('abc'))->isMatch('abc'));
-        self::assertTrue((new Regex('a', MatchMode::Starts))->isMatch('abc'));
-        self::assertTrue((new Regex('c', MatchMode::Ends))->isMatch('abc'));
+    public function testMatch(): void {
+        self::assertTrue((new Regex('abc', matchCase: false))->match('ABC'));
+        self::assertFalse((new Regex('b'))->match('abc'));
+        self::assertTrue((new Regex('b', MatchMode::Contains))->match('abc'));
+        self::assertFalse((new Regex('b', MatchMode::Starts))->match('abc'));
+        self::assertFalse((new Regex('b', MatchMode::Ends))->match('abc'));
+        self::assertFalse((new Regex('b'))->match('abc'));
+        self::assertTrue((new Regex('abc'))->match('abc'));
+        self::assertTrue((new Regex('a', MatchMode::Starts))->match('abc'));
+        self::assertTrue((new Regex('c', MatchMode::Ends))->match('abc'));
     }
 
     public function testToString(): void {

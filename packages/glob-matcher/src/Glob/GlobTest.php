@@ -38,12 +38,12 @@ final class GlobTest extends TestCase {
      * @param array<array-key, string> $expected
      * @param array<array-key, string> $paths
      */
-    #[DataProvider('dataProviderIsMatch')]
-    public function testIsMatch(array $expected, array $paths, string $pattern, ?Options $options): void {
+    #[DataProvider('dataProviderMatch')]
+    public function testMatch(array $expected, array $paths, string $pattern, ?Options $options): void {
         $actual = [];
 
         foreach ($paths as $path) {
-            $match = (new Glob($pattern, $options))->isMatch($path);
+            $match = (new Glob($pattern, $options))->match($path);
 
             if ($match) {
                 $actual[] = $path;
@@ -59,7 +59,7 @@ final class GlobTest extends TestCase {
     /**
      * @return array<string, array{array<array-key, string>, array<array-key, string>, string, ?Options}>
      */
-    public static function dataProviderIsMatch(): array {
+    public static function dataProviderMatch(): array {
         $data    = [];
         $default = new Options();
         $allowed = [
@@ -70,8 +70,8 @@ final class GlobTest extends TestCase {
         ];
 
         try {
-            $file  = self::getTestData()->path('IsMatch/index.txt');
-            $lines = self::getIsMatchIterator($file, basename($file));
+            $file  = self::getTestData()->path('Match/index.txt');
+            $lines = self::getMatchIterator($file, basename($file));
 
             foreach ($lines as $line => $string) {
                 try {
@@ -113,8 +113,8 @@ final class GlobTest extends TestCase {
                     $negated        = $expected === [] ? 'not ' : '';
                     $message        = "Path `{$path}` should {$negated}match `{$pattern}` ({$line})";
                     $data[$message] = [
-                        self::getIsMatchStrings($expected),
-                        self::getIsMatchStrings($paths),
+                        self::getMatchStrings($expected),
+                        self::getMatchStrings($paths),
                         $pattern,
                         $options,
                     ];
@@ -137,7 +137,7 @@ final class GlobTest extends TestCase {
     /**
      * @return iterable<string, string>
      */
-    private static function getIsMatchIterator(string $file, string $prefix = ''): iterable {
+    private static function getMatchIterator(string $file, string $prefix = ''): iterable {
         // Read
         $lines = file($file);
 
@@ -163,7 +163,7 @@ final class GlobTest extends TestCase {
                 $include = mb_substr($string, 1, encoding: Package::Encoding);
                 $include = mb_trim($include, encoding: Package::Encoding);
 
-                yield from self::getIsMatchIterator(
+                yield from self::getMatchIterator(
                     dirname($file).'/'.$include,
                     $key.' / '.$string,
                 );
@@ -181,7 +181,7 @@ final class GlobTest extends TestCase {
      *
      * @return array<array-key, string>
      */
-    private static function getIsMatchStrings(array $values): array {
+    private static function getMatchStrings(array $values): array {
         // @phpstan-ignore return.type (data are trusted, so method exists only for phpstan to suppress the error)
         return $values;
     }
