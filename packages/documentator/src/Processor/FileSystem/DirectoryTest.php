@@ -51,8 +51,8 @@ final class DirectoryTest extends TestCase {
         $a         = (new FilePath(self::getTestData()->path('a/a.txt')));
         $b         = $a->getPath(new DirectoryPath('../../..'));
         $fs        = $this->getFileSystem(__DIR__);
-        $file      = $fs->getFile(__FILE__);
-        $directory = $fs->getDirectory(__DIR__);
+        $file      = $fs->getFile(new FilePath(__FILE__));
+        $directory = $fs->getDirectory(new DirectoryPath(__DIR__));
 
         self::assertTrue($directory->isInside($a));
         self::assertFalse($directory->isInside($b));

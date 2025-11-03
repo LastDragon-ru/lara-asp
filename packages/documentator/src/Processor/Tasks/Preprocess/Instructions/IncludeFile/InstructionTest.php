@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
@@ -24,7 +25,7 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters(self::getTestData()->path($source));
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

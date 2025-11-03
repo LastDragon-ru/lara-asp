@@ -17,7 +17,7 @@ class Directory extends Entry {
     public function __construct(FileSystemAdapter $adapter, DirectoryPath $path) {
         parent::__construct($adapter, $path);
 
-        if (!$this->adapter->isDirectory((string) $this->path)) {
+        if (!$this->adapter->isDirectory($this->path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `%s` is not a directory.',

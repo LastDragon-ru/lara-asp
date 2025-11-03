@@ -16,7 +16,7 @@ class FileReal extends File {
     public function __construct(FileSystemAdapter $adapter, FilePath $path, Caster $caster) {
         parent::__construct($adapter, $path, $caster);
 
-        if (!$this->adapter->isFile((string) $this->path)) {
+        if (!$this->adapter->isFile($this->path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `%s` is not a file.',

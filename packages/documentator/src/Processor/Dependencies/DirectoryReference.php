@@ -25,7 +25,7 @@ readonly class DirectoryReference implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): Directory {
         try {
-            return $fs->getDirectory($this->reference);
+            return $fs->getDirectory($this->getPath($fs));
         } catch (DirectoryNotFound $exception) {
             throw new DependencyUnresolvable($exception);
         }

@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,7 +33,7 @@ final class ClassCommentCastTest extends TestCase {
         }
         PHP;
         $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(self::getTempFile($content, '.php')->getPathname());
+        $file    = $fs->getFile(new FilePath(self::getTempFile($content, '.php')->getPathname()));
         $cast    = new ClassCommentCast();
         $value   = $cast->castTo($file, ClassComment::class);
 

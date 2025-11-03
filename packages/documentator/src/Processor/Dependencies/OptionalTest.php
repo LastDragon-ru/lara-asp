@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,7 +24,7 @@ final class OptionalTest extends TestCase {
 
     public function testInvoke(): void {
         $fs         = $this->getFileSystem(__DIR__);
-        $file       = $fs->getFile(__FILE__);
+        $file       = $fs->getFile(new FilePath(__FILE__));
         $dependency = new FileReference(__FILE__);
         $optional   = new Optional($dependency);
 

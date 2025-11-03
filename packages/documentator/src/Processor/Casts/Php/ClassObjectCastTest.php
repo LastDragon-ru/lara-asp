@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +17,7 @@ final class ClassObjectCastTest extends TestCase {
 
     public function testCastTo(): void {
         $fs     = $this->getFileSystem(__DIR__);
-        $file   = $fs->getFile(__FILE__);
+        $file   = $fs->getFile(new FilePath(__FILE__));
         $cast   = new ClassObjectCast();
         $casted = $cast->castTo($file, ClassObject::class);
 
@@ -29,7 +30,7 @@ final class ClassObjectCastTest extends TestCase {
 
     public function testCastToNotFound(): void {
         $fs     = $this->getFileSystem(__DIR__);
-        $file   = $fs->getFile('../../../../README.md');
+        $file   = $fs->getFile(new FilePath('../../../../README.md'));
         $cast   = new ClassObjectCast();
         $casted = $cast->castTo($file, ClassObject::class);
 

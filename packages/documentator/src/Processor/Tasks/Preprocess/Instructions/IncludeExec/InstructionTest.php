@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Illuminate\Process\Factory;
 use Illuminate\Process\PendingProcess;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -17,7 +18,7 @@ final class InstructionTest extends TestCase {
 
     public function testInvoke(): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters('command to execute');
         $expected = 'result';
         $command  = $params->target;

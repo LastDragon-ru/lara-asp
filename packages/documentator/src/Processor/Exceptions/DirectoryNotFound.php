@@ -9,7 +9,7 @@ use function sprintf;
 
 class DirectoryNotFound extends FileSystemError {
     public function __construct(
-        protected readonly DirectoryPath|string $target,
+        protected readonly DirectoryPath $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
@@ -21,7 +21,7 @@ class DirectoryNotFound extends FileSystemError {
         );
     }
 
-    public function getTarget(): DirectoryPath|string {
+    public function getTarget(): DirectoryPath {
         return $this->target;
     }
 }

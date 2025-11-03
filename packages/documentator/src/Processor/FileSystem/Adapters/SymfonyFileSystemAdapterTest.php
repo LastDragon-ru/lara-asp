@@ -18,19 +18,19 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
     public function testIsFile(): void {
         $adapter = new SymfonyFileSystemAdapter();
 
-        self::assertTrue($adapter->isFile(__FILE__));
-        self::assertFalse($adapter->isFile(__DIR__));
+        self::assertTrue($adapter->isFile(new FilePath(__FILE__)));
+        self::assertFalse($adapter->isFile(new FilePath(__DIR__)));
     }
 
     public function testIsDirectory(): void {
         $adapter = new SymfonyFileSystemAdapter();
 
-        self::assertFalse($adapter->isDirectory(__FILE__));
-        self::assertTrue($adapter->isDirectory(__DIR__));
+        self::assertFalse($adapter->isDirectory(new DirectoryPath(__FILE__)));
+        self::assertTrue($adapter->isDirectory(new DirectoryPath(__DIR__)));
     }
 
     public function testGetFilesIterator(): void {
-        $path    = self::getTestData()->path('');
+        $path    = new DirectoryPath(self::getTestData()->path(''));
         $adapter = new SymfonyFileSystemAdapter();
 
         self::assertSame(
@@ -80,43 +80,43 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
     }
 
     public function testGetDirectoriesIterator(): void {
-        $path    = self::getTestData()->path('');
+        $path    = new DirectoryPath(self::getTestData()->path(''));
         $adapter = new SymfonyFileSystemAdapter();
 
         self::assertSame(
             [
-                'a',
-                'a/aa',
-                'b',
-                'b/bb',
+                'a/',
+                'a/aa/',
+                'b/',
+                'b/bb/',
             ],
             $this->asArray($path, $adapter->getDirectoriesIterator($path)),
         );
         self::assertSame(
             [
-                'a',
-                'b',
+                'a/',
+                'b/',
             ],
             $this->asArray($path, $adapter->getDirectoriesIterator($path, depth: 0)),
         );
         self::assertSame(
             [
-                'a',
-                'b',
-                'b/bb',
+                'a/',
+                'b/',
+                'b/bb/',
             ],
             $this->asArray($path, $adapter->getDirectoriesIterator($path, exclude: ['a/*/'])),
         );
         self::assertSame(
             [
-                'a',
+                'a/',
             ],
             $this->asArray($path, $adapter->getDirectoriesIterator($path, include: ['a/'])),
         );
     }
 
     public function testRead(): void {
-        $path     = self::getTestData()->path('a/aa.txt');
+        $path     = new FilePath(self::getTestData()->path('a/aa.txt'));
         $adapter  = new SymfonyFileSystemAdapter();
         $expected = "a\na\n";
 
@@ -124,26 +124,25 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
     }
 
     public function testWrite(): void {
-        $path     = self::getTempFile()->getPathname();
+        $path     = new FilePath(self::getTempFile()->getPathname());
         $adapter  = new SymfonyFileSystemAdapter();
         $expected = 'content';
 
         $adapter->write($path, $expected);
 
-        self::assertSame($expected, file_get_contents($path));
+        self::assertSame($expected, file_get_contents((string) $path));
     }
 
     /**
-     * @param iterable<array-key, string> $iterable
+     * @param iterable<array-key, FilePath|DirectoryPath> $iterable
      *
      * @return array<array-key, string>
      */
-    private function asArray(string $root, iterable $iterable): array {
-        $root  = new DirectoryPath($root);
+    private function asArray(DirectoryPath $root, iterable $iterable): array {
         $array = [];
 
         foreach ($iterable as $path) {
-            $array[] = (string) $root->getRelativePath(new FilePath($path));
+            $array[] = (string) $root->getRelativePath($path);
         }
 
         sort($array);

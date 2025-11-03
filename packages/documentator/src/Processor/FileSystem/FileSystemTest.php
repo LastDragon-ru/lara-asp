@@ -42,10 +42,10 @@ final class FileSystemTest extends TestCase {
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
         $file         = $fs->getFile($path);
         $hook         = $fs->getFile(Hook::After);
-        $readonly     = $fs->getFile(__FILE__);
-        $relative     = $fs->getFile(basename(__FILE__));
-        $internal     = $fs->getFile(self::getTestData()->path('c.html'));
-        $external     = $fs->getFile('../Processor.php');
+        $readonly     = $fs->getFile(new FilePath(__FILE__));
+        $relative     = $fs->getFile(new FilePath(basename(__FILE__)));
+        $internal     = $fs->getFile(new FilePath(self::getTestData()->path('c.html')));
+        $external     = $fs->getFile(new FilePath('../Processor.php'));
         $fromFilePath = $fs->getFile($path);
 
         self::assertSame(
@@ -83,7 +83,7 @@ final class FileSystemTest extends TestCase {
     public function testGetFileNotFound(): void {
         self::expectException(FileNotFound::class);
 
-        $this->getFileSystem(__DIR__)->getFile('not found');
+        $this->getFileSystem(__DIR__)->getFile(new FilePath('not found'));
     }
 
     public function testGetFileHook(): void {
@@ -110,12 +110,12 @@ final class FileSystemTest extends TestCase {
 
         // Self
         self::assertSame(
-            $fs->getDirectory('.'),
-            $fs->getDirectory(''),
+            $fs->getDirectory(new DirectoryPath('.')),
+            $fs->getDirectory(new DirectoryPath('')),
         );
 
         // Readonly
-        $readonly = $fs->getDirectory(__DIR__);
+        $readonly = $fs->getDirectory(new DirectoryPath(__DIR__));
 
         self::assertSame(
             (string) (new DirectoryPath(__DIR__))->getNormalizedPath(),
@@ -123,7 +123,7 @@ final class FileSystemTest extends TestCase {
         );
 
         // Relative
-        $relative = $fs->getDirectory(basename(__DIR__));
+        $relative = $fs->getDirectory(new DirectoryPath(basename(__DIR__)));
 
         self::assertSame(
             (string) (new DirectoryPath(__DIR__))->getNormalizedPath(),
@@ -132,12 +132,12 @@ final class FileSystemTest extends TestCase {
 
         // Internal
         $internalPath = self::getTestData()->path('a');
-        $internal     = $fs->getDirectory($internalPath);
+        $internal     = $fs->getDirectory(new DirectoryPath($internalPath));
 
         self::assertSame("{$internalPath}/", (string) $internal);
 
         // External
-        $external = $fs->getDirectory('../Package');
+        $external = $fs->getDirectory(new DirectoryPath('../Package'));
 
         self::assertSame(
             (string) (new DirectoryPath(__DIR__))->getDirectoryPath('../../Package'),
@@ -163,7 +163,7 @@ final class FileSystemTest extends TestCase {
     public function testGetDirectoryNotFound(): void {
         self::expectException(DirectoryNotFound::class);
 
-        $this->getFileSystem(__DIR__)->getDirectory('not found');
+        $this->getFileSystem(__DIR__)->getDirectory(new DirectoryPath('not found'));
     }
 
     public function testGetFilesIterator(): void {
@@ -477,7 +477,7 @@ final class FileSystemTest extends TestCase {
 
         $path = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $fs   = $this->getFileSystem($path);
-        $file = $fs->getFile(__FILE__);
+        $file = $fs->getFile(new FilePath(__FILE__));
 
         $fs->write($file, 'outside output');
     }
@@ -590,12 +590,12 @@ final class FileSystemTest extends TestCase {
 
     public function testCache(): void {
         $fs        = $this->getFileSystem(__DIR__);
-        $file      = $fs->getFile(__FILE__);
-        $directory = $fs->getDirectory(__DIR__);
+        $file      = $fs->getFile(new FilePath(__FILE__));
+        $directory = $fs->getDirectory(new DirectoryPath(__DIR__));
 
-        self::assertSame($file, $fs->getFile(__FILE__));
+        self::assertSame($file, $fs->getFile(new FilePath(__FILE__)));
 
-        self::assertSame($directory, $fs->getDirectory(__DIR__));
+        self::assertSame($directory, $fs->getDirectory(new DirectoryPath(__DIR__)));
     }
 
     /**
@@ -633,12 +633,12 @@ final class FileSystemTest extends TestCase {
                 return $filesystem;
             };
         };
-        $file      = static function (FilePath|Hook|string $path): Closure {
+        $file      = static function (FilePath|Hook $path): Closure {
             return static function (self $test, FileSystem $fs) use ($path): File {
                 return $fs->getFile($path);
             };
         };
-        $directory = static function (DirectoryPath|FilePath|string $path): Closure {
+        $directory = static function (DirectoryPath|FilePath $path): Closure {
             return static function (self $test, FileSystem $fs) use ($path): Directory {
                 return $fs->getDirectory($path);
             };
@@ -658,52 +658,52 @@ final class FileSystemTest extends TestCase {
             '(a, b): in file'               => [
                 '→ a.txt',
                 $fs('a', 'b'),
-                $file('../a/a.txt'),
+                $file(new FilePath('../a/a.txt')),
             ],
             '(a, b): out file'              => [
                 '← b.txt',
                 $fs('a', 'b'),
-                $file('../b/b.txt'),
+                $file(new FilePath('../b/b.txt')),
             ],
             '(a, b): external file'         => [
                 '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
                 $fs('a', 'b'),
-                $file('../c.txt'),
+                $file(new FilePath('../c.txt')),
             ],
             '(a, null): in file'            => [
                 '↔ a.txt',
                 $fs('a', null),
-                $file('../a/a.txt'),
+                $file(new FilePath('../a/a.txt')),
             ],
             '(a, null): external file'      => [
                 '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
                 $fs('a', null),
-                $file('../c.txt'),
+                $file(new FilePath('../c.txt')),
             ],
             '(a, b): in directory'          => [
                 '→ a/',
                 $fs('a', 'b'),
-                $directory('../a/a'),
+                $directory(new DirectoryPath('../a/a')),
             ],
             '(a, b): out directory'         => [
                 '← b/',
                 $fs('a', 'b'),
-                $directory('../b/b'),
+                $directory(new DirectoryPath('../b/b')),
             ],
             '(a, b): external directory'    => [
                 '! '.(new DirectoryPath(__DIR__))->getNormalizedPath(),
                 $fs('a', 'b'),
-                $directory(__DIR__),
+                $directory(new DirectoryPath(__DIR__)),
             ],
             '(a, null): in directory'       => [
                 '↔ a/',
                 $fs('a', null),
-                $directory('../a/a'),
+                $directory(new DirectoryPath('../a/a')),
             ],
             '(a, null): external directory' => [
                 '! '.(new DirectoryPath(__DIR__))->getNormalizedPath(),
                 $fs('a', null),
-                $directory(__DIR__),
+                $directory(new DirectoryPath(__DIR__)),
             ],
             '(a, b): relative path'         => [
                 '→ a.txt',

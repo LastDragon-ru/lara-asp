@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
@@ -34,7 +35,7 @@ final class ClassMarkdownCastTest extends TestCase {
         }
         PHP;
         $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(self::getTempFile($content, '.php')->getPathname());
+        $file    = $fs->getFile(new FilePath(self::getTempFile($content, '.php')->getPathname()));
         $cast    = new ClassMarkdownCast($this->app()->make(PhpDocumentFactory::class));
         $value   = $cast->castTo($file, Document::class);
 

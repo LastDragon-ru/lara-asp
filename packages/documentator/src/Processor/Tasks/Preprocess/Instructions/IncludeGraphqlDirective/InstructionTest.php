@@ -7,6 +7,7 @@ use GraphQL\Language\Parser;
 use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveResolver;
 use LastDragon_ru\GraphQLPrinter\Contracts\Printer as PrinterContract;
 use LastDragon_ru\GraphQLPrinter\Printer;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
@@ -45,7 +46,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -71,7 +72,7 @@ final class InstructionTest extends TestCase {
 
         // Test
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -98,7 +99,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -116,7 +117,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

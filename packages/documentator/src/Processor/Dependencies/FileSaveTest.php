@@ -22,7 +22,7 @@ final class FileSaveTest extends TestCase {
     public function testGetPath(): void {
         $fs   = $this->getFileSystem(dirname(__DIR__), __DIR__);
         $path = (new FilePath(__FILE__))->getNormalizedPath();
-        $file = $fs->getFile(__FILE__);
+        $file = $fs->getFile($path);
 
         self::assertSame(
             (string) $fs->output->getFilePath('path/to/file'),

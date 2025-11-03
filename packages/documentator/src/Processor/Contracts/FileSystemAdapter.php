@@ -2,19 +2,22 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-interface FileSystemAdapter {
-    public function isFile(string $path): bool;
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 
-    public function isDirectory(string $path): bool;
+interface FileSystemAdapter {
+    public function isFile(FilePath $path): bool;
+
+    public function isDirectory(DirectoryPath $path): bool;
 
     /**
      * @param list<string> $exclude
      * @param list<string> $include
      *
-     * @return iterable<array-key, string>
+     * @return iterable<array-key, FilePath>
      */
     public function getFilesIterator(
-        string $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
@@ -24,16 +27,16 @@ interface FileSystemAdapter {
      * @param list<string> $exclude
      * @param list<string> $include
      *
-     * @return iterable<array-key, string>
+     * @return iterable<array-key, DirectoryPath>
      */
     public function getDirectoriesIterator(
-        string $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): iterable;
 
-    public function read(string $path): string;
+    public function read(FilePath $path): string;
 
-    public function write(string $path, string $content): void;
+    public function write(FilePath $path, string $content): void;
 }

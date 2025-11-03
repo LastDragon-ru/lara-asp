@@ -21,12 +21,12 @@ class SymfonyFileSystemAdapter implements FileSystemAdapter {
     }
 
     #[Override]
-    public function isFile(FilePath|DirectoryPath|string $path): bool {
+    public function isFile(FilePath $path): bool {
         return is_file((string) $path);
     }
 
     #[Override]
-    public function isDirectory(FilePath|DirectoryPath|string $path): bool {
+    public function isDirectory(DirectoryPath $path): bool {
         return is_dir((string) $path);
     }
 
@@ -35,13 +35,13 @@ class SymfonyFileSystemAdapter implements FileSystemAdapter {
      */
     #[Override]
     public function getFilesIterator(
-        string $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): iterable {
         foreach ($this->getFinder($directory, $include, $exclude, $depth)->files() as $file) {
-            yield $file->getPathname();
+            yield new FilePath($file->getPathname());
         }
 
         yield from [];
@@ -52,26 +52,26 @@ class SymfonyFileSystemAdapter implements FileSystemAdapter {
      */
     #[Override]
     public function getDirectoriesIterator(
-        string $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): iterable {
         foreach ($this->getFinder($directory, $include, $exclude, $depth)->directories() as $file) {
-            yield $file->getPathname();
+            yield new DirectoryPath($file->getPathname());
         }
 
         yield from [];
     }
 
     #[Override]
-    public function read(string $path): string {
-        return $this->filesystem->readFile($path);
+    public function read(FilePath $path): string {
+        return $this->filesystem->readFile((string) $path);
     }
 
     #[Override]
-    public function write(string $path, string $content): void {
-        $this->filesystem->dumpFile($path, $content);
+    public function write(FilePath $path, string $content): void {
+        $this->filesystem->dumpFile((string) $path, $content);
     }
 
     /**
@@ -79,7 +79,7 @@ class SymfonyFileSystemAdapter implements FileSystemAdapter {
      * @param list<string> $exclude
      */
     protected function getFinder(
-        string $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
@@ -88,7 +88,7 @@ class SymfonyFileSystemAdapter implements FileSystemAdapter {
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
             ->exclude('vendor')
-            ->in($directory);
+            ->in((string) $directory);
 
         if ($depth !== null) {
             $finder = $finder->depth("<= {$depth}");

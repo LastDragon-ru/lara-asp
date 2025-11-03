@@ -39,7 +39,7 @@ final class EntryTest extends TestCase {
     public function testGetRelativePath(): void {
         $adapter   = Mockery::mock(FileSystemAdapter::class);
         $fs        = $this->getFileSystem(__DIR__);
-        $file      = $fs->getFile(__FILE__);
+        $file      = $fs->getFile(new FilePath(__FILE__));
         $path      = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
         $parent    = new class($adapter, $path->getDirectoryPath()) extends Entry {
             // empty

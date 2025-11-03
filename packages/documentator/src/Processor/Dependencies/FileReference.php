@@ -25,7 +25,7 @@ readonly class FileReference implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): File {
         try {
-            return $fs->getFile($this->reference);
+            return $fs->getFile($this->getPath($fs));
         } catch (FileNotFound $exception) {
             throw new DependencyUnresolvable($exception);
         }

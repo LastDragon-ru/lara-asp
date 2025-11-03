@@ -35,7 +35,7 @@ class FileSystem {
      */
     private array $cache = [];
     /**
-     * @var array<int, array<string, string>>
+     * @var array<int, array<string, array{FilePath, string}>>
      */
     private array $changes = [];
     private int   $level   = 0;
@@ -98,10 +98,10 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    protected function isFile(FilePath|string $path): bool {
-        $path = $this->input->getFilePath((string) $path);
+    protected function isFile(FilePath $path): bool {
+        $path = $this->input->getPath($path);
         $file = $this->cached($path);
-        $is   = $file instanceof File || $this->adapter->isFile((string) $path);
+        $is   = $file instanceof File || $this->adapter->isFile($path);
 
         return $is;
     }
@@ -109,14 +109,14 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(FilePath|Hook|string $path): File {
+    public function getFile(FilePath|Hook $path): File {
         // Hook?
         if ($path instanceof Hook) {
             return $this->hook($path);
         }
 
         // Cached?
-        $path = $this->input->getFilePath((string) $path);
+        $path = $this->input->getPath($path);
         $file = $this->cached($path);
 
         if ($file !== null && !($file instanceof File)) {
@@ -128,7 +128,7 @@ class FileSystem {
         }
 
         // Create
-        if ($this->adapter->isFile((string) $path)) {
+        if ($this->adapter->isFile($path)) {
             $file = new FileReal($this->adapter, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
@@ -140,10 +140,10 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getDirectory(DirectoryPath|FilePath|string $path): Directory {
+    public function getDirectory(DirectoryPath|FilePath $path): Directory {
         // Cached?
         $path      = $path instanceof FilePath ? $path->getDirectoryPath() : $path;
-        $path      = $this->input->getDirectoryPath((string) $path);
+        $path      = $this->input->getPath($path);
         $directory = $this->cached($path);
 
         if ($directory !== null && !($directory instanceof Directory)) {
@@ -155,7 +155,7 @@ class FileSystem {
         }
 
         // Create
-        if ($this->adapter->isDirectory((string) $path)) {
+        if ($this->adapter->isDirectory($path)) {
             $directory = $this->cache(new Directory($this->adapter, $path));
         } else {
             throw new DirectoryNotFound($path);
@@ -173,13 +173,13 @@ class FileSystem {
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
-        Directory|DirectoryPath|string $directory,
+        Directory|DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): Iterator {
         $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
-        $iterator  = $this->adapter->getFilesIterator((string) $directory, $include, $exclude, $depth);
+        $iterator  = $this->adapter->getFilesIterator($directory->getPath(), $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
             yield $this->getFile($path);
@@ -197,13 +197,13 @@ class FileSystem {
      * @return Iterator<array-key, Directory>
      */
     public function getDirectoriesIterator(
-        Directory|DirectoryPath|string $directory,
+        Directory|DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): Iterator {
         $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
-        $iterator  = $this->adapter->getDirectoriesIterator((string) $directory, $include, $exclude, $depth);
+        $iterator  = $this->adapter->getDirectoriesIterator($directory->getPath(), $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
             yield $this->getDirectory($path);
@@ -217,7 +217,7 @@ class FileSystem {
      * if not, it will be created immediately. Relative path will be resolved
      * based on {@see self::$output}.
      */
-    public function write(File|FilePath|string $path, object|string $content): File {
+    public function write(File|FilePath $path, object|string $content): File {
         // Hook?
         if ($path instanceof FileHook) {
             throw new FileNotWritable($path->getPath());
@@ -229,8 +229,6 @@ class FileSystem {
         if ($path instanceof File) {
             $file = $path;
             $path = $path->getPath();
-        } elseif (is_string($path)) {
-            $path = new FilePath($path);
         } else {
             // as is
         }
@@ -262,7 +260,7 @@ class FileSystem {
             $this->change($file, $content);
         } else {
             try {
-                $this->adapter->write((string) $path, $content);
+                $this->adapter->write($path, $content);
             } catch (Exception $exception) {
                 throw new FileCreateFailed($path, $exception);
             }
@@ -289,7 +287,7 @@ class FileSystem {
 
     public function commit(): void {
         // Commit
-        foreach ($this->changes[$this->level] ?? [] as $path => $content) {
+        foreach ($this->changes[$this->level] ?? [] as [$path, $content]) {
             try {
                 $this->adapter->write($path, $content);
             } catch (Exception $exception) {
@@ -309,12 +307,13 @@ class FileSystem {
         }
     }
 
-    protected function change(File $path, string $content): void {
-        $path                               = (string) $path;
-        $this->changes[$this->level][$path] = $content;
+    protected function change(File $file, string $content): void {
+        $path                                 = $file->getPath();
+        $string                               = (string) $path;
+        $this->changes[$this->level][$string] = [$path, $content];
 
         for ($level = $this->level - 1; $level >= 0; $level--) {
-            unset($this->changes[$level][$path]);
+            unset($this->changes[$level][$string]);
         }
     }
 

@@ -31,7 +31,7 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source, array $data): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters(self::getTestData()->path($source), $data);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -49,7 +49,7 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeNoData(): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(__FILE__);
+        $file     = $fs->getFile(new FilePath(__FILE__));
         $params   = new Parameters((string) $file, []);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

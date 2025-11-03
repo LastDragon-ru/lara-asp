@@ -1017,7 +1017,7 @@ class ProcessorTest__FileSystemAdapter extends SymfonyFileSystemAdapter {
      */
     #[Override]
     protected function getFinder(
-        string $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,

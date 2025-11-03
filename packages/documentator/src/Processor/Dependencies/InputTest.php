@@ -23,7 +23,7 @@ final class InputTest extends TestCase {
 
     public function testInvoke(): void {
         $fs         = $this->getFileSystem(new DirectoryPath(__DIR__));
-        $file       = $fs->getDirectory(__DIR__);
+        $file       = $fs->getDirectory(new DirectoryPath(__DIR__));
         $dependency = new Input();
 
         self::assertEquals($file, $dependency($fs));

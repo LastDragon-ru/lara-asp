@@ -23,7 +23,7 @@ readonly class FileSave implements Dependency {
 
     #[Override]
     public function __invoke(FileSystem $fs): File {
-        return $fs->write($this->file, $this->content);
+        return $fs->write($this->getPath($fs), $this->content);
     }
 
     #[Override]

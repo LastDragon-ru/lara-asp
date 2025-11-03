@@ -45,7 +45,7 @@ readonly class DirectoryIterator implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): Iterator {
         try {
-            yield from $fs->getDirectoriesIterator($this->directory, $this->include, $this->exclude, $this->depth);
+            yield from $fs->getDirectoriesIterator($this->getPath($fs), $this->include, $this->exclude, $this->depth);
         } catch (DirectoryNotFound $exception) {
             throw new DependencyUnresolvable($exception);
         }

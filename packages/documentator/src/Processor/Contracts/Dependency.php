@@ -24,7 +24,7 @@ interface Dependency {
     public function __invoke(FileSystem $fs): Traversable|Directory|File|null;
 
     /**
-     * Used only for events. Relative path will be resolved based on {@see FileSystem::$input}.
+     * Relative path will be resolved based on {@see FileSystem::$input}.
      */
     public function getPath(FileSystem $fs): Directory|DirectoryPath|File|FilePath;
 }

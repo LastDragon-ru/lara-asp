@@ -9,7 +9,7 @@ use function sprintf;
 
 class FileCreateFailed extends FileSystemError {
     public function __construct(
-        protected readonly FilePath|string $target,
+        protected readonly FilePath $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
@@ -21,7 +21,7 @@ class FileCreateFailed extends FileSystemError {
         );
     }
 
-    public function getTarget(): FilePath|string {
+    public function getTarget(): FilePath {
         return $this->target;
     }
 }

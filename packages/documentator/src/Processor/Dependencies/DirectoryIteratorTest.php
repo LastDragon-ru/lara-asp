@@ -22,7 +22,7 @@ final class DirectoryIteratorTest extends TestCase {
 
     public function testGetPath(): void {
         $filesystem = $this->getFileSystem(__DIR__);
-        $directory  = $filesystem->getDirectory(__DIR__);
+        $directory  = $filesystem->getDirectory(new DirectoryPath(__DIR__));
         $path       = $directory->getPath();
 
         self::assertSame(
