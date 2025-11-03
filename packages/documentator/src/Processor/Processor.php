@@ -9,8 +9,8 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
@@ -41,7 +41,7 @@ class Processor {
 
     public function __construct(
         protected readonly ContainerResolver $container,
-        protected readonly FileSystemAdapter $adapter,
+        protected readonly Adapter $adapter,
     ) {
         $this->tasks      = new Tasks($container);
         $this->caster     = new Caster($container, $this->adapter);

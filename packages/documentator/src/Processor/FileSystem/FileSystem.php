@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
@@ -43,7 +43,7 @@ class FileSystem {
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Caster $caster,
-        private readonly FileSystemAdapter $adapter,
+        private readonly Adapter $adapter,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {

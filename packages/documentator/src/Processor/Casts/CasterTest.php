@@ -6,8 +6,8 @@ use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastFromFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastToFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -49,7 +49,7 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn($bCast);
 
-        $adapter = Mockery::mock(FileSystemAdapter::class);
+        $adapter = Mockery::mock(Adapter::class);
         $caster  = new class($resolver, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -104,7 +104,7 @@ final class CasterTest extends TestCase {
             ->andReturn($value);
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -148,7 +148,7 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -182,7 +182,7 @@ final class CasterTest extends TestCase {
     public function testCastToNoCast(): void {
         // Prepare
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -220,7 +220,7 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -246,7 +246,7 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -271,7 +271,7 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -293,7 +293,7 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -315,7 +315,7 @@ final class CasterTest extends TestCase {
         $file      = Mockery::mock(File::class);
         $value     = new stdClass();
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
@@ -350,7 +350,7 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(FileSystemAdapter::class);
+        $adapter   = Mockery::mock(Adapter::class);
         $caster    = new class($container, $adapter) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {

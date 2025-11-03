@@ -12,8 +12,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassMarkdownCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ComposerPackageCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Serializer\SerializableCast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastFromFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastToFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -35,7 +35,7 @@ class Caster {
 
     public function __construct(
         protected readonly ContainerResolver $container,
-        protected readonly FileSystemAdapter $adapter,
+        protected readonly Adapter $adapter,
     ) {
         $this->files   = new WeakMap();
         $this->casts   = new Casts($container);

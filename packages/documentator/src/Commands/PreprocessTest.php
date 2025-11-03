@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
@@ -30,7 +30,7 @@ final class PreprocessTest extends TestCase {
             ]);
 
         $container = $this->app()->make(ContainerResolver::class);
-        $adapter   = $this->app()->make(FileSystemAdapter::class);
+        $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
             public function getProcessedHelpTaskPreprocessInstructions(Task $task, int $level): string {
@@ -77,7 +77,7 @@ final class PreprocessTest extends TestCase {
 
     public function testGetProcessedHelpTaskPreprocessInstructionTarget(): void {
         $container = $this->app()->make(ContainerResolver::class);
-        $adapter   = $this->app()->make(FileSystemAdapter::class);
+        $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
             public function getProcessedHelpTaskPreprocessInstructionTarget(
@@ -108,7 +108,7 @@ final class PreprocessTest extends TestCase {
 
     public function testGetProcessedHelpTaskPreprocessParameters(): void {
         $container = $this->app()->make(ContainerResolver::class);
-        $adapter   = $this->app()->make(FileSystemAdapter::class);
+        $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
             public function getProcessedHelpTaskPreprocessParameters(
@@ -143,7 +143,7 @@ final class PreprocessTest extends TestCase {
 
     public function testGetProcessedHelpTaskPreprocessParametersNoParameters(): void {
         $container = $this->app()->make(ContainerResolver::class);
-        $adapter   = $this->app()->make(FileSystemAdapter::class);
+        $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
             public function getProcessedHelpTaskPreprocessParameters(

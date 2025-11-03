@@ -13,17 +13,17 @@ use function sort;
 /**
  * @internal
  */
-#[CoversClass(SymfonyFileSystemAdapter::class)]
-final class SymfonyFileSystemAdapterTest extends TestCase {
+#[CoversClass(SymfonyFileSystem::class)]
+final class SymfonyFileSystemTest extends TestCase {
     public function testIsFile(): void {
-        $adapter = new SymfonyFileSystemAdapter();
+        $adapter = new SymfonyFileSystem();
 
         self::assertTrue($adapter->isFile(new FilePath(__FILE__)));
         self::assertFalse($adapter->isFile(new FilePath(__DIR__)));
     }
 
     public function testIsDirectory(): void {
-        $adapter = new SymfonyFileSystemAdapter();
+        $adapter = new SymfonyFileSystem();
 
         self::assertFalse($adapter->isDirectory(new DirectoryPath(__FILE__)));
         self::assertTrue($adapter->isDirectory(new DirectoryPath(__DIR__)));
@@ -31,7 +31,7 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
 
     public function testGetFilesIterator(): void {
         $path    = new DirectoryPath(self::getTestData()->path(''));
-        $adapter = new SymfonyFileSystemAdapter();
+        $adapter = new SymfonyFileSystem();
 
         self::assertSame(
             [
@@ -81,7 +81,7 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
 
     public function testGetDirectoriesIterator(): void {
         $path    = new DirectoryPath(self::getTestData()->path(''));
-        $adapter = new SymfonyFileSystemAdapter();
+        $adapter = new SymfonyFileSystem();
 
         self::assertSame(
             [
@@ -117,7 +117,7 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
 
     public function testRead(): void {
         $path     = new FilePath(self::getTestData()->path('a/aa.txt'));
-        $adapter  = new SymfonyFileSystemAdapter();
+        $adapter  = new SymfonyFileSystem();
         $expected = "a\na\n";
 
         self::assertSame($expected, $adapter->read($path));
@@ -125,7 +125,7 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
 
     public function testWrite(): void {
         $path     = new FilePath(self::getTempFile()->getPathname());
-        $adapter  = new SymfonyFileSystemAdapter();
+        $adapter  = new SymfonyFileSystem();
         $expected = 'content';
 
         $adapter->write($path, $expected);

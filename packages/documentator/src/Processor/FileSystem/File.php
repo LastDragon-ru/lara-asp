@@ -4,14 +4,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 
 /**
  * @extends Entry<FilePath>
  */
 abstract class File extends Entry {
     public function __construct(
-        FileSystemAdapter $adapter,
+        Adapter $adapter,
         FilePath $path,
         private readonly Caster $caster,
     ) {

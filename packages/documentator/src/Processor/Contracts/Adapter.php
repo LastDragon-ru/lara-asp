@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 
-interface FileSystemAdapter {
+interface Adapter {
     public function isFile(FilePath $path): bool;
 
     public function isDirectory(DirectoryPath $path): bool;

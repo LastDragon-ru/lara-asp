@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystemAdapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
@@ -31,7 +31,7 @@ trait WithProcessor {
         $output     = $output !== null
             ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
             : $input;
-        $adapter    = new class() extends SymfonyFileSystemAdapter {
+        $adapter    = new class() extends SymfonyFileSystem {
             /**
              * @inheritDoc
              */

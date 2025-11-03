@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileSystemAdapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
@@ -12,7 +12,7 @@ use Override;
  */
 readonly class ContentCast implements Cast {
     public function __construct(
-        protected FileSystemAdapter $adapter,
+        protected Adapter $adapter,
     ) {
         // empty
     }
