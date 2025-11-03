@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
-use LastDragon_ru\GlobMatcher\GlobUtils;
+use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
@@ -150,7 +150,7 @@ class Processor {
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
             if (!$directory->isEqual($output) && $directory->isInside($output)) {
-                $exclude[] = GlobUtils::escape((string) $directory->getRelativePath($output)).'**';
+                $exclude[] = GlobMatcher::escape((string) $directory->getRelativePath($output)).'**';
             }
         } else {
             $output = $directory;

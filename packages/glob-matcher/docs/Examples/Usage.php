@@ -22,5 +22,6 @@ Example::dump($noGlobstar->match('/**/a.txt'));
 // Escaping
 $escaped = new GlobMatcher('/\\*.txt');
 
+Example::dump(GlobMatcher::escape('/*.txt'));
 Example::dump($escaped->match('/a.txt'));
 Example::dump($escaped->match('/*.txt'));

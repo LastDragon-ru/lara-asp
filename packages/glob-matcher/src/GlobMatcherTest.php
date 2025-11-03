@@ -35,4 +35,17 @@ final class GlobMatcherTest extends TestCase {
             (new GlobMatcher('\\*.txt'))->match('*.txt'),
         );
     }
+
+    public function testEscape(): void {
+        self::assertSame('/a/b/c.txt', GlobMatcher::escape('/a/b/c.txt'));
+        self::assertSame('/a/b/\\*.txt', GlobMatcher::escape('/a/b/*.txt'));
+        self::assertSame('/a/\\*\\*/\\*.txt', GlobMatcher::escape('/a/**/*.txt'));
+        self::assertSame('\\[\\[.ch.\\]\\].txt', GlobMatcher::escape('[[.ch.]].txt'));
+        self::assertSame('\\[\\[=a=\\]\\].txt', GlobMatcher::escape('[[=a=]].txt'));
+        self::assertSame('/\\{a,b,c\\}.txt', GlobMatcher::escape('/{a,b,c}.txt'));
+        self::assertSame('/\\{a..c\\}.txt', GlobMatcher::escape('/{a..c}.txt'));
+
+        self::assertSame('/{a,b,c}.\\*.txt', GlobMatcher::escape('/{a,b,c}.*.txt', new Options(braces: false)));
+        self::assertSame('/{a..c}.\\*.txt', GlobMatcher::escape('/{a..c}.*.txt', new Options(braces: false)));
+    }
 }
