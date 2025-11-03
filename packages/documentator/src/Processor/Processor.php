@@ -150,7 +150,7 @@ class Processor {
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
             if (!$directory->isEqual($output) && $directory->isInside($output)) {
-                $exclude[] = GlobUtils::escape((string) $directory->getRelativePath($output)).'/**';
+                $exclude[] = GlobUtils::escape((string) $directory->getRelativePath($output)).'**';
             }
         } else {
             $output = $directory;

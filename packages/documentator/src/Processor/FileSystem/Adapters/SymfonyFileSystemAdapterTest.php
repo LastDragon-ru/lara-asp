@@ -105,13 +105,13 @@ final class SymfonyFileSystemAdapterTest extends TestCase {
                 'b',
                 'b/bb',
             ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, exclude: ['a/*'])),
+            $this->asArray($path, $adapter->getDirectoriesIterator($path, exclude: ['a/*/'])),
         );
         self::assertSame(
             [
                 'a',
             ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, include: ['a'])),
+            $this->asArray($path, $adapter->getDirectoriesIterator($path, include: ['a/'])),
         );
     }
 

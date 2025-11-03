@@ -29,7 +29,7 @@ final class EntryTest extends TestCase {
 
     public function testConstructNotAbsolute(): void {
         self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage('Path must be absolute, `../path` given.');
+        self::expectExceptionMessage('Path must be absolute, `../path/` given.');
 
         new class(Mockery::mock(FileSystemAdapter::class), (new DirectoryPath('../path'))->getNormalizedPath()) extends Entry {
             // empty
@@ -48,7 +48,7 @@ final class EntryTest extends TestCase {
             // empty
         };
 
-        self::assertSame('EntryTest/a', (string) $directory->getRelativePath($parent));
+        self::assertSame('EntryTest/a/', (string) $directory->getRelativePath($parent));
         self::assertSame('EntryTest.php', (string) $directory->getRelativePath($file));
         self::assertSame('EntryTest/a/a.txt', (string) $directory->getRelativePath($path));
     }

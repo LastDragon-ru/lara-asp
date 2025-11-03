@@ -627,11 +627,11 @@ final class ProcessorTest extends TestCase {
             <<<MESSAGE
             Circular Dependency detected:
 
-            * {$input}/a/a.txt
-            * {$input}/b/b.txt
-            * {$input}/b/a/ba.txt
-            * {$input}/c.txt
-            ! {$input}/a/a.txt
+            * {$input->getFilePath('a/a.txt')}
+            * {$input->getFilePath('b/b.txt')}
+            * {$input->getFilePath('b/a/ba.txt')}
+            * {$input->getFilePath('c.txt')}
+            ! {$input->getFilePath('a/a.txt')}
             MESSAGE,
         );
 
@@ -687,9 +687,9 @@ final class ProcessorTest extends TestCase {
             <<<MESSAGE
             Circular Dependency detected:
 
-            * {$input}/aa.txt
-            * {$input}/excluded.txt
-            ! {$input}/aa.txt
+            * {$input->getFilePath('aa.txt')}
+            * {$input->getFilePath('excluded.txt')}
+            ! {$input->getFilePath('aa.txt')}
             MESSAGE,
         );
 

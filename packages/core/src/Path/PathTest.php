@@ -124,10 +124,10 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/path/to'))->getDirectoryPath('/directory');
         $null     = (new PathTest_Path('/path/to'))->getDirectoryPath();
 
-        self::assertSame('relative/path/to/directory', (string) $relative);
+        self::assertSame('relative/path/to/directory/', (string) $relative);
 
-        self::assertSame('/directory', (string) $absolute);
-        self::assertSame('/path', (string) $null);
+        self::assertSame('/directory/', (string) $absolute);
+        self::assertSame('/path/', (string) $null);
     }
 
     public function testIsEqual(): void {

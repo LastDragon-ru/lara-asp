@@ -134,7 +134,7 @@ final class FileSystemTest extends TestCase {
         $internalPath = self::getTestData()->path('a');
         $internal     = $fs->getDirectory($internalPath);
 
-        self::assertSame($internalPath, (string) $internal);
+        self::assertSame("{$internalPath}/", (string) $internal);
 
         // External
         $external = $fs->getDirectory('../Package');
@@ -244,34 +244,34 @@ final class FileSystemTest extends TestCase {
 
         self::assertEquals(
             [
-                'a',
-                'a/a',
-                'a/b',
-                'b',
-                'b/a',
-                'b/b',
+                'a/',
+                'a/a/',
+                'a/b/',
+                'b/',
+                'b/a/',
+                'b/b/',
             ],
             array_map($map, iterator_to_array($filesystem->getDirectoriesIterator($directory), false)),
         );
 
         self::assertEquals(
             [
-                'a',
-                'b',
+                'a/',
+                'b/',
             ],
             array_map($map, iterator_to_array($filesystem->getDirectoriesIterator($directory, depth: 0), false)),
         );
 
         self::assertEquals(
             [
-                'a',
-                'a/b',
-                'b',
-                'b/b',
+                'a/',
+                'a/b/',
+                'b/',
+                'b/b/',
             ],
             array_map(
                 $map,
-                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: ['*/a']), false),
+                iterator_to_array($filesystem->getDirectoriesIterator($directory, exclude: ['*/a/']), false),
             ),
         );
     }
@@ -691,7 +691,7 @@ final class FileSystemTest extends TestCase {
                 $directory('../b/b'),
             ],
             '(a, b): external directory'    => [
-                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath().'/',
+                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath(),
                 $fs('a', 'b'),
                 $directory(__DIR__),
             ],
@@ -701,7 +701,7 @@ final class FileSystemTest extends TestCase {
                 $directory('../a/a'),
             ],
             '(a, null): external directory' => [
-                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath().'/',
+                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath(),
                 $fs('a', null),
                 $directory(__DIR__),
             ],

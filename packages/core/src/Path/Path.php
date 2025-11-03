@@ -84,7 +84,7 @@ abstract class Path implements Stringable {
             return $this;
         }
 
-        $path             = new static(SymfonyPath::canonicalize($this->path));
+        $path             = new static($this->normalize($this->path));
         $path->normalized = true;
 
         return $path;
@@ -104,7 +104,7 @@ abstract class Path implements Stringable {
 
     public function isNormalized(): bool {
         if ($this->normalized === null) {
-            $this->normalized = SymfonyPath::canonicalize($this->path) === $this->path;
+            $this->normalized = $this->normalize($this->path) === $this->path;
         }
 
         return $this->normalized;
@@ -113,6 +113,10 @@ abstract class Path implements Stringable {
     public function isEqual(self $path): bool {
         return $path instanceof $this
             && (string) $path->getNormalizedPath() === (string) $this->getNormalizedPath();
+    }
+
+    protected function normalize(string $path): string {
+        return SymfonyPath::canonicalize($path);
     }
 
     /**

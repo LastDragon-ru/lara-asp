@@ -32,15 +32,34 @@ final class FilePathTest extends TestCase {
         $absolute = (new FilePath('/path/to/file.a'))->getDirectoryPath('/directory');
         $null     = (new FilePath('/path/to/file.a'))->getDirectoryPath();
 
-        self::assertSame('relative/path/to/directory', (string) $relative);
+        self::assertSame('relative/path/to/directory/', (string) $relative);
 
-        self::assertSame('/directory', (string) $absolute);
+        self::assertSame('/directory/', (string) $absolute);
 
-        self::assertSame('/path/to', (string) $null);
+        self::assertSame('/path/to/', (string) $null);
     }
 
     public function testGetExtension(): void {
         self::assertSame('txt', (new FilePath('relative/path/to/file.txt'))->getExtension());
         self::assertNull((new FilePath('relative/path/to/file'))->getExtension());
+    }
+
+    public function testGetNormalizedPath(): void {
+        self::assertSame('/any/path', (string) (new FilePath('/any/path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new FilePath('any/path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new FilePath('./any/path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new FilePath('././any/path'))->getNormalizedPath());
+        self::assertSame('../any/path', (string) (new FilePath('./../any/path'))->getNormalizedPath());
+        self::assertSame('path', (string) (new FilePath('./any/../path'))->getNormalizedPath());
+        self::assertSame('', (string) (new FilePath('./'))->getNormalizedPath());
+        self::assertSame('', (string) (new FilePath('.'))->getNormalizedPath());
+        self::assertSame('..', (string) (new FilePath('../'))->getNormalizedPath());
+        self::assertSame('..', (string) (new FilePath('..'))->getNormalizedPath());
+        self::assertSame('path', (string) (new FilePath('./any/../path/.'))->getNormalizedPath());
+        self::assertSame('/', (string) (new FilePath('/..'))->getNormalizedPath());
+        self::assertSame('../any/path', (string) (new FilePath('.\\..\\any\\path'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new FilePath('any\\path'))->getNormalizedPath());
+        self::assertSame('/any/path', (string) (new FilePath('/any/path/'))->getNormalizedPath());
+        self::assertSame('any/path', (string) (new FilePath('any/path/'))->getNormalizedPath());
     }
 }

@@ -42,13 +42,13 @@ final class FileIteratorTest extends TestCase {
             return (string) $item;
         };
         $expected  = [
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/a.txt'),
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/a/aa.txt'),
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/a/b/ab.txt'),
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/a/ba.txt'),
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/b.txt'),
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/b/b/bb.txt'),
-            (string) $fs->input->getDirectoryPath('FileIteratorTest/c.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/a/a.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/a/a/aa.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/a/b/ab.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/b/a/ba.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/b/b.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/b/b/bb.txt'),
+            (string) $fs->input->getFilePath('FileIteratorTest/c.txt'),
         ];
 
         self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs), false)));

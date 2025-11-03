@@ -74,23 +74,22 @@ class FileSystem {
      * @return non-empty-string
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
-        $suffix = $path instanceof Directory || $path instanceof DirectoryPath ? '/' : '';
-        $hook   = $path instanceof FileHook;
-        $path   = $path instanceof Entry ? $path->getPath() : $path;
-        $path   = $this->input->getPath($path);
-        $name   = match (true) {
+        $hook = $path instanceof FileHook;
+        $path = $path instanceof Entry ? $path->getPath() : $path;
+        $path = $this->input->getPath($path);
+        $name = match (true) {
             $hook && $path instanceof FilePath
                 => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
             $this->input->isEqual($this->output) && $this->input->isInside($path),
-                => Mark::Inout->value.' '.$this->output->getRelativePath($path).$suffix,
+                => Mark::Inout->value.' '.$this->output->getRelativePath($path),
             $this->output->isInside($path),
             $this->output->isEqual($path),
-                => Mark::Output->value.' '.$this->output->getRelativePath($path).$suffix,
+                => Mark::Output->value.' '.$this->output->getRelativePath($path),
             $this->input->isInside($path),
             $this->input->isEqual($path),
-                => Mark::Input->value.' '.$this->input->getRelativePath($path).$suffix,
+                => Mark::Input->value.' '.$this->input->getRelativePath($path),
             default
-                => Mark::External->value.' '.$path.$suffix,
+                => Mark::External->value.' '.$path,
         };
 
         return $name;
