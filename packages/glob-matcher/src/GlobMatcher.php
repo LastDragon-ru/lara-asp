@@ -12,13 +12,15 @@ use Stringable;
 use function implode;
 
 readonly class GlobMatcher implements Matcher {
-    public Regex $regex;
+    public Regex   $regex;
+    public Options $options;
 
     public function __construct(
         public string $pattern,
-        protected ?Options $options = null,
+        ?Options $options = null,
     ) {
-        $this->regex = $this->regex();
+        $this->options = $options ?? new Options();
+        $this->regex   = $this->regex();
     }
 
     #[Override]
@@ -28,13 +30,12 @@ readonly class GlobMatcher implements Matcher {
 
     protected function regex(): Regex {
         $regex    = [];
-        $default  = new Options();
         $options  = new GlobOptions(
-            globstar: $this->options->globstar ?? $default->globstar,
-            extended: $this->options->extended ?? $default->extended,
-            hidden  : $this->options->hidden ?? $default->hidden,
+            globstar: $this->options->globstar,
+            extended: $this->options->extended,
+            hidden  : $this->options->hidden,
         );
-        $patterns = ($this->options->braces ?? $default->braces) ? new BraceExpander($this->pattern) : [$this->pattern];
+        $patterns = $this->options->braces ? new BraceExpander($this->pattern) : [$this->pattern];
 
         foreach ($patterns as $pattern) {
             $regex[] = (new Glob($pattern, $options))->regex->pattern;
@@ -42,8 +43,8 @@ readonly class GlobMatcher implements Matcher {
 
         return new Regex(
             '(?:'.implode('|', $regex).')',
-            $this->options->matchMode ?? MatchMode::Match,
-            $this->options->matchCase ?? true,
+            $this->options->matchMode,
+            $this->options->matchCase,
         );
     }
 }

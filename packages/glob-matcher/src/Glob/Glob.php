@@ -19,11 +19,12 @@ use Stringable;
 readonly class Glob implements Matcher {
     public GlobNode $node;
     public Regex    $regex;
+    public Options  $options;
 
     public function __construct(string $pattern, ?Options $options = null) {
-        $options   ??= new Options();
-        $this->node  = $this->parse($options, $pattern);
-        $this->regex = $this->regex($options, $this->node);
+        $this->options = $options ?? new Options();
+        $this->node    = $this->parse($this->options, $pattern);
+        $this->regex   = $this->regex($this->options, $this->node);
     }
 
     #[Override]
