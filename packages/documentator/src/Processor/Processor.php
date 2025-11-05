@@ -20,7 +20,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 
 use function array_map;
 use function array_merge;
@@ -64,15 +63,7 @@ class Processor {
      * @param T|class-string<T> $task
      */
     public function addTask(Task|string $task, ?int $priority = null): static {
-        $extensions = $task::getExtensions();
-        $extensions = array_map(
-            static function (Hook|string $extension): string {
-                return $extension instanceof Hook ? $extension->value : $extension;
-            },
-            $extensions,
-        );
-
-        $this->tasks->add($task, $extensions, $priority);
+        $this->tasks->add($task, $task::getExtensions(), $priority);
 
         return $this;
     }

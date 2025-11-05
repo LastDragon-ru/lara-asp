@@ -41,7 +41,6 @@ final class FileSystemTest extends TestCase {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath();
         $file         = $fs->getFile($path);
-        $hook         = $fs->getFile(Hook::After);
         $readonly     = $fs->getFile(new FilePath(__FILE__));
         $relative     = $fs->getFile(new FilePath(basename(__FILE__)));
         $internal     = $fs->getFile(new FilePath(self::getTestData()->path('c.html')));
@@ -73,35 +72,12 @@ final class FileSystemTest extends TestCase {
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
             (string) $fromFilePath,
         );
-
-        self::assertSame(
-            (string) (new DirectoryPath(__DIR__))->getFilePath('@.'.Hook::After->value),
-            (string) $hook,
-        );
     }
 
     public function testGetFileNotFound(): void {
         self::expectException(FileNotFound::class);
 
         $this->getFileSystem(__DIR__)->getFile(new FilePath('not found'));
-    }
-
-    public function testGetFileHook(): void {
-        $fs   = $this->getFileSystem(__DIR__);
-        $hook = $fs->getFile(Hook::After);
-
-        $fs->begin();
-
-        self::assertInstanceOf(FileHook::class, $hook);
-        self::assertSame($hook, $fs->getFile(Hook::After));
-        self::assertSame(
-            (string) (new DirectoryPath(__DIR__))->getFilePath('@.'.Hook::After->value),
-            (string) $hook,
-        );
-
-        $fs->commit();
-
-        self::assertSame($hook, $fs->getFile(Hook::After));
     }
 
     public function testGetDirectory(): void {
@@ -578,16 +554,6 @@ final class FileSystemTest extends TestCase {
         $filesystem->write($file, $value);
     }
 
-    public function testWriteHook(): void {
-        self::expectException(FileNotWritable::class);
-
-        $path = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $fs   = $this->getFileSystem($path);
-        $file = $fs->getFile(Hook::Before);
-
-        $fs->write($file, 'hook');
-    }
-
     public function testCache(): void {
         $fs        = $this->getFileSystem(__DIR__);
         $file      = $fs->getFile(new FilePath(__FILE__));
@@ -633,7 +599,7 @@ final class FileSystemTest extends TestCase {
                 return $filesystem;
             };
         };
-        $file      = static function (FilePath|Hook $path): Closure {
+        $file      = static function (FilePath $path): Closure {
             return static function (self $test, FileSystem $fs) use ($path): File {
                 return $fs->getFile($path);
             };
@@ -645,16 +611,6 @@ final class FileSystemTest extends TestCase {
         };
 
         return [
-            '(a, b): hook'                  => [
-                '@ :before',
-                $fs('a', 'b'),
-                $file(Hook::Before),
-            ],
-            '(a, null): hook'               => [
-                '@ :before',
-                $fs('a', 'null'),
-                $file(Hook::Before),
-            ],
             '(a, b): in file'               => [
                 '→ a.txt',
                 $fs('a', 'b'),

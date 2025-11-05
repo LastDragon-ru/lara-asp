@@ -18,18 +18,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
-use SplObjectStorage;
 
-use function array_reverse;
-use function explode;
 use function is_string;
 use function sprintf;
 
 class FileSystem {
-    /**
-     * @var SplObjectStorage<Hook, FileHook>
-     */
-    private SplObjectStorage $hooks;
     /**
      * @var array<string, Directory|File>
      */
@@ -64,8 +57,6 @@ class FileSystem {
                 ),
             );
         }
-
-        $this->hooks = new SplObjectStorage();
     }
 
     /**
@@ -74,12 +65,9 @@ class FileSystem {
      * @return non-empty-string
      */
     public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
-        $hook = $path instanceof FileHook;
         $path = $path instanceof Entry ? $path->getPath() : $path;
         $path = $this->input->getPath($path);
         $name = match (true) {
-            $hook && $path instanceof FilePath
-                => Mark::Hook->value.' :'.(array_reverse(explode(':', (string) $path->getExtension()))[0]),
             $this->input->isEqual($this->output) && $this->input->isInside($path),
                 => Mark::Inout->value.' '.$this->output->getRelativePath($path),
             $this->output->isInside($path),
@@ -109,12 +97,7 @@ class FileSystem {
     /**
      * Relative path will be resolved based on {@see self::$input}.
      */
-    public function getFile(FilePath|Hook $path): File {
-        // Hook?
-        if ($path instanceof Hook) {
-            return $this->hook($path);
-        }
-
+    public function getFile(FilePath $path): File {
         // Cached?
         $path = $this->input->getPath($path);
         $file = $this->cached($path);
@@ -218,11 +201,6 @@ class FileSystem {
      * based on {@see self::$output}.
      */
     public function write(File|FilePath $path, object|string $content): File {
-        // Hook?
-        if ($path instanceof FileHook) {
-            throw new FileNotWritable($path->getPath());
-        }
-
         // Prepare
         $file = null;
 
@@ -334,14 +312,5 @@ class FileSystem {
         $cached = $this->cache[(string) $path] ?? null;
 
         return $cached;
-    }
-
-    private function hook(Hook $hook): FileHook {
-        if (!isset($this->hooks[$hook])) {
-            $path               = $this->input->getFilePath("@.{$hook->value}");
-            $this->hooks[$hook] = new FileHook($this->adapter, $path, $this->caster, $hook);
-        }
-
-        return $this->hooks[$hook];
     }
 }
