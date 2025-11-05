@@ -112,7 +112,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->isFile($path)) {
-            $file = new FileReal($this->adapter, $path, $this->caster);
+            $file = new File($this->adapter, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
         }
@@ -222,7 +222,7 @@ class FileSystem {
         // File?
         $file ??= $this->isFile($path) ? $this->getFile($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new FileReal($this->adapter, $path, $this->caster));
+        $file ??= $this->cache(new File($this->adapter, $path, $this->caster));
 
         // Changed?
         $content = is_string($content)

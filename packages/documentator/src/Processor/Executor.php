@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 
@@ -146,7 +145,7 @@ class Executor {
         }
 
         // Process
-        if (end($this->stack) !== $resolved && $resolved instanceof FileReal) {
+        if (end($this->stack) !== $resolved && $resolved instanceof File) {
             $this->file($resolved);
         }
     }
@@ -188,15 +187,11 @@ class Executor {
      * @return list<string>
      */
     private function extensions(File $file): array {
-        $extensions = [];
+        $extensions = ['*'];
         $extension  = $file->getExtension();
 
         if ($extension !== null) {
             $extensions[] = $extension;
-        }
-
-        if ($file instanceof FileReal) {
-            $extensions[] = '*';
         }
 
         return $extensions;
