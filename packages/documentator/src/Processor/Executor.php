@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
@@ -138,14 +137,14 @@ class Executor {
         }
     }
 
-    private function onResolve(Directory|File $resolved): void {
+    private function onResolve(File $resolved): void {
         // Skipped?
-        if ($resolved instanceof File && $this->isSkipped($resolved)) {
+        if ($this->isSkipped($resolved)) {
             return;
         }
 
         // Process
-        if (end($this->stack) !== $resolved && $resolved instanceof File) {
+        if (end($this->stack) !== $resolved) {
             $this->file($resolved);
         }
     }

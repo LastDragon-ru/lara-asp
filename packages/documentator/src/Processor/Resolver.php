@@ -14,8 +14,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Traversable;
 
-use function assert;
-
 /**
  * @internal
  */
@@ -26,7 +24,7 @@ class Resolver implements DependencyResolver {
         protected readonly Dispatcher $dispatcher,
         protected readonly FileSystem $fs,
         /**
-         * @var Closure(Directory|File): void
+         * @var Closure(File): void
          */
         protected readonly Closure $run,
         /**
@@ -41,13 +39,16 @@ class Resolver implements DependencyResolver {
     public function resolve(Dependency $dependency): Traversable|Directory|File|null {
         try {
             $resolved = $dependency($this->fs);
+            $result   = $resolved === null ? Result::Null : Result::Success;
 
-            $this->notify($dependency, $this->result($resolved));
+            $this->notify($dependency, $result);
 
-            if ($resolved instanceof Traversable) {
-                $resolved = $this->iterate($dependency, $resolved);
-            } elseif ($resolved !== null) {
+            if ($resolved instanceof File) {
                 ($this->run)($resolved);
+            } elseif ($resolved instanceof Directory) {
+                // empty
+            } elseif ($resolved instanceof Traversable) {
+                $resolved = $this->iterate($dependency, $resolved);
             } else {
                 // empty
             }
@@ -67,20 +68,18 @@ class Resolver implements DependencyResolver {
         try {
             $resolved = $dependency($this->fs);
 
-            if ($resolved instanceof Traversable) {
+            if ($resolved instanceof File) {
+                ($this->queue)($resolved);
+
+                $this->notify($resolved, Result::Queued);
+            } elseif ($resolved instanceof Traversable) {
                 $this->notify($dependency, Result::Success);
 
                 foreach ($resolved as $file) {
-                    assert($file instanceof File, 'https://github.com/phpstan/phpstan/issues/12894');
-
                     ($this->queue)($file);
 
                     $this->notify($file, Result::Queued);
                 }
-            } elseif ($resolved instanceof File) {
-                ($this->queue)($resolved);
-
-                $this->notify($resolved, Result::Queued);
             } else {
                 $this->notify($dependency, Result::Null);
             }
@@ -105,8 +104,7 @@ class Resolver implements DependencyResolver {
     }
 
     /**
-     * @template V of Traversable<mixed, Directory|File>|Directory|File|null
-     * @template D of Dependency<V>
+     * @template D of Dependency<Traversable<mixed, Directory|File>|Directory|File|null>
      * @template T of Traversable<mixed, Directory|File>
      *
      * @param D $dependency
@@ -124,7 +122,9 @@ class Resolver implements DependencyResolver {
 
                 $this->notify($value, Result::Success);
 
-                ($this->run)($value);
+                if ($value instanceof File) {
+                    ($this->run)($value);
+                }
 
                 yield $key => $value;
             }
@@ -158,12 +158,5 @@ class Resolver implements DependencyResolver {
                 $result,
             ),
         );
-    }
-
-    /**
-     * @see https://github.com/phpstan/phpstan/issues/12894
-     */
-    private function result(mixed $value): Result {
-        return $value === null ? Result::Null : Result::Success;
     }
 }
