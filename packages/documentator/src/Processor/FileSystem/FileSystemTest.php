@@ -371,11 +371,6 @@ final class FileSystemTest extends TestCase {
 
         $adapter = Mockery::mock(Adapter::class);
         $adapter
-            ->shouldReceive('isFile')
-            ->with((string) $path)
-            ->once()
-            ->andReturn(true);
-        $adapter
             ->shouldReceive('write')
             ->with((string) $path, $content)
             ->once()
@@ -406,11 +401,6 @@ final class FileSystemTest extends TestCase {
         $path    = $input->getFilePath('file.md');
         $content = 'content';
         $adapter = Mockery::mock(Adapter::class);
-        $adapter
-            ->shouldReceive('isFile')
-            ->with((string) $path)
-            ->once()
-            ->andReturn(true);
         $adapter
             ->shouldReceive('write')
             ->with((string) $path, $content)
