@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -24,6 +25,7 @@ use function end;
  * @internal
  */
 class Executor {
+    private ExecutorState     $state;
     private readonly Resolver $resolver;
 
     /**
@@ -43,16 +45,26 @@ class Executor {
         private readonly Iterator $iterator,
         private readonly Globs $exclude,
     ) {
+        $this->state    = ExecutorState::Created;
         $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 
     public function run(): void {
+        // Ready
+        $this->state = ExecutorState::Preparation;
+
+        // Fight
+        $this->state = ExecutorState::Iteration;
+
         foreach ($this->iterator as $file) {
             $this->file($file);
         }
+
+        // Finish him!
+        $this->state = ExecutorState::Finished;
     }
 
-    private function file(File $file): void {
+    protected function file(File $file): void {
         // Processed?
         $path = (string) $file;
 
@@ -115,7 +127,7 @@ class Executor {
         unset($this->stack[$path]);
     }
 
-    private function task(File $file, Task $task): void {
+    protected function task(File $file, Task $task): void {
         $this->dispatcher->notify(new TaskStarted($task::class));
 
         try {
@@ -137,29 +149,43 @@ class Executor {
         }
     }
 
-    private function onResolve(File $resolved): void {
+    protected function queue(File $file): void {
+        $this->iterator->push($file->getPath());
+    }
+
+    protected function onResolve(File $resolved): void {
+        // Possible?
+        if ($this->state->is(ExecutorState::Created)) {
+            throw new DependencyUnavailable();
+        }
+
         // Skipped?
         if ($this->isSkipped($resolved)) {
             return;
         }
 
         // Process
-        if (end($this->stack) !== $resolved) {
+        if (!$this->state->is(ExecutorState::Preparation) && end($this->stack) !== $resolved) {
             $this->file($resolved);
         }
     }
 
-    private function onQueue(File $resolved): void {
+    protected function onQueue(File $resolved): void {
+        // Possible?
+        if ($this->state->is(ExecutorState::Finished)) {
+            throw new DependencyUnavailable();
+        }
+
         // Skipped?
         if ($this->isSkipped($resolved)) {
             return;
         }
 
         // Queue
-        $this->iterator->push($resolved->getPath());
+        $this->queue($resolved);
     }
 
-    private function isSkipped(File $file): bool {
+    protected function isSkipped(File $file): bool {
         // Tasks?
         if (!$this->tasks->has(...$this->extensions($file))) {
             return true;
