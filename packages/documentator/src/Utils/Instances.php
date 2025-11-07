@@ -141,7 +141,7 @@ class Instances {
         $class                    = is_string($instance) ? $instance : $instance::class;
         $this->classes[$class]    = array_unique(array_merge($this->classes[$class] ?? [], $tags));
         $this->resolved[$class]   = is_object($instance) ? $instance : null;
-        $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->getPriority();
+        $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->priority();
 
         foreach ($tags as $tag) {
             $this->tags[$tag] = array_unique(array_merge($this->tags[$tag] ?? [], [$class]));
@@ -186,8 +186,9 @@ class Instances {
         return $this->resolved[$class];
     }
 
-    private function getPriority(): int {
-        $priority = max($this->priorities + [0]);
+    private function priority(): int {
+        $priority = array_filter($this->priorities, static fn ($p) => $p < PHP_INT_MAX) + [0];
+        $priority = max($priority);
         $priority = min($priority, PHP_INT_MAX - 1);
         $priority = max($priority, PHP_INT_MIN);
 

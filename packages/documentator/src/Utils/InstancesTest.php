@@ -11,6 +11,8 @@ use stdClass;
 
 use function iterator_to_array;
 
+use const PHP_INT_MAX;
+
 /**
  * @internal
  */
@@ -180,6 +182,12 @@ final class InstancesTest extends TestCase {
         $bInstance = new class() extends stdClass {
             // empty
         };
+        $cInstance = new class() extends stdClass {
+            // empty
+        };
+        $dInstance = new class() extends stdClass {
+            // empty
+        };
 
         self::assertEquals([], $instances->getTags());
         self::assertEquals([], $instances->getClasses());
@@ -195,6 +203,19 @@ final class InstancesTest extends TestCase {
 
         self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->getTags());
         self::assertEquals([$bInstance::class, $aInstance::class], $instances->getClasses());
+
+        $instances->add($cInstance, ['c'], PHP_INT_MAX);
+        $instances->add($dInstance, ['d']);
+
+        self::assertEquals(
+            [
+                $bInstance::class,
+                $aInstance::class,
+                $dInstance::class,
+                $cInstance::class,
+            ],
+            $instances->getClasses(),
+        );
     }
 
     public function testRemove(): void {
