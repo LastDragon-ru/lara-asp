@@ -173,6 +173,37 @@ final class InstancesTest extends TestCase {
         self::assertSame($bInstance, $instances->first('b', 'aa'));
     }
 
+    public function testGetNotCacheable(): void {
+        $container = Mockery::mock(Container::class);
+        $resolver  = Mockery::mock(ContainerResolver::class);
+        $resolver
+            ->shouldReceive('getInstance')
+            ->twice()
+            ->andReturn($container);
+
+        $instances = new InstancesTest__Instances($resolver, SortOrder::Asc, false);
+        $aInstance = new class() extends stdClass {
+            // empty
+        };
+        $bInstance = new class() extends stdClass {
+            // empty
+        };
+
+        $container
+            ->shouldReceive('make')
+            ->with($bInstance::class)
+            ->twice()
+            ->andReturn($bInstance);
+
+        $instances->add($aInstance, ['a']);
+        $instances->add($bInstance::class, ['b']);
+
+        self::assertSame([$aInstance], iterator_to_array($instances->get('a'), false));
+        self::assertSame([$aInstance], iterator_to_array($instances->get('a'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
+    }
+
     public function testAdd(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container, SortOrder::Asc);
