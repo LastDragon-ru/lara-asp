@@ -12,6 +12,8 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Listener;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
@@ -32,6 +34,7 @@ use function array_map;
 use function getcwd;
 use function gettype;
 use function implode;
+use function is_a;
 use function is_scalar;
 use function ksort;
 use function max;
@@ -122,8 +125,7 @@ class Preprocess extends Command {
         foreach ($processor->getTasks() as $index => $task) {
             $description = mb_trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
-            $extensions  = $task::getExtensions();
-            $extensions  = '`'.implode('`, `', $extensions).'`';
+            $extensions  = $this->getProcessedHelpTaskExtensions($task);
             $deprecated  = $this->getDeprecatedMark(new ReflectionClass($task));
             $title       = mb_trim((string) $this->getProcessedHelpTaskTitle($task));
             $title       = $title !== '' ? $title : "Task №{$index}";
@@ -139,16 +141,44 @@ class Preprocess extends Command {
         return $help !== '' ? $help : '_No tasks defined_.';
     }
 
-    protected function getProcessedHelpTaskTitle(Task $task): ?string {
+    /**
+     * @param class-string<Task> $task
+     */
+    protected function getProcessedHelpTaskTitle(string $task): ?string {
         return match (true) {
-            $task instanceof PreprocessTask => 'Preprocess',
-            $task instanceof CodeLinksTask  => 'Code Links',
-            default                         => null,
+            is_a($task, PreprocessTask::class, true) => 'Preprocess',
+            is_a($task, CodeLinksTask::class, true)  => 'Code Links',
+            default                                  => null,
         };
     }
 
-    protected function getProcessedHelpTaskDescription(Task $task, int $level): string {
+    /**
+     * @param class-string<Task> $task
+     */
+    protected function getProcessedHelpTaskExtensions(string $task): string {
+        $extensions = [];
+
+        if (is_a($task, FileTask::class, true)) {
+            foreach ($task::getExtensions() as $extension) {
+                $extensions[] = "`{$extension}`";
+            }
+        }
+
+        if (is_a($task, HookTask::class, true)) {
+            foreach ($task::hooks() as $hook) {
+                $extensions[] = "`Hook::{$hook->name}`";
+            }
+        }
+
+        return implode(', ', $extensions);
+    }
+
+    /**
+     * @param class-string<Task> $task
+     */
+    protected function getProcessedHelpTaskDescription(string $task, int $level): string {
         $help = $this->getDocBlock(new ReflectionClass($task), null, $level);
+        $task = $this->laravel->make($task);
 
         if ($task instanceof PreprocessTask) {
             $help .= "\n\n".$this->getProcessedHelpTaskPreprocessInstructions($task, $level);

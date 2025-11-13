@@ -7,7 +7,8 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
@@ -15,6 +16,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinished;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinishedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
@@ -22,6 +26,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -45,10 +50,10 @@ final class ProcessorTest extends TestCase {
         $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $events = [];
 
-        $mock = Mockery::mock(Task::class);
+        $mock = Mockery::mock(FileTask::class);
         $mock
             ->shouldReceive('getExtensions')
-            ->once()
+            ->twice()
             ->andReturns(['php']);
 
         $taskA = new class() extends ProcessorTest__Task {
@@ -73,7 +78,7 @@ final class ProcessorTest extends TestCase {
                 '../../../../../README.md',
             ],
         ]);
-        $taskD = new class() extends ProcessorTest__Task {
+        $taskC = new class() extends ProcessorTest__Task {
             /**
              * @inheritDoc
              */
@@ -91,6 +96,20 @@ final class ProcessorTest extends TestCase {
                 );
             }
         };
+        $taskD = new class() implements HookTask {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function hooks(): array {
+                return [Hook::File];
+            }
+
+            #[Override]
+            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+                // empty
+            }
+        };
 
         (new Processor(
             $this->app()->make(ContainerResolver::class),
@@ -99,6 +118,7 @@ final class ProcessorTest extends TestCase {
             ->addTask($mock)
             ->addTask($taskA)
             ->addTask($taskB)
+            ->addTask($taskC)
             ->addTask($taskD)
             ->exclude(['excluded.txt', '**/**/excluded.txt'])
             ->addListener(
@@ -122,10 +142,14 @@ final class ProcessorTest extends TestCase {
                 new FileStarted('↔ b/a/ba.txt'),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
+                new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new DependencyResolved('↔ c.txt', DependencyResolvedResult::Success),
                 new FileStarted('↔ c.txt'),
                 new TaskStarted($taskB::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new DependencyResolved(
@@ -133,32 +157,48 @@ final class ProcessorTest extends TestCase {
                     DependencyResolvedResult::Success,
                 ),
                 new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
+                new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new DependencyResolved('↔ c.txt', DependencyResolvedResult::Success),
                 new DependencyResolved('↔ c.html', DependencyResolvedResult::Success),
+                new FileStarted('↔ c.html'),
+                new TaskStarted($taskD::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
                 new DependencyResolved('↔ a/excluded.txt', DependencyResolvedResult::Success),
+                new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ a/a/aa.txt'),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
+                new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ a/b/ab.txt'),
                 new TaskStarted($taskB::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ b/b.txt'),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
+                new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted('↔ c.htm'),
                 new TaskStarted($taskA::class),
                 new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
+                new TaskStarted($taskC::class),
                 new DependencyResolved(
                     '! '.$input->getFilePath('../ProcessorTest.php'),
                     DependencyResolvedResult::Queued,
                 ),
+                new TaskFinished(TaskFinishedResult::Success),
+                new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
@@ -743,6 +783,133 @@ final class ProcessorTest extends TestCase {
             $task->processed,
         );
     }
+
+    public function testRunHookBeforeProcessing(): void {
+        $events = [];
+        $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $task   = new class() implements HookTask {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function hooks(): array {
+                return [Hook::BeforeProcessing];
+            }
+
+            #[Override]
+            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+                $resolver->resolve(new FileReference('c.txt'));
+                $resolver->queue(new FileReference('c.htm'));
+            }
+        };
+
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__Adapter(),
+        ))
+            ->addTask($task)
+            ->addListener(
+                static function (Event $event) use (&$events): void {
+                    $events[] = $event;
+                },
+            )
+            ->run(
+                $input,
+            );
+
+        self::assertEquals(
+            [
+                new ProcessingStarted(),
+                new HookStarted(Hook::BeforeProcessing, '↔ excluded.txt'),
+                new TaskStarted($task::class),
+                new DependencyResolved('↔ c.txt', DependencyResolvedResult::Success),
+                new DependencyResolved('↔ c.htm', DependencyResolvedResult::Queued),
+                new TaskFinished(TaskFinishedResult::Success),
+                new HookFinished(HookFinishedResult::Success),
+                new FileStarted('↔ excluded.txt'),
+                new FileFinished(FileFinishedResult::Skipped),
+                new ProcessingFinished(ProcessingFinishedResult::Success),
+            ],
+            $events,
+        );
+    }
+
+    public function testRunHookAfterProcessing(): void {
+        $events = [];
+        $input  = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $task   = new class() implements HookTask {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function hooks(): array {
+                return [Hook::AfterProcessing];
+            }
+
+            #[Override]
+            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+                $resolver->resolve(new FileReference('c.txt'));
+            }
+        };
+
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__Adapter(),
+        ))
+            ->addTask($task)
+            ->addListener(
+                static function (Event $event) use (&$events): void {
+                    $events[] = $event;
+                },
+            )
+            ->run(
+                $input,
+            );
+
+        self::assertEquals(
+            [
+                new ProcessingStarted(),
+                new FileStarted('↔ excluded.txt'),
+                new FileFinished(FileFinishedResult::Skipped),
+                new HookStarted(Hook::AfterProcessing, '↔ excluded.txt'),
+                new TaskStarted($task::class),
+                new DependencyResolved('↔ c.txt', DependencyResolvedResult::Success),
+                new TaskFinished(TaskFinishedResult::Success),
+                new HookFinished(HookFinishedResult::Success),
+                new ProcessingFinished(ProcessingFinishedResult::Success),
+            ],
+            $events,
+        );
+    }
+
+    public function testRunHookAfterProcessingQueue(): void {
+        $input = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $task  = new class() implements HookTask {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function hooks(): array {
+                return [Hook::AfterProcessing];
+            }
+
+            #[Override]
+            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+                $resolver->queue(new FileReference('c.txt'));
+            }
+        };
+
+        self::expectException(DependencyUnavailable::class);
+
+        (new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__Adapter(),
+        ))
+            ->addTask($task)
+            ->run(
+                $input,
+            );
+    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -752,7 +919,7 @@ final class ProcessorTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ProcessorTest__Task implements Task {
+class ProcessorTest__Task implements FileTask {
     /**
      * @var array<array-key, array{string, array<string, mixed>}>
      */

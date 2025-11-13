@@ -9,7 +9,7 @@ use Throwable;
 
 use function sprintf;
 
-class TaskFailed extends TaskError {
+class TaskNotInvokable extends TaskError {
     public function __construct(
         protected readonly Task $task,
         protected readonly Hook $hook,
@@ -18,7 +18,7 @@ class TaskFailed extends TaskError {
     ) {
         parent::__construct(
             sprintf(
-                'The `%s` task failed for `%s` file (`%s` hook).',
+                'The `%s` task cannot be invoked for `%s` file (`%s` hook).',
                 $this->task::class,
                 $this->target,
                 $this->hook->name,

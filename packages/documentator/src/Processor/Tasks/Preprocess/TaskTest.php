@@ -196,7 +196,7 @@ final class TaskTest extends TestCase {
                 return $file;
             });
 
-        $this->runProcessorTask($task, $filesystem, $file);
+        $this->runProcessorFileTask($task, $filesystem, $file);
 
         self::assertSame(
             <<<'MARKDOWN'
