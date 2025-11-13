@@ -31,6 +31,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Metadata renamed to cast. The [`Cast`][code-links/6a213cdb7ed49c73] should be used instead of `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver` and `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer`.
 
+* [ ] The [`Task`][code-links/405a2082bc21eb5b] split into two new classes that should be used instead
+  * [`FileTask`][code-links/42d900d10c3c5f5c]
+  * [`HookTask`][code-links/b3d5664fcbd8bbf1]
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -60,7 +64,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The [`Runner`][code-links/f9077a28b352f84b] should be used/provided instead.
 
-* [ ] [`Task::__invoke()`][code-links/ac42b74d053a366b] should yield a [`Dependency`][code-links/f4718f92376c3c25] instead of file.
+* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()` should yield a [`Dependency`][code-links/f4718f92376c3c25] instead of file.
 
 * [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound`.
 
@@ -96,8 +100,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
 
-[code-links/ac42b74d053a366b]: src/Processor/Contracts/Task.php#L17-L20
-    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()"
+[code-links/405a2082bc21eb5b]: src/Processor/Contracts/Task.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task"
+
+[code-links/42d900d10c3c5f5c]: src/Processor/Contracts/Tasks/FileTask.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask"
+
+[code-links/b3d5664fcbd8bbf1]: src/Processor/Contracts/Tasks/HookTask.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask"
 
 [code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction"
