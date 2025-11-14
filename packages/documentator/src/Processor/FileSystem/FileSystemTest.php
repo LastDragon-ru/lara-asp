@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
@@ -21,7 +20,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 use function array_map;
@@ -178,9 +176,9 @@ final class FileSystemTest extends TestCase {
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
-                static function (Event $event): bool {
+                static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
-                        && $event->path === '↔ file.md'
+                        && $event->path === $path
                         && $event->type === FileSystemModifiedType::Updated;
                 },
             )
@@ -257,9 +255,9 @@ final class FileSystemTest extends TestCase {
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
-                static function (Event $event): bool {
+                static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
-                        && $event->path === '↔ file.md'
+                        && $event->path === $path
                         && $event->type === FileSystemModifiedType::Created;
                 },
             )
@@ -363,9 +361,9 @@ final class FileSystemTest extends TestCase {
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
-                static function (Event $event): bool {
+                static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
-                        && $event->path === '↔ file.md'
+                        && $event->path === $path
                         && $event->type === FileSystemModifiedType::Updated;
                 },
             )
@@ -407,9 +405,9 @@ final class FileSystemTest extends TestCase {
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
-                static function (Event $event): bool {
+                static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
-                        && $event->path === '↔ file.md'
+                        && $event->path === $path
                         && $event->type === FileSystemModifiedType::Updated;
                 },
             )
@@ -439,89 +437,5 @@ final class FileSystemTest extends TestCase {
 
         self::assertSame($file, $fs->getFile(new FilePath(__FILE__)));
     }
-
-    /**
-     * @param Closure(static): FileSystem                                $fsFactory
-     * @param Closure(static, FileSystem): (DirectoryPath|File|FilePath) $pathFactory
-     */
-    #[DataProvider('dataProviderGetPathname')]
-    public function testGetPathname(string $expected, Closure $fsFactory, Closure $pathFactory): void {
-        $fs     = $fsFactory($this);
-        $path   = $pathFactory($this, $fs);
-        $actual = $fs->getPathname($path);
-
-        self::assertSame($expected, $actual);
-    }
     // </editor-fold>
-
-    // <editor-fold desc="DataProviders">
-    // =========================================================================
-    /**
-     * @return array<string, array{
-     *      string,
-     *      Closure(static): FileSystem,
-     *      Closure(static, FileSystem): (DirectoryPath|File|FilePath),
-     *      }>
-     */
-    public static function dataProviderGetPathname(): array {
-        $fs   = static function (string $input, ?string $output): Closure {
-            return static function (self $test) use ($input, $output): FileSystem {
-                $input      = (new DirectoryPath(self::getTestData()->path($input)))->getNormalizedPath();
-                $output     = $output !== null
-                    ? (new DirectoryPath(self::getTestData()->path($output)))->getNormalizedPath()
-                    : null;
-                $filesystem = $test->getFileSystem($input, $output);
-
-                return $filesystem;
-            };
-        };
-        $file = static function (FilePath $path): Closure {
-            return static function (self $test, FileSystem $fs) use ($path): File {
-                return $fs->getFile($path);
-            };
-        };
-
-        return [
-            '(a, b): in file'          => [
-                '→ a.txt',
-                $fs('a', 'b'),
-                $file(new FilePath('../a/a.txt')),
-            ],
-            '(a, b): out file'         => [
-                '← b.txt',
-                $fs('a', 'b'),
-                $file(new FilePath('../b/b.txt')),
-            ],
-            '(a, b): external file'    => [
-                '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
-                $fs('a', 'b'),
-                $file(new FilePath('../c.txt')),
-            ],
-            '(a, null): in file'       => [
-                '↔ a.txt',
-                $fs('a', null),
-                $file(new FilePath('../a/a.txt')),
-            ],
-            '(a, null): external file' => [
-                '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
-                $fs('a', null),
-                $file(new FilePath('../c.txt')),
-            ],
-            '(a, b): relative path'    => [
-                '→ a.txt',
-                $fs('a', 'b'),
-                static function (): FilePath {
-                    return new FilePath('a.txt');
-                },
-            ],
-            '(a, null): relative path' => [
-                '↔ a.txt',
-                $fs('a', null),
-                static function (): FilePath {
-                    return new FilePath('a.txt');
-                },
-            ],
-        ];
-    }
-    //</editor-fold>
 }

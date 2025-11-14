@@ -61,30 +61,6 @@ class FileSystem {
 
     /**
      * Relative path will be resolved based on {@see self::$input}.
-     *
-     * @return non-empty-string
-     */
-    public function getPathname(DirectoryPath|File|FilePath $path): string {
-        $path = $path instanceof File ? $path->path : $path;
-        $path = $this->input->getPath($path);
-        $name = match (true) {
-            $this->input->isEqual($this->output) && $this->input->isInside($path),
-                => Mark::Inout->value.' '.$this->output->getRelativePath($path),
-            $this->output->isInside($path),
-            $this->output->isEqual($path),
-                => Mark::Output->value.' '.$this->output->getRelativePath($path),
-            $this->input->isInside($path),
-            $this->input->isEqual($path),
-                => Mark::Input->value.' '.$this->input->getRelativePath($path),
-            default
-                => Mark::External->value.' '.$path,
-        };
-
-        return $name;
-    }
-
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
      */
     protected function isFile(FilePath $path): bool {
         $path = $this->input->getPath($path);
@@ -199,7 +175,7 @@ class FileSystem {
         // Event
         $this->dispatcher->notify(
             new FileSystemModified(
-                $this->getPathname($file),
+                $file->path,
                 $exists
                     ? FileSystemModifiedType::Updated
                     : FileSystemModifiedType::Created,

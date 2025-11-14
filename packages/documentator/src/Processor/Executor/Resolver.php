@@ -147,12 +147,13 @@ class Resolver implements DependencyResolver {
             $dependency instanceof Dependency => $dependency->getPath($this->fs),
             default                           => $dependency,
         };
+        $path = match (true) {
+            $path instanceof File => $path->path,
+            default               => $path,
+        };
 
         $this->dispatcher->notify(
-            new Event(
-                $this->fs->getPathname($path),
-                $result,
-            ),
+            new Event($path, $result),
         );
     }
 }

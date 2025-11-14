@@ -2,12 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
+
 readonly class FileStarted implements Event {
     public function __construct(
-        /**
-         * @var non-empty-string
-         */
-        public string $path,
+        public FilePath $path,
     ) {
         // empty
     }

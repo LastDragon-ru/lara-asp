@@ -6,17 +6,15 @@ use ArrayIterator;
 use Closure;
 use Exception;
 use IteratorAggregate;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
-use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -305,16 +303,8 @@ final class ResolverTest extends TestCase {
     }
 
     public function testNotify(): void {
+        $filepath   = new FilePath('/path/to/file');
         $filesystem = Mockery::mock(FileSystem::class);
-        $filesystem
-            ->shouldReceive('getPathname')
-            ->twice()
-            ->andReturnUsing(
-                static function (DirectoryPath|File|FilePath $path): string {
-                    return (string) $path;
-                },
-            );
-
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -322,7 +312,7 @@ final class ResolverTest extends TestCase {
             ->with(
                 Mockery::isEqual(
                     new DependencyResolved(
-                        'path/to/dependency',
+                        new FilePath('path/to/dependency'),
                         DependencyResolvedResult::Success,
                     ),
                 ),
@@ -334,29 +324,21 @@ final class ResolverTest extends TestCase {
             ->with(
                 Mockery::isEqual(
                     new DependencyResolved(
-                        'path/to/file',
+                        $filepath,
                         DependencyResolvedResult::Missed,
                     ),
                 ),
             )
             ->andReturn();
 
-        $resolver = Mockery::mock(Resolver::class, new WithProperties(), PropertiesMock::class);
+        $callback = static function (File $file): void {
+            // empty
+        };
+        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $callback, $callback]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
-        $resolver
-            ->shouldUseProperty('fs')
-            ->value($filesystem);
-        $resolver
-            ->shouldUseProperty('dispatcher')
-            ->value($dispatcher);
 
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('__toString')
-            ->once()
-            ->andReturn(new FilePath('path/to/file'));
-
+        $file       = Mockery::mock(File::class, [$filepath, Mockery::mock(Caster::class)]);
         $dependency = Mockery::mock(Dependency::class);
         $dependency
             ->shouldReceive('getPath')

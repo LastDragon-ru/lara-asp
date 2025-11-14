@@ -175,10 +175,6 @@ final class TaskTest extends TestCase {
         $actual     = '';
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getPathname')
-            ->once()
-            ->andReturn((string) $path);
-        $filesystem
             ->shouldReceive('write')
             ->once()
             ->andReturnUsing(static function (mixed $path, string $content) use ($file, &$actual): File {

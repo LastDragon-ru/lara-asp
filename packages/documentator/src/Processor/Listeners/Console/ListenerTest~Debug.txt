@@ -3,12 +3,12 @@
 <fg=yellow>↔ c.txt</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
 <fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> <fg=yellow>↔ c.txt</> <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=gray>NULL</>
-<fg=green>↔ ../../../README.md</> <fg=gray>...................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=gray>SKIP</>
+<fg=green>! /README.md</> <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=gray>SKIP</>
 ↔ b/b/bb.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=green>DONE</>
 <fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> ↔ b/a/ba.txt <fg=gray>....................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> ↔ c.txt <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
-<fg=gray>·</> <fg=gray>·</> <fg=green>↔ ../../../README.md</> <fg=gray>............................................</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=gray>NULL</>
+<fg=gray>·</> <fg=gray>·</> <fg=green>! /README.md</> <fg=gray>....................................................</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=gray>NULL</>
 ↔ c.html <fg=gray>...............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>SKIP</>
 ↔ a/excluded.txt <fg=gray>.......................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>SKIP</>
 ↔ a/a.txt <fg=gray>..............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
