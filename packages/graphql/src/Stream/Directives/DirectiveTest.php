@@ -472,7 +472,7 @@ final class DirectiveTest extends TestCase {
 
     /**
      * @param Closure(AstManipulator): (ObjectFieldSource|InterfaceFieldSource) $sourceFactory
-     * @param Closure():mixed|array{class-string, string}|null                  $resolver
+     * @param Closure():mixed|array{string, string}|null                        $resolver
      */
     #[DataProvider('dataProviderGetBuilderInfo')]
     public function testGetBuilderInfo(

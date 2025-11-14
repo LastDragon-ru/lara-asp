@@ -10,7 +10,6 @@ use Nette\Neon\Neon;
 
 use function array_filter;
 use function array_keys;
-use function array_values;
 use function file_get_contents;
 use function file_put_contents;
 use function getcwd;
@@ -105,6 +104,7 @@ class Extension {
         }
 
         // Remove
+        $services = [];
         $disabled = [
             'Larastan\\Larastan\\ReturnTypes\\ApplicationMakeDynamicReturnTypeExtension'            => true,
             'Larastan\\Larastan\\ReturnTypes\\AppMakeDynamicReturnTypeExtension'                    => true,
@@ -119,14 +119,15 @@ class Extension {
                 : '';
 
             if (isset($disabled[$class])) {
-                unset($extension['services'][$index]);
-
                 $disabled[$class] = false;
+            } elseif (is_string($index)) {
+                $services[$index] = $service;
+            } else {
+                $services[] = $service;
             }
         }
 
-        // Reindex
-        $extension['services'] = array_values($extension['services']);
+        $extension['services'] = $services;
 
         // Unused?
         $unused = array_keys(array_filter($disabled));

@@ -36,7 +36,6 @@ final class ResourceTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        // @phpstan-ignore-next-line expr.resultUnused
         new class($value) extends Resource {
             // empty
         };

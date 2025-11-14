@@ -21,6 +21,8 @@ parameters:
     checkBenevolentUnionTypes: true
     checkUninitializedProperties: true
     noEnvCallsOutsideOfConfig: true
+    phpunit:
+        checkDataProviderData: false
 
     # Package
     classMustBeFinal:
