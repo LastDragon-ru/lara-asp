@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
@@ -16,11 +15,10 @@ use stdClass;
 #[CoversClass(File::class)]
 final class FileTest extends TestCase {
     public function testAs(): void {
-        $caster  = Mockery::mock(Caster::class);
-        $adapter = Mockery::mock(Adapter::class);
-        $value   = new stdClass();
-        $path    = (new FilePath(__FILE__))->getNormalizedPath();
-        $file    = new class($adapter, $path, $caster) extends File {
+        $caster = Mockery::mock(Caster::class);
+        $value  = new stdClass();
+        $path   = (new FilePath(__FILE__))->getNormalizedPath();
+        $file   = new class($path, $caster) extends File {
             // empty
         };
 

@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
@@ -20,11 +21,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 
-use function array_map;
 use function array_merge;
+use function array_unique;
 use function array_values;
+use function is_a;
 
 /**
  * Perform one or more task on the file(s).
@@ -50,29 +51,21 @@ class Processor {
 
     /**
      * @internal
-     * @return iterable<array-key, Task>
+     * @return iterable<array-key, class-string<Task>>
      */
     public function getTasks(): iterable {
-        return $this->tasks->get();
+        return $this->tasks;
     }
 
     /**
-     * The first added tasks have a bigger priority.
+     * The first added tasks have a bigger priority unless specify.
      *
      * @template T of Task
      *
      * @param T|class-string<T> $task
      */
     public function addTask(Task|string $task, ?int $priority = null): static {
-        $extensions = $task::getExtensions();
-        $extensions = array_map(
-            static function (Hook|string $extension): string {
-                return $extension instanceof Hook ? $extension->value : $extension;
-            },
-            $extensions,
-        );
-
-        $this->tasks->add($task, $extensions, $priority);
+        $this->tasks->add($task, $priority);
 
         return $this;
     }
@@ -138,12 +131,10 @@ class Processor {
             $input instanceof FilePath => 0,
             default                    => null,
         };
-        $extensions = match (true) {
-            $input instanceof FilePath => [$input->getName()],
-            !$this->tasks->has('*')    => array_map(static fn ($e) => "**/*.{$e}", $this->tasks->getTags()),
-            default                    => [],
+        $include = match (true) {
+            $input instanceof FilePath => [GlobMatcher::escape($input->getName())],
+            default                    => $this->include(),
         };
-        $include   = $extensions;
         $exclude   = $this->exclude;
         $directory = $input->getDirectoryPath('.');
 
@@ -192,5 +183,23 @@ class Processor {
         $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
 
         $executor->run();
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function include(): array {
+        $include = [];
+
+        foreach ($this->tasks as $task) {
+            if (is_a($task, FileTask::class, true)) {
+                foreach ($task::getExtensions() as $extension) {
+                    $extension = '**/*'.($extension !== '*' ? ".{$extension}" : '');
+                    $include[] = $extension;
+                }
+            }
+        }
+
+        return array_values(array_unique($include));
     }
 }

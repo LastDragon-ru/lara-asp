@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -53,7 +53,7 @@ trait WithProcessor {
         return $filesystem;
     }
 
-    protected function runProcessorTask(Task $task, FileSystem $fs, File $file): void {
+    protected function runProcessorFileTask(FileTask $task, FileSystem $fs, File $file): void {
         $task($this->getDependencyResolver($fs), $file);
     }
 

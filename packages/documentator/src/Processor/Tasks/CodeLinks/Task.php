@@ -12,7 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task as TaskContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
@@ -52,7 +52,7 @@ use function str_starts_with;
  * * `\App\Class::$property`
  * * `\App\Class::Constant`
  */
-class Task implements TaskContract {
+class Task implements FileTask {
     protected const string BlockMarker       = 'code-links';
     protected const string DeprecationMarker = '💀';
 

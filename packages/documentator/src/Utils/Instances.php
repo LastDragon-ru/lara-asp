@@ -24,7 +24,7 @@ use const PHP_INT_MIN;
  *
  * @internal
  */
-abstract class Instances {
+class Instances {
     /**
      * @var array<class-string<TInstance>, int>
      */
@@ -48,6 +48,7 @@ abstract class Instances {
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly SortOrder $order,
+        protected readonly bool $cacheable = true,
     ) {
         // empty
     }
@@ -141,7 +142,7 @@ abstract class Instances {
         $class                    = is_string($instance) ? $instance : $instance::class;
         $this->classes[$class]    = array_unique(array_merge($this->classes[$class] ?? [], $tags));
         $this->resolved[$class]   = is_object($instance) ? $instance : null;
-        $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->getPriority();
+        $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->priority();
 
         foreach ($tags as $tag) {
             $this->tags[$tag] = array_unique(array_merge($this->tags[$tag] ?? [], [$class]));
@@ -181,13 +182,22 @@ abstract class Instances {
      * @return TInstance
      */
     protected function resolve(string $class): object {
-        $this->resolved[$class] ??= $this->container->getInstance()->make($class);
+        if (isset($this->resolved[$class])) {
+            return $this->resolved[$class];
+        }
 
-        return $this->resolved[$class];
+        $instance = $this->container->getInstance()->make($class);
+
+        if ($this->cacheable) {
+            $this->resolved[$class] = $instance;
+        }
+
+        return $instance;
     }
 
-    private function getPriority(): int {
-        $priority = max($this->priorities + [0]);
+    private function priority(): int {
+        $priority = array_filter($this->priorities, static fn ($p) => $p < PHP_INT_MAX) + [0];
+        $priority = max($priority);
         $priority = min($priority, PHP_INT_MAX - 1);
         $priority = max($priority, PHP_INT_MIN);
 

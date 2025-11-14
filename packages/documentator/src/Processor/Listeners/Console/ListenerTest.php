@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 use LastDragon_ru\LaraASP\Documentator\Package\RawOutputFormatter;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -326,7 +326,7 @@ final class ListenerTest extends TestCase {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ListenerTest__TaskA implements Task {
+class ListenerTest__TaskA implements FileTask {
     public function __construct() {
         // empty
     }
@@ -349,7 +349,7 @@ class ListenerTest__TaskA implements Task {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
-class ListenerTest__TaskB implements Task {
+class ListenerTest__TaskB implements FileTask {
     public function __construct() {
         // empty
     }

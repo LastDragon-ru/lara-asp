@@ -4,9 +4,14 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinished;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinishedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
@@ -14,13 +19,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDe
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileHook;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileReal;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Hook;
 
 use function array_values;
 use function end;
@@ -29,6 +31,7 @@ use function end;
  * @internal
  */
 class Executor {
+    private ExecutorState     $state;
     private readonly Resolver $resolver;
 
     /**
@@ -48,31 +51,54 @@ class Executor {
         private readonly Iterator $iterator,
         private readonly Globs $exclude,
     ) {
+        $this->state    = ExecutorState::Created;
         $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 
     public function run(): void {
-        // Before?
-        $before = $this->fs->getFile(Hook::Before);
+        $file        = null;
+        $this->state = ExecutorState::Preparation;
 
-        if (!$this->isSkipped($before)) {
-            $this->file($before);
+        foreach ($this->iterator as $item) {
+            if ($file === null) {
+                $this->hook(Hook::BeforeProcessing, $item);
+
+                $this->state = ExecutorState::Iteration;
+            }
+
+            $this->file($item);
+
+            $file = $item;
         }
 
-        // Files
-        foreach ($this->iterator as $file) {
-            $this->file($file);
-        }
+        if ($file !== null) {
+            $this->state = ExecutorState::Finished;
 
-        // After
-        $after = $this->fs->getFile(Hook::After);
-
-        if (!$this->isSkipped($after)) {
-            $this->file($after);
+            $this->hook(Hook::AfterProcessing, $file);
         }
     }
 
-    private function file(File $file): void {
+    protected function hook(Hook $hook, File $file): void {
+        // Tasks?
+        if ($hook === Hook::File || !$this->tasks->has($hook)) {
+            return;
+        }
+
+        // Run
+        $this->dispatcher->notify(new HookStarted($hook, $this->fs->getPathname($file)));
+
+        try {
+            $this->tasks($this->tasks->get($hook), $hook, $file);
+        } catch (Exception $exception) {
+            $this->dispatcher->notify(new HookFinished(HookFinishedResult::Failed));
+
+            throw $exception;
+        }
+
+        $this->dispatcher->notify(new HookFinished(HookFinishedResult::Success));
+    }
+
+    protected function file(File $file): void {
         // Processed?
         $path = (string) $file;
 
@@ -107,19 +133,10 @@ class Executor {
         }
 
         // Process
-        $tasks              = $this->tasks->get(...$this->extensions($file));
         $this->stack[$path] = $file;
 
         try {
-            $this->fs->begin();
-
-            foreach ($tasks as $task) {
-                $this->task($file, $task);
-
-                $this->resolver->check();
-            }
-
-            $this->fs->commit();
+            $this->tasks($this->tasks->get($file), Hook::File, $file);
         } catch (Exception $exception) {
             $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
@@ -135,18 +152,39 @@ class Executor {
         unset($this->stack[$path]);
     }
 
-    private function task(File $file, Task $task): void {
+    /**
+     * @param iterable<int, Task> $tasks
+     */
+    protected function tasks(iterable $tasks, Hook $hook, File $file): void {
+        $this->fs->begin();
+
+        foreach ($tasks as $task) {
+            $this->task($task, $hook, $file);
+
+            $this->resolver->check();
+        }
+
+        $this->fs->commit();
+    }
+
+    protected function task(Task $task, Hook $hook, File $file): void {
         $this->dispatcher->notify(new TaskStarted($task::class));
 
         try {
             try {
-                $task($this->resolver, $file);
+                if ($task instanceof FileTask) {
+                    $task($this->resolver, $file);
+                } elseif ($task instanceof HookTask) {
+                    $task($this->resolver, $file, $hook);
+                } else {
+                    throw new TaskNotInvokable($task, $hook, $file);
+                }
 
                 $this->resolver->check();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
-                throw new TaskFailed($file, $task, $exception);
+                throw new TaskFailed($task, $hook, $file, $exception);
             }
 
             $this->dispatcher->notify(new TaskFinished(TaskFinishedResult::Success));
@@ -157,30 +195,30 @@ class Executor {
         }
     }
 
-    private function onResolve(Directory|File $resolved): void {
-        // Skipped?
-        if ($resolved instanceof File && $this->isSkipped($resolved)) {
-            return;
-        }
+    protected function queue(File $file): void {
+        $this->iterator->push($file->getPath());
+    }
 
-        // The `:before` hook cannot use files that will be processed because
-        // the hook should be run before any of the tasks.
-        $file         = end($this->stack);
-        $isBeforeHook = $file instanceof FileHook && $file->hook === Hook::Before;
-
-        if ($isBeforeHook && $resolved instanceof File) {
+    protected function onResolve(File $resolved): void {
+        // Possible?
+        if ($this->state->is(ExecutorState::Created)) {
             throw new DependencyUnavailable();
         }
 
+        // Skipped?
+        if ($this->isSkipped($resolved)) {
+            return;
+        }
+
         // Process
-        if (!$isBeforeHook && $file !== $resolved && $resolved instanceof FileReal) {
+        if (!$this->state->is(ExecutorState::Preparation) && end($this->stack) !== $resolved) {
             $this->file($resolved);
         }
     }
 
-    private function onQueue(File $resolved): void {
-        // Hook?
-        if ($resolved instanceof FileHook) {
+    protected function onQueue(File $resolved): void {
+        // Possible?
+        if ($this->state->is(ExecutorState::Finished)) {
             throw new DependencyUnavailable();
         }
 
@@ -190,12 +228,12 @@ class Executor {
         }
 
         // Queue
-        $this->iterator->push($resolved->getPath());
+        $this->queue($resolved);
     }
 
-    private function isSkipped(File $file): bool {
+    protected function isSkipped(File $file): bool {
         // Tasks?
-        if (!$this->tasks->has(...$this->extensions($file))) {
+        if (!$this->tasks->has($file)) {
             return true;
         }
 
@@ -214,24 +252,5 @@ class Executor {
 
         // Return
         return false;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function extensions(File $file): array {
-        $extensions = [];
-        $extension  = $file->getExtension();
-
-        if ($extension !== null) {
-            $extensions[] = $extension;
-        }
-
-        if ($file instanceof FileReal) {
-            $extensions[] = '*';
-            $extensions[] = Hook::Each->value;
-        }
-
-        return $extensions;
     }
 }
