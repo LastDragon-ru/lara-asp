@@ -11,12 +11,12 @@ use SplFileInfo;
 /**
  * @internal
  */
-#[CoversClass(Globs::class)]
-final class GlobsTest extends TestCase {
+#[CoversClass(Glob::class)]
+final class GlobTest extends TestCase {
     public function testMatch(): void {
         // Prepare
         $root = (new DirectoryPath(__DIR__))->getNormalizedPath();
-        $glob = new Globs($root, ['*.txt', '*.md', '**/*.tmp']);
+        $glob = new Glob($root, ['*.txt', '*.md', '**/*.tmp']);
 
         // Strings
         self::assertFalse($glob->match((string) $root->getFilePath('/file.txt')));

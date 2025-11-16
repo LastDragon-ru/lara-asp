@@ -1,12 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Exception;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
+use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
@@ -23,6 +24,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
 
 use function array_values;
 use function end;
@@ -31,7 +34,7 @@ use function end;
  * @internal
  */
 class Executor {
-    private ExecutorState     $state;
+    private State             $state;
     private readonly Iterator $iterator;
     private readonly Resolver $resolver;
 
@@ -55,20 +58,20 @@ class Executor {
         iterable $files,
         private readonly Matcher $skip,
     ) {
-        $this->state    = ExecutorState::Created;
+        $this->state    = State::Created;
         $this->iterator = new Iterator($this->fs, $files);
         $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 
     public function run(): void {
         $file        = null;
-        $this->state = ExecutorState::Preparation;
+        $this->state = State::Preparation;
 
         foreach ($this->iterator as $item) {
             if ($file === null) {
                 $this->hook(Hook::BeforeProcessing, $item);
 
-                $this->state = ExecutorState::Iteration;
+                $this->state = State::Iteration;
             }
 
             $this->file($item);
@@ -77,7 +80,7 @@ class Executor {
         }
 
         if ($file !== null) {
-            $this->state = ExecutorState::Finished;
+            $this->state = State::Finished;
 
             $this->hook(Hook::AfterProcessing, $file);
         }
@@ -206,7 +209,7 @@ class Executor {
 
     protected function onResolve(File $resolved): void {
         // Possible?
-        if ($this->state->is(ExecutorState::Created)) {
+        if ($this->state->is(State::Created)) {
             throw new DependencyUnavailable();
         }
 
@@ -216,14 +219,14 @@ class Executor {
         }
 
         // Process
-        if (!$this->state->is(ExecutorState::Preparation) && end($this->stack) !== $resolved) {
+        if (!$this->state->is(State::Preparation) && end($this->stack) !== $resolved) {
             $this->file($resolved);
         }
     }
 
     protected function onQueue(File $resolved): void {
         // Possible?
-        if ($this->state->is(ExecutorState::Finished)) {
+        if ($this->state->is(State::Finished)) {
             throw new DependencyUnavailable();
         }
 

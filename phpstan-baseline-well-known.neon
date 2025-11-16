@@ -65,9 +65,9 @@ parameters:
             paths:
                 - packages/testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
         -
-            message: "#^Call to protected method (iterate|notify)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Resolver\\.$#"
+            message: "#^Call to protected method (iterate|notify)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Executor\\\\Resolver\\.$#"
             paths:
-                - packages/documentator/src/Processor/ResolverTest.php
+                - packages/documentator/src/Processor/Executor/ResolverTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149

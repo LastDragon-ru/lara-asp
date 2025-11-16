@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 
 readonly class HookStarted implements Event {
     public function __construct(

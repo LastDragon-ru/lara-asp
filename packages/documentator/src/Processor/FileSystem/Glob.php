@@ -18,7 +18,7 @@ use function implode;
 /**
  * @internal
  */
-readonly class Globs implements Matcher {
+readonly class Glob implements Matcher {
     private ?Regex $regex;
 
     /**
