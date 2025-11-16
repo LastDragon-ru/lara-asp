@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Exception;
+use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
@@ -22,7 +23,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
 
 use function array_values;
 use function end;
@@ -32,6 +32,7 @@ use function end;
  */
 class Executor {
     private ExecutorState     $state;
+    private readonly Iterator $iterator;
     private readonly Resolver $resolver;
 
     /**
@@ -44,14 +45,18 @@ class Executor {
      */
     private array $stack = [];
 
+    /**
+     * @param iterable<mixed, File> $files
+     */
     public function __construct(
         private readonly Dispatcher $dispatcher,
         private readonly Tasks $tasks,
         private readonly FileSystem $fs,
-        private readonly Iterator $iterator,
-        private readonly Globs $exclude,
+        iterable $files,
+        private readonly Matcher $skip,
     ) {
         $this->state    = ExecutorState::Created;
+        $this->iterator = new Iterator($this->fs, $files);
         $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 
@@ -244,7 +249,7 @@ class Executor {
 
         // Excluded?
         $path     = $this->fs->input->getRelativePath($file->getPath());
-        $excluded = $this->exclude->isMatch($path);
+        $excluded = $this->skip->match($path);
 
         if ($excluded) {
             return true;

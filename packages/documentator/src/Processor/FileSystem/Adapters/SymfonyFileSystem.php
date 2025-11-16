@@ -94,16 +94,17 @@ class SymfonyFileSystem implements Adapter {
             $finder = $finder->depth("<= {$depth}");
         }
 
-        $include = new Globs($include);
-
-        if (!$include->isEmpty()) {
-            $finder = $finder->filter($include->isMatch(...));
+        if ($include !== []) {
+            $finder = $finder->filter(
+                (new Globs($directory, $include))->match(...),
+            );
         }
 
-        $exclude = new Globs($exclude);
-
-        if (!$exclude->isEmpty()) {
-            $finder = $finder->filter($exclude->isNotMatch(...), true);
+        if ($exclude !== []) {
+            $finder = $finder->filter(
+                (new Globs($directory, $exclude))->mismatch(...),
+                true,
+            );
         }
 
         return $finder;

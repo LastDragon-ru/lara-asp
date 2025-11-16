@@ -24,9 +24,9 @@ class Iterator implements IteratorAggregate {
     public function __construct(
         private readonly FileSystem $fs,
         /**
-         * @var Traversable<mixed, File>
+         * @var iterable<mixed, File>
          */
-        private readonly Traversable $iterator,
+        private readonly iterable $iterator,
     ) {
         // empty
     }

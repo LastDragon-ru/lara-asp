@@ -4,6 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
+use IteratorAggregate;
+use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
@@ -19,8 +21,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
+use Override;
+use Traversable;
 
 use function array_merge;
 use function array_unique;
@@ -127,14 +132,6 @@ class Processor {
 
     public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
         // Prepare
-        $depth = match (true) {
-            $input instanceof FilePath => 0,
-            default                    => null,
-        };
-        $include = match (true) {
-            $input instanceof FilePath => [GlobMatcher::escape($input->getName())],
-            default                    => $this->include(),
-        };
         $exclude   = $this->exclude;
         $directory = $input->getDirectoryPath('.');
 
@@ -152,7 +149,28 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $this->execute($directory, $output, $include, $exclude, $depth);
+                $fs    = new FileSystem($this->dispatcher, $this->caster, $this->adapter, $directory, $output);
+                $files = match (true) {
+                    default                    => $fs->getFilesIterator($directory, $this->include(), $exclude),
+                    $input instanceof FilePath => new readonly class($fs, $input) implements IteratorAggregate {
+                        public function __construct(
+                            private FileSystem $fs,
+                            private FilePath $path,
+                        ) {
+                            // empty
+                        }
+
+                        /**
+                         * @return Traversable<int, File>
+                         */
+                        #[Override]
+                        public function getIterator(): Traversable {
+                            yield $this->fs->getFile($this->path);
+                        }
+                    },
+                };
+
+                $this->execute($fs, $files, new Globs($directory, $exclude));
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -168,19 +186,10 @@ class Processor {
     }
 
     /**
-     * @param list<string> $include
-     * @param list<string> $exclude
+     * @param iterable<mixed, File> $files
      */
-    protected function execute(
-        DirectoryPath $input,
-        DirectoryPath $output,
-        array $include,
-        array $exclude,
-        ?int $depth,
-    ): void {
-        $filesystem = new FileSystem($this->dispatcher, $this->caster, $this->adapter, $input, $output);
-        $iterator   = new Iterator($filesystem, $filesystem->getFilesIterator($input, $include, $exclude, $depth));
-        $executor   = new Executor($this->dispatcher, $this->tasks, $filesystem, $iterator, new Globs($exclude));
+    protected function execute(FileSystem $fs, iterable $files, Matcher $exclude): void {
+        $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $exclude);
 
         $executor->run();
     }
