@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use Exception;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\ContentCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown\MarkdownCast;
@@ -21,36 +20,37 @@ use RuntimeException;
 use UnexpectedValueException;
 use WeakMap;
 
-use function class_exists;
-use function class_implements;
+use function interface_exists;
+use function is_a;
 use function sprintf;
 
+/**
+ * @internal
+ */
 class Caster {
     /**
      * @var WeakMap<File, array<class-string<object>, object>>
      */
     private WeakMap              $files;
-    private readonly Casts       $casts;
     private readonly ContentCast $content;
 
     public function __construct(
-        protected readonly ContainerResolver $container,
-        protected readonly Adapter $adapter,
+        private readonly Adapter $adapter,
+        protected readonly Casts $casts,
     ) {
         $this->files   = new WeakMap();
-        $this->casts   = new Casts($container);
         $this->content = new ContentCast($this->adapter);
 
         $this->addBuiltInCasts();
     }
 
     protected function addBuiltInCasts(): void {
-        $this->addCast(ComposerPackageCast::class);
-        $this->addCast(ClassMarkdownCast::class);
-        $this->addCast(ClassCommentCast::class);
-        $this->addCast(ClassObjectCast::class);
-        $this->addCast(SerializableCast::class);
-        $this->addCast(MarkdownCast::class);
+        $this->casts->add(ComposerPackageCast::class);
+        $this->casts->add(ClassMarkdownCast::class);
+        $this->casts->add(ClassCommentCast::class);
+        $this->casts->add(ClassObjectCast::class);
+        $this->casts->add(SerializableCast::class);
+        $this->casts->add(MarkdownCast::class);
     }
 
     /**
@@ -63,7 +63,7 @@ class Caster {
     public function castTo(File $file, string $class): mixed {
         if (!isset($this->files[$file][$class])) {
             try {
-                $cast  = $this->getCast($file, $class);
+                $cast  = $this->cast($file, $class);
                 $value = $cast->castTo($file, $class);
 
                 if ($value instanceof $class) {
@@ -97,7 +97,7 @@ class Caster {
 
         // Cast
         try {
-            $cast   = $this->getCast($file, $value::class);
+            $cast   = $this->cast($file, $value::class);
             $string = $cast->castFrom($file, $value);
 
             if ($string === null) {
@@ -127,69 +127,35 @@ class Caster {
     }
 
     /**
-     * @template V of object
-     * @template R of Cast<V>
-     *
-     * @param R|class-string<R> $cast
-     */
-    public function addCast(Cast|string $cast, ?int $priority = null): void {
-        $tags       = [];
-        $class      = $cast::getClass();
-        $extensions = $cast::getExtensions();
-
-        foreach ($extensions as $extension) {
-            $tags[] = "{$class}:{$extension}";
-        }
-
-        $this->casts->add($cast, $tags, $priority);
-    }
-
-    /**
-     * @template V of object
-     * @template R of Cast<V>
-     *
-     * @param R|class-string<R> $cast
-     */
-    public function removeCast(Cast|string $cast): void {
-        $this->casts->remove($cast);
-    }
-
-    /**
      * @template T of object
      *
      * @param class-string<T> $class
      *
      * @return Cast<T>
      */
-    protected function getCast(File $file, string $class): Cast {
-        $cast = match (true) {
-            $class === Content::class => $this->content,
-            default                   => $this->casts->first(...$this->getTags($file, $class)),
-        };
+    private function cast(File $file, string $class): Cast {
+        // Content?
+        if ($class === Content::class) {
+            return $this->content; // @phpstan-ignore return.type (fixme(documentator): Caster)
+        }
+
+        // Nope
+        $cast  = null;
+        $casts = $this->casts->get($file);
+
+        foreach ($casts as $item) {
+            $expected = $item::getClass();
+
+            if ($expected === $class || (interface_exists($expected) && is_a($class, $expected, true))) {
+                $cast = $item;
+                break;
+            }
+        }
 
         if (!($cast instanceof Cast)) {
             throw new RuntimeException('Cast not found.');
         }
 
-        return $cast; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
-    }
-
-    /**
-     * @param class-string $class
-     *
-     * @return list<string>
-     */
-    protected function getTags(File $file, string $class): array {
-        $tags       = [];
-        $extensions = [$file->getExtension(), '*'];
-        $implements = [$class, ...(class_exists($class) ? (array) class_implements($class) : [])];
-
-        foreach ($implements as $interface) {
-            foreach ($extensions as $extension) {
-                $tags[] = "{$interface}:{$extension}";
-            }
-        }
-
-        return $tags;
+        return $cast; // @phpstan-ignore return.type (fixme(documentator): Caster)
     }
 }

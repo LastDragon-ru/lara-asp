@@ -292,7 +292,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('write')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -330,7 +330,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('write')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -376,7 +376,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -420,7 +420,7 @@ final class FileSystemTest extends TestCase {
             ->andReturns($content);
 
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -484,7 +484,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('write')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
@@ -532,7 +532,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('write')
             ->never();
 
-        $filesystem = Mockery::mock(FileSystem::class, [$dispatcher, $caster, $adapter, $input, $input]);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem

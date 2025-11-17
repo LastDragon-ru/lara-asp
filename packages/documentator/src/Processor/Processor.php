@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
@@ -39,7 +40,7 @@ use function is_a;
  */
 class Processor {
     private readonly Tasks        $tasks;
-    private readonly Caster       $caster;
+    private readonly Casts        $casts;
     protected readonly Dispatcher $dispatcher;
 
     /**
@@ -52,7 +53,7 @@ class Processor {
         protected readonly Adapter $adapter,
     ) {
         $this->tasks      = new Tasks($container);
-        $this->caster     = new Caster($container, $this->adapter);
+        $this->casts      = new Casts($container);
         $this->dispatcher = new Dispatcher();
     }
 
@@ -97,7 +98,7 @@ class Processor {
      * @param R|class-string<R> $cast
      */
     public function addCast(Cast|string $cast, ?int $priority = null): static {
-        $this->caster->addCast($cast, $priority);
+        $this->casts->add($cast, $priority);
 
         return $this;
     }
@@ -109,7 +110,7 @@ class Processor {
      * @param R|class-string<R> $cast
      */
     public function removeCast(Cast|string $cast): static {
-        $this->caster->removeCast($cast);
+        $this->casts->remove($cast);
 
         return $this;
     }
@@ -151,8 +152,9 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted());
 
             try {
-                $fs    = new FileSystem($this->dispatcher, $this->caster, $this->adapter, $directory, $output);
-                $files = match (true) {
+                $caster = new Caster($this->adapter, $this->casts);
+                $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $directory, $output);
+                $files  = match (true) {
                     default                    => $fs->getFilesIterator($directory, $this->include(), $exclude),
                     $input instanceof FilePath => new readonly class($fs, $input) implements IteratorAggregate {
                         public function __construct(
