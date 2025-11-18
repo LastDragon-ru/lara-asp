@@ -35,6 +35,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   * [`FileTask`][code-links/42d900d10c3c5f5c]
   * [`HookTask`][code-links/b3d5664fcbd8bbf1]
 
+* [ ] The [`Processor`][code-links/e7daa686f09d9cc3] has fewer methods to simplify the API.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -108,6 +110,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/b3d5664fcbd8bbf1]: src/Processor/Contracts/Tasks/HookTask.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask"
+
+[code-links/e7daa686f09d9cc3]: src/Processor/Processor.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Processor"
 
 [code-links/6312f45bb1f04802]: src/Processor/Tasks/Preprocess/Contracts/Instruction.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction"

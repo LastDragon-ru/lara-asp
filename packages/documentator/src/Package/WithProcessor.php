@@ -3,16 +3,16 @@
 namespace LastDragon_ru\LaraASP\Documentator\Package;
 
 use Illuminate\Contracts\Foundation\Application;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Resolver;
 use Override;
 use Symfony\Component\Finder\Finder;
 
@@ -46,9 +46,9 @@ trait WithProcessor {
                     ->sortByName(true);
             }
         };
-        $caster     = new Caster($this->app()->make(ContainerResolver::class), $adapter);
+        $caster     = new Caster($adapter, $this->app()->make(Casts::class));
         $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($dispatcher, $caster, $adapter, $input, $output);
+        $filesystem = new FileSystem($adapter, $dispatcher, $caster, $input, $output);
 
         return $filesystem;
     }

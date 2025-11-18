@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 /**
  * @internal
  */
-enum ExecutorState {
+enum State {
     case Preparation;
     case Iteration;
     case Finished;

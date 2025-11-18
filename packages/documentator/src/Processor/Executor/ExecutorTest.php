@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
@@ -19,7 +19,7 @@ final class ExecutorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderOnResolve')]
-    public function testOnResolve(?bool $expected, ExecutorState $state): void {
+    public function testOnResolve(?bool $expected, State $state): void {
         $file     = Mockery::mock(File::class);
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
@@ -51,7 +51,7 @@ final class ExecutorTest extends TestCase {
     }
 
     #[DataProvider('dataProviderOnQueue')]
-    public function testOnQueue(bool $expected, ExecutorState $state): void {
+    public function testOnQueue(bool $expected, State $state): void {
         $file     = Mockery::mock(File::class);
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
@@ -81,26 +81,26 @@ final class ExecutorTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{?bool, ExecutorState}>
+     * @return array<string, array{?bool, State}>
      */
     public static function dataProviderOnResolve(): array {
         return [
-            ExecutorState::Preparation->name => [null, ExecutorState::Preparation],
-            ExecutorState::Iteration->name   => [true, ExecutorState::Iteration],
-            ExecutorState::Finished->name    => [true, ExecutorState::Finished],
-            ExecutorState::Created->name     => [false, ExecutorState::Created],
+            State::Preparation->name => [null, State::Preparation],
+            State::Iteration->name   => [true, State::Iteration],
+            State::Finished->name    => [true, State::Finished],
+            State::Created->name     => [false, State::Created],
         ];
     }
 
     /**
-     * @return array<string, array{bool, ExecutorState}>
+     * @return array<string, array{bool, State}>
      */
     public static function dataProviderOnQueue(): array {
         return [
-            ExecutorState::Preparation->name => [true, ExecutorState::Preparation],
-            ExecutorState::Iteration->name   => [true, ExecutorState::Iteration],
-            ExecutorState::Finished->name    => [false, ExecutorState::Finished],
-            ExecutorState::Created->name     => [true, ExecutorState::Created],
+            State::Preparation->name => [true, State::Preparation],
+            State::Iteration->name   => [true, State::Iteration],
+            State::Finished->name    => [false, State::Finished],
+            State::Created->name     => [true, State::Created],
         ];
     }
     // </editor-fold>

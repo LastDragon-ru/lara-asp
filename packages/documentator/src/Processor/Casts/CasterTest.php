@@ -49,16 +49,17 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn($bCast);
 
+        $casts = new Casts($resolver);
+        $casts->add($aCast, 100);
+        $casts->add($bCast::class, 200);
+
         $adapter = Mockery::mock(Adapter::class);
-        $caster  = new class($resolver, $adapter) extends Caster {
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
                 // empty
             }
         };
-
-        $caster->addCast($aCast, 100);
-        $caster->addCast($bCast::class, 200);
 
         // Wildcard
         $aFile = Mockery::mock(File::class);
@@ -104,15 +105,16 @@ final class CasterTest extends TestCase {
             ->andReturn($value);
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $casts     = new Casts($container);
+        $casts->add($cast);
+
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
                 // empty
             }
         };
-
-        $caster->addCast($cast);
 
         // Test
         $file = Mockery::mock(File::class);
@@ -148,15 +150,16 @@ final class CasterTest extends TestCase {
             ->andReturn('extension');
 
         $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $casts     = new Casts($container);
+        $casts->add($cast);
+
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
                 // empty
             }
         };
-
-        $caster->addCast($cast);
 
         // Test
         $previous = null;
@@ -181,21 +184,21 @@ final class CasterTest extends TestCase {
 
     public function testCastToNoCast(): void {
         // Prepare
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $file  = Mockery::mock(File::class);
+        $casts = Mockery::mock(Casts::class);
+        $casts
+            ->shouldReceive('get')
+            ->once()
+            ->with($file)
+            ->andReturn([]);
+
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
                 // empty
             }
         };
-
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getExtension')
-            ->atLeast()
-            ->once()
-            ->andReturn('extension');
 
         // Test
         $previous = null;
@@ -219,12 +222,12 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $casts   = new Casts(Mockery::mock(ContainerResolver::class));
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
-                $this->addCast(new CasterTest__Cast());
+                $this->casts->add(new CasterTest__Cast());
             }
         };
 
@@ -236,6 +239,33 @@ final class CasterTest extends TestCase {
         self::assertSame(__METHOD__, $caster->castTo($file, Content::class)->content);
     }
 
+    public function testCastFromImplementation(): void {
+        // Prepare
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->atLeast()
+            ->once()
+            ->andReturn('md');
+
+        $casts   = new Casts(Mockery::mock(ContainerResolver::class));
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
+            #[Override]
+            protected function addBuiltInCasts(): void {
+                $this->casts->add(new CasterTest__InterfaceCast());
+            }
+        };
+
+        // Test
+        $value = $caster->castTo($file, CasterTest__Contract::class);
+
+        self::assertSame(
+            CasterTest__InterfaceCast::class,
+            $caster->castFrom($file, $value),
+        );
+    }
+
     public function testCastFromContent(): void {
         // Prepare
         $file = Mockery::mock(File::class);
@@ -245,12 +275,12 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $casts   = new Casts(Mockery::mock(ContainerResolver::class));
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
-                $this->addCast(new CasterTest__Cast());
+                $this->casts->add(new CasterTest__Cast());
             }
         };
 
@@ -270,12 +300,12 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $casts   = new Casts(Mockery::mock(ContainerResolver::class));
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
-                $this->addCast(new CasterTest__Cast());
+                $this->casts->add(new CasterTest__Cast());
             }
         };
 
@@ -292,12 +322,12 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn('extension');
 
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $casts   = new Casts(Mockery::mock(ContainerResolver::class));
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
-                $this->addCast(new CasterTest__Cast());
+                $this->casts->add(new CasterTest__Cast());
             }
         };
 
@@ -312,19 +342,19 @@ final class CasterTest extends TestCase {
 
     public function testCastFromNoCast(): void {
         // Prepare
-        $file      = Mockery::mock(File::class);
-        $value     = new stdClass();
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
+        $file = Mockery::mock(File::class);
+        $file
+            ->shouldReceive('getExtension')
+            ->once()
+            ->andReturn('extension');
+
+        $value   = new stdClass();
+        $casts   = new Casts(Mockery::mock(ContainerResolver::class));
+        $adapter = Mockery::mock(Adapter::class);
+        $caster  = new class($adapter, $casts) extends Caster {
             #[Override]
             protected function addBuiltInCasts(): void {
                 // empty
-            }
-
-            #[Override]
-            protected function getCast(File $file, string $class): Cast {
-                throw new RuntimeException('Cast not found.');
             }
         };
 
@@ -339,56 +369,6 @@ final class CasterTest extends TestCase {
 
         self::assertInstanceOf(RuntimeException::class, $previous);
         self::assertSame('Cast not found.', $previous->getMessage());
-    }
-
-    public function testGetTags(): void {
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getExtension')
-            ->atLeast()
-            ->once()
-            ->andReturn('extension');
-
-        $container = Mockery::mock(ContainerResolver::class);
-        $adapter   = Mockery::mock(Adapter::class);
-        $caster    = new class($container, $adapter) extends Caster {
-            #[Override]
-            protected function addBuiltInCasts(): void {
-                // empty
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function getTags(File $file, string $class): array {
-                return parent::getTags($file, $class);
-            }
-        };
-
-        self::assertSame(
-            [
-                'stdClass:extension',
-                'stdClass:*',
-            ],
-            $caster->getTags($file, stdClass::class),
-        );
-        self::assertSame(
-            [
-                Cast::class.':extension',
-                Cast::class.':*',
-            ],
-            $caster->getTags($file, Cast::class),
-        );
-        self::assertSame(
-            [
-                CasterTest__Cast::class.':extension',
-                CasterTest__Cast::class.':*',
-                Cast::class.':extension',
-                Cast::class.':*',
-            ],
-            $caster->getTags($file, CasterTest__Cast::class),
-        );
     }
 }
 
@@ -435,4 +415,44 @@ class CasterTest__Value {
     ) {
         // empty
     }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ * @implements Cast<CasterTest__Contract>
+ */
+class CasterTest__InterfaceCast implements Cast {
+    #[Override]
+    public static function getClass(): string {
+        return CasterTest__Contract::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function getExtensions(): array {
+        return ['md'];
+    }
+
+    #[Override]
+    public function castTo(File $file, string $class): ?object {
+        return new class() implements CasterTest__Contract {
+            // empty
+        };
+    }
+
+    #[Override]
+    public function castFrom(File $file, object $value): ?string {
+        return $this::class;
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+interface CasterTest__Contract {
+    // empty
 }

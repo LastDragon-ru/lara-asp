@@ -34,9 +34,9 @@ class FileSystem {
     private int   $level   = 0;
 
     public function __construct(
+        private readonly Adapter $adapter,
         private readonly Dispatcher $dispatcher,
         private readonly Caster $caster,
-        private readonly Adapter $adapter,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {

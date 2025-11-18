@@ -1,0 +1,140 @@
+<?php declare(strict_types = 1);
+
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
+
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use Mockery;
+use Override;
+use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
+
+use function iterator_to_array;
+
+/**
+ * @internal
+ */
+#[CoversClass(Casts::class)]
+final class CastsTest extends TestCase {
+    public function testGet(): void {
+        $casts = new Casts(Mockery::mock(ContainerResolver::class));
+        $aCast = new CastsTest__Cast();
+        $bCast = new class() extends CastsTest__Cast {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function getExtensions(): array {
+                return ['md'];
+            }
+        };
+        $cCast = new class() extends CastsTest__Cast {
+            // empty
+        };
+
+        $casts->add($aCast);
+        $casts->add($bCast, 200);
+        $casts->add($cCast, 100);
+
+        $aFile = Mockery::mock(File::class);
+        $aFile
+            ->shouldReceive('getExtension')
+            ->once()
+            ->andReturn('md');
+        $bFile = Mockery::mock(File::class);
+        $bFile
+            ->shouldReceive('getExtension')
+            ->once()
+            ->andReturn('txt');
+
+        self::assertSame([$bCast, $cCast, $aCast], iterator_to_array($casts->get($aFile), false));
+        self::assertSame([$cCast, $aCast], iterator_to_array($casts->get($bFile), false));
+    }
+
+    public function testAdd(): void {
+        $casts = new Casts(Mockery::mock(ContainerResolver::class));
+        $cast  = CastsTest__Cast::class;
+
+        self::assertTrue($casts->add($cast));
+    }
+
+    public function testRemove(): void {
+        $casts = new Casts(Mockery::mock(ContainerResolver::class));
+        $cast  = new class() extends CastsTest__Cast {
+            // empty
+        };
+
+        $casts->add($cast);
+        $casts->add(CastsTest__Cast::class);
+
+        self::assertSame(
+            [
+                CastsTest__Cast::class,
+                $cast::class,
+            ],
+            iterator_to_array($casts, false),
+        );
+
+        $casts->remove($cast);
+        $casts->remove(CastsTest__Cast::class);
+
+        self::assertSame([], iterator_to_array($casts, false));
+    }
+
+    public function testGetIterator(): void {
+        $casts = new Casts(Mockery::mock(ContainerResolver::class));
+        $cast  = new class() extends CastsTest__Cast {
+            // empty
+        };
+
+        $casts->add($cast, 100);
+        $casts->add(CastsTest__Cast::class, 200);
+
+        self::assertSame(
+            [
+                CastsTest__Cast::class,
+                $cast::class,
+            ],
+            iterator_to_array($casts, false),
+        );
+    }
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @implements Cast<stdClass>
+ *
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class CastsTest__Cast implements Cast {
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function getClass(): string {
+        return stdClass::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function getExtensions(): array {
+        return ['*'];
+    }
+
+    #[Override]
+    public function castTo(File $file, string $class): ?object {
+        return new stdClass();
+    }
+
+    #[Override]
+    public function castFrom(File $file, object $value): ?string {
+        return $value::class;
+    }
+}

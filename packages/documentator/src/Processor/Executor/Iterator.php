@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
@@ -24,9 +24,9 @@ class Iterator implements IteratorAggregate {
     public function __construct(
         private readonly FileSystem $fs,
         /**
-         * @var Traversable<mixed, File>
+         * @var iterable<mixed, File>
          */
-        private readonly Traversable $iterator,
+        private readonly iterable $iterator,
     ) {
         // empty
     }

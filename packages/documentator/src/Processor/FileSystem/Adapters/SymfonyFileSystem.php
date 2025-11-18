@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Globs;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use Override;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -94,16 +94,17 @@ class SymfonyFileSystem implements Adapter {
             $finder = $finder->depth("<= {$depth}");
         }
 
-        $include = new Globs($include);
-
-        if (!$include->isEmpty()) {
-            $finder = $finder->filter($include->isMatch(...));
+        if ($include !== []) {
+            $finder = $finder->filter(
+                (new Glob($directory, $include))->match(...),
+            );
         }
 
-        $exclude = new Globs($exclude);
-
-        if (!$exclude->isEmpty()) {
-            $finder = $finder->filter($exclude->isNotMatch(...), true);
+        if ($exclude !== []) {
+            $finder = $finder->filter(
+                (new Glob($directory, $exclude))->mismatch(...),
+                true,
+            );
         }
 
         return $finder;

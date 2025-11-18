@@ -65,9 +65,9 @@ parameters:
             paths:
                 - packages/testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
         -
-            message: "#^Call to protected method (iterate|notify)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Resolver\\.$#"
+            message: "#^Call to protected method (iterate|notify)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Documentator\\\\Processor\\\\Executor\\\\Resolver\\.$#"
             paths:
-                - packages/documentator/src/Processor/ResolverTest.php
+                - packages/documentator/src/Processor/Executor/ResolverTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
@@ -100,13 +100,6 @@ parameters:
             message: '#^Parameter \#4 \$args of method Nuwave\\Lighthouse\\Execution\\ResolveInfo::enhanceBuilder\(\) expects array<string, mixed>, array given\.$#'
             paths:
                 - packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
-
-        # Would be nice to have a way add types for console command arguments
-        # https://github.com/symfony/symfony/issues/58406
-        -
-            message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\): mixed\)\|null, Closure\(bool\|float\|int\|resource\|string\|null\): string given\.$#'
-            paths:
-                - packages/documentator/src/Commands/Preprocess.php
 
         # is_a(static::class, Class::class, true) false positive
         # https://github.com/phpstan/phpstan/issues/1239
