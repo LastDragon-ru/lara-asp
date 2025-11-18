@@ -30,12 +30,14 @@ use ReflectionProperty;
 use Symfony\Component\Console\Attribute\AsCommand;
 use UnitEnum;
 
-use function array_map;
+use function array_filter;
+use function array_values;
 use function getcwd;
 use function gettype;
 use function implode;
 use function is_a;
 use function is_scalar;
+use function is_string;
 use function ksort;
 use function max;
 use function mb_rtrim;
@@ -43,7 +45,6 @@ use function mb_trim;
 use function min;
 use function str_repeat;
 use function strtr;
-use function strval;
 use function var_export;
 
 /**
@@ -86,21 +87,21 @@ class Preprocess extends Command {
     }
 
     public function __invoke(Formatter $formatter): void {
-        $cwd     = getcwd();
-        $path    = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
-        $exclude = array_map(strval(...), (array) $this->option('exclude'));
+        $cwd  = getcwd();
+        $path = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
+        $skip = array_filter((array) $this->option('exclude'), static fn ($v) => is_string($v) && $v !== '');
+        $skip = array_values($skip);
 
         $this->processor()
-            ->addListener((new Listener($this->output, $formatter))(...))
-            ->exclude($exclude)
-            ->run($path);
+            ->listen((new Listener($this->output, $formatter))(...))
+            ->run($path, null, $skip);
     }
 
     protected function processor(): Processor {
         $processor = new Processor($this->container, $this->adapter);
 
-        $processor->addTask(PreprocessTask::class, 100);
-        $processor->addTask(CodeLinksTask::class, 200);
+        $processor->task(PreprocessTask::class, 100);
+        $processor->task(CodeLinksTask::class, 200);
 
         return $processor;
     }
@@ -120,9 +121,26 @@ class Preprocess extends Command {
         $help      = '';
         $heading   = str_repeat('#', $level);
         $default   = '_No description provided_.';
-        $processor = $this->processor();
+        $processor = new class($this->processor()) extends Processor {
+            /**
+             * @noinspection             PhpMissingParentConstructorInspection
+             * @phpstan-ignore-next-line constructor.missingParentCall
+             */
+            public function __construct(
+                private readonly Processor $processor,
+            ) {
+                // empty
+            }
 
-        foreach ($processor->getTasks() as $index => $task) {
+            /**
+             * @return iterable<int, class-string<Task>>
+             */
+            public function tasks(): iterable {
+                return $this->processor->tasks;
+            }
+        };
+
+        foreach ($processor->tasks() as $index => $task) {
             $description = mb_trim($this->getProcessedHelpTaskDescription($task, $level + 1));
             $description = $description !== '' ? $description : $default;
             $extensions  = $this->getProcessedHelpTaskExtensions($task);

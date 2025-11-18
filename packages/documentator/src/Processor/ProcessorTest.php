@@ -119,19 +119,20 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($mock)
-            ->addTask($taskA)
-            ->addTask($taskB)
-            ->addTask($taskC)
-            ->addTask($taskD)
-            ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->addListener(
+            ->task($mock)
+            ->task($taskA)
+            ->task($taskB)
+            ->task($taskC)
+            ->task($taskD)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
             )
             ->run(
                 $input,
+                null,
+                ['excluded.txt', '**/**/excluded.txt'],
             );
 
         self::assertEquals(
@@ -271,8 +272,8 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
-            ->addListener(
+            ->task($task)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -332,10 +333,10 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($taskA)
-            ->addTask($taskB)
-            ->addTask($taskC, -1)
-            ->addListener(
+            ->task($taskA)
+            ->task($taskB)
+            ->task($taskC, -1)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -403,16 +404,17 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($taskA)
-            ->addTask($taskB)
-            ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->addListener(
+            ->task($taskA)
+            ->task($taskB)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
             )
             ->run(
                 $input,
+                null,
+                ['excluded.txt', '**/**/excluded.txt'],
             );
 
         self::assertEquals(
@@ -562,9 +564,8 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
-            ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->addListener(
+            ->task($task)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -572,6 +573,7 @@ final class ProcessorTest extends TestCase {
             ->run(
                 $input,
                 $output,
+                ['excluded.txt', '**/**/excluded.txt'],
             );
 
         self::assertEquals(
@@ -634,7 +636,7 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
+            ->task($task)
             ->run($input);
     }
 
@@ -664,7 +666,7 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
+            ->task($task)
             ->run($input);
     }
 
@@ -678,7 +680,7 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
+            ->task($task)
             ->run($input);
 
         self::assertEquals(
@@ -722,7 +724,7 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
+            ->task($task)
             ->run($input);
     }
 
@@ -738,14 +740,13 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
-            ->exclude(['excluded.txt', '**/**/excluded.txt'])
-            ->addListener(
+            ->task($task)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
             )
-            ->run($input, $output);
+            ->run($input, $output, ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
@@ -811,8 +812,8 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
-            ->addListener(
+            ->task($task)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -860,8 +861,8 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
-            ->addListener(
+            ->task($task)
+            ->listen(
                 static function (Event $event) use (&$events): void {
                     $events[] = $event;
                 },
@@ -909,7 +910,7 @@ final class ProcessorTest extends TestCase {
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
         ))
-            ->addTask($task)
+            ->task($task)
             ->run(
                 $input,
             );

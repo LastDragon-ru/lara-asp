@@ -30,7 +30,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
 use Override;
 use Traversable;
 
-use function array_merge;
 use function array_unique;
 use function array_values;
 use function is_a;
@@ -39,14 +38,9 @@ use function is_a;
  * Perform one or more task on the file(s).
  */
 class Processor {
-    private readonly Tasks        $tasks;
-    private readonly Casts        $casts;
+    protected readonly Tasks      $tasks;
+    protected readonly Casts      $casts;
     protected readonly Dispatcher $dispatcher;
-
-    /**
-     * @var list<string>
-     */
-    private array $exclude = [];
 
     public function __construct(
         protected readonly ContainerResolver $container,
@@ -58,33 +52,14 @@ class Processor {
     }
 
     /**
-     * @internal
-     * @return iterable<array-key, class-string<Task>>
-     */
-    public function getTasks(): iterable {
-        return $this->tasks;
-    }
-
-    /**
      * The first added tasks have a bigger priority unless specify.
      *
      * @template T of Task
      *
      * @param T|class-string<T> $task
      */
-    public function addTask(Task|string $task, ?int $priority = null): static {
+    public function task(Task|string $task, ?int $priority = null): static {
         $this->tasks->add($task, $priority);
-
-        return $this;
-    }
-
-    /**
-     * @template T of Task
-     *
-     * @param T|class-string<T> $task
-     */
-    public function removeTask(Task|string $task): static {
-        $this->tasks->remove($task);
 
         return $this;
     }
@@ -97,54 +72,43 @@ class Processor {
      *
      * @param R|class-string<R> $cast
      */
-    public function addCast(Cast|string $cast, ?int $priority = null): static {
+    public function cast(Cast|string $cast, ?int $priority = null): static {
         $this->casts->add($cast, $priority);
 
         return $this;
     }
 
     /**
-     * @template V of object
-     * @template R of Cast<V>
-     *
-     * @param R|class-string<R> $cast
+     * @param callable(Event): void $listener
      */
-    public function removeCast(Cast|string $cast): static {
-        $this->casts->remove($cast);
+    public function listen(callable $listener): static {
+        if (!($listener instanceof Closure)) {
+            $listener = $listener(...);
+        }
 
-        return $this;
-    }
-
-    /**
-     * @param array<array-key, string>|string $exclude glob(s) to exclude.
-     */
-    public function exclude(array|string $exclude): static {
-        $this->exclude = array_merge($this->exclude, array_values((array) $exclude));
-
-        return $this;
-    }
-
-    /**
-     * @param Closure(Event): void $listener
-     */
-    public function addListener(Closure $listener): static {
         $this->dispatcher->attach($listener);
 
         return $this;
     }
 
-    public function run(DirectoryPath|FilePath $input, ?DirectoryPath $output = null): void {
+    /**
+     * @param list<non-empty-string> $skip Globs that shouldn't be processed.
+     */
+    public function run(
+        DirectoryPath|FilePath $input,
+        ?DirectoryPath $output = null,
+        array $skip = [],
+    ): void {
         // Prepare
-        $exclude   = $this->exclude;
-        $directory = $input->getDirectoryPath('.');
+        $root = $input->getDirectoryPath('.');
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
-            if (!$directory->isEqual($output) && $directory->isInside($output)) {
-                $exclude[] = GlobMatcher::escape((string) $directory->getRelativePath($output)).'**';
+            if (!$root->isEqual($output) && $root->isInside($output)) {
+                $skip[] = GlobMatcher::escape((string) $root->getRelativePath($output)).'**';
             }
         } else {
-            $output = $directory;
+            $output = $root;
         }
 
         // Start
@@ -153,9 +117,9 @@ class Processor {
 
             try {
                 $caster = new Caster($this->adapter, $this->casts);
-                $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $directory, $output);
+                $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $root, $output);
                 $files  = match (true) {
-                    default                    => $fs->getFilesIterator($directory, $this->include(), $exclude),
+                    default                    => $fs->getFilesIterator($root, $this->include(), $skip),
                     $input instanceof FilePath => new readonly class($fs, $input) implements IteratorAggregate {
                         public function __construct(
                             private FileSystem $fs,
@@ -174,7 +138,7 @@ class Processor {
                     },
                 };
 
-                $this->execute($fs, $files, new Glob($directory, $exclude));
+                $this->execute($fs, $files, new Glob($root, $skip));
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -192,8 +156,8 @@ class Processor {
     /**
      * @param iterable<mixed, File> $files
      */
-    protected function execute(FileSystem $fs, iterable $files, Matcher $exclude): void {
-        $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $exclude);
+    protected function execute(FileSystem $fs, iterable $files, Matcher $skipped): void {
+        $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $skipped);
 
         $executor->run();
     }
@@ -201,7 +165,7 @@ class Processor {
     /**
      * @return list<string>
      */
-    protected function include(): array {
+    private function include(): array {
         $include = [];
 
         foreach ($this->tasks as $task) {

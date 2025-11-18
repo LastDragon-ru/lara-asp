@@ -35,6 +35,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   * [`FileTask`][code-links/42d900d10c3c5f5c]
   * [`HookTask`][code-links/b3d5664fcbd8bbf1]
 
+* [ ] The `\LastDragon_ru\LaraASP\Documentator\Processor\Processor` has fewer methods to simplify the API.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md

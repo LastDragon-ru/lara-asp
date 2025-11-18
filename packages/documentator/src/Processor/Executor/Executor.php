@@ -56,7 +56,7 @@ class Executor {
         private readonly Tasks $tasks,
         private readonly FileSystem $fs,
         iterable $files,
-        private readonly Matcher $skip,
+        private readonly Matcher $skipped,
     ) {
         $this->state    = State::Created;
         $this->iterator = new Iterator($this->fs, $files);
@@ -251,10 +251,10 @@ class Executor {
         }
 
         // Excluded?
-        $path     = $this->fs->input->getRelativePath($file->getPath());
-        $excluded = $this->skip->match($path);
+        $path    = $this->fs->input->getRelativePath($file->getPath());
+        $skipped = $this->skipped->match($path);
 
-        if ($excluded) {
+        if ($skipped) {
             return true;
         }
 
