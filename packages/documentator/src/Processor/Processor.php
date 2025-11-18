@@ -94,7 +94,7 @@ class Processor {
     /**
      * @param list<non-empty-string> $skip Globs that shouldn't be processed.
      */
-    public function run(
+    public function __invoke(
         DirectoryPath|FilePath $input,
         ?DirectoryPath $output = null,
         array $skip = [],

@@ -92,9 +92,10 @@ class Preprocess extends Command {
         $skip = array_filter((array) $this->option('exclude'), static fn ($v) => is_string($v) && $v !== '');
         $skip = array_values($skip);
 
-        $this->processor()
-            ->listen((new Listener($this->output, $formatter))(...))
-            ->run($path, null, $skip);
+        $processor = $this->processor();
+        $processor->listen((new Listener($this->output, $formatter))(...));
+
+        $processor($path, null, $skip);
     }
 
     protected function processor(): Processor {
