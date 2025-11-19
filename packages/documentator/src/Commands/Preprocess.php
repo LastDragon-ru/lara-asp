@@ -178,7 +178,7 @@ class Preprocess extends Command {
         $extensions = [];
 
         if (is_a($task, FileTask::class, true)) {
-            foreach ($task::getExtensions() as $extension) {
+            foreach ((array) $task::glob() as $extension) {
                 $extensions[] = "`{$extension}`";
             }
         }

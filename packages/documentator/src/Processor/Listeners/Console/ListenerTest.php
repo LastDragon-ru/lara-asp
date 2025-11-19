@@ -335,8 +335,8 @@ class ListenerTest__TaskA implements FileTask {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['*'];
+    public static function glob(): array|string {
+        return '*';
     }
 
     #[Override]
@@ -358,8 +358,8 @@ class ListenerTest__TaskB implements FileTask {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['*'];
+    public static function glob(): array|string {
+        return '*';
     }
 
     #[Override]

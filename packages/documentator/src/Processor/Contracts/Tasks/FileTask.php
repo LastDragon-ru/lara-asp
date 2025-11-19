@@ -11,12 +11,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
  */
 interface FileTask extends Task {
     /**
-     * Returns the file extensions which task is processing. The `*` can be used
-     * to process all existing files.
+     * Glob pattern(s) to search files that should be processed by the task. It
+     * will be matched against the name of the file and thus cannot contain
+     * the `/`.
      *
-     * @return non-empty-list<string>
+     * @return non-empty-list<non-empty-string>|non-empty-string
      */
-    public static function getExtensions(): array;
+    public static function glob(): array|string;
 
     public function __invoke(DependencyResolver $resolver, File $file): void;
 }
