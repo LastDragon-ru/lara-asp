@@ -57,9 +57,11 @@ class Casts implements IteratorAggregate {
      *
      * @param C|class-string<C> $cast
      */
-    public function remove(Cast|string $cast): bool {
+    public function remove(Cast|string $cast): void {
         $this->instances->remove($cast);
+    }
 
-        return true;
+    public function reset(): void {
+        $this->instances->reset();
     }
 }

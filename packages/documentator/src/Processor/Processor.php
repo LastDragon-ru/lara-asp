@@ -138,7 +138,8 @@ class Processor {
                     },
                 };
 
-                $this->execute($fs, $files, new Glob($root, $skip));
+                $this->run($fs, $files, new Glob($root, $skip));
+                $this->reset();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -156,10 +157,15 @@ class Processor {
     /**
      * @param iterable<mixed, File> $files
      */
-    protected function execute(FileSystem $fs, iterable $files, Matcher $skipped): void {
+    protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
         $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $skipped);
 
         $executor->run();
+    }
+
+    protected function reset(): void {
+        $this->tasks->reset();
+        $this->casts->reset();
     }
 
     /**

@@ -70,10 +70,12 @@ class Tasks implements IteratorAggregate {
      *
      * @param T|class-string<T> $task
      */
-    public function remove(Task|string $task): bool {
+    public function remove(Task|string $task): void {
         $this->instances->remove($task);
+    }
 
-        return true;
+    public function reset(): void {
+        $this->instances->reset();
     }
 
     /**
