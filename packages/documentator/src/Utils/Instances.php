@@ -60,7 +60,6 @@ class Instances {
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly SortOrder $order,
-        protected readonly bool $cacheable = true,
     ) {
         $this->enums = new WeakMap();
     }
@@ -225,17 +224,9 @@ class Instances {
      * @return TInstance
      */
     protected function resolve(string $class): object {
-        if (isset($this->resolved[$class])) {
-            return $this->resolved[$class];
-        }
+        $this->resolved[$class] ??= $this->container->getInstance()->make($class);
 
-        $instance = $this->container->getInstance()->make($class);
-
-        if ($this->cacheable) {
-            $this->resolved[$class] = $instance;
-        }
-
-        return $instance;
+        return $this->resolved[$class];
     }
 
     private function priority(): int {
