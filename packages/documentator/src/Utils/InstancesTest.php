@@ -272,6 +272,50 @@ final class InstancesTest extends TestCase {
 
         self::assertEquals([], $instances->tags());
     }
+
+    public function testReset(): void {
+        $container = Mockery::mock(Container::class);
+        $resolver  = Mockery::mock(ContainerResolver::class);
+        $resolver
+            ->shouldReceive('getInstance')
+            ->twice()
+            ->andReturn($container);
+
+        $instances = new InstancesTest__Instances($resolver, SortOrder::Asc);
+        $aInstance = new class() {
+            // empty
+        };
+        $bInstance = new class() extends stdClass {
+            // empty
+        };
+
+        $instances->add($aInstance, ['a']);
+        $instances->add($bInstance::class, ['b']);
+
+        $container
+            ->shouldReceive('make')
+            ->with($bInstance::class)
+            ->twice()
+            ->andReturn($bInstance);
+
+        self::assertEquals(
+            [
+                $aInstance,
+                $bInstance,
+            ],
+            iterator_to_array($instances->get(), false),
+        );
+
+        $instances->reset();
+
+        self::assertEquals(
+            [
+                $aInstance,
+                $bInstance,
+            ],
+            iterator_to_array($instances->get(), false),
+        );
+    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -280,7 +324,7 @@ final class InstancesTest extends TestCase {
 /**
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
- * @extends Instances<stdClass>
+ * @extends Instances<object>
  */
 class InstancesTest__Instances extends Instances {
     // empty
