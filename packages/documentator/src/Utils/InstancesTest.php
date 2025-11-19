@@ -18,7 +18,7 @@ use const PHP_INT_MAX;
  */
 #[CoversClass(Instances::class)]
 final class InstancesTest extends TestCase {
-    public function testGetTags(): void {
+    public function testTags(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container, SortOrder::Desc);
         $aInstance = new class() extends stdClass {
@@ -31,7 +31,7 @@ final class InstancesTest extends TestCase {
         $instances->add($aInstance, ['aa', 'ab'], 200);
         $instances->add($bInstance, ['b'], 100);
 
-        self::assertEquals(['aa', 'ab', 'b'], $instances->getTags());
+        self::assertEquals(['aa', 'ab', 'b'], $instances->tags());
     }
 
     public function testGetClasses(): void {
@@ -220,19 +220,19 @@ final class InstancesTest extends TestCase {
             // empty
         };
 
-        self::assertEquals([], $instances->getTags());
+        self::assertEquals([], $instances->tags());
         self::assertEquals([], $instances->getClasses());
 
         $instances->add($aInstance, ['aa', 'ab'], 200);
         $instances->add($aInstance, ['ac'], merge: true);
 
-        self::assertEquals(['aa', 'ab', 'ac'], $instances->getTags());
+        self::assertEquals(['aa', 'ab', 'ac'], $instances->tags());
         self::assertEquals([$aInstance::class], $instances->getClasses());
 
         $instances->add($bInstance, ['b'], 100);
         $instances->add($bInstance, ['bb'], 100);
 
-        self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->getTags());
+        self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->tags());
         self::assertEquals([$bInstance::class, $aInstance::class], $instances->getClasses());
 
         $instances->add($cInstance, ['c'], PHP_INT_MAX);
@@ -262,15 +262,15 @@ final class InstancesTest extends TestCase {
         $instances->add($aInstance, ['aa', 'ab']);
         $instances->add($bInstance, ['b']);
 
-        self::assertEquals(['aa', 'ab', 'b'], $instances->getTags());
+        self::assertEquals(['aa', 'ab', 'b'], $instances->tags());
 
         $instances->remove($aInstance);
 
-        self::assertEquals(['b'], $instances->getTags());
+        self::assertEquals(['b'], $instances->tags());
 
         $instances->remove($bInstance);
 
-        self::assertEquals([], $instances->getTags());
+        self::assertEquals([], $instances->tags());
     }
 }
 

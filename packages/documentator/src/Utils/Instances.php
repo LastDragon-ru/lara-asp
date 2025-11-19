@@ -56,7 +56,7 @@ class Instances {
     /**
      * @return list<string>
      */
-    public function getTags(): array {
+    public function tags(): array {
         return array_keys($this->tags);
     }
 
