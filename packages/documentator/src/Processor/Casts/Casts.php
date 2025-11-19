@@ -29,7 +29,7 @@ class Casts implements IteratorAggregate {
      */
     #[Override]
     public function getIterator(): Traversable {
-        yield from $this->instances->getClasses();
+        yield from $this->instances->classes();
     }
 
     /**

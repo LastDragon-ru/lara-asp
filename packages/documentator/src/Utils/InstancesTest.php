@@ -34,7 +34,7 @@ final class InstancesTest extends TestCase {
         self::assertEquals(['aa', 'ab', 'b'], $instances->tags());
     }
 
-    public function testGetClasses(): void {
+    public function testClasses(): void {
         $container = Mockery::mock(ContainerResolver::class);
         $instances = new InstancesTest__Instances($container, SortOrder::Asc);
         $aInstance = new class() extends stdClass {
@@ -57,7 +57,7 @@ final class InstancesTest extends TestCase {
                 $aInstance::class,
                 $cInstance::class,
             ],
-            $instances->getClasses(),
+            $instances->classes(),
         );
     }
 
@@ -221,19 +221,19 @@ final class InstancesTest extends TestCase {
         };
 
         self::assertEquals([], $instances->tags());
-        self::assertEquals([], $instances->getClasses());
+        self::assertEquals([], $instances->classes());
 
         $instances->add($aInstance, ['aa', 'ab'], 200);
         $instances->add($aInstance, ['ac'], merge: true);
 
         self::assertEquals(['aa', 'ab', 'ac'], $instances->tags());
-        self::assertEquals([$aInstance::class], $instances->getClasses());
+        self::assertEquals([$aInstance::class], $instances->classes());
 
         $instances->add($bInstance, ['b'], 100);
         $instances->add($bInstance, ['bb'], 100);
 
         self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->tags());
-        self::assertEquals([$bInstance::class, $aInstance::class], $instances->getClasses());
+        self::assertEquals([$bInstance::class, $aInstance::class], $instances->classes());
 
         $instances->add($cInstance, ['c'], PHP_INT_MAX);
         $instances->add($dInstance, ['d']);
@@ -245,7 +245,7 @@ final class InstancesTest extends TestCase {
                 $dInstance::class,
                 $cInstance::class,
             ],
-            $instances->getClasses(),
+            $instances->classes(),
         );
     }
 

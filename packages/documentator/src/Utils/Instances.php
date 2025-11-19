@@ -63,7 +63,7 @@ class Instances {
     /**
      * @return list<class-string<TInstance>>
      */
-    public function getClasses(): array {
+    public function classes(): array {
         $classes = array_keys($this->resolved);
 
         usort($classes, $this->compare(...));
@@ -98,7 +98,7 @@ class Instances {
      * @return iterable<int, TInstance>
      */
     public function get(?string ...$tags): iterable {
-        $classes = $tags === [] ? $this->getClasses() : [];
+        $classes = $tags === [] ? $this->classes() : [];
 
         foreach ($tags as $tag) {
             $classes = array_merge($classes, $this->tags[$tag] ?? []);

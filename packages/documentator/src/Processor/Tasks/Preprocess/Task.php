@@ -98,7 +98,7 @@ class Task implements FileTask {
      * @return list<class-string<Instruction<Parameters>>>
      */
     public function getInstructions(): array {
-        return $this->instructions->getClasses();
+        return $this->instructions->classes();
     }
 
     /**
