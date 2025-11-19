@@ -3,12 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use UnitEnum;
+use WeakMap;
 
 use function array_filter;
-use function array_key_exists;
 use function array_keys;
 use function array_merge;
-use function array_search;
 use function array_unique;
 use function is_object;
 use function is_string;
@@ -41,7 +41,14 @@ class Instances {
     private array $tags = [];
 
     /**
-     * @var array<class-string<TInstance>, array<array-key, string>>
+     * @see https://github.com/php/php-src/issues/9208
+     *
+     * @var WeakMap<UnitEnum, array<array-key, class-string<TInstance>>>
+     */
+    private WeakMap $enums;
+
+    /**
+     * @var array<class-string<TInstance>, list<UnitEnum|string>>
      */
     private array $classes = [];
 
@@ -55,21 +62,27 @@ class Instances {
         protected readonly SortOrder $order,
         protected readonly bool $cacheable = true,
     ) {
-        // empty
+        $this->enums = new WeakMap();
     }
 
     /**
-     * @return list<string>
+     * @return list<UnitEnum|string>
      */
     public function tags(): array {
-        return array_keys($this->tags);
+        $tags = array_keys($this->tags);
+
+        foreach ($this->enums as $enum => $classes) {
+            $tags[] = $enum;
+        }
+
+        return $tags;
     }
 
     /**
      * @return list<class-string<TInstance>>
      */
     public function classes(): array {
-        $classes = array_keys($this->resolved);
+        $classes = array_keys($this->classes);
 
         usort($classes, $this->compare(...));
 
@@ -80,17 +93,14 @@ class Instances {
      * @param TInstance|class-string<TInstance> $instance
      */
     public function is(object|string $instance): bool {
-        return array_key_exists(
-            is_object($instance) ? $instance::class : $instance,
-            $this->resolved,
-        );
+        return isset($this->classes[is_object($instance) ? $instance::class : $instance]);
     }
 
-    public function has(?string ...$tags): bool {
-        $exists = $tags === [] && $this->tags !== [];
+    public function has(UnitEnum|string|null ...$tags): bool {
+        $exists = $tags === [] && ($this->tags !== [] || $this->enums->count() > 0);
 
         foreach ($tags as $tag) {
-            if (isset($this->tags[$tag])) {
+            if ($tag instanceof UnitEnum ? isset($this->enums[$tag]) : isset($this->tags[$tag])) {
                 $exists = true;
                 break;
             }
@@ -102,11 +112,12 @@ class Instances {
     /**
      * @return iterable<int, TInstance>
      */
-    public function get(?string ...$tags): iterable {
+    public function get(UnitEnum|string|null ...$tags): iterable {
         $classes = $tags === [] ? $this->classes() : [];
 
         foreach ($tags as $tag) {
-            $classes = array_merge($classes, $this->tags[$tag] ?? []);
+            $merge   = $tag instanceof UnitEnum ? ($this->enums[$tag] ?? []) : ($this->tags[$tag] ?? []);
+            $classes = array_merge($classes, $merge);
         }
 
         $classes = array_unique($classes);
@@ -123,7 +134,7 @@ class Instances {
     /**
      * @return ?TInstance
      */
-    public function first(?string ...$tags): ?object {
+    public function first(UnitEnum|string|null ...$tags): ?object {
         $first = null;
 
         foreach ($this->get(...$tags) as $instance) {
@@ -136,22 +147,26 @@ class Instances {
 
     /**
      * @param TInstance|class-string<TInstance> $instance
-     * @param list<?string>                     $tags
+     * @param list<UnitEnum|string|null>        $tags
      */
     public function add(object|string $instance, array $tags = [], ?int $priority = null, bool $merge = false): static {
         if (!$merge) {
             $this->remove($instance);
         }
 
-        $tags                     = array_filter($tags, static fn (?string $tag): bool => $tag !== null);
+        $tags                     = array_filter($tags, static fn ($tag): bool => $tag !== null);
         $class                    = is_string($instance) ? $instance : $instance::class;
-        $this->classes[$class]    = array_unique(array_merge($this->classes[$class] ?? [], $tags));
+        $this->classes[$class]    = array_merge($this->classes[$class] ?? [], $tags);
         $this->resolved[$class]   = is_object($instance) ? $instance : null;
         $this->persistent[$class] = is_object($instance);
         $this->priorities[$class] = $priority ?? $this->priorities[$class] ?? $this->priority();
 
         foreach ($tags as $tag) {
-            $this->tags[$tag] = array_unique(array_merge($this->tags[$tag] ?? [], [$class]));
+            if ($tag instanceof UnitEnum) {
+                $this->enums[$tag] = array_merge($this->enums[$tag] ?? [], [$class]);
+            } else {
+                $this->tags[$tag] = array_merge($this->tags[$tag] ?? [], [$class]);
+            }
         }
 
         return $this;
@@ -161,25 +176,36 @@ class Instances {
      * @param TInstance|class-string<TInstance> $instance
      */
     public function remove(object|string $instance): static {
-        $class = is_string($instance) ? $instance : $instance::class;
-        $tags  = $this->classes[$class] ?? [];
-
-        unset($this->priorities[$class]);
-        unset($this->persistent[$class]);
-        unset($this->resolved[$class]);
+        // Tags
+        $class  = is_string($instance) ? $instance : $instance::class;
+        $tags   = $this->classes[$class] ?? [];
+        $filter = static function (UnitEnum|string $name) use ($class): bool {
+            return $name !== $class;
+        };
 
         foreach ($tags as $tag) {
-            $index = array_search($class, $this->tags[$tag] ?? [], true);
+            if ($tag instanceof UnitEnum) {
+                $this->enums[$tag] = array_filter($this->enums[$tag] ?? [], $filter);
 
-            if ($index !== false) {
-                unset($this->tags[$tag][$index]);
-            }
+                if ($this->enums[$tag] === []) {
+                    unset($this->enums[$tag]);
+                }
+            } else {
+                $this->tags[$tag] = array_filter($this->tags[$tag] ?? [], $filter);
 
-            if (($this->tags[$tag] ?? []) === []) {
-                unset($this->tags[$tag]);
+                if ($this->tags[$tag] === []) {
+                    unset($this->tags[$tag]);
+                }
             }
         }
 
+        // Class
+        unset($this->priorities[$class]);
+        unset($this->persistent[$class]);
+        unset($this->resolved[$class]);
+        unset($this->classes[$class]);
+
+        // Return
         return $this;
     }
 

@@ -29,9 +29,9 @@ final class InstancesTest extends TestCase {
         };
 
         $instances->add($aInstance, ['aa', 'ab'], 200);
-        $instances->add($bInstance, ['b'], 100);
+        $instances->add($bInstance, ['b', InstancesTest__Enum::B], 100);
 
-        self::assertEquals(['aa', 'ab', 'b'], $instances->tags());
+        self::assertEquals(['aa', 'ab', 'b', InstancesTest__Enum::B], $instances->tags());
     }
 
     public function testClasses(): void {
@@ -47,7 +47,7 @@ final class InstancesTest extends TestCase {
             // empty
         };
 
-        $instances->add($aInstance, ['aa', 'ab'], 200);
+        $instances->add($aInstance, ['a'], 200);
         $instances->add($bInstance, ['b'], 100);
         $instances->add($cInstance::class, ['c']);
 
@@ -96,7 +96,7 @@ final class InstancesTest extends TestCase {
         self::assertFalse($instances->has());
 
         $instances->add($aInstance, ['aa', 'ab']);
-        $instances->add($bInstance, ['b']);
+        $instances->add($bInstance, ['b', InstancesTest__Enum::B]);
 
         self::assertTrue($instances->has());
 
@@ -104,6 +104,8 @@ final class InstancesTest extends TestCase {
         self::assertTrue($instances->has('ab'));
         self::assertTrue($instances->has('b'));
         self::assertTrue($instances->has('c', 'aa'));
+        self::assertTrue($instances->has(InstancesTest__Enum::B));
+        self::assertTrue($instances->has('c', InstancesTest__Enum::B));
         self::assertFalse($instances->has('c'));
     }
 
@@ -130,12 +132,13 @@ final class InstancesTest extends TestCase {
             ->andReturn($bInstance);
 
         $instances->add($aInstance, ['aa', 'ab']);
-        $instances->add($bInstance::class, ['b']);
+        $instances->add($bInstance::class, ['b', InstancesTest__Enum::B]);
 
         self::assertSame([$aInstance], iterator_to_array($instances->get('aa'), false));
         self::assertSame([$aInstance, $bInstance], iterator_to_array($instances->get('b', 'ab'), false));
         self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
-        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
+        self::assertSame([$bInstance], iterator_to_array($instances->get(InstancesTest__Enum::B), false));
+        self::assertSame([], iterator_to_array($instances->get(InstancesTest__Enum::A), false));
 
         self::assertSame($aInstance, $instances->first('b', 'aa'));
     }
@@ -165,10 +168,7 @@ final class InstancesTest extends TestCase {
         $instances->add($aInstance, ['aa', 'ab']);
         $instances->add($bInstance::class, ['b']);
 
-        self::assertSame([$aInstance], iterator_to_array($instances->get('aa'), false));
         self::assertSame([$bInstance, $aInstance], iterator_to_array($instances->get('b', 'ab'), false));
-        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
-        self::assertSame([$bInstance], iterator_to_array($instances->get('b'), false));
 
         self::assertSame($bInstance, $instances->first('b', 'aa'));
     }
@@ -230,9 +230,9 @@ final class InstancesTest extends TestCase {
         self::assertEquals([$aInstance::class], $instances->classes());
 
         $instances->add($bInstance, ['b'], 100);
-        $instances->add($bInstance, ['bb'], 100);
+        $instances->add($bInstance, ['bb', InstancesTest__Enum::B], 100);
 
-        self::assertEquals(['aa', 'ab', 'ac', 'bb'], $instances->tags());
+        self::assertEquals(['aa', 'ab', 'ac', 'bb', InstancesTest__Enum::B], $instances->tags());
         self::assertEquals([$bInstance::class, $aInstance::class], $instances->classes());
 
         $instances->add($cInstance, ['c'], PHP_INT_MAX);
@@ -259,18 +259,20 @@ final class InstancesTest extends TestCase {
             // empty
         };
 
-        $instances->add($aInstance, ['aa', 'ab']);
-        $instances->add($bInstance, ['b']);
+        $instances->add($aInstance, ['aa', 'ab', InstancesTest__Enum::A]);
+        $instances->add($bInstance, ['b', InstancesTest__Enum::B]);
 
-        self::assertEquals(['aa', 'ab', 'b'], $instances->tags());
+        self::assertEquals(['aa', 'ab', 'b', InstancesTest__Enum::A, InstancesTest__Enum::B], $instances->tags());
 
         $instances->remove($aInstance);
 
-        self::assertEquals(['b'], $instances->tags());
+        self::assertEquals(['b', InstancesTest__Enum::B], $instances->tags());
+        self::assertEquals([$bInstance::class], $instances->classes());
 
         $instances->remove($bInstance);
 
         self::assertEquals([], $instances->tags());
+        self::assertEquals([], $instances->classes());
     }
 
     public function testReset(): void {
@@ -328,4 +330,13 @@ final class InstancesTest extends TestCase {
  */
 class InstancesTest__Instances extends Instances {
     // empty
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+enum InstancesTest__Enum {
+    case A;
+    case B;
 }
