@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use Override;
 use Traversable;
 
-use function array_map;
 use function is_a;
 
 /**
@@ -81,27 +80,15 @@ class Tasks implements IteratorAggregate {
     /**
      * @param Task|Hook|File|class-string<Task> $object
      *
-     * @return list<string>
+     * @return list<Hook|string|null>
      */
     private function tags(Task|Hook|File|string $object): array {
         return match (true) {
-            $object instanceof File              => [
-                $this->hook(Hook::File),
-                $this->file((string) $object->getExtension()),
-                $this->file('*'),
-            ],
-            $object instanceof Hook              => [$this->hook($object)],
-            is_a($object, HookTask::class, true) => array_map($this->hook(...), $object::hooks()),
-            is_a($object, FileTask::class, true) => array_map($this->file(...), $object::getExtensions()),
+            $object instanceof File              => [Hook::File, (string) $object->getExtension(), '*'],
+            $object instanceof Hook              => [$object],
+            is_a($object, HookTask::class, true) => $object::hooks(),
+            is_a($object, FileTask::class, true) => $object::getExtensions(),
             default                              => [],
         };
-    }
-
-    private function hook(Hook $hook): string {
-        return HookTask::class.': '.$hook->name;
-    }
-
-    private function file(string $ext): string {
-        return FileTask::class.': '.$ext;
     }
 }
