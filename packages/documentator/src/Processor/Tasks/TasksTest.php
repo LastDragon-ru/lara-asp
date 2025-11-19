@@ -205,8 +205,8 @@ class TasksTest__HookTask implements HookTask {
      * @inheritDoc
      */
     #[Override]
-    public static function hooks(): array {
-        return [Hook::File];
+    public static function hook(): array|Hook {
+        return Hook::File;
     }
 
     #[Override]
@@ -224,7 +224,7 @@ class TasksTest__Task implements FileTask, HookTask {
      * @inheritDoc
      */
     #[Override]
-    public static function hooks(): array {
+    public static function hook(): array|Hook {
         return [Hook::BeforeProcessing];
     }
 

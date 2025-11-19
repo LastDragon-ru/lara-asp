@@ -9,9 +9,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 
 interface HookTask extends Task {
     /**
-     * @return non-empty-list<Hook>
+     * @return non-empty-list<Hook>|Hook
      */
-    public static function hooks(): array;
+    public static function hook(): array|Hook;
 
     public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void;
 }

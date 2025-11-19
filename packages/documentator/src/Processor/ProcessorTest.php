@@ -95,12 +95,9 @@ final class ProcessorTest extends TestCase {
             }
         };
         $taskD = new class() implements HookTask {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function hooks(): array {
-                return [Hook::File];
+            public static function hook(): Hook {
+                return Hook::File;
             }
 
             #[Override]
@@ -772,7 +769,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public static function hooks(): array {
+            public static function hook(): array {
                 return [Hook::BeforeProcessing];
             }
 
@@ -817,12 +814,9 @@ final class ProcessorTest extends TestCase {
         $events    = [];
         $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $task      = new class() implements HookTask {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function hooks(): array {
-                return [Hook::AfterProcessing];
+            public static function hook(): Hook {
+                return Hook::AfterProcessing;
             }
 
             #[Override]
@@ -867,7 +861,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public static function hooks(): array {
+            public static function hook(): array {
                 return [Hook::AfterProcessing];
             }
 

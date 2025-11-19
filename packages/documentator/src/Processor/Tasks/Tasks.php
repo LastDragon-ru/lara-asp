@@ -18,6 +18,7 @@ use WeakMap;
 use function array_diff_uassoc;
 use function array_keys;
 use function is_a;
+use function is_array;
 
 /**
  * @implements IteratorAggregate<int, class-string<Task>>
@@ -88,7 +89,10 @@ class Tasks implements IteratorAggregate {
         }
 
         if (is_a($task, HookTask::class, true)) {
-            foreach ($task::hooks() as $hook) {
+            $hooks = $task::hook();
+            $hooks = is_array($hooks) ? $hooks : [$hooks];
+
+            foreach ($hooks as $hook) {
                 $tags[] = $hook;
             }
         }
