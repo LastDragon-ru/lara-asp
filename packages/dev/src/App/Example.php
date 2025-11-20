@@ -61,7 +61,7 @@ final class Example implements Runner {
     #[Override]
     public function __invoke(File $file): ?string {
         // Runnable?
-        if ($file->getExtension() !== 'php' || !str_contains($file->as(Content::class)->content, 'Example::')) {
+        if ($file->extension !== 'php' || !str_contains($file->as(Content::class)->content, 'Example::')) {
             return null;
         }
 

@@ -916,7 +916,7 @@ class ProcessorTest__Task implements FileTask {
     #[Override]
     public function __invoke(DependencyResolver $resolver, File $file): void {
         $resolved     = [];
-        $dependencies = $this->dependencies[$file->getName()] ?? $this->dependencies['*'] ?? [];
+        $dependencies = $this->dependencies[$file->name] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
             $resolved[$dependency] = $resolver->resolve(new FileReference($file->getFilePath($dependency)));

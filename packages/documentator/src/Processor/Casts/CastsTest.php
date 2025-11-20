@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -35,16 +36,8 @@ final class CastsTest extends TestCase {
         $casts->add($bCast, 200);
         $casts->add($cCast, 100);
 
-        $aFile = Mockery::mock(File::class);
-        $aFile
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.md');
-        $bFile = Mockery::mock(File::class);
-        $bFile
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.txt');
+        $aFile = Mockery::mock(File::class, [new FilePath('/file.md'), Mockery::mock(Caster::class)]);
+        $bFile = Mockery::mock(File::class, [new FilePath('/file.txt'), Mockery::mock(Caster::class)]);
 
         self::assertSame([$bCast, $cCast, $aCast], iterator_to_array($casts->get($aFile), false));
         self::assertSame([$cCast, $aCast], iterator_to_array($casts->get($bFile), false));

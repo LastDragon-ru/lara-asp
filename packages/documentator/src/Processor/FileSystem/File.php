@@ -12,6 +12,10 @@ use Stringable;
 
 use function sprintf;
 
+/**
+ * @property-read string            $name
+ * @property-read ?non-empty-string $extension
+ */
 class File implements Stringable {
     public function __construct(
         public readonly FilePath $path,
@@ -47,17 +51,6 @@ class File implements Stringable {
         return $this->caster->castTo($this, $class);
     }
 
-    public function getName(): string {
-        return $this->path->getName();
-    }
-
-    /**
-     * @return ?non-empty-string
-     */
-    public function getExtension(): ?string {
-        return $this->path->getExtension();
-    }
-
     public function getFilePath(string $path): FilePath {
         return $this->path->getFilePath($path);
     }
@@ -83,5 +76,23 @@ class File implements Stringable {
     #[Override]
     public function __toString(): string {
         return (string) $this->path;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __isset(string $name): bool {
+        return $this->__get($name) !== null;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __get(string $name): mixed {
+        return match ($name) {
+            'extension' => $this->path->getExtension(),
+            'name'      => $this->path->getName(),
+            default     => null,
+        };
     }
 }

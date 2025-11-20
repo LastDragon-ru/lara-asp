@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use Illuminate\Contracts\Container\Container;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
@@ -62,26 +63,14 @@ final class CasterTest extends TestCase {
         };
 
         // Wildcard
-        $aFile = Mockery::mock(File::class);
-        $aFile
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension-a');
-
+        $aFile   = Mockery::mock(File::class, [new FilePath('/file.extension-a'), Mockery::mock(Caster::class)]);
         $aActual = $caster->castTo($aFile, CasterTest__Value::class);
 
         self::assertEquals(new CasterTest__Value($aCast::class), $aActual);
         self::assertSame($aActual, $caster->castTo($aFile, CasterTest__Value::class));
 
         // Extension
-        $bFile = Mockery::mock(File::class);
-        $bFile
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension-b');
-
+        $bFile   = Mockery::mock(File::class, [new FilePath('/file.extension-b'), Mockery::mock(Caster::class)]);
         $bActual = $caster->castTo($bFile, CasterTest__Value::class);
 
         self::assertEquals(new CasterTest__Value($bCast::class), $bActual);
@@ -117,13 +106,7 @@ final class CasterTest extends TestCase {
         };
 
         // Test
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
         $aActual = $caster->castTo($file, $value::class);
         $bActual = $caster->castTo($file, $value::class);
         $cActual = $caster->castTo($file, stdClass::class);
@@ -142,15 +125,8 @@ final class CasterTest extends TestCase {
             ->once()
             ->andReturn(new stdClass());
 
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension');
-
-        $container = Mockery::mock(ContainerResolver::class);
-        $casts     = new Casts($container);
+        $file  = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
+        $casts = new Casts(Mockery::mock(ContainerResolver::class));
         $casts->add($cast);
 
         $adapter = Mockery::mock(Adapter::class);
@@ -215,13 +191,7 @@ final class CasterTest extends TestCase {
 
     public function testCastFromObject(): void {
         // Prepare
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
         $caster  = new class($adapter, $casts) extends Caster {
@@ -241,13 +211,7 @@ final class CasterTest extends TestCase {
 
     public function testCastFromImplementation(): void {
         // Prepare
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.md');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.md'), Mockery::mock(Caster::class)]);
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
         $caster  = new class($adapter, $casts) extends Caster {
@@ -268,13 +232,7 @@ final class CasterTest extends TestCase {
 
     public function testCastFromContent(): void {
         // Prepare
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
         $caster  = new class($adapter, $casts) extends Caster {
@@ -293,13 +251,7 @@ final class CasterTest extends TestCase {
 
     public function testCastFromSameValue(): void {
         // Prepare
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
         $caster  = new class($adapter, $casts) extends Caster {
@@ -315,13 +267,7 @@ final class CasterTest extends TestCase {
 
     public function testCastFromSameContent(): void {
         // Prepare
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->atLeast()
-            ->once()
-            ->andReturn('file.extension');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
         $caster  = new class($adapter, $casts) extends Caster {
@@ -342,12 +288,7 @@ final class CasterTest extends TestCase {
 
     public function testCastFromNoCast(): void {
         // Prepare
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.extension');
-
+        $file    = Mockery::mock(File::class, [new FilePath('/file.extension'), Mockery::mock(Caster::class)]);
         $value   = new stdClass();
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);

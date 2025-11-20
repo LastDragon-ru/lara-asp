@@ -10,6 +10,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(DirectoryPath::class)]
 final class DirectoryPathTest extends TestCase {
+    public function testGetName(): void {
+        $path       = new DirectoryPath('path/./to/./directory');
+        $normalized = $path->getNormalizedPath();
+
+        self::assertSame('directory', $path->getName());
+        self::assertSame('directory', $normalized->getName());
+        self::assertSame('path/to/directory/', (string) $normalized);
+    }
+
     public function testGetFilePath(): void {
         $relative = (new DirectoryPath('relative/path/to/directory'))->getFilePath('file.b');
         $absolute = (new DirectoryPath('/path/to/directory'))->getFilePath('/file.b');

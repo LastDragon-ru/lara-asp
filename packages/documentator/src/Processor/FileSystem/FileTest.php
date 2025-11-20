@@ -83,4 +83,13 @@ final class FileTest extends TestCase {
         self::assertTrue($a->isEqual($a));
         self::assertFalse($a->isEqual($b));
     }
+
+    public function testProperties(): void {
+        $path = new FilePath('/path/to/file.txt');
+        $file = new File($path, Mockery::mock(Caster::class));
+
+        self::assertSame($path, $file->path);
+        self::assertSame('file.txt', $file->name);
+        self::assertSame('txt', $file->extension);
+    }
 }

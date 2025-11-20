@@ -56,7 +56,7 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path('Example.md')))->getNormalizedPath();
         $fs       = $this->getFileSystem($path->getDirectoryPath());
         $file     = $fs->getFile($path);
-        $params   = new Parameters($file->getName());
+        $params   = new Parameters($file->name);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $expected = mb_trim((string) file_get_contents((string) $path));
         $instance = $this->app()->make(Instruction::class);
