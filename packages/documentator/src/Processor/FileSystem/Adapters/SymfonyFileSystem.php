@@ -87,6 +87,7 @@ class SymfonyFileSystem implements Adapter {
         $finder = Finder::create()
             ->ignoreVCSIgnored(true)
             ->exclude('node_modules')
+            ->exclude('vendor-bin')
             ->exclude('vendor')
             ->in((string) $directory);
 
