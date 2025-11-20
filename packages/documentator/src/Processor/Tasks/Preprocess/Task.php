@@ -30,7 +30,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\I
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExec\Instruction as IncludeExec;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile\Instruction as IncludeFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Instruction as IncludeGraphqlDirective;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludePackageList\Instruction as IncludePackageList;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Instruction as IncludeTemplate;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
@@ -87,7 +86,6 @@ class Task implements FileTask {
         $this->addInstruction(IncludeArtisan::class);
         $this->addInstruction(IncludeTemplate::class);
         $this->addInstruction(IncludeDocBlock::class);
-        $this->addInstruction(IncludePackageList::class);
         $this->addInstruction(IncludeDocumentList::class);
         $this->addInstruction(IncludeGraphqlDirective::class);
     }

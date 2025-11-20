@@ -120,16 +120,6 @@ Includes the `<target>` file.
 
 Includes the definition of the directive as a Markdown code block.
 
-#### `[include:package-list]: <target> <parameters>` 💀
-
-* `<target>` - Directory path.
-* `<parameters>` - additional parameters
-  * `order`: [`SortOrder`][code-links/7e5c66e8748c6ff8] = [`SortOrder::Asc`][code-links/08e0648f66e2d1a5] - Sort order.
-  * `template`: `string` = `'default'` - Blade template.
-
-Generates package list from `<target>` directory. The readme file will be
-used to determine package name and summary.
-
 #### `[include:template]: <target> <parameters>`
 
 * `<target>` - File path.
