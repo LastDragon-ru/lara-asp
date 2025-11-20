@@ -65,7 +65,7 @@ class FileSystem {
      * @return non-empty-string
      */
     public function getPathname(DirectoryPath|File|FilePath $path): string {
-        $path = $path instanceof Entry ? $path->getPath() : $path;
+        $path = $path instanceof File ? $path->getPath() : $path;
         $path = $this->input->getPath($path);
         $name = match (true) {
             $this->input->isEqual($this->output) && $this->input->isInside($path),
