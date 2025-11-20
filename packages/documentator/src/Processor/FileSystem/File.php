@@ -47,10 +47,6 @@ class File implements Stringable {
         return $this->caster->castTo($this, $class);
     }
 
-    public function getPath(): FilePath {
-        return $this->path;
-    }
-
     public function getName(): string {
         return $this->path->getName();
     }

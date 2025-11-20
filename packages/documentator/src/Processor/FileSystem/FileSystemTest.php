@@ -67,7 +67,7 @@ final class FileSystemTest extends TestCase {
             (string) $external,
         );
 
-        self::assertEquals($file->getPath(), $fromFilePath->getPath());
+        self::assertEquals($file->path, $fromFilePath->path);
         self::assertSame(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
             (string) $fromFilePath,
@@ -85,7 +85,7 @@ final class FileSystemTest extends TestCase {
         $filesystem = $this->getFileSystem($input);
         $directory  = $input;
         $map        = static function (File $file) use ($directory): string {
-            return (string) $directory->getRelativePath($file->getPath());
+            return (string) $directory->getRelativePath($file->path);
         };
 
         self::assertEquals(
@@ -160,11 +160,7 @@ final class FileSystemTest extends TestCase {
         $content = 'content';
         $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path    = $input->getFilePath('file.md');
-        $file    = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getPath')
-            ->twice()
-            ->andReturn($path);
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
 
         $caster = Mockery::mock(Caster::class);
         $caster
@@ -212,11 +208,8 @@ final class FileSystemTest extends TestCase {
         $content = 'content';
         $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path    = $input->getFilePath('file.md');
-        $file    = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getPath')
-            ->once()
-            ->andReturn($path);
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
+
         $caster = Mockery::mock(Caster::class);
         $caster
             ->shouldReceive('castFrom')
@@ -357,11 +350,7 @@ final class FileSystemTest extends TestCase {
         $value   = new stdClass();
         $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path    = $input->getFilePath('file.md');
-        $file    = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getPath')
-            ->twice()
-            ->andReturn($path);
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
 
         $caster = Mockery::mock(Caster::class);
         $caster
@@ -405,11 +394,7 @@ final class FileSystemTest extends TestCase {
         $value   = new Content($content);
         $input   = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
         $path    = $input->getFilePath('file.md');
-        $file    = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getPath')
-            ->twice()
-            ->andReturn($path);
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
 
         $caster = Mockery::mock(Caster::class);
         $caster

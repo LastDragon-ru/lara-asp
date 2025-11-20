@@ -74,7 +74,7 @@ final class Example implements Runner {
         try {
             // Execute
             (static function () use ($file): void {
-                include $file->getPath();
+                include (string) $file->path;
             })();
 
             // Output

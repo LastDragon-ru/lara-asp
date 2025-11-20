@@ -34,7 +34,7 @@ readonly class MarkdownCast implements Cast {
 
     #[Override]
     public function castTo(File $file, string $class): ?object {
-        return $this->markdown->parse($file->as(Content::class)->content, $file->getPath());
+        return $this->markdown->parse($file->as(Content::class)->content, $file->path);
     }
 
     #[Override]

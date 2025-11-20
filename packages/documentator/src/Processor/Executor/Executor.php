@@ -204,7 +204,7 @@ class Executor {
     }
 
     protected function queue(File $file): void {
-        $this->iterator->push($file->getPath());
+        $this->iterator->push($file->path);
     }
 
     protected function onResolve(File $resolved): void {
@@ -246,12 +246,12 @@ class Executor {
         }
 
         // Outside?
-        if (!$this->fs->input->isInside($file->getPath())) {
+        if (!$this->fs->input->isInside($file->path)) {
             return true;
         }
 
         // Excluded?
-        $path    = $this->fs->input->getRelativePath($file->getPath());
+        $path    = $this->fs->input->getRelativePath($file->path);
         $skipped = $this->skipped->match($path);
 
         if ($skipped) {

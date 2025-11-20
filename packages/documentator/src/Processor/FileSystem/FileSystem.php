@@ -65,7 +65,7 @@ class FileSystem {
      * @return non-empty-string
      */
     public function getPathname(DirectoryPath|File|FilePath $path): string {
-        $path = $path instanceof File ? $path->getPath() : $path;
+        $path = $path instanceof File ? $path->path : $path;
         $path = $this->input->getPath($path);
         $name = match (true) {
             $this->input->isEqual($this->output) && $this->input->isInside($path),
@@ -158,7 +158,7 @@ class FileSystem {
 
         if ($path instanceof File) {
             $file = $path;
-            $path = $path->getPath();
+            $path = $path->path;
         } else {
             // as is
         }
@@ -238,9 +238,8 @@ class FileSystem {
     }
 
     protected function change(File $file, string $content): void {
-        $path                                 = $file->getPath();
-        $string                               = (string) $path;
-        $this->changes[$this->level][$string] = [$path, $content];
+        $string                               = (string) $file->path;
+        $this->changes[$this->level][$string] = [$file->path, $content];
 
         for ($level = $this->level - 1; $level >= 0; $level--) {
             unset($this->changes[$level][$string]);

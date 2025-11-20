@@ -38,7 +38,7 @@ final class InstructionTest extends TestCase {
             $mock
                 ->shouldReceive('__invoke')
                 ->withArgs(static function (File $arg) use ($target): bool {
-                    return (string) $arg->getPath() === $target;
+                    return (string) $arg->path === $target;
                 })
                 ->once()
                 ->andReturn($output);

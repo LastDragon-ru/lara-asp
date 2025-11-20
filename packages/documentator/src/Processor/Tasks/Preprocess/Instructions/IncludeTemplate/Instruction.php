@@ -102,7 +102,7 @@ readonly class Instruction implements InstructionContract {
 
         // Markdown?
         if ($target->getExtension() === 'md') {
-            $content = $this->markdown->parse($content, $target->getPath());
+            $content = $this->markdown->parse($content, $target->path);
         }
 
         // Return
