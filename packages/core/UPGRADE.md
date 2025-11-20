@@ -31,6 +31,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Utils\Path` removed, please use [`FilePath`][code-links/5dccbbbbfd89f5f6]/[`DirectoryPath`][code-links/6a882555d8c99237] instead.
 
+* [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Path\Path::isMatch()`, the `preg_match()` can be used directly.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md

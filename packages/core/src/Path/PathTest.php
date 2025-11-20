@@ -157,13 +157,6 @@ final class PathTest extends TestCase {
             ),
         );
     }
-
-    public function testIsMatch(): void {
-        $path = new PathTest_Path('path/to/file.md');
-
-        self::assertTrue($path->isMatch('#[^/]+\.md$#'));
-        self::assertFalse($path->isMatch('#[^/]+\.txt$#'));
-    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
