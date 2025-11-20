@@ -26,8 +26,8 @@ readonly class ContentCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['*'];
+    public static function glob(): array|string {
+        return '*';
     }
 
     #[Override]

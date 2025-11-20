@@ -28,8 +28,8 @@ readonly class ComposerPackageCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['json'];
+    public static function glob(): array|string {
+        return '*.json';
     }
 
     #[Override]

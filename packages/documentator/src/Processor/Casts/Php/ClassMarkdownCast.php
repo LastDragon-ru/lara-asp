@@ -27,8 +27,8 @@ readonly class ClassMarkdownCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['php'];
+    public static function glob(): array|string {
+        return '*.php';
     }
 
     #[Override]
