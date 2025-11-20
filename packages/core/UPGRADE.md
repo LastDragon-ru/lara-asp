@@ -27,6 +27,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Utils\Path` removed, please use [`FilePath`][code-links/5dccbbbbfd89f5f6]/[`DirectoryPath`][code-links/6a882555d8c99237] instead.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -69,6 +73,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/b1bdaf40c86b0742]: src/PackageProvider.php
     "\LastDragon_ru\LaraASP\Core\PackageProvider"
+
+[code-links/6a882555d8c99237]: src/Path/DirectoryPath.php
+    "\LastDragon_ru\LaraASP\Core\Path\DirectoryPath"
+
+[code-links/5dccbbbbfd89f5f6]: src/Path/FilePath.php
+    "\LastDragon_ru\LaraASP\Core\Path\FilePath"
 
 [code-links/8b4dc3d615948332]: src/Provider.php
     "\LastDragon_ru\LaraASP\Core\Provider"
