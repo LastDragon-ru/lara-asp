@@ -24,7 +24,7 @@ use function sprintf;
 
 class FileSystem {
     /**
-     * @var array<string, Directory|File>
+     * @var array<string, File>
      */
     private array $cache = [];
     /**
@@ -64,7 +64,7 @@ class FileSystem {
      *
      * @return non-empty-string
      */
-    public function getPathname(Directory|DirectoryPath|File|FilePath $path): string {
+    public function getPathname(DirectoryPath|File|FilePath $path): string {
         $path = $path instanceof Entry ? $path->getPath() : $path;
         $path = $this->input->getPath($path);
         $name = match (true) {
@@ -89,7 +89,7 @@ class FileSystem {
     protected function isFile(FilePath $path): bool {
         $path = $this->input->getPath($path);
         $file = $this->cached($path);
-        $is   = $file instanceof File || $this->adapter->isFile($path);
+        $is   = $file !== null || $this->adapter->isFile($path);
 
         return $is;
     }
@@ -101,10 +101,6 @@ class FileSystem {
         // Cached?
         $path = $this->input->getPath($path);
         $file = $this->cached($path);
-
-        if ($file !== null && !($file instanceof File)) {
-            throw new FileNotFound($path);
-        }
 
         if ($file instanceof File) {
             return $file;
@@ -122,33 +118,6 @@ class FileSystem {
 
     /**
      * Relative path will be resolved based on {@see self::$input}.
-     */
-    public function getDirectory(DirectoryPath|FilePath $path): Directory {
-        // Cached?
-        $path      = $path instanceof FilePath ? $path->getDirectoryPath() : $path;
-        $path      = $this->input->getPath($path);
-        $directory = $this->cached($path);
-
-        if ($directory !== null && !($directory instanceof Directory)) {
-            throw new DirectoryNotFound($path);
-        }
-
-        if ($directory instanceof Directory) {
-            return $directory;
-        }
-
-        // Create
-        if ($this->adapter->isDirectory($path)) {
-            $directory = $this->cache(new Directory($path));
-        } else {
-            throw new DirectoryNotFound($path);
-        }
-
-        return $directory;
-    }
-
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
      *
      * @param list<string> $include
      * @param list<string> $exclude
@@ -156,40 +125,23 @@ class FileSystem {
      * @return Iterator<array-key, File>
      */
     public function getFilesIterator(
-        Directory|DirectoryPath $directory,
+        DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): Iterator {
-        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
-        $iterator  = $this->adapter->getFilesIterator($directory->getPath(), $include, $exclude, $depth);
+        // Exist?
+        $directory = $this->input->getPath($directory);
+
+        if (!$this->adapter->isDirectory($directory)) {
+            throw new DirectoryNotFound($directory);
+        }
+
+        // Search
+        $iterator = $this->adapter->getFilesIterator($directory, $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
             yield $this->getFile($path);
-        }
-
-        yield from [];
-    }
-
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
-     *
-     * @param list<string> $exclude
-     * @param list<string> $include
-     *
-     * @return Iterator<array-key, Directory>
-     */
-    public function getDirectoriesIterator(
-        Directory|DirectoryPath $directory,
-        array $include = [],
-        array $exclude = [],
-        ?int $depth = null,
-    ): Iterator {
-        $directory = $directory instanceof Directory ? $directory : $this->getDirectory($directory);
-        $iterator  = $this->adapter->getDirectoriesIterator($directory->getPath(), $include, $exclude, $depth);
-
-        foreach ($iterator as $path) {
-            yield $this->getDirectory($path);
         }
 
         yield from [];
@@ -296,19 +248,19 @@ class FileSystem {
     }
 
     /**
-     * @template T of Directory|File
+     * @template T of File
      *
      * @param T $object
      *
      * @return T
      */
-    protected function cache(Directory|File $object): Directory|File {
+    protected function cache(File $object): File {
         $this->cache[(string) $object] = $object;
 
         return $object;
     }
 
-    protected function cached(DirectoryPath|FilePath $path): Directory|File|null {
+    protected function cached(DirectoryPath|FilePath $path): ?File {
         $cached = $this->cache[(string) $path] ?? null;
 
         return $cached;

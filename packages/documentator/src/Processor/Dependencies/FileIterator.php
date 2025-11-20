@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
@@ -21,7 +20,7 @@ use function is_string;
  */
 readonly class FileIterator implements Dependency {
     public function __construct(
-        protected Directory|DirectoryPath|string $directory,
+        protected DirectoryPath|string $directory,
         /**
          * Glob(s) to include.
          *
@@ -55,7 +54,7 @@ readonly class FileIterator implements Dependency {
     }
 
     #[Override]
-    public function getPath(FileSystem $fs): Directory|DirectoryPath {
+    public function getPath(FileSystem $fs): DirectoryPath {
         return is_string($this->directory)
             ? new DirectoryPath($this->directory)
             : $this->directory;

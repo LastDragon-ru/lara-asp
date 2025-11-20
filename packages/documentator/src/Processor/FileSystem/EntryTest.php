@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(Directory::class)]
+#[CoversClass(Entry::class)]
 final class EntryTest extends TestCase {
     use WithProcessor;
 

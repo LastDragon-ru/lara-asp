@@ -47,23 +47,6 @@ class SymfonyFileSystem implements Adapter {
         yield from [];
     }
 
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function getDirectoriesIterator(
-        DirectoryPath $directory,
-        array $include = [],
-        array $exclude = [],
-        ?int $depth = null,
-    ): iterable {
-        foreach ($this->getFinder($directory, $include, $exclude, $depth)->directories() as $file) {
-            yield new DirectoryPath($file->getPathname());
-        }
-
-        yield from [];
-    }
-
     #[Override]
     public function read(FilePath $path): string {
         return $this->filesystem->readFile((string) $path);

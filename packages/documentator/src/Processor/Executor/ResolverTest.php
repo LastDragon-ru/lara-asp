@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
@@ -311,7 +310,7 @@ final class ResolverTest extends TestCase {
             ->shouldReceive('getPathname')
             ->twice()
             ->andReturnUsing(
-                static function (Directory|DirectoryPath|File|FilePath $path): string {
+                static function (DirectoryPath|File|FilePath $path): string {
                     return (string) $path;
                 },
             );
