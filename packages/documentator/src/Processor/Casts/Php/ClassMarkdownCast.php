@@ -19,7 +19,7 @@ readonly class ClassMarkdownCast implements Cast {
     }
 
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return Document::class;
     }
 

@@ -92,7 +92,7 @@ final class CasterTest extends TestCase {
         $value = new stdClass();
         $cast  = Mockery::mock(Cast::class);
         $cast
-            ->shouldReceive('getClass')
+            ->shouldReceive('class')
             ->once()
             ->andReturn(stdClass::class);
         $cast
@@ -382,7 +382,7 @@ final class CasterTest extends TestCase {
  */
 class CasterTest__Cast implements Cast {
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return CasterTest__Value::class;
     }
 
@@ -424,7 +424,7 @@ class CasterTest__Value {
  */
 class CasterTest__InterfaceCast implements Cast {
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return CasterTest__Contract::class;
     }
 

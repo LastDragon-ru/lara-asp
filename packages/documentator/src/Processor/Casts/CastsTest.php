@@ -117,7 +117,7 @@ class CastsTest__Cast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return stdClass::class;
     }
 

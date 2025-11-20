@@ -11,7 +11,7 @@ interface Cast {
     /**
      * @return class-string<TValue>
      */
-    public static function getClass(): string;
+    public static function class(): string;
 
     /**
      * Glob pattern(s) to define castable filenames. It will be matched against
