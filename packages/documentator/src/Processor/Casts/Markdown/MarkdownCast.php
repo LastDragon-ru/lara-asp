@@ -20,7 +20,7 @@ readonly class MarkdownCast implements Cast {
     }
 
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return Document::class;
     }
 
@@ -28,8 +28,8 @@ readonly class MarkdownCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['md'];
+    public static function glob(): array|string {
+        return '*.md';
     }
 
     #[Override]

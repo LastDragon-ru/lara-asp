@@ -119,7 +119,7 @@ class Caster {
         $this->files[$file][Content::class] = new Content($string);
 
         if (!($value instanceof Content)) {
-            $this->files[$file][$cast::getClass()] = $value;
+            $this->files[$file][$cast::class()] = $value;
         }
 
         // Return
@@ -144,7 +144,7 @@ class Caster {
         $casts = $this->casts->get($file);
 
         foreach ($casts as $item) {
-            $expected = $item::getClass();
+            $expected = $item::class();
 
             if ($expected === $class || (interface_exists($expected) && is_a($class, $expected, true))) {
                 $cast = $item;

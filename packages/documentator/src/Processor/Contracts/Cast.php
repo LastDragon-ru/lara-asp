@@ -11,14 +11,15 @@ interface Cast {
     /**
      * @return class-string<TValue>
      */
-    public static function getClass(): string;
+    public static function class(): string;
 
     /**
-     * Returns the castable file extensions. The `*` can be used for any file.
+     * Glob pattern(s) to define castable filenames. It will be matched against
+     * the name of the file and thus cannot contain the `/`.
      *
-     * @return non-empty-list<string>
+     * @return non-empty-list<non-empty-string>|non-empty-string
      */
-    public static function getExtensions(): array;
+    public static function glob(): array|string;
 
     /**
      * Cast file into object.

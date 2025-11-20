@@ -21,33 +21,41 @@ use function iterator_to_array;
 final class TasksTest extends TestCase {
     public function testHas(): void {
         $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
-        $file  = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getExtension')
-            ->twice()
-            ->andReturn('md');
+        $aFile = Mockery::mock(File::class);
+        $aFile
+            ->shouldReceive('getName')
+            ->once()
+            ->andReturn('file.md');
+        $bFile = Mockery::mock(File::class);
+        $bFile
+            ->shouldReceive('getName')
+            ->once()
+            ->andReturn('file.task');
 
-        self::assertFalse($tasks->has($file));
+        self::assertFalse($tasks->has($aFile));
         self::assertFalse($tasks->has(Hook::File));
+        self::assertFalse($tasks->has($bFile));
+        self::assertFalse($tasks->has(Hook::BeforeProcessing));
 
         $tasks->add(new TasksTest__FileTask());
         $tasks->add(TasksTest__HookTask::class);
+        $tasks->add(TasksTest__Task::class);
 
-        self::assertTrue($tasks->has($file));
+        self::assertTrue($tasks->has($aFile));
         self::assertTrue($tasks->has(Hook::File));
+        self::assertTrue($tasks->has($bFile));
+        self::assertTrue($tasks->has(Hook::BeforeProcessing));
     }
 
     public function testGet(): void {
         $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
         $taskA = new TasksTest__FileTask();
         $taskB = new TasksTest__HookTask();
-        $taskC = new class() implements FileTask {
-            /**
-             * @inheritDoc
-             */
+        $taskC = new TasksTest__Task();
+        $taskD = new class() implements FileTask {
             #[Override]
-            public static function getExtensions(): array {
-                return ['md'];
+            public static function glob(): string {
+                return '*.md';
             }
 
             #[Override]
@@ -55,23 +63,29 @@ final class TasksTest extends TestCase {
                 // empty
             }
         };
-        $file  = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getExtension')
+        $aFile = Mockery::mock(File::class);
+        $aFile
+            ->shouldReceive('getName')
             ->once()
-            ->andReturn('md');
+            ->andReturn('file.md');
+        $bFile = Mockery::mock(File::class);
+        $bFile
+            ->shouldReceive('getName')
+            ->once()
+            ->andReturn('file.task');
 
-        $tasks->add($taskC, 200);
+        $tasks->add($taskD, 200);
         $tasks->add($taskA, 100);
         $tasks->add($taskB);
+        $tasks->add($taskC);
 
         self::assertSame(
             [
                 $taskA,
-                $taskC,
+                $taskD,
                 $taskB,
             ],
-            iterator_to_array($tasks->get($file), false),
+            iterator_to_array($tasks->get($aFile), false),
         );
         self::assertSame(
             [
@@ -79,26 +93,57 @@ final class TasksTest extends TestCase {
             ],
             iterator_to_array($tasks->get(Hook::File), false),
         );
+        self::assertSame(
+            [
+                $taskB,
+                $taskC,
+            ],
+            iterator_to_array($tasks->get($bFile), false),
+        );
+        self::assertSame(
+            [
+                $taskC,
+            ],
+            iterator_to_array($tasks->get(Hook::BeforeProcessing), false),
+        );
     }
 
     public function testAdd(): void {
         $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
-        $task  = new TasksTest__FileTask();
 
-        self::assertTrue($tasks->add($task));
+        $tasks->add(TasksTest__Task::class);
+
+        self::assertSame(
+            [TasksTest__Task::class],
+            iterator_to_array($tasks, false),
+        );
     }
 
     public function testRemove(): void {
         $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
-        $task  = new TasksTest__HookTask();
 
-        $tasks->add($task);
+        $tasks->add(new TasksTest__FileTask());
+        $tasks->add(TasksTest__HookTask::class);
+        $tasks->add(TasksTest__Task::class);
 
         self::assertTrue($tasks->has(Hook::File));
+        self::assertSame(
+            ['*.txt', '*.md', '*.task'],
+            $tasks->globs(),
+        );
 
-        $tasks->remove($task::class);
+        $tasks->remove(TasksTest__HookTask::class);
+        $tasks->remove(TasksTest__Task::class);
 
         self::assertFalse($tasks->has(Hook::File));
+        self::assertSame(
+            [TasksTest__FileTask::class],
+            iterator_to_array($tasks, false),
+        );
+        self::assertSame(
+            ['*.txt', '*.md'],
+            $tasks->globs(),
+        );
     }
 
     public function testGetIterator(): void {
@@ -115,6 +160,18 @@ final class TasksTest extends TestCase {
             iterator_to_array($tasks, false),
         );
     }
+
+    public function testGlobs(): void {
+        $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
+
+        $tasks->add(new TasksTest__FileTask());
+        $tasks->add(TasksTest__Task::class);
+
+        self::assertSame(
+            ['*.txt', '*.md', '*.task'],
+            $tasks->globs(),
+        );
+    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -129,8 +186,8 @@ class TasksTest__FileTask implements FileTask {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['txt', 'md'];
+    public static function glob(): array|string {
+        return ['*.txt', '*.md'];
     }
 
     #[Override]
@@ -148,12 +205,39 @@ class TasksTest__HookTask implements HookTask {
      * @inheritDoc
      */
     #[Override]
-    public static function hooks(): array {
-        return [Hook::File];
+    public static function hook(): array|Hook {
+        return Hook::File;
     }
 
     #[Override]
     public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+        // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class TasksTest__Task implements FileTask, HookTask {
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function hook(): array|Hook {
+        return [Hook::BeforeProcessing];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public static function glob(): array|string {
+        return ['*.task'];
+    }
+
+    #[Override]
+    public function __invoke(DependencyResolver $resolver, File $file, ?Hook $hook = null): void {
         // empty
     }
 }

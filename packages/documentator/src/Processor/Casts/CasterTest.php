@@ -33,8 +33,8 @@ final class CasterTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public static function getExtensions(): array {
-                return ['extension-b'];
+            public static function glob(): string {
+                return '*.extension-b';
             }
         };
         $container = Mockery::mock(Container::class);
@@ -64,10 +64,10 @@ final class CasterTest extends TestCase {
         // Wildcard
         $aFile = Mockery::mock(File::class);
         $aFile
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension-a');
+            ->andReturn('file.extension-a');
 
         $aActual = $caster->castTo($aFile, CasterTest__Value::class);
 
@@ -77,10 +77,10 @@ final class CasterTest extends TestCase {
         // Extension
         $bFile = Mockery::mock(File::class);
         $bFile
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension-b');
+            ->andReturn('file.extension-b');
 
         $bActual = $caster->castTo($bFile, CasterTest__Value::class);
 
@@ -92,13 +92,13 @@ final class CasterTest extends TestCase {
         $value = new stdClass();
         $cast  = Mockery::mock(Cast::class);
         $cast
-            ->shouldReceive('getClass')
+            ->shouldReceive('class')
             ->once()
             ->andReturn(stdClass::class);
         $cast
-            ->shouldReceive('getExtensions')
+            ->shouldReceive('glob')
             ->once()
-            ->andReturn(['*']);
+            ->andReturn('*');
         $cast
             ->shouldReceive('castTo')
             ->once()
@@ -119,10 +119,10 @@ final class CasterTest extends TestCase {
         // Test
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $aActual = $caster->castTo($file, $value::class);
         $bActual = $caster->castTo($file, $value::class);
@@ -144,10 +144,10 @@ final class CasterTest extends TestCase {
 
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $container = Mockery::mock(ContainerResolver::class);
         $casts     = new Casts($container);
@@ -217,10 +217,10 @@ final class CasterTest extends TestCase {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
@@ -243,10 +243,10 @@ final class CasterTest extends TestCase {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('md');
+            ->andReturn('file.md');
 
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
@@ -270,10 +270,10 @@ final class CasterTest extends TestCase {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
@@ -295,10 +295,10 @@ final class CasterTest extends TestCase {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
@@ -317,10 +317,10 @@ final class CasterTest extends TestCase {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->atLeast()
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
         $adapter = Mockery::mock(Adapter::class);
@@ -344,9 +344,9 @@ final class CasterTest extends TestCase {
         // Prepare
         $file = Mockery::mock(File::class);
         $file
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->once()
-            ->andReturn('extension');
+            ->andReturn('file.extension');
 
         $value   = new stdClass();
         $casts   = new Casts(Mockery::mock(ContainerResolver::class));
@@ -382,7 +382,7 @@ final class CasterTest extends TestCase {
  */
 class CasterTest__Cast implements Cast {
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return CasterTest__Value::class;
     }
 
@@ -390,8 +390,8 @@ class CasterTest__Cast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['*'];
+    public static function glob(): array|string {
+        return '*';
     }
 
     #[Override]
@@ -424,7 +424,7 @@ class CasterTest__Value {
  */
 class CasterTest__InterfaceCast implements Cast {
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return CasterTest__Contract::class;
     }
 
@@ -432,8 +432,8 @@ class CasterTest__InterfaceCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['md'];
+    public static function glob(): string {
+        return '*.md';
     }
 
     #[Override]

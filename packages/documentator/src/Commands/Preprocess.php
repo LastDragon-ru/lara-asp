@@ -36,6 +36,7 @@ use function getcwd;
 use function gettype;
 use function implode;
 use function is_a;
+use function is_array;
 use function is_scalar;
 use function is_string;
 use function ksort;
@@ -178,13 +179,16 @@ class Preprocess extends Command {
         $extensions = [];
 
         if (is_a($task, FileTask::class, true)) {
-            foreach ($task::getExtensions() as $extension) {
+            foreach ((array) $task::glob() as $extension) {
                 $extensions[] = "`{$extension}`";
             }
         }
 
         if (is_a($task, HookTask::class, true)) {
-            foreach ($task::hooks() as $hook) {
+            $hooks = $task::hook();
+            $hooks = is_array($hooks) ? $hooks : [$hooks];
+
+            foreach ($hooks as $hook) {
                 $extensions[] = "`Hook::{$hook->name}`";
             }
         }

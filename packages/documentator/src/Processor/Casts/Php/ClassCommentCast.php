@@ -16,7 +16,7 @@ class ClassCommentCast implements Cast {
     }
 
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return ClassComment::class;
     }
 
@@ -24,8 +24,8 @@ class ClassCommentCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['php'];
+    public static function glob(): array|string {
+        return '*.php';
     }
 
     #[Override]

@@ -15,7 +15,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
@@ -30,9 +29,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
 use Override;
 use Traversable;
 
-use function array_unique;
-use function array_values;
-use function is_a;
+use function array_map;
 
 /**
  * Perform one or more task on the file(s).
@@ -118,8 +115,9 @@ class Processor {
             try {
                 $caster = new Caster($this->adapter, $this->casts);
                 $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $root, $output);
+                $globs  = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
                 $files  = match (true) {
-                    default                    => $fs->getFilesIterator($root, $this->include(), $skip),
+                    default                    => $fs->getFilesIterator($root, $globs, $skip),
                     $input instanceof FilePath => new readonly class($fs, $input) implements IteratorAggregate {
                         public function __construct(
                             private FileSystem $fs,
@@ -138,7 +136,8 @@ class Processor {
                     },
                 };
 
-                $this->execute($fs, $files, new Glob($root, $skip));
+                $this->run($fs, $files, new Glob($root, $skip));
+                $this->reset();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -156,27 +155,14 @@ class Processor {
     /**
      * @param iterable<mixed, File> $files
      */
-    protected function execute(FileSystem $fs, iterable $files, Matcher $skipped): void {
+    protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
         $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $skipped);
 
         $executor->run();
     }
 
-    /**
-     * @return list<string>
-     */
-    private function include(): array {
-        $include = [];
-
-        foreach ($this->tasks as $task) {
-            if (is_a($task, FileTask::class, true)) {
-                foreach ($task::getExtensions() as $extension) {
-                    $extension = '**/*'.($extension !== '*' ? ".{$extension}" : '');
-                    $include[] = $extension;
-                }
-            }
-        }
-
-        return array_values(array_unique($include));
+    protected function reset(): void {
+        $this->tasks->reset();
+        $this->casts->reset();
     }
 }

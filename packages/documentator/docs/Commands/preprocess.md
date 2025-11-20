@@ -12,7 +12,7 @@ Perform one or more task on the file.
 
 ## Tasks
 
-### Preprocess (`md`)
+### Preprocess (`*.md`)
 
 Replaces special instructions in Markdown. Instruction is the [link
 reference definition](https://github.github.com/gfm/#link-reference-definitions),
@@ -138,7 +138,7 @@ used to determine package name and summary.
 
 Includes the `<target>` as a template.
 
-### Code Links (`md`)
+### Code Links (`*.md`)
 
 Searches class/method/property/etc names in `inline code` and wrap it into a
 link to file.

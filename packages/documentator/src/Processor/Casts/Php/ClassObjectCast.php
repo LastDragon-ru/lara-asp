@@ -22,7 +22,7 @@ readonly class ClassObjectCast implements Cast {
     }
 
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return ClassObject::class;
     }
 
@@ -30,8 +30,8 @@ readonly class ClassObjectCast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['php'];
+    public static function glob(): array|string {
+        return '*.php';
     }
 
     #[Override]

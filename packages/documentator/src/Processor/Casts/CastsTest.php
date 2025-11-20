@@ -22,12 +22,9 @@ final class CastsTest extends TestCase {
         $casts = new Casts(Mockery::mock(ContainerResolver::class));
         $aCast = new CastsTest__Cast();
         $bCast = new class() extends CastsTest__Cast {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['md'];
+            public static function glob(): string {
+                return '*.md';
             }
         };
         $cCast = new class() extends CastsTest__Cast {
@@ -40,14 +37,14 @@ final class CastsTest extends TestCase {
 
         $aFile = Mockery::mock(File::class);
         $aFile
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->once()
-            ->andReturn('md');
+            ->andReturn('file.md');
         $bFile = Mockery::mock(File::class);
         $bFile
-            ->shouldReceive('getExtension')
+            ->shouldReceive('getName')
             ->once()
-            ->andReturn('txt');
+            ->andReturn('file.txt');
 
         self::assertSame([$bCast, $cCast, $aCast], iterator_to_array($casts->get($aFile), false));
         self::assertSame([$cCast, $aCast], iterator_to_array($casts->get($bFile), false));
@@ -55,9 +52,13 @@ final class CastsTest extends TestCase {
 
     public function testAdd(): void {
         $casts = new Casts(Mockery::mock(ContainerResolver::class));
-        $cast  = CastsTest__Cast::class;
 
-        self::assertTrue($casts->add($cast));
+        $casts->add(CastsTest__Cast::class);
+
+        self::assertSame(
+            [CastsTest__Cast::class],
+            iterator_to_array($casts, false),
+        );
     }
 
     public function testRemove(): void {
@@ -116,7 +117,7 @@ class CastsTest__Cast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getClass(): string {
+    public static function class(): string {
         return stdClass::class;
     }
 
@@ -124,8 +125,8 @@ class CastsTest__Cast implements Cast {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['*'];
+    public static function glob(): array|string {
+        return '*';
     }
 
     #[Override]

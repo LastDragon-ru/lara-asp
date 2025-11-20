@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
 
 use IteratorAggregate;
+use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -12,9 +13,12 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Instances;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use Override;
 use Traversable;
+use WeakMap;
 
-use function array_map;
+use function array_diff_uassoc;
+use function array_keys;
 use function is_a;
+use function is_array;
 
 /**
  * @implements IteratorAggregate<int, class-string<Task>>
@@ -25,7 +29,18 @@ class Tasks implements IteratorAggregate {
      */
     private Instances $instances;
 
+    /**
+     * @var array<non-empty-string, GlobMatcher>
+     */
+    private array $globs = [];
+
+    /**
+     * @var WeakMap<File|Hook, list<Hook|non-empty-string>>
+     */
+    private WeakMap $tags;
+
     public function __construct(ContainerResolver $container) {
+        $this->tags      = new WeakMap();
         $this->instances = new Instances($container, SortOrder::Asc);
     }
 
@@ -34,7 +49,14 @@ class Tasks implements IteratorAggregate {
      */
     #[Override]
     public function getIterator(): Traversable {
-        yield from $this->instances->getClasses();
+        yield from $this->instances->classes();
+    }
+
+    /**
+     * @return list<non-empty-string>
+     */
+    public function globs(): array {
+        return array_keys($this->globs);
     }
 
     public function has(File|Hook $object): bool {
@@ -53,16 +75,29 @@ class Tasks implements IteratorAggregate {
      *
      * @param T|class-string<T> $task
      */
-    public function add(Task|string $task, ?int $priority = null): bool {
-        $tags = $this->tags($task);
+    public function add(Task|string $task, ?int $priority = null): void {
+        $tags = [];
 
-        if ($tags !== []) {
-            $this->instances->add($task, $tags, $priority);
+        if (is_a($task, FileTask::class, true)) {
+            foreach ((array) $task::glob() as $tag) {
+                $tags[] = $tag;
 
-            return true;
+                if (!isset($this->globs[$tag])) {
+                    $this->globs[$tag] = new GlobMatcher($tag);
+                }
+            }
         }
 
-        return false;
+        if (is_a($task, HookTask::class, true)) {
+            $hooks = $task::hook();
+            $hooks = is_array($hooks) ? $hooks : [$hooks];
+
+            foreach ($hooks as $hook) {
+                $tags[] = $hook;
+            }
+        }
+
+        $this->instances->add($task, $tags, $priority);
     }
 
     /**
@@ -70,36 +105,54 @@ class Tasks implements IteratorAggregate {
      *
      * @param T|class-string<T> $task
      */
-    public function remove(Task|string $task): bool {
+    public function remove(Task|string $task): void {
+        // Task
         $this->instances->remove($task);
 
-        return true;
+        // Tags
+        $this->tags = new WeakMap();
+
+        // Globs
+        $tags = array_diff_uassoc(
+            array_keys($this->globs),
+            $this->instances->tags(),
+            static function (mixed $a, mixed $b): int {
+                return $a === $b ? 0 : 1;
+            },
+        );
+
+        foreach ($tags as $tag) {
+            unset($this->globs[$tag]);
+        }
+    }
+
+    public function reset(): void {
+        $this->instances->reset();
     }
 
     /**
-     * @param Task|Hook|File|class-string<Task> $object
-     *
-     * @return list<string>
+     * @return list<Hook|non-empty-string>
      */
-    private function tags(Task|Hook|File|string $object): array {
-        return match (true) {
-            $object instanceof File              => [
-                $this->hook(Hook::File),
-                $this->file((string) $object->getExtension()),
-                $this->file('*'),
-            ],
-            $object instanceof Hook              => [$this->hook($object)],
-            is_a($object, HookTask::class, true) => array_map($this->hook(...), $object::hooks()),
-            is_a($object, FileTask::class, true) => array_map($this->file(...), $object::getExtensions()),
-            default                              => [],
-        };
-    }
+    private function tags(Hook|File $object): array {
+        if (!isset($this->tags[$object])) {
+            $tags = [];
 
-    private function hook(Hook $hook): string {
-        return HookTask::class.': '.$hook->name;
-    }
+            if ($object instanceof File) {
+                $name   = $object->getName();
+                $tags[] = Hook::File;
 
-    private function file(string $ext): string {
-        return FileTask::class.': '.$ext;
+                foreach ($this->globs as $tag => $matcher) {
+                    if ($matcher->match($name)) {
+                        $tags[] = $tag;
+                    }
+                }
+            } else {
+                $tags[] = $object;
+            }
+
+            $this->tags[$object] = $tags;
+        }
+
+        return $this->tags[$object];
     }
 }

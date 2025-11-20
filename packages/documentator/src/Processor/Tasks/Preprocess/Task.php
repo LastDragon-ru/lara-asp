@@ -98,7 +98,7 @@ class Task implements FileTask {
      * @return list<class-string<Instruction<Parameters>>>
      */
     public function getInstructions(): array {
-        return $this->instructions->getClasses();
+        return $this->instructions->classes();
     }
 
     /**
@@ -131,8 +131,8 @@ class Task implements FileTask {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['md'];
+    public static function glob(): array|string {
+        return '*.md';
     }
 
     #[Override]

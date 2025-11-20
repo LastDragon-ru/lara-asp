@@ -56,17 +56,14 @@ final class ProcessorTest extends TestCase {
 
         $mock = Mockery::mock(FileTask::class);
         $mock
-            ->shouldReceive('getExtensions')
-            ->twice()
-            ->andReturns(['php']);
+            ->shouldReceive('glob')
+            ->once()
+            ->andReturns(['*.php']);
 
         $taskA = new class() extends ProcessorTest__Task {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['htm'];
+            public static function glob(): string {
+                return '*.htm';
             }
         };
         $taskB = new ProcessorTest__Task([
@@ -83,12 +80,9 @@ final class ProcessorTest extends TestCase {
             ],
         ]);
         $taskC = new class() extends ProcessorTest__Task {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['htm'];
+            public static function glob(): string {
+                return '*.htm';
             }
 
             #[Override]
@@ -101,12 +95,9 @@ final class ProcessorTest extends TestCase {
             }
         };
         $taskD = new class() implements HookTask {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function hooks(): array {
-                return [Hook::File];
+            public static function hook(): Hook {
+                return Hook::File;
             }
 
             #[Override]
@@ -305,21 +296,15 @@ final class ProcessorTest extends TestCase {
     public function testRunEach(): void {
         $taskA     = new ProcessorTest__Task();
         $taskB     = new class() extends ProcessorTest__Task {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['*'];
+            public static function glob(): string {
+                return '*';
             }
         };
         $taskC     = new class() extends ProcessorTest__Task {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['*'];
+            public static function glob(): string {
+                return '*';
             }
         };
         $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
@@ -377,21 +362,15 @@ final class ProcessorTest extends TestCase {
                 '../a/excluded.txt',
             ],
         ]) extends ProcessorTest__Task {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['html'];
+            public static function glob(): string {
+                return '*.html';
             }
         };
         $taskB     = new class() extends ProcessorTest__Task {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function getExtensions(): array {
-                return ['*'];
+            public static function glob(): string {
+                return '*';
             }
         };
         $processor = new Processor(
@@ -790,7 +769,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public static function hooks(): array {
+            public static function hook(): array {
                 return [Hook::BeforeProcessing];
             }
 
@@ -835,12 +814,9 @@ final class ProcessorTest extends TestCase {
         $events    = [];
         $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
         $task      = new class() implements HookTask {
-            /**
-             * @inheritDoc
-             */
             #[Override]
-            public static function hooks(): array {
-                return [Hook::AfterProcessing];
+            public static function hook(): Hook {
+                return Hook::AfterProcessing;
             }
 
             #[Override]
@@ -885,7 +861,7 @@ final class ProcessorTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public static function hooks(): array {
+            public static function hook(): array {
                 return [Hook::AfterProcessing];
             }
 
@@ -933,8 +909,8 @@ class ProcessorTest__Task implements FileTask {
      * @inheritDoc
      */
     #[Override]
-    public static function getExtensions(): array {
-        return ['txt', 'md'];
+    public static function glob(): array|string {
+        return ['*.txt', '*.md'];
     }
 
     #[Override]
