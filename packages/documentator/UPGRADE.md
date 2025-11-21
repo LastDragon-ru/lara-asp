@@ -29,13 +29,17 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v9
 
-* [ ] Metadata renamed to cast. The [`Cast`][code-links/6a213cdb7ed49c73] should be used instead of `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver` and `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer`.
+* [ ] Metadata renamed to cast. The [`Cast`][code-links/6a213cdb7ed49c73] should be used instead of
+  * `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataResolver`
+  * `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\MetadataSerializer`
 
 * [ ] The [`Task`][code-links/405a2082bc21eb5b] split into two new classes that should be used instead
   * [`FileTask`][code-links/42d900d10c3c5f5c]
   * [`HookTask`][code-links/b3d5664fcbd8bbf1]
 
 * [ ] The [`Processor`][code-links/e7daa686f09d9cc3] has fewer methods to simplify the API.
+
+* [ ] Deprecated `💀\LastDragon_ru\LaraASP\Documentator\Utils\Markdown` removed, please use [`Document`][code-links/ab9a95ccf7b21703] instead.
 
 # Upgrade from v7
 
@@ -92,6 +96,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/ab9a95ccf7b21703]: src/Markdown/Contracts/Document.php
+    "\LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document"
 
 [code-links/bddbc83c8cbd0c67]: src/PackageProvider.php
     "\LastDragon_ru\LaraASP\Documentator\PackageProvider"
