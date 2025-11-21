@@ -32,7 +32,7 @@ readonly class ContentCast implements Cast {
 
     #[Override]
     public function castTo(File $file, string $class): ?object {
-        return new Content($this->adapter->read($file->getPath()));
+        return new Content($this->adapter->read($file->path));
     }
 
     #[Override]

@@ -34,7 +34,7 @@ readonly class ClassMarkdownCast implements Cast {
     #[Override]
     public function castTo(File $file, string $class): ?object {
         $comment  = $file->as(ClassComment::class);
-        $document = ($this->factory)($comment->comment, $file->getPath(), $comment->context);
+        $document = ($this->factory)($comment->comment, $file->path, $comment->context);
 
         return $document;
     }

@@ -138,11 +138,10 @@ class Tasks implements IteratorAggregate {
             $tags = [];
 
             if ($object instanceof File) {
-                $name   = $object->getName();
                 $tags[] = Hook::File;
 
                 foreach ($this->globs as $tag => $matcher) {
-                    if ($matcher->match($name)) {
+                    if ($matcher->match($object->name)) {
                         $tags[] = $tag;
                     }
                 }

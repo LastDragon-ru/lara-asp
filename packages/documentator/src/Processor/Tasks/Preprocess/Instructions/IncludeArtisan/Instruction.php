@@ -84,7 +84,7 @@ class Instruction implements InstructionContract {
     protected function getCommand(Context $context, string $target, Parameters $parameters): string {
         return strtr($target, [
             '{$directory}' => $context->file->getDirectoryPath(),
-            '{$file}'      => $context->file->getPath(),
+            '{$file}'      => $context->file->path,
         ]);
     }
 

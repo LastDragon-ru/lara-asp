@@ -2,15 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 
 readonly class HookStarted implements Event {
     public function __construct(
         public Hook $hook,
-        /**
-         * @var non-empty-string
-         */
-        public string $path,
+        public FilePath $path,
     ) {
         // empty
     }

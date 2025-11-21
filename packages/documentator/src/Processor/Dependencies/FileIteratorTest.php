@@ -23,12 +23,10 @@ final class FileIteratorTest extends TestCase {
 
     public function testGetPath(): void {
         $filesystem = $this->getFileSystem(__DIR__);
-        $directory  = $filesystem->getDirectory(new DirectoryPath(__DIR__));
-        $path       = $directory->getPath();
+        $directory  = new DirectoryPath(__DIR__);
 
         self::assertSame('path/to/directory', (string) (new FileIterator('path/to/directory'))->getPath($filesystem));
         self::assertSame((string) $directory, (string) (new FileIterator($directory))->getPath($filesystem));
-        self::assertSame((string) $path, (string) (new FileIterator($path))->getPath($filesystem));
     }
 
     public function testInvoke(): void {
@@ -37,7 +35,6 @@ final class FileIteratorTest extends TestCase {
         $include   = ['**/*.txt'];
         $absolute  = new FileIterator($path, $include);
         $relative  = new FileIterator(basename((string) $path), $include);
-        $directory = new FileIterator($fs->getDirectory($path), $include);
         $formatter = static function (File|FilePath $item): string {
             return (string) $item;
         };
@@ -53,7 +50,6 @@ final class FileIteratorTest extends TestCase {
 
         self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs), false)));
         self::assertEquals($expected, array_map($formatter, iterator_to_array($relative($fs), false)));
-        self::assertEquals($expected, array_map($formatter, iterator_to_array($directory($fs), false)));
     }
 
     public function testInvokeNotFound(): void {

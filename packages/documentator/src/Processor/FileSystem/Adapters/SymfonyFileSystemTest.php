@@ -77,41 +77,15 @@ final class SymfonyFileSystemTest extends TestCase {
             ],
             $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'])),
         );
-    }
-
-    public function testGetDirectoriesIterator(): void {
-        $path    = new DirectoryPath(self::getTestData()->path(''));
-        $adapter = new SymfonyFileSystem();
-
         self::assertSame(
             [
-                'a/',
-                'a/aa/',
-                'b/',
-                'b/bb/',
+                'a.txt',
+                'a/aa.txt',
+                'b.txt',
+                'b/bb.txt',
+                'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path)),
-        );
-        self::assertSame(
-            [
-                'a/',
-                'b/',
-            ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, depth: 0)),
-        );
-        self::assertSame(
-            [
-                'a/',
-                'b/',
-                'b/bb/',
-            ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, exclude: ['a/*/'])),
-        );
-        self::assertSame(
-            [
-                'a/',
-            ],
-            $this->asArray($path, $adapter->getDirectoriesIterator($path, include: ['a/'])),
+            $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'], exclude: ['**/aa/*'])),
         );
     }
 

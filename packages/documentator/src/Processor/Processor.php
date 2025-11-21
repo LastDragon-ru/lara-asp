@@ -110,7 +110,7 @@ class Processor {
 
         // Start
         try {
-            $this->dispatcher->notify(new ProcessingStarted());
+            $this->dispatcher->notify(new ProcessingStarted($root, $output));
 
             try {
                 $caster = new Caster($this->adapter, $this->casts);

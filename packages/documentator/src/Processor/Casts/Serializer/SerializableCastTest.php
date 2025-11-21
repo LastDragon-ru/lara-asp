@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Serializer;
 
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
@@ -26,11 +28,7 @@ final class SerializableCastTest extends TestCase {
             ->once()
             ->andReturn($object);
 
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getExtension')
-            ->once()
-            ->andReturn($extension);
+        $file = Mockery::mock(File::class, [new FilePath("/file.{$extension}"), Mockery::mock(Caster::class)]);
         $file
             ->shouldReceive('as')
             ->with(Content::class)
@@ -44,13 +42,8 @@ final class SerializableCastTest extends TestCase {
     }
 
     public function testCastFrom(): void {
-        $ext  = 'json';
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getExtension')
-            ->once()
-            ->andReturn($ext);
-
+        $ext        = 'json';
+        $file       = Mockery::mock(File::class, [new FilePath("/file.{$ext}"), Mockery::mock(Caster::class)]);
         $object     = Mockery::mock(Serializable::class);
         $content    = 'content';
         $serializer = Mockery::mock(Serializer::class);

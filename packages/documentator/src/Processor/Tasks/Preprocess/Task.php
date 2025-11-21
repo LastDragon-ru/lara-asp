@@ -159,7 +159,7 @@ class Task implements FileTask {
                             )
                             ->mutate(
                                 new Cleanup(),
-                                new Move($file->getPath()),
+                                new Move($file->path),
                             );
                     }
                 } catch (PreprocessError $exception) {

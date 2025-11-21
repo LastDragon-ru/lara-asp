@@ -93,7 +93,7 @@ class Executor {
         }
 
         // Run
-        $this->dispatcher->notify(new HookStarted($hook, $this->fs->getPathname($file)));
+        $this->dispatcher->notify(new HookStarted($hook, $file->path));
 
         try {
             $this->tasks($this->tasks->get($hook), $hook, $file);
@@ -119,7 +119,7 @@ class Executor {
             // The $file cannot be processed if it is skipped, so we can return
             // it safely in this case.
             if (!$this->isSkipped($file)) {
-                $this->dispatcher->notify(new FileStarted($this->fs->getPathname($file)));
+                $this->dispatcher->notify(new FileStarted($file->path));
                 $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
                 throw new DependencyCircularDependency($file, array_values($this->stack));
@@ -129,7 +129,7 @@ class Executor {
         }
 
         // Event
-        $this->dispatcher->notify(new FileStarted($this->fs->getPathname($file)));
+        $this->dispatcher->notify(new FileStarted($file->path));
 
         // Skipped?
         if ($this->isSkipped($file)) {
@@ -204,7 +204,7 @@ class Executor {
     }
 
     protected function queue(File $file): void {
-        $this->iterator->push($file->getPath());
+        $this->iterator->push($file->path);
     }
 
     protected function onResolve(File $resolved): void {
@@ -246,12 +246,12 @@ class Executor {
         }
 
         // Outside?
-        if (!$this->fs->input->isInside($file->getPath())) {
+        if (!$this->fs->input->isInside($file->path)) {
             return true;
         }
 
         // Excluded?
-        $path    = $this->fs->input->getRelativePath($file->getPath());
+        $path    = $this->fs->input->getRelativePath($file->path);
         $skipped = $this->skipped->match($path);
 
         if ($skipped) {

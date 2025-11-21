@@ -6,14 +6,13 @@ use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
 use Traversable;
 
 /**
- * @template TValue of Traversable<mixed, Directory|File>|Directory|File
+ * @template TValue of Traversable<mixed, File>|File
  *
  * @implements Dependency<TValue|null>
  */
@@ -31,7 +30,7 @@ readonly class Optional implements Dependency {
      * @return TValue|null
      */
     #[Override]
-    public function __invoke(FileSystem $fs): Traversable|Directory|File|null {
+    public function __invoke(FileSystem $fs): Traversable|File|null {
         $resolved = null;
 
         try {
@@ -44,7 +43,7 @@ readonly class Optional implements Dependency {
     }
 
     #[Override]
-    public function getPath(FileSystem $fs): Directory|DirectoryPath|File|FilePath {
+    public function getPath(FileSystem $fs): DirectoryPath|File|FilePath {
         return $this->dependency->getPath($fs);
     }
 }

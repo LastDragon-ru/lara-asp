@@ -10,14 +10,13 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
-use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
-use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -162,17 +161,9 @@ final class TaskTest extends TestCase {
             ->addInstruction(TaskTest__TestInstruction::class)
             ->addInstruction(TaskTest__DocumentInstruction::class);
 
-        $path = new FilePath('path/to/file.md');
-        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
+        $path = new FilePath('/path/to/file.md');
+        $file = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
         $file->makePartial();
-        $file
-            ->shouldUseProperty('path')
-            ->value($path);
-        $file
-            ->shouldReceive('getPath')
-            ->atLeast()
-            ->once()
-            ->andReturn($path);
         $file
             ->shouldReceive('as')
             ->with(Document::class)
@@ -183,10 +174,6 @@ final class TaskTest extends TestCase {
 
         $actual     = '';
         $filesystem = Mockery::mock(FileSystem::class);
-        $filesystem
-            ->shouldReceive('getPathname')
-            ->once()
-            ->andReturn((string) $path);
         $filesystem
             ->shouldReceive('write')
             ->once()

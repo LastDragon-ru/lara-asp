@@ -112,10 +112,9 @@ class Casts implements IteratorAggregate {
     private function tags(File $file): array {
         if (!isset($this->tags[$file])) {
             $tags = [];
-            $name = $file->getName();
 
             foreach ($this->globs as $tag => $matcher) {
-                if ($matcher->match($name)) {
+                if ($matcher->match($file->name)) {
                     $tags[] = $tag;
                 }
             }

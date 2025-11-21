@@ -2,6 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -57,16 +59,18 @@ class Listener {
      */
     private array $changes = [];
 
-    private int   $width          = 150;
-    private float $start          = 0;
-    private int   $startMemory    = 0;
-    private int   $peakMemory     = 0;
-    private int   $filesCreated   = 0;
-    private int   $filesUpdated   = 0;
-    private int   $filesProcessed = 0;
+    private ?DirectoryPath $input          = null;
+    private ?DirectoryPath $output         = null;
+    private int            $width          = 150;
+    private float          $start          = 0;
+    private int            $startMemory    = 0;
+    private int            $peakMemory     = 0;
+    private int            $filesCreated   = 0;
+    private int            $filesUpdated   = 0;
+    private int            $filesProcessed = 0;
 
     public function __construct(
-        protected readonly OutputInterface $output,
+        protected readonly OutputInterface $writer,
         protected readonly Formatter $formatter,
     ) {
         // empty
@@ -95,6 +99,8 @@ class Listener {
     }
 
     protected function processingStarted(ProcessingStarted $event): void {
+        $this->input          = $event->input;
+        $this->output         = $event->output;
         $this->width          = $this->getTerminalWidth();
         $this->stack          = [];
         $this->changes        = [];
@@ -121,6 +127,8 @@ class Listener {
 
         // Reset
         // (should we throw error if any of the stacks are not empty?)
+        $this->input          = null;
+        $this->output         = null;
         $this->width          = 0;
         $this->start          = 0;
         $this->stack          = [];
@@ -133,7 +141,8 @@ class Listener {
     }
 
     protected function fileStarted(FileStarted $event): void {
-        $this->stack[] = new File($event->path, microtime(true), changes: $this->changes($event->path));
+        $pathname      = $this->pathname($event->path);
+        $this->stack[] = new File($pathname, microtime(true), changes: $this->changes($pathname));
 
         $this->filesProcessed++;
     }
@@ -206,7 +215,7 @@ class Listener {
         }
 
         // Save
-        $task->children[] = new Item($event->path, null, $event->result, $this->changes);
+        $task->children[] = new Item($this->pathname($event->path), null, $event->result, $this->changes);
         $task->changes    = array_values(array_unique(array_merge($task->changes, $this->changes), SORT_REGULAR));
 
         // Clear
@@ -214,7 +223,7 @@ class Listener {
     }
 
     protected function filesystem(FileSystemModified $event): void {
-        $this->changes[] = new Change($event->path, $event->type);
+        $this->changes[] = new Change($this->pathname($event->path), $event->type);
 
         if ($event->type === FileSystemModifiedType::Created) {
             $this->filesCreated++;
@@ -259,7 +268,7 @@ class Listener {
         $template = array_intersect_key($template, $filled);
         $template = implode(' ', $template);
 
-        $this->output->writeln($template);
+        $this->writer->writeln($template);
     }
 
     /**
@@ -351,9 +360,9 @@ class Listener {
     protected function isLevelVisible(int $level): bool {
         return match ($level) {
             0       => true,
-            1       => $this->output->isVerbose(),
-            2       => $this->output->isVeryVerbose(),
-            3       => $this->output->isDebug(),
+            1       => $this->writer->isVerbose(),
+            2       => $this->writer->isVeryVerbose(),
+            3       => $this->writer->isDebug(),
             default => false,
         };
     }
@@ -362,7 +371,7 @@ class Listener {
         ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
     ): bool {
         return match ($result) {
-            FileFinishedResult::Skipped => $this->output->isDebug(),
+            FileFinishedResult::Skipped => $this->writer->isDebug(),
             default                     => true,
         };
     }
@@ -400,5 +409,30 @@ class Listener {
         }
 
         return array_values(array_unique($changes, SORT_REGULAR));
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    protected function pathname(DirectoryPath|FilePath $path): string {
+        if ($this->input === null || $this->output === null) {
+            return Mark::Unknown->value.' '.$path;
+        }
+
+        $path = $this->input->getPath($path);
+        $name = match (true) {
+            $this->input->isEqual($this->output) && $this->input->isInside($path),
+                => Mark::Inout->value.' '.$this->output->getRelativePath($path),
+            $this->output->isInside($path),
+            $this->output->isEqual($path),
+                => Mark::Output->value.' '.$this->output->getRelativePath($path),
+            $this->input->isInside($path),
+            $this->input->isEqual($path),
+                => Mark::Input->value.' '.$this->input->getRelativePath($path),
+            default
+                => Mark::External->value.' '.$path,
+        };
+
+        return $name;
     }
 }

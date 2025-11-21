@@ -2,8 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
+use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+
 readonly class ProcessingStarted implements Event {
-    public function __construct() {
+    public function __construct(
+        public DirectoryPath $input,
+        public DirectoryPath $output,
+    ) {
         // empty
     }
 }

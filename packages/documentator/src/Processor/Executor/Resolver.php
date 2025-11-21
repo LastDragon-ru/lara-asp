@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Directory;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use Override;
@@ -37,7 +36,7 @@ class Resolver implements DependencyResolver {
     }
 
     #[Override]
-    public function resolve(Dependency $dependency): Traversable|Directory|File|null {
+    public function resolve(Dependency $dependency): Traversable|File|null {
         try {
             $resolved = $dependency($this->fs);
             $result   = $resolved === null ? Result::Null : Result::Success;
@@ -46,8 +45,6 @@ class Resolver implements DependencyResolver {
 
             if ($resolved instanceof File) {
                 ($this->run)($resolved);
-            } elseif ($resolved instanceof Directory) {
-                // empty
             } elseif ($resolved instanceof Traversable) {
                 $resolved = $this->iterate($dependency, $resolved);
             } else {
@@ -105,8 +102,8 @@ class Resolver implements DependencyResolver {
     }
 
     /**
-     * @template D of Dependency<Traversable<mixed, Directory|File>|Directory|File|null>
-     * @template T of Traversable<mixed, Directory|File>
+     * @template D of Dependency<Traversable<mixed, File>|File|null>
+     * @template T of Traversable<mixed, File>
      *
      * @param D $dependency
      * @param T $resolved
@@ -123,9 +120,7 @@ class Resolver implements DependencyResolver {
 
                 $this->notify($value, Result::Success);
 
-                if ($value instanceof File) {
-                    ($this->run)($value);
-                }
+                ($this->run)($value);
 
                 yield $key => $value;
             }
@@ -142,22 +137,23 @@ class Resolver implements DependencyResolver {
     }
 
     /**
-     * @template V of Traversable<mixed, Directory|File>|Directory|File|null
+     * @template V of Traversable<mixed, File>|File|null
      * @template D of Dependency<V>
      *
-     * @param D|Directory|File $dependency
+     * @param D|File $dependency
      */
-    protected function notify(Dependency|Directory|File $dependency, Result $result): void {
+    protected function notify(Dependency|File $dependency, Result $result): void {
         $path = match (true) {
             $dependency instanceof Dependency => $dependency->getPath($this->fs),
             default                           => $dependency,
         };
+        $path = match (true) {
+            $path instanceof File => $path->path,
+            default               => $path,
+        };
 
         $this->dispatcher->notify(
-            new Event(
-                $this->fs->getPathname($path),
-                $result,
-            ),
+            new Event($path, $result),
         );
     }
 }

@@ -97,14 +97,14 @@ class Instruction implements InstructionContract {
                     subject : $output,
                     flags   : PREG_UNMATCHED_AS_NULL,
                 );
-                $output = $this->markdown->parse($output, $target->getPath());
+                $output = $this->markdown->parse($output, $target->path);
                 $output = $output
                     ->mutate(
                         new MakeInlinable(Utils::getSeed($context, $output)),
                         new Unwrap(),
                     )
                     ->mutate(
-                        new Move($context->file->getPath()),
+                        new Move($context->file->path),
                     );
                 $output = mb_trim((string) $output);
             }
@@ -152,6 +152,6 @@ class Instruction implements InstructionContract {
     }
 
     protected function getLanguage(Context $context, File $target, Parameters $parameters): ?string {
-        return $target->getExtension();
+        return $target->extension;
     }
 }

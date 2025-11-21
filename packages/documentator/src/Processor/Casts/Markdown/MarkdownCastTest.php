@@ -6,6 +6,7 @@ use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Mockery;
@@ -21,17 +22,13 @@ final class MarkdownCastTest extends TestCase {
         $document = Mockery::mock(Document::class);
         $content  = 'content';
         $cast     = new MarkdownCast($markdown);
-        $path     = new FilePath('path/to/file.md');
-        $file     = Mockery::mock(File::class);
+        $path     = new FilePath('/path/to/file.md');
+        $file     = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
         $file
             ->shouldReceive('as')
             ->with(Content::class)
             ->once()
             ->andReturn(new Content($content));
-        $file
-            ->shouldReceive('getPath')
-            ->once()
-            ->andReturn($path);
         $markdown
             ->shouldReceive('parse')
             ->with($content, $path)

@@ -3,7 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
@@ -21,16 +23,8 @@ use function iterator_to_array;
 final class TasksTest extends TestCase {
     public function testHas(): void {
         $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
-        $aFile = Mockery::mock(File::class);
-        $aFile
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.md');
-        $bFile = Mockery::mock(File::class);
-        $bFile
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.task');
+        $aFile = Mockery::mock(File::class, [new FilePath('/file.md'), Mockery::mock(Caster::class)]);
+        $bFile = Mockery::mock(File::class, [new FilePath('/file.task'), Mockery::mock(Caster::class)]);
 
         self::assertFalse($tasks->has($aFile));
         self::assertFalse($tasks->has(Hook::File));
@@ -63,16 +57,8 @@ final class TasksTest extends TestCase {
                 // empty
             }
         };
-        $aFile = Mockery::mock(File::class);
-        $aFile
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.md');
-        $bFile = Mockery::mock(File::class);
-        $bFile
-            ->shouldReceive('getName')
-            ->once()
-            ->andReturn('file.task');
+        $aFile = Mockery::mock(File::class, [new FilePath('/file.md'), Mockery::mock(Caster::class)]);
+        $bFile = Mockery::mock(File::class, [new FilePath('/file.task'), Mockery::mock(Caster::class)]);
 
         $tasks->add($taskD, 200);
         $tasks->add($taskA, 100);

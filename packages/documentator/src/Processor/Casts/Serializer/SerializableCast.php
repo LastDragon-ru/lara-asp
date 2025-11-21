@@ -34,11 +34,11 @@ readonly class SerializableCast implements Cast {
 
     #[Override]
     public function castTo(File $file, string $class): ?object {
-        return $this->serializer->deserialize($class, $file->as(Content::class)->content, $file->getExtension());
+        return $this->serializer->deserialize($class, $file->as(Content::class)->content, $file->extension);
     }
 
     #[Override]
     public function castFrom(File $file, object $value): ?string {
-        return $this->serializer->serialize($value, $file->getExtension());
+        return $this->serializer->serialize($value, $file->extension);
     }
 }
