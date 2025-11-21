@@ -41,6 +41,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Deprecated `💀\LastDragon_ru\LaraASP\Documentator\Utils\Markdown` removed, please use [`Document`][code-links/ab9a95ccf7b21703] instead.
 
+* [ ] Directories concept was removed to simplify API.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
