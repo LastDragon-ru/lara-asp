@@ -61,6 +61,11 @@ class SymfonyFileSystem implements Adapter {
         $this->filesystem->dumpFile((string) $path, $content);
     }
 
+    #[Override]
+    public function reset(): void {
+        // empty
+    }
+
     /**
      * @param list<string> $include
      * @param list<string> $exclude
