@@ -30,8 +30,8 @@ readonly class FileSave implements Dependency {
     public function getPath(FileSystem $fs): File|FilePath {
         return match (true) {
             $this->file instanceof File => $this->file,
-            is_string($this->file)      => $fs->output->getPath(new FilePath($this->file)),
-            default                     => $fs->output->getPath($this->file),
+            is_string($this->file)      => $fs->output->resolve(new FilePath($this->file)),
+            default                     => $fs->output->resolve($this->file),
         };
     }
 }

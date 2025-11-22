@@ -45,7 +45,7 @@ class Package {
                     $suffix = mb_substr($class, mb_strlen($namespace));
 
                     foreach ($directories as $directory) {
-                        $paths[] = $directory->getFilePath("{$suffix}.php");
+                        $paths[] = $directory->file("{$suffix}.php");
                     }
                 }
             }

@@ -8,19 +8,9 @@ use function str_ends_with;
 use function str_starts_with;
 
 class DirectoryPath extends Path {
-    #[Override]
-    public function getParentPath(): self {
-        return $this->getDirectoryPath('..');
-    }
-
-    #[Override]
-    protected function getDirectory(): self {
-        return $this;
-    }
-
-    public function isInside(Path $path): bool {
-        $path   = (string) $this->getPath($path);
-        $root   = (string) $this->getNormalizedPath();
+    public function contains(Path $path): bool {
+        $path   = (string) $this->resolve($path);
+        $root   = (string) $this->normalized();
         $inside = $path !== $root && str_starts_with($path, $root);
 
         return $inside;

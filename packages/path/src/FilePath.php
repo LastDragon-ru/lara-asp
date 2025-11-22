@@ -4,26 +4,29 @@ namespace LastDragon_ru\Path;
 
 use Override;
 
-use function dirname;
 use function pathinfo;
 
 use const PATHINFO_EXTENSION;
 
+/**
+ * @property-read ?non-empty-string $extension
+ */
 class FilePath extends Path {
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
     #[Override]
-    public function getParentPath(): DirectoryPath {
-        return $this->getDirectory();
-    }
-
-    #[Override]
-    protected function getDirectory(): DirectoryPath {
-        return new DirectoryPath(dirname($this->path));
+    public function __get(string $name): mixed {
+        return match ($name) {
+            'extension' => $this->extension(),
+            default     => parent::__get($name),
+        };
     }
 
     /**
      * @return ?non-empty-string
      */
-    public function getExtension(): ?string {
+    private function extension(): ?string {
         $extension = pathinfo($this->path, PATHINFO_EXTENSION);
         $extension = $extension !== '' ? $extension : null;
 

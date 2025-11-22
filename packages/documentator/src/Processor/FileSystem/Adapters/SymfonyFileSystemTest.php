@@ -116,7 +116,7 @@ final class SymfonyFileSystemTest extends TestCase {
         $array = [];
 
         foreach ($iterable as $path) {
-            $array[] = (string) $root->getRelativePath($path);
+            $array[] = (string) $root->relative($path);
         }
 
         sort($array);

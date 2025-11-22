@@ -10,76 +10,89 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(DirectoryPath::class)]
 final class DirectoryPathTest extends TestCase {
-    public function testGetName(): void {
+    public function testPropertyName(): void {
         $path       = new DirectoryPath('path/./to/./directory');
-        $normalized = $path->getNormalizedPath();
+        $normalized = $path->normalized();
 
-        self::assertSame('directory', $path->getName());
-        self::assertSame('directory', $normalized->getName());
+        self::assertSame('directory', $path->name);
+        self::assertSame('directory', $normalized->name);
         self::assertSame('path/to/directory/', (string) $normalized);
     }
 
-    public function testGetFilePath(): void {
-        $relative = (new DirectoryPath('relative/path/to/directory'))->getFilePath('file.b');
-        $absolute = (new DirectoryPath('/path/to/directory'))->getFilePath('/file.b');
+    public function testFile(): void {
+        $relative = (new DirectoryPath('relative/path/to/directory'))->file('file.b');
+        $absolute = (new DirectoryPath('/path/to/directory'))->file('/file.b');
 
         self::assertSame('relative/path/to/directory/file.b', (string) $relative);
 
         self::assertSame('/file.b', (string) $absolute);
     }
 
-    public function testGetDirectoryPath(): void {
-        $relative = (new DirectoryPath('relative/path/to'))->getDirectoryPath('directory');
-        $absolute = (new DirectoryPath('/path/to'))->getDirectoryPath('/directory');
-        $null     = (new DirectoryPath('/path/to'))->getDirectoryPath();
+    public function testDirectory(): void {
+        $relative = (new DirectoryPath('relative/path/to'))->directory('directory');
+        $absolute = (new DirectoryPath('/path/to'))->directory('/directory');
+        $null     = (new DirectoryPath('/path/to'))->directory();
 
         self::assertSame('relative/path/to/directory/', (string) $relative);
 
         self::assertSame('/directory/', (string) $absolute);
 
-        self::assertSame('/path/', (string) $null);
+        self::assertSame('/path/to/', (string) $null);
     }
 
-    public function testGetParentPath(): void {
+    public function testParent(): void {
         $relative = new DirectoryPath('relative/path/to/file');
         $absolute = new DirectoryPath('/absolute/path/to/file');
 
-        self::assertSame('relative/path/to/', (string) $relative->getParentPath());
-        self::assertSame('relative/path/', (string) $relative->getParentPath()->getParentPath());
+        self::assertSame('relative/path/to/', (string) $relative->parent());
+        self::assertSame('relative/path/', (string) $relative->parent()->parent());
 
-        self::assertSame('/absolute/path/to/', (string) $absolute->getParentPath());
-        self::assertSame('/absolute/path/', (string) $absolute->getParentPath()->getParentPath());
-
-        self::assertSame((string) $relative->getDirectoryPath(), (string) $relative->getParentPath());
-        self::assertSame((string) $absolute->getDirectoryPath(), (string) $absolute->getParentPath());
+        self::assertSame('/absolute/path/to/', (string) $absolute->parent());
+        self::assertSame('/absolute/path/', (string) $absolute->parent()->parent());
     }
 
-    public function testIsInside(): void {
+    public function testContains(): void {
         $path = new DirectoryPath('/path/to/directory');
 
-        self::assertFalse($path->isInside($path));
-        self::assertTrue($path->isInside(new FilePath('/path/to/directory/file.md')));
-        self::assertTrue($path->isInside(new FilePath('file.md')));
-        self::assertFalse($path->isInside(new FilePath('/path/to/directory/../file.md')));
-        self::assertFalse($path->isInside(new FilePath('/path/to/file.md')));
+        self::assertFalse($path->contains($path));
+        self::assertTrue($path->contains(new FilePath('/path/to/directory/file.md')));
+        self::assertTrue($path->contains(new FilePath('file.md')));
+        self::assertFalse($path->contains(new FilePath('/path/to/directory/../file.md')));
+        self::assertFalse($path->contains(new FilePath('/path/to/file.md')));
     }
 
-    public function testGetNormalizedPath(): void {
-        self::assertSame('/any/path/', (string) (new DirectoryPath('/any/path'))->getNormalizedPath());
-        self::assertSame('any/path/', (string) (new DirectoryPath('any/path'))->getNormalizedPath());
-        self::assertSame('any/path/', (string) (new DirectoryPath('./any/path'))->getNormalizedPath());
-        self::assertSame('any/path/', (string) (new DirectoryPath('././any/path'))->getNormalizedPath());
-        self::assertSame('../any/path/', (string) (new DirectoryPath('./../any/path'))->getNormalizedPath());
-        self::assertSame('path/', (string) (new DirectoryPath('./any/../path'))->getNormalizedPath());
-        self::assertSame('./', (string) (new DirectoryPath('./'))->getNormalizedPath());
-        self::assertSame('./', (string) (new DirectoryPath('.'))->getNormalizedPath());
-        self::assertSame('../', (string) (new DirectoryPath('../'))->getNormalizedPath());
-        self::assertSame('../', (string) (new DirectoryPath('..'))->getNormalizedPath());
-        self::assertSame('path/', (string) (new DirectoryPath('./any/../path/.'))->getNormalizedPath());
-        self::assertSame('/', (string) (new DirectoryPath('/..'))->getNormalizedPath());
-        self::assertSame('../any/path/', (string) (new DirectoryPath('.\\..\\any\\path'))->getNormalizedPath());
-        self::assertSame('any/path/', (string) (new DirectoryPath('any\\path'))->getNormalizedPath());
-        self::assertSame('/any/path/', (string) (new DirectoryPath('/any/path/'))->getNormalizedPath());
-        self::assertSame('any/path/', (string) (new DirectoryPath('any/path/'))->getNormalizedPath());
+    public function testNormalized(): void {
+        self::assertSame('/any/path/', (string) (new DirectoryPath('/any/path'))->normalized());
+        self::assertSame('any/path/', (string) (new DirectoryPath('any/path'))->normalized());
+        self::assertSame('any/path/', (string) (new DirectoryPath('./any/path'))->normalized());
+        self::assertSame('any/path/', (string) (new DirectoryPath('././any/path'))->normalized());
+        self::assertSame('../any/path/', (string) (new DirectoryPath('./../any/path'))->normalized());
+        self::assertSame('path/', (string) (new DirectoryPath('./any/../path'))->normalized());
+        self::assertSame('./', (string) (new DirectoryPath(''))->normalized());
+        self::assertSame('./', (string) (new DirectoryPath('./'))->normalized());
+        self::assertSame('./', (string) (new DirectoryPath('.'))->normalized());
+        self::assertSame('../', (string) (new DirectoryPath('../'))->normalized());
+        self::assertSame('../', (string) (new DirectoryPath('..'))->normalized());
+        self::assertSame('path/', (string) (new DirectoryPath('./any/../path/.'))->normalized());
+        self::assertSame('/', (string) (new DirectoryPath('/..'))->normalized());
+        self::assertSame('../any/path/', (string) (new DirectoryPath('.\\..\\any\\path'))->normalized());
+        self::assertSame('any/path/', (string) (new DirectoryPath('any\\path'))->normalized());
+        self::assertSame('/any/path/', (string) (new DirectoryPath('/any/path/'))->normalized());
+        self::assertSame('any/path/', (string) (new DirectoryPath('any/path/'))->normalized());
+    }
+
+    public function testRelative(): void {
+        self::assertSame(
+            '../to/file',
+            (string) (new DirectoryPath('/any/path'))->relative(new FilePath('/any/path/../to/file')),
+        );
+        self::assertSame(
+            './',
+            (string) (new DirectoryPath('/any/path'))->relative(new DirectoryPath('/any/path')),
+        );
+        self::assertSame(
+            'to/file',
+            (string) (new DirectoryPath('/absolute/path'))->relative(new FilePath('to/./file')),
+        );
     }
 }

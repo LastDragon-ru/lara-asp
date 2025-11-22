@@ -71,6 +71,6 @@ readonly class Glob implements Matcher {
             $path = new FilePath((string) $path);
         }
 
-        return $this->root->getPath($path);
+        return $this->root->resolve($path);
     }
 }

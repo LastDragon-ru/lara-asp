@@ -97,12 +97,12 @@ class Processor {
         array $skip = [],
     ): void {
         // Prepare
-        $root = $input->getDirectoryPath('.');
+        $root = $input->directory('.');
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
-            if (!$root->isEqual($output) && $root->isInside($output)) {
-                $skip[] = GlobMatcher::escape((string) $root->getRelativePath($output)).'**';
+            if (!$root->equals($output) && $root->contains($output)) {
+                $skip[] = GlobMatcher::escape((string) $root->relative($output)).'**';
             }
         } else {
             $output = $root;

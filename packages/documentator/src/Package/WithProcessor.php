@@ -27,9 +27,9 @@ trait WithProcessor {
         DirectoryPath|string $input,
         DirectoryPath|string|null $output = null,
     ): FileSystem {
-        $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
+        $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->normalized();
         $output     = $output !== null
-            ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
+            ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->normalized()
             : $input;
         $adapter    = new class() extends SymfonyFileSystem {
             /**

@@ -211,7 +211,7 @@ class Requirements extends Command {
     protected function getPackageInfo(ComposerJsonFactory $factory, Git $git, string $tag, DirectoryPath $cwd): ?ComposerJson {
         try {
             $root    = (string) $git->getRoot($cwd);
-            $path    = (string) $cwd->getFilePath('composer.json');
+            $path    = (string) $cwd->file('composer.json');
             $gitPath = str_starts_with($path, $root)
                 ? mb_substr($path, mb_strlen($root) + 1)
                 : $path;

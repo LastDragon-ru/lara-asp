@@ -21,7 +21,7 @@ final class FileTest extends TestCase {
     public function testAs(): void {
         $caster = Mockery::mock(Caster::class);
         $value  = new stdClass();
-        $path   = (new FilePath(__FILE__))->getNormalizedPath();
+        $path   = (new FilePath(__FILE__))->normalized();
         $file   = new class($path, $caster) extends File {
             // empty
         };
@@ -49,7 +49,7 @@ final class FileTest extends TestCase {
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
         new class(
-            (new FilePath('../path'))->getNormalizedPath(),
+            (new FilePath('../path'))->normalized(),
             Mockery::mock(Caster::class),
         ) extends File {
             // empty
@@ -59,9 +59,9 @@ final class FileTest extends TestCase {
     public function testGetRelativePath(): void {
         $fs      = $this->getFileSystem(__DIR__);
         $file    = $fs->getFile(new FilePath(__FILE__));
-        $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
+        $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
         $another = new class(
-            (new FilePath(__FILE__))->getNormalizedPath(),
+            (new FilePath(__FILE__))->normalized(),
             Mockery::mock(Caster::class),
         ) extends File {
             // empty
@@ -72,7 +72,7 @@ final class FileTest extends TestCase {
     }
 
     public function testIsEqual(): void {
-        $path = (new FilePath(self::getTestData()->path('a/a.txt')))->getNormalizedPath();
+        $path = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
         $a    = new class($path, Mockery::mock(Caster::class)) extends File {
             // empty
         };

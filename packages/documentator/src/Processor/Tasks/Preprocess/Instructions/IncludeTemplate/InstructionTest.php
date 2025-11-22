@@ -62,8 +62,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeVariablesUnused(): void {
-        $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path('.md')))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $params   = new Parameters((string) $file, [
             'a' => 'A',
@@ -82,8 +82,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeVariablesMissed(): void {
-        $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path('.md')))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $params   = new Parameters((string) $file, [
             'a' => 'A',

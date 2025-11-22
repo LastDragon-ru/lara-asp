@@ -31,7 +31,7 @@ trait WithPathComparator {
                     bool $ignoreCase = false,
                 ): void {
                     // Same?
-                    if ($expected instanceof Path && $actual instanceof Path && $expected->isEqual($actual)) {
+                    if ($expected instanceof Path && $actual instanceof Path && $expected->equals($actual)) {
                         return;
                     }
 

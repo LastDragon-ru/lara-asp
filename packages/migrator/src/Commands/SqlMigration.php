@@ -37,7 +37,7 @@ class SqlMigration extends BaseCommand {
     public function __invoke(SqlMigrationCreator $creator): int {
         $name = Str::snake(mb_trim(Cast::toString($this->input->getArgument('name'))));
         $path = Cast::toStringNullable($this->input->getOption('path')) ?? $this->getMigrationPath();
-        $path = (new DirectoryPath($this->laravel->basePath()))->getFilePath($path);
+        $path = (new DirectoryPath($this->laravel->basePath()))->file($path);
         $path = (string) $path;
         $file = $creator->create($name, $path);
 

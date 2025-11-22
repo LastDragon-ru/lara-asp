@@ -38,8 +38,8 @@ final class TaskTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
-        $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $fs   = $this->getFileSystem($path->getDirectoryPath());
+        $path = (new FilePath(self::getTestData()->path($document)))->normalized();
+        $fs   = $this->getFileSystem($path->directory());
         $file = $fs->getFile($path);
         $task = $this->app()->make(Task::class);
 

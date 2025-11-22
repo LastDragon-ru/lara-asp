@@ -21,7 +21,7 @@ class File implements Stringable {
         public readonly FilePath $path,
         private readonly Caster $caster,
     ) {
-        if (!$this->path->isNormalized()) {
+        if (!$this->path->normalized) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be normalized, `%s` given.',
@@ -30,7 +30,7 @@ class File implements Stringable {
             );
         }
 
-        if (!$this->path->isAbsolute()) {
+        if (!$this->path->absolute) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be absolute, `%s` given.',
@@ -52,11 +52,11 @@ class File implements Stringable {
     }
 
     public function getFilePath(string $path): FilePath {
-        return $this->path->getFilePath($path);
+        return $this->path->file($path);
     }
 
     public function getDirectoryPath(?string $path = null): DirectoryPath {
-        return $this->path->getDirectoryPath($path);
+        return $this->path->directory($path);
     }
 
     /**
@@ -64,13 +64,13 @@ class File implements Stringable {
      */
     public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath {
         $path = $path instanceof Path ? $path : $path->path;
-        $path = $this->path->getRelativePath($path);
+        $path = $this->path->relative($path);
 
         return $path;
     }
 
     public function isEqual(self $object): bool {
-        return ($this === $object) || ($this::class === $object::class && $this->path->isEqual($object->path));
+        return ($this === $object) || ($this::class === $object::class && $this->path->equals($object->path));
     }
 
     #[Override]
@@ -90,8 +90,8 @@ class File implements Stringable {
      */
     public function __get(string $name): mixed {
         return match ($name) {
-            'extension' => $this->path->getExtension(),
-            'name'      => $this->path->getName(),
+            'extension' => $this->path->extension,
+            'name'      => $this->path->name,
             default     => null,
         };
     }

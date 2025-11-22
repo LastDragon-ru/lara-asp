@@ -33,8 +33,8 @@ class Extension {
         }
 
         // Prepare
-        $origin = self::getLarastanPath()->getFilePath('extension.neon');
-        $target = self::getRootPath()->getFilePath('phpstan-larastan.neon');
+        $origin = self::getLarastanPath()->file('extension.neon');
+        $target = self::getRootPath()->file('phpstan-larastan.neon');
 
         // Load
         $extension = Neon::decode((string) file_get_contents((string) $origin));
@@ -84,8 +84,8 @@ class Extension {
                 );
             }
 
-            $file                                              = $source->getFilePath($file);
-            $extension['parameters']['bootstrapFiles'][$index] = (string) $path->getRelativePath($file);
+            $file                                              = $source->file($file);
+            $extension['parameters']['bootstrapFiles'][$index] = (string) $path->relative($file);
         }
 
         // Return

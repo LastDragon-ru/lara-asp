@@ -28,8 +28,8 @@ final class InstructionTest extends TestCase {
      */
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
-        $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path($file)))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

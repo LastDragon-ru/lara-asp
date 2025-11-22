@@ -419,16 +419,16 @@ class Listener {
             return Mark::Unknown->value.' '.$path;
         }
 
-        $path = $this->input->getPath($path);
+        $path = $this->input->resolve($path);
         $name = match (true) {
-            $this->input->isEqual($this->output) && $this->input->isInside($path),
-                => Mark::Inout->value.' '.$this->output->getRelativePath($path),
-            $this->output->isInside($path),
-            $this->output->isEqual($path),
-                => Mark::Output->value.' '.$this->output->getRelativePath($path),
-            $this->input->isInside($path),
-            $this->input->isEqual($path),
-                => Mark::Input->value.' '.$this->input->getRelativePath($path),
+            $this->input->equals($this->output) && $this->input->contains($path),
+                => Mark::Inout->value.' '.$this->output->relative($path),
+            $this->output->contains($path),
+            $this->output->equals($path),
+                => Mark::Output->value.' '.$this->output->relative($path),
+            $this->input->contains($path),
+            $this->input->equals($path),
+                => Mark::Input->value.' '.$this->input->relative($path),
             default
                 => Mark::External->value.' '.$path,
         };

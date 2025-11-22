@@ -29,8 +29,8 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $path, string $content): void {
         // Prepare
-        $path        = (new FilePath(self::getTestData()->path($path)))->getNormalizedPath();
-        $fs          = $this->getFileSystem($path->getDirectoryPath());
+        $path        = (new FilePath(self::getTestData()->path($path)))->normalized();
+        $fs          = $this->getFileSystem($path->directory());
         $file        = $fs->getFile($path);
         $document    = $this->app()->make(Markdown::class)->parse($content, $path);
         $instruction = (new Query())->where(Query::type(Node::class))->findOne($document->node);

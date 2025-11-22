@@ -246,12 +246,12 @@ class Executor {
         }
 
         // Outside?
-        if (!$this->fs->input->isInside($file->path)) {
+        if (!$this->fs->input->contains($file->path)) {
             return true;
         }
 
         // Excluded?
-        $path    = $this->fs->input->getRelativePath($file->path);
+        $path    = $this->fs->input->relative($file->path);
         $skipped = $this->skipped->match($path);
 
         if ($skipped) {

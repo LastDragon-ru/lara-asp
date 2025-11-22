@@ -46,7 +46,7 @@ class Commands extends Command {
         $application = Cast::to(Application::class, $this->getApplication());
         $namespace   = $application->findNamespace(Cast::toString($this->argument('namespace')));
         $cwd         = new DirectoryPath((string) getcwd());
-        $target      = $cwd->getDirectoryPath(Cast::toString($this->argument('target')));
+        $target      = $cwd->directory(Cast::toString($this->argument('target')));
         $defaults    = Cast::toBool($this->option('defaults'));
         $commands    = $application->all($namespace);
 
@@ -94,8 +94,8 @@ class Commands extends Command {
 
                     // Render
                     $name    = Str::after((string) $command->getName(), "{$namespace}:");
-                    $path    = $target->getFilePath("{$name}.md");
-                    $source  = $cwd->getFilePath("{$name}.md");
+                    $path    = $target->file("{$name}.md");
+                    $source  = $cwd->file("{$name}.md");
                     $content = $viewer->render('commands.default', [
                         'serializer' => $serializer,
                         'command'    => $command,

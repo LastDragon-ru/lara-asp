@@ -38,7 +38,7 @@ class Migrator extends IlluminateMigrator {
 
         foreach ($paths as $path) {
             foreach (Finder::create()->in(Cast::toString($path))->directories() as $dir) {
-                $paths[] = (string) (new DirectoryPath($dir->getPathname()))->getNormalizedPath();
+                $paths[] = (string) (new DirectoryPath($dir->getPathname()))->normalized();
             }
         }
 

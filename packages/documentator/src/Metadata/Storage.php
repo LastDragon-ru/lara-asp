@@ -45,7 +45,7 @@ class Storage {
     }
 
     protected function getPath(): string {
-        return (string) $this->path->getFilePath('metadata.json');
+        return (string) $this->path->file('metadata.json');
     }
 
     public function load(): Metadata {

@@ -378,7 +378,7 @@ class Preprocess extends Command {
 
         // Move to cwd
         $cwd  = new DirectoryPath((string) getcwd());
-        $help = $help->mutate(new Move($cwd->getFilePath('help.md')));
+        $help = $help->mutate(new Move($cwd->file('help.md')));
 
         // Level?
         if ($level !== null) {

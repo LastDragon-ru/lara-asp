@@ -212,13 +212,13 @@ class Utils {
         return filter_var($path, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
             && !str_starts_with($path, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
             && !str_starts_with($path, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
-            && (new FilePath($path))->isRelative();
+            && (new FilePath($path))->relative;
     }
 
     public static function isPathToSelf(Document $document, FilePath|string $path): bool {
         $self = $document->path;
         $path = (string) parse_url((string) $path, PHP_URL_PATH);
-        $is   = $path === '' || $path === '.' || $self === null || $self->isEqual($self->getFilePath($path));
+        $is   = $path === '' || $path === '.' || $self === null || $self->equals($self->file($path));
 
         return $is;
     }
