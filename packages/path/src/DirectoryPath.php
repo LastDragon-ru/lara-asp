@@ -7,7 +7,7 @@ use Override;
 use function str_ends_with;
 use function str_starts_with;
 
-class DirectoryPath extends Path {
+final class DirectoryPath extends Path {
     public function contains(Path $path): bool {
         $path   = (string) $this->resolve($path);
         $root   = (string) $this->normalized();

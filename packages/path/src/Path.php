@@ -13,12 +13,14 @@ use function basename;
  * @property-read bool   $absolute
  * @property-read bool   $relative
  * @property-read bool   $normalized
+ *
+ * @phpstan-sealed DirectoryPath|FilePath
  */
 abstract class Path implements Stringable {
-    private ?bool $isNormalized = null;
-    private ?bool $isAbsolute   = null;
+    protected ?bool $isNormalized = null; // `private` will lead to an error https://github.com/phpstan/phpstan/issues/13836
+    protected ?bool $isAbsolute   = null; // `private` will lead to an error https://github.com/phpstan/phpstan/issues/13836
 
-    final public function __construct(
+    public function __construct(
         public readonly string $path,
     ) {
         // empty
@@ -50,20 +52,17 @@ abstract class Path implements Stringable {
     }
 
     /**
-     * @template T of Path
-     *
-     * @param T $path
-     *
-     * @return new<T>
+     * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function resolve(self $path): self {
         if ($path->relative) {
-            $class = $path::class;
-            $path  = SymfonyPath::join($this->directory()->path, $path->path);
-            $path  = new $class($path);
+            $resolved = SymfonyPath::join($this->directory()->path, $path->path);
+            $resolved = $path instanceof DirectoryPath ? new DirectoryPath($resolved) : new FilePath($resolved);
+        } else {
+            $resolved = $path;
         }
 
-        return $path->normalized();
+        return $resolved->normalized();
     }
 
     public function parent(): DirectoryPath {
@@ -83,28 +82,29 @@ abstract class Path implements Stringable {
     }
 
     /**
-     * @template T of Path
-     *
-     * @param T $path
-     *
-     * @return new<T>
+     * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function relative(self $path): self {
-        $class            = $path::class;
-        $path             = $this->resolve($path);
-        $path             = SymfonyPath::makeRelative($path->path, $this->directory()->path);
-        $path             = (new $class($path))->normalized();
-        $path->isAbsolute = false;
+        $relative             = $this->resolve($path);
+        $relative             = SymfonyPath::makeRelative($relative->path, $this->directory()->path);
+        $relative             = $path instanceof DirectoryPath ? new DirectoryPath($relative) : new FilePath($relative);
+        $relative             = $relative->normalized();
+        $relative->isAbsolute = false;
 
-        return $path;
+        return $relative;
     }
 
-    public function normalized(): static {
+    /**
+     * @return ($this is DirectoryPath ? DirectoryPath : FilePath)
+     */
+    public function normalized(): self {
         if ($this->normalized) {
+            // @phpstan-ignore return.type (sealed not narrowed correctly, see https://github.com/phpstan/phpstan/issues/13839)
             return $this;
         }
 
-        $path               = new static($this->normalize($this->path));
+        $path               = $this->normalize($this->path);
+        $path               = $this instanceof DirectoryPath ? new DirectoryPath($path) : new FilePath($path);
         $path->isNormalized = true;
 
         return $path;

@@ -131,6 +131,7 @@ final class PathTest extends TestCase {
         self::assertFalse((new PathTest_Path('path/to/file'))->equals(new PathTest_Path('path/to')));
         self::assertFalse(
             (new PathTest_Path('path/to/file'))->equals(
+                // @phpstan-ignore class.disallowedSubtype (for test)
                 new class('path/to/file') extends Path {
                     // path must be a subclass of
                 },
@@ -144,7 +145,8 @@ final class PathTest extends TestCase {
 
 /**
  * @internal
- * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ * @noinspection   PhpMultipleClassesDeclarationsInOneFile
+ * @phpstan-ignore class.disallowedSubtype (for test)
  */
 class PathTest_Path extends Path {
     // empty

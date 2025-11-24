@@ -11,7 +11,7 @@ use const PATHINFO_EXTENSION;
 /**
  * @property-read ?non-empty-string $extension
  */
-class FilePath extends Path {
+final class FilePath extends Path {
     /**
      * @deprecated %{VERSION} Will be replaced to property hooks soon.
      */
