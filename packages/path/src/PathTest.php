@@ -133,6 +133,18 @@ final class PathTest extends TestCase {
             ),
         );
     }
+
+    public function testMake(): void {
+        self::assertEquals(new DirectoryPath(''), Path::make(''));
+        self::assertEquals(new DirectoryPath('.'), Path::make('.'));
+        self::assertEquals(new DirectoryPath('./'), Path::make('./'));
+        self::assertEquals(new DirectoryPath('..'), Path::make('..'));
+        self::assertEquals(new DirectoryPath('../'), Path::make('../'));
+        self::assertEquals(new DirectoryPath('path/'), Path::make('path/'));
+        self::assertEquals(new DirectoryPath('/path/'), Path::make('/path/'));
+        self::assertEquals(new FilePath('path'), Path::make('path'));
+        self::assertEquals(new FilePath('/path'), Path::make('/path'));
+    }
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses

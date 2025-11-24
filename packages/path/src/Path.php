@@ -7,6 +7,7 @@ use Stringable;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 use function basename;
+use function str_ends_with;
 
 /**
  * @property-read TPath $name
@@ -57,6 +58,18 @@ abstract class Path implements Stringable {
             'normalized' => $this->isNormalized ??= $this->normalize($this->path) === $this->path,
             default      => null,
         };
+    }
+
+    /**
+     * @return DirectoryPath|FilePath
+     */
+    public static function make(string $path): self {
+        $name = basename($path);
+        $path = $name === '' || $name === '.' || $name === '..' || !str_ends_with($path, $name)
+            ? new DirectoryPath($path)
+            : new FilePath($path);
+
+        return $path;
     }
 
     /**
