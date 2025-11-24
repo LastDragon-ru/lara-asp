@@ -7,6 +7,9 @@ use Override;
 use function str_ends_with;
 use function str_starts_with;
 
+/**
+ * @extends Path<string>
+ */
 final class DirectoryPath extends Path {
     public function contains(Path $path): bool {
         $path   = (string) $this->resolve($path);
@@ -16,6 +19,9 @@ final class DirectoryPath extends Path {
         return $inside;
     }
 
+    /**
+     * @return non-empty-string
+     */
     #[Override]
     protected function normalize(string $path): string {
         $normalized = parent::normalize($path);

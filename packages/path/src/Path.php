@@ -9,10 +9,12 @@ use Symfony\Component\Filesystem\Path as SymfonyPath;
 use function basename;
 
 /**
- * @property-read string $name
- * @property-read bool   $absolute
- * @property-read bool   $relative
- * @property-read bool   $normalized
+ * @property-read TPath $name
+ * @property-read bool  $absolute
+ * @property-read bool  $relative
+ * @property-read bool  $normalized
+ *
+ * @template TPath of string = string
  *
  * @phpstan-sealed DirectoryPath|FilePath
  */
@@ -21,11 +23,17 @@ abstract class Path implements Stringable {
     protected ?bool $isAbsolute   = null; // `private` will lead to an error https://github.com/phpstan/phpstan/issues/13836
 
     public function __construct(
+        /**
+         * @var TPath
+         */
         public readonly string $path,
     ) {
         // empty
     }
 
+    /**
+     * @return TPath
+     */
     #[Override]
     public function __toString(): string {
         return $this->path;

@@ -55,12 +55,7 @@ final class PathTest extends TestCase {
         self::assertSame('any/path', (string) (new PathTest_Path('././any/path'))->normalized());
         self::assertSame('../any/path', (string) (new PathTest_Path('./../any/path'))->normalized());
         self::assertSame('path', (string) (new PathTest_Path('./any/../path'))->normalized());
-        self::assertSame('', (string) (new PathTest_Path('./'))->normalized());
-        self::assertSame('', (string) (new PathTest_Path('.'))->normalized());
-        self::assertSame('..', (string) (new PathTest_Path('../'))->normalized());
         self::assertSame('..', (string) (new PathTest_Path('..'))->normalized());
-        self::assertSame('path', (string) (new PathTest_Path('./any/../path/.'))->normalized());
-        self::assertSame('/', (string) (new PathTest_Path('/..'))->normalized());
         self::assertSame('../any/path', (string) (new PathTest_Path('.\\..\\any\\path'))->normalized());
         self::assertSame('any/path', (string) (new PathTest_Path('any\\path'))->normalized());
         self::assertSame('/any/path', (string) (new PathTest_Path('/any/path/'))->normalized());

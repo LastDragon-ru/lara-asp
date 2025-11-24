@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\Path;
 
+use InvalidArgumentException;
 use LastDragon_ru\Path\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -10,9 +11,36 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(FilePath::class)]
 final class FilePathTest extends TestCase {
+    public function testConstructEmpty(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Filename cannot be empty.');
+
+        new FilePath('');
+    }
+
+    public function testConstructSlash(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Filename cannot be empty.');
+
+        new FilePath('/a/b/c/');
+    }
+
+    public function testConstructDot(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Filename cannot be `.` or `..`.');
+
+        new FilePath('/a/b/c/.');
+    }
+
+    public function testConstructDotDot(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Filename cannot be `.` or `..`.');
+
+        new FilePath('/a/b/c/..');
+    }
+
     public function testPropertyName(): void {
         self::assertSame('c', (new FilePath('/a/b/c'))->name);
-        self::assertSame('c', (new FilePath('/a/b/c/'))->name); // todo(core/Path): Should be an error here?
     }
 
     public function testFile(): void {
@@ -56,15 +84,7 @@ final class FilePathTest extends TestCase {
         self::assertSame('any/path', (string) (new FilePath('././any/path'))->normalized());
         self::assertSame('../any/path', (string) (new FilePath('./../any/path'))->normalized());
         self::assertSame('path', (string) (new FilePath('./any/../path'))->normalized());
-        self::assertSame('', (string) (new FilePath('./'))->normalized());
-        self::assertSame('', (string) (new FilePath('.'))->normalized());
-        self::assertSame('..', (string) (new FilePath('../'))->normalized());
-        self::assertSame('..', (string) (new FilePath('..'))->normalized());
-        self::assertSame('path', (string) (new FilePath('./any/../path/.'))->normalized());
-        self::assertSame('/', (string) (new FilePath('/..'))->normalized());
         self::assertSame('../any/path', (string) (new FilePath('.\\..\\any\\path'))->normalized());
         self::assertSame('any/path', (string) (new FilePath('any\\path'))->normalized());
-        self::assertSame('/any/path', (string) (new FilePath('/any/path/'))->normalized());
-        self::assertSame('any/path', (string) (new FilePath('any/path/'))->normalized());
     }
 }

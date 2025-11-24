@@ -57,7 +57,7 @@ final class GlobTest extends TestCase {
             ->shouldReceive('getPathname')
             ->once()
             ->andReturn(
-                (string) $root->directory('dir.md'),
+                (string) $root->file('dir.md'),
             );
 
         self::assertTrue($glob->match($fileInfo));
