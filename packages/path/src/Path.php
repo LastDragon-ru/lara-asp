@@ -77,13 +77,17 @@ abstract class Path implements Stringable {
      */
     public function resolve(self $path): self {
         if ($path->relative) {
-            $resolved = SymfonyPath::join($this->directory()->path, $path->path);
-            $resolved = $path instanceof DirectoryPath ? new DirectoryPath($resolved) : new FilePath($resolved);
+            $resolved               = $this->directory()->path.$path->path;
+            $resolved               = $path->normalize($resolved);
+            $resolved               = $path instanceof DirectoryPath
+                ? new DirectoryPath($resolved)
+                : new FilePath($resolved);
+            $resolved->isNormalized = true;
         } else {
-            $resolved = $path;
+            $resolved = $path->normalized();
         }
 
-        return $resolved->normalized();
+        return $resolved;
     }
 
     public function parent(): DirectoryPath {
