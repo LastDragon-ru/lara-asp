@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\Path\Path;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image as ImageNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
@@ -111,7 +112,7 @@ readonly class Move implements Mutation {
             $target = mb_substr($target, mb_strlen($path));
             $target = $target !== '' ? $target : '#';
         } else {
-            $target = $docPath->file($target);
+            $target = $docPath->resolve(Path::make($target));
             $target = $newPath->relative($target);
         }
 

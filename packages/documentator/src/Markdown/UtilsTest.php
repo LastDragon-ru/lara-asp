@@ -42,8 +42,10 @@ final class UtilsTest extends TestCase {
         $md = $this->app()->make(Markdown::class);
         $a  = $md->parse('', new FilePath('/path/to/a.md'));
         $b  = $md->parse('', new FilePath('/path/to/b.md'));
+        $c  = $md->parse('');
 
-        self::assertTrue(Utils::isPathToSelf($a, '.'));
+        self::assertFalse(Utils::isPathToSelf($a, '.'));
+        self::assertFalse(Utils::isPathToSelf($a, '..'));
         self::assertTrue(Utils::isPathToSelf($a, '#fragment'));
         self::assertTrue(Utils::isPathToSelf($a, './a.md#fragment'));
         self::assertTrue(Utils::isPathToSelf($a, '?a=bc'));
@@ -56,6 +58,17 @@ final class UtilsTest extends TestCase {
         self::assertTrue(Utils::isPathToSelf($b, '/path/to/b.md'));
         self::assertFalse(Utils::isPathToSelf($b, 'a.md'));
         self::assertFalse(Utils::isPathToSelf($b, './a.md#fragment'));
+
+        self::assertFalse(Utils::isPathToSelf($c, '.'));
+        self::assertFalse(Utils::isPathToSelf($c, '..'));
+        self::assertTrue(Utils::isPathToSelf($c, '#fragment'));
+        self::assertFalse(Utils::isPathToSelf($c, './a.md#fragment'));
+        self::assertTrue(Utils::isPathToSelf($c, '?a=bc'));
+        self::assertFalse(Utils::isPathToSelf($c, 'a.md'));
+        self::assertFalse(Utils::isPathToSelf($c, './a.md'));
+        self::assertFalse(Utils::isPathToSelf($c, '../to/a.md'));
+        self::assertFalse(Utils::isPathToSelf($c, '/a.md'));
+        self::assertFalse(Utils::isPathToSelf($c, '../a.md'));
 
         self::assertTrue(Utils::isPathToSelf($a, new FilePath('a.md')));
         self::assertTrue(Utils::isPathToSelf($a, new FilePath('../to/a.md')));

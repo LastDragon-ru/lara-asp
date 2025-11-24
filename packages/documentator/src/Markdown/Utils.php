@@ -12,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text as TextUtils;
 use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\Path\Path;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Table\TableCell;
@@ -212,15 +213,29 @@ class Utils {
         return filter_var($path, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
             && !str_starts_with($path, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
             && !str_starts_with($path, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
-            && (new FilePath($path))->relative;
+            && Path::make($path)->relative;
     }
 
     public static function isPathToSelf(Document $document, FilePath|string $path): bool {
         $self = $document->path;
         $path = (string) parse_url((string) $path, PHP_URL_PATH);
-        $is   = $path === '' || $path === '.' || $self === null || $self->equals($self->file($path));
 
-        return $is;
+        if ($path === '.' || $path === '..') {
+            // This is directory path, not file path.
+            return false;
+        }
+
+        if ($path === '') {
+            // This is `#` or `?`
+            return true;
+        }
+
+        if ($self === null) {
+            // Cannot be determined
+            return false;
+        }
+
+        return $self->equals($self->resolve(Path::make($path)));
     }
 
     /**

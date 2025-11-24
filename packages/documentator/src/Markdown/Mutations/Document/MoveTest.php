@@ -56,7 +56,7 @@ final class MoveTest extends TestCase {
             ],
             'Empty'                        => [
                 <<<'MARKDOWN'
-                [foo]: # "title"
+                [foo]: ../from/ "title"
 
                 MARKDOWN,
                 '/path/from/file.md',
