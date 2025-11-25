@@ -18,6 +18,17 @@ final class FilePathTest extends TestCase {
         new FilePath('');
     }
 
+    public function testConstructHome(): void {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Filename cannot be empty.');
+
+        new FilePath('~/');
+    }
+
+    public function testConstructTilde(): void {
+        self::assertSame('~', (string) new FilePath('~'));
+    }
+
     public function testConstructSlash(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Filename cannot be empty.');
@@ -75,16 +86,5 @@ final class FilePathTest extends TestCase {
     public function testPropertyExtension(): void {
         self::assertSame('txt', (new FilePath('relative/path/to/file.txt'))->extension);
         self::assertNull((new FilePath('relative/path/to/file'))->extension);
-    }
-
-    public function testNormalized(): void {
-        self::assertSame('/any/path', (string) (new FilePath('/any/path'))->normalized());
-        self::assertSame('any/path', (string) (new FilePath('any/path'))->normalized());
-        self::assertSame('any/path', (string) (new FilePath('./any/path'))->normalized());
-        self::assertSame('any/path', (string) (new FilePath('././any/path'))->normalized());
-        self::assertSame('../any/path', (string) (new FilePath('./../any/path'))->normalized());
-        self::assertSame('path', (string) (new FilePath('./any/../path'))->normalized());
-        self::assertSame('../any/path', (string) (new FilePath('.\\..\\any\\path'))->normalized());
-        self::assertSame('any/path', (string) (new FilePath('any\\path'))->normalized());
     }
 }

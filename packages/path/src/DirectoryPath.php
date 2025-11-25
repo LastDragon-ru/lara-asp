@@ -23,7 +23,7 @@ final class DirectoryPath extends Path {
      * @return non-empty-string
      */
     #[Override]
-    protected function normalize(string $path): string {
+    protected static function normalize(string $path): string {
         $normalized = parent::normalize($path);
         $normalized = $normalized !== '' ? $normalized : '.';
         $normalized = $normalized.(str_ends_with($normalized, '/') ? '' : '/');

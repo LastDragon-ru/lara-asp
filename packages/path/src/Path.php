@@ -6,10 +6,17 @@ use Override;
 use Stringable;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
+use function array_pop;
 use function basename;
+use function count;
+use function explode;
+use function implode;
+use function mb_rtrim;
+use function mb_strlen;
 use function mb_substr;
 use function preg_match;
 use function str_ends_with;
+use function str_replace;
 
 /**
  * It differs slightly from the Symfony FileSystem Path component.
@@ -62,7 +69,7 @@ abstract class Path implements Stringable {
             'name'       => basename($this->path),
             'relative'   => !$this->absolute,
             'absolute'   => $this->isAbsolute   ??= static::isAbsolute($this->path),
-            'normalized' => $this->isNormalized ??= $this->normalize($this->path) === $this->path,
+            'normalized' => $this->isNormalized ??= static::normalize($this->path) === $this->path,
             default      => null,
         };
     }
@@ -85,7 +92,7 @@ abstract class Path implements Stringable {
     public function resolve(self $path): self {
         if ($path->relative) {
             $resolved               = $this->directory()->path.$path->path;
-            $resolved               = $path->normalize($resolved);
+            $resolved               = $path::normalize($resolved);
             $resolved               = $path instanceof DirectoryPath
                 ? new DirectoryPath($resolved)
                 : new FilePath($resolved);
@@ -135,7 +142,7 @@ abstract class Path implements Stringable {
             return $this;
         }
 
-        $path               = $this->normalize($this->path);
+        $path               = static::normalize($this->path);
         $path               = $this instanceof DirectoryPath ? new DirectoryPath($path) : new FilePath($path);
         $path->isNormalized = true;
 
@@ -147,39 +154,78 @@ abstract class Path implements Stringable {
             && $path->normalized()->path === $this->normalized()->path;
     }
 
-    protected function normalize(string $path): string {
-        return SymfonyPath::canonicalize($path);
+    protected static function normalize(string $path): string {
+        // Empty?
+        if ($path === '') {
+            return '';
+        }
+
+        // Normalize
+        $path    = str_replace('\\', '/', $path);
+        $root    = self::getRoot($path);
+        $result  = [];
+        $default = '..';
+
+        if ($root !== '') {
+            $path    = mb_substr($path, mb_strlen($root));
+            $root    = mb_rtrim($root, '/').'/';
+            $default = '';
+        }
+
+        foreach (explode('/', $path) as $part) {
+            // Ignore?
+            if ($part === '' || $part === '.') {
+                continue;
+            }
+
+            // Skip?
+            if ($part === '..' && ($result[count($result) - 1] ?? $default) !== '..') {
+                array_pop($result);
+
+                continue;
+            }
+
+            // Save
+            $result[] = $part;
+        }
+
+        // Return
+        return $root.implode('/', $result);
     }
 
     protected static function isAbsolute(string $path): bool {
+        return self::getRoot($path) !== '';
+    }
+
+    private static function getRoot(string $path): string {
         // Empty?
         if ($path === '') {
-            return false;
+            return '';
         }
 
         // Root?
         $first = mb_substr($path, 0, 1);
 
         if (self::isRoot($first)) {
-            return true;
+            return $first;
         }
 
         // Home?
         $second = mb_substr($path, 1, 1);
 
         if ($first === '~' && self::isRoot($second)) {
-            return true;
+            return $first.$second;
         }
 
         // Win drive?
         $third = mb_substr($path, 2, 1);
 
         if (self::isRoot($third) && $second === ':' && preg_match('/[a-z]/ui', $first) !== false) {
-            return true;
+            return $first.$second.$third;
         }
 
         // Nope
-        return false;
+        return '';
     }
 
     private static function isRoot(string $path): bool {

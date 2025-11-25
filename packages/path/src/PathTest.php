@@ -3,6 +3,7 @@
 namespace LastDragon_ru\Path;
 
 use LastDragon_ru\Path\Package\TestCase;
+use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -53,17 +54,20 @@ final class PathTest extends TestCase {
     }
 
     public function testNormalized(): void {
-        self::assertSame('/any/path', (string) (new PathTest_Path('/any/path'))->normalized());
-        self::assertSame('any/path', (string) (new PathTest_Path('any/path'))->normalized());
-        self::assertSame('any/path', (string) (new PathTest_Path('./any/path'))->normalized());
-        self::assertSame('any/path', (string) (new PathTest_Path('././any/path'))->normalized());
-        self::assertSame('../any/path', (string) (new PathTest_Path('./../any/path'))->normalized());
-        self::assertSame('path', (string) (new PathTest_Path('./any/../path'))->normalized());
-        self::assertSame('..', (string) (new PathTest_Path('..'))->normalized());
-        self::assertSame('../any/path', (string) (new PathTest_Path('.\\..\\any\\path'))->normalized());
-        self::assertSame('any/path', (string) (new PathTest_Path('any\\path'))->normalized());
-        self::assertSame('/any/path', (string) (new PathTest_Path('/any/path/'))->normalized());
-        self::assertSame('any/path', (string) (new PathTest_Path('any/path/'))->normalized());
+        $path     = 'path/to';
+        $instance = Mockery::mock(Path::class, [$path]);
+        $instance->shouldAllowMockingProtectedMethods();
+        $instance->makePartial();
+        $instance
+            ->shouldReceive('normalize')
+            ->with($path)
+            ->times(3)
+            ->andReturn('normalized');
+
+        $normalized = $instance->normalized();
+
+        self::assertSame('normalized', (string) $normalized);
+        self::assertNotSame($normalized, $instance->normalized());
     }
 
     public function testRelative(): void {
@@ -149,6 +153,11 @@ final class PathTest extends TestCase {
     public function testIsAbsolute(bool $expected, string $path): void {
         self::assertSame($expected, PathTest_Path::isAbsolute($path));
     }
+
+    #[DataProvider('dataProviderNormalize')]
+    public function testNormalize(string $expected, string $path): void {
+        self::assertSame($expected, PathTest_Path::normalize($path));
+    }
     // </editor-fold>
 
     // <editor-fold desc="DataProvider">
@@ -188,6 +197,54 @@ final class PathTest extends TestCase {
             'relative (backslash)'       => [false, 'path\\to'],
         ];
     }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function dataProviderNormalize(): array {
+        return [
+            'empty'                          => ['', ''],
+            'unix root'                      => ['/', '/'],
+            'unix root (backslash)'          => ['/', '\\'],
+            'unix root path'                 => ['/path/to', '/path/to'],
+            'unix root path (backslash)'     => ['/path/to', '\\path/to'],
+            'unix home'                      => ['~/', '~'],
+            'unix home (slash)'              => ['~/', '~/'],
+            'unix home (backslash)'          => ['~/', '~\\'],
+            'win drive'                      => ['C:/', 'C:'],
+            'win root'                       => ['D:/', 'D:\\'],
+            'win root (slash)'               => ['D:/', 'D:/'],
+            'win root path'                  => ['D:/path/to', 'D:\\path\\to'],
+            'win root path (slash)'          => ['D:/path/to', 'D:/path/to'],
+            'win malformed'                  => ['C:path/to', 'C:path\\to'],
+            'dot'                            => ['', '.'],
+            'dot (slash)'                    => ['', './'],
+            'dot (backslash)'                => ['', '.\\'],
+            'dot path (slash)'               => ['path/to', './path/to'],
+            'dot path (backslash)'           => ['path/to', '.\\path\\to'],
+            'dot dot'                        => ['..', '..'],
+            'dot dot (slash)'                => ['..', '../'],
+            'dot dot (backslash)'            => ['..', '..\\'],
+            'dot dot path (slash)'           => ['../path/to', '../path/to'],
+            'dot dot path (backslash)'       => ['../path/to', '..\\path\\to'],
+            'relative'                       => ['path/to', 'path/to'],
+            'relative (backslash)'           => ['path/to', 'path\\to'],
+            'relative dot'                   => ['path/to', 'path/././/.//to'],
+            'relative dot (backslash)'       => ['path/to', 'path\\.\\.\\\\.\\\\to'],
+            'relative dot dot'               => ['../file', 'path/.//to/../../../file'],
+            'relative dot dot (backslash)'   => ['../file', 'path\\.\\\\to\\..\\..\\..\\file'],
+            'absolute dot'                   => ['/path/to', '/path/././/.//to'],
+            'absolute dot (backslash)'       => ['/path/to', '/path\\.\\.\\\\.\\\\to'],
+            'absolute dot dot'               => ['/to', '/path/./../../../to'],
+            'absolute dot dot(backslash)'    => ['/to', '\\path\\.\\..\\..\\..\\to'],
+            'absolute unix home'             => ['~/to', '~/path/./../../../to'],
+            'absolute unix home (backslash)' => ['~/to', '~\\path\\.\\..\\..\\..\\to'],
+            'starts with tilde'              => ['~path/to', '~path/to'],
+            'starts with tilde (backslash)'  => ['~path/to', '~path\\to'],
+            'dots'                           => ['', './././././'],
+            'dots (backslash)'               => ['', '.\\.\\.\\.\\.\\'],
+        ];
+    }
     //</editor-fold>
 }
 
@@ -203,5 +260,10 @@ class PathTest_Path extends Path {
     #[Override]
     public static function isAbsolute(string $path): bool {
         return parent::isAbsolute($path);
+    }
+
+    #[Override]
+    public static function normalize(string $path): string {
+        return parent::normalize($path);
     }
 }
