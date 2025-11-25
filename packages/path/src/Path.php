@@ -7,9 +7,16 @@ use Stringable;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 use function basename;
+use function mb_substr;
+use function preg_match;
 use function str_ends_with;
 
 /**
+ * It differs slightly from the Symfony FileSystem Path component.
+ *
+ * + The home path (`~`) treatment as absolute (because in almost all cases it is absolute).
+ * + URL/URI/etc not supported and treatment as path.
+ *
  * @property-read TPath $name
  * @property-read bool  $absolute
  * @property-read bool  $relative
@@ -54,7 +61,7 @@ abstract class Path implements Stringable {
         return match ($name) {
             'name'       => basename($this->path),
             'relative'   => !$this->absolute,
-            'absolute'   => $this->isAbsolute   ??= SymfonyPath::isAbsolute($this->path),
+            'absolute'   => $this->isAbsolute   ??= static::isAbsolute($this->path),
             'normalized' => $this->isNormalized ??= $this->normalize($this->path) === $this->path,
             default      => null,
         };
@@ -142,5 +149,40 @@ abstract class Path implements Stringable {
 
     protected function normalize(string $path): string {
         return SymfonyPath::canonicalize($path);
+    }
+
+    protected static function isAbsolute(string $path): bool {
+        // Empty?
+        if ($path === '') {
+            return false;
+        }
+
+        // Root?
+        $first = mb_substr($path, 0, 1);
+
+        if (self::isRoot($first)) {
+            return true;
+        }
+
+        // Home?
+        $second = mb_substr($path, 1, 1);
+
+        if ($first === '~' && self::isRoot($second)) {
+            return true;
+        }
+
+        // Win drive?
+        $third = mb_substr($path, 2, 1);
+
+        if (self::isRoot($third) && $second === ':' && preg_match('/[a-z]/ui', $first) !== false) {
+            return true;
+        }
+
+        // Nope
+        return false;
+    }
+
+    private static function isRoot(string $path): bool {
+        return ($path === '' || $path === '/' || $path === '\\');
     }
 }

@@ -70,11 +70,13 @@ final class DirectoryPathTest extends TestCase {
         self::assertSame('path/', (string) (new DirectoryPath('./any/../path'))->normalized());
         self::assertSame('./', (string) (new DirectoryPath(''))->normalized());
         self::assertSame('./', (string) (new DirectoryPath('./'))->normalized());
+        self::assertSame('./', (string) (new DirectoryPath('.\\'))->normalized());
         self::assertSame('./', (string) (new DirectoryPath('.'))->normalized());
         self::assertSame('../', (string) (new DirectoryPath('../'))->normalized());
         self::assertSame('../', (string) (new DirectoryPath('..'))->normalized());
+        self::assertSame('../', (string) (new DirectoryPath('..\\'))->normalized());
         self::assertSame('path/', (string) (new DirectoryPath('./any/../path/.'))->normalized());
-        self::assertSame('/', (string) (new DirectoryPath('/..'))->normalized());
+        self::assertSame('/', (string) (new DirectoryPath('\\..'))->normalized());
         self::assertSame('../any/path/', (string) (new DirectoryPath('.\\..\\any\\path'))->normalized());
         self::assertSame('any/path/', (string) (new DirectoryPath('any\\path'))->normalized());
         self::assertSame('/any/path/', (string) (new DirectoryPath('/any/path/'))->normalized());

@@ -3,13 +3,17 @@
 namespace LastDragon_ru\Path;
 
 use LastDragon_ru\Path\Package\TestCase;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
  */
 #[CoversClass(Path::class)]
 final class PathTest extends TestCase {
+    // <editor-fold desc="Tests">
+    // =========================================================================
     public function testToString(): void {
         $path   = '/a/b/c';
         $object = new PathTest_Path($path);
@@ -78,19 +82,14 @@ final class PathTest extends TestCase {
     }
 
     public function testPropertyRelative(): void {
-        self::assertFalse((new PathTest_Path('/any/path'))->relative);
-        self::assertTrue((new PathTest_Path('any/path'))->relative);
-        self::assertTrue((new PathTest_Path('./any/path'))->relative);
-        self::assertTrue((new PathTest_Path('././any/path'))->relative);
-        self::assertTrue((new PathTest_Path('./../any/path'))->relative);
+        $path = new PathTest_Path('/any/path');
+
+        self::assertSame(!$path->absolute, $path->relative);
     }
 
-    public function testPropertyAbsolute(): void {
-        self::assertTrue((new PathTest_Path('/any/path'))->absolute);
-        self::assertFalse((new PathTest_Path('any/path'))->absolute);
-        self::assertFalse((new PathTest_Path('./any/path'))->absolute);
-        self::assertFalse((new PathTest_Path('././any/path'))->absolute);
-        self::assertFalse((new PathTest_Path('./../any/path'))->absolute);
+    #[DataProvider('dataProviderIsAbsolute')]
+    public function testPropertyAbsolute(bool $expected, string $path): void {
+        self::assertSame($expected, (new PathTest_Path($path))->absolute);
     }
 
     public function testFile(): void {
@@ -126,7 +125,7 @@ final class PathTest extends TestCase {
         self::assertFalse((new PathTest_Path('path/to/file'))->equals(new PathTest_Path('path/to')));
         self::assertFalse(
             (new PathTest_Path('path/to/file'))->equals(
-                // @phpstan-ignore class.disallowedSubtype (for test)
+            // @phpstan-ignore class.disallowedSubtype (for test)
                 new class('path/to/file') extends Path {
                     // path must be a subclass of
                 },
@@ -145,6 +144,51 @@ final class PathTest extends TestCase {
         self::assertEquals(new FilePath('path'), Path::make('path'));
         self::assertEquals(new FilePath('/path'), Path::make('/path'));
     }
+
+    #[DataProvider('dataProviderIsAbsolute')]
+    public function testIsAbsolute(bool $expected, string $path): void {
+        self::assertSame($expected, PathTest_Path::isAbsolute($path));
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="DataProvider">
+    // =========================================================================
+    /**
+     * @return array<string, array{bool, string}>
+     */
+    public static function dataProviderIsAbsolute(): array {
+        return [
+            'empty'                      => [false, ''],
+            'unix root'                  => [true, '/'],
+            'unix root (backslash)'      => [true, '\\'],
+            'unix root path'             => [true, '/path/to'],
+            'unix root path (backslash)' => [true, '\\path/to'],
+            'unix home'                  => [true, '~'],
+            'unix home (slash)'          => [true, '~/'],
+            'unix home (backslash)'      => [true, '~\\'],
+            'win drive'                  => [true, 'C:'],
+            'win root'                   => [true, 'D:\\'],
+            'win root (slash)'           => [true, 'D:/'],
+            'win root path'              => [true, 'D:\\path\\to'],
+            'win root path (slash)'      => [true, 'D:/path/to'],
+            'win malformed'              => [false, 'C:path\\to'],
+            'url (https)'                => [false, 'https://example.com'],
+            'url (mailto)'               => [false, 'mailto:example@example.com'],
+            'dot'                        => [false, '.'],
+            'dot (slash)'                => [false, './'],
+            'dot (backslash)'            => [false, '.\\'],
+            'dot path (slash)'           => [false, './path/to'],
+            'dot path (backslash)'       => [false, '.\\path\\to'],
+            'dot dot'                    => [false, '..'],
+            'dot dot (slash)'            => [false, '../'],
+            'dot dot (backslash)'        => [false, '..\\'],
+            'dot dot path (slash)'       => [false, '../path/to'],
+            'dot dot path (backslash)'   => [false, '..\\path\\to'],
+            'relative'                   => [false, 'path/to'],
+            'relative (backslash)'       => [false, 'path\\to'],
+        ];
+    }
+    //</editor-fold>
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
@@ -156,5 +200,8 @@ final class PathTest extends TestCase {
  * @phpstan-ignore class.disallowedSubtype (for test)
  */
 class PathTest_Path extends Path {
-    // empty
+    #[Override]
+    public static function isAbsolute(string $path): bool {
+        return parent::isAbsolute($path);
+    }
 }
