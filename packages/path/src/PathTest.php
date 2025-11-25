@@ -37,20 +37,24 @@ final class PathTest extends TestCase {
 
     public function testResolveAbsolute(): void {
         $target   = new PathTest_Path('/to/absolute/./path');
-        $relative = (new PathTest_Path('relative/path'));
-        $absolute = (new PathTest_Path('/absolute/path'));
+        $relative = (new PathTest_Path('relative/path'))->resolve($target);
+        $absolute = (new PathTest_Path('/absolute/path'))->resolve($target);
 
-        self::assertSame('/to/absolute/path', (string) $relative->resolve($target));
-        self::assertSame('/to/absolute/path', (string) $absolute->resolve($target));
+        self::assertSame('/to/absolute/path', (string) $relative);
+        self::assertTrue($relative->absolute);
+        self::assertSame('/to/absolute/path', (string) $absolute);
+        self::assertTrue($absolute->absolute);
     }
 
     public function testResolveRelative(): void {
-        $to       = new PathTest_Path('to/../relative/./path');
-        $relative = new PathTest_Path('relative/path');
-        $absolute = new PathTest_Path('/absolute/path');
+        $target   = new PathTest_Path('to/../relative/./path');
+        $relative = (new PathTest_Path('relative/path'))->resolve($target);
+        $absolute = (new PathTest_Path('/absolute/path'))->resolve($target);
 
-        self::assertSame('/absolute/relative/path', (string) $absolute->resolve($to));
-        self::assertSame('relative/relative/path', (string) $relative->resolve($to));
+        self::assertSame('relative/relative/path', (string) $relative);
+        self::assertTrue($relative->relative);
+        self::assertSame('/absolute/relative/path', (string) $absolute);
+        self::assertTrue($absolute->absolute);
     }
 
     public function testNormalized(): void {
@@ -67,6 +71,7 @@ final class PathTest extends TestCase {
         $normalized = $instance->normalized();
 
         self::assertSame('normalized', (string) $normalized);
+        self::assertSame($instance->absolute, $normalized->absolute);
         self::assertNotSame($normalized, $instance->normalized());
     }
 

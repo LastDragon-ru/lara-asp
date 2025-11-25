@@ -96,6 +96,7 @@ abstract class Path implements Stringable {
             $resolved               = $path instanceof DirectoryPath
                 ? new DirectoryPath($resolved)
                 : new FilePath($resolved);
+            $resolved->isAbsolute   = $this->isAbsolute;
             $resolved->isNormalized = true;
         } else {
             $resolved = $path->normalized();
@@ -169,7 +170,10 @@ abstract class Path implements Stringable {
         }
 
         $path               = static::normalize($this->path);
-        $path               = $this instanceof DirectoryPath ? new DirectoryPath($path) : new FilePath($path);
+        $path               = $this instanceof DirectoryPath
+            ? new DirectoryPath($path)
+            : new FilePath($path);
+        $path->isAbsolute   = $this->isAbsolute;
         $path->isNormalized = true;
 
         return $path;
@@ -235,7 +239,7 @@ abstract class Path implements Stringable {
         // Home?
         $second = mb_substr($path, 1, 1);
 
-        if ($first === '~' && self::isRoot($second)) {
+        if (self::isRoot($second) && $first === '~') {
             return $first.$second;
         }
 
