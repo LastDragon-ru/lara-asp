@@ -13,7 +13,7 @@ use Stringable;
 use function sprintf;
 
 /**
- * @property-read string            $name
+ * @property-read non-empty-string  $name
  * @property-read ?non-empty-string $extension
  */
 class File implements Stringable {
@@ -51,6 +51,9 @@ class File implements Stringable {
         return $this->caster->castTo($this, $class);
     }
 
+    /**
+     * @param non-empty-string $path
+     */
     public function getFilePath(string $path): FilePath {
         return $this->path->file($path);
     }

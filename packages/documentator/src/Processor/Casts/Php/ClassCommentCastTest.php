@@ -33,9 +33,13 @@ final class ClassCommentCastTest extends TestCase {
         }
         PHP;
         $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(new FilePath(self::getTempFile($content, '.php')->getPathname()));
-        $cast    = new ClassCommentCast();
-        $value   = $cast->castTo($file, ClassComment::class);
+        $path    = self::getTempFile($content, '.php')->getPathname();
+
+        self::assertNotEmpty($path);
+
+        $file  = $fs->getFile(new FilePath($path));
+        $cast  = new ClassCommentCast();
+        $value = $cast->castTo($file, ClassComment::class);
 
         self::assertNotNull($value);
         self::assertSame(

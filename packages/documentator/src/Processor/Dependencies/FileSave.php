@@ -15,6 +15,9 @@ use function is_string;
  */
 readonly class FileSave implements Dependency {
     public function __construct(
+        /**
+         * @var File|FilePath|non-empty-string
+         */
         protected File|FilePath|string $file,
         protected object|string $content,
     ) {

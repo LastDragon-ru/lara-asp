@@ -41,7 +41,11 @@ class SymfonyFileSystem implements Adapter {
         ?int $depth = null,
     ): iterable {
         foreach ($this->getFinder($directory, $include, $exclude, $depth)->files() as $file) {
-            yield new FilePath($file->getPathname());
+            $pathname = $file->getPathname();
+
+            if ($pathname !== '') {
+                yield new FilePath($pathname);
+            }
         }
 
         yield from [];

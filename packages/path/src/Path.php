@@ -101,7 +101,7 @@ abstract class Path implements Stringable {
         $concat               = $path::normalize($concat);
         $concat               = $path instanceof DirectoryPath
             ? new DirectoryPath($concat)
-            : new FilePath($concat);
+            : new FilePath($concat); // @phpstan-ignore argument.type (ok. it will throw error if empty)
         $concat->isAbsolute   = $this->isAbsolute;
         $concat->isNormalized = true;
 
@@ -112,6 +112,9 @@ abstract class Path implements Stringable {
         return (new DirectoryPath("{$this->path}/.."))->normalized();
     }
 
+    /**
+     * @param non-empty-string $path
+     */
     public function file(string $path): FilePath {
         return $this->resolve(new FilePath($path));
     }
@@ -155,7 +158,7 @@ abstract class Path implements Stringable {
         $relative               = $path::normalize($relative);
         $relative               = $path instanceof DirectoryPath
             ? new DirectoryPath($relative)
-            : new FilePath($relative);
+            : new FilePath($relative); // @phpstan-ignore argument.type (ok. it will throw error if empty)
         $relative->isAbsolute   = false;
         $relative->isNormalized = true;
 
@@ -175,7 +178,7 @@ abstract class Path implements Stringable {
         $path               = static::normalize($this->path);
         $path               = $this instanceof DirectoryPath
             ? new DirectoryPath($path)
-            : new FilePath($path);
+            : new FilePath($path); // @phpstan-ignore argument.type (ok. it will throw error if empty)
         $path->isAbsolute   = $this->isAbsolute;
         $path->isNormalized = true;
 

@@ -23,7 +23,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 
 use function array_map;
-use function basename;
 use function iterator_to_array;
 
 /**
@@ -40,7 +39,7 @@ final class FileSystemTest extends TestCase {
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->normalized();
         $file         = $fs->getFile($path);
         $readonly     = $fs->getFile(new FilePath(__FILE__));
-        $relative     = $fs->getFile(new FilePath(basename(__FILE__)));
+        $relative     = $fs->getFile(new FilePath($readonly->name));
         $internal     = $fs->getFile(new FilePath(self::getTestData()->path('c.html')));
         $external     = $fs->getFile(new FilePath('../Processor.php'));
         $fromFilePath = $fs->getFile($path);

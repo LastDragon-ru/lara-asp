@@ -35,9 +35,13 @@ final class ClassMarkdownCastTest extends TestCase {
         }
         PHP;
         $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(new FilePath(self::getTempFile($content, '.php')->getPathname()));
-        $cast    = new ClassMarkdownCast($this->app()->make(PhpDocumentFactory::class));
-        $value   = $cast->castTo($file, Document::class);
+        $path    = self::getTempFile($content, '.php')->getPathname();
+
+        self::assertNotEmpty($path);
+
+        $file  = $fs->getFile(new FilePath($path));
+        $cast  = new ClassMarkdownCast($this->app()->make(PhpDocumentFactory::class));
+        $value = $cast->castTo($file, Document::class);
 
         self::assertSame(
             <<<'MARKDOWN'

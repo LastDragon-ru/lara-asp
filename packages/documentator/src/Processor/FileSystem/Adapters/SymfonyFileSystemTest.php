@@ -98,13 +98,15 @@ final class SymfonyFileSystemTest extends TestCase {
     }
 
     public function testWrite(): void {
-        $path     = new FilePath(self::getTempFile()->getPathname());
+        $path     = self::getTempFile()->getPathname();
         $adapter  = new SymfonyFileSystem();
         $expected = 'content';
 
-        $adapter->write($path, $expected);
+        self::assertNotEmpty($path);
 
-        self::assertSame($expected, file_get_contents((string) $path));
+        $adapter->write(new FilePath($path), $expected);
+
+        self::assertSame($expected, file_get_contents($path));
     }
 
     /**

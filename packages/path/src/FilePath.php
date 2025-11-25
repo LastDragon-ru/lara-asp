@@ -11,17 +11,21 @@ use function str_ends_with;
 use const PATHINFO_EXTENSION;
 
 /**
+ * @property-read non-empty-string  $name
  * @property-read ?non-empty-string $extension
  *
- * @extends Path<string>
+ * @extends Path<non-empty-string>
  */
 final class FilePath extends Path {
+    /**
+     * @param non-empty-string $path
+     */
     public function __construct(string $path) {
         parent::__construct($path);
 
         if ($this->name === '.' || $this->name === '..') {
             throw new InvalidArgumentException('Filename cannot be `.` or `..`.');
-        } elseif ($this->name === '' || !str_ends_with($path, $this->name)) {
+        } elseif ($this->name === '' || !str_ends_with($path, $this->name)) { // @phpstan-ignore identical.alwaysFalse
             throw new InvalidArgumentException('Filename cannot be empty.');
         } else {
             // empty

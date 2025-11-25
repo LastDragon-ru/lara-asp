@@ -56,6 +56,10 @@ readonly class Instruction implements InstructionContract {
             throw new TemplateDataMissed($context, $parameters);
         }
 
+        if ($parameters->target === '') {
+            return '';
+        }
+
         // Replace
         $vars    = array_keys($parameters->data);
         $used    = [];

@@ -75,7 +75,7 @@ class Extension {
         $source = self::getLarastanPath();
 
         foreach ($extension['parameters']['bootstrapFiles'] as $index => $file) {
-            if (!is_string($file)) {
+            if (!is_string($file) || $file === '') {
                 throw new Exception(
                     sprintf(
                         'The `$extension[\'parameters\'][\'bootstrapFiles\'][%s]` expected to be a string.',

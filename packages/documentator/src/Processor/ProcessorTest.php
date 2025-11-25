@@ -901,7 +901,7 @@ class ProcessorTest__Task implements FileTask {
 
     public function __construct(
         /**
-         * @var array<string, list<string>>
+         * @var array<string, list<non-empty-string>>
          */
         private readonly array $dependencies = [],
     ) {

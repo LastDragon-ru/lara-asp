@@ -17,6 +17,9 @@ use function is_string;
  */
 readonly class FileReference implements Dependency {
     public function __construct(
+        /**
+         * @var FilePath|non-empty-string
+         */
         protected FilePath|string $reference,
     ) {
         // empty

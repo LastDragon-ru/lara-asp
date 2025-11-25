@@ -8,8 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvab
 use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-use function basename;
-
 /**
  * @internal
  */
@@ -29,8 +27,8 @@ final class FileReferenceTest extends TestCase {
         $fs       = $this->getFileSystem(__DIR__);
         $path     = (new FilePath(__FILE__))->normalized();
         $file     = $fs->getFile($path);
-        $absolute = new FileReference(__FILE__);
-        $relative = new FileReference(basename(__FILE__));
+        $absolute = new FileReference($path->path);
+        $relative = new FileReference($path->name);
         $filepath = new FileReference($path);
 
         self::assertEquals($file, $absolute($fs));

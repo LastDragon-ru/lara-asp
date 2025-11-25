@@ -15,7 +15,7 @@ final class FilePathTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Filename cannot be empty.');
 
-        new FilePath('');
+        new FilePath(''); // @phpstan-ignore argument.type (for test)
     }
 
     public function testConstructHome(): void {

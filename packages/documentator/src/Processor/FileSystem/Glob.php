@@ -13,6 +13,7 @@ use Override;
 use SplFileInfo;
 use Stringable;
 
+use function assert;
 use function implode;
 
 /**
@@ -66,9 +67,17 @@ readonly class Glob implements Matcher {
         if ($path instanceof DirectoryPath || $path instanceof FilePath) {
             // as is
         } elseif ($path instanceof SplFileInfo) {
-            $path = $path->isDir() ? new DirectoryPath($path->getPathname()) : new FilePath($path->getPathname());
+            $pathname = $path->getPathname();
+
+            assert($pathname !== '');
+
+            $path = $path->isDir() ? new DirectoryPath($pathname) : new FilePath($pathname);
         } else {
-            $path = new FilePath((string) $path);
+            $pathname = (string) $path;
+
+            assert($pathname !== '');
+
+            $path = new FilePath($pathname);
         }
 
         return $this->root->resolve($path);
