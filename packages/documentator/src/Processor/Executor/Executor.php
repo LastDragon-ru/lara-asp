@@ -252,7 +252,7 @@ class Executor {
 
         // Excluded?
         $path    = $this->fs->input->relative($file->path);
-        $skipped = $this->skipped->match($path);
+        $skipped = $path === null || $this->skipped->match($path);
 
         if ($skipped) {
             return true;

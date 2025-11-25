@@ -4,7 +4,6 @@ namespace LastDragon_ru\Path;
 
 use Override;
 use Stringable;
-use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 use function array_pop;
 use function basename;
@@ -16,6 +15,7 @@ use function mb_strlen;
 use function mb_substr;
 use function preg_match;
 use function str_ends_with;
+use function str_repeat;
 use function str_replace;
 
 /**
@@ -119,15 +119,43 @@ abstract class Path implements Stringable {
     }
 
     /**
-     * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
+     * @return ($path is DirectoryPath ? DirectoryPath|null : FilePath|null)
      */
-    public function relative(self $path): self {
-        $relative             = $this->resolve($path);
-        $relative             = SymfonyPath::makeRelative($relative->path, $this->directory()->path);
-        $relative             = $path instanceof DirectoryPath ? new DirectoryPath($relative) : new FilePath($relative);
-        $relative             = $relative->normalized();
-        $relative->isAbsolute = false;
+    public function relative(self $path): ?self {
+        // Relative?
+        if ($path->relative) {
+            return $path->normalized();
+        }
 
+        if ($this->relative) {
+            return null; // unresolvable
+        }
+
+        // Convert
+        $root  = explode('/', $this->directory()->path);
+        $parts = explode('/', $path->normalized()->path);
+        $count = 0;
+
+        foreach ($root as $i => $part) {
+            if ($part !== ($parts[$i] ?? '')) {
+                break;
+            }
+
+            unset($parts[$i]);
+
+            $count++;
+        }
+
+        $repeat                 = count($root) - $count - 1;
+        $relative               = ($repeat > 0 ? str_repeat('../', $repeat) : '').implode('/', $parts);
+        $relative               = $path::normalize($relative);
+        $relative               = $path instanceof DirectoryPath
+            ? new DirectoryPath($relative)
+            : new FilePath($relative);
+        $relative->isAbsolute   = false;
+        $relative->isNormalized = true;
+
+        // Return
         return $relative;
     }
 

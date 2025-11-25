@@ -70,17 +70,39 @@ final class DirectoryPathTest extends TestCase {
     }
 
     public function testRelative(): void {
-        self::assertSame(
-            '../to/file',
-            (string) (new DirectoryPath('/any/path'))->relative(new FilePath('/any/path/../to/file')),
-        );
+        $root = new DirectoryPath('/root/path/to/directory.path');
+
         self::assertSame(
             './',
-            (string) (new DirectoryPath('/any/path'))->relative(new DirectoryPath('/any/path')),
+            (string) $root->relative($root),
         );
         self::assertSame(
-            'to/file',
-            (string) (new DirectoryPath('/absolute/path'))->relative(new FilePath('to/./file')),
+            '../file',
+            (string) $root->relative(new FilePath('/root/path/to/file')),
+        );
+        self::assertSame(
+            '../directory/',
+            (string) $root->relative(new DirectoryPath('/root/path/to/directory')),
+        );
+        self::assertSame(
+            '../path/to/file',
+            (string) $root->relative(new FilePath('/root/path/to/path/to/file')),
+        );
+        self::assertSame(
+            '../path/to/directory/',
+            (string) $root->relative(new DirectoryPath('/root/path/to/path/to/directory')),
+        );
+        self::assertSame(
+            '../../../../directory/',
+            (string) $root->relative(new DirectoryPath('/directory')),
+        );
+        self::assertSame(
+            '../../../../file',
+            (string) $root->relative(new FilePath('/file')),
+        );
+        self::assertSame(
+            '../../../../file',
+            (string) $root->relative(new FilePath('/./file')),
         );
     }
     //</editor-fold>

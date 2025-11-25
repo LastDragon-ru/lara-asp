@@ -87,4 +87,41 @@ final class FilePathTest extends TestCase {
         self::assertSame('txt', (new FilePath('relative/path/to/file.txt'))->extension);
         self::assertNull((new FilePath('relative/path/to/file'))->extension);
     }
+
+    public function testRelative(): void {
+        $root = new FilePath('/root/path/to/file.path');
+
+        self::assertSame(
+            'file.path',
+            (string) $root->relative($root),
+        );
+        self::assertSame(
+            'file',
+            (string) $root->relative(new FilePath('/root/path/to/file')),
+        );
+        self::assertSame(
+            'directory/',
+            (string) $root->relative(new DirectoryPath('/root/path/to/directory')),
+        );
+        self::assertSame(
+            'path/to/file',
+            (string) $root->relative(new FilePath('/root/path/to/path/to/file')),
+        );
+        self::assertSame(
+            'path/to/directory/',
+            (string) $root->relative(new DirectoryPath('/root/path/to/path/to/directory')),
+        );
+        self::assertSame(
+            '../../../directory/',
+            (string) $root->relative(new DirectoryPath('/directory')),
+        );
+        self::assertSame(
+            '../../../file',
+            (string) $root->relative(new FilePath('/file')),
+        );
+        self::assertSame(
+            '../../../file',
+            (string) $root->relative(new FilePath('/./file')),
+        );
+    }
 }

@@ -60,9 +60,9 @@ class File implements Stringable {
     }
 
     /**
-     * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
+     * @return ($path is DirectoryPath ? DirectoryPath|null : FilePath|null)
      */
-    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath {
+    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath|null {
         $path = $path instanceof Path ? $path : $path->path;
         $path = $this->path->relative($path);
 

@@ -88,8 +88,8 @@ abstract class Base implements Link {
 
     abstract protected function getTargetNode(ClassLike $class): ?Node;
 
-    private function target(FilePath $path, ?Node $node, bool $deprecated): ?LinkTarget {
-        if ($node === null) {
+    private function target(?FilePath $path, ?Node $node, bool $deprecated): ?LinkTarget {
+        if ($path === null || $node === null) {
             return null;
         }
 

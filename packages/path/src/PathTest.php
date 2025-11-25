@@ -71,18 +71,54 @@ final class PathTest extends TestCase {
     }
 
     public function testRelative(): void {
+        $root = new PathTest_Path('/root/path/to/file.path');
+
         self::assertSame(
-            'to/file',
-            (string) (new PathTest_Path('/any/path'))->relative(new PathTest_Path('/any/path/../to/file')),
+            'file.path',
+            (string) $root->relative($root),
         );
         self::assertSame(
-            'path',
-            (string) (new PathTest_Path('/any/path'))->relative(new PathTest_Path('/any/path')),
+            'file',
+            (string) $root->relative(new FilePath('/root/path/to/file')),
         );
         self::assertSame(
-            'to/file',
-            (string) (new PathTest_Path('/absolute/path'))->relative(new PathTest_Path('to/./file')),
+            'directory/',
+            (string) $root->relative(new DirectoryPath('/root/path/to/directory')),
         );
+        self::assertSame(
+            'path/to/file',
+            (string) $root->relative(new FilePath('/root/path/to/path/to/file')),
+        );
+        self::assertSame(
+            'path/to/directory/',
+            (string) $root->relative(new DirectoryPath('/root/path/to/path/to/directory')),
+        );
+        self::assertSame(
+            '../../../directory/',
+            (string) $root->relative(new DirectoryPath('/directory')),
+        );
+        self::assertSame(
+            '../../../file',
+            (string) $root->relative(new FilePath('/file')),
+        );
+        self::assertSame(
+            '../../../file',
+            (string) $root->relative(new FilePath('/./file')),
+        );
+    }
+
+    public function testRelativeRootRelative(): void {
+        $root = new PathTest_Path('./');
+        $path = new PathTest_Path('/path');
+
+        self::assertNull($root->relative($path));
+    }
+
+    public function testRelativePathRelative(): void {
+        $root = new PathTest_Path('/root/path');
+        $path = new PathTest_Path('path');
+
+        self::assertSame($path, $root->relative($path)); // @phpstan-ignore staticMethod.impossibleType
     }
 
     public function testPropertyRelative(): void {
@@ -106,9 +142,9 @@ final class PathTest extends TestCase {
     }
 
     public function testDirectory(): void {
-        $relative = (new PathTest_Path('relative/path/to'))->directory('directory');
-        $absolute = (new PathTest_Path('/path/to'))->directory('/directory');
-        $null     = (new PathTest_Path('/path/to'))->directory();
+        $relative = (new PathTest_Path('./relative/./path/to'))->directory('directory');
+        $absolute = (new PathTest_Path('/./path/./to'))->directory('/directory');
+        $null     = (new PathTest_Path('/./path/./to'))->directory();
 
         self::assertSame('relative/path/directory/', (string) $relative);
 
