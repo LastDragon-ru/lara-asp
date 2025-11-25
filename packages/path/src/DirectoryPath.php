@@ -11,6 +11,11 @@ use function str_starts_with;
  * @extends Path<string>
  */
 final class DirectoryPath extends Path {
+    #[Override]
+    public function directory(?string $path = null): self {
+        return $path !== null ? parent::directory($path) : $this->normalized();
+    }
+
     public function contains(Path $path): bool {
         $path   = (string) $this->resolve($path);
         $root   = (string) $this->normalized();

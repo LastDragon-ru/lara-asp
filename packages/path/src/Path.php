@@ -68,7 +68,7 @@ abstract class Path implements Stringable {
         return match ($name) {
             'name'       => basename($this->path),
             'relative'   => !$this->absolute,
-            'absolute'   => $this->isAbsolute   ??= static::isAbsolute($this->path),
+            'absolute'   => $this->isAbsolute   ??= self::getRoot($this->path) !== '',
             'normalized' => $this->isNormalized ??= static::normalize($this->path) === $this->path,
             default      => null,
         };
@@ -113,11 +113,9 @@ abstract class Path implements Stringable {
     }
 
     public function directory(?string $path = null): DirectoryPath {
-        return match (true) {
-            $path === null && $this instanceof DirectoryPath => $this->normalized(),
-            $path !== null                                   => $this->resolve(new DirectoryPath($path)),
-            default                                          => $this->parent(),
-        };
+        return $path !== null
+            ? $this->resolve(new DirectoryPath($path))
+            : $this->parent();
     }
 
     /**
@@ -191,10 +189,6 @@ abstract class Path implements Stringable {
 
         // Return
         return $root.implode('/', $result);
-    }
-
-    protected static function isAbsolute(string $path): bool {
-        return self::getRoot($path) !== '';
     }
 
     private static function getRoot(string $path): string {

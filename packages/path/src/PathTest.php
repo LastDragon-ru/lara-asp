@@ -151,7 +151,7 @@ final class PathTest extends TestCase {
 
     #[DataProvider('dataProviderIsAbsolute')]
     public function testIsAbsolute(bool $expected, string $path): void {
-        self::assertSame($expected, PathTest_Path::isAbsolute($path));
+        self::assertSame($expected, (new PathTest_Path($path))->absolute);
     }
 
     #[DataProvider('dataProviderNormalize')]
@@ -257,11 +257,6 @@ final class PathTest extends TestCase {
  * @phpstan-ignore class.disallowedSubtype (for test)
  */
 class PathTest_Path extends Path {
-    #[Override]
-    public static function isAbsolute(string $path): bool {
-        return parent::isAbsolute($path);
-    }
-
     #[Override]
     public static function normalize(string $path): string {
         return parent::normalize($path);
