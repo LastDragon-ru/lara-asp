@@ -136,6 +136,12 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 
 [Read more](<packages/graphql-printer-testing/README.md>).
 
+## [Path](<packages/path/README.md>)
+
+Provides utilities for working with file and directory paths in an object-oriented way.
+
+[Read more](<packages/path/README.md>).
+
 [//]: # (end: preprocess/f3f343cc508e884a)
 
 # Upgrading
