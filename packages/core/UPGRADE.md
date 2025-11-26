@@ -33,6 +33,11 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Path\Path::isMatch()`, the `preg_match()` can be used directly.
 
+* [ ] The Path component is deprecated, please migrate to [`lastdragon-ru/path`](../path/README.md) package 🤝
+  * [`DirectoryPath`][code-links/6a882555d8c99237]
+  * [`FilePath`][code-links/5dccbbbbfd89f5f6]
+  * [`Path`][code-links/277f4a31cdbb54b4]
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -81,6 +86,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/5dccbbbbfd89f5f6]: src/Path/FilePath.php
     "\LastDragon_ru\LaraASP\Core\Path\FilePath"
+
+[code-links/277f4a31cdbb54b4]: src/Path/Path.php
+    "\LastDragon_ru\LaraASP\Core\Path\Path"
 
 [code-links/8b4dc3d615948332]: src/Provider.php
     "\LastDragon_ru\LaraASP\Core\Provider"
