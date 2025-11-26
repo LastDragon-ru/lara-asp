@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+.gitattributes                                                  export-ignore
+.gitignore                                                      export-ignore
+/.github                                                        export-ignore
+/metadata.json                                                  export-ignore
+/phpunit.xml                                                    export-ignore
+/src/**/*Test                                                   export-ignore
+/src/**/*Test.php                                               export-ignore
+/src/**/*Test~*                                                 export-ignore
+/src/Package                                                    export-ignore

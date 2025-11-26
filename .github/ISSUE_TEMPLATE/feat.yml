@@ -18,6 +18,7 @@ body:
         - graphql-printer
         - graphql-printer-testing
         - migrator
+        - path
         - serializer
         - spa
         - testing

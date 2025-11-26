@@ -1,0 +1,15 @@
+{
+    "version": "9.2.0",
+    "require": {
+        "php": "PHP"
+    },
+    "merge": null,
+    "requirements": {
+        "HEAD": {
+            "php": [
+                "^8.4",
+                "^8.3"
+            ]
+        }
+    }
+}
