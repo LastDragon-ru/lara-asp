@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Migrator\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
 use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\Path;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -78,7 +79,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && $directory->file("{$file}~up.sql")->path === $path;
+                        && $directory->file("{$file}~up.sql")->equals(Path::make($path));
                 },
             )
             ->once()
@@ -104,7 +105,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && $directory->file("{$file}~a.up.sql")->path === $path;
+                        && $directory->file("{$file}~a.up.sql")->equals(Path::make($path));
                 },
             )
             ->once()
@@ -131,7 +132,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($bConnection, $directory, $file): bool {
                     return $bConnection === $connection
-                        && $directory->file("{$file}~up.sql")->path === $path;
+                        && $directory->file("{$file}~up.sql")->equals(Path::make($path));
                 },
             )
             ->once()
@@ -202,7 +203,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && $directory->file("{$file}~down.sql")->path === $path;
+                        && $directory->file("{$file}~down.sql")->equals(Path::make($path));
                 },
             )
             ->once()
@@ -228,7 +229,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($aConnection, $directory, $file): bool {
                     return $aConnection === $connection
-                        && $directory->file("{$file}~a.down.sql")->path === $path;
+                        && $directory->file("{$file}~a.down.sql")->equals(Path::make($path));
                 },
             )
             ->once()
@@ -255,7 +256,7 @@ final class SqlMigrationTest extends TestCase {
             ->withArgs(
                 static function (Connection $connection, string $path) use ($bConnection, $directory, $file): bool {
                     return $bConnection === $connection
-                        && $directory->file("{$file}~down.sql")->path === $path;
+                        && $directory->file("{$file}~down.sql")->equals(Path::make($path));
                 },
             )
             ->once()
