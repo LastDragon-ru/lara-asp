@@ -25,6 +25,7 @@
     "illuminate/support": "^12.0.1",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
+    "lastdragon-ru/path": "self.version",
     "nikic/php-parser": "^5.4.0",
     "nette/neon": "^3.4.1",
     "phpstan/phpstan": "^2.1.1",

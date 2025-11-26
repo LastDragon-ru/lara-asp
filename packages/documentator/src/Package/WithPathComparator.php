@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Package;
 
-use LastDragon_ru\LaraASP\Core\Path\Path;
+use LastDragon_ru\Path\Path;
 use Override;
 use PHPUnit\Framework\Attributes\Before;
 use SebastianBergmann\Comparator\Comparator;

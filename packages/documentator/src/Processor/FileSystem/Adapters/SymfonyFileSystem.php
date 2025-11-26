@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;

@@ -4,10 +4,10 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
 use Illuminate\Database\Console\Migrations\BaseCommand;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Migrator\Migrations\SqlMigrationCreator;
 use LastDragon_ru\LaraASP\Migrator\Package;
+use LastDragon_ru\Path\DirectoryPath;
 use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

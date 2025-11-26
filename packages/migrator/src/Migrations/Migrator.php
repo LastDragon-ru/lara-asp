@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Migrator\Migrations;
 
 use Illuminate\Database\Migrations\Migrator as IlluminateMigrator;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
+use LastDragon_ru\Path\DirectoryPath;
 use Override;
 use Symfony\Component\Finder\Finder;
 

@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Environment;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\AstRestorer\Extension as AstRestorerExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Generated\Extension as GeneratedExtension;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Extension as ReferenceExtension;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Environment\EnvironmentInterface;
 use League\CommonMark\Extension\ExtensionInterface;

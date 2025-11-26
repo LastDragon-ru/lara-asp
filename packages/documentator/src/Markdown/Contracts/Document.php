@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Contracts;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\DocumentImpl;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Node\Node;
 use Stringable;

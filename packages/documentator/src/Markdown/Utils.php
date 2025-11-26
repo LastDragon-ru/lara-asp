@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Content as ContentData;
@@ -12,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeSplittabl
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Title;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text as TextUtils;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Table\TableCell;

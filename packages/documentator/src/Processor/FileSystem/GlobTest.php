@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\Path\DirectoryPath;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;

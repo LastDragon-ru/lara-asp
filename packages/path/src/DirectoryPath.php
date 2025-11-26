@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Path;
+namespace LastDragon_ru\Path;
 
 use Override;
 

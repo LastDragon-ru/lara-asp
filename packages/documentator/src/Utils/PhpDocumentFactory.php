@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
+use LastDragon_ru\Path\FilePath;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 use PhpParser\NodeTraverser;

@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Core\Path;
+namespace LastDragon_ru\Path;
 
-use LastDragon_ru\LaraASP\Core\Package\TestCase;
+use LastDragon_ru\Path\Package\TestCase;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 

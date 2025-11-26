@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Composer;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 
 use function array_key_exists;
 use function array_unique;
