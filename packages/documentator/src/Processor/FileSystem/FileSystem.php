@@ -5,8 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use Exception;
 use InvalidArgumentException;
 use Iterator;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
@@ -18,6 +16,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 
 use function is_string;
 use function sprintf;
@@ -40,7 +40,7 @@ class FileSystem {
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
-        if (!$input->isAbsolute()) {
+        if (!$input->absolute) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `$input` path must be absolute, `%s` given.',
@@ -49,7 +49,7 @@ class FileSystem {
             );
         }
 
-        if (!$output->isAbsolute()) {
+        if (!$output->absolute) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `$output` path must be absolute, `%s` given.',
@@ -63,7 +63,7 @@ class FileSystem {
      * Relative path will be resolved based on {@see self::$input}.
      */
     protected function isFile(FilePath $path): bool {
-        $path = $this->input->getPath($path);
+        $path = $this->input->resolve($path);
         $file = $this->cached($path);
         $is   = $file !== null || $this->adapter->isFile($path);
 
@@ -75,7 +75,7 @@ class FileSystem {
      */
     public function getFile(FilePath $path): File {
         // Cached?
-        $path = $this->input->getPath($path);
+        $path = $this->input->resolve($path);
         $file = $this->cached($path);
 
         if ($file instanceof File) {
@@ -107,7 +107,7 @@ class FileSystem {
         ?int $depth = null,
     ): Iterator {
         // Exist?
-        $directory = $this->input->getPath($directory);
+        $directory = $this->input->resolve($directory);
 
         if (!$this->adapter->isDirectory($directory)) {
             throw new DirectoryNotFound($directory);
@@ -140,10 +140,10 @@ class FileSystem {
         }
 
         // Relative?
-        $path = $this->output->getPath($path);
+        $path = $this->output->resolve($path);
 
         // Writable?
-        if (!$this->output->isInside($path)) {
+        if (!$this->output->contains($path)) {
             throw new FileNotWritable($path);
         }
 

@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -19,6 +17,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 use UnexpectedValueException;
@@ -419,16 +419,16 @@ class Listener {
             return Mark::Unknown->value.' '.$path;
         }
 
-        $path = $this->input->getPath($path);
+        $path = $this->input->resolve($path);
         $name = match (true) {
-            $this->input->isEqual($this->output) && $this->input->isInside($path),
-                => Mark::Inout->value.' '.$this->output->getRelativePath($path),
-            $this->output->isInside($path),
-            $this->output->isEqual($path),
-                => Mark::Output->value.' '.$this->output->getRelativePath($path),
-            $this->input->isInside($path),
-            $this->input->isEqual($path),
-                => Mark::Input->value.' '.$this->input->getRelativePath($path),
+            $this->input->equals($this->output) && $this->input->contains($path),
+                => Mark::Inout->value.' '.$this->output->relative($path),
+            $this->output->contains($path),
+            $this->output->equals($path),
+                => Mark::Output->value.' '.$this->output->relative($path),
+            $this->input->contains($path),
+            $this->input->equals($path),
+                => Mark::Input->value.' '.$this->input->relative($path),
             default
                 => Mark::External->value.' '.$path,
         };

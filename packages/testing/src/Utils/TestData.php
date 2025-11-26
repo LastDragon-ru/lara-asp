@@ -34,6 +34,9 @@ class TestData {
         $this->path = $path;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function path(string $path): string {
         $dir  = dirname(str_replace('\\', '/', $this->path));
         $name = basename($this->path, '.php');

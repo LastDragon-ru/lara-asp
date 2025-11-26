@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
 use LastDragon_ru\LaraASP\Documentator\Utils\ArtisanSerializer;
+use LastDragon_ru\Path\DirectoryPath;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Filesystem\Filesystem;
@@ -46,7 +46,7 @@ class Commands extends Command {
         $application = Cast::to(Application::class, $this->getApplication());
         $namespace   = $application->findNamespace(Cast::toString($this->argument('namespace')));
         $cwd         = new DirectoryPath((string) getcwd());
-        $target      = $cwd->getDirectoryPath(Cast::toString($this->argument('target')));
+        $target      = $cwd->directory(Cast::toString($this->argument('target')));
         $defaults    = Cast::toBool($this->option('defaults'));
         $commands    = $application->all($namespace);
 
@@ -94,8 +94,8 @@ class Commands extends Command {
 
                     // Render
                     $name    = Str::after((string) $command->getName(), "{$namespace}:");
-                    $path    = $target->getFilePath("{$name}.md");
-                    $source  = $cwd->getFilePath("{$name}.md");
+                    $path    = $target->file("{$name}.md");
+                    $source  = $cwd->file("{$name}.md");
                     $content = $viewer->render('commands.default', [
                         'serializer' => $serializer,
                         'command'    => $command,

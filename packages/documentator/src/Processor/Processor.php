@@ -8,8 +8,6 @@ use IteratorAggregate;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
@@ -26,6 +24,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use Traversable;
 
@@ -97,12 +97,12 @@ class Processor {
         array $skip = [],
     ): void {
         // Prepare
-        $root = $input->getDirectoryPath('.');
+        $root = $input->directory('.');
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
-            if (!$root->isEqual($output) && $root->isInside($output)) {
-                $skip[] = GlobMatcher::escape((string) $root->getRelativePath($output)).'**';
+            if (!$root->equals($output) && $root->contains($output)) {
+                $skip[] = GlobMatcher::escape((string) $root->relative($output)).'**';
             }
         } else {
             $output = $root;

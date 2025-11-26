@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJsonFactory;
@@ -17,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Documentator\Utils\Version;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\Path\DirectoryPath;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function array_combine;
@@ -211,7 +211,7 @@ class Requirements extends Command {
     protected function getPackageInfo(ComposerJsonFactory $factory, Git $git, string $tag, DirectoryPath $cwd): ?ComposerJson {
         try {
             $root    = (string) $git->getRoot($cwd);
-            $path    = (string) $cwd->getFilePath('composer.json');
+            $path    = (string) $cwd->file('composer.json');
             $gitPath = str_starts_with($path, $root)
                 ? mb_substr($path, mb_strlen($root) + 1)
                 : $path;

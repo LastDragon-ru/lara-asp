@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
+use LastDragon_ru\Path\FilePath;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -27,8 +27,8 @@ final class InstructionTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $output): void {
-        $path    = (new FilePath(__FILE__))->getNormalizedPath();
-        $fs      = $this->getFileSystem($path->getDirectoryPath());
+        $path    = (new FilePath(__FILE__))->normalized();
+        $fs      = $this->getFileSystem($path->directory());
         $file    = $fs->getFile($path);
         $params  = new Parameters(self::getTestData()->path('Example.md'));
         $target  = $params->target;
@@ -53,8 +53,8 @@ final class InstructionTest extends TestCase {
     public function testInvokeNoRun(): void {
         self::assertFalse($this->app()->bound(Runner::class));
 
-        $path     = (new FilePath(self::getTestData()->path('Example.md')))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path('Example.md')))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $params   = new Parameters($file->name);
         $context  = $this->getPreprocessInstructionContext($fs, $file);

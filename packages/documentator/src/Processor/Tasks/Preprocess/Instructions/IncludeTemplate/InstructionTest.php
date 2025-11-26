@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -62,8 +62,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeVariablesUnused(): void {
-        $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path('.md')))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $params   = new Parameters((string) $file, [
             'a' => 'A',
@@ -82,8 +82,8 @@ final class InstructionTest extends TestCase {
     }
 
     public function testInvokeVariablesMissed(): void {
-        $path     = (new FilePath(self::getTestData()->path('.md')))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path('.md')))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $params   = new Parameters((string) $file, [
             'a' => 'A',

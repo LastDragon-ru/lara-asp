@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
+use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -33,9 +33,13 @@ final class ClassCommentCastTest extends TestCase {
         }
         PHP;
         $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(new FilePath(self::getTempFile($content, '.php')->getPathname()));
-        $cast    = new ClassCommentCast();
-        $value   = $cast->castTo($file, ClassComment::class);
+        $path    = self::getTempFile($content, '.php')->getPathname();
+
+        self::assertNotEmpty($path);
+
+        $file  = $fs->getFile(new FilePath($path));
+        $cast  = new ClassCommentCast();
+        $value = $cast->castTo($file, ClassComment::class);
 
         self::assertNotNull($value);
         self::assertSame(

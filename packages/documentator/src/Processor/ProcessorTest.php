@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
@@ -35,6 +33,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -54,7 +54,7 @@ final class ProcessorTest extends TestCase {
     use WithPathComparator;
 
     public function testRun(): void {
-        $input  = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $events = [];
 
         $mock = Mockery::mock(FileTask::class);
@@ -129,68 +129,68 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted($input, $input),
-                new FileStarted($input->getFilePath('a/a.txt')),
+                new FileStarted($input->file('a/a.txt')),
                 new TaskStarted($taskB::class),
-                new DependencyResolved($input->getFilePath('b/b/bb.txt'), DependencyResolvedResult::Success),
-                new FileStarted($input->getFilePath('b/b/bb.txt')),
+                new DependencyResolved($input->file('b/b/bb.txt'), DependencyResolvedResult::Success),
+                new FileStarted($input->file('b/b/bb.txt')),
                 new TaskStarted($taskB::class),
-                new DependencyResolved($input->getFilePath('b/a/ba.txt'), DependencyResolvedResult::Success),
-                new FileStarted($input->getFilePath('b/a/ba.txt')),
+                new DependencyResolved($input->file('b/a/ba.txt'), DependencyResolvedResult::Success),
+                new FileStarted($input->file('b/a/ba.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved($input->getFilePath('c.txt'), DependencyResolvedResult::Success),
-                new FileStarted($input->getFilePath('c.txt')),
+                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
+                new FileStarted($input->file('c.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
                 new DependencyResolved(
-                    $input->getFilePath('../../../README.md'),
+                    $input->file('../../../README.md'),
                     DependencyResolvedResult::Success,
                 ),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved($input->getFilePath('c.txt'), DependencyResolvedResult::Success),
-                new DependencyResolved($input->getFilePath('c.html'), DependencyResolvedResult::Success),
-                new FileStarted($input->getFilePath('c.html')),
+                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('c.html'), DependencyResolvedResult::Success),
+                new FileStarted($input->file('c.html')),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved($input->getFilePath('a/excluded.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('a/excluded.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('a/a/aa.txt')),
+                new FileStarted($input->file('a/a/aa.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('a/b/ab.txt')),
+                new FileStarted($input->file('a/b/ab.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/b.txt')),
+                new FileStarted($input->file('b/b.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('c.htm')),
+                new FileStarted($input->file('c.htm')),
                 new TaskStarted($taskA::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskC::class),
                 new DependencyResolved(
-                    $input->getFilePath('../ProcessorTest.php'),
+                    $input->file('../ProcessorTest.php'),
                     DependencyResolvedResult::Queued,
                 ),
                 new TaskFinished(TaskFinishedResult::Success),
@@ -204,7 +204,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('c.htm'),
+                    (string) $input->file('c.htm'),
                     [],
                 ],
             ],
@@ -213,40 +213,40 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('b/a/ba.txt'),
+                    (string) $input->file('b/a/ba.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('c.txt'),
+                    (string) $input->file('c.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b/bb.txt'),
+                    (string) $input->file('b/b/bb.txt'),
                     [
-                        '../../b/a/ba.txt'         => (string) $input->getFilePath('b/a/ba.txt'),
-                        '../../c.txt'              => (string) $input->getFilePath('c.txt'),
-                        '../../../../../README.md' => (string) $input->getFilePath('../../../README.md'),
+                        '../../b/a/ba.txt'         => (string) $input->file('b/a/ba.txt'),
+                        '../../c.txt'              => (string) $input->file('c.txt'),
+                        '../../../../../README.md' => (string) $input->file('../../../README.md'),
                     ],
                 ],
                 [
-                    (string) $input->getFilePath('a/a.txt'),
+                    (string) $input->file('a/a.txt'),
                     [
-                        '../b/b/bb.txt' => (string) $input->getFilePath('b/b/bb.txt'),
-                        '../c.txt'      => (string) $input->getFilePath('c.txt'),
-                        '../c.html'     => (string) $input->getFilePath('c.html'),
-                        'excluded.txt'  => (string) $input->getFilePath('a/excluded.txt'),
+                        '../b/b/bb.txt' => (string) $input->file('b/b/bb.txt'),
+                        '../c.txt'      => (string) $input->file('c.txt'),
+                        '../c.html'     => (string) $input->file('c.html'),
+                        'excluded.txt'  => (string) $input->file('a/excluded.txt'),
                     ],
                 ],
                 [
-                    (string) $input->getFilePath('a/a/aa.txt'),
+                    (string) $input->file('a/a/aa.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('a/b/ab.txt'),
+                    (string) $input->file('a/b/ab.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b.txt'),
+                    (string) $input->file('b/b.txt'),
                     [],
                 ],
             ],
@@ -256,7 +256,7 @@ final class ProcessorTest extends TestCase {
 
     public function testRunFile(): void {
         $task      = new ProcessorTest__Task();
-        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $events    = [];
         $processor = new Processor(
             $this->app()->make(ContainerResolver::class),
@@ -274,8 +274,8 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->getDirectoryPath(), $input->getDirectoryPath()),
-                new FileStarted($input->getFilePath('excluded.txt')),
+                new ProcessingStarted($input->directory(), $input->directory()),
+                new FileStarted($input->file('excluded.txt')),
                 new TaskStarted(ProcessorTest__Task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
@@ -286,7 +286,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('excluded.txt'),
+                    (string) $input->file('excluded.txt'),
                     [
                         // empty
                     ],
@@ -310,7 +310,7 @@ final class ProcessorTest extends TestCase {
                 return '*';
             }
         };
-        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $events    = [];
         $processor = new Processor(
             $this->app()->make(ContainerResolver::class),
@@ -330,8 +330,8 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->getDirectoryPath(), $input->getDirectoryPath()),
-                new FileStarted($input->getFilePath('excluded.txt')),
+                new ProcessingStarted($input->directory(), $input->directory()),
+                new FileStarted($input->file('excluded.txt')),
                 new TaskStarted($taskC::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskA::class),
@@ -346,7 +346,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('excluded.txt'),
+                    (string) $input->file('excluded.txt'),
                     [
                         // empty
                     ],
@@ -357,7 +357,7 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunWildcard(): void {
-        $input     = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input     = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $events    = [];
         $taskA     = new class([
             'b.html' => [
@@ -394,58 +394,58 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted($input, $input),
-                new FileStarted($input->getFilePath('a/a.html')),
+                new FileStarted($input->file('a/a.html')),
                 new TaskStarted($taskA::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('a/a.txt')),
+                new FileStarted($input->file('a/a.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('a/a/aa.txt')),
+                new FileStarted($input->file('a/a/aa.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('a/b/ab.txt')),
+                new FileStarted($input->file('a/b/ab.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/a/ba.txt')),
+                new FileStarted($input->file('b/a/ba.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/b.html')),
+                new FileStarted($input->file('b/b.html')),
                 new TaskStarted($taskA::class),
                 new DependencyResolved(
-                    $input->getFilePath('../../../README.md'),
+                    $input->file('../../../README.md'),
                     DependencyResolvedResult::Success,
                 ),
-                new DependencyResolved($input->getFilePath('a/excluded.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('a/excluded.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/b.txt')),
+                new FileStarted($input->file('b/b.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/b/bb.txt')),
+                new FileStarted($input->file('b/b/bb.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('c.htm')),
+                new FileStarted($input->file('c.htm')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('c.html')),
+                new FileStarted($input->file('c.html')),
                 new TaskStarted($taskA::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('c.txt')),
+                new FileStarted($input->file('c.txt')),
                 new TaskStarted($taskB::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
@@ -456,18 +456,18 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('a/a.html'),
+                    (string) $input->file('a/a.html'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b.html'),
+                    (string) $input->file('b/b.html'),
                     [
-                        '../../../../README.md' => (string) $input->getFilePath('../../../README.md'),
-                        '../a/excluded.txt'     => (string) $input->getFilePath('a/excluded.txt'),
+                        '../../../../README.md' => (string) $input->file('../../../README.md'),
+                        '../a/excluded.txt'     => (string) $input->file('a/excluded.txt'),
                     ],
                 ],
                 [
-                    (string) $input->getFilePath('c.html'),
+                    (string) $input->file('c.html'),
                     [],
                 ],
             ],
@@ -476,47 +476,47 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('a/a.html'),
+                    (string) $input->file('a/a.html'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('a/a.txt'),
+                    (string) $input->file('a/a.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('a/a/aa.txt'),
+                    (string) $input->file('a/a/aa.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('a/b/ab.txt'),
+                    (string) $input->file('a/b/ab.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/a/ba.txt'),
+                    (string) $input->file('b/a/ba.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b.html'),
+                    (string) $input->file('b/b.html'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b.txt'),
+                    (string) $input->file('b/b.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b/bb.txt'),
+                    (string) $input->file('b/b/bb.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('c.htm'),
+                    (string) $input->file('c.htm'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('c.html'),
+                    (string) $input->file('c.html'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('c.txt'),
+                    (string) $input->file('c.txt'),
                     [],
                 ],
             ],
@@ -525,8 +525,8 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunOutputInsideInput(): void {
-        $input     = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
-        $output    = $input->getDirectoryPath('a');
+        $input     = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $output    = $input->directory('a');
         $events    = [];
         $task      = new ProcessorTest__Task([
             'ba.txt' => [
@@ -550,20 +550,20 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted($input, $output),
-                new FileStarted($input->getFilePath('b/a/ba.txt')),
+                new FileStarted($input->file('b/a/ba.txt')),
                 new TaskStarted($task::class),
-                new DependencyResolved($output->getFilePath('a.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($output->file('a.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/b.txt')),
-                new TaskStarted($task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/b/bb.txt')),
+                new FileStarted($input->file('b/b.txt')),
                 new TaskStarted($task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('c.txt')),
+                new FileStarted($input->file('b/b/bb.txt')),
+                new TaskStarted($task::class),
+                new TaskFinished(TaskFinishedResult::Success),
+                new FileFinished(FileFinishedResult::Success),
+                new FileStarted($input->file('c.txt')),
                 new TaskStarted($task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
@@ -574,21 +574,21 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('b/a/ba.txt'),
+                    (string) $input->file('b/a/ba.txt'),
                     [
-                        '../../a/a.txt' => (string) $input->getFilePath('a/a.txt'),
+                        '../../a/a.txt' => (string) $input->file('a/a.txt'),
                     ],
                 ],
                 [
-                    (string) $input->getFilePath('b/b.txt'),
+                    (string) $input->file('b/b.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('b/b/bb.txt'),
+                    (string) $input->file('b/b/bb.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('c.txt'),
+                    (string) $input->file('c.txt'),
                     [],
                 ],
             ],
@@ -597,7 +597,7 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunFileNotFound(): void {
-        $input     = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input     = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $task      = new ProcessorTest__Task(['*' => ['404.html']]);
         $processor = new Processor(
             $this->app()->make(ContainerResolver::class),
@@ -613,7 +613,7 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependency(): void {
-        $input     = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $input     = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $task      = new ProcessorTest__Task([
             'a.txt'  => ['../b/b.txt'],
             'b.txt'  => ['../b/a/ba.txt'],
@@ -631,11 +631,11 @@ final class ProcessorTest extends TestCase {
             <<<MESSAGE
             Circular Dependency detected:
 
-            * {$input->getFilePath('a/a.txt')}
-            * {$input->getFilePath('b/b.txt')}
-            * {$input->getFilePath('b/a/ba.txt')}
-            * {$input->getFilePath('c.txt')}
-            ! {$input->getFilePath('a/a.txt')}
+            * {$input->file('a/a.txt')}
+            * {$input->file('b/b.txt')}
+            * {$input->file('b/a/ba.txt')}
+            * {$input->file('c.txt')}
+            ! {$input->file('a/a.txt')}
             MESSAGE,
         );
 
@@ -643,7 +643,7 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependencySelf(): void {
-        $input     = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
+        $input     = (new DirectoryPath(self::getTestData()->path('a/a')))->normalized();
         $task      = new ProcessorTest__Task([
             'aa.txt' => ['aa.txt'],
         ]);
@@ -659,13 +659,13 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('aa.txt'),
+                    (string) $input->file('aa.txt'),
                     [
-                        'aa.txt' => (string) $input->getFilePath('aa.txt'),
+                        'aa.txt' => (string) $input->file('aa.txt'),
                     ],
                 ],
                 [
-                    (string) $input->getFilePath('excluded.txt'),
+                    (string) $input->file('excluded.txt'),
                     [
                         // empty
                     ],
@@ -676,7 +676,7 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunCircularDependencySelfThrough(): void {
-        $input     = (new DirectoryPath(self::getTestData()->path('a/a')))->getNormalizedPath();
+        $input     = (new DirectoryPath(self::getTestData()->path('a/a')))->normalized();
         $task      = new ProcessorTest__Task([
             'aa.txt'       => ['excluded.txt'],
             'excluded.txt' => ['aa.txt'],
@@ -693,9 +693,9 @@ final class ProcessorTest extends TestCase {
             <<<MESSAGE
             Circular Dependency detected:
 
-            * {$input->getFilePath('aa.txt')}
-            * {$input->getFilePath('excluded.txt')}
-            ! {$input->getFilePath('aa.txt')}
+            * {$input->file('aa.txt')}
+            * {$input->file('excluded.txt')}
+            ! {$input->file('aa.txt')}
             MESSAGE,
         );
 
@@ -704,8 +704,8 @@ final class ProcessorTest extends TestCase {
 
     public function testRunCircularDependencyNotWritable(): void {
         $events    = [];
-        $output    = (new DirectoryPath(self::getTestData()->path('b')))->getNormalizedPath();
-        $input     = (new DirectoryPath(self::getTestData()->path('a')))->getNormalizedPath();
+        $output    = (new DirectoryPath(self::getTestData()->path('b')))->normalized();
+        $input     = (new DirectoryPath(self::getTestData()->path('a')))->normalized();
         $task      = new ProcessorTest__Task([
             'aa.txt' => ['../a.txt'],
         ]);
@@ -726,16 +726,16 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessingStarted($input, $output),
-                new FileStarted($input->getFilePath('a.txt')),
+                new FileStarted($input->file('a.txt')),
                 new TaskStarted($task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('a/aa.txt')),
+                new FileStarted($input->file('a/aa.txt')),
                 new TaskStarted($task::class),
-                new DependencyResolved($input->getFilePath('a.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('a.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->getFilePath('b/ab.txt')),
+                new FileStarted($input->file('b/ab.txt')),
                 new TaskStarted($task::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
@@ -746,17 +746,17 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 [
-                    (string) $input->getFilePath('a.txt'),
+                    (string) $input->file('a.txt'),
                     [],
                 ],
                 [
-                    (string) $input->getFilePath('a/aa.txt'),
+                    (string) $input->file('a/aa.txt'),
                     [
-                        '../a.txt' => (string) $input->getFilePath('a.txt'),
+                        '../a.txt' => (string) $input->file('a.txt'),
                     ],
                 ],
                 [
-                    (string) $input->getFilePath('b/ab.txt'),
+                    (string) $input->file('b/ab.txt'),
                     [],
                 ],
             ],
@@ -766,7 +766,7 @@ final class ProcessorTest extends TestCase {
 
     public function testRunHookBeforeProcessing(): void {
         $events    = [];
-        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $task      = new class() implements HookTask {
             /**
              * @inheritDoc
@@ -798,14 +798,14 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->getDirectoryPath(), $input->getDirectoryPath()),
-                new HookStarted(Hook::BeforeProcessing, $input->getFilePath('excluded.txt')),
+                new ProcessingStarted($input->directory(), $input->directory()),
+                new HookStarted(Hook::BeforeProcessing, $input->file('excluded.txt')),
                 new TaskStarted($task::class),
                 new DependencyResolved(new FilePath('c.txt'), DependencyResolvedResult::Success),
-                new DependencyResolved($input->getFilePath('c.htm'), DependencyResolvedResult::Queued),
+                new DependencyResolved($input->file('c.htm'), DependencyResolvedResult::Queued),
                 new TaskFinished(TaskFinishedResult::Success),
                 new HookFinished(HookFinishedResult::Success),
-                new FileStarted($input->getFilePath('excluded.txt')),
+                new FileStarted($input->file('excluded.txt')),
                 new FileFinished(FileFinishedResult::Skipped),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
             ],
@@ -815,7 +815,7 @@ final class ProcessorTest extends TestCase {
 
     public function testRunHookAfterProcessing(): void {
         $events    = [];
-        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $task      = new class() implements HookTask {
             #[Override]
             public static function hook(): Hook {
@@ -843,10 +843,10 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->getDirectoryPath(), $input->getDirectoryPath()),
-                new FileStarted($input->getFilePath('excluded.txt')),
+                new ProcessingStarted($input->directory(), $input->directory()),
+                new FileStarted($input->file('excluded.txt')),
                 new FileFinished(FileFinishedResult::Skipped),
-                new HookStarted(Hook::AfterProcessing, $input->getFilePath('excluded.txt')),
+                new HookStarted(Hook::AfterProcessing, $input->file('excluded.txt')),
                 new TaskStarted($task::class),
                 new DependencyResolved(new FilePath('c.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
@@ -858,7 +858,7 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunHookAfterProcessingQueue(): void {
-        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->getNormalizedPath();
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $task      = new class() implements HookTask {
             /**
              * @inheritDoc
@@ -901,7 +901,7 @@ class ProcessorTest__Task implements FileTask {
 
     public function __construct(
         /**
-         * @var array<string, list<string>>
+         * @var array<string, list<non-empty-string>>
          */
         private readonly array $dependencies = [],
     ) {

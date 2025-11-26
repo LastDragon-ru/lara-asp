@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -15,6 +15,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class MoveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
+    /**
+     * @param ?non-empty-string $path
+     * @param non-empty-string  $target
+     */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, ?string $path, string $content, string $target): void {
         $path     = $path !== null ? new FilePath($path) : null;
@@ -29,7 +33,7 @@ final class MoveTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{string, ?string, string, string}>
+     * @return array<string, array{string, ?non-empty-string, string, non-empty-string}>
      */
     public static function dataProviderInvoke(): array {
         return [
@@ -56,7 +60,7 @@ final class MoveTest extends TestCase {
             ],
             'Empty'                        => [
                 <<<'MARKDOWN'
-                [foo]: # "title"
+                [foo]: ../from/ "title"
 
                 MARKDOWN,
                 '/path/from/file.md',

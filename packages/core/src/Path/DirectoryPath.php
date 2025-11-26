@@ -2,10 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Core\Path;
 
+use LastDragon_ru\LaraASP\Core\Package;
 use Override;
 
 use function str_ends_with;
 use function str_starts_with;
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'The `\LastDragon_ru\Path\DirectoryPath` from `lastdragon-ru/path` package should be used instead.');
 
 class DirectoryPath extends Path {
     #[Override]

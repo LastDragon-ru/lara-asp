@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
@@ -31,7 +31,7 @@ final class FileIteratorTest extends TestCase {
 
     public function testInvoke(): void {
         $fs        = $this->getFileSystem(__DIR__);
-        $path      = (new DirectoryPath(self::getTestData()->path('')))->getNormalizedPath();
+        $path      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $include   = ['**/*.txt'];
         $absolute  = new FileIterator($path, $include);
         $relative  = new FileIterator(basename((string) $path), $include);
@@ -39,13 +39,13 @@ final class FileIteratorTest extends TestCase {
             return (string) $item;
         };
         $expected  = [
-            (string) $fs->input->getFilePath('FileIteratorTest/a/a.txt'),
-            (string) $fs->input->getFilePath('FileIteratorTest/a/a/aa.txt'),
-            (string) $fs->input->getFilePath('FileIteratorTest/a/b/ab.txt'),
-            (string) $fs->input->getFilePath('FileIteratorTest/b/a/ba.txt'),
-            (string) $fs->input->getFilePath('FileIteratorTest/b/b.txt'),
-            (string) $fs->input->getFilePath('FileIteratorTest/b/b/bb.txt'),
-            (string) $fs->input->getFilePath('FileIteratorTest/c.txt'),
+            (string) $fs->input->file('FileIteratorTest/a/a.txt'),
+            (string) $fs->input->file('FileIteratorTest/a/a/aa.txt'),
+            (string) $fs->input->file('FileIteratorTest/a/b/ab.txt'),
+            (string) $fs->input->file('FileIteratorTest/b/a/ba.txt'),
+            (string) $fs->input->file('FileIteratorTest/b/b.txt'),
+            (string) $fs->input->file('FileIteratorTest/b/b/bb.txt'),
+            (string) $fs->input->file('FileIteratorTest/c.txt'),
         ];
 
         self::assertEquals($expected, array_map($formatter, iterator_to_array($absolute($fs), false)));

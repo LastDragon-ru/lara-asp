@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutator;
 
 use Closure;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Editor\Locations\Location;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
@@ -15,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Extract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading as HeadingNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
 use League\CommonMark\Node\Block\AbstractBlock;

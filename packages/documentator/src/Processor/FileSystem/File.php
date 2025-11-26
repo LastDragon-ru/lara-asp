@@ -3,17 +3,17 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
-use LastDragon_ru\LaraASP\Core\Path\Path;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\Path\Path;
 use Override;
 use Stringable;
 
 use function sprintf;
 
 /**
- * @property-read string            $name
+ * @property-read non-empty-string  $name
  * @property-read ?non-empty-string $extension
  */
 class File implements Stringable {
@@ -21,7 +21,7 @@ class File implements Stringable {
         public readonly FilePath $path,
         private readonly Caster $caster,
     ) {
-        if (!$this->path->isNormalized()) {
+        if (!$this->path->normalized) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be normalized, `%s` given.',
@@ -30,7 +30,7 @@ class File implements Stringable {
             );
         }
 
-        if (!$this->path->isAbsolute()) {
+        if (!$this->path->absolute) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be absolute, `%s` given.',
@@ -51,26 +51,29 @@ class File implements Stringable {
         return $this->caster->castTo($this, $class);
     }
 
+    /**
+     * @param non-empty-string $path
+     */
     public function getFilePath(string $path): FilePath {
-        return $this->path->getFilePath($path);
+        return $this->path->file($path);
     }
 
     public function getDirectoryPath(?string $path = null): DirectoryPath {
-        return $this->path->getDirectoryPath($path);
+        return $this->path->directory($path);
     }
 
     /**
-     * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
+     * @return ($path is DirectoryPath ? DirectoryPath|null : FilePath|null)
      */
-    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath {
+    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath|null {
         $path = $path instanceof Path ? $path : $path->path;
-        $path = $this->path->getRelativePath($path);
+        $path = $this->path->relative($path);
 
         return $path;
     }
 
     public function isEqual(self $object): bool {
-        return ($this === $object) || ($this::class === $object::class && $this->path->isEqual($object->path));
+        return ($this === $object) || ($this::class === $object::class && $this->path->equals($object->path));
     }
 
     #[Override]
@@ -90,8 +93,8 @@ class File implements Stringable {
      */
     public function __get(string $name): mixed {
         return match ($name) {
-            'extension' => $this->path->getExtension(),
-            'name'      => $this->path->getName(),
+            'extension' => $this->path->extension,
+            'name'      => $this->path->name,
             default     => null,
         };
     }

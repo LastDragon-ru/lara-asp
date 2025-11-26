@@ -3,6 +3,7 @@
     "php": "^8.3|^8.4",
     "laravel/framework": "^12.0",
     "laravel/tinker": "^2.9",
+    "lastdragon-ru/path": "self.version",
     "lastdragon-ru/diy-parser": "self.version",
     "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",

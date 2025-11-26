@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Package;
 
 use Illuminate\Contracts\Foundation\Application;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
@@ -13,6 +12,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\DirectoryPath;
 use Override;
 use Symfony\Component\Finder\Finder;
 
@@ -27,9 +27,9 @@ trait WithProcessor {
         DirectoryPath|string $input,
         DirectoryPath|string|null $output = null,
     ): FileSystem {
-        $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->getNormalizedPath();
+        $input      = ($input instanceof DirectoryPath ? $input : new DirectoryPath($input))->normalized();
         $output     = $output !== null
-            ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->getNormalizedPath()
+            ? ($output instanceof DirectoryPath ? $output : new DirectoryPath($output))->normalized()
             : $input;
         $adapter    = new class() extends SymfonyFileSystem {
             /**

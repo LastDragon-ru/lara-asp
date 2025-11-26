@@ -41,7 +41,8 @@
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-formatter": "self.version",
     "lastdragon-ru/lara-asp-serializer": "self.version",
-    "lastdragon-ru/graphql-printer": "self.version"
+    "lastdragon-ru/graphql-printer": "self.version",
+    "lastdragon-ru/path": "self.version"
   },
   "require-dev": {
     "ext-xmlwriter": "*",

@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\RawOutputFormatter;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
@@ -25,6 +23,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -144,22 +144,22 @@ final class ListenerTest extends TestCase {
         $tree = [
             new ProcessingStarted($root, $root),
             [
-                new FileStarted($root->getFilePath('a/a.txt')),
+                new FileStarted($root->file('a/a.txt')),
                 [
                     new TaskStarted(ListenerTest__TaskA::class),
                     [
-                        new DependencyResolved($root->getFilePath('b/b/bb.txt'), DependencyResolvedResult::Success),
+                        new DependencyResolved($root->file('b/b/bb.txt'), DependencyResolvedResult::Success),
                         [
-                            new FileStarted($root->getFilePath('b/b/bb.txt')),
+                            new FileStarted($root->file('b/b/bb.txt')),
                             [
                                 new TaskStarted(ListenerTest__TaskA::class),
                                 [
                                     new DependencyResolved(
-                                        $root->getFilePath('b/a/ba.txt'),
+                                        $root->file('b/a/ba.txt'),
                                         DependencyResolvedResult::Success,
                                     ),
                                     [
-                                        new FileStarted($root->getFilePath('b/a/ba.txt')),
+                                        new FileStarted($root->file('b/a/ba.txt')),
                                         [
                                             new TaskStarted(ListenerTest__TaskA::class),
                                             new TaskFinished(TaskFinishedResult::Success),
@@ -167,20 +167,20 @@ final class ListenerTest extends TestCase {
                                         new FileFinished(FileFinishedResult::Success),
                                     ],
                                     new DependencyResolved(
-                                        $root->getFilePath('c.txt'),
+                                        $root->file('c.txt'),
                                         DependencyResolvedResult::Success,
                                     ),
                                     [
-                                        new FileStarted($root->getFilePath('c.txt')),
+                                        new FileStarted($root->file('c.txt')),
                                         [
                                             new TaskStarted(ListenerTest__TaskA::class),
                                             [
                                                 new FileSystemModified(
-                                                    $root->getFilePath('c.txt'),
+                                                    $root->file('c.txt'),
                                                     FileSystemModifiedType::Updated,
                                                 ),
                                                 new DependencyResolved(
-                                                    $root->getFilePath('c.txt'),
+                                                    $root->file('c.txt'),
                                                     DependencyResolvedResult::Null,
                                                 ),
                                             ],
@@ -189,15 +189,15 @@ final class ListenerTest extends TestCase {
                                         new FileFinished(FileFinishedResult::Success),
                                     ],
                                     new FileSystemModified(
-                                        $root->getFilePath('../../../README.md'),
+                                        $root->file('../../../README.md'),
                                         FileSystemModifiedType::Created,
                                     ),
                                     new DependencyResolved(
-                                        $root->getFilePath('../../../README.md'),
+                                        $root->file('../../../README.md'),
                                         DependencyResolvedResult::Null,
                                     ),
                                     [
-                                        new FileStarted($root->getFilePath('../../../README.md')),
+                                        new FileStarted($root->file('../../../README.md')),
                                         new FileFinished(FileFinishedResult::Skipped),
                                     ],
                                 ],
@@ -205,58 +205,58 @@ final class ListenerTest extends TestCase {
                             ],
                             new FileFinished(FileFinishedResult::Success),
                         ],
-                        new DependencyResolved($root->getFilePath('c.txt'), DependencyResolvedResult::Success),
-                        new DependencyResolved($root->getFilePath('c.html'), DependencyResolvedResult::Success),
+                        new DependencyResolved($root->file('c.txt'), DependencyResolvedResult::Success),
+                        new DependencyResolved($root->file('c.html'), DependencyResolvedResult::Success),
                         [
-                            new FileStarted($root->getFilePath('c.html')),
+                            new FileStarted($root->file('c.html')),
                             new FileFinished(FileFinishedResult::Skipped),
                         ],
-                        new DependencyResolved($root->getFilePath('a/excluded.txt'), DependencyResolvedResult::Success),
+                        new DependencyResolved($root->file('a/excluded.txt'), DependencyResolvedResult::Success),
                         [
-                            new FileStarted($root->getFilePath('a/excluded.txt')),
+                            new FileStarted($root->file('a/excluded.txt')),
                             new FileFinished(FileFinishedResult::Skipped),
                         ],
                     ],
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->getFilePath('a/a/aa.txt')),
+                new FileStarted($root->file('a/a/aa.txt')),
                 [
                     new TaskStarted(ListenerTest__TaskA::class),
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->getFilePath('a/b/ab.txt')),
+                new FileStarted($root->file('a/b/ab.txt')),
                 [
                     new TaskStarted(ListenerTest__TaskA::class),
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->getFilePath('b/b.txt')),
+                new FileStarted($root->file('b/b.txt')),
                 [
                     new TaskStarted(ListenerTest__TaskA::class),
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
                 new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->getFilePath('c.htm')),
+                new FileStarted($root->file('c.htm')),
                 [
                     new TaskStarted(ListenerTest__TaskA::class),
                     [
-                        new FileSystemModified($root->getFilePath('c.htm'), FileSystemModifiedType::Updated),
-                        new DependencyResolved($root->getFilePath('c.htm'), DependencyResolvedResult::Null),
-                        new FileSystemModified($root->getFilePath('c.new'), FileSystemModifiedType::Created),
-                        new DependencyResolved($root->getFilePath('c.new'), DependencyResolvedResult::Success),
+                        new FileSystemModified($root->file('c.htm'), FileSystemModifiedType::Updated),
+                        new DependencyResolved($root->file('c.htm'), DependencyResolvedResult::Null),
+                        new FileSystemModified($root->file('c.new'), FileSystemModifiedType::Created),
+                        new DependencyResolved($root->file('c.new'), DependencyResolvedResult::Success),
                         [
-                            new FileStarted($root->getFilePath('c.new')),
+                            new FileStarted($root->file('c.new')),
                             new FileFinished(FileFinishedResult::Failed),
                         ],
-                        new DependencyResolved($root->getFilePath('c.next'), DependencyResolvedResult::Queued),
+                        new DependencyResolved($root->file('c.next'), DependencyResolvedResult::Queued),
                     ],
                     new TaskFinished(TaskFinishedResult::Success),
                     new TaskStarted(ListenerTest__TaskB::class),
                     [
-                        new FileSystemModified($root->getFilePath('c.new'), FileSystemModifiedType::Updated),
-                        new DependencyResolved($root->getFilePath('c.new'), DependencyResolvedResult::Null),
+                        new FileSystemModified($root->file('c.new'), FileSystemModifiedType::Updated),
+                        new DependencyResolved($root->file('c.new'), DependencyResolvedResult::Null),
                     ],
                     new TaskFinished(TaskFinishedResult::Success),
                 ],
@@ -371,8 +371,8 @@ final class ListenerTest extends TestCase {
      * @return array<string, array{string, ?DirectoryPath, ?DirectoryPath, DirectoryPath|FilePath}>
      */
     public static function dataProviderGetPathname(): array {
-        $a = (new DirectoryPath(self::getTestData()->path('a')))->getNormalizedPath();
-        $b = (new DirectoryPath(self::getTestData()->path('b')))->getNormalizedPath();
+        $a = (new DirectoryPath(self::getTestData()->path('a')))->normalized();
+        $b = (new DirectoryPath(self::getTestData()->path('b')))->normalized();
 
         return [
             '(a, b): in file'                         => [
@@ -388,7 +388,7 @@ final class ListenerTest extends TestCase {
                 new FilePath('../b/b.txt'),
             ],
             '(a, b): external file'                   => [
-                '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
+                '! '.(new FilePath(self::getTestData()->path('c.txt')))->normalized(),
                 $a,
                 $b,
                 new FilePath('../c.txt'),
@@ -400,7 +400,7 @@ final class ListenerTest extends TestCase {
                 new FilePath('../a/a.txt'),
             ],
             '(a, a): external file'                   => [
-                '! '.(new FilePath(self::getTestData()->path('c.txt')))->getNormalizedPath(),
+                '! '.(new FilePath(self::getTestData()->path('c.txt')))->normalized(),
                 $a,
                 $a,
                 new FilePath('../c.txt'),
@@ -418,7 +418,7 @@ final class ListenerTest extends TestCase {
                 new DirectoryPath('../b/b'),
             ],
             '(a, b): external directory'              => [
-                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath(),
+                '! '.(new DirectoryPath(__DIR__))->normalized(),
                 $a,
                 $b,
                 new DirectoryPath(__DIR__),
@@ -430,7 +430,7 @@ final class ListenerTest extends TestCase {
                 new DirectoryPath('../a/a'),
             ],
             '(a, a): external directory'              => [
-                '! '.(new DirectoryPath(__DIR__))->getNormalizedPath(),
+                '! '.(new DirectoryPath(__DIR__))->normalized(),
                 $a,
                 $a,
                 new DirectoryPath(__DIR__),

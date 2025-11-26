@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Environment\Markdown as MarkdownImpl;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
@@ -14,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Node\Node;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -38,8 +38,8 @@ final class TaskTest extends TestCase {
      */
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(Closure|string $expected, string $document): void {
-        $path = (new FilePath(self::getTestData()->path($document)))->getNormalizedPath();
-        $fs   = $this->getFileSystem($path->getDirectoryPath());
+        $path = (new FilePath(self::getTestData()->path($document)))->normalized();
+        $fs   = $this->getFileSystem($path->directory());
         $file = $fs->getFile($path);
         $task = $this->app()->make(Task::class);
 

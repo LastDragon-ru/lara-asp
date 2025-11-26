@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document as DocumentContract;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Lines;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutator;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Parser\MarkdownParserInterface;
 use Override;

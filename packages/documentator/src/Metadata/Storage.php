@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Metadata;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
+use LastDragon_ru\Path\DirectoryPath;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
 
 use function file_get_contents;
@@ -45,7 +45,7 @@ class Storage {
     }
 
     protected function getPath(): string {
-        return (string) $this->path->getFilePath('metadata.json');
+        return (string) $this->path->file('metadata.json');
     }
 
     public function load(): Metadata {

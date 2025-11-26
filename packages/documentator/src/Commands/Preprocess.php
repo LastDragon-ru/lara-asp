@@ -4,8 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
 use Illuminate\Console\Command;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Heading\Renumber;
@@ -24,6 +22,8 @@ use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use ReflectionClass;
 use ReflectionProperty;
@@ -378,7 +378,7 @@ class Preprocess extends Command {
 
         // Move to cwd
         $cwd  = new DirectoryPath((string) getcwd());
-        $help = $help->mutate(new Move($cwd->getFilePath('help.md')));
+        $help = $help->mutate(new Move($cwd->file('help.md')));
 
         // Level?
         if ($level !== null) {

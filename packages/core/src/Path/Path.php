@@ -2,11 +2,17 @@
 
 namespace LastDragon_ru\LaraASP\Core\Path;
 
+use LastDragon_ru\LaraASP\Core\Package;
 use Override;
 use Stringable;
 use Symfony\Component\Filesystem\Path as SymfonyPath;
 
 use function basename;
+use function trigger_deprecation;
+
+// phpcs:disable PSR1.Files.SideEffects
+
+trigger_deprecation(Package::Name, '%{VERSION}', 'The `\LastDragon_ru\Path\Path` from `lastdragon-ru/path` package should be used instead.');
 
 abstract class Path implements Stringable {
     private ?bool $normalized = null;

@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Dev\PhpStan\Larastan;
 
 use Composer\InstalledVersions;
 use Exception;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Nette\Neon\Neon;
 
 use function array_filter;
@@ -33,8 +33,8 @@ class Extension {
         }
 
         // Prepare
-        $origin = self::getLarastanPath()->getFilePath('extension.neon');
-        $target = self::getRootPath()->getFilePath('phpstan-larastan.neon');
+        $origin = self::getLarastanPath()->file('extension.neon');
+        $target = self::getRootPath()->file('phpstan-larastan.neon');
 
         // Load
         $extension = Neon::decode((string) file_get_contents((string) $origin));
@@ -75,7 +75,7 @@ class Extension {
         $source = self::getLarastanPath();
 
         foreach ($extension['parameters']['bootstrapFiles'] as $index => $file) {
-            if (!is_string($file)) {
+            if (!is_string($file) || $file === '') {
                 throw new Exception(
                     sprintf(
                         'The `$extension[\'parameters\'][\'bootstrapFiles\'][%s]` expected to be a string.',
@@ -84,8 +84,8 @@ class Extension {
                 );
             }
 
-            $file                                              = $source->getFilePath($file);
-            $extension['parameters']['bootstrapFiles'][$index] = (string) $path->getRelativePath($file);
+            $file                                              = $source->file($file);
+            $extension['parameters']['bootstrapFiles'][$index] = (string) $path->relative($file);
         }
 
         // Return

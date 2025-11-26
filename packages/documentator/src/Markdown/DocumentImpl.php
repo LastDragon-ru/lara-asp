@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\Path\FilePath;
 use League\CommonMark\Node\Block\Document as DocumentNode;
 use OutOfBoundsException;
 

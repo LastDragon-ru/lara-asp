@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\Path\DirectoryPath;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
@@ -15,23 +15,23 @@ use SplFileInfo;
 final class GlobTest extends TestCase {
     public function testMatch(): void {
         // Prepare
-        $root = (new DirectoryPath(__DIR__))->getNormalizedPath();
+        $root = (new DirectoryPath(__DIR__))->normalized();
         $glob = new Glob($root, ['*.txt', '*.md', '**/*.tmp']);
 
         // Strings
-        self::assertFalse($glob->match((string) $root->getFilePath('/file.txt')));
-        self::assertTrue($glob->match((string) $root->getFilePath('file.md')));
-        self::assertFalse($glob->match((string) $root->getFilePath('file.php')));
-        self::assertFalse($glob->match((string) $root->getFilePath('a/file.md')));
-        self::assertTrue($glob->match((string) $root->getFilePath('file.tmp')));
-        self::assertTrue($glob->match((string) $root->getFilePath('a/file.tmp')));
-        self::assertFalse($glob->match((string) $root->getFilePath('/a/file.tmp')));
-        self::assertTrue($glob->match((string) $root->getFilePath('a/b/file.tmp')));
-        self::assertFalse($glob->match((string) $root->getFilePath('/a/b/file.tmp')));
+        self::assertFalse($glob->match((string) $root->file('/file.txt')));
+        self::assertTrue($glob->match((string) $root->file('file.md')));
+        self::assertFalse($glob->match((string) $root->file('file.php')));
+        self::assertFalse($glob->match((string) $root->file('a/file.md')));
+        self::assertTrue($glob->match((string) $root->file('file.tmp')));
+        self::assertTrue($glob->match((string) $root->file('a/file.tmp')));
+        self::assertFalse($glob->match((string) $root->file('/a/file.tmp')));
+        self::assertTrue($glob->match((string) $root->file('a/b/file.tmp')));
+        self::assertFalse($glob->match((string) $root->file('/a/b/file.tmp')));
 
         // Path
-        self::assertTrue($glob->match($root->getFilePath('file.md')));
-        self::assertFalse($glob->match($root->getDirectoryPath('dir.md')));
+        self::assertTrue($glob->match($root->file('file.md')));
+        self::assertFalse($glob->match($root->directory('dir.md')));
 
         // Spl
         $dirInfo = Mockery::mock(SplFileInfo::class);
@@ -43,7 +43,7 @@ final class GlobTest extends TestCase {
             ->shouldReceive('getPathname')
             ->once()
             ->andReturn(
-                (string) $root->getDirectoryPath('dir.md'),
+                (string) $root->directory('dir.md'),
             );
 
         self::assertFalse($glob->match($dirInfo));
@@ -57,7 +57,7 @@ final class GlobTest extends TestCase {
             ->shouldReceive('getPathname')
             ->once()
             ->andReturn(
-                (string) $root->getDirectoryPath('dir.md'),
+                (string) $root->file('dir.md'),
             );
 
         self::assertTrue($glob->match($fileInfo));

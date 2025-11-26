@@ -73,15 +73,15 @@ readonly class Instruction implements InstructionContract {
             }
 
             // Add
-            $document    = $file->as(Document::class);
-            $move        = new Move($context->file->getFilePath($file->name));
-            $title       = Utils::getTitle($document) ?? '';
-            $summary     = mb_trim((string) $document->mutate(new Summary())->mutate($move));
-            $documents[] = new TemplateDocument(
-                $context->file->getRelativePath($file),
-                $title,
-                $summary,
-            );
+            $document = $file->as(Document::class);
+            $move     = new Move($context->file->getFilePath($file->name));
+            $path     = $context->file->getRelativePath($file);
+            $title    = Utils::getTitle($document) ?? '';
+            $summary  = mb_trim((string) $document->mutate(new Summary())->mutate($move));
+
+            if ($path !== null && $title !== '') {
+                $documents[] = new TemplateDocument($path, $title, $summary);
+            }
         }
 
         // Empty?

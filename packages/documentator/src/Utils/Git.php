@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Utils;
 
 use Illuminate\Process\Factory;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\Path\DirectoryPath;
 
 use function array_filter;
 use function array_values;

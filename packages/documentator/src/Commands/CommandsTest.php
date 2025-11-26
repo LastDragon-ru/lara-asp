@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\Path\DirectoryPath;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -39,10 +39,10 @@ final class CommandsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testInvoke(): void {
-        $directory = (new DirectoryPath(self::getTempDirectory()))->getNormalizedPath();
+        $directory = (new DirectoryPath(self::getTempDirectory()))->normalized();
 
         self::assertNotFalse(
-            file_put_contents((string) $directory->getFilePath('file.txt'), self::class),
+            file_put_contents((string) $directory->file('file.txt'), self::class),
         );
 
         $result = $this

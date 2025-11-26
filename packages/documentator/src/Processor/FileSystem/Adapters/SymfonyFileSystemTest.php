@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function file_get_contents;
@@ -98,13 +98,15 @@ final class SymfonyFileSystemTest extends TestCase {
     }
 
     public function testWrite(): void {
-        $path     = new FilePath(self::getTempFile()->getPathname());
+        $path     = self::getTempFile()->getPathname();
         $adapter  = new SymfonyFileSystem();
         $expected = 'content';
 
-        $adapter->write($path, $expected);
+        self::assertNotEmpty($path);
 
-        self::assertSame($expected, file_get_contents((string) $path));
+        $adapter->write(new FilePath($path), $expected);
+
+        self::assertSame($expected, file_get_contents($path));
     }
 
     /**
@@ -116,7 +118,7 @@ final class SymfonyFileSystemTest extends TestCase {
         $array = [];
 
         foreach ($iterable as $path) {
-            $array[] = (string) $root->getRelativePath($path);
+            $array[] = (string) $root->relative($path);
         }
 
         sort($array);

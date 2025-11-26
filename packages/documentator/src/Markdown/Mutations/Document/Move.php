@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Mutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Reference as ReferenceData;
@@ -11,6 +10,8 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Finalize;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
+use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\Path\Path;
 use League\CommonMark\Extension\CommonMark\Node\Inline\AbstractWebResource;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image as ImageNode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link as LinkNode;
@@ -64,14 +65,14 @@ readonly class Move implements Mutation {
         if ($node instanceof DocumentNode) {
             if ($document->path !== null) {
                 $mutagens[] = new Finalize(function (Document $document): void {
-                    $document->path = $document->path?->getPath($this->path);
+                    $document->path = $document->path?->resolve($this->path);
                 });
             } else {
                 $mutagens[] = new Finalize(function (Document $document): void {
-                    $document->path = $this->path->getNormalizedPath();
+                    $document->path = $this->path->normalized();
                 });
             }
-        } elseif ($document->path === null || $document->path->isEqual($document->path->getPath($this->path))) {
+        } elseif ($document->path === null || $document->path->equals($document->path->resolve($this->path))) {
             // Path already equal to new path -> skip
         } elseif (!$this->isPathRelative($node)) {
             // Path is not relative -> skip
@@ -85,7 +86,7 @@ readonly class Move implements Mutation {
                 ? Utils::getReferenceDestinationLocation($document, $node)
                 : Utils::getLinkDestinationLocation($document, $node);
             $origin      = (string) $document->mutate(new Text($location));
-            $target      = $document->path->getPath($this->path);
+            $target      = $document->path->resolve($this->path);
             $value       = $this->target($document, $document->path, $target, $destination);
             $wrap        = mb_substr(mb_ltrim($origin), 0, 1) === '<';
             $text        = Utils::getLinkTarget($node, $value, $wrap !== false ? true : null);
@@ -111,8 +112,8 @@ readonly class Move implements Mutation {
             $target = mb_substr($target, mb_strlen($path));
             $target = $target !== '' ? $target : '#';
         } else {
-            $target = $docPath->getFilePath($target);
-            $target = $newPath->getRelativePath($target);
+            $target = $docPath->resolve(Path::make($target));
+            $target = $newPath->relative($target);
         }
 
         return (string) $target;

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use Stringable;
 

@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\FilePath;
 use Override;
 
 use function is_string;
@@ -15,6 +15,9 @@ use function is_string;
  */
 readonly class FileSave implements Dependency {
     public function __construct(
+        /**
+         * @var File|FilePath|non-empty-string
+         */
         protected File|FilePath|string $file,
         protected object|string $content,
     ) {
@@ -30,8 +33,8 @@ readonly class FileSave implements Dependency {
     public function getPath(FileSystem $fs): File|FilePath {
         return match (true) {
             $this->file instanceof File => $this->file,
-            is_string($this->file)      => $fs->output->getPath(new FilePath($this->file)),
-            default                     => $fs->output->getPath($this->file),
+            is_string($this->file)      => $fs->output->resolve(new FilePath($this->file)),
+            default                     => $fs->output->resolve($this->file),
         };
     }
 }

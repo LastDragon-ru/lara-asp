@@ -2,11 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\FilePath;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -21,11 +21,11 @@ final class FileSaveTest extends TestCase {
 
     public function testGetPath(): void {
         $fs   = $this->getFileSystem(dirname(__DIR__), __DIR__);
-        $path = (new FilePath(__FILE__))->getNormalizedPath();
+        $path = (new FilePath(__FILE__))->normalized();
         $file = $fs->getFile($path);
 
         self::assertSame(
-            (string) $fs->output->getFilePath('path/to/file'),
+            (string) $fs->output->file('path/to/file'),
             (string) (new FileSave('path/to/file', ''))->getPath($fs),
         );
         self::assertSame(

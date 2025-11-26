@@ -4,11 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
+use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -28,8 +28,8 @@ final class InstructionTest extends TestCase {
      */
     #[DataProvider('dataProviderProcess')]
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
-        $path     = (new FilePath(self::getTestData()->path($file)))->getNormalizedPath();
-        $fs       = $this->getFileSystem($path->getDirectoryPath());
+        $path     = (new FilePath(self::getTestData()->path($file)))->normalized();
+        $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Core\Path\DirectoryPath;
+use LastDragon_ru\Path\DirectoryPath;
 use Throwable;
 
 use function sprintf;

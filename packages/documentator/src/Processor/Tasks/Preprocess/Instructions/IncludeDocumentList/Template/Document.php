@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template;
 
-use LastDragon_ru\LaraASP\Core\Path\FilePath;
+use LastDragon_ru\Path\FilePath;
 
 readonly class Document {
     public function __construct(

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Package;
 
-use LastDragon_ru\LaraASP\Core\Path\Path;
+use LastDragon_ru\Path\Path;
 use Override;
 use PHPUnit\Framework\Attributes\Before;
 use SebastianBergmann\Comparator\Comparator;
@@ -31,7 +31,7 @@ trait WithPathComparator {
                     bool $ignoreCase = false,
                 ): void {
                     // Same?
-                    if ($expected instanceof Path && $actual instanceof Path && $expected->isEqual($actual)) {
+                    if ($expected instanceof Path && $actual instanceof Path && $expected->equals($actual)) {
                         return;
                     }
 
