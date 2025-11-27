@@ -228,6 +228,8 @@ final class PathTest extends TestCase {
             'dot dot path (backslash)'   => [Type::Relative, '..\\path\\to'],
             'relative'                   => [Type::Relative, 'path/to'],
             'relative (backslash)'       => [Type::Relative, 'path\\to'],
+            'unc'                        => [Type::Unc, '//server/share/path/to/file.txt'],
+            'unc (backslash)'            => [Type::Unc, '\\\\server\\share\\path\\to\\file.txt'],
         ];
     }
 
