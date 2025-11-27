@@ -112,9 +112,9 @@ final class DirectoryPathTest extends TestCase {
         $absolute = (new DirectoryPath('/absolute/path'))->concat($target);
 
         self::assertSame('relative/path/~/home/', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/path/~/home/', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatAbsolute(): void {
@@ -123,9 +123,9 @@ final class DirectoryPathTest extends TestCase {
         $absolute = (new DirectoryPath('/absolute/path'))->concat($target);
 
         self::assertSame('relative/path/to/absolute/path/', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/path/to/absolute/path/', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatRelative(): void {
@@ -134,9 +134,9 @@ final class DirectoryPathTest extends TestCase {
         $absolute = (new DirectoryPath('/absolute/path'))->concat($target);
 
         self::assertSame('relative/path/relative/path/', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/path/relative/path/', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
     //</editor-fold>
 
@@ -155,6 +155,7 @@ final class DirectoryPathTest extends TestCase {
             'unix home'                      => ['~/', '~'],
             'unix home (slash)'              => ['~/', '~/'],
             'unix home (backslash)'          => ['~/', '~\\'],
+            'unix home (path)'               => ['~/path/to/', '~/path\\to'],
             'win drive'                      => ['C:/', 'C:'],
             'win root'                       => ['D:/', 'D:\\'],
             'win root (slash)'               => ['D:/', 'D:/'],

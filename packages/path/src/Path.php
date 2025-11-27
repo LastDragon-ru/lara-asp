@@ -10,6 +10,7 @@ use function basename;
 use function count;
 use function explode;
 use function implode;
+use function in_array;
 use function mb_rtrim;
 use function mb_strlen;
 use function mb_substr;
@@ -25,8 +26,7 @@ use function str_replace;
  * + URL/URI/etc not supported and treatment as path.
  *
  * @property-read TPath $name
- * @property-read bool  $absolute
- * @property-read bool  $relative
+ * @property-read Type  $type
  * @property-read bool  $normalized
  *
  * @template TPath of string = string
@@ -35,7 +35,11 @@ use function str_replace;
  */
 abstract class Path implements Stringable {
     protected ?bool $isNormalized = null; // `private` will lead to an error https://github.com/phpstan/phpstan/issues/13836
-    protected ?bool $isAbsolute   = null; // `private` will lead to an error https://github.com/phpstan/phpstan/issues/13836
+
+    /**
+     * @internal `private` will lead to an error https://github.com/phpstan/phpstan/issues/
+     */
+    protected ?Type $cachedType = null;
 
     public function __construct(
         /**
@@ -67,8 +71,7 @@ abstract class Path implements Stringable {
     public function __get(string $name): mixed {
         return match ($name) {
             'name'       => basename($this->path),
-            'relative'   => !$this->absolute,
-            'absolute'   => $this->isAbsolute   ??= self::getRoot($this->path) !== '',
+            'type'       => $this->cachedType   ??= self::getType($this->path),
             'normalized' => $this->isNormalized ??= static::normalize($this->path) === $this->path,
             default      => null,
         };
@@ -86,11 +89,15 @@ abstract class Path implements Stringable {
         return $path;
     }
 
+    public function is(Type ...$type): bool {
+        return in_array($this->type, $type, true);
+    }
+
     /**
      * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function resolve(self $path): self {
-        return $path->relative ? $this->concat($path) : $path->normalized();
+        return $path->is(Type::Relative) ? $this->concat($path) : $path->normalized();
     }
 
     /**
@@ -130,11 +137,11 @@ abstract class Path implements Stringable {
      */
     public function relative(self $path): ?self {
         // Relative?
-        if ($path->relative) {
+        if ($path->is(Type::Relative)) {
             return $path->normalized();
         }
 
-        if ($this->relative) {
+        if (!$this->is($path->type)) {
             return null; // unresolvable
         }
 
@@ -159,7 +166,7 @@ abstract class Path implements Stringable {
         $relative               = $path instanceof DirectoryPath
             ? new DirectoryPath($relative)
             : new FilePath($relative); // @phpstan-ignore argument.type (ok. it will throw error if empty)
-        $relative->isAbsolute   = false;
+        $relative->cachedType   = Type::Relative;
         $relative->isNormalized = true;
 
         // Return
@@ -197,8 +204,8 @@ abstract class Path implements Stringable {
      *
      * @return T
      */
-    private function sync(self $path): self {
-        $path->isAbsolute   = $this->isAbsolute;
+    protected function sync(self $path): self {
+        $path->cachedType   = $this->cachedType;
         $path->isNormalized = $this->isNormalized;
 
         return $path;
@@ -241,6 +248,14 @@ abstract class Path implements Stringable {
 
         // Return
         return $root.implode('/', $result);
+    }
+
+    private static function getType(string $path): Type {
+        return match (str_replace('\\', '/', self::getRoot($path))) {
+            ''        => Type::Relative,
+            '~', '~/' => Type::Home,
+            default   => Type::Absolute,
+        };
     }
 
     private static function getRoot(string $path): string {

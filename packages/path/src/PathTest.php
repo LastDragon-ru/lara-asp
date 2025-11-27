@@ -41,9 +41,9 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/absolute/path'))->resolve($target);
 
         self::assertSame('/to/absolute/path', (string) $relative);
-        self::assertTrue($relative->absolute);
+        self::assertTrue($relative->is(Type::Absolute));
         self::assertSame('/to/absolute/path', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testResolveRelative(): void {
@@ -52,9 +52,9 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/absolute/path'))->resolve($target);
 
         self::assertSame('relative/relative/path', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/relative/path', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatHome(): void {
@@ -63,9 +63,9 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/absolute/path'))->concat($target);
 
         self::assertSame('relative/~/home', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/~/home', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatAbsolute(): void {
@@ -74,9 +74,9 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/absolute/path'))->concat($target);
 
         self::assertSame('relative/to/absolute/path', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/to/absolute/path', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatRelative(): void {
@@ -85,9 +85,9 @@ final class PathTest extends TestCase {
         $absolute = (new PathTest_Path('/absolute/path'))->concat($target);
 
         self::assertSame('relative/relative/path', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/relative/path', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testNormalized(): void {
@@ -95,6 +95,10 @@ final class PathTest extends TestCase {
         $instance = Mockery::mock(Path::class, [$path]);
         $instance->shouldAllowMockingProtectedMethods();
         $instance->makePartial();
+        $instance
+            ->shouldReceive('sync')
+            ->twice()
+            ->andReturnUsing(static fn ($path) => $path);
         $instance
             ->shouldReceive('normalize')
             ->with($path)
@@ -104,7 +108,6 @@ final class PathTest extends TestCase {
         $normalized = $instance->normalized();
 
         self::assertSame('normalized', (string) $normalized);
-        self::assertSame($instance->absolute, $normalized->absolute);
         self::assertNotSame($normalized, $instance->normalized());
     }
 
@@ -159,15 +162,9 @@ final class PathTest extends TestCase {
         self::assertSame($path, $root->relative($path)); // @phpstan-ignore staticMethod.impossibleType
     }
 
-    public function testPropertyRelative(): void {
-        $path = new PathTest_Path('/any/path');
-
-        self::assertSame(!$path->absolute, $path->relative);
-    }
-
-    #[DataProvider('dataProviderIsAbsolute')]
-    public function testPropertyAbsolute(bool $expected, string $path): void {
-        self::assertSame($expected, (new PathTest_Path($path))->absolute);
+    #[DataProvider('dataProviderType')]
+    public function testPropertyType(Type $expected, string $path): void {
+        self::assertSame($expected, (new PathTest_Path($path))->type);
     }
 
     public function testFile(): void {
@@ -223,52 +220,56 @@ final class PathTest extends TestCase {
         self::assertEquals(new FilePath('/path'), Path::make('/path'));
     }
 
-    #[DataProvider('dataProviderIsAbsolute')]
-    public function testIsAbsolute(bool $expected, string $path): void {
-        self::assertSame($expected, (new PathTest_Path($path))->absolute);
-    }
-
     #[DataProvider('dataProviderNormalize')]
     public function testNormalize(string $expected, string $path): void {
         self::assertSame($expected, PathTest_Path::normalize($path));
+    }
+
+    public function testIs(): void {
+        $path = new PathTest_Path('path');
+
+        self::assertTrue($path->is(Type::Home, Type::Relative));
+        self::assertTrue($path->is(Type::Relative));
+        self::assertFalse($path->is(Type::Absolute));
     }
     // </editor-fold>
 
     // <editor-fold desc="DataProvider">
     // =========================================================================
     /**
-     * @return array<string, array{bool, string}>
+     * @return array<string, array{Type, string}>
      */
-    public static function dataProviderIsAbsolute(): array {
+    public static function dataProviderType(): array {
         return [
-            'empty'                      => [false, ''],
-            'unix root'                  => [true, '/'],
-            'unix root (backslash)'      => [true, '\\'],
-            'unix root path'             => [true, '/path/to'],
-            'unix root path (backslash)' => [true, '\\path/to'],
-            'unix home'                  => [true, '~'],
-            'unix home (slash)'          => [true, '~/'],
-            'unix home (backslash)'      => [true, '~\\'],
-            'win drive'                  => [true, 'C:'],
-            'win root'                   => [true, 'D:\\'],
-            'win root (slash)'           => [true, 'D:/'],
-            'win root path'              => [true, 'D:\\path\\to'],
-            'win root path (slash)'      => [true, 'D:/path/to'],
-            'win malformed'              => [false, 'C:path\\to'],
-            'url (https)'                => [false, 'https://example.com'],
-            'url (mailto)'               => [false, 'mailto:example@example.com'],
-            'dot'                        => [false, '.'],
-            'dot (slash)'                => [false, './'],
-            'dot (backslash)'            => [false, '.\\'],
-            'dot path (slash)'           => [false, './path/to'],
-            'dot path (backslash)'       => [false, '.\\path\\to'],
-            'dot dot'                    => [false, '..'],
-            'dot dot (slash)'            => [false, '../'],
-            'dot dot (backslash)'        => [false, '..\\'],
-            'dot dot path (slash)'       => [false, '../path/to'],
-            'dot dot path (backslash)'   => [false, '..\\path\\to'],
-            'relative'                   => [false, 'path/to'],
-            'relative (backslash)'       => [false, 'path\\to'],
+            'empty'                      => [Type::Relative, ''],
+            'unix root'                  => [Type::Absolute, '/'],
+            'unix root (backslash)'      => [Type::Absolute, '\\'],
+            'unix root path'             => [Type::Absolute, '/path/to'],
+            'unix root path (backslash)' => [Type::Absolute, '\\path/to'],
+            'unix home'                  => [Type::Home, '~'],
+            'unix home (slash)'          => [Type::Home, '~/'],
+            'unix home (backslash)'      => [Type::Home, '~\\'],
+            'unix home (path)'           => [Type::Home, '~/path\\to'],
+            'win drive'                  => [Type::Absolute, 'C:'],
+            'win root'                   => [Type::Absolute, 'D:\\'],
+            'win root (slash)'           => [Type::Absolute, 'D:/'],
+            'win root path'              => [Type::Absolute, 'D:\\path\\to'],
+            'win root path (slash)'      => [Type::Absolute, 'D:/path/to'],
+            'win malformed'              => [Type::Relative, 'C:path\\to'],
+            'url (https)'                => [Type::Relative, 'https://example.com'],
+            'url (mailto)'               => [Type::Relative, 'mailto:example@example.com'],
+            'dot'                        => [Type::Relative, '.'],
+            'dot (slash)'                => [Type::Relative, './'],
+            'dot (backslash)'            => [Type::Relative, '.\\'],
+            'dot path (slash)'           => [Type::Relative, './path/to'],
+            'dot path (backslash)'       => [Type::Relative, '.\\path\\to'],
+            'dot dot'                    => [Type::Relative, '..'],
+            'dot dot (slash)'            => [Type::Relative, '../'],
+            'dot dot (backslash)'        => [Type::Relative, '..\\'],
+            'dot dot path (slash)'       => [Type::Relative, '../path/to'],
+            'dot dot path (backslash)'   => [Type::Relative, '..\\path\\to'],
+            'relative'                   => [Type::Relative, 'path/to'],
+            'relative (backslash)'       => [Type::Relative, 'path\\to'],
         ];
     }
 
@@ -285,6 +286,7 @@ final class PathTest extends TestCase {
             'unix home'                      => ['~/', '~'],
             'unix home (slash)'              => ['~/', '~/'],
             'unix home (backslash)'          => ['~/', '~\\'],
+            'unix home (path)'               => ['~/path/to', '~/path\\to'],
             'win drive'                      => ['C:/', 'C:'],
             'win root'                       => ['D:/', 'D:\\'],
             'win root (slash)'               => ['D:/', 'D:/'],
