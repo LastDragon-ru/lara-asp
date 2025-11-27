@@ -6,17 +6,14 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer as SerializerContract;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\DateTimeNormalizerContextBuilder;
+use LastDragon_ru\LaraASP\Serializer\Normalizers\EnumNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer;
 use LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizerContextBuilder;
-use LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizer;
-use LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizerContextBuilder;
 use Symfony\Component\Serializer\Context\Encoder\JsonEncoderContextBuilder;
-use Symfony\Component\Serializer\Context\Normalizer\BackedEnumNormalizerContextBuilder;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateIntervalNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -183,12 +180,7 @@ class Factory {
                 ->toArray(),
             DateTimeZoneNormalizer::class => [],
             DateIntervalNormalizer::class => [],
-            UnitEnumNormalizer::class     => (new UnitEnumNormalizerContextBuilder())
-                ->withAllowInvalidValues(false)
-                ->toArray(),
-            BackedEnumNormalizer::class   => (new BackedEnumNormalizerContextBuilder())
-                ->withAllowInvalidValues(false)
-                ->toArray(),
+            EnumNormalizer::class         => [],
             SerializableNormalizer::class => (new SerializableNormalizerContextBuilder())
                 ->withDisableTypeEnforcement(false)
                 ->withSkipNullValues(false)
