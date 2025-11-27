@@ -104,6 +104,7 @@ final class UnitEnumNormalizerTest extends TestCase {
     }
 
     public function testDenormalizeAllowInvalid(): void {
+        /** @phpstan-ignore staticMethod.impossibleType */
         self::assertNull(
             (new UnitEnumNormalizer([UnitEnumNormalizer::ContextAllowInvalidValues => true]))->denormalize(
                 'invalid',

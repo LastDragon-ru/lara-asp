@@ -82,7 +82,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     }
 
     /**
-     * @param array<array-key, mixed> $context
+     * @inheritDoc
      */
     #[Override]
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed {
@@ -96,7 +96,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
     }
 
     /**
-     * @param array<array-key, mixed> $context
+     * @param array<string, mixed> $context
      *
      * @return array<array-key, mixed>|string|int|float|bool|ArrayObject<array-key, mixed>|null
      */
