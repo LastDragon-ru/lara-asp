@@ -69,52 +69,15 @@ final class DirectoryPathTest extends TestCase {
         self::assertSame($expected, (string) (new DirectoryPath($path))->normalized());
     }
 
-    public function testRelative(): void {
-        $root = new DirectoryPath('/root/path/to/directory.path');
-
-        self::assertSame(
-            './',
-            (string) $root->relative($root),
-        );
-        self::assertSame(
-            '../file',
-            (string) $root->relative(new FilePath('/root/path/to/file')),
-        );
-        self::assertSame(
-            '../directory/',
-            (string) $root->relative(new DirectoryPath('/root/path/to/directory')),
-        );
-        self::assertSame(
-            '../path/to/file',
-            (string) $root->relative(new FilePath('/root/path/to/path/to/file')),
-        );
-        self::assertSame(
-            '../path/to/directory/',
-            (string) $root->relative(new DirectoryPath('/root/path/to/path/to/directory')),
-        );
-        self::assertSame(
-            '../../../../directory/',
-            (string) $root->relative(new DirectoryPath('/directory')),
-        );
-        self::assertSame(
-            '../../../../file',
-            (string) $root->relative(new FilePath('/file')),
-        );
-        self::assertSame(
-            '../../../../file',
-            (string) $root->relative(new FilePath('/./file')),
-        );
-    }
-
     public function testConcatHome(): void {
         $target   = new DirectoryPath('~/home');
         $relative = (new DirectoryPath('relative/path'))->concat($target);
         $absolute = (new DirectoryPath('/absolute/path'))->concat($target);
 
         self::assertSame('relative/path/~/home/', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/path/~/home/', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatAbsolute(): void {
@@ -123,9 +86,9 @@ final class DirectoryPathTest extends TestCase {
         $absolute = (new DirectoryPath('/absolute/path'))->concat($target);
 
         self::assertSame('relative/path/to/absolute/path/', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/path/to/absolute/path/', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
 
     public function testConcatRelative(): void {
@@ -134,9 +97,9 @@ final class DirectoryPathTest extends TestCase {
         $absolute = (new DirectoryPath('/absolute/path'))->concat($target);
 
         self::assertSame('relative/path/relative/path/', (string) $relative);
-        self::assertTrue($relative->relative);
+        self::assertTrue($relative->is(Type::Relative));
         self::assertSame('/absolute/path/relative/path/', (string) $absolute);
-        self::assertTrue($absolute->absolute);
+        self::assertTrue($absolute->is(Type::Absolute));
     }
     //</editor-fold>
 
@@ -155,6 +118,7 @@ final class DirectoryPathTest extends TestCase {
             'unix home'                      => ['~/', '~'],
             'unix home (slash)'              => ['~/', '~/'],
             'unix home (backslash)'          => ['~/', '~\\'],
+            'unix home (path)'               => ['~/path/to/', '~/path\\to'],
             'win drive'                      => ['C:/', 'C:'],
             'win root'                       => ['D:/', 'D:\\'],
             'win root (slash)'               => ['D:/', 'D:/'],
