@@ -27,6 +27,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] `💀\LastDragon_ru\LaraASP\Serializer\Normalizers\UnitEnumNormalizer` replaced by [`EnumNormalizer`][code-links/c063e3779af28ba1].
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -66,6 +70,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
+
+[code-links/c063e3779af28ba1]: src/Normalizers/EnumNormalizer.php
+    "\LastDragon_ru\LaraASP\Serializer\Normalizers\EnumNormalizer"
 
 [code-links/f67757c3076438c4]: src/PackageProvider.php
     "\LastDragon_ru\LaraASP\Serializer\PackageProvider"
