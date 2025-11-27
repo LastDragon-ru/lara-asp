@@ -141,8 +141,9 @@ abstract class Path implements Stringable {
             return $path->normalized();
         }
 
+        // Resolvable?
         if (!$this->is($path->type)) {
-            return null; // unresolvable
+            return null;
         }
 
         // Convert

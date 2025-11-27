@@ -111,55 +111,12 @@ final class PathTest extends TestCase {
         self::assertNotSame($normalized, $instance->normalized());
     }
 
-    public function testRelative(): void {
-        $root = new PathTest_Path('/root/path/to/file.path');
+    #[DataProvider('dataProviderRelative')]
+    public function testRelative(?string $expected, string $root, string $path): void {
+        $root   = Path::make($root);
+        $actual = $root->relative(Path::make($path));
 
-        self::assertSame(
-            'file.path',
-            (string) $root->relative($root),
-        );
-        self::assertSame(
-            'file',
-            (string) $root->relative(new FilePath('/root/path/to/file')),
-        );
-        self::assertSame(
-            'directory/',
-            (string) $root->relative(new DirectoryPath('/root/path/to/directory')),
-        );
-        self::assertSame(
-            'path/to/file',
-            (string) $root->relative(new FilePath('/root/path/to/path/to/file')),
-        );
-        self::assertSame(
-            'path/to/directory/',
-            (string) $root->relative(new DirectoryPath('/root/path/to/path/to/directory')),
-        );
-        self::assertSame(
-            '../../../directory/',
-            (string) $root->relative(new DirectoryPath('/directory')),
-        );
-        self::assertSame(
-            '../../../file',
-            (string) $root->relative(new FilePath('/file')),
-        );
-        self::assertSame(
-            '../../../file',
-            (string) $root->relative(new FilePath('/./file')),
-        );
-    }
-
-    public function testRelativeRootRelative(): void {
-        $root = new PathTest_Path('./');
-        $path = new PathTest_Path('/path');
-
-        self::assertNull($root->relative($path));
-    }
-
-    public function testRelativePathRelative(): void {
-        $root = new PathTest_Path('/root/path');
-        $path = new PathTest_Path('path');
-
-        self::assertSame($path, $root->relative($path)); // @phpstan-ignore staticMethod.impossibleType
+        self::assertSame($expected, $actual?->path);
     }
 
     #[DataProvider('dataProviderType')]
@@ -319,6 +276,32 @@ final class PathTest extends TestCase {
             'starts with tilde (backslash)'  => ['~path/to', '~path\\to'],
             'dots'                           => ['', './././././'],
             'dots (backslash)'               => ['', '.\\.\\.\\.\\.\\'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{?string, string, string}>
+     */
+    public static function dataProviderRelative(): array {
+        return [
+            'relative + absolute'        => [null, 'root', '/path'],
+            'relative + relative'        => ['path', 'root', 'path'],
+            'absolute + relative'        => ['path', '/root/path', 'path'],
+            'type mismatch'              => [null, '/root/path/to/file.path', '~/root/path/to/file.path'],
+            'same'                       => ['file.path', '/root/path/to/file.path', '/root/path/to/file.path'],
+            'file + file'                => ['file', '/root/path/to/file.path', '/root/path/to/file'],
+            'file + directory'           => ['directory/', '/root/path/to/file.path', '/root/path/to/directory/'],
+            'file + file path'           => ['path/to/file', '/root/path/to/file.path', '/root/path/to/path/to/file'],
+            'file + directory path'      => ['path/to/directory/', '/root/file.path', '/root/path/to/directory/'],
+            'file + /file'               => ['../../../file.path', '/root/path/to/file.path', '/file.path'],
+            'file + /directory'          => ['../../../directory/', '/root/path/to/file.path', '/directory/'],
+            'directory + file'           => ['file', '/root/path/to/', '/root/path/to/file'],
+            'directory + directory'      => ['directory/', '/root/path/to/', '/root/path/to/directory/'],
+            'directory + file path'      => ['path/to/file', '/root/path/to/', '/root/path/to/path/to/file'],
+            'directory + directory path' => ['path/to/directory/', '/root/', '/root/path/to/directory/'],
+            'directory + /file'          => ['../../../file.path', '/root/path/to/', '/file.path'],
+            'directory + /directory'     => ['../../../directory/', '/root/path/to/', '/directory/'],
+            'normalization'              => ['file', '/root/./path/./to/./file.path', '\\root\\.\\path\\.\\to\\file'],
         ];
     }
     //</editor-fold>
