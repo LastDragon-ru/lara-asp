@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
@@ -89,13 +88,13 @@ class SymfonyFileSystem implements Adapter {
 
         if ($include !== []) {
             $finder = $finder->filter(
-                (new Glob($directory, $include))->match(...),
+                (new SymfonyGlob($include))->match(...),
             );
         }
 
         if ($exclude !== []) {
             $finder = $finder->filter(
-                (new Glob($directory, $exclude))->mismatch(...),
+                (new SymfonyGlob($exclude))->mismatch(...),
                 true,
             );
         }

@@ -136,7 +136,7 @@ class Processor {
                     },
                 };
 
-                $this->run($fs, $files, new Glob($root, $skip));
+                $this->run($fs, $files, new Glob($skip));
                 $this->reset();
             } catch (ProcessorError $exception) {
                 throw $exception;
