@@ -9,4 +9,5 @@ use LastDragon_ru\Path\FilePath;
 $home = new DirectoryPath('~/path');
 $file = new FilePath('file.txt');
 
+Example::dump($home->type);
 Example::dump((string) $home->resolve($file));
