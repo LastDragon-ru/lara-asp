@@ -193,7 +193,7 @@ abstract class Path implements Stringable {
         return $path;
     }
 
-    public function equals(self $path): bool {
+    public function equals(?self $path): bool {
         return $path instanceof $this
             && $path->normalized()->path === $this->normalized()->path;
     }

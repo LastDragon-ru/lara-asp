@@ -155,6 +155,7 @@ final class PathTest extends TestCase {
             ),
         );
         self::assertFalse((new PathTest_Path('path/to/file'))->equals(new PathTest_Path('path/to')));
+        self::assertFalse((new PathTest_Path('path/to/file'))->equals(null));
         self::assertFalse(
             (new PathTest_Path('path/to/file'))->equals(
             // @phpstan-ignore class.disallowedSubtype (for test)
