@@ -2,8 +2,17 @@
 
 namespace LastDragon_ru\Path;
 
-enum Type {
-    case Home;
-    case Absolute;
-    case Relative;
+enum Type: string {
+    /**
+     * Universal Naming Convention (UNC, uniform naming convention, or network path)
+     *
+     * @see https://en.wikipedia.org/wiki/Path_(computing)#UNC
+     */
+    case Unc = '//';
+    /**
+     * Inside user home directory (`~/...`).
+     */
+    case Home     = '~?';
+    case Absolute = '/';
+    case Relative = '';
 }

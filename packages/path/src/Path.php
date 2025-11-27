@@ -254,6 +254,7 @@ abstract class Path implements Stringable {
     private static function getType(string $path): Type {
         return match (str_replace('\\', '/', self::getRoot($path))) {
             ''        => Type::Relative,
+            '//'      => Type::Unc,
             '~', '~/' => Type::Home,
             default   => Type::Absolute,
         };
@@ -266,16 +267,17 @@ abstract class Path implements Stringable {
         }
 
         // Root?
-        $first = mb_substr($path, 0, 1);
+        $first        = mb_substr($path, 0, 1);
+        $firstIsRoot  = self::isRoot($first);
+        $second       = mb_substr($path, 1, 1);
+        $secondIsRoot = self::isRoot($second);
 
-        if (self::isRoot($first)) {
+        if ($firstIsRoot && !$secondIsRoot) {
             return $first;
         }
 
-        // Home?
-        $second = mb_substr($path, 1, 1);
-
-        if (self::isRoot($second) && $first === '~') {
+        // Home/Unc?
+        if ($secondIsRoot && ($firstIsRoot || $first === '~')) {
             return $first.$second;
         }
 

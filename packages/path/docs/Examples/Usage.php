@@ -12,3 +12,4 @@ $file          = new FilePath('../file.txt');
 
 Example::dump((string) $baseDirectory->resolve($file));
 Example::dump((string) $baseFile->resolve($file));
+Example::dump((string) $baseFile->file('../../file.md'));

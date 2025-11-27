@@ -11,3 +11,4 @@ $file = new FilePath('file.txt');
 
 Example::dump($home->type);
 Example::dump((string) $home->resolve($file));
+Example::dump((string) $home->file('../../../file.md')); // !
