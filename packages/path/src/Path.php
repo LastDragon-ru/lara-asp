@@ -97,13 +97,13 @@ abstract class Path implements Stringable {
      * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function concat(self $path): self {
-        $concat               = $this->directory()->path.$path->path;
-        $concat               = $path::normalize($concat);
-        $concat               = $path instanceof DirectoryPath
+        $concat = $this->directory()->path.$path->path;
+        $concat = $path::normalize($concat);
+        $concat = $path instanceof DirectoryPath
             ? new DirectoryPath($concat)
             : new FilePath($concat); // @phpstan-ignore argument.type (ok. it will throw error if empty)
-        $concat->isAbsolute   = $this->isAbsolute;
-        $concat->isNormalized = true;
+
+        $this->sync($concat)->isNormalized = true;
 
         return $concat;
     }
@@ -175,12 +175,12 @@ abstract class Path implements Stringable {
             return $this;
         }
 
-        $path               = static::normalize($this->path);
-        $path               = $this instanceof DirectoryPath
+        $path = static::normalize($this->path);
+        $path = $this instanceof DirectoryPath
             ? new DirectoryPath($path)
             : new FilePath($path); // @phpstan-ignore argument.type (ok. it will throw error if empty)
-        $path->isAbsolute   = $this->isAbsolute;
-        $path->isNormalized = true;
+
+        $this->sync($path)->isNormalized = true;
 
         return $path;
     }
@@ -188,6 +188,20 @@ abstract class Path implements Stringable {
     public function equals(self $path): bool {
         return $path instanceof $this
             && $path->normalized()->path === $this->normalized()->path;
+    }
+
+    /**
+     * @template T of self
+     *
+     * @param T $path
+     *
+     * @return T
+     */
+    private function sync(self $path): self {
+        $path->isAbsolute   = $this->isAbsolute;
+        $path->isNormalized = $this->isNormalized;
+
+        return $path;
     }
 
     protected static function normalize(string $path): string {
