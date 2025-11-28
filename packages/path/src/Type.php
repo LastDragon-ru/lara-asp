@@ -12,7 +12,7 @@ enum Type: string {
     /**
      * Inside user home directory (`~/...`).
      */
-    case Home     = '~?';
+    case Home     = '~/';
     case Absolute = '/';
     case Relative = '';
 }

@@ -20,10 +20,7 @@ use function str_repeat;
 use function str_replace;
 
 /**
- * It differs slightly from the Symfony FileSystem Path component.
- *
- * + The home path (`~`) treatment as absolute (because in almost all cases it is absolute).
- * + URL/URI/etc not supported and treatment as path.
+ * URL/URI/etc not supported and treatment as path.
  *
  * @property-read TPath $name
  * @property-read Type  $type
@@ -34,12 +31,15 @@ use function str_replace;
  * @phpstan-sealed DirectoryPath|FilePath
  */
 abstract class Path implements Stringable {
-    protected ?bool $isNormalized = null; // `private` will lead to an error https://github.com/phpstan/phpstan/issues/13836
+    /**
+     * @internal `private` will lead to an error https://github.com/phpstan/phpstan/issues/
+     */
+    protected ?bool $cNormalized = null;
 
     /**
      * @internal `private` will lead to an error https://github.com/phpstan/phpstan/issues/
      */
-    protected ?Type $cachedType = null;
+    protected ?Type $cType = null;
 
     public function __construct(
         /**
@@ -71,8 +71,8 @@ abstract class Path implements Stringable {
     public function __get(string $name): mixed {
         return match ($name) {
             'name'       => basename($this->path),
-            'type'       => $this->cachedType   ??= self::getType($this->path),
-            'normalized' => $this->isNormalized ??= static::normalize($this->path) === $this->path,
+            'type'       => $this->cType       ??= self::getType($this->path),
+            'normalized' => $this->cNormalized ??= static::normalize($this->path) === $this->path,
             default      => null,
         };
     }
@@ -110,7 +110,7 @@ abstract class Path implements Stringable {
             ? new DirectoryPath($concat)
             : new FilePath($concat); // @phpstan-ignore argument.type (ok. it will throw error if empty)
 
-        $this->sync($concat)->isNormalized = true;
+        $this->sync($concat)->cNormalized = true;
 
         return $concat;
     }
@@ -161,14 +161,14 @@ abstract class Path implements Stringable {
             $count++;
         }
 
-        $repeat                 = count($root) - $count - 1;
-        $relative               = ($repeat > 0 ? str_repeat('../', $repeat) : '').implode('/', $parts);
-        $relative               = $path::normalize($relative);
-        $relative               = $path instanceof DirectoryPath
+        $repeat                = count($root) - $count - 1;
+        $relative              = ($repeat > 0 ? str_repeat('../', $repeat) : '').implode('/', $parts);
+        $relative              = $path::normalize($relative);
+        $relative              = $path instanceof DirectoryPath
             ? new DirectoryPath($relative)
             : new FilePath($relative); // @phpstan-ignore argument.type (ok. it will throw error if empty)
-        $relative->cachedType   = Type::Relative;
-        $relative->isNormalized = true;
+        $relative->cType       = Type::Relative;
+        $relative->cNormalized = true;
 
         // Return
         return $relative;
@@ -188,7 +188,7 @@ abstract class Path implements Stringable {
             ? new DirectoryPath($path)
             : new FilePath($path); // @phpstan-ignore argument.type (ok. it will throw error if empty)
 
-        $this->sync($path)->isNormalized = true;
+        $this->sync($path)->cNormalized = true;
 
         return $path;
     }
@@ -206,8 +206,8 @@ abstract class Path implements Stringable {
      * @return T
      */
     protected function sync(self $path): self {
-        $path->cachedType   = $this->cachedType;
-        $path->isNormalized = $this->isNormalized;
+        $path->cType       = $this->cType;
+        $path->cNormalized = $this->cNormalized;
 
         return $path;
     }
