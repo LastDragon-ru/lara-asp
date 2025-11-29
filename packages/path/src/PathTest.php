@@ -63,10 +63,6 @@ final class PathTest extends TestCase {
         $instance->shouldAllowMockingProtectedMethods();
         $instance->makePartial();
         $instance
-            ->shouldReceive('sync')
-            ->twice()
-            ->andReturnUsing(static fn ($path) => $path);
-        $instance
             ->shouldReceive('normalize')
             ->with(Type::Relative, ['', 'path', 'to'])
             ->twice()

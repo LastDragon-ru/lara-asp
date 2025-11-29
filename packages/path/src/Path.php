@@ -121,7 +121,8 @@ abstract class Path implements Stringable {
                 ? new DirectoryPath($resolved)
                 : new FilePath($resolved); // @phpstan-ignore argument.type (ok. it will throw error if empty)
 
-            $this->sync($resolved)->cNormalized = true;
+            $resolved->cType       = $this->type;
+            $resolved->cNormalized = true;
         } else {
             $resolved = $path->normalized();
         }
@@ -156,13 +157,14 @@ abstract class Path implements Stringable {
         }
 
         // Resolvable?
-        if (!$this->is($path->type)) {
+        $root  = $this->directory()->parts;
+        $parts = $path->normalized()->parts;
+
+        if ($root[0] !== $parts[0]) {
             return null;
         }
 
         // Convert
-        $root  = explode('/', $this->directory()->path);
-        $parts = explode('/', $path->normalized()->path);
         $count = 0;
 
         foreach ($root as $i => $part) {
@@ -175,13 +177,14 @@ abstract class Path implements Stringable {
             $count++;
         }
 
-        $type                  = Type::Relative;
-        $repeat                = count($root) - $count - 1;
-        $relative              = ($repeat > 0 ? str_repeat('../', $repeat) : '').implode('/', $parts);
-        $relative              = $path::normalize($type, $path::parts($type, $relative));
-        $relative              = $path instanceof DirectoryPath
+        $type     = Type::Relative;
+        $repeat   = count($root) - $count;
+        $relative = ($repeat > 0 ? str_repeat('../', $repeat) : '').implode('/', $parts);
+        $relative = $path::normalize($type, $path::parts($type, $relative));
+        $relative = $path instanceof DirectoryPath
             ? new DirectoryPath($relative)
             : new FilePath($relative); // @phpstan-ignore argument.type (ok. it will throw error if empty)
+
         $relative->cType       = $type;
         $relative->cNormalized = true;
 
@@ -203,7 +206,8 @@ abstract class Path implements Stringable {
             ? new DirectoryPath($path)
             : new FilePath($path); // @phpstan-ignore argument.type (ok. it will throw error if empty)
 
-        $this->sync($path)->cNormalized = true;
+        $path->cType       = $this->type;
+        $path->cNormalized = true;
 
         return $path;
     }
@@ -211,20 +215,6 @@ abstract class Path implements Stringable {
     public function equals(?self $path): bool {
         return $path instanceof $this
             && $path->normalized()->path === $this->normalized()->path;
-    }
-
-    /**
-     * @template T of self
-     *
-     * @param T $path
-     *
-     * @return T
-     */
-    protected function sync(self $path): self {
-        $path->cType       = $this->cType;
-        $path->cNormalized = $this->cNormalized;
-
-        return $path;
     }
 
     /**
