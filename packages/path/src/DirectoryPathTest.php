@@ -4,15 +4,12 @@ namespace LastDragon_ru\Path;
 
 use LastDragon_ru\Path\Package\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
  */
 #[CoversClass(DirectoryPath::class)]
 final class DirectoryPathTest extends TestCase {
-    // <editor-fold desc="Tests">
-    // =========================================================================
     public function testPropertyName(): void {
         $path       = new DirectoryPath('path/./to/./directory');
         $normalized = $path->normalized();
@@ -20,6 +17,7 @@ final class DirectoryPathTest extends TestCase {
         self::assertSame('directory', $path->name);
         self::assertSame('directory', $normalized->name);
         self::assertSame('path/to/directory/', (string) $normalized);
+        self::assertSame('', (new DirectoryPath('./'))->name);
     }
 
     public function testFile(): void {
@@ -64,59 +62,10 @@ final class DirectoryPathTest extends TestCase {
         self::assertFalse($path->contains(new FilePath('/path/to/file.md')));
     }
 
-    #[DataProvider('dataProviderNormalized')]
-    public function testNormalized(string $expected, string $path): void {
-        self::assertSame($expected, (string) (new DirectoryPath($path))->normalized());
+    public function testNormalized(): void {
+        self::assertSame('./', (string) (new DirectoryPath(''))->normalized());
+        self::assertSame('./', (string) (new DirectoryPath('.'))->normalized());
+        self::assertSame('../', (string) (new DirectoryPath('..'))->normalized());
+        self::assertSame('/path/to/', (string) (new DirectoryPath('/path/to'))->normalized());
     }
-    //</editor-fold>
-
-    // <editor-fold desc="DataProviders">
-    // =========================================================================
-    /**
-     * @return array<string, array{string, string}>
-     */
-    public static function dataProviderNormalized(): array {
-        return [
-            'empty'                          => ['./', ''],
-            'unix root'                      => ['/', '/'],
-            'unix root (backslash)'          => ['/', '\\'],
-            'unix root path'                 => ['/path/to/', '/path/to'],
-            'unix root path (backslash)'     => ['/path/to/', '\\path/to'],
-            'unix home'                      => ['~/', '~'],
-            'unix home (slash)'              => ['~/', '~/'],
-            'unix home (backslash)'          => ['~/', '~\\'],
-            'unix home (path)'               => ['~/path/to/', '~/path\\to'],
-            'win drive'                      => ['C:/', 'C:'],
-            'win root'                       => ['D:/', 'D:\\'],
-            'win root (slash)'               => ['D:/', 'D:/'],
-            'win root path'                  => ['D:/path/to/', 'D:\\path\\to'],
-            'win root path (slash)'          => ['D:/path/to/', 'D:/path/to'],
-            'win malformed'                  => ['C:path/to/', 'C:path\\to'],
-            'dot'                            => ['./', '.'],
-            'dot (slash)'                    => ['./', './'],
-            'dot (backslash)'                => ['./', '.\\'],
-            'dot path (slash)'               => ['path/to/', './path/to'],
-            'dot path (backslash)'           => ['path/to/', '.\\path\\to'],
-            'dot dot'                        => ['../', '..'],
-            'dot dot (slash)'                => ['../', '../'],
-            'dot dot (backslash)'            => ['../', '..\\'],
-            'dot dot path (slash)'           => ['../path/to/', '../path/to'],
-            'dot dot path (backslash)'       => ['../path/to/', '..\\path\\to'],
-            'relative'                       => ['path/to/', 'path/to'],
-            'relative (backslash)'           => ['path/to/', 'path\\to'],
-            'relative dot'                   => ['path/to/', 'path/././/.//to'],
-            'relative dot (backslash)'       => ['path/to/', 'path\\.\\.\\\\.\\\\to'],
-            'relative dot dot'               => ['../file/', 'path/.//to/../../../file'],
-            'relative dot dot (backslash)'   => ['../file/', 'path\\.\\\\to\\..\\..\\..\\file'],
-            'absolute dot'                   => ['/path/to/', '/path/././/.//to'],
-            'absolute dot (backslash)'       => ['/path/to/', '/path\\.\\.\\\\.\\\\to'],
-            'absolute dot dot'               => ['/to/', '/path/./../../../to'],
-            'absolute dot dot(backslash)'    => ['/to/', '\\path\\.\\..\\..\\..\\to'],
-            'absolute unix home'             => ['~/to/', '~/path/./../../../to'],
-            'absolute unix home (backslash)' => ['~/to/', '~\\path\\.\\..\\..\\..\\to'],
-            'starts with tilde'              => ['~path/to/', '~path/to'],
-            'starts with tilde (backslash)'  => ['~path/to/', '~path\\to'],
-        ];
-    }
-    //</editor-fold>
 }
