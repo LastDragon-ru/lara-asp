@@ -28,6 +28,7 @@ use function str_starts_with;
  * @property-read TPath                  $name
  * @property-read Type                   $type
  * @property-read non-empty-list<string> $parts
+ * @property-read bool                   $relative
  * @property-read bool                   $normalized
  *
  * @template TPath of string = string
@@ -85,6 +86,7 @@ abstract class Path implements Stringable {
             'type'       => $this->cType       ??= self::type($this->path),
             'parts'      => $this->cParts      ??= self::parts($this->type, $this->path),
             'normalized' => $this->cNormalized ??= static::normalize($this->type, $this->parts) === $this->path,
+            'relative'   => $this->is(Type::Relative, Type::WindowsRelative),
             default      => null,
         };
     }
@@ -114,7 +116,7 @@ abstract class Path implements Stringable {
      * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function resolve(self $path): self {
-        if ($path->is(Type::Relative)) {
+        if ($path->relative) {
             $resolved = [...$this->directory()->parts, ...$path->parts];
             $resolved = $path::normalize($this->type, $resolved);
             $resolved = $path instanceof DirectoryPath
@@ -152,7 +154,7 @@ abstract class Path implements Stringable {
      */
     public function relative(self $path): ?self {
         // Relative?
-        if ($path->is(Type::Relative)) {
+        if ($path->relative) {
             return $path->normalized();
         }
 

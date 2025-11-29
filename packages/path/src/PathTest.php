@@ -26,6 +26,13 @@ final class PathTest extends TestCase {
         self::assertSame('c', (new PathTest_Path('/a/b/c/'))->name);
     }
 
+    public function testPropertyRelative(): void {
+        self::assertFalse((new PathTest_Path('/'))->relative);
+        self::assertFalse((new PathTest_Path('C:'))->relative);
+        self::assertTrue((new PathTest_Path('./'))->relative);
+        self::assertTrue((new PathTest_Path('C:path'))->relative);
+    }
+
     public function testPropertyNormalized(): void {
         self::assertTrue((new PathTest_Path('/any/path'))->normalized);
         self::assertTrue((new PathTest_Path('any/path'))->normalized);

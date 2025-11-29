@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text as TextUtils;
 use LastDragon_ru\Path\FilePath;
 use LastDragon_ru\Path\Path;
-use LastDragon_ru\Path\Type;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\Table\TableCell;
@@ -214,7 +213,7 @@ class Utils {
         return filter_var($path, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE) === null
             && !str_starts_with($path, 'tel:+') // see https://www.php.net/manual/en/filter.filters.validate.php
             && !str_starts_with($path, 'urn:')  // see https://www.php.net/manual/en/filter.filters.validate.php
-            && Path::make($path)->is(Type::Relative);
+            && Path::make($path)->relative;
     }
 
     public static function isPathToSelf(Document $document, FilePath|string $path): bool {
