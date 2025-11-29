@@ -97,22 +97,19 @@ abstract class Path implements Stringable {
      * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function resolve(self $path): self {
-        return $path->is(Type::Relative) ? $this->concat($path) : $path->normalized();
-    }
+        if ($path->is(Type::Relative)) {
+            $resolved = $this->directory()->path.$path->path;
+            $resolved = $path::normalize($resolved);
+            $resolved = $path instanceof DirectoryPath
+                ? new DirectoryPath($resolved)
+                : new FilePath($resolved); // @phpstan-ignore argument.type (ok. it will throw error if empty)
 
-    /**
-     * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
-     */
-    public function concat(self $path): self {
-        $concat = $this->directory()->path.$path->path;
-        $concat = $path::normalize($concat);
-        $concat = $path instanceof DirectoryPath
-            ? new DirectoryPath($concat)
-            : new FilePath($concat); // @phpstan-ignore argument.type (ok. it will throw error if empty)
+            $this->sync($resolved)->cNormalized = true;
+        } else {
+            $resolved = $path->normalized();
+        }
 
-        $this->sync($concat)->cNormalized = true;
-
-        return $concat;
+        return $resolved;
     }
 
     public function parent(): DirectoryPath {

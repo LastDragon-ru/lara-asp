@@ -57,39 +57,6 @@ final class PathTest extends TestCase {
         self::assertTrue($absolute->is(Type::Absolute));
     }
 
-    public function testConcatHome(): void {
-        $target   = new PathTest_Path('~/home');
-        $relative = (new PathTest_Path('relative/path'))->concat($target);
-        $absolute = (new PathTest_Path('/absolute/path'))->concat($target);
-
-        self::assertSame('relative/~/home', (string) $relative);
-        self::assertTrue($relative->is(Type::Relative));
-        self::assertSame('/absolute/~/home', (string) $absolute);
-        self::assertTrue($absolute->is(Type::Absolute));
-    }
-
-    public function testConcatAbsolute(): void {
-        $target   = new PathTest_Path('/to/absolute/./path');
-        $relative = (new PathTest_Path('relative/path'))->concat($target);
-        $absolute = (new PathTest_Path('/absolute/path'))->concat($target);
-
-        self::assertSame('relative/to/absolute/path', (string) $relative);
-        self::assertTrue($relative->is(Type::Relative));
-        self::assertSame('/absolute/to/absolute/path', (string) $absolute);
-        self::assertTrue($absolute->is(Type::Absolute));
-    }
-
-    public function testConcatRelative(): void {
-        $target   = new PathTest_Path('to/../relative/./path');
-        $relative = (new PathTest_Path('relative/path'))->concat($target);
-        $absolute = (new PathTest_Path('/absolute/path'))->concat($target);
-
-        self::assertSame('relative/relative/path', (string) $relative);
-        self::assertTrue($relative->is(Type::Relative));
-        self::assertSame('/absolute/relative/path', (string) $absolute);
-        self::assertTrue($absolute->is(Type::Absolute));
-    }
-
     public function testNormalized(): void {
         $path     = 'path/to';
         $instance = Mockery::mock(Path::class, [$path]);
