@@ -197,6 +197,8 @@ final class PathTest extends TestCase {
     public static function dataProviderType(): array {
         return [
             'empty'                        => [Type::Relative, ''],
+            '///'                          => [Type::Absolute, '///'],
+            '\\\\\\'                       => [Type::Absolute, '\\\\\\'],
             'root'                         => [Type::Absolute, '/'],
             'root (backslash)'             => [Type::Absolute, '\\'],
             'root path'                    => [Type::Absolute, '/path/to'],
@@ -243,6 +245,8 @@ final class PathTest extends TestCase {
     public static function dataProviderNormalize(): array {
         return [
             'empty'                         => ['./', ''],
+            '///'                           => ['/', '///'],
+            '\\\\\\'                        => ['/', '\\\\\\'],
             'root'                          => ['/', '/'],
             'root (backslash)'              => ['/', '\\'],
             'root path'                     => ['/path/to', '/path/to'],
@@ -302,6 +306,8 @@ final class PathTest extends TestCase {
     public static function dataProviderParts(): array {
         return [
             'empty'                          => [[''], ''],
+            '///'                            => [['/'], '///'],
+            '\\\\\\'                         => [['\\'], '\\\\\\'],
             'root'                           => [['/'], '/'],
             'root (backslash)'               => [['\\'], '\\'],
             'root path'                      => [['/', 'path', 'to'], '/path/to'],

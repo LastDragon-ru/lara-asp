@@ -268,15 +268,15 @@ abstract class Path implements Stringable {
         $prefix = str_replace('\\', '/', $prefix);
         $first  = mb_substr($prefix, 0, 1);
         $second = mb_substr($prefix, 1, 1);
+        $third  = mb_substr($prefix, 2, 1);
         $type   = Type::Relative;
 
-        if ($first === '/' && $second === '/') {
+        if ($first === '/' && $second === '/' && $third !== '/') {
             $type = Type::Unc;
         } elseif ($first === '~' && $second === '/') {
             $type = Type::Home;
         } elseif ($second === ':' && preg_match('/[a-z]/ui', $first) > 0) {
-            $third = mb_substr($prefix, 2, 1);
-            $type  = $third === '/' || $third === ''
+            $type = $third === '/' || $third === ''
                 ? Type::WindowsAbsolute
                 : Type::WindowsRelative;
         } elseif ($first === '/') {
