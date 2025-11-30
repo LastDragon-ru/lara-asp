@@ -25,11 +25,13 @@ final class DirectoryPath extends Path {
     }
 
     /**
+     * @inheritDoc
+     *
      * @return non-empty-string
      */
     #[Override]
-    protected static function normalize(string $path): string {
-        $normalized = parent::normalize($path);
+    protected static function normalize(Type $type, array $parts): string {
+        $normalized = parent::normalize($type, $parts);
         $normalized = $normalized !== '' ? $normalized : '.';
         $normalized = $normalized.(str_ends_with($normalized, '/') ? '' : '/');
 

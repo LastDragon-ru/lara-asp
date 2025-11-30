@@ -18,7 +18,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use LastDragon_ru\Path\Type;
 
 use function is_string;
 use function sprintf;
@@ -41,7 +40,7 @@ class FileSystem {
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
-        if ($input->is(Type::Relative)) {
+        if ($input->relative) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `$input` path must be absolute, `%s` given.',
@@ -50,7 +49,7 @@ class FileSystem {
             );
         }
 
-        if ($output->is(Type::Relative)) {
+        if ($output->relative) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The `$output` path must be absolute, `%s` given.',

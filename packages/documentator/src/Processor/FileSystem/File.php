@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use LastDragon_ru\Path\Path;
-use LastDragon_ru\Path\Type;
 use Override;
 use Stringable;
 
@@ -31,7 +30,7 @@ class File implements Stringable {
             );
         }
 
-        if ($this->path->is(Type::Relative)) {
+        if ($this->path->relative) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Path must be absolute, `%s` given.',

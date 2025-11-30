@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/path",
   "homepage": "https://github.com/LastDragon-ru/lara-asp",
-  "description": "Provides utilities for working with file and directory paths in an object-oriented way.",
+  "description": "Provides utilities for working with file and directory paths in an object-oriented way for all path types.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -18,7 +18,8 @@
   },
   "require": {
     "php": "^8.3|^8.4",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "symfony/polyfill-php85": "^1.33"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",

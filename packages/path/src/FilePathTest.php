@@ -27,6 +27,7 @@ final class FilePathTest extends TestCase {
 
     public function testConstructTilde(): void {
         self::assertSame('~', (string) new FilePath('~'));
+        self::assertSame('./~', (string) new FilePath('./~'));
     }
 
     public function testConstructSlash(): void {
