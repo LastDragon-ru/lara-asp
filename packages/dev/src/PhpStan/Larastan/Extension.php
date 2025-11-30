@@ -15,6 +15,7 @@ use function file_put_contents;
 use function getcwd;
 use function implode;
 use function is_array;
+use function is_file;
 use function is_string;
 use function sprintf;
 
@@ -30,6 +31,13 @@ class Extension {
         // Larastan?
         if (!self::hasLarastan()) {
             return;
+        }
+
+        // Autoload (required for polyfills)
+        $file = './vendor/autoload.php';
+
+        if (is_file($file)) {
+            require_once $file;
         }
 
         // Prepare
