@@ -7,6 +7,7 @@ use Stringable;
 
 use function array_last;
 use function array_pop;
+use function array_slice;
 use function count;
 use function explode;
 use function implode;
@@ -116,7 +117,7 @@ abstract class Path implements Stringable {
      * @return ($path is DirectoryPath ? DirectoryPath : FilePath)
      */
     public function resolve(self $path): self {
-        if ($path->relative) {
+        if ($path->is(Type::Relative)) {
             $resolved = [...$this->directory()->parts, ...$path->parts];
             $resolved = $path::normalize($this->type, $resolved);
             $resolved = $path instanceof DirectoryPath
@@ -124,6 +125,33 @@ abstract class Path implements Stringable {
                 : new FilePath($resolved); // @phpstan-ignore argument.type (ok. it will throw error if empty)
 
             $resolved->cType       = $this->type;
+            $resolved->cNormalized = true;
+        } elseif ($path->is(Type::WindowsRelative)) {
+            /**
+             * Relative path resolves based on the current directory for the
+             * same drive. We are using `$this` as the current directory.
+             * If the drives do not match, the $path becomes absolute.
+             *
+             * @see https://learn.microsoft.com/en-us/dotnet/standard/io/file-path-formats
+             */
+
+            $currentDrive = mb_strtoupper(mb_substr($this->parts[0], 0, 1));
+            $pathDrive    = mb_strtoupper(mb_substr($path->parts[0], 0, 1));
+
+            if ($currentDrive === $pathDrive) {
+                $type     = $this->type;
+                $resolved = [...$this->directory()->parts, ...array_slice($path->parts, 1)];
+            } else {
+                $type     = Type::WindowsAbsolute;
+                $resolved = [$path->parts[0].'/', ...array_slice($path->parts, 1)];
+            }
+
+            $resolved = $path::normalize($type, $resolved);
+            $resolved = $path instanceof DirectoryPath
+                ? new DirectoryPath($resolved)
+                : new FilePath($resolved); // @phpstan-ignore argument.type (ok. it will throw error if empty)
+
+            $resolved->cType       = $type;
             $resolved->cNormalized = true;
         } else {
             $resolved = $path->normalized();

@@ -42,26 +42,14 @@ final class PathTest extends TestCase {
         self::assertFalse((new PathTest_Path('./../any/path'))->normalized);
     }
 
-    public function testResolveAbsolute(): void {
-        $target   = new PathTest_Path('/to/absolute/./path');
-        $relative = (new PathTest_Path('relative/path'))->resolve($target);
-        $absolute = (new PathTest_Path('/absolute/path'))->resolve($target);
+    /**
+     * @param array{Type, string} $expected
+     */
+    #[DataProvider('dataProviderResolve')]
+    public function testResolve(array $expected, string $root, string $path): void {
+        $actual = Path::make($root)->resolve(Path::make($path));
 
-        self::assertSame('/to/absolute/path', (string) $relative);
-        self::assertTrue($relative->is(Type::Absolute));
-        self::assertSame('/to/absolute/path', (string) $absolute);
-        self::assertTrue($absolute->is(Type::Absolute));
-    }
-
-    public function testResolveRelative(): void {
-        $target   = new PathTest_Path('to/../relative/./path');
-        $relative = (new PathTest_Path('relative/path'))->resolve($target);
-        $absolute = (new PathTest_Path('/absolute/path'))->resolve($target);
-
-        self::assertSame('relative/relative/path', (string) $relative);
-        self::assertTrue($relative->is(Type::Relative));
-        self::assertSame('/absolute/relative/path', (string) $absolute);
-        self::assertTrue($absolute->is(Type::Absolute));
+        self::assertSame($expected, [$actual->type, $actual->path]);
     }
 
     public function testNormalized(): void {
@@ -418,6 +406,75 @@ final class PathTest extends TestCase {
             'directory + /file'          => ['../../../file.path', '/root/path/to/', '/file.path'],
             'directory + /directory'     => ['../../../directory/', '/root/path/to/', '/directory/'],
             'normalization'              => ['file', '/root/./path/./to/./file.path', '\\root\\.\\path\\.\\to\\file'],
+            'different root'             => [null, 'C:/root', 'D:/path/to/file.txt'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{array{Type, string}, string, string}>
+     */
+    public static function dataProviderResolve(): array {
+        return [
+            'absolute + absolute'                                   => [
+                [Type::Absolute, '/path/to/file.txt'],
+                '/root/path',
+                '/path/./to/././file.txt',
+            ],
+            'absolute + relative'                                   => [
+                [Type::Absolute, '/root/path/to/file.txt'],
+                '/root/path',
+                'path/./to/././file.txt',
+            ],
+            'relative + absolute'                                   => [
+                [Type::Absolute, '/path/to/file.txt'],
+                'root/path',
+                '/path/./to/././file.txt',
+            ],
+            'relative + relative'                                   => [
+                [Type::Relative, 'root/path/to/file.txt'],
+                'root/path',
+                'path/./to/././file.txt',
+            ],
+            'absolute + windows absolute'                           => [
+                [Type::WindowsAbsolute, 'C:/path/to/file.txt'],
+                '/root/path',
+                'C:/path/to/file.txt',
+            ],
+            'relative + windows absolute'                           => [
+                [Type::WindowsAbsolute, 'C:/path/to/file.txt'],
+                'root/path',
+                'C:/path/to/file.txt',
+            ],
+            'absolute + windows relative'                           => [
+                [Type::WindowsAbsolute, 'C:/path/to/file.txt'],
+                '/root/path',
+                'C:path/to/file.txt',
+            ],
+            'relative + windows relative'                           => [
+                [Type::WindowsAbsolute, 'C:/path/to/file.txt'],
+                'root/path',
+                'C:path/to/file.txt',
+            ],
+            'windows absolute + windows relative (same drive)'      => [
+                [Type::WindowsAbsolute, 'C:/root/path/to/file.txt'],
+                'c:/root/path',
+                'C:path/to/file.txt',
+            ],
+            'windows absolute + windows relative (different drive)' => [
+                [Type::WindowsAbsolute, 'C:/path/to/file.txt'],
+                'D:/root/path',
+                'C:path/to/file.txt',
+            ],
+            'windows relative + windows relative (same drive)'      => [
+                [Type::WindowsRelative, 'C:root/path/to/file.txt'],
+                'c:root/path',
+                'C:path/to/file.txt',
+            ],
+            'windows relative + windows relative (different drive)' => [
+                [Type::WindowsAbsolute, 'C:/path/to/file.txt'],
+                'D:root/path',
+                'C:path/to/file.txt',
+            ],
         ];
     }
     //</editor-fold>
