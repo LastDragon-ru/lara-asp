@@ -138,7 +138,7 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 
 ## [Path](<packages/path/README.md>)
 
-Provides utilities for working with file and directory paths in an object-oriented way.
+Provides utilities for working with file and directory paths in an object-oriented way for all path types.
 
 [Read more](<packages/path/README.md>).
 

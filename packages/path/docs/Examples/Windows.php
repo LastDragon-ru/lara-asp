@@ -6,7 +6,12 @@ use LastDragon_ru\LaraASP\Dev\App\Example;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
-$base = new DirectoryPath('//server/share/directory');
-$file = new FilePath('../../../../../file.txt');
+$base = new DirectoryPath('C:/path');
 
-Example::dump((string) $base->resolve($file));
+Example::dump(
+    (string) $base->resolve(new FilePath('C:file.txt')),
+);
+
+Example::dump(
+    (string) $base->resolve(new FilePath('D:file.txt')),
+);

@@ -1,6 +1,6 @@
 # Path
 
-Provides utilities for working with file and directory paths in an object-oriented way.
+Provides utilities for working with file and directory paths in an object-oriented way for all path types.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
 [//]: # (start: preprocess/78cfc4c7c7c55577)
@@ -74,7 +74,20 @@ The `(string) $baseFile->file('../../file.md')` is:
 
 # What is supported
 
-The package works only with paths, not with URL/URI/etc, and doesn't interact with OS. As a path separator, any/mix of `/`/`\\` can be used, but in the normalized form all `\\` will always be converted into `/`:
+The package works only with paths, not with URL/URI/etc, and doesn't interact with OS. The following table shows possible path types.
+
+| Type                                                   | Example                                | Root                                      |
+|--------------------------------------------------------|----------------------------------------|-------------------------------------------|
+| [`Type::Absolute`][code-links/eeda5588c3cf02ff]        | `/path`                                | `/`                                       |
+| [`Type::Relative`][code-links/5f48ca28e823cf62]        | `path`, `./path`, `../path`            | `​`                                       |
+| [`Type::Home`][code-links/0b2589a0ba046f5b]            | `~/`, `~/path`                         | `~/`                                      |
+| [`Type::Unc`][code-links/338940468184c4b5]             | `\\ComputerName\SharedFolder\Resource` | `\\ComputerName\SharedFolder`             |
+| [`Type::WindowsAbsolute`][code-links/bad0bc31946fc486] | `C:\path`                              | `C:\`                                     |
+| [`Type::WindowsRelative`][code-links/d77252dc90c836dd] | `C:path`                               | `C:/<current directory>`[^1] or `C:\`[^1] |
+
+[^1]: <https://learn.microsoft.com/en-us/dotnet/standard/io/file-path-formats>
+
+As a path separator, any/mix of `/`/`\` can be used, but in the normalized form all `\` will always be converted into `/`:
 
 [include:example]: ./docs/Examples/Normalization.php
 [//]: # (start: preprocess/a6f0748f7e17a9e0)
@@ -91,8 +104,10 @@ use LastDragon_ru\Path\FilePath;
 
 $base = new DirectoryPath('\\path\\.\\to\\directory');
 $file = new FilePath('../path/../to/../file.txt');
+$win  = new FilePath('c:/path/../to/../file.txt');
 
 Example::dump((string) $base->resolve($file));
+Example::dump((string) $win->normalized());
 ```
 
 The `(string) $base->resolve($file)` is:
@@ -101,7 +116,15 @@ The `(string) $base->resolve($file)` is:
 "/path/to/file.txt"
 ```
 
+The `(string) $win->normalized()` is:
+
+```plain
+"C:/file.txt"
+```
+
 [//]: # (end: preprocess/a6f0748f7e17a9e0)
+
+## Home `~/`
 
 OS independent means that unlike e.g. `\Symfony\Component\Filesystem\Path` the user home directory `~/` will not be replaced to the actual path, moreover paths stated with `~/` will be treatment like absolute paths (because in almost all cases it is an absolute path).
 
@@ -131,7 +154,6 @@ The `$home->type` is:
 ```plain
 LastDragon_ru\Path\Type {
   +name: "Home"
-  +value: "~?"
 }
 ```
 
@@ -149,7 +171,51 @@ The `(string) $home->file('../../../file.md')` is:
 
 [//]: # (end: preprocess/e29c126d3008f205)
 
-In addition to the user home path, the package also has basic support of [Universal Naming Convention (UNC)](https://en.wikipedia.org/wiki/Path_(computing)#UNC) format - if the path starts with `//` (or `\\`) it treat as UNC:
+## Windows
+
+Nothing special here except how the relative path resolves[^1]:
+
+[include:example]: ./docs/Examples/Windows.php
+[//]: # (start: preprocess/392556a3996e57eb)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+namespace LastDragon_ru\Path\Docs\Examples;
+
+use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
+
+$base = new DirectoryPath('C:/path');
+
+Example::dump(
+    (string) $base->resolve(new FilePath('C:file.txt')),
+);
+
+Example::dump(
+    (string) $base->resolve(new FilePath('D:file.txt')),
+);
+```
+
+The `(string) $base->resolve(new FilePath('C:file.txt'))` is:
+
+```plain
+"C:/path/file.txt"
+```
+
+The `(string) $base->resolve(new FilePath('D:file.txt'))` is:
+
+```plain
+"D:/file.txt"
+```
+
+[//]: # (end: preprocess/392556a3996e57eb)
+
+## Universal Naming Convention (UNC)
+
+In [UNC](https://en.wikipedia.org/wiki/Path_(computing)#UNC), the root is `\\server\share`, so relative paths resolve based on it:
 
 [include:example]: ./docs/Examples/Unc.php
 [//]: # (start: preprocess/880c01870a9b887d)
@@ -161,25 +227,24 @@ In addition to the user home path, the package also has basic support of [Univer
 namespace LastDragon_ru\Path\Docs\Examples;
 
 use LastDragon_ru\LaraASP\Dev\App\Example;
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
-Example::dump(
-    (new FilePath('//server/share/path/to/file.txt'))->type,
-);
+$base = new DirectoryPath('//server/share/directory');
+$file = new FilePath('../../../../../file.txt');
+
+Example::dump((string) $base->resolve($file));
 ```
 
-The `(new FilePath('//server/share/path/to/file.txt'))->type` is:
+The `(string) $base->resolve($file)` is:
 
 ```plain
-LastDragon_ru\Path\Type {
-  +name: "Unc"
-  +value: "//"
-}
+"//server/share/file.txt"
 ```
 
 [//]: # (end: preprocess/880c01870a9b887d)
 
-One of notable cases where the type of path matters:
+## Making path relative
 
 [include:example]: ./docs/Examples/Relative.php
 [//]: # (start: preprocess/a3135a42fea85bd0)
@@ -236,5 +301,23 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [code-links/43d8e2c832b53052]: src/FilePath.php
     "\LastDragon_ru\Path\FilePath"
+
+[code-links/eeda5588c3cf02ff]: src/Type.php#L6-L9
+    "\LastDragon_ru\Path\Type::Absolute"
+
+[code-links/0b2589a0ba046f5b]: src/Type.php#L20-L23
+    "\LastDragon_ru\Path\Type::Home"
+
+[code-links/5f48ca28e823cf62]: src/Type.php#L10-L13
+    "\LastDragon_ru\Path\Type::Relative"
+
+[code-links/338940468184c4b5]: src/Type.php#L14-L19
+    "\LastDragon_ru\Path\Type::Unc"
+
+[code-links/bad0bc31946fc486]: src/Type.php#L24-L27
+    "\LastDragon_ru\Path\Type::WindowsAbsolute"
+
+[code-links/d77252dc90c836dd]: src/Type.php#L28-L33
+    "\LastDragon_ru\Path\Type::WindowsRelative"
 
 [//]: # (end: code-links)
