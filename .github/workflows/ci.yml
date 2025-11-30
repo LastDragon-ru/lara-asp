@@ -123,6 +123,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install PHP
         uses: ./.github/actions/php
+        with:
+          dependencies: false
       - name: Install phpcs
         uses: ./.github/actions/tool
         with:
