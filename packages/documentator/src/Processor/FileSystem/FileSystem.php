@@ -19,6 +19,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
+use function array_key_last;
+use function count;
 use function is_string;
 use function sprintf;
 
@@ -28,10 +30,9 @@ class FileSystem {
      */
     private array $cache = [];
     /**
-     * @var array<int, array<string, array{FilePath, string}>>
+     * @var array<int, array<string, File>>
      */
     private array $changes = [];
-    private int   $level   = 0;
 
     public function __construct(
         private readonly Adapter $adapter,
@@ -163,7 +164,7 @@ class FileSystem {
 
         // Update
         if ($exists) {
-            $this->change($file, $content);
+            $this->change($file);
         } else {
             try {
                 $this->adapter->write($path, $content);
@@ -187,38 +188,43 @@ class FileSystem {
     }
 
     public function begin(): void {
-        $this->level++;
-        $this->changes[$this->level] = [];
+        $this->changes[] = [];
     }
 
     public function commit(): void {
         // Commit
-        foreach ($this->changes[$this->level] ?? [] as [$path, $content]) {
-            try {
-                $this->adapter->write($path, $content);
-            } catch (Exception $exception) {
-                throw new FileSaveFailed($path, $exception);
+        $level = array_key_last($this->changes);
+
+        if ($level !== null) {
+            foreach ($this->changes[$level] ?? [] as $file) {
+                try {
+                    $this->adapter->write($file->path, $this->caster->castTo($file, Content::class)->content);
+                } catch (Exception $exception) {
+                    throw new FileSaveFailed($file->path, $exception);
+                }
             }
+
+            unset($this->changes[$level]);
         }
 
-        unset($this->changes[$this->level]);
-
-        // Decrease
-        $this->level--;
-
         // Cleanup
-        if ($this->level === 0) {
-            $this->changes = [];
-            $this->cache   = [];
+        if (count($this->changes) <= 0) {
+            $this->cache = [];
         }
     }
 
-    protected function change(File $file, string $content): void {
-        $string                               = (string) $file->path;
-        $this->changes[$this->level][$string] = [$file->path, $content];
+    protected function change(File $file): void {
+        $level = array_key_last($this->changes);
 
-        for ($level = $this->level - 1; $level >= 0; $level--) {
-            unset($this->changes[$level][$string]);
+        if ($level === null) {
+            return;
+        }
+
+        $string                         = (string) $file->path;
+        $this->changes[$level][$string] = $file;
+
+        for ($l = $level - 1; $l >= 0; $l--) {
+            unset($this->changes[$l][$string]);
         }
     }
 

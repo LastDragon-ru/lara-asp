@@ -194,7 +194,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->makePartial();
         $filesystem
             ->shouldReceive('change')
-            ->with($file, $content)
+            ->with($file)
             ->once()
             ->andReturns();
 
@@ -379,7 +379,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->makePartial();
         $filesystem
             ->shouldReceive('change')
-            ->with($file, $content)
+            ->with($file)
             ->once()
             ->andReturns();
 
@@ -423,7 +423,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->makePartial();
         $filesystem
             ->shouldReceive('change')
-            ->with($file, $content)
+            ->with($file)
             ->once()
             ->andReturns();
 
