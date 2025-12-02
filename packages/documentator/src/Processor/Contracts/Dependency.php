@@ -25,5 +25,5 @@ interface Dependency {
     /**
      * Relative path will be resolved based on {@see FileSystem::$input}.
      */
-    public function getPath(FileSystem $fs): DirectoryPath|File|FilePath;
+    public function getPath(FileSystem $fs): DirectoryPath|FilePath;
 }

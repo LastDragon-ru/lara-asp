@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Dependencies;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
@@ -40,11 +41,12 @@ final class FileSaveTest extends TestCase {
 
     public function testInvoke(): void {
         $content = __DIR__;
-        $file    = Mockery::mock(File::class);
+        $path    = new FilePath('/file.txt');
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
         $fs      = Mockery::mock(FileSystem::class);
         $fs
             ->shouldReceive('write')
-            ->with($file, $content)
+            ->with($path, $content)
             ->once()
             ->andReturn($file);
 
