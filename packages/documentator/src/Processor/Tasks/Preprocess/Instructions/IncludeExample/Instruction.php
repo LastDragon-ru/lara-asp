@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
@@ -74,7 +73,7 @@ class Instruction implements InstructionContract {
         $target   = $context->file->getFilePath($parameters->target);
         $target   = $context->resolver->resolve(new FileReference($target));
         $language = $this->getLanguage($context, $target, $parameters);
-        $content  = mb_trim($target->as(Content::class)->content);
+        $content  = mb_trim($target->content);
         $content  = <<<CODE
             ```{$language}
             $content

@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
 
 /**
+ * @internal
  * @implements Cast<Content>
  */
 readonly class ContentCast implements Cast {

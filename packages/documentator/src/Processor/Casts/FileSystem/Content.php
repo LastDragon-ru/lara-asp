@@ -5,6 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem;
 use Override;
 use Stringable;
 
+/**
+ * @internal
+ */
 readonly class Content implements Stringable {
     public function __construct(
         public string $content,

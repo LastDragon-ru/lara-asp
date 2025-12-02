@@ -2,7 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use Override;
@@ -37,7 +36,7 @@ readonly class ClassObjectCast implements Cast {
     #[Override]
     public function castTo(File $file, string $class): ?object {
         $resolver = new NameResolver();
-        $stmts    = $this->parse($resolver, $file->as(Content::class)->content);
+        $stmts    = $this->parse($resolver, $file->content);
         $finder   = new NodeFinder();
         $class    = $finder->findFirstInstanceOf($stmts, ClassLike::class);
 

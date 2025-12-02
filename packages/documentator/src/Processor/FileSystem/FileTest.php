@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -71,12 +72,34 @@ final class FileTest extends TestCase {
         self::assertSame('FileTest/a/a.txt', (string) $another->getRelativePath($path));
     }
 
-    public function testProperties(): void {
-        $path = new FilePath('/path/to/file.txt');
-        $file = new File($path, Mockery::mock(Caster::class));
+    public function testPropertyName(): void {
+        $caster = Mockery::mock(Caster::class);
+        $fileA  = new File(new FilePath('/path/to/file.txt'), $caster);
+        $fileB  = new File(new FilePath('/path/to/file'), $caster);
 
-        self::assertSame($path, $file->path);
-        self::assertSame('file.txt', $file->name);
-        self::assertSame('txt', $file->extension);
+        self::assertSame('file.txt', $fileA->name);
+        self::assertSame('file', $fileB->name);
+    }
+
+    public function testPropertyExtension(): void {
+        $caster = Mockery::mock(Caster::class);
+        $fileA  = new File(new FilePath('/path/to/file.txt'), $caster);
+        $fileB  = new File(new FilePath('/path/to/file'), $caster);
+
+        self::assertSame('txt', $fileA->extension);
+        self::assertNull($fileB->extension);
+    }
+
+    public function testPropertyContent(): void {
+        $content = 'content';
+        $file    = Mockery::mock(File::class);
+        $file->makePartial();
+        $file
+            ->shouldReceive('as')
+            ->with(Content::class)
+            ->once()
+            ->andReturn(new Content($content));
+
+        self::assertSame($content, $file->content);
     }
 }
