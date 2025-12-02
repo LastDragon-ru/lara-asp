@@ -72,10 +72,6 @@ class File implements Stringable {
         return $path;
     }
 
-    public function isEqual(self $object): bool {
-        return ($this === $object) || ($this::class === $object::class && $this->path->equals($object->path));
-    }
-
     #[Override]
     public function __toString(): string {
         return (string) $this->path;

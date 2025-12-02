@@ -71,19 +71,6 @@ final class FileTest extends TestCase {
         self::assertSame('FileTest/a/a.txt', (string) $another->getRelativePath($path));
     }
 
-    public function testIsEqual(): void {
-        $path = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
-        $a    = new class($path, Mockery::mock(Caster::class)) extends File {
-            // empty
-        };
-        $b    = new class($path, Mockery::mock(Caster::class)) extends File {
-            // empty
-        };
-
-        self::assertTrue($a->isEqual($a));
-        self::assertFalse($a->isEqual($b));
-    }
-
     public function testProperties(): void {
         $path = new FilePath('/path/to/file.txt');
         $file = new File($path, Mockery::mock(Caster::class));
