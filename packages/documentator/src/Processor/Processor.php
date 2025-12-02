@@ -113,7 +113,7 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted($root, $output));
 
             try {
-                $caster = new Caster($this->adapter, $this->casts);
+                $caster = new Caster($this->casts);
                 $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $root, $output);
                 $globs  = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
                 $files  = match (true) {

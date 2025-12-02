@@ -42,8 +42,9 @@ final class FileSaveTest extends TestCase {
     public function testInvoke(): void {
         $content = __DIR__;
         $path    = new FilePath('/file.txt');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
         $fs      = Mockery::mock(FileSystem::class);
+        $file    = Mockery::mock(File::class, [$fs, $path, Mockery::mock(Caster::class)]);
+
         $fs
             ->shouldReceive('write')
             ->with($path, $content)

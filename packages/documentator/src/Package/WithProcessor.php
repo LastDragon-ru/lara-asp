@@ -46,7 +46,7 @@ trait WithProcessor {
                     ->sortByName(true);
             }
         };
-        $caster     = new Caster($adapter, $this->app()->make(Casts::class));
+        $caster     = new Caster($this->app()->make(Casts::class));
         $dispatcher = new Dispatcher();
         $filesystem = new FileSystem($adapter, $dispatcher, $caster, $input, $output);
 

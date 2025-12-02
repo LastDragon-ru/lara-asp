@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use LastDragon_ru\Path\Path;
@@ -18,6 +17,7 @@ use function sprintf;
  */
 class File {
     public function __construct(
+        private readonly FileSystem $fs,
         public readonly FilePath $path,
         private readonly Caster $caster,
     ) {
@@ -84,7 +84,7 @@ class File {
      */
     public function __get(string $name): mixed {
         return match ($name) {
-            'content'   => $this->as(Content::class)->content,
+            'content'   => $this->fs->read($this),
             'extension' => $this->path->extension,
             'name'      => $this->path->name,
             default     => null,

@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Serializer;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use LastDragon_ru\Path\FilePath;
@@ -28,12 +28,15 @@ final class SerializableCastTest extends TestCase {
             ->once()
             ->andReturn($object);
 
-        $file = Mockery::mock(File::class, [new FilePath("/file.{$extension}"), Mockery::mock(Caster::class)]);
-        $file
-            ->shouldReceive('as')
-            ->with(Content::class)
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $file       = Mockery::mock(File::class, [$filesystem, new FilePath("/file.{$extension}"), $caster]);
+
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
             ->once()
-            ->andReturn(new Content($content));
+            ->andReturn($content);
 
         $cast   = new SerializableCast($serializer);
         $actual = $cast->castTo($file, Serializable::class);
@@ -42,14 +45,16 @@ final class SerializableCastTest extends TestCase {
     }
 
     public function testCastFrom(): void {
-        $ext        = 'json';
-        $file       = Mockery::mock(File::class, [new FilePath("/file.{$ext}"), Mockery::mock(Caster::class)]);
+        $extension  = 'json';
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $file       = Mockery::mock(File::class, [$filesystem, new FilePath("/file.{$extension}"), $caster]);
         $object     = Mockery::mock(Serializable::class);
         $content    = 'content';
         $serializer = Mockery::mock(Serializer::class);
         $serializer
             ->shouldReceive('serialize')
-            ->with($object, $ext)
+            ->with($object, $extension)
             ->once()
             ->andReturn($content);
 

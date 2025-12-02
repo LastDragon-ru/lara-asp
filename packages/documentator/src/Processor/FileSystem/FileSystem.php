@@ -6,7 +6,6 @@ use Exception;
 use InvalidArgumentException;
 use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
@@ -19,6 +18,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
+use WeakMap;
 
 use function array_key_last;
 use function count;
@@ -34,6 +34,11 @@ class FileSystem {
      * @var array<int, array<string, File>>
      */
     private array $changes = [];
+
+    /**
+     * @var WeakMap<File, string>
+     */
+    private WeakMap $content;
 
     public function __construct(
         private readonly Adapter $adapter,
@@ -59,6 +64,8 @@ class FileSystem {
                 ),
             );
         }
+
+        $this->content = new WeakMap();
     }
 
     /**
@@ -86,7 +93,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->isFile($path)) {
-            $file = new File($path, $this->caster);
+            $file = new File($this, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
         }
@@ -126,15 +133,15 @@ class FileSystem {
     }
 
     public function read(File $file): string {
-        $path = $this->input->resolve($file->path);
-
-        try {
-            $content = $this->adapter->read($path);
-        } catch (Exception $exception) {
-            throw new FileReadFailed($path, $exception);
+        if (!isset($this->content[$file])) {
+            try {
+                $this->content[$file] = $this->adapter->read($file->path);
+            } catch (Exception $exception) {
+                throw new FileReadFailed($file->path, $exception);
+            }
         }
 
-        return $content;
+        return $this->content[$file];
     }
 
     /**
@@ -164,18 +171,20 @@ class FileSystem {
         // File?
         $file ??= $this->isFile($path) ? $this->getFile($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new File($path, $this->caster));
+        $file ??= $this->cache(new File($this, $path, $this->caster));
 
         // Changed?
-        $content = is_string($content)
-            ? $this->caster->castFrom($file, new Content($content))
-            : $this->caster->castFrom($file, $content);
+        if (!is_string($content)) {
+            $content = $this->caster->castFrom($file, $content);
+        }
 
-        if ($content === null) {
+        if ($content === null || (($this->content[$file] ?? null) === $content)) {
             return $file;
         }
 
         // Update
+        $this->content[$file] = $content;
+
         if ($exists) {
             $this->change($file);
         } else {
@@ -211,7 +220,9 @@ class FileSystem {
         if ($level !== null) {
             foreach ($this->changes[$level] ?? [] as $file) {
                 try {
-                    $this->adapter->write($file->path, $this->caster->castTo($file, Content::class)->content);
+                    if (isset($this->content[$file])) {
+                        $this->adapter->write($file->path, $this->content[$file]);
+                    }
                 } catch (Exception $exception) {
                     throw new FileSaveFailed($file->path, $exception);
                 }

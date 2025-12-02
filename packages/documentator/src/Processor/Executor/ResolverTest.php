@@ -338,7 +338,7 @@ final class ResolverTest extends TestCase {
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
 
-        $file       = Mockery::mock(File::class, [$filepath, Mockery::mock(Caster::class)]);
+        $file       = Mockery::mock(File::class, [$filesystem, $filepath, Mockery::mock(Caster::class)]);
         $dependency = Mockery::mock(Dependency::class);
         $dependency
             ->shouldReceive('getPath')

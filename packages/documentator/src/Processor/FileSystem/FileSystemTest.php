@@ -6,7 +6,6 @@ use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -158,7 +157,6 @@ final class FileSystemTest extends TestCase {
         $content = 'content';
         $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
         $adapter = Mockery::mock(Adapter::class);
         $adapter
             ->shouldReceive('read')
@@ -172,13 +170,15 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
 
+        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+
         self::assertSame($content, $filesystem->read($file));
+        self::assertSame($content, $filesystem->read($file)); // should be cached
     }
 
     public function testReadError(): void {
         $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
         $adapter = Mockery::mock(Adapter::class);
         $adapter
             ->shouldReceive('read')
@@ -194,27 +194,16 @@ final class FileSystemTest extends TestCase {
 
         self::expectException(FileReadFailed::class);
 
+        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+
         $filesystem->read($file);
     }
 
     public function testWriteFile(): void {
-        $content = 'content';
-        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
-
-        $caster = Mockery::mock(Caster::class);
-        $caster
-            ->shouldReceive('castFrom')
-            ->with(
-                $file,
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns($content);
-
+        $content    = 'content';
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path       = $input->file('file.md');
+        $caster     = Mockery::mock(Caster::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -228,14 +217,13 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
-        $adapter
-            ->shouldReceive('write')
-            ->never();
-
+        $adapter    = Mockery::mock(Adapter::class);
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
+
+        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+
         $filesystem
             ->shouldReceive('change')
             ->with($file)
@@ -246,28 +234,10 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteFileNoChanges(): void {
-        $content = 'content';
-        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
-
-        $caster = Mockery::mock(Caster::class);
-        $caster
-            ->shouldReceive('castFrom')
-            ->with($file, Mockery::type(Content::class))
-            ->once()
-            ->andReturn(null);
-
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $caster     = Mockery::mock(Caster::class);
+        $adapter    = Mockery::mock(Adapter::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher
-            ->shouldReceive('notify')
-            ->never();
-
-        $adapter = Mockery::mock(Adapter::class);
-        $adapter
-            ->shouldReceive('write')
-            ->never();
-
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
@@ -275,33 +245,31 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('change')
             ->never();
 
-        $filesystem->write($file, $content);
+        $path = $input->file('file.md');
+        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+
+        $caster
+            ->shouldReceive('castFrom')
+            ->with($file, Mockery::type(stdClass::class))
+            ->once()
+            ->andReturn(null);
+
+        $filesystem->write($file, new stdClass());
     }
 
     public function testWriteCreate(): void {
-        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path    = $input->file('file.md');
-        $content = 'content';
-        $caster  = Mockery::mock(Caster::class);
-        $caster
-            ->shouldReceive('castFrom')
-            ->with(
-                Mockery::type(File::class),
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns($content);
-
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path       = $input->file('file.md');
+        $content    = 'content';
+        $caster     = Mockery::mock(Caster::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
             ->withArgs(
                 static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
-                        && $event->path === $path
-                        && $event->type === FileSystemModifiedType::Created;
+                        && $event->type === FileSystemModifiedType::Created
+                        && $event->path->equals($path);
                 },
             )
             ->once()
@@ -345,18 +313,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andThrow(Exception::class);
 
-        $caster = Mockery::mock(Caster::class);
-        $caster
-            ->shouldReceive('castFrom')
-            ->with(
-                Mockery::type(File::class),
-                Mockery::on(static function (mixed $value) use ($content): bool {
-                    return $value instanceof Content && $value->content === $content;
-                }),
-            )
-            ->once()
-            ->andReturns($content);
-
+        $caster     = Mockery::mock(Caster::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
@@ -387,18 +344,9 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteObject(): void {
-        $content = 'content';
-        $value   = new stdClass();
-        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
-
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path   = $input->file('file.md');
         $caster = Mockery::mock(Caster::class);
-        $caster
-            ->shouldReceive('castFrom')
-            ->with($file, $value)
-            ->once()
-            ->andReturn($content);
 
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
@@ -406,21 +354,30 @@ final class FileSystemTest extends TestCase {
             ->withArgs(
                 static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
-                        && $event->path === $path
-                        && $event->type === FileSystemModifiedType::Updated;
+                        && $event->type === FileSystemModifiedType::Updated
+                        && $event->path->equals($path);
                 },
             )
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
-        $adapter
-            ->shouldReceive('write')
-            ->never();
-
+        $adapter    = Mockery::mock(Adapter::class);
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
+
+        $content = 'content';
+        $value   = new stdClass();
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path    = $input->file('file.md');
+        $file    = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+
+        $caster
+            ->shouldReceive('castFrom')
+            ->with($file, $value)
+            ->once()
+            ->andReturn($content);
+
         $filesystem
             ->shouldReceive('change')
             ->with($file)
@@ -431,18 +388,9 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteContent(): void {
-        $content = 'content';
-        $value   = new Content($content);
-        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
-
+        $input  = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path   = $input->file('file.md');
         $caster = Mockery::mock(Caster::class);
-        $caster
-            ->shouldReceive('castFrom')
-            ->with($file, $value)
-            ->once()
-            ->andReturn($content);
 
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
@@ -457,14 +405,21 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $adapter = Mockery::mock(Adapter::class);
-        $adapter
-            ->shouldReceive('write')
-            ->never();
-
+        $adapter    = Mockery::mock(Adapter::class);
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
+
+        $content = 'content';
+        $value   = new stdClass();
+        $file    = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+
+        $caster
+            ->shouldReceive('castFrom')
+            ->with($file, $value)
+            ->once()
+            ->andReturn($content);
+
         $filesystem
             ->shouldReceive('change')
             ->with($file)

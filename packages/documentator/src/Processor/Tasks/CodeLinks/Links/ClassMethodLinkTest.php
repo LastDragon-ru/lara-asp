@@ -3,12 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObject;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
-use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
 use PhpParser\Node;
@@ -34,24 +34,25 @@ final class ClassMethodLinkTest extends TestCase {
     }
 
     public function testGetTargetNode(): void {
-        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
-        $file->makePartial();
-        $file
-            ->shouldReceive('as')
-            ->with(Content::class)
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $path       = new FilePath('/file.md');
+        $file       = new File($filesystem, $path, $caster);
+
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
             ->once()
             ->andReturn(
-                new Content(
-                    <<<'PHP'
-                    <?php declare(strict_types = 1);
+                <<<'PHP'
+                <?php declare(strict_types = 1);
 
-                    class A {
-                        protected function method(): void {
-                            // empty
-                        }
+                class A {
+                    protected function method(): void {
+                        // empty
                     }
-                    PHP,
-                ),
+                }
+                PHP,
             );
         $link = new class ('A', 'method') extends ClassMethodLink {
             #[Override]

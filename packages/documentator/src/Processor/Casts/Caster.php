@@ -3,15 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\ContentCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown\MarkdownCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassCommentCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassMarkdownCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ComposerPackageCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Serializer\SerializableCast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastFromFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastToFailed;
@@ -31,15 +28,12 @@ class Caster {
     /**
      * @var WeakMap<File, array<class-string<object>, object>>
      */
-    private WeakMap              $files;
-    private readonly ContentCast $content;
+    private WeakMap $files;
 
     public function __construct(
-        private readonly Adapter $adapter,
         protected readonly Casts $casts,
     ) {
-        $this->files   = new WeakMap();
-        $this->content = new ContentCast($this->adapter);
+        $this->files = new WeakMap();
 
         $this->addBuiltInCasts();
     }
@@ -107,20 +101,9 @@ class Caster {
             throw new CastFromFailed($file->path, $value, $exception);
         }
 
-        // Changed?
-        $content = ($this->files[$file][Content::class] ?? null);
-
-        if ($content instanceof Content && $content->content === $string) {
-            return null;
-        }
-
         // Update
         $this->files[$file]                 = [];
-        $this->files[$file][Content::class] = new Content($string);
-
-        if (!($value instanceof Content)) {
-            $this->files[$file][$cast::class()] = $value;
-        }
+        $this->files[$file][$cast::class()] = $value;
 
         // Return
         return $string;
@@ -134,11 +117,6 @@ class Caster {
      * @return Cast<T>
      */
     private function cast(File $file, string $class): Cast {
-        // Content?
-        if ($class === Content::class) {
-            return $this->content; // @phpstan-ignore return.type (fixme(documentator): Caster)
-        }
-
         // Nope
         $cast  = null;
         $casts = $this->casts->get($file);

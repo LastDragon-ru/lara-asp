@@ -161,8 +161,10 @@ final class TaskTest extends TestCase {
             ->addInstruction(TaskTest__TestInstruction::class)
             ->addInstruction(TaskTest__DocumentInstruction::class);
 
-        $path = new FilePath('/path/to/file.md');
-        $file = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
+        $actual     = '';
+        $path       = new FilePath('/path/to/file.md');
+        $filesystem = Mockery::mock(FileSystem::class);
+        $file       = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
         $file->makePartial();
         $file
             ->shouldReceive('as')
@@ -172,8 +174,6 @@ final class TaskTest extends TestCase {
                 $this->app()->make(Markdown::class)->parse(self::MARKDOWN, $path),
             );
 
-        $actual     = '';
-        $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('write')
             ->once()

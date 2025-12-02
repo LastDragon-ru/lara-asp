@@ -3,12 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObject;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
-use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
 use PhpParser\Node;
@@ -43,22 +43,23 @@ final class ClassConstantLinkTest extends TestCase {
     }
 
     public function testGetTargetNodeClassConstant(): void {
-        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
-        $file->makePartial();
-        $file
-            ->shouldReceive('as')
-            ->with(Content::class)
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $path       = new FilePath('/file.md');
+        $file       = new File($filesystem, $path, $caster);
+
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
             ->once()
             ->andReturn(
-                new Content(
-                    <<<'PHP'
-                    <?php declare(strict_types = 1);
+                <<<'PHP'
+                <?php declare(strict_types = 1);
 
-                    class A {
-                        public const Constant = 123;
-                    }
-                    PHP,
-                ),
+                class A {
+                    public const Constant = 123;
+                }
+                PHP,
             );
 
         $link = new class ('A', 'Constant') extends ClassConstantLink {
@@ -85,22 +86,23 @@ final class ClassConstantLinkTest extends TestCase {
     }
 
     public function testGetTargetNodeEnum(): void {
-        $file = Mockery::mock(File::class, new WithProperties(), PropertiesMock::class);
-        $file->makePartial();
-        $file
-            ->shouldReceive('as')
-            ->with(Content::class)
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $path       = new FilePath('/file.md');
+        $file       = new File($filesystem, $path, $caster);
+
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
             ->once()
             ->andReturn(
-                new Content(
-                    <<<'PHP'
-                    <?php declare(strict_types = 1);
+                <<<'PHP'
+                <?php declare(strict_types = 1);
 
-                    enum A {
-                        case A;
-                    }
-                    PHP,
-                ),
+                enum A {
+                    case A;
+                }
+                PHP,
             );
 
         $link = new class ('A', 'A') extends ClassConstantLink {
