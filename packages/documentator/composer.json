@@ -36,6 +36,7 @@
     "symfony/filesystem": "^7.1.0",
     "symfony/finder": "^7.0.0",
     "symfony/polyfill-php84": "^1.31",
+    "symfony/polyfill-php85": "^1.33",
     "symfony/serializer": "^7.0.0",
     "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/lara-asp-core": "self.version",

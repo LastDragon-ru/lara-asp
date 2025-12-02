@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
+use LastDragon_ru\Path\FilePath;
 use Throwable;
 
 use function sprintf;
@@ -13,7 +13,7 @@ class TaskFailed extends TaskError {
     public function __construct(
         protected readonly Task $task,
         protected readonly Hook $hook,
-        protected readonly File $target,
+        protected readonly FilePath $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
@@ -35,7 +35,7 @@ class TaskFailed extends TaskError {
         return $this->hook;
     }
 
-    public function getTarget(): File {
+    public function getTarget(): FilePath {
         return $this->target;
     }
 }

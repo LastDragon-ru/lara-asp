@@ -160,7 +160,7 @@ final class CasterTest extends TestCase {
 
     public function testCastToNoCast(): void {
         // Prepare
-        $file  = Mockery::mock(File::class);
+        $file  = Mockery::mock(File::class, [new FilePath('/file.txt'), Mockery::mock(Caster::class)]);
         $casts = Mockery::mock(Casts::class);
         $casts
             ->shouldReceive('get')

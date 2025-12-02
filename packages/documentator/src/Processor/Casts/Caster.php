@@ -80,7 +80,7 @@ class Caster {
                     );
                 }
             } catch (Exception $exception) {
-                throw new CastToFailed($file, $class, $exception);
+                throw new CastToFailed($file->path, $class, $exception);
             }
         }
 
@@ -104,7 +104,7 @@ class Caster {
                 throw new RuntimeException('Cast not found.');
             }
         } catch (Exception $exception) {
-            throw new CastFromFailed($file, $value, $exception);
+            throw new CastFromFailed($file->path, $value, $exception);
         }
 
         // Changed?

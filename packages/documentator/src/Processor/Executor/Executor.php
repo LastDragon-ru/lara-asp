@@ -26,9 +26,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
+use LastDragon_ru\Path\FilePath;
 
+use function array_last;
 use function array_values;
-use function end;
 
 /**
  * @internal
@@ -44,7 +45,7 @@ class Executor {
     private array $processed = [];
 
     /**
-     * @var array<string, File>
+     * @var array<string, FilePath>
      */
     private array $stack = [];
 
@@ -122,7 +123,7 @@ class Executor {
                 $this->dispatcher->notify(new FileStarted($file->path));
                 $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
-                throw new DependencyCircularDependency($file, array_values($this->stack));
+                throw new DependencyCircularDependency($file->path, array_values($this->stack));
             } else {
                 return;
             }
@@ -141,7 +142,7 @@ class Executor {
         }
 
         // Process
-        $this->stack[$path] = $file;
+        $this->stack[$path] = $file->path;
 
         try {
             $this->tasks($this->tasks->get($file), Hook::File, $file);
@@ -185,14 +186,14 @@ class Executor {
                 } elseif ($task instanceof HookTask) {
                     $task($this->resolver, $file, $hook);
                 } else {
-                    throw new TaskNotInvokable($task, $hook, $file);
+                    throw new TaskNotInvokable($task, $hook, $file->path);
                 }
 
                 $this->resolver->check();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
-                throw new TaskFailed($task, $hook, $file, $exception);
+                throw new TaskFailed($task, $hook, $file->path, $exception);
             }
 
             $this->dispatcher->notify(new TaskFinished(TaskFinishedResult::Success));
@@ -219,7 +220,7 @@ class Executor {
         }
 
         // Process
-        if (!$this->state->is(State::Preparation) && end($this->stack) !== $resolved) {
+        if (!$this->state->is(State::Preparation) && !$resolved->path->equals(array_last($this->stack))) {
             $this->file($resolved);
         }
     }

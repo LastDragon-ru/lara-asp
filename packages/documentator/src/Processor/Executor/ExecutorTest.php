@@ -3,8 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,7 +22,7 @@ final class ExecutorTest extends TestCase {
     // =========================================================================
     #[DataProvider('dataProviderOnResolve')]
     public function testOnResolve(?bool $expected, State $state): void {
-        $file     = Mockery::mock(File::class);
+        $file     = Mockery::mock(File::class, [new FilePath('/file.txt'), Mockery::mock(Caster::class)]);
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
         $executor->makePartial();
