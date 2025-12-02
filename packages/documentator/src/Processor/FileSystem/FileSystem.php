@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -122,6 +123,18 @@ class FileSystem {
         }
 
         yield from [];
+    }
+
+    public function read(File $file): string {
+        $path = $this->input->resolve($file->path);
+
+        try {
+            $content = $this->adapter->read($path);
+        } catch (Exception $exception) {
+            throw new FileReadFailed($path, $exception);
+        }
+
+        return $content;
     }
 
     /**

@@ -16,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
@@ -151,6 +152,49 @@ final class FileSystemTest extends TestCase {
         iterator_to_array(
             $this->getFileSystem(__DIR__)->getFilesIterator(new DirectoryPath('not found')),
         );
+    }
+
+    public function testRead(): void {
+        $content = 'content';
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path    = $input->file('file.md');
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
+        $adapter = Mockery::mock(Adapter::class);
+        $adapter
+            ->shouldReceive('read')
+            ->with($path)
+            ->once()
+            ->andReturn($content);
+
+        $caster     = Mockery::mock(Caster::class);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+
+        self::assertSame($content, $filesystem->read($file));
+    }
+
+    public function testReadError(): void {
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path    = $input->file('file.md');
+        $file    = Mockery::mock(File::class, [$path, Mockery::mock(Caster::class)]);
+        $adapter = Mockery::mock(Adapter::class);
+        $adapter
+            ->shouldReceive('read')
+            ->with($path)
+            ->once()
+            ->andThrow(new Exception());
+
+        $caster     = Mockery::mock(Caster::class);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem->makePartial();
+
+        self::expectException(FileReadFailed::class);
+
+        $filesystem->read($file);
     }
 
     public function testWriteFile(): void {
