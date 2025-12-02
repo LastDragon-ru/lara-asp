@@ -15,6 +15,9 @@ use const PATHINFO_EXTENSION;
 
 trigger_deprecation(Package::Name, '%{VERSION}', 'The `\LastDragon_ru\Path\FilePath` from `lastdragon-ru/path` package should be used instead.');
 
+/**
+ * @deprecated %{VERSION} The `\LastDragon_ru\Path\FilePath` from `lastdragon-ru/path` package should be used instead.
+ */
 class FilePath extends Path {
     #[Override]
     public function getParentPath(): DirectoryPath {
