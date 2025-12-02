@@ -236,7 +236,7 @@ class FileSystem {
      * @return T
      */
     protected function cache(File $object): File {
-        $this->cache[(string) $object] = $object;
+        $this->cache[(string) $object->path] = $object;
 
         return $object;
     }

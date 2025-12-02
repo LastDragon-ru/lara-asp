@@ -7,8 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use LastDragon_ru\Path\Path;
-use Override;
-use Stringable;
 
 use function sprintf;
 
@@ -16,7 +14,7 @@ use function sprintf;
  * @property-read non-empty-string  $name
  * @property-read ?non-empty-string $extension
  */
-class File implements Stringable {
+class File {
     public function __construct(
         public readonly FilePath $path,
         private readonly Caster $caster,
@@ -70,11 +68,6 @@ class File implements Stringable {
         $path = $this->path->relative($path);
 
         return $path;
-    }
-
-    #[Override]
-    public function __toString(): string {
-        return (string) $this->path;
     }
 
     /**

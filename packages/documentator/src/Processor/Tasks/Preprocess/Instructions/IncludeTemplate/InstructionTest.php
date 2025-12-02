@@ -50,7 +50,7 @@ final class InstructionTest extends TestCase {
     public function testInvokeNoData(): void {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(new FilePath(__FILE__));
-        $params   = new Parameters((string) $file, []);
+        $params   = new Parameters((string) $file->path, []);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 
@@ -65,7 +65,7 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path('.md')))->normalized();
         $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
-        $params   = new Parameters((string) $file, [
+        $params   = new Parameters((string) $file->path, [
             'a' => 'A',
             'b' => 'B',
             'c' => 'C',
@@ -85,7 +85,7 @@ final class InstructionTest extends TestCase {
         $path     = (new FilePath(self::getTestData()->path('.md')))->normalized();
         $fs       = $this->getFileSystem($path->directory());
         $file     = $fs->getFile($path);
-        $params   = new Parameters((string) $file, [
+        $params   = new Parameters((string) $file->path, [
             'a' => 'A',
         ]);
         $context  = $this->getPreprocessInstructionContext($fs, $file);

@@ -46,28 +46,28 @@ final class FileSystemTest extends TestCase {
 
         self::assertSame(
             (string) (new FilePath(__FILE__))->normalized(),
-            (string) $readonly,
+            (string) $readonly->path,
         );
 
         self::assertSame(
             (string) (new FilePath(__FILE__))->normalized(),
-            (string) $relative,
+            (string) $relative->path,
         );
 
         self::assertSame(
             (string) (new FilePath(self::getTestData()->path('c.html')))->normalized(),
-            (string) $internal,
+            (string) $internal->path,
         );
 
         self::assertSame(
             (string) (new FilePath(__FILE__))->file('../Processor.php'),
-            (string) $external,
+            (string) $external->path,
         );
 
         self::assertEquals($file->path, $fromFilePath->path);
         self::assertSame(
             (string) (new FilePath(self::getTestData()->path('c.txt')))->normalized(),
-            (string) $fromFilePath,
+            (string) $fromFilePath->path,
         );
     }
 

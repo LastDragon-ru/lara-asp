@@ -109,7 +109,7 @@ class Executor {
 
     protected function file(File $file): void {
         // Processed?
-        $path = (string) $file;
+        $path = (string) $file->path;
 
         if (isset($this->processed[$path])) {
             return;

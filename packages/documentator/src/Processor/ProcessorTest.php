@@ -926,10 +926,10 @@ class ProcessorTest__Task implements FileTask {
         }
 
         $this->processed[] = [
-            (string) $file,
+            (string) $file->path,
             array_map(
-                static function (mixed $file): string {
-                    return (string) $file;
+                static function (File $file): string {
+                    return (string) $file->path;
                 },
                 $resolved,
             ),

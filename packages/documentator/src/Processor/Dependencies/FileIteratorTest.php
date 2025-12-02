@@ -7,7 +7,6 @@ use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\Path\DirectoryPath;
-use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function array_map;
@@ -35,8 +34,8 @@ final class FileIteratorTest extends TestCase {
         $include   = ['**/*.txt'];
         $absolute  = new FileIterator($path, $include);
         $relative  = new FileIterator(basename((string) $path), $include);
-        $formatter = static function (File|FilePath $item): string {
-            return (string) $item;
+        $formatter = static function (File $item): string {
+            return (string) $item->path;
         };
         $expected  = [
             (string) $fs->input->file('FileIteratorTest/a/a.txt'),
