@@ -12,10 +12,10 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
@@ -225,12 +225,13 @@ final class FileSystemTest extends TestCase {
         $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
 
         $filesystem
-            ->shouldReceive('change')
+            ->shouldReceive('queue')
             ->with($file)
             ->once()
             ->andReturns();
 
-        $filesystem->write($file, $content);
+        self::assertSame($file, $filesystem->write($file, $content));
+        self::assertSame($content, $filesystem->read($file));
     }
 
     public function testWriteFileNoChanges(): void {
@@ -242,7 +243,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
-            ->shouldReceive('change')
+            ->shouldReceive('queue')
             ->never();
 
         $path = $input->file('file.md');
@@ -294,14 +295,17 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('getFile')
             ->never();
         $filesystem
-            ->shouldReceive('change')
+            ->shouldReceive('queue')
             ->never();
 
-        $filesystem->write($path, $content);
+        $file = $filesystem->write($path, $content);
+
+        self::assertSame($path, $file->path);
+        self::assertSame($content, $filesystem->read($file));
     }
 
     public function testWriteCreateFailed(): void {
-        self::expectException(FileCreateFailed::class);
+        self::expectException(FileSaveFailed::class);
 
         $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path    = $input->file('file.md');
@@ -327,7 +331,7 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('getFile')
             ->never();
         $filesystem
-            ->shouldReceive('change')
+            ->shouldReceive('queue')
             ->never();
 
         $filesystem->write($path, $content);
@@ -379,54 +383,13 @@ final class FileSystemTest extends TestCase {
             ->andReturn($content);
 
         $filesystem
-            ->shouldReceive('change')
+            ->shouldReceive('queue')
             ->with($file)
             ->once()
             ->andReturns();
 
-        $filesystem->write($file, $value);
-    }
-
-    public function testWriteContent(): void {
-        $input  = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path   = $input->file('file.md');
-        $caster = Mockery::mock(Caster::class);
-
-        $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher
-            ->shouldReceive('notify')
-            ->withArgs(
-                static function (Event $event) use ($path): bool {
-                    return $event instanceof FileSystemModified
-                        && $event->path === $path
-                        && $event->type === FileSystemModifiedType::Updated;
-                },
-            )
-            ->once()
-            ->andReturns();
-
-        $adapter    = Mockery::mock(Adapter::class);
-        $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $caster, $input, $input]);
-        $filesystem->shouldAllowMockingProtectedMethods();
-        $filesystem->makePartial();
-
-        $content = 'content';
-        $value   = new stdClass();
-        $file    = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
-
-        $caster
-            ->shouldReceive('castFrom')
-            ->with($file, $value)
-            ->once()
-            ->andReturn($content);
-
-        $filesystem
-            ->shouldReceive('change')
-            ->with($file)
-            ->once()
-            ->andReturns();
-
-        $filesystem->write($file, $value);
+        self::assertSame($file, $filesystem->write($file, $value));
+        self::assertSame($content, $filesystem->read($file));
     }
 
     public function testCache(): void {

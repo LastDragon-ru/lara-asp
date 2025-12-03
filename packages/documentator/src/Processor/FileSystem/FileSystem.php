@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
@@ -20,9 +19,10 @@ use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use WeakMap;
 
-use function array_key_last;
+use function array_pop;
 use function count;
 use function is_string;
+use function spl_object_id;
 use function sprintf;
 
 class FileSystem {
@@ -31,9 +31,10 @@ class FileSystem {
      */
     private array $cache = [];
     /**
-     * @var array<int, array<string, File>>
+     * @var array<int, File>
      */
-    private array $changes = [];
+    private array $queue = [];
+    private int   $level = 0;
 
     /**
      * @var WeakMap<File, string>
@@ -186,13 +187,9 @@ class FileSystem {
         $this->content[$file] = $content;
 
         if ($exists) {
-            $this->change($file);
+            $this->queue($file);
         } else {
-            try {
-                $this->adapter->write($path, $content);
-            } catch (Exception $exception) {
-                throw new FileCreateFailed($path, $exception);
-            }
+            $this->save($file);
         }
 
         // Event
@@ -210,45 +207,44 @@ class FileSystem {
     }
 
     public function begin(): void {
-        $this->changes[] = [];
+        $this->level++;
     }
 
     public function commit(): void {
-        // Commit
-        $level = array_key_last($this->changes);
+        // Level
+        $this->level--;
 
-        if ($level !== null) {
-            foreach ($this->changes[$level] ?? [] as $file) {
-                try {
-                    if (isset($this->content[$file])) {
-                        $this->adapter->write($file->path, $this->content[$file]);
-                    }
-                } catch (Exception $exception) {
-                    throw new FileSaveFailed($file->path, $exception);
-                }
-            }
-
-            unset($this->changes[$level]);
-        }
-
-        // Cleanup
-        if (count($this->changes) <= 0) {
-            $this->cache = [];
-        }
-    }
-
-    protected function change(File $file): void {
-        $level = array_key_last($this->changes);
-
-        if ($level === null) {
+        if ($this->level > 0) {
             return;
         }
 
-        $string                         = (string) $file->path;
-        $this->changes[$level][$string] = $file;
+        // Commit
+        while (count($this->queue) > 0) {
+            $this->save(array_pop($this->queue));
+        }
 
-        for ($l = $level - 1; $l >= 0; $l--) {
-            unset($this->changes[$l][$string]);
+        // Cleanup
+        $this->level   = 0;
+        $this->cache   = [];
+        $this->queue   = [];
+        $this->content = new WeakMap();
+    }
+
+    protected function queue(File $file): void {
+        if ($this->level > 0) {
+            $this->queue[spl_object_id($file)] = $file;
+        } else {
+            $this->save($file);
+        }
+    }
+
+    protected function save(File $file): void {
+        try {
+            if (isset($this->content[$file])) {
+                $this->adapter->write($file->path, $this->content[$file]);
+            }
+        } catch (Exception $exception) {
+            throw new FileSaveFailed($file->path, $exception);
         }
     }
 
@@ -259,14 +255,14 @@ class FileSystem {
      *
      * @return T
      */
-    protected function cache(File $object): File {
-        $this->cache[(string) $object->path] = $object;
+    private function cache(File $object): File {
+        $this->cache[$object->path->normalized()->path] = $object;
 
         return $object;
     }
 
-    protected function cached(DirectoryPath|FilePath $path): ?File {
-        $cached = $this->cache[(string) $path] ?? null;
+    private function cached(FilePath $path): ?File {
+        $cached = $this->cache[$path->normalized()->path] ?? null;
 
         return $cached;
     }

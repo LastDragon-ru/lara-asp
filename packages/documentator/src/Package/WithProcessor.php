@@ -13,6 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFile
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use Symfony\Component\Finder\Finder;
 
@@ -44,6 +45,11 @@ trait WithProcessor {
             ): Finder {
                 return parent::getFinder($directory, $include, $exclude, $depth)
                     ->sortByName(true);
+            }
+
+            #[Override]
+            public function write(FilePath $path, string $content): void {
+                // Skip
             }
         };
         $caster     = new Caster($this->app()->make(Casts::class));
