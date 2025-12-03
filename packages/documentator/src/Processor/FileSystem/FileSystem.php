@@ -127,7 +127,10 @@ class FileSystem {
         $iterator = $this->adapter->getFilesIterator($directory, $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
-            yield $this->getFile($path);
+            $path = $directory->resolve($path);
+            $file = $this->cached($path) ?? $this->cache(new File($this, $path, $this->caster));
+
+            yield $file;
         }
 
         yield from [];
