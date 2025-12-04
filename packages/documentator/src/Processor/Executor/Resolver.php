@@ -102,6 +102,25 @@ class Resolver implements DependencyResolver {
     }
 
     /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __isset(string $name): bool {
+        return $this->__get($name) !== null;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __get(string $name): mixed {
+        return match ($name) {
+            'input'     => $this->fs->input,
+            'output'    => $this->fs->output,
+            'directory' => $this->fs->directory,
+            default     => null,
+        };
+    }
+
+    /**
      * @template D of Dependency<Traversable<mixed, File>|File|null>
      * @template T of Traversable<mixed, File>
      *

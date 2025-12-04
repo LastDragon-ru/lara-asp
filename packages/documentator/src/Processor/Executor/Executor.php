@@ -165,7 +165,7 @@ class Executor {
      * @param iterable<int, Task> $tasks
      */
     protected function tasks(iterable $tasks, Hook $hook, File $file): void {
-        $this->fs->begin();
+        $this->fs->begin($file->path->directory());
 
         foreach ($tasks as $task) {
             $this->task($task, $hook, $file);

@@ -398,5 +398,29 @@ final class FileSystemTest extends TestCase {
 
         self::assertSame($file, $fs->getFile(new FilePath(__FILE__)));
     }
+
+    public function testPropertyDirectory(): void {
+        $fs = $this->getFileSystem(__DIR__);
+        $a  = new DirectoryPath('/a');
+        $b  = new DirectoryPath('/b');
+
+        self::assertSame($fs->input, $fs->directory);
+
+        $fs->begin($a);
+
+        self::assertSame($a, $fs->directory);
+
+        $fs->begin($b);
+
+        self::assertSame($b, $fs->directory);
+
+        $fs->commit();
+
+        self::assertSame($a, $fs->directory);
+
+        $fs->commit();
+
+        self::assertSame($fs->input, $fs->directory);
+    }
     // </editor-fold>
 }

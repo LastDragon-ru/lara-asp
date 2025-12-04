@@ -19,12 +19,16 @@ use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use WeakMap;
 
+use function array_last;
 use function array_pop;
 use function count;
 use function is_string;
 use function spl_object_id;
 use function sprintf;
 
+/**
+ * @property-read DirectoryPath $directory
+ */
 class FileSystem {
     /**
      * @var array<string, File>
@@ -34,7 +38,10 @@ class FileSystem {
      * @var array<int, File>
      */
     private array $queue = [];
-    private int   $level = 0;
+    /**
+     * @var array<int, DirectoryPath>
+     */
+    private array $level = [];
 
     /**
      * @var WeakMap<File, string>
@@ -209,15 +216,15 @@ class FileSystem {
         return $file;
     }
 
-    public function begin(): void {
-        $this->level++;
+    public function begin(DirectoryPath $path): void {
+        $this->level[] = $path;
     }
 
     public function commit(): void {
         // Level
-        $this->level--;
+        array_pop($this->level);
 
-        if ($this->level > 0) {
+        if (count($this->level) > 0) {
             return;
         }
 
@@ -227,14 +234,14 @@ class FileSystem {
         }
 
         // Cleanup
-        $this->level   = 0;
+        $this->level   = [];
         $this->cache   = [];
         $this->queue   = [];
         $this->content = new WeakMap();
     }
 
     protected function queue(File $file): void {
-        if ($this->level > 0) {
+        if (count($this->level) > 0) {
             $this->queue[spl_object_id($file)] = $file;
         } else {
             $this->save($file);
@@ -268,5 +275,22 @@ class FileSystem {
         $cached = $this->cache[$path->normalized()->path] ?? null;
 
         return $cached;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __isset(string $name): bool {
+        return $this->__get($name) !== null;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __get(string $name): mixed {
+        return match ($name) {
+            'directory' => array_last($this->level) ?? $this->input,
+            default     => null,
+        };
     }
 }
