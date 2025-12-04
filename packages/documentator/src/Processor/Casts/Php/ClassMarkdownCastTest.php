@@ -9,6 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function dirname;
+
 /**
  * @internal
  */
@@ -34,8 +36,8 @@ final class ClassMarkdownCastTest extends TestCase {
             // empty
         }
         PHP;
-        $fs      = $this->getFileSystem(__DIR__);
         $path    = self::getTempFile($content, '.php')->getPathname();
+        $fs      = $this->getFileSystem(dirname($path));
 
         self::assertNotEmpty($path);
 

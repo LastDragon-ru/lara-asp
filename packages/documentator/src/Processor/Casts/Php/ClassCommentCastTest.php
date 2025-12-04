@@ -7,6 +7,8 @@ use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+use function dirname;
+
 /**
  * @internal
  */
@@ -32,8 +34,8 @@ final class ClassCommentCastTest extends TestCase {
             // empty
         }
         PHP;
-        $fs      = $this->getFileSystem(__DIR__);
         $path    = self::getTempFile($content, '.php')->getPathname();
+        $fs      = $this->getFileSystem(dirname($path));
 
         self::assertNotEmpty($path);
 

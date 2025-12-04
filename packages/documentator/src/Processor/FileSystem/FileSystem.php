@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use WeakMap;
@@ -25,8 +26,11 @@ use function count;
 use function is_string;
 use function spl_object_id;
 use function sprintf;
+use function str_starts_with;
 
 /**
+ * By default, relative paths will be resolved based on {@see self::$input}.
+ *
  * @property-read DirectoryPath $directory
  */
 class FileSystem {
@@ -76,23 +80,17 @@ class FileSystem {
         $this->content = new WeakMap();
     }
 
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
-     */
     protected function isFile(FilePath $path): bool {
-        $path = $this->input->resolve($path);
+        $path = $this->path($path);
         $file = $this->cached($path);
         $is   = $file !== null || $this->adapter->isFile($path);
 
         return $is;
     }
 
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
-     */
     public function getFile(FilePath $path): File {
         // Cached?
-        $path = $this->input->resolve($path);
+        $path = $this->path($path);
         $file = $this->cached($path);
 
         if ($file instanceof File) {
@@ -110,8 +108,6 @@ class FileSystem {
     }
 
     /**
-     * Relative path will be resolved based on {@see self::$input}.
-     *
      * @param list<string> $include
      * @param list<string> $exclude
      *
@@ -124,7 +120,7 @@ class FileSystem {
         ?int $depth = null,
     ): Iterator {
         // Exist?
-        $directory = $this->input->resolve($directory);
+        $directory = $this->path($directory);
 
         if (!$this->adapter->isDirectory($directory)) {
             throw new DirectoryNotFound($directory);
@@ -134,7 +130,7 @@ class FileSystem {
         $iterator = $this->adapter->getFilesIterator($directory, $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
-            $path = $directory->resolve($path);
+            $path = $this->path($path, $directory);
             $file = $this->cached($path) ?? $this->cache(new File($this, $path, $this->caster));
 
             yield $file;
@@ -172,7 +168,7 @@ class FileSystem {
         }
 
         // Relative?
-        $path = $this->output->resolve($path);
+        $path = $this->path($path, $this->output);
 
         // Writable?
         if (!$this->output->contains($path)) {
@@ -217,7 +213,7 @@ class FileSystem {
     }
 
     public function begin(DirectoryPath $path): void {
-        $this->level[] = $path;
+        $this->level[] = $this->path($path);
     }
 
     public function commit(): void {
@@ -256,6 +252,29 @@ class FileSystem {
         } catch (Exception $exception) {
             throw new FileSaveFailed($file->path, $exception);
         }
+    }
+
+    /**
+     * @template T of DirectoryPath|FilePath
+     *
+     * @param T $path
+     *
+     * @return new<T>
+     */
+    public function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
+        $base = match (true) {
+            $this->input->equals($base)  => $this->input,
+            $this->output->equals($base) => $this->output,
+            $base !== null               => $this->input->resolve($base),
+            default                      => $this->input,
+        };
+        $path = $base->resolve($path);
+
+        if (!str_starts_with($path->path, $this->input->path) && !str_starts_with($path->path, $this->output->path)) {
+            throw new PathUnavailable($path);
+        }
+
+        return $path;
     }
 
     /**

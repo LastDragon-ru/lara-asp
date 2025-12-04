@@ -29,8 +29,8 @@ final class ClassObjectCastTest extends TestCase {
     }
 
     public function testCastToNotFound(): void {
-        $fs     = $this->getFileSystem(__DIR__);
-        $file   = $fs->getFile(new FilePath('../../../../README.md'));
+        $fs     = $this->getFileSystem(__DIR__.'/../../../../');
+        $file   = $fs->getFile(new FilePath('README.md'));
         $cast   = new ClassObjectCast();
         $casted = $cast->castTo($file, ClassObject::class);
 

@@ -79,7 +79,6 @@ final class ProcessorTest extends TestCase {
             'bb.txt' => [
                 '../../b/a/ba.txt',
                 '../../c.txt',
-                '../../../../../README.md',
             ],
         ]);
         $taskC = new class() extends ProcessorTest__Task {
@@ -124,11 +123,11 @@ final class ProcessorTest extends TestCase {
             },
         );
 
-        $processor($input, null, ['excluded.txt', '**/**/excluded.txt']);
+        $processor($input, $input->parent(), ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
-                new ProcessingStarted($input, $input),
+                new ProcessingStarted($input, $input->parent()),
                 new FileStarted($input->file('a/a.txt')),
                 new TaskStarted($taskB::class),
                 new DependencyResolved($input->file('b/b/bb.txt'), DependencyResolvedResult::Success),
@@ -148,10 +147,6 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved(
-                    $input->file('../../../README.md'),
-                    DependencyResolvedResult::Success,
-                ),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
@@ -223,9 +218,8 @@ final class ProcessorTest extends TestCase {
                 [
                     (string) $input->file('b/b/bb.txt'),
                     [
-                        '../../b/a/ba.txt'         => (string) $input->file('b/a/ba.txt'),
-                        '../../c.txt'              => (string) $input->file('c.txt'),
-                        '../../../../../README.md' => (string) $input->file('../../../README.md'),
+                        '../../b/a/ba.txt' => (string) $input->file('b/a/ba.txt'),
+                        '../../c.txt'      => (string) $input->file('c.txt'),
                     ],
                 ],
                 [
@@ -361,7 +355,6 @@ final class ProcessorTest extends TestCase {
         $events    = [];
         $taskA     = new class([
             'b.html' => [
-                '../../../../README.md',
                 '../a/excluded.txt',
             ],
         ]) extends ProcessorTest__Task {
@@ -418,10 +411,6 @@ final class ProcessorTest extends TestCase {
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted($input->file('b/b.html')),
                 new TaskStarted($taskA::class),
-                new DependencyResolved(
-                    $input->file('../../../README.md'),
-                    DependencyResolvedResult::Success,
-                ),
                 new DependencyResolved($input->file('a/excluded.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskB::class),
@@ -462,8 +451,7 @@ final class ProcessorTest extends TestCase {
                 [
                     (string) $input->file('b/b.html'),
                     [
-                        '../../../../README.md' => (string) $input->file('../../../README.md'),
-                        '../a/excluded.txt'     => (string) $input->file('a/excluded.txt'),
+                        '../a/excluded.txt' => (string) $input->file('a/excluded.txt'),
                     ],
                 ],
                 [
