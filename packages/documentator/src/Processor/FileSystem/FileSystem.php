@@ -19,6 +19,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use WeakMap;
+use WeakReference;
 
 use function array_last;
 use function array_pop;
@@ -35,7 +36,7 @@ use function str_starts_with;
  */
 class FileSystem {
     /**
-     * @var array<string, File>
+     * @var array<string, WeakReference<File>>
      */
     private array $cache = [];
     /**
@@ -220,20 +221,22 @@ class FileSystem {
         // Level
         array_pop($this->level);
 
-        if (count($this->level) > 0) {
-            return;
-        }
-
-        // Commit
+        // Dump
         while (count($this->queue) > 0) {
             $this->save(array_pop($this->queue));
         }
 
+        // Top?
+        if (count($this->level) > 0) {
+            return;
+        }
+
         // Cleanup
-        $this->level   = [];
-        $this->cache   = [];
-        $this->queue   = [];
-        $this->content = new WeakMap();
+        foreach ($this->cache as $path => $reference) {
+            if ($reference->get() === null) {
+                unset($this->cache[$path]);
+            }
+        }
     }
 
     protected function queue(File $file): void {
@@ -285,15 +288,13 @@ class FileSystem {
      * @return T
      */
     private function cache(File $object): File {
-        $this->cache[$object->path->normalized()->path] = $object;
+        $this->cache[$object->path->normalized()->path] = WeakReference::create($object);
 
         return $object;
     }
 
     private function cached(FilePath $path): ?File {
-        $cached = $this->cache[$path->normalized()->path] ?? null;
-
-        return $cached;
+        return ($this->cache[$path->normalized()->path] ?? null)?->get();
     }
 
     /**
