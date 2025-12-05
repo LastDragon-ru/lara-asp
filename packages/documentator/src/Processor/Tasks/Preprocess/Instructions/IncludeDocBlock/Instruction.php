@@ -40,10 +40,6 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        if ($parameters->target === '') {
-            return '';
-        }
-
         $target   = $context->file->getFilePath($parameters->target);
         $target   = $context->resolver->resolve(new FileReference($target));
         $document = $target->as(Document::class);

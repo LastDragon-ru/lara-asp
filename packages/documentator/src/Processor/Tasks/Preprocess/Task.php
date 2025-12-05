@@ -222,15 +222,15 @@ class Task implements FileTask {
 
             // Exists?
             $name        = $node->getLabel();
+            $target      = rawurldecode($node->getDestination());
             $instruction = $this->instructions->first($name);
 
-            if ($instruction === null) {
+            if ($instruction === null || $target === '') {
                 continue;
             }
 
             // Hash
             $priority = $instruction::getPriority() ?? 0;
-            $target   = rawurldecode($node->getDestination());
             $params   = $this->getParametersJson($target, $node->getTitle());
             $hash     = Text::hash("{$name}({$params})");
 
@@ -263,6 +263,9 @@ class Task implements FileTask {
         return $tokens;
     }
 
+    /**
+     * @param non-empty-string $target
+     */
     private function getParametersJson(string $target, ?string $json): string {
         $parameters           = $json !== null && $json !== ''
             ? (array) json_decode($json, true, flags: JSON_THROW_ON_ERROR)

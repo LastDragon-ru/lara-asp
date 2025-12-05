@@ -75,13 +75,8 @@ final class InstructionTest extends TestCase {
     public function testInvokeFailed(): void {
         $fs       = $this->getFileSystem(__DIR__);
         $file     = $fs->getFile(new FilePath(__FILE__));
-        $node     = new class() extends Node {
-            #[Override]
-            public function getDestination(): string {
-                return 'command to execute';
-            }
-        };
-        $params   = new Parameters($node->getDestination());
+        $node     = new Node();
+        $params   = new Parameters('command to execute');
         $command  = $params->target;
         $context  = $this->getPreprocessInstructionContext($fs, $file, node: $node);
         $instance = $this->app()->make(Instruction::class);

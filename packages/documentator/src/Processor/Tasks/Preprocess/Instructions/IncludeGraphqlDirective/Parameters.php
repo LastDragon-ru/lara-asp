@@ -8,6 +8,8 @@ readonly class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * Directive name (started with `@` sign)
+         *
+         * @var non-empty-string
          */
         public string $target,
     ) {

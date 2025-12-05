@@ -64,11 +64,6 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        // Valid?
-        if ($parameters->target === '') {
-            return '';
-        }
-
         // Content
         $target   = $context->file->getFilePath($parameters->target);
         $target   = $context->resolver->resolve(new FileReference($target));
