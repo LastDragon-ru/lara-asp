@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -11,6 +12,8 @@ use Traversable;
  * @property-read DirectoryPath $input
  * @property-read DirectoryPath $output
  * @property-read DirectoryPath $directory
+ *
+ * @phpstan-require-extends Resolver
  */
 interface DependencyResolver {
     /**
@@ -27,6 +30,11 @@ interface DependencyResolver {
      * @param FilePath|non-empty-string $path
      */
     public function get(FilePath|string $path): File;
+
+    /**
+     * @param FilePath|non-empty-string $path
+     */
+    public function find(FilePath|string $path): ?File;
 
     /**
      * @param FilePath|iterable<mixed, FilePath|non-empty-string>|non-empty-string $path

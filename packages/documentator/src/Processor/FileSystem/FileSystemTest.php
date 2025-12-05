@@ -37,6 +37,14 @@ final class FileSystemTest extends TestCase {
 
     // <editor-fold desc="Tests">
     // =========================================================================
+    public function testIsFile(): void {
+        $fs   = $this->getFileSystem(__DIR__);
+        $base = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+
+        self::assertTrue($fs->isFile($base->file('c.txt')));
+        self::assertFalse($fs->isFile($base->file('404.txt')));
+    }
+
     public function testGetFile(): void {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->normalized();

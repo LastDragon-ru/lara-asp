@@ -68,7 +68,8 @@ class Resolver implements DependencyResolver {
     #[Override]
     public function get(FilePath|string $path): File {
         try {
-            $path = $this->file($path);
+            $path = $this->path($path);
+            $path = $this->fs->getFile($path);
 
             $this->notify($path, Result::Success);
 
@@ -85,6 +86,35 @@ class Resolver implements DependencyResolver {
     }
 
     /**
+     * @param FilePath|non-empty-string $path
+     */
+    #[Override]
+    public function find(FilePath|string $path): ?File {
+        try {
+            $path = $this->path($path);
+            $file = $this->fs->isFile($path)
+                ? $this->fs->getFile($path)
+                : null;
+
+            if ($file !== null) {
+                $this->notify($file, Result::Success);
+
+                ($this->run)($file);
+            } else {
+                $this->notify($path, Result::Null);
+            }
+        } catch (Exception $exception) {
+            $this->exception = $exception;
+
+            $this->notify($path, Result::Failed);
+
+            throw $exception;
+        }
+
+        return $file;
+    }
+
+    /**
      * @inheritDoc
      */
     #[Override]
@@ -93,7 +123,8 @@ class Resolver implements DependencyResolver {
 
         foreach ($iterator as $file) {
             try {
-                $file = $this->file($file);
+                $file = $this->path($file);
+                $file = $this->fs->getFile($file);
 
                 $this->notify($file, Result::Queued);
 
@@ -207,12 +238,5 @@ class Resolver implements DependencyResolver {
         $path = $this->directory->resolve($path);
 
         return $path;
-    }
-
-    /**
-     * @param FilePath|non-empty-string $path
-     */
-    protected function file(FilePath|string $path): File {
-        return $this->fs->getFile($this->path($path));
     }
 }

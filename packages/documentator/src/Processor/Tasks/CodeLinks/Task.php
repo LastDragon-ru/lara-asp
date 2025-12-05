@@ -13,9 +13,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
@@ -73,7 +71,7 @@ class Task implements FileTask {
     #[Override]
     public function __invoke(DependencyResolver $resolver, File $file): void {
         // Composer?
-        $composer = $resolver->resolve(new Optional(new FileReference('composer.json')));
+        $composer = $resolver->find($resolver->input->file('composer.json'));
         $composer = $composer?->as(Package::class);
 
         if (!($composer instanceof Package)) {
@@ -100,7 +98,7 @@ class Task implements FileTask {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $source = $resolver->resolve(new Optional(new FileReference($path)));
+                $source = $resolver->find($path);
 
                 if ($source !== null) {
                     break;

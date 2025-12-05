@@ -81,7 +81,7 @@ class FileSystem {
         $this->content = new WeakMap();
     }
 
-    protected function isFile(FilePath $path): bool {
+    public function isFile(FilePath $path): bool {
         $path = $this->path($path);
         $file = $this->cached($path);
         $is   = $file !== null || $this->adapter->isFile($path);
