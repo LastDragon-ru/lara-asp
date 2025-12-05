@@ -65,6 +65,25 @@ class Resolver implements DependencyResolver {
         return $resolved;
     }
 
+    #[Override]
+    public function get(FilePath|string $path): File {
+        try {
+            $path = $this->file($path);
+
+            $this->notify($path, Result::Success);
+
+            ($this->run)($path);
+        } catch (Exception $exception) {
+            $this->exception = $exception;
+
+            $this->notify($path, Result::Failed);
+
+            throw $exception;
+        }
+
+        return $path;
+    }
+
     /**
      * @inheritDoc
      */
@@ -76,9 +95,9 @@ class Resolver implements DependencyResolver {
             try {
                 $file = $this->file($file);
 
-                ($this->queue)($file);
-
                 $this->notify($file, Result::Queued);
+
+                ($this->queue)($file);
             } catch (Exception $exception) {
                 $this->exception = $exception;
 

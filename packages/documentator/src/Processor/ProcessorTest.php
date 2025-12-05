@@ -8,7 +8,6 @@ use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -26,7 +25,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
@@ -594,8 +593,9 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage('Dependency not found.');
+        self::expectExceptionObject(
+            new FileNotFound($input->file('a/404.html')),
+        );
 
         $processor($input);
     }
@@ -766,8 +766,8 @@ final class ProcessorTest extends TestCase {
 
             #[Override]
             public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
-                $resolver->resolve(new FileReference('c.txt'));
-                $resolver->queue(new FilePath('c.htm'));
+                $resolver->get('c.txt');
+                $resolver->queue('c.htm');
             }
         };
         $processor = new Processor(
@@ -812,7 +812,7 @@ final class ProcessorTest extends TestCase {
 
             #[Override]
             public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
-                $resolver->resolve(new FileReference('c.txt'));
+                $resolver->get('c.txt');
             }
         };
         $processor = new Processor(
@@ -910,7 +910,7 @@ class ProcessorTest__Task implements FileTask {
         $dependencies = $this->dependencies[$file->name] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = $resolver->resolve(new FileReference($file->getFilePath($dependency)));
+            $resolved[$dependency] = $resolver->get($dependency);
         }
 
         $this->processed[] = [

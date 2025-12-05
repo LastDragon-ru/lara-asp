@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -60,8 +59,7 @@ readonly class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $target  = $context->file->getFilePath($parameters->target);
-        $target  = $context->resolver->resolve(new FileReference($target));
+        $target  = $context->resolver->get($parameters->target);
         $content = $target->content;
 
         do {
