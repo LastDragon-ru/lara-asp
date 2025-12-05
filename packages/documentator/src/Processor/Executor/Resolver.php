@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Ev
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use Traversable;
 
@@ -61,32 +62,27 @@ class Resolver implements DependencyResolver {
         return $resolved;
     }
 
+    /**
+     * @inheritDoc
+     */
     #[Override]
-    public function queue(Dependency $dependency): void {
-        try {
-            $resolved = $dependency($this->fs);
+    public function queue(FilePath|iterable $path): void {
+        $iterator = $path instanceof FilePath ? [$path] : $path;
 
-            if ($resolved instanceof File) {
-                ($this->queue)($resolved);
+        foreach ($iterator as $file) {
+            try {
+                $file = $this->fs->getFile($file);
 
-                $this->notify($resolved, Result::Queued);
-            } elseif ($resolved instanceof Traversable) {
-                $this->notify($dependency, Result::Success);
+                ($this->queue)($file);
 
-                foreach ($resolved as $file) {
-                    ($this->queue)($file);
+                $this->notify($file, Result::Queued);
+            } catch (Exception $exception) {
+                $this->exception = $exception;
 
-                    $this->notify($file, Result::Queued);
-                }
-            } else {
-                $this->notify($dependency, Result::Null);
+                $this->notify($file, Result::Failed);
+
+                throw $exception;
             }
-        } catch (Exception $exception) {
-            $this->exception = $exception;
-
-            $this->notify($dependency, Result::Failed);
-
-            throw $exception;
         }
     }
 
@@ -159,9 +155,9 @@ class Resolver implements DependencyResolver {
      * @template V of Traversable<mixed, File>|File|null
      * @template D of Dependency<V>
      *
-     * @param D|File $dependency
+     * @param D|File|FilePath $dependency
      */
-    protected function notify(Dependency|File $dependency, Result $result): void {
+    protected function notify(Dependency|File|FilePath $dependency, Result $result): void {
         $path = match (true) {
             $dependency instanceof Dependency => $dependency->getPath($this->fs),
             default                           => $dependency,
@@ -170,6 +166,7 @@ class Resolver implements DependencyResolver {
             $path instanceof File => $path->path,
             default               => $path,
         };
+        $path = $this->fs->path($path);
 
         $this->dispatcher->notify(
             new Event($path, $result),

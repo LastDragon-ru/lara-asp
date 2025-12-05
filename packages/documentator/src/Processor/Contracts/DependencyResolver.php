@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Traversable;
 
 /**
@@ -23,10 +24,7 @@ interface DependencyResolver {
     public function resolve(Dependency $dependency): Traversable|File|null;
 
     /**
-     * @template V of Traversable<mixed, File>|File|null
-     * @template D of Dependency<V>
-     *
-     * @param D $dependency
+     * @param FilePath|iterable<mixed, FilePath> $path
      */
-    public function queue(Dependency $dependency): void;
+    public function queue(FilePath|iterable $path): void;
 }

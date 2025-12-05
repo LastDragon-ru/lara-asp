@@ -203,13 +203,13 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
+        $path       = new FilePath('/file.txt');
         $resolved   = Mockery::mock(File::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
-        $dependency = Mockery::mock(Dependency::class);
-        $dependency
-            ->shouldReceive('__invoke')
-            ->with($filesystem)
+        $filesystem
+            ->shouldReceive('getFile')
+            ->with($path)
             ->once()
             ->andReturn($resolved);
 
@@ -222,11 +222,13 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $resolver->queue($dependency);
+        $resolver->queue($path);
     }
 
-    public function testQueueTraversable(): void {
+    public function testQueueIterable(): void {
+        $aPath = new FilePath('/a.txt');
         $aFile = Mockery::mock(File::class);
+        $bPath = new FilePath('/b.txt');
         $bFile = Mockery::mock(File::class);
         $run   = static function (mixed $resolved): void {
             // empty
@@ -243,24 +245,22 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $resolved   = new ArrayIterator([$aFile, $bFile]);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
-        $dependency = Mockery::mock(Dependency::class);
-        $dependency
-            ->shouldReceive('__invoke')
-            ->with($filesystem)
+        $filesystem
+            ->shouldReceive('getFile')
+            ->with($aPath)
             ->once()
-            ->andReturn($resolved);
+            ->andReturn($aFile);
+        $filesystem
+            ->shouldReceive('getFile')
+            ->with($bPath)
+            ->once()
+            ->andReturn($bFile);
 
         $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run, Closure::fromCallable($queue)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
-        $resolver
-            ->shouldReceive('notify')
-            ->with($dependency, DependencyResolvedResult::Success)
-            ->once()
-            ->andReturns();
         $resolver
             ->shouldReceive('notify')
             ->with($aFile, DependencyResolvedResult::Queued)
@@ -272,7 +272,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $resolver->queue($dependency);
+        $resolver->queue([$aPath, $bPath]);
     }
 
     public function testCheck(): void {
@@ -303,8 +303,20 @@ final class ResolverTest extends TestCase {
     }
 
     public function testNotify(): void {
+        $path       = new FilePath('path/to/dependency');
         $filepath   = new FilePath('/path/to/file');
         $filesystem = Mockery::mock(FileSystem::class);
+        $filesystem
+            ->shouldReceive('path')
+            ->with($filepath)
+            ->once()
+            ->andReturn($filepath);
+        $filesystem
+            ->shouldReceive('path')
+            ->with($path)
+            ->once()
+            ->andReturn($path);
+
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
             ->shouldReceive('notify')
@@ -312,7 +324,7 @@ final class ResolverTest extends TestCase {
             ->with(
                 Mockery::isEqual(
                     new DependencyResolved(
-                        new FilePath('path/to/dependency'),
+                        $path,
                         DependencyResolvedResult::Success,
                     ),
                 ),
@@ -344,9 +356,7 @@ final class ResolverTest extends TestCase {
             ->shouldReceive('getPath')
             ->with($filesystem)
             ->once()
-            ->andReturn(
-                new FilePath('path/to/dependency'),
-            );
+            ->andReturn($path);
 
         $resolver->notify($file, DependencyResolvedResult::Missed);
         $resolver->notify($dependency, DependencyResolvedResult::Success);

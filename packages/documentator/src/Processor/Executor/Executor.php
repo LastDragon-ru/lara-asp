@@ -60,7 +60,7 @@ class Executor {
         private readonly Matcher $skipped,
     ) {
         $this->state    = State::Created;
-        $this->iterator = new Iterator($this->fs, $files);
+        $this->iterator = new Iterator($files);
         $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 
@@ -205,7 +205,7 @@ class Executor {
     }
 
     protected function queue(File $file): void {
-        $this->iterator->push($file->path);
+        $this->iterator->push($file);
     }
 
     protected function onResolve(File $resolved): void {

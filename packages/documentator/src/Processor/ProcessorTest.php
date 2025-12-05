@@ -92,7 +92,7 @@ final class ProcessorTest extends TestCase {
                 parent::__invoke($resolver, $file);
 
                 $resolver->queue(
-                    new FileReference('../'.basename(__FILE__)),
+                    new FilePath('../'.basename(__FILE__)),
                 );
             }
         };
@@ -767,7 +767,7 @@ final class ProcessorTest extends TestCase {
             #[Override]
             public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
                 $resolver->resolve(new FileReference('c.txt'));
-                $resolver->queue(new FileReference('c.htm'));
+                $resolver->queue(new FilePath('c.htm'));
             }
         };
         $processor = new Processor(
@@ -789,7 +789,7 @@ final class ProcessorTest extends TestCase {
                 new ProcessingStarted($input->directory(), $input->directory()),
                 new HookStarted(Hook::BeforeProcessing, $input->file('excluded.txt')),
                 new TaskStarted($task::class),
-                new DependencyResolved(new FilePath('c.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
                 new DependencyResolved($input->file('c.htm'), DependencyResolvedResult::Queued),
                 new TaskFinished(TaskFinishedResult::Success),
                 new HookFinished(HookFinishedResult::Success),
@@ -836,7 +836,7 @@ final class ProcessorTest extends TestCase {
                 new FileFinished(FileFinishedResult::Skipped),
                 new HookStarted(Hook::AfterProcessing, $input->file('excluded.txt')),
                 new TaskStarted($task::class),
-                new DependencyResolved(new FilePath('c.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new HookFinished(HookFinishedResult::Success),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
@@ -858,7 +858,7 @@ final class ProcessorTest extends TestCase {
 
             #[Override]
             public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
-                $resolver->queue(new FileReference('c.txt'));
+                $resolver->queue(new FilePath('c.txt'));
             }
         };
         $processor = new Processor(
