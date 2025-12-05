@@ -20,6 +20,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
@@ -447,13 +448,15 @@ final class FileSystemTest extends TestCase {
         ?DirectoryPath $base,
         DirectoryPath|FilePath $path,
     ): void {
-        $fs = new FileSystem(
-            Mockery::mock(Adapter::class),
-            Mockery::mock(Dispatcher::class),
-            Mockery::mock(Caster::class),
-            $input,
-            $input,
-        );
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $adapter    = Mockery::mock(Adapter::class);
+        $caster     = Mockery::mock(Caster::class);
+        $fs         = new class($adapter, $dispatcher, $caster, $input, $input) extends FileSystem {
+            #[Override]
+            public function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
+                return parent::path($path, $base);
+            }
+        };
 
         if ($directory !== null) {
             $fs->begin($directory);
@@ -510,7 +513,7 @@ final class FileSystemTest extends TestCase {
                 new FilePath('file.md'),
             ],
             'relative, inside, no base, directory'    => [
-                $input->file('file.md'),
+                $directory->file('file.md'),
                 $input,
                 $directory,
                 null,

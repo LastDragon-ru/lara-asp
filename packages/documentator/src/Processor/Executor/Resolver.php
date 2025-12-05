@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Ev
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
 use Traversable;
@@ -71,7 +72,7 @@ class Resolver implements DependencyResolver {
 
         foreach ($iterator as $file) {
             try {
-                $file = $this->fs->getFile($file);
+                $file = $this->file($file);
 
                 ($this->queue)($file);
 
@@ -166,10 +167,25 @@ class Resolver implements DependencyResolver {
             $path instanceof File => $path->path,
             default               => $path,
         };
-        $path = $this->fs->path($path);
+        $path = $this->path($path);
 
         $this->dispatcher->notify(
             new Event($path, $result),
         );
+    }
+
+    /**
+     * @template T of DirectoryPath|FilePath
+     *
+     * @param T $path
+     *
+     * @return new<T>
+     */
+    protected function path(DirectoryPath|FilePath $path): DirectoryPath|FilePath {
+        return $this->directory->resolve($path);
+    }
+
+    protected function file(FilePath $path): File {
+        return $this->fs->getFile($this->path($path));
     }
 }

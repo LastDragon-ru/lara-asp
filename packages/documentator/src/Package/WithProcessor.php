@@ -5,9 +5,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -68,7 +70,12 @@ trait WithProcessor {
         $callback   = static function (): void {
             // empty
         };
-        $resolver   = new Resolver($dispatcher, $fs, $callback, $callback);
+        $resolver   = new class($dispatcher, $fs, $callback, $callback) extends Resolver {
+            #[Override]
+            protected function notify(Dependency|FilePath|File $dependency, Result $result): void {
+                // Makes no sense anyway
+            }
+        };
 
         return $resolver;
     }

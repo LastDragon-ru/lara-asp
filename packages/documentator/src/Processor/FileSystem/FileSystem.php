@@ -30,7 +30,7 @@ use function sprintf;
 use function str_starts_with;
 
 /**
- * By default, relative paths will be resolved based on {@see self::$input}.
+ * By default, relative paths will be resolved based on {@see self::$directory}.
  *
  * @property-read DirectoryPath $directory
  */
@@ -264,12 +264,12 @@ class FileSystem {
      *
      * @return new<T>
      */
-    public function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
+    protected function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
         $base = match (true) {
             $this->input->equals($base)  => $this->input,
             $this->output->equals($base) => $this->output,
-            $base !== null               => $this->input->resolve($base),
-            default                      => $this->input,
+            $base !== null               => $this->directory->resolve($base),
+            default                      => $this->directory,
         };
         $path = $base->resolve($path);
 

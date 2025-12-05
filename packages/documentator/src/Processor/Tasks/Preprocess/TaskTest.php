@@ -175,11 +175,6 @@ final class TaskTest extends TestCase {
             );
 
         $filesystem
-            ->shouldReceive('path')
-            ->with($path)
-            ->once()
-            ->andReturn($path);
-        $filesystem
             ->shouldReceive('write')
             ->once()
             ->andReturnUsing(static function (mixed $path, string $content) use ($file, &$actual): File {
