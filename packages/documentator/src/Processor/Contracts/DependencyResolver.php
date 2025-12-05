@@ -24,7 +24,7 @@ interface DependencyResolver {
     public function resolve(Dependency $dependency): Traversable|File|null;
 
     /**
-     * @param FilePath|iterable<mixed, FilePath> $path
+     * @param FilePath|iterable<mixed, FilePath|non-empty-string>|non-empty-string $path
      */
-    public function queue(FilePath|iterable $path): void;
+    public function queue(FilePath|iterable|string $path): void;
 }

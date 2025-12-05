@@ -16,6 +16,8 @@ use LastDragon_ru\Path\FilePath;
 use Override;
 use Traversable;
 
+use function is_string;
+
 /**
  * @internal
  */
@@ -67,8 +69,8 @@ class Resolver implements DependencyResolver {
      * @inheritDoc
      */
     #[Override]
-    public function queue(FilePath|iterable $path): void {
-        $iterator = $path instanceof FilePath ? [$path] : $path;
+    public function queue(FilePath|iterable|string $path): void {
+        $iterator = $path instanceof FilePath || is_string($path) ? [$path] : $path;
 
         foreach ($iterator as $file) {
             try {
@@ -156,9 +158,9 @@ class Resolver implements DependencyResolver {
      * @template V of Traversable<mixed, File>|File|null
      * @template D of Dependency<V>
      *
-     * @param D|File|FilePath $dependency
+     * @param D|File|FilePath|non-empty-string $dependency
      */
-    protected function notify(Dependency|File|FilePath $dependency, Result $result): void {
+    protected function notify(Dependency|File|FilePath|string $dependency, Result $result): void {
         $path = match (true) {
             $dependency instanceof Dependency => $dependency->getPath($this->fs),
             default                           => $dependency,
@@ -175,17 +177,23 @@ class Resolver implements DependencyResolver {
     }
 
     /**
-     * @template T of DirectoryPath|FilePath
+     * @template T of DirectoryPath|FilePath|non-empty-string
      *
      * @param T $path
      *
-     * @return new<T>
+     * @return (T is string ? FilePath : new<T>)
      */
-    protected function path(DirectoryPath|FilePath $path): DirectoryPath|FilePath {
-        return $this->directory->resolve($path);
+    protected function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
+        $path = is_string($path) ? new FilePath($path) : $path;
+        $path = $this->directory->resolve($path);
+
+        return $path;
     }
 
-    protected function file(FilePath $path): File {
+    /**
+     * @param FilePath|non-empty-string $path
+     */
+    protected function file(FilePath|string $path): File {
         return $this->fs->getFile($this->path($path));
     }
 }

@@ -224,6 +224,37 @@ final class ResolverTest extends TestCase {
         $resolver->queue($path);
     }
 
+    public function testQueueString(): void {
+        $run   = static function (): void {
+            // empty
+        };
+        $queue = Mockery::mock(ResolverTest__Invokable::class);
+        $queue
+            ->shouldReceive('__invoke')
+            ->once()
+            ->andReturns();
+
+        $path       = '/file.txt';
+        $resolved   = Mockery::mock(File::class);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $resolver   = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run, Closure::fromCallable($queue)]);
+        $resolver->shouldAllowMockingProtectedMethods();
+        $resolver->makePartial();
+        $resolver
+            ->shouldReceive('file')
+            ->with($path)
+            ->once()
+            ->andReturn($resolved);
+        $resolver
+            ->shouldReceive('notify')
+            ->with($resolved, DependencyResolvedResult::Queued)
+            ->once()
+            ->andReturns();
+
+        $resolver->queue($path);
+    }
+
     public function testQueueIterable(): void {
         $aPath = new FilePath('/a.txt');
         $aFile = Mockery::mock(File::class);

@@ -72,7 +72,7 @@ trait WithProcessor {
         };
         $resolver   = new class($dispatcher, $fs, $callback, $callback) extends Resolver {
             #[Override]
-            protected function notify(Dependency|FilePath|File $dependency, Result $result): void {
+            protected function notify(Dependency|FilePath|File|string $dependency, Result $result): void {
                 // Makes no sense anyway
             }
         };
