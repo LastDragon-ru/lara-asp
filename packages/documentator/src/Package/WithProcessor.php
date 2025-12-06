@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
@@ -72,7 +71,7 @@ trait WithProcessor {
         };
         $resolver   = new class($dispatcher, $fs, $callback, $callback) extends Resolver {
             #[Override]
-            protected function notify(Dependency|FilePath|File|string $dependency, Result $result): void {
+            protected function notify(FilePath|File|string $path, Result $result): void {
                 // Makes no sense anyway
             }
         };

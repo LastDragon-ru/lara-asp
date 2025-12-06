@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use Traversable;
 
 /**
  * If not specified, relative paths will be resolved based on {@see self::$directory}.
@@ -18,16 +17,6 @@ use Traversable;
  * @phpstan-require-extends Resolver
  */
 interface DependencyResolver {
-    /**
-     * @template V of Traversable<mixed, File>|File|null
-     * @template D of Dependency<V>
-     *
-     * @param D $dependency
-     *
-     * @return V
-     */
-    public function resolve(Dependency $dependency): Traversable|File|null;
-
     /**
      * @param FilePath|non-empty-string $path
      */

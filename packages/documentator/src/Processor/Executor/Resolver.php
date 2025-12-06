@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
@@ -14,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
-use Traversable;
 
 use function is_string;
 
@@ -37,32 +35,6 @@ class Resolver implements DependencyResolver {
         protected readonly Closure $queue,
     ) {
         // empty
-    }
-
-    #[Override]
-    public function resolve(Dependency $dependency): Traversable|File|null {
-        try {
-            $resolved = $dependency($this->fs);
-            $result   = $resolved === null ? Result::Null : Result::Success;
-
-            $this->notify($dependency, $result);
-
-            if ($resolved instanceof File) {
-                ($this->run)($resolved);
-            } elseif ($resolved instanceof Traversable) {
-                $resolved = $this->iterate($dependency, $resolved);
-            } else {
-                // empty
-            }
-        } catch (Exception $exception) {
-            $this->exception = $exception;
-
-            $this->notify($dependency, Result::Failed);
-
-            throw $exception;
-        }
-
-        return $resolved;
     }
 
     #[Override]
@@ -213,51 +185,9 @@ class Resolver implements DependencyResolver {
     }
 
     /**
-     * @template D of Dependency<Traversable<mixed, File>|File|null>
-     * @template T of Traversable<mixed, File>
-     *
-     * @param D $dependency
-     * @param T $resolved
-     *
-     * @return T
+     * @param File|FilePath|non-empty-string $path
      */
-    protected function iterate(Dependency $dependency, Traversable $resolved): Traversable {
-        // Process
-        try {
-            $last = null;
-
-            foreach ($resolved as $key => $value) {
-                $last = $value;
-
-                $this->notify($value, Result::Success);
-
-                ($this->run)($value);
-
-                yield $key => $value;
-            }
-        } catch (Exception $exception) {
-            $this->exception = $exception;
-
-            $this->notify($last ?? $dependency, Result::Failed);
-
-            throw $exception;
-        }
-
-        // Just for the case
-        yield from [];
-    }
-
-    /**
-     * @template V of Traversable<mixed, File>|File|null
-     * @template D of Dependency<V>
-     *
-     * @param D|File|FilePath|non-empty-string $dependency
-     */
-    protected function notify(Dependency|File|FilePath|string $dependency, Result $result): void {
-        $path = match (true) {
-            $dependency instanceof Dependency => $dependency->getPath($this->fs),
-            default                           => $dependency,
-        };
+    protected function notify(File|FilePath|string $path, Result $result): void {
         $path = match (true) {
             $path instanceof File => $path->path,
             default               => $path,
