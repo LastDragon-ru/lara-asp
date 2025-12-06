@@ -72,7 +72,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Instruction `include:example` not check/run `<example>.run` file anymore. The [`Runner`][code-links/f9077a28b352f84b] should be used/provided instead.
 
-* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()` should yield a [`Dependency`][code-links/f4718f92376c3c25] instead of file.
+* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task::__invoke()` should yield a `💀\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency` instead of file.
 
 * [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileDependencyNotFound` replaced by `💀\LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyNotFound`.
 
@@ -107,9 +107,6 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/6a213cdb7ed49c73]: src/Processor/Contracts/Cast.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast"
-
-[code-links/f4718f92376c3c25]: src/Processor/Contracts/Dependency.php
-    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency"
 
 [code-links/405a2082bc21eb5b]: src/Processor/Contracts/Task.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task"
