@@ -105,7 +105,7 @@ final class SymfonyFileSystemTest extends TestCase {
     }
 
     /**
-     * @param iterable<array-key, FilePath|DirectoryPath> $iterable
+     * @param iterable<mixed, FilePath|DirectoryPath> $iterable
      *
      * @return array<array-key, string>
      */

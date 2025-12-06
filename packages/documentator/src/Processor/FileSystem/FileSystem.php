@@ -109,8 +109,9 @@ class FileSystem {
     }
 
     /**
-     * @param list<string> $include
-     * @param list<string> $exclude
+     * @param list<non-empty-string> $include
+     * @param list<non-empty-string> $exclude
+     * @param ?int<0, max>           $depth
      *
      * @return Iterator<array-key, File>
      */

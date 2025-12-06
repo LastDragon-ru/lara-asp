@@ -19,7 +19,7 @@ readonly class Glob implements Matcher {
     private ?Regex $regex;
 
     /**
-     * @param list<string> $patterns
+     * @param list<non-empty-string> $patterns
      */
     public function __construct(array $patterns) {
         $this->regex = $this->regex($patterns);

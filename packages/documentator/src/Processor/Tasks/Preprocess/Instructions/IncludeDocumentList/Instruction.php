@@ -18,6 +18,8 @@ use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Node;
 use Override;
 
+use function array_filter;
+use function array_values;
 use function max;
 use function mb_trim;
 use function min;
@@ -56,8 +58,11 @@ readonly class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target    = $context->file->getDirectoryPath($parameters->target);
+        $include   = array_values(array_filter($parameters->include, static fn ($s) => $s !== ''));
+        $exclude   = array_values(array_filter($parameters->exclude, static fn ($s) => $s !== ''));
+        $depth     = $parameters->depth !== null ? max($parameters->depth, 0) : null;
         $iterator  = $context->resolver->resolve(
-            new FileIterator($target, $parameters->include, $parameters->exclude, $parameters->depth),
+            new FileIterator($target, $include, $exclude, $depth),
         );
         $documents = [];
 

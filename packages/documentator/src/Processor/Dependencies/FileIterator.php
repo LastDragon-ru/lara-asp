@@ -24,17 +24,19 @@ readonly class FileIterator implements Dependency {
         /**
          * Glob(s) to include.
          *
-         * @var list<string>
+         * @var list<non-empty-string>
          */
         protected array $include = [],
         /**
          * Glob(s) to exclude.
          *
-         * @var list<string>
+         * @var list<non-empty-string>
          */
         protected array $exclude = [],
         /**
          * Maximum depth.
+         *
+         * @var ?int<0, max>
          */
         protected ?int $depth = null,
     ) {

@@ -9,10 +9,11 @@ interface Adapter {
     public function exists(DirectoryPath|FilePath $path): bool;
 
     /**
-     * @param list<string> $exclude
-     * @param list<string> $include
+     * @param list<non-empty-string> $exclude globs
+     * @param list<non-empty-string> $include globs
+     * @param ?int<0, max>           $depth
      *
-     * @return iterable<array-key, FilePath>
+     * @return iterable<mixed, FilePath>
      */
     public function search(
         DirectoryPath $directory,
