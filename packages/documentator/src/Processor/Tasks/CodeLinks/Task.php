@@ -13,7 +13,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
@@ -45,6 +44,7 @@ use function str_starts_with;
  * automatically.
  *
  * Supported links:
+ *
  * * `\App\Class`
  * * `\App\Class::method()`
  * * `\App\Class::$property`
@@ -139,7 +139,7 @@ class Task implements FileTask {
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            $resolver->resolve(new FileSave($file, $document->mutate(new Changeset($changes))));
+            $resolver->save($file, $document->mutate(new Changeset($changes)));
         }
     }
 

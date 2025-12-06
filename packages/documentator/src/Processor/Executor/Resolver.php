@@ -114,6 +114,26 @@ class Resolver implements DependencyResolver {
         return $file;
     }
 
+    #[Override]
+    public function save(File|FilePath|string $path, object|string $content): File {
+        try {
+            $path = $path instanceof File ? $path : $this->path($path, true);
+            $path = $this->fs->write($path, $content);
+
+            $this->notify($path, Result::Success);
+
+            ($this->run)($path);
+        } catch (Exception $exception) {
+            $this->exception = $exception;
+
+            $this->notify($path, Result::Failed);
+
+            throw $exception;
+        }
+
+        return $path;
+    }
+
     /**
      * @inheritDoc
      */
@@ -233,9 +253,9 @@ class Resolver implements DependencyResolver {
      *
      * @return (T is string ? FilePath : new<T>)
      */
-    protected function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
+    protected function path(DirectoryPath|FilePath|string $path, bool $output = false): DirectoryPath|FilePath {
         $path = is_string($path) ? new FilePath($path) : $path;
-        $path = $this->directory->resolve($path);
+        $path = ($output ? $this->output : $this->directory)->resolve($path);
 
         return $path;
     }

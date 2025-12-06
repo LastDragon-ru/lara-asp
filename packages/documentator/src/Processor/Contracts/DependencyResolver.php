@@ -9,6 +9,8 @@ use LastDragon_ru\Path\FilePath;
 use Traversable;
 
 /**
+ * If not specified, relative paths will be resolved based on {@see self::$directory}.
+ *
  * @property-read DirectoryPath $input
  * @property-read DirectoryPath $output
  * @property-read DirectoryPath $directory
@@ -35,6 +37,14 @@ interface DependencyResolver {
      * @param FilePath|non-empty-string $path
      */
     public function find(FilePath|string $path): ?File;
+
+    /**
+     * Relative paths will be resolved based on {@see self::$output}. If the
+     * file exists, it will be overwritten.
+     *
+     * @param File|FilePath|non-empty-string $path
+     */
+    public function save(File|FilePath|string $path, object|string $content): File;
 
     /**
      * @param FilePath|iterable<mixed, FilePath|non-empty-string>|non-empty-string $path
