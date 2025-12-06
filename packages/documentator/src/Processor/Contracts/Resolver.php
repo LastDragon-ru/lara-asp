@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver as ResolverImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -14,9 +14,9 @@ use LastDragon_ru\Path\FilePath;
  * @property-read DirectoryPath $output
  * @property-read DirectoryPath $directory
  *
- * @phpstan-require-extends Resolver
+ * @phpstan-require-extends ResolverImpl
  */
-interface DependencyResolver {
+interface Resolver {
     /**
      * @param FilePath|non-empty-string $path
      */

@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
@@ -19,5 +19,5 @@ interface FileTask extends Task {
      */
     public static function glob(): array|string;
 
-    public function __invoke(DependencyResolver $resolver, File $file): void;
+    public function __invoke(Resolver $resolver, File $file): void;
 }

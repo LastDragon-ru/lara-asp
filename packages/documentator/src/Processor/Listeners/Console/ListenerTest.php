@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
 use LastDragon_ru\LaraASP\Documentator\Package\RawOutputFormatter;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
@@ -467,7 +467,7 @@ class ListenerTest__TaskA implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // empty
     }
 }
@@ -490,7 +490,7 @@ class ListenerTest__TaskB implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // empty;
     }
 }

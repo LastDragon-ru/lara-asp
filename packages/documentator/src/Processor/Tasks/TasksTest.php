@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -58,7 +58,7 @@ final class TasksTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file): void {
+            public function __invoke(Resolver $resolver, File $file): void {
                 // empty
             }
         };
@@ -182,7 +182,7 @@ class TasksTest__FileTask implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // empty
     }
 }
@@ -201,7 +201,7 @@ class TasksTest__HookTask implements HookTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+    public function __invoke(Resolver $resolver, File $file, Hook $hook): void {
         // empty
     }
 }
@@ -228,7 +228,7 @@ class TasksTest__Task implements FileTask, HookTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file, ?Hook $hook = null): void {
+    public function __invoke(Resolver $resolver, File $file, ?Hook $hook = null): void {
         // empty
     }
 }

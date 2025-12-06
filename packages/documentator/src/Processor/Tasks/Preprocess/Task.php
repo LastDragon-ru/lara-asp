@@ -15,7 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -133,7 +133,7 @@ class Task implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // Process
         $document = $file->as(Document::class);
         $parsed   = $this->parse($resolver, $file, $document);
@@ -204,7 +204,7 @@ class Task implements FileTask {
     /**
      * @return array<int, array<string, Token<*>>>
      */
-    protected function parse(DependencyResolver $resolver, File $file, Document $document): array {
+    protected function parse(Resolver $resolver, File $file, Document $document): array {
         // Empty?
         if (!$this->instructions->has()) {
             return [];

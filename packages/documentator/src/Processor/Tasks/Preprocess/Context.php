@@ -4,12 +4,12 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Extensions\Reference\Node as ReferenceNode;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 readonly class Context {
     public function __construct(
-        public DependencyResolver $resolver,
+        public Resolver $resolver,
         public File $file,
         public Document $document,
         public ReferenceNode $node,

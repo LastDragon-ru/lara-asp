@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
@@ -64,7 +64,7 @@ trait WithProcessor {
         $task($this->getDependencyResolver($fs), $file);
     }
 
-    protected function getDependencyResolver(FileSystem $fs): DependencyResolver {
+    protected function getDependencyResolver(FileSystem $fs): ResolverContract {
         $dispatcher = new Dispatcher();
         $callback   = static function (): void {
             // empty

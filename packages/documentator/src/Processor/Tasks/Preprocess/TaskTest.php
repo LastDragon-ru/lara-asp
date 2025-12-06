@@ -10,7 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
@@ -81,7 +81,7 @@ final class TaskTest extends TestCase {
              * @inheritDoc
              */
             #[Override]
-            public function parse(DependencyResolver $resolver, File $file, Document $document): array {
+            public function parse(Resolver $resolver, File $file, Document $document): array {
                 return parent::parse($resolver, $file, $document);
             }
         };
@@ -91,7 +91,7 @@ final class TaskTest extends TestCase {
 
         $file     = Mockery::mock(File::class);
         $document = $this->app()->make(Markdown::class)->parse(self::MARKDOWN);
-        $resolver = Mockery::mock(DependencyResolver::class);
+        $resolver = Mockery::mock(Resolver::class);
         $tokens   = $task->parse($resolver, $file, $document);
         $actual   = array_map(
             static function (array $tokens): array {

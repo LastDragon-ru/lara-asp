@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
@@ -87,7 +87,7 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file): void {
+            public function __invoke(ResolverContract $resolver, File $file): void {
                 parent::__invoke($resolver, $file);
 
                 $resolver->queue(
@@ -102,7 +102,7 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
                 // empty
             }
         };
@@ -765,7 +765,7 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
                 $resolver->get('c.txt');
                 $resolver->queue('c.htm');
             }
@@ -811,7 +811,7 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
                 $resolver->get('c.txt');
             }
         };
@@ -857,7 +857,7 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
                 $resolver->queue(new FilePath('c.txt'));
             }
         };
@@ -905,7 +905,7 @@ class ProcessorTest__Task implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(ResolverContract $resolver, File $file): void {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->name] ?? $this->dependencies['*'] ?? [];
 
