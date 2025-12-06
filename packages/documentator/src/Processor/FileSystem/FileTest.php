@@ -64,7 +64,7 @@ final class FileTest extends TestCase {
 
     public function testGetRelativePath(): void {
         $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(new FilePath(__FILE__));
+        $file    = $fs->get(new FilePath(__FILE__));
         $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
         $another = new class(
             Mockery::mock(FileSystem::class),

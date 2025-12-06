@@ -41,7 +41,7 @@ final class ClassMarkdownCastTest extends TestCase {
 
         self::assertNotEmpty($path);
 
-        $file  = $fs->getFile(new FilePath($path));
+        $file  = $fs->get(new FilePath($path));
         $cast  = new ClassMarkdownCast($this->app()->make(PhpDocumentFactory::class));
         $value = $cast->castTo($file, Document::class);
 

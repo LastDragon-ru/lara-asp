@@ -6,9 +6,7 @@ use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
 interface Adapter {
-    public function isFile(FilePath $path): bool;
-
-    public function isDirectory(DirectoryPath $path): bool;
+    public function exists(DirectoryPath|FilePath $path): bool;
 
     /**
      * @param list<string> $exclude

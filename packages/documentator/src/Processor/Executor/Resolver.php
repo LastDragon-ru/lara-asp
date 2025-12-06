@@ -69,7 +69,7 @@ class Resolver implements DependencyResolver {
     public function get(FilePath|string $path): File {
         try {
             $path = $this->path($path);
-            $path = $this->fs->getFile($path);
+            $path = $this->fs->get($path);
 
             $this->notify($path, Result::Success);
 
@@ -92,8 +92,8 @@ class Resolver implements DependencyResolver {
     public function find(FilePath|string $path): ?File {
         try {
             $path = $this->path($path);
-            $file = $this->fs->isFile($path)
-                ? $this->fs->getFile($path)
+            $file = $this->fs->exists($path)
+                ? $this->fs->get($path)
                 : null;
 
             if ($file !== null) {
@@ -144,7 +144,7 @@ class Resolver implements DependencyResolver {
         foreach ($iterator as $file) {
             try {
                 $file = $this->path($file);
-                $file = $this->fs->getFile($file);
+                $file = $this->fs->get($file);
 
                 $this->notify($file, Result::Queued);
 

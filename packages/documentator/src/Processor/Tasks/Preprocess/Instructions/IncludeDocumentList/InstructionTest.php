@@ -31,7 +31,7 @@ final class InstructionTest extends TestCase {
         // Prepare
         $path        = (new FilePath(self::getTestData()->path($path)))->normalized();
         $fs          = $this->getFileSystem($path->directory());
-        $file        = $fs->getFile($path);
+        $file        = $fs->get($path);
         $document    = $this->app()->make(Markdown::class)->parse($content, $path);
         $instruction = (new Query())->where(Query::type(Node::class))->findOne($document->node);
 

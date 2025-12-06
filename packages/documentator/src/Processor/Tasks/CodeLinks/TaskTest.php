@@ -39,7 +39,7 @@ final class TaskTest extends TestCase {
     public function testInvoke(Closure|string $expected, string $document): void {
         $path = (new FilePath(self::getTestData()->path($document)))->normalized();
         $fs   = $this->getFileSystem($path->directory());
-        $file = $fs->getFile($path);
+        $file = $fs->get($path);
         $task = $this->app()->make(Task::class);
 
         if ($expected instanceof Closure) {

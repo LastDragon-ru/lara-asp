@@ -39,7 +39,7 @@ final class ClassCommentCastTest extends TestCase {
 
         self::assertNotEmpty($path);
 
-        $file  = $fs->getFile(new FilePath($path));
+        $file  = $fs->get(new FilePath($path));
         $cast  = new ClassCommentCast();
         $value = $cast->castTo($file, ClassComment::class);
 

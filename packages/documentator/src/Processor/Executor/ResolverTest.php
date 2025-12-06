@@ -44,7 +44,7 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andReturn($resolved);
@@ -83,7 +83,7 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andReturn($resolved);
@@ -121,7 +121,7 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andThrow($exception);
@@ -162,12 +162,12 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('isFile')
+            ->shouldReceive('exists')
             ->with($filepath)
             ->once()
             ->andReturn(true);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andReturn($resolved);
@@ -206,12 +206,12 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('isFile')
+            ->shouldReceive('exists')
             ->with($filepath)
             ->once()
             ->andReturn(true);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andReturn($resolved);
@@ -248,7 +248,7 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('isFile')
+            ->shouldReceive('exists')
             ->with($filepath)
             ->once()
             ->andReturn(false);
@@ -286,12 +286,12 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('isFile')
+            ->shouldReceive('exists')
             ->with($filepath)
             ->once()
             ->andReturn(true);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andThrow($exception);
@@ -577,7 +577,7 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andReturn($resolved);
@@ -614,7 +614,7 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($filepath)
             ->once()
             ->andReturn($resolved);
@@ -659,12 +659,12 @@ final class ResolverTest extends TestCase {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($aPath)
             ->once()
             ->andReturn($aFile);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->with($bPath)
             ->once()
             ->andReturn($bFile);

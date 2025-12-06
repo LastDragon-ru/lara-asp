@@ -37,22 +37,22 @@ final class FileSystemTest extends TestCase {
 
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testIsFile(): void {
+    public function testExists(): void {
         $fs   = $this->getFileSystem(__DIR__);
         $base = (new DirectoryPath(self::getTestData()->path('')))->normalized();
 
-        self::assertTrue($fs->isFile($base->file('c.txt')));
-        self::assertFalse($fs->isFile($base->file('404.txt')));
+        self::assertTrue($fs->exists($base->file('c.txt')));
+        self::assertFalse($fs->exists($base->file('404.txt')));
     }
 
-    public function testGetFile(): void {
+    public function testGet(): void {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->normalized();
-        $file         = $fs->getFile($path);
-        $readonly     = $fs->getFile(new FilePath(__FILE__));
-        $relative     = $fs->getFile(new FilePath($readonly->name));
-        $internal     = $fs->getFile(new FilePath(self::getTestData()->path('c.html')));
-        $fromFilePath = $fs->getFile($path);
+        $file         = $fs->get($path);
+        $readonly     = $fs->get(new FilePath(__FILE__));
+        $relative     = $fs->get(new FilePath($readonly->name));
+        $internal     = $fs->get(new FilePath(self::getTestData()->path('c.html')));
+        $fromFilePath = $fs->get($path);
 
         self::assertSame(
             (string) (new FilePath(__FILE__))->normalized(),
@@ -81,7 +81,7 @@ final class FileSystemTest extends TestCase {
 
         $this
             ->getFileSystem(__DIR__)
-            ->getFile(new FilePath('../Processor.php'));
+            ->get(new FilePath('../Processor.php'));
     }
 
     public function testGetFileNotFound(): void {
@@ -89,7 +89,7 @@ final class FileSystemTest extends TestCase {
 
         $this
             ->getFileSystem(__DIR__)
-            ->getFile(new FilePath('not found'));
+            ->get(new FilePath('not found'));
     }
 
     public function testGetFilesIterator(): void {
@@ -302,12 +302,12 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
-            ->shouldReceive('isFile')
+            ->shouldReceive('exists')
             ->with($path)
             ->once()
             ->andReturn(false);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->never();
         $filesystem
             ->shouldReceive('queue')
@@ -338,12 +338,12 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
         $filesystem
-            ->shouldReceive('isFile')
+            ->shouldReceive('exists')
             ->with($path)
             ->once()
             ->andReturn(false);
         $filesystem
-            ->shouldReceive('getFile')
+            ->shouldReceive('get')
             ->never();
         $filesystem
             ->shouldReceive('queue')
@@ -419,9 +419,9 @@ final class FileSystemTest extends TestCase {
 
     public function testCache(): void {
         $fs   = $this->getFileSystem(__DIR__);
-        $file = $fs->getFile(new FilePath(__FILE__));
+        $file = $fs->get(new FilePath(__FILE__));
 
-        self::assertSame($file, $fs->getFile(new FilePath(__FILE__)));
+        self::assertSame($file, $fs->get(new FilePath(__FILE__)));
     }
 
     public function testPropertyDirectory(): void {

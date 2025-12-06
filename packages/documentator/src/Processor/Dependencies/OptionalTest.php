@@ -24,7 +24,7 @@ final class OptionalTest extends TestCase {
 
     public function testInvoke(): void {
         $fs         = $this->getFileSystem(__DIR__);
-        $file       = $fs->getFile(new FilePath(__FILE__));
+        $file       = $fs->get(new FilePath(__FILE__));
         $dependency = new FileReference(__FILE__);
         $optional   = new Optional($dependency);
 

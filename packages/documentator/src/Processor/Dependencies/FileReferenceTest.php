@@ -26,7 +26,7 @@ final class FileReferenceTest extends TestCase {
     public function testInvoke(): void {
         $fs       = $this->getFileSystem(__DIR__);
         $path     = (new FilePath(__FILE__))->normalized();
-        $file     = $fs->getFile($path);
+        $file     = $fs->get($path);
         $absolute = new FileReference($path->path);
         $relative = new FileReference($path->name);
         $filepath = new FileReference($path);

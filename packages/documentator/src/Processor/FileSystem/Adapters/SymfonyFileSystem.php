@@ -20,13 +20,10 @@ class SymfonyFileSystem implements Adapter {
     }
 
     #[Override]
-    public function isFile(FilePath $path): bool {
-        return is_file((string) $path);
-    }
-
-    #[Override]
-    public function isDirectory(DirectoryPath $path): bool {
-        return is_dir((string) $path);
+    public function exists(DirectoryPath|FilePath $path): bool {
+        return $path instanceof FilePath
+            ? is_file((string) $path)
+            : is_dir((string) $path);
     }
 
     /**

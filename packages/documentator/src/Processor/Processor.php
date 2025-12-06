@@ -131,7 +131,7 @@ class Processor {
                          */
                         #[Override]
                         public function getIterator(): Traversable {
-                            yield $this->fs->getFile($this->path);
+                            yield $this->fs->get($this->path);
                         }
                     },
                 };

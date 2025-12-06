@@ -46,7 +46,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -72,7 +72,7 @@ final class InstructionTest extends TestCase {
 
         // Test
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -99,7 +99,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -117,7 +117,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

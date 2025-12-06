@@ -29,7 +29,7 @@ final class InstructionTest extends TestCase {
 
     public function testInvoke(): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters('command to execute');
         $expected = 'result';
         $command  = $params->target;
@@ -74,7 +74,7 @@ final class InstructionTest extends TestCase {
 
     public function testInvokeFailed(): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $node     = new Node();
         $params   = new Parameters('command to execute');
         $command  = $params->target;
@@ -127,7 +127,7 @@ final class InstructionTest extends TestCase {
 
     public function testGetCommand(): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters('artisan:command $directory {$directory} "{$directory}" $file {$file} "{$file}"');
         $command  = $params->target;
         $context  = $this->getPreprocessInstructionContext($fs, $file);

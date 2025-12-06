@@ -25,7 +25,7 @@ final class InstructionTest extends TestCase {
     #[DataProvider('dataProviderInvoke')]
     public function testInvoke(string $expected, string $source): void {
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get(new FilePath(__FILE__));
         $params   = new Parameters(self::getTestData()->path($source));
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

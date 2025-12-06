@@ -81,15 +81,15 @@ class FileSystem {
         $this->content = new WeakMap();
     }
 
-    public function isFile(FilePath $path): bool {
+    public function exists(FilePath $path): bool {
         $path = $this->path($path);
         $file = $this->cached($path);
-        $is   = $file !== null || $this->adapter->isFile($path);
+        $is   = $file !== null || $this->adapter->exists($path);
 
         return $is;
     }
 
-    public function getFile(FilePath $path): File {
+    public function get(FilePath $path): File {
         // Cached?
         $path = $this->path($path);
         $file = $this->cached($path);
@@ -99,7 +99,7 @@ class FileSystem {
         }
 
         // Create
-        if ($this->adapter->isFile($path)) {
+        if ($this->adapter->exists($path)) {
             $file = new File($this, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
@@ -123,7 +123,7 @@ class FileSystem {
         // Exist?
         $directory = $this->path($directory);
 
-        if (!$this->adapter->isDirectory($directory)) {
+        if (!$this->adapter->exists($directory)) {
             throw new DirectoryNotFound($directory);
         }
 
@@ -177,7 +177,7 @@ class FileSystem {
         }
 
         // File?
-        $file ??= $this->isFile($path) ? $this->getFile($path) : null;
+        $file ??= $this->exists($path) ? $this->get($path) : null;
         $exists = $file !== null;
         $file ??= $this->cache(new File($this, $path, $this->caster));
 
