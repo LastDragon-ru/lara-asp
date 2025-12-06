@@ -14,7 +14,7 @@ interface Adapter {
      *
      * @return iterable<array-key, FilePath>
      */
-    public function getFilesIterator(
+    public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],

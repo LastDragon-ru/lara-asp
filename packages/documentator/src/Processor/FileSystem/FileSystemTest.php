@@ -92,7 +92,7 @@ final class FileSystemTest extends TestCase {
             ->get(new FilePath('not found'));
     }
 
-    public function testGetFilesIterator(): void {
+    public function testSearch(): void {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $filesystem = $this->getFileSystem($input);
         $directory  = $input;
@@ -113,14 +113,14 @@ final class FileSystemTest extends TestCase {
                 'c.html',
                 'c.txt',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory), false)),
+            array_map($map, iterator_to_array($filesystem->search($directory), false)),
         );
 
         self::assertEquals(
             [
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, ['*.html']), false)),
+            array_map($map, iterator_to_array($filesystem->search($directory, ['*.html']), false)),
         );
 
         self::assertEquals(
@@ -128,7 +128,7 @@ final class FileSystemTest extends TestCase {
                 'c.html',
                 'c.txt',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, depth: 0), false)),
+            array_map($map, iterator_to_array($filesystem->search($directory, depth: 0), false)),
         );
 
         self::assertEquals(
@@ -137,14 +137,14 @@ final class FileSystemTest extends TestCase {
                 'b/b.html',
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, ['**/*.html']), false)),
+            array_map($map, iterator_to_array($filesystem->search($directory, ['**/*.html']), false)),
         );
 
         self::assertEquals(
             [
                 'c.html',
             ],
-            array_map($map, iterator_to_array($filesystem->getFilesIterator($directory, ['**/*.html'], [], 0), false)),
+            array_map($map, iterator_to_array($filesystem->search($directory, ['**/*.html'], [], 0), false)),
         );
 
         self::assertEquals(
@@ -155,16 +155,16 @@ final class FileSystemTest extends TestCase {
             ],
             array_map(
                 $map,
-                iterator_to_array($filesystem->getFilesIterator($directory, exclude: ['*.txt', '**/**/*.txt']), false),
+                iterator_to_array($filesystem->search($directory, exclude: ['*.txt', '**/**/*.txt']), false),
             ),
         );
     }
 
-    public function testGetFilesIteratorDirectoryNotFound(): void {
+    public function testSearchDirectoryNotFound(): void {
         self::expectException(DirectoryNotFound::class);
 
         iterator_to_array(
-            $this->getFileSystem(__DIR__)->getFilesIterator(new DirectoryPath('not found')),
+            $this->getFileSystem(__DIR__)->search(new DirectoryPath('not found')),
         );
     }
 

@@ -24,7 +24,7 @@ final class SymfonyFileSystemTest extends TestCase {
         self::assertTrue($adapter->exists(new DirectoryPath(__DIR__)));
     }
 
-    public function testGetFilesIterator(): void {
+    public function testSearch(): void {
         $path    = new DirectoryPath(self::getTestData()->path(''));
         $adapter = new SymfonyFileSystem();
 
@@ -37,14 +37,14 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path)),
+            $this->asArray($path, $adapter->search($path)),
         );
         self::assertSame(
             [
                 'a.txt',
                 'b.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, depth: 0)),
+            $this->asArray($path, $adapter->search($path, depth: 0)),
         );
         self::assertSame(
             [
@@ -53,13 +53,13 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, exclude: ['a/**/*.txt'])),
+            $this->asArray($path, $adapter->search($path, exclude: ['a/**/*.txt'])),
         );
         self::assertSame(
             [
                 'a.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: ['a.txt'])),
+            $this->asArray($path, $adapter->search($path, include: ['a.txt'])),
         );
         self::assertSame(
             [
@@ -70,7 +70,7 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'])),
+            $this->asArray($path, $adapter->search($path, include: ['**/*.txt'])),
         );
         self::assertSame(
             [
@@ -80,7 +80,7 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'], exclude: ['**/aa/*'])),
+            $this->asArray($path, $adapter->search($path, include: ['**/*.txt'], exclude: ['**/aa/*'])),
         );
     }
 

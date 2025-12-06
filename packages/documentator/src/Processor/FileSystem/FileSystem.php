@@ -114,7 +114,7 @@ class FileSystem {
      *
      * @return Iterator<array-key, File>
      */
-    public function getFilesIterator(
+    public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
@@ -128,7 +128,7 @@ class FileSystem {
         }
 
         // Search
-        $iterator = $this->adapter->getFilesIterator($directory, $include, $exclude, $depth);
+        $iterator = $this->adapter->search($directory, $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
             $path = $this->path($path, $directory);

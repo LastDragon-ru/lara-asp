@@ -30,7 +30,7 @@ class SymfonyFileSystem implements Adapter {
      * @inheritDoc
      */
     #[Override]
-    public function getFilesIterator(
+    public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],

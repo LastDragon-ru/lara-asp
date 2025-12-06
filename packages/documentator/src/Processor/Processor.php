@@ -117,7 +117,7 @@ class Processor {
                 $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $root, $output);
                 $globs  = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
                 $files  = match (true) {
-                    default                    => $fs->getFilesIterator($root, $globs, $skip),
+                    default                    => $fs->search($root, $globs, $skip),
                     $input instanceof FilePath => new readonly class($fs, $input) implements IteratorAggregate {
                         public function __construct(
                             private FileSystem $fs,
