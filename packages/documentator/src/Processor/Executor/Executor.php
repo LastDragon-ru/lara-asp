@@ -50,7 +50,7 @@ class Executor {
     private array $stack = [];
 
     /**
-     * @param iterable<mixed, File> $files
+     * @param iterable<mixed, FilePath> $files
      */
     public function __construct(
         private readonly Dispatcher $dispatcher,
@@ -60,7 +60,7 @@ class Executor {
         private readonly Matcher $skipped,
     ) {
         $this->state    = State::Created;
-        $this->iterator = new Iterator($files);
+        $this->iterator = new Iterator($this->fs, $files);
         $this->resolver = new Resolver($this->dispatcher, $this->fs, $this->onResolve(...), $this->onQueue(...));
     }
 

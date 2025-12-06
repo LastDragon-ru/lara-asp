@@ -49,7 +49,11 @@ readonly class FileIterator implements Dependency {
     #[Override]
     public function __invoke(FileSystem $fs): Iterator {
         try {
-            yield from $fs->search($this->getPath($fs), $this->include, $this->exclude, $this->depth);
+            $files = $fs->search($this->getPath($fs), $this->include, $this->exclude, $this->depth);
+
+            foreach ($files as $path) {
+                yield $fs->get($path);
+            }
         } catch (DirectoryNotFound $exception) {
             throw new DependencyUnresolvable($exception);
         }

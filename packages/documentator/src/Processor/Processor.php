@@ -20,7 +20,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
@@ -118,20 +117,19 @@ class Processor {
                 $globs  = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
                 $files  = match (true) {
                     default                    => $fs->search($root, $globs, $skip),
-                    $input instanceof FilePath => new readonly class($fs, $input) implements IteratorAggregate {
+                    $input instanceof FilePath => new readonly class($input) implements IteratorAggregate {
                         public function __construct(
-                            private FileSystem $fs,
                             private FilePath $path,
                         ) {
                             // empty
                         }
 
                         /**
-                         * @return Traversable<int, File>
+                         * @return Traversable<int, FilePath>
                          */
                         #[Override]
                         public function getIterator(): Traversable {
-                            yield $this->fs->get($this->path);
+                            yield $this->path;
                         }
                     },
                 };
@@ -153,7 +151,7 @@ class Processor {
     }
 
     /**
-     * @param iterable<mixed, File> $files
+     * @param iterable<mixed, FilePath> $files
      */
     protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
         $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $skipped);

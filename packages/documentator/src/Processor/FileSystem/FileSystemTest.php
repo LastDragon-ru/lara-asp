@@ -96,8 +96,8 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $filesystem = $this->getFileSystem($input);
         $directory  = $input;
-        $map        = static function (File $file) use ($directory): string {
-            return (string) $directory->relative($file->path);
+        $map        = static function (FilePath $path) use ($directory): string {
+            return (string) $directory->relative($path);
         };
 
         self::assertEquals(

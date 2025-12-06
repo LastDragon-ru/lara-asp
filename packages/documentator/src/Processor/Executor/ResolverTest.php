@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
@@ -694,6 +695,125 @@ final class ResolverTest extends TestCase {
             ->andReturns();
 
         $resolver->queue([$aPath, $bPath]);
+    }
+
+    public function testSearchNull(): void {
+        $run = Mockery::mock(ResolverTest__Invokable::class);
+        $run
+            ->shouldReceive('__invoke')
+            ->never();
+
+        $queue = Mockery::mock(ResolverTest__Invokable::class);
+        $queue
+            ->shouldReceive('__invoke')
+            ->never();
+
+        $depth      = 5;
+        $include    = ['include'];
+        $exclude    = ['exclude'];
+        $directory  = new DirectoryPath('directory');
+        $resolved   = [new FilePath('file.txt')];
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $filesystem
+            ->shouldReceive('search')
+            ->with($directory, $include, $exclude, $depth)
+            ->once()
+            ->andReturn($resolved);
+
+        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver->shouldAllowMockingProtectedMethods();
+        $resolver->makePartial();
+        $resolver
+            ->shouldReceive('path')
+            ->with(
+                Mockery::on(static function (mixed $path): bool {
+                    return $path instanceof DirectoryPath
+                        && $path->equals(new DirectoryPath('.'));
+                }),
+            )
+            ->once()
+            ->andReturn($directory);
+
+        self::assertSame($resolved, $resolver->search($include, $exclude, $depth));
+    }
+
+    public function testSearchString(): void {
+        $run = Mockery::mock(ResolverTest__Invokable::class);
+        $run
+            ->shouldReceive('__invoke')
+            ->never();
+
+        $queue = Mockery::mock(ResolverTest__Invokable::class);
+        $queue
+            ->shouldReceive('__invoke')
+            ->never();
+
+        $depth      = 5;
+        $include    = ['include'];
+        $exclude    = ['exclude'];
+        $directory  = new DirectoryPath('directory');
+        $resolved   = [new FilePath('file.txt')];
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $filesystem
+            ->shouldReceive('search')
+            ->with($directory, $include, $exclude, $depth)
+            ->once()
+            ->andReturn($resolved);
+
+        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver->shouldAllowMockingProtectedMethods();
+        $resolver->makePartial();
+        $resolver
+            ->shouldReceive('path')
+            ->with(
+                Mockery::on(static function (mixed $path) use ($directory): bool {
+                    return $path instanceof DirectoryPath
+                        && $path->equals($directory);
+                }),
+            )
+            ->once()
+            ->andReturn($directory);
+
+        self::assertNotEmpty($directory->path);
+        self::assertSame($resolved, $resolver->search($include, $exclude, $depth, $directory->path));
+    }
+
+    public function testSearchDirectoryPath(): void {
+        $run = Mockery::mock(ResolverTest__Invokable::class);
+        $run
+            ->shouldReceive('__invoke')
+            ->never();
+
+        $queue = Mockery::mock(ResolverTest__Invokable::class);
+        $queue
+            ->shouldReceive('__invoke')
+            ->never();
+
+        $depth      = 5;
+        $include    = ['include'];
+        $exclude    = ['exclude'];
+        $directory  = new DirectoryPath('directory');
+        $resolved   = [new FilePath('file.txt')];
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $filesystem
+            ->shouldReceive('search')
+            ->with($directory, $include, $exclude, $depth)
+            ->once()
+            ->andReturn($resolved);
+
+        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver->shouldAllowMockingProtectedMethods();
+        $resolver->makePartial();
+        $resolver
+            ->shouldReceive('path')
+            ->with($directory)
+            ->once()
+            ->andReturn($directory);
+
+        self::assertSame($resolved, $resolver->search($include, $exclude, $depth, $directory));
     }
 
     public function testCheck(): void {

@@ -159,6 +159,29 @@ class Resolver implements DependencyResolver {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function search(
+        array|string $include,
+        array|string $exclude,
+        ?int $depth,
+        DirectoryPath|string|null $directory = null,
+    ): iterable {
+        $directory = match (true) {
+            $directory instanceof DirectoryPath => $directory,
+            is_string($directory)               => new DirectoryPath($directory),
+            $directory === null                 => new DirectoryPath('.'),
+        };
+        $directory = $this->path($directory);
+        $include   = (array) $include;
+        $exclude   = (array) $exclude;
+        $files     = $this->fs->search($directory, $include, $exclude, $depth);
+
+        return $files;
+    }
+
     public function check(): void {
         if ($this->exception === null) {
             return;

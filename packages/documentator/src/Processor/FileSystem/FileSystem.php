@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
 use InvalidArgumentException;
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
@@ -113,14 +112,14 @@ class FileSystem {
      * @param list<non-empty-string> $exclude
      * @param ?int<0, max>           $depth
      *
-     * @return Iterator<array-key, File>
+     * @return iterable<mixed, FilePath>
      */
     public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
-    ): Iterator {
+    ): iterable {
         // Exist?
         $directory = $this->path($directory);
 
@@ -133,9 +132,16 @@ class FileSystem {
 
         foreach ($iterator as $path) {
             $path = $this->path($path, $directory);
-            $file = $this->cached($path) ?? $this->cache(new File($this, $path, $this->caster));
 
-            yield $file;
+            if ($this->cached($path) === null) {
+                /**
+                 * We are expecting all files are exist, so add them into the
+                 * cache to avoid another {@see Adapter::exists()} call.
+                 */
+                $this->cache(new File($this, $path, $this->caster));
+            }
+
+            yield $path;
         }
 
         yield from [];
