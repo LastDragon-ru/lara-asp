@@ -29,14 +29,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v9
 
-* [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Utils\Path` removed, please use [`FilePath`][code-links/5dccbbbbfd89f5f6]/[`DirectoryPath`][code-links/6a882555d8c99237] instead.
+* [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Utils\Path` removed, please use [`💀FilePath`][code-links/5dccbbbbfd89f5f6]/[`💀DirectoryPath`][code-links/6a882555d8c99237] instead.
 
 * [ ] Deprecated `💀\LastDragon_ru\LaraASP\Core\Path\Path::isMatch()`, the `preg_match()` can be used directly.
 
 * [ ] The Path component is deprecated, please migrate to [`lastdragon-ru/path`](../path/README.md) package 🤝
-  * [`DirectoryPath`][code-links/6a882555d8c99237]
-  * [`FilePath`][code-links/5dccbbbbfd89f5f6]
-  * [`Path`][code-links/277f4a31cdbb54b4]
+  * [`💀DirectoryPath`][code-links/6a882555d8c99237]
+  * [`💀FilePath`][code-links/5dccbbbbfd89f5f6]
+  * [`💀Path`][code-links/277f4a31cdbb54b4]
 
 # Upgrade from v7
 
