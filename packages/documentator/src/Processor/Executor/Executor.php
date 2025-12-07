@@ -169,8 +169,6 @@ class Executor {
 
         foreach ($tasks as $task) {
             $this->task($task, $hook, $file);
-
-            $this->resolver->check();
         }
 
         $this->fs->commit();
@@ -188,8 +186,6 @@ class Executor {
                 } else {
                     throw new TaskNotInvokable($task, $hook, $file->path);
                 }
-
-                $this->resolver->check();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {

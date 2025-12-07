@@ -643,33 +643,6 @@ final class ResolverTest extends TestCase {
         self::assertSame($resolved, $resolver->search($include, $exclude, $depth, $directory));
     }
 
-    public function testCheck(): void {
-        $exception = new Exception();
-        $resolver  = new class($exception) extends Resolver {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct(Exception $exception) {
-                $this->exception = $exception;
-            }
-
-            public function getException(): ?Exception {
-                return $this->exception;
-            }
-        };
-
-        $thrown = null;
-
-        try {
-            $resolver->check();
-        } catch (Exception $e) {
-            $thrown = $e;
-        }
-
-        self::assertSame($exception, $thrown);
-        self::assertNull($resolver->getException());
-
-        $resolver->check();
-    }
-
     public function testNotify(): void {
         $path       = new FilePath('path/to/dependency');
         $filepath   = new FilePath('/path/to/file');

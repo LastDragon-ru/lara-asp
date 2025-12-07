@@ -20,8 +20,6 @@ use function is_string;
  * @internal
  */
 class Resolver implements ResolverContract {
-    protected ?Exception $exception = null;
-
     public function __construct(
         protected readonly Dispatcher $dispatcher,
         protected readonly FileSystem $fs,
@@ -47,8 +45,6 @@ class Resolver implements ResolverContract {
 
             ($this->run)($path);
         } catch (Exception $exception) {
-            $this->exception = $exception;
-
             $this->notify($path, Result::Failed);
 
             throw $exception;
@@ -76,8 +72,6 @@ class Resolver implements ResolverContract {
                 $this->notify($path, Result::Null);
             }
         } catch (Exception $exception) {
-            $this->exception = $exception;
-
             $this->notify($path, Result::Failed);
 
             throw $exception;
@@ -96,8 +90,6 @@ class Resolver implements ResolverContract {
 
             ($this->run)($path);
         } catch (Exception $exception) {
-            $this->exception = $exception;
-
             $this->notify($path, Result::Failed);
 
             throw $exception;
@@ -122,8 +114,6 @@ class Resolver implements ResolverContract {
 
                 ($this->queue)($file);
             } catch (Exception $exception) {
-                $this->exception = $exception;
-
                 $this->notify($file, Result::Failed);
 
                 throw $exception;
@@ -152,17 +142,6 @@ class Resolver implements ResolverContract {
         $files     = $this->fs->search($directory, $include, $exclude, $depth);
 
         return $files;
-    }
-
-    public function check(): void {
-        if ($this->exception === null) {
-            return;
-        }
-
-        $exception       = $this->exception;
-        $this->exception = null;
-
-        throw $exception;
     }
 
     /**
