@@ -141,7 +141,7 @@ final class InstructionTest extends TestCase {
         self::assertEquals(
             sprintf(
                 'artisan:command $directory %1$s "%1$s" $file %2$s "%2$s"',
-                $file->getDirectoryPath(),
+                $file->path->directory(),
                 $file->path,
             ),
             $instance->getCommand($context, $command, $params),

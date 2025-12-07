@@ -77,7 +77,7 @@ abstract class Base implements Link {
         }
 
         // Resolve
-        $path       = $file->getRelativePath($source);
+        $path       = $file->path->relative($source->path);
         $node       = $this->getTargetNode($comment->class);
         $deprecated = $comment->comment->isDeprecated();
         $target     = $this->target($path, $node, $deprecated);

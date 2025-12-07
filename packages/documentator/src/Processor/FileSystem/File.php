@@ -4,9 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use LastDragon_ru\Path\Path;
 
 use function sprintf;
 
@@ -49,27 +47,6 @@ class File {
      */
     public function as(string $class): object {
         return $this->caster->castTo($this, $class);
-    }
-
-    /**
-     * @param non-empty-string $path
-     */
-    public function getFilePath(string $path): FilePath {
-        return $this->path->file($path);
-    }
-
-    public function getDirectoryPath(?string $path = null): DirectoryPath {
-        return $this->path->directory($path);
-    }
-
-    /**
-     * @return ($path is DirectoryPath ? DirectoryPath|null : FilePath|null)
-     */
-    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath|null {
-        $path = $path instanceof Path ? $path : $path->path;
-        $path = $this->path->relative($path);
-
-        return $path;
     }
 
     /**

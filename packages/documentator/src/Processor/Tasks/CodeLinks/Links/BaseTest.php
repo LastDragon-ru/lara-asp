@@ -4,8 +4,10 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassComment;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
@@ -79,24 +81,18 @@ final class BaseTest extends TestCase {
             ->twice()
             ->andReturn(true, false);
 
+        $fs     = Mockery::mock(FileSystem::class);
         $data   = new ClassComment($class, $context, $comment);
-        $source = Mockery::mock(File::class);
+        $caster = Mockery::mock(Caster::class);
+        $source = Mockery::mock(File::class, [$fs, new FilePath('/relative/path/to/class/a.php'), $caster]);
         $source
             ->shouldReceive('as')
             ->with(ClassComment::class)
             ->twice()
             ->andReturn($data);
 
-        $file = Mockery::mock(File::class);
-        $file
-            ->shouldReceive('getRelativePath')
-            ->with($source)
-            ->twice()
-            ->andReturn(
-                new FilePath('relative/path/to/class/a.php'),
-            );
-
-        $doc = Mockery::mock(Doc::class);
+        $file = Mockery::mock(File::class, [$fs, new FilePath('/file.txt'), $caster]);
+        $doc  = Mockery::mock(Doc::class);
         $doc
             ->shouldReceive('getStartLine')
             ->once()
@@ -128,12 +124,12 @@ final class BaseTest extends TestCase {
             ->andReturn($class, $node);
 
         self::assertEquals(
-            new LinkTarget(new FilePath('relative/path/to/class/a.php'), true, null, null),
+            new LinkTarget((new FilePath('relative/path/to/class/a.php'))->normalized(), true, null, null),
             $link->getTarget($file, $source),
         );
 
         self::assertEquals(
-            new LinkTarget(new FilePath('relative/path/to/class/a.php'), true, 234, 321),
+            new LinkTarget((new FilePath('relative/path/to/class/a.php'))->normalized(), true, 234, 321),
             $link->getTarget($file, $source),
         );
     }

@@ -62,22 +62,6 @@ final class FileTest extends TestCase {
         };
     }
 
-    public function testGetRelativePath(): void {
-        $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->get(new FilePath(__FILE__));
-        $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
-        $another = new class(
-            Mockery::mock(FileSystem::class),
-            (new FilePath(__FILE__))->normalized(),
-            Mockery::mock(Caster::class),
-        ) extends File {
-            // empty
-        };
-
-        self::assertSame('FileTest.php', (string) $another->getRelativePath($file));
-        self::assertSame('FileTest/a/a.txt', (string) $another->getRelativePath($path));
-    }
-
     public function testPropertyName(): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);

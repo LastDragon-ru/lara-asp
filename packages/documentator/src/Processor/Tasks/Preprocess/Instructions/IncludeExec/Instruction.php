@@ -47,7 +47,7 @@ readonly class Instruction implements InstructionContract {
         try {
             return mb_trim(
                 $this->factory->newPendingProcess()
-                    ->path((string) $context->file->getDirectoryPath())
+                    ->path($context->resolver->directory->path)
                     ->run($parameters->target)
                     ->throw()
                     ->output(),
