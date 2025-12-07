@@ -8,7 +8,12 @@ use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
 /**
- * If not specified, relative paths will be resolved based on {@see self::$directory}.
+ * Paths solution:
+ *
+ * + Relative - relative to {@see self::$directory}.
+ * + `~input/` - relative to {@see self::$input}
+ * + `~output/` - relative to {@see self::$output}
+ * + Other - as is.
  *
  * @property-read DirectoryPath $input
  * @property-read DirectoryPath $output
@@ -28,8 +33,7 @@ interface Resolver {
     public function find(FilePath|string $path): ?File;
 
     /**
-     * Relative paths will be resolved based on {@see self::$output}. If the
-     * file exists, it will be overwritten.
+     * If the file exists, it will be overwritten.
      *
      * @param File|FilePath|non-empty-string $path
      */

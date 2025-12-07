@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
@@ -14,13 +13,17 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal
  */
 #[CoversClass(Resolver::class)]
 final class ResolverTest extends TestCase {
+    // <editor-fold desc="Tests">
+    // =========================================================================
     public function testGet(): void {
         $run = Mockery::mock(ResolverTest__Invokable::class);
         $run
@@ -53,7 +56,7 @@ final class ResolverTest extends TestCase {
             ->andReturn($filepath);
         $resolver
             ->shouldReceive('notify')
-            ->with($resolved, DependencyResolvedResult::Success)
+            ->with($filepath, DependencyResolvedResult::Success)
             ->once()
             ->andReturns();
 
@@ -137,7 +140,7 @@ final class ResolverTest extends TestCase {
             ->andReturn($filepath);
         $resolver
             ->shouldReceive('notify')
-            ->with($resolved, DependencyResolvedResult::Success)
+            ->with($filepath, DependencyResolvedResult::Success)
             ->once()
             ->andReturns();
 
@@ -254,12 +257,12 @@ final class ResolverTest extends TestCase {
         $resolver->makePartial();
         $resolver
             ->shouldReceive('path')
-            ->with($filepath, true)
+            ->with($filepath)
             ->once()
             ->andReturn($filepath);
         $resolver
             ->shouldReceive('notify')
-            ->with($resolved, DependencyResolvedResult::Success)
+            ->with($filepath, DependencyResolvedResult::Success)
             ->once()
             ->andReturns();
 
@@ -293,7 +296,7 @@ final class ResolverTest extends TestCase {
         $resolver->makePartial();
         $resolver
             ->shouldReceive('path')
-            ->with($filepath, true)
+            ->with($filepath)
             ->once()
             ->andReturn($filepath);
         $resolver
@@ -337,7 +340,7 @@ final class ResolverTest extends TestCase {
             ->andReturn($filepath);
         $resolver
             ->shouldReceive('notify')
-            ->with($resolved, DependencyResolvedResult::Queued)
+            ->with($filepath, DependencyResolvedResult::Queued)
             ->once()
             ->andReturns();
 
@@ -392,12 +395,12 @@ final class ResolverTest extends TestCase {
             ->andReturn($bPath);
         $resolver
             ->shouldReceive('notify')
-            ->with($aFile, DependencyResolvedResult::Queued)
+            ->with($aPath, DependencyResolvedResult::Queued)
             ->once()
             ->andReturns();
         $resolver
             ->shouldReceive('notify')
-            ->with($bFile, DependencyResolvedResult::Queued)
+            ->with($bPath, DependencyResolvedResult::Queued)
             ->once()
             ->andReturns();
 
@@ -524,8 +527,7 @@ final class ResolverTest extends TestCase {
     }
 
     public function testNotify(): void {
-        $path       = new FilePath('path/to/dependency');
-        $filepath   = new FilePath('/path/to/file');
+        $path       = new FilePath('path/to/file.txt');
         $filesystem = Mockery::mock(FileSystem::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
@@ -540,18 +542,6 @@ final class ResolverTest extends TestCase {
                 ),
             )
             ->andReturn();
-        $dispatcher
-            ->shouldReceive('notify')
-            ->once()
-            ->with(
-                Mockery::isEqual(
-                    new DependencyResolved(
-                        $filepath,
-                        DependencyResolvedResult::Missed,
-                    ),
-                ),
-            )
-            ->andReturn();
 
         $callback = static function (File $file): void {
             // empty
@@ -559,22 +549,60 @@ final class ResolverTest extends TestCase {
         $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $callback, $callback]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
-        $resolver
-            ->shouldReceive('path')
-            ->with($filepath)
-            ->once()
-            ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('path')
-            ->with($path)
-            ->once()
-            ->andReturn($path);
 
-        $file = Mockery::mock(File::class, [$filesystem, $filepath, Mockery::mock(Caster::class)]);
-
-        $resolver->notify($file, DependencyResolvedResult::Missed);
         $resolver->notify($path, DependencyResolvedResult::Success);
     }
+
+    /**
+     * @param DirectoryPath|FilePath|non-empty-string $path
+     */
+    #[DataProvider('dataProviderPath')]
+    public function testPath(DirectoryPath|FilePath $expected, DirectoryPath|FilePath|string $path): void {
+        $run        = (new ResolverTest__Invokable())(...);
+        $queue      = (new ResolverTest__Invokable())(...);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $resolver   = new class($dispatcher, $filesystem, $run, $queue) extends Resolver {
+            #[Override]
+            public function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
+                return parent::path($path);
+            }
+
+            #[Override]
+            public function __get(string $name): mixed {
+                return match ($name) {
+                    'input'     => new DirectoryPath('/input'),
+                    'output'    => new DirectoryPath('/output'),
+                    'directory' => new DirectoryPath('/directory'),
+                    default     => parent::__get($name),
+                };
+            }
+        };
+
+        self::assertEquals($expected->normalized(), $resolver->path($path));
+    }
+    //</editor-fold>
+
+    // <editor-fold desc="DataProviders">
+    // =========================================================================
+    /**
+     * @return array<string, array{DirectoryPath|FilePath, DirectoryPath|FilePath|non-empty-string}>
+     */
+    public static function dataProviderPath(): array {
+        return [
+            'relative + directory' => [new DirectoryPath('/directory/relative'), new DirectoryPath('relative')],
+            'relative + file'      => [new FilePath('/directory/file.txt'), new FilePath('file.txt')],
+            'relative + string'    => [new FilePath('/directory/file.txt'), 'file.txt'],
+            'output + directory'   => [new DirectoryPath('/output/relative'), new DirectoryPath('~output/relative')],
+            'output + file'        => [new FilePath('/output/file.txt'), new FilePath('~output/file.txt')],
+            'output + string'      => [new FilePath('/output/file.txt'), '~output/file.txt'],
+            'input + directory'    => [new DirectoryPath('/input/relative'), new DirectoryPath('~input/relative')],
+            'input + file'         => [new FilePath('/input/file.txt'), new FilePath('~input/file.txt')],
+            'input + string'       => [new FilePath('/input/file.txt'), '~input/file.txt'],
+            'absolute'             => [new FilePath('/file.txt'), '/file.txt'],
+        ];
+    }
+    //</editor-fold>
 }
 
 // @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses

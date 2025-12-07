@@ -20,6 +20,9 @@ use function is_string;
  * @internal
  */
 class Resolver implements ResolverContract {
+    private readonly DirectoryPath $iHome;
+    private readonly DirectoryPath $oHome;
+
     public function __construct(
         protected readonly Dispatcher $dispatcher,
         protected readonly FileSystem $fs,
@@ -32,25 +35,27 @@ class Resolver implements ResolverContract {
          */
         protected readonly Closure $queue,
     ) {
-        // empty
+        $this->iHome = (new DirectoryPath('~input'))->normalized();
+        $this->oHome = (new DirectoryPath('~output'))->normalized();
     }
 
     #[Override]
     public function get(FilePath|string $path): File {
+        $path = $this->path($path);
+
         try {
-            $path = $this->path($path);
-            $path = $this->fs->get($path);
+            $file = $this->fs->get($path);
 
             $this->notify($path, Result::Success);
 
-            ($this->run)($path);
+            ($this->run)($file);
         } catch (Exception $exception) {
             $this->notify($path, Result::Failed);
 
             throw $exception;
         }
 
-        return $path;
+        return $file;
     }
 
     /**
@@ -58,14 +63,15 @@ class Resolver implements ResolverContract {
      */
     #[Override]
     public function find(FilePath|string $path): ?File {
+        $path = $this->path($path);
+
         try {
-            $path = $this->path($path);
             $file = $this->fs->exists($path)
                 ? $this->fs->get($path)
                 : null;
 
             if ($file !== null) {
-                $this->notify($file, Result::Success);
+                $this->notify($path, Result::Success);
 
                 ($this->run)($file);
             } else {
@@ -82,20 +88,22 @@ class Resolver implements ResolverContract {
 
     #[Override]
     public function save(File|FilePath|string $path, object|string $content): File {
+        $file = $path instanceof File ? $path : null;
+        $path = $this->path($path instanceof File ? $path->path : $path);
+
         try {
-            $path = $path instanceof File ? $path : $this->path($path, true);
-            $path = $this->fs->write($path, $content);
+            $file = $this->fs->write($file ?? $path, $content);
 
             $this->notify($path, Result::Success);
 
-            ($this->run)($path);
+            ($this->run)($file);
         } catch (Exception $exception) {
             $this->notify($path, Result::Failed);
 
             throw $exception;
         }
 
-        return $path;
+        return $file;
     }
 
     /**
@@ -106,15 +114,16 @@ class Resolver implements ResolverContract {
         $iterator = $path instanceof FilePath || is_string($path) ? [$path] : $path;
 
         foreach ($iterator as $file) {
-            try {
-                $file = $this->path($file);
-                $file = $this->fs->get($file);
+            $filepath = $this->path($file);
 
-                $this->notify($file, Result::Queued);
+            try {
+                $file = $this->fs->get($filepath);
+
+                $this->notify($filepath, Result::Queued);
 
                 ($this->queue)($file);
             } catch (Exception $exception) {
-                $this->notify($file, Result::Failed);
+                $this->notify($filepath, Result::Failed);
 
                 throw $exception;
             }
@@ -163,16 +172,7 @@ class Resolver implements ResolverContract {
         };
     }
 
-    /**
-     * @param File|FilePath|non-empty-string $path
-     */
-    protected function notify(File|FilePath|string $path, Result $result): void {
-        $path = match (true) {
-            $path instanceof File => $path->path,
-            default               => $path,
-        };
-        $path = $this->path($path);
-
+    protected function notify(FilePath $path, Result $result): void {
         $this->dispatcher->notify(
             new Event($path, $result),
         );
@@ -185,9 +185,14 @@ class Resolver implements ResolverContract {
      *
      * @return (T is string ? FilePath : new<T>)
      */
-    protected function path(DirectoryPath|FilePath|string $path, bool $output = false): DirectoryPath|FilePath {
+    protected function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
         $path = is_string($path) ? new FilePath($path) : $path;
-        $path = ($output ? $this->output : $this->directory)->resolve($path);
+        $path = match (true) {
+            $path->parts[0] === $this->oHome->parts[0] => $this->output->resolve($this->oHome->relative($path) ?? $path),
+            $path->parts[0] === $this->iHome->parts[0] => $this->input->resolve($this->iHome->relative($path) ?? $path),
+            $path->relative                            => $this->directory->resolve($path),
+            default                                    => $path->normalized(),
+        };
 
         return $path;
     }
