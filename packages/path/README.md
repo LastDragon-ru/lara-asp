@@ -81,6 +81,7 @@ The package works only with paths, not with URL/URI/etc, and doesn't interact wi
 | [`Type::Absolute`][code-links/eeda5588c3cf02ff]        | `/path`                                | `/`                                       |
 | [`Type::Relative`][code-links/5f48ca28e823cf62]        | `path`, `./path`, `../path`            | `​`                                       |
 | [`Type::Home`][code-links/0b2589a0ba046f5b]            | `~`, `~/`, `~/path`                    | `~/`                                      |
+| [`Type::User`][code-links/d6e7f9ebd35ee97e]            | `~username`, `~username/path`          | `~username/`                              |
 | [`Type::Unc`][code-links/338940468184c4b5]             | `\\ComputerName\SharedFolder\Resource` | `\\ComputerName\SharedFolder`             |
 | [`Type::WindowsAbsolute`][code-links/bad0bc31946fc486] | `C:\path`                              | `C:\`                                     |
 | [`Type::WindowsRelative`][code-links/d77252dc90c836dd] | `C:path`                               | `C:/<current directory>`[^1] or `C:\`[^1] |
@@ -314,10 +315,13 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 [code-links/338940468184c4b5]: src/Type.php#L14-L19
     "\LastDragon_ru\Path\Type::Unc"
 
-[code-links/bad0bc31946fc486]: src/Type.php#L24-L27
+[code-links/d6e7f9ebd35ee97e]: src/Type.php#L24-L27
+    "\LastDragon_ru\Path\Type::User"
+
+[code-links/bad0bc31946fc486]: src/Type.php#L28-L31
     "\LastDragon_ru\Path\Type::WindowsAbsolute"
 
-[code-links/d77252dc90c836dd]: src/Type.php#L28-L33
+[code-links/d77252dc90c836dd]: src/Type.php#L32-L37
     "\LastDragon_ru\Path\Type::WindowsRelative"
 
 [//]: # (end: code-links)

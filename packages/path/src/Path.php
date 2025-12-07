@@ -275,7 +275,7 @@ abstract class Path implements Stringable {
         // Root
         $body = implode('/', $result);
         $root = match ($type) {
-            Type::Relative  => $body === '~' ? './' : '',
+            Type::Relative  => str_starts_with($body, '~') ? './' : '',
             default         => $parts[0],
         };
 
@@ -301,6 +301,8 @@ abstract class Path implements Stringable {
             $type = Type::Unc;
         } elseif ($first === '~' && ($second === '/' || $second === '')) {
             $type = Type::Home;
+        } elseif ($first === '~') {
+            $type = Type::User;
         } elseif ($second === ':' && preg_match('/[a-z]/ui', $first) > 0) {
             $type = $third === '/' || $third === ''
                 ? Type::WindowsAbsolute
@@ -324,6 +326,7 @@ abstract class Path implements Stringable {
             Type::Relative        => str_starts_with($normalized, './') ? 2 : 0,
             Type::Unc             => self::length($normalized, 4),
             Type::Home            => 2,
+            Type::User            => self::length($normalized),
             Type::WindowsRelative => 2,
             Type::WindowsAbsolute => 3,
         };

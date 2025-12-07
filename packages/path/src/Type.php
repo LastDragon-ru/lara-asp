@@ -18,9 +18,13 @@ enum Type {
      */
     case Unc;
     /**
-     * User home directory path (`~/path`).
+     * Current user home directory path (`~/path`).
      */
     case Home;
+    /**
+     * Specific user home directory path (`~username/path`).
+     */
+    case User;
     /**
      * `C:\\path`
      */
