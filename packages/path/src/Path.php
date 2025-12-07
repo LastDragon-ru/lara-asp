@@ -273,13 +273,14 @@ abstract class Path implements Stringable {
         }
 
         // Root
+        $body = implode('/', $result);
         $root = match ($type) {
-            Type::Relative  => '',
+            Type::Relative  => $body === '~' ? './' : '',
             default         => $parts[0],
         };
 
         // Return
-        return $root.implode('/', $result);
+        return $root.$body;
     }
 
     private static function type(string $path): Type {
@@ -298,7 +299,7 @@ abstract class Path implements Stringable {
 
         if ($first === '/' && $second === '/' && $third !== '/') {
             $type = Type::Unc;
-        } elseif ($first === '~' && $second === '/') {
+        } elseif ($first === '~' && ($second === '/' || $second === '')) {
             $type = Type::Home;
         } elseif ($second === ':' && preg_match('/[a-z]/ui', $first) > 0) {
             $type = $third === '/' || $third === ''

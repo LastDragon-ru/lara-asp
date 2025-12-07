@@ -80,7 +80,7 @@ The package works only with paths, not with URL/URI/etc, and doesn't interact wi
 |--------------------------------------------------------|----------------------------------------|-------------------------------------------|
 | [`Type::Absolute`][code-links/eeda5588c3cf02ff]        | `/path`                                | `/`                                       |
 | [`Type::Relative`][code-links/5f48ca28e823cf62]        | `path`, `./path`, `../path`            | `​`                                       |
-| [`Type::Home`][code-links/0b2589a0ba046f5b]            | `~/`, `~/path`                         | `~/`                                      |
+| [`Type::Home`][code-links/0b2589a0ba046f5b]            | `~`, `~/`, `~/path`                    | `~/`                                      |
 | [`Type::Unc`][code-links/338940468184c4b5]             | `\\ComputerName\SharedFolder\Resource` | `\\ComputerName\SharedFolder`             |
 | [`Type::WindowsAbsolute`][code-links/bad0bc31946fc486] | `C:\path`                              | `C:\`                                     |
 | [`Type::WindowsRelative`][code-links/d77252dc90c836dd] | `C:path`                               | `C:/<current directory>`[^1] or `C:\`[^1] |
