@@ -273,12 +273,9 @@ abstract class Path implements Stringable {
         }
 
         // Root
-        $root = str_replace('\\', '/', $parts[0]);
         $root = match ($type) {
-            default               => $root.(mb_substr($root, -1) !== '/' ? '/' : ''),
-            Type::Relative        => '',
-            Type::WindowsAbsolute,
-            Type::WindowsRelative => mb_strtoupper($root),
+            Type::Relative  => '',
+            default         => $parts[0],
         };
 
         // Return
@@ -331,7 +328,17 @@ abstract class Path implements Stringable {
         };
         $prefix = match ($type) {
             Type::Relative => '',
-            default        => mb_substr($path, 0, $length),
+            default        => mb_substr($normalized, 0, $length),
+        };
+        $prefix = match ($type) {
+            Type::Relative,
+            Type::WindowsRelative => $prefix,
+            default               => $prefix.(mb_substr($prefix, -1) !== '/' ? '/' : ''),
+        };
+        $prefix = match ($type) {
+            Type::WindowsAbsolute,
+            Type::WindowsRelative => mb_strtoupper($prefix),
+            default               => $prefix,
         };
         $suffix = mb_substr($normalized, $length);
         $suffix = mb_rtrim($suffix, '/\\');
