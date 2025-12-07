@@ -26,8 +26,10 @@ final class FilePathTest extends TestCase {
     }
 
     public function testConstructTilde(): void {
-        self::assertSame('~', (string) new FilePath('~'));
-        self::assertSame('./~', (string) new FilePath('./~'));
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Filename cannot be empty.');
+
+        new FilePath('~');
     }
 
     public function testConstructSlash(): void {
@@ -53,6 +55,7 @@ final class FilePathTest extends TestCase {
 
     public function testPropertyName(): void {
         self::assertSame('c', (new FilePath('/a/b/c'))->name);
+        self::assertSame('~', (new FilePath('./~'))->name);
     }
 
     public function testFile(): void {
