@@ -50,7 +50,7 @@ final class FileSystemTest extends TestCase {
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->normalized();
         $file         = $fs->get($path);
         $readonly     = $fs->get(new FilePath(__FILE__));
-        $relative     = $fs->get(new FilePath($readonly->name));
+        $relative     = $fs->get($fs->input->resolve(new FilePath($readonly->name)));
         $internal     = $fs->get(new FilePath(self::getTestData()->path('c.html')));
         $fromFilePath = $fs->get($path);
 
@@ -87,9 +87,10 @@ final class FileSystemTest extends TestCase {
     public function testGetFileNotFound(): void {
         self::expectException(FileNotFound::class);
 
-        $this
-            ->getFileSystem(__DIR__)
-            ->get(new FilePath('not found'));
+        $fs   = $this->getFileSystem(__DIR__);
+        $file = $fs->input->resolve(new FilePath('not found'));
+
+        $fs->get($file);
     }
 
     public function testSearch(): void {
@@ -163,9 +164,10 @@ final class FileSystemTest extends TestCase {
     public function testSearchDirectoryNotFound(): void {
         self::expectException(DirectoryNotFound::class);
 
-        iterator_to_array(
-            $this->getFileSystem(__DIR__)->search(new DirectoryPath('not found')),
-        );
+        $fs        = $this->getFileSystem(__DIR__);
+        $directory = $fs->input->resolve(new DirectoryPath('not found'));
+
+        iterator_to_array($fs->search($directory));
     }
 
     public function testRead(): void {
@@ -449,32 +451,24 @@ final class FileSystemTest extends TestCase {
     }
 
     #[DataProvider('dataProviderPath')]
-    public function testPath(
-        Exception|DirectoryPath|FilePath $expected,
-        DirectoryPath $input,
-        ?DirectoryPath $directory,
-        ?DirectoryPath $base,
-        DirectoryPath|FilePath $path,
-    ): void {
+    public function testPath(Exception|DirectoryPath|FilePath $expected, DirectoryPath|FilePath $path): void {
         $dispatcher = Mockery::mock(Dispatcher::class);
         $adapter    = Mockery::mock(Adapter::class);
         $caster     = Mockery::mock(Caster::class);
-        $fs         = new class($adapter, $dispatcher, $caster, $input, $input) extends FileSystem {
+        $output     = new DirectoryPath('/output');
+        $input      = new DirectoryPath('/input');
+        $fs         = new class($adapter, $dispatcher, $caster, $input, $output) extends FileSystem {
             #[Override]
             public function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
                 return parent::path($path, $base);
             }
         };
 
-        if ($directory !== null) {
-            $fs->begin($directory);
-        }
-
         if ($expected instanceof Exception) {
             self::expectExceptionObject($expected);
         }
 
-        $actual = $fs->path($path, $base);
+        $actual = $fs->path($path);
 
         self::assertInstanceOf($expected::class, $actual);
         self::assertNotInstanceOf(Exception::class, $expected);
@@ -485,61 +479,25 @@ final class FileSystemTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{Exception|DirectoryPath|FilePath, DirectoryPath, ?DirectoryPath, ?DirectoryPath, DirectoryPath|FilePath}>
+     * @return array<string, array{Exception|DirectoryPath|FilePath, DirectoryPath|FilePath}>
      */
     public static function dataProviderPath(): array {
-        $directory = (new DirectoryPath('/input/directory'))->normalized();
-        $input     = (new DirectoryPath('/input'))->normalized();
-
         return [
-            'absolute, inside, no base, no directory' => [
-                $input->file('file.md'),
-                $input,
-                null,
-                null,
-                $input->file('file.md'),
+            'relative'      => [
+                new PathUnavailable(new FilePath('file.txt')),
+                new FilePath('file.txt'),
             ],
-            'absolute, inside, no base, directory'    => [
-                $input->file('file.md'),
-                $input,
-                $directory,
-                null,
-                $input->file('file.md'),
+            'external'      => [
+                new PathUnavailable(new FilePath('/file.txt')),
+                new FilePath('/file.txt'),
             ],
-            'absolute, inside, base, directory'       => [
-                $input->file('file.md'),
-                $input,
-                $directory,
-                $input->directory('base'),
-                $input->file('file.md'),
+            'inside input'  => [
+                new FilePath('/input/file.txt'),
+                new FilePath('/input/file.txt'),
             ],
-            'relative, inside, no base, no directory' => [
-                $input->file('file.md'),
-                $input,
-                null,
-                null,
-                new FilePath('file.md'),
-            ],
-            'relative, inside, no base, directory'    => [
-                $directory->file('file.md'),
-                $input,
-                $directory,
-                null,
-                new FilePath('file.md'),
-            ],
-            'relative, inside, base, directory'       => [
-                $input->file('base/file.md'),
-                $input,
-                $directory,
-                $input->directory('base'),
-                new FilePath('file.md'),
-            ],
-            'absolute, outside'                       => [
-                new PathUnavailable(new DirectoryPath('/outside/')),
-                $input,
-                null,
-                null,
-                new DirectoryPath('/outside'),
+            'inside output' => [
+                new DirectoryPath('/output/file.txt'),
+                new DirectoryPath('/output/file.txt'),
             ],
         ];
     }

@@ -131,7 +131,7 @@ class FileSystem {
         $iterator = $this->adapter->search($directory, $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
-            $path = $this->path($path, $directory);
+            $path = $this->path($directory->resolve($path));
 
             if ($this->cached($path) === null) {
                 /**
@@ -175,10 +175,9 @@ class FileSystem {
             // as is
         }
 
-        // Relative?
-        $path = $this->path($path, $this->output);
-
         // Writable?
+        $path = $this->path($path);
+
         if (!$this->output->contains($path)) {
             throw new FileNotWritable($path);
         }
@@ -269,17 +268,9 @@ class FileSystem {
      *
      * @param T $path
      *
-     * @return new<T>
+     * @return T
      */
     protected function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
-        $base = match (true) {
-            $this->input->equals($base)  => $this->input,
-            $this->output->equals($base) => $this->output,
-            $base !== null               => $this->directory->resolve($base),
-            default                      => $this->directory,
-        };
-        $path = $base->resolve($path);
-
         if (!str_starts_with($path->path, $this->input->path) && !str_starts_with($path->path, $this->output->path)) {
             throw new PathUnavailable($path);
         }
