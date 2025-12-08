@@ -193,7 +193,7 @@ class FileSystem {
             $content = $this->caster->castFrom($file, $content);
         }
 
-        if ($content === null) {
+        if ($content === null || (($this->content[$file] ?? null) === $content)) {
             return $file;
         }
 
