@@ -72,9 +72,9 @@ class Task implements FileTask {
     public function __invoke(Resolver $resolver, File $file): void {
         // Composer?
         $composer = $resolver->find('~input/composer.json');
-        $composer = $composer?->as(Package::class);
+        $package  = $composer?->as(Package::class);
 
-        if (!($composer instanceof Package)) {
+        if (!($package instanceof Package)) {
             return;
         }
 
@@ -87,7 +87,7 @@ class Task implements FileTask {
         // Links
         foreach ($parsed['links'] as $token) {
             // External?
-            $paths = $token->link->getSource($file, $composer);
+            $paths = $token->link->getSource($file, $package);
 
             if ($paths === null) {
                 continue;
@@ -98,7 +98,7 @@ class Task implements FileTask {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $source = $resolver->find($path);
+                $source = $resolver->find($composer->path->resolve($path));
 
                 if ($source !== null) {
                     break;
