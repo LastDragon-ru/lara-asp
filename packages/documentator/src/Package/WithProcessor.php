@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Package;
 
+use Closure;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
@@ -40,8 +41,8 @@ trait WithProcessor {
             #[Override]
             protected function getFinder(
                 DirectoryPath $directory,
-                array $include = [],
-                array $exclude = [],
+                ?Closure $include = null,
+                ?Closure $exclude = null,
                 ?int $depth = null,
             ): Finder {
                 return parent::getFinder($directory, $include, $exclude, $depth)

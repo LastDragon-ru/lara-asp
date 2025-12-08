@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
+use Closure;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
@@ -938,8 +939,8 @@ class ProcessorTest__Adapter extends SymfonyFileSystem {
     #[Override]
     protected function getFinder(
         DirectoryPath $directory,
-        array $include = [],
-        array $exclude = [],
+        ?Closure $include = null,
+        ?Closure $exclude = null,
         ?int $depth = null,
     ): Finder {
         return parent::getFinder($directory, $include, $exclude, $depth)

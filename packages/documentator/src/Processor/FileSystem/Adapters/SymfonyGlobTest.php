@@ -13,7 +13,8 @@ use Symfony\Component\Finder\SplFileInfo;
 final class SymfonyGlobTest extends TestCase {
     public function testMatch(): void {
         // Prepare
-        $glob = new SymfonyGlob(['*.txt', '*.md', '**/*.tmp']);
+        $map  = new SymfonyPathMap();
+        $glob = new SymfonyGlob($map, ['*.txt', '*.md', '**/*.tmp']);
 
         // Strings
         self::assertFalse($glob->match(new SplFileInfo('$file', '$path', '/file.txt')));

@@ -2,12 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 
+use Closure;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 use function is_dir;
 use function is_file;
@@ -36,11 +38,16 @@ class SymfonyFileSystem implements Adapter {
         array $exclude = [],
         ?int $depth = null,
     ): iterable {
-        foreach ($this->getFinder($directory, $include, $exclude, $depth)->files() as $file) {
-            $pathname = $file->getPathname();
+        $map      = new SymfonyPathMap();
+        $include  = $include !== [] ? (new SymfonyGlob($map, $include))->match(...) : null;
+        $exclude  = $exclude !== [] ? (new SymfonyGlob($map, $exclude))->mismatch(...) : null;
+        $iterator = $this->getFinder($directory, $include, $exclude, $depth)->files();
 
-            if ($pathname !== '') {
-                yield new FilePath($pathname);
+        foreach ($iterator as $file) {
+            $path = $map->get($file);
+
+            if ($path instanceof FilePath) {
+                yield $path;
             }
         }
 
@@ -63,14 +70,14 @@ class SymfonyFileSystem implements Adapter {
     }
 
     /**
-     * @param list<non-empty-string> $include
-     * @param list<non-empty-string> $exclude
-     * @param ?int<0, max>           $depth
+     * @param Closure(SplFileInfo): bool|null $include
+     * @param Closure(SplFileInfo): bool|null $exclude
+     * @param ?int<0, max>                    $depth
      */
     protected function getFinder(
         DirectoryPath $directory,
-        array $include = [],
-        array $exclude = [],
+        ?Closure $include = null,
+        ?Closure $exclude = null,
         ?int $depth = null,
     ): Finder {
         $finder = Finder::create()
@@ -84,17 +91,12 @@ class SymfonyFileSystem implements Adapter {
             $finder = $finder->depth("<= {$depth}");
         }
 
-        if ($include !== []) {
-            $finder = $finder->filter(
-                (new SymfonyGlob($include))->match(...),
-            );
+        if ($include !== null) {
+            $finder = $finder->filter($include);
         }
 
-        if ($exclude !== []) {
-            $finder = $finder->filter(
-                (new SymfonyGlob($exclude))->mismatch(...),
-                true,
-            );
+        if ($exclude !== null) {
+            $finder = $finder->filter($exclude, true);
         }
 
         return $finder;

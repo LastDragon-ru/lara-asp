@@ -27,7 +27,7 @@ readonly class Glob implements Matcher {
 
     #[Override]
     public function match(Stringable|string $string): bool {
-        return (bool) $this->regex?->match((string) $string);
+        return (bool) $this->regex?->match($string);
     }
 
     public function mismatch(Stringable|string $string): bool {
