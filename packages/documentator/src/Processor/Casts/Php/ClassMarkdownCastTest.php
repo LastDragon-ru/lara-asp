@@ -6,7 +6,6 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
-use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function dirname;
@@ -41,7 +40,7 @@ final class ClassMarkdownCastTest extends TestCase {
 
         self::assertNotEmpty($path);
 
-        $file  = $fs->get(new FilePath($path));
+        $file  = $fs->get($fs->input->file($path));
         $cast  = new ClassMarkdownCast($this->app()->make(PhpDocumentFactory::class));
         $value = $cast->castTo($file, Document::class);
 

@@ -48,7 +48,7 @@ final class FileSystemTest extends TestCase {
         $fs           = $this->getFileSystem(__DIR__);
         $path         = (new FilePath(self::getTestData()->path('c.txt')))->normalized();
         $file         = $fs->get($path);
-        $readonly     = $fs->get(new FilePath(__FILE__));
+        $readonly     = $fs->get($fs->input->file(__FILE__));
         $relative     = $fs->get($fs->input->resolve(new FilePath($readonly->name)));
         $internal     = $fs->get(new FilePath(self::getTestData()->path('c.html')));
         $fromFilePath = $fs->get($path);
@@ -420,9 +420,9 @@ final class FileSystemTest extends TestCase {
 
     public function testCache(): void {
         $fs   = $this->getFileSystem(__DIR__);
-        $file = $fs->get(new FilePath(__FILE__));
+        $file = $fs->get($fs->input->file(__FILE__));
 
-        self::assertSame($file, $fs->get(new FilePath(__FILE__)));
+        self::assertSame($file, $fs->get($fs->input->file(__FILE__)));
     }
 
     public function testPropertyDirectory(): void {

@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
-use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function dirname;
@@ -39,7 +38,7 @@ final class ClassCommentCastTest extends TestCase {
 
         self::assertNotEmpty($path);
 
-        $file  = $fs->get(new FilePath($path));
+        $file  = $fs->get($fs->input->file($path));
         $cast  = new ClassCommentCast();
         $value = $cast->castTo($file, ClassComment::class);
 
