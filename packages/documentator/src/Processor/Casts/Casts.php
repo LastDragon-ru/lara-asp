@@ -6,7 +6,7 @@ use IteratorAggregate;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Instances;
 use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
 use Override;

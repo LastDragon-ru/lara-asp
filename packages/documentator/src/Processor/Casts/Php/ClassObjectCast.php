@@ -3,7 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;

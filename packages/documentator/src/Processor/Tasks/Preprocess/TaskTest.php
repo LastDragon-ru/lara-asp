@@ -10,8 +10,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Data\Location as LocationData;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
@@ -164,7 +165,7 @@ final class TaskTest extends TestCase {
         $actual     = '';
         $path       = new FilePath('/path/to/file.md');
         $filesystem = Mockery::mock(FileSystem::class);
-        $file       = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file       = Mockery::mock(FileImpl::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
         $file->makePartial();
         $file
             ->shouldReceive('as')

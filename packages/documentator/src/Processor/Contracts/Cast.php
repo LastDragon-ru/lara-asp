@@ -2,8 +2,6 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
-
 /**
  * @template TValue of object
  */

@@ -4,8 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
@@ -26,7 +27,7 @@ final class ExecutorTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($filesystem, $path, $caster);
+        $file       = new FileImpl($filesystem, $path, $caster);
 
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();

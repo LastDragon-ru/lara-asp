@@ -6,7 +6,8 @@ use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassComment;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
@@ -84,14 +85,14 @@ final class BaseTest extends TestCase {
         $fs     = Mockery::mock(FileSystem::class);
         $data   = new ClassComment($class, $context, $comment);
         $caster = Mockery::mock(Caster::class);
-        $source = Mockery::mock(File::class, [$fs, new FilePath('/relative/path/to/class/a.php'), $caster]);
+        $source = Mockery::mock(FileImpl::class, [$fs, new FilePath('/relative/path/to/class/a.php'), $caster]);
         $source
             ->shouldReceive('as')
             ->with(ClassComment::class)
             ->twice()
             ->andReturn($data);
 
-        $file = Mockery::mock(File::class, [$fs, new FilePath('/file.txt'), $caster]);
+        $file = Mockery::mock(FileImpl::class, [$fs, new FilePath('/file.txt'), $caster]);
         $doc  = Mockery::mock(Doc::class);
         $doc
             ->shouldReceive('getStartLine')

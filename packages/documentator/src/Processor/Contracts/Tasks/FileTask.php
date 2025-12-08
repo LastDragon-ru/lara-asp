@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 
 /**
  * Performs action on the file.

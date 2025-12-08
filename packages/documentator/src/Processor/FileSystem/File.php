@@ -4,16 +4,16 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File as Contract;
 use LastDragon_ru\Path\FilePath;
+use Override;
 
 use function sprintf;
 
 /**
- * @property-read non-empty-string  $name
- * @property-read ?non-empty-string $extension
- * @property-read string            $content
+ * @internal
  */
-class File {
+class File implements Contract {
     public function __construct(
         private readonly FileSystem $fs,
         public readonly FilePath $path,
@@ -45,6 +45,7 @@ class File {
      *
      * @return T
      */
+    #[Override]
     public function as(string $class): object {
         return $this->caster->castTo($this, $class);
     }

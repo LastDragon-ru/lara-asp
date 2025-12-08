@@ -5,10 +5,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
@@ -26,8 +27,8 @@ final class TasksTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $tasks      = new Tasks(Mockery::mock(ContainerResolver::class));
-        $aFile      = Mockery::mock(File::class, [$filesystem, new FilePath('/file.md'), $caster]);
-        $bFile      = Mockery::mock(File::class, [$filesystem, new FilePath('/file.task'), $caster]);
+        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md'), $caster]);
+        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.task'), $caster]);
 
         self::assertFalse($tasks->has($aFile));
         self::assertFalse($tasks->has(Hook::File));
@@ -62,8 +63,8 @@ final class TasksTest extends TestCase {
                 // empty
             }
         };
-        $aFile      = Mockery::mock(File::class, [$filesystem, new FilePath('/file.md'), $caster]);
-        $bFile      = Mockery::mock(File::class, [$filesystem, new FilePath('/file.task'), $caster]);
+        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md'), $caster]);
+        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.task'), $caster]);
 
         $tasks->add($taskD, 200);
         $tasks->add($taskA, 100);

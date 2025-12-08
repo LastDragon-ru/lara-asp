@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
@@ -15,6 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use WeakMap;
@@ -99,7 +101,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->exists($path)) {
-            $file = new File($this, $path, $this->caster);
+            $file = new FileImpl($this, $path, $this->caster);
         } else {
             throw new FileNotFound($path);
         }
@@ -138,7 +140,7 @@ class FileSystem {
                  * We are expecting all files are exist, so add them into the
                  * cache to avoid another {@see Adapter::exists()} call.
                  */
-                $this->cache(new File($this, $path, $this->caster));
+                $this->cache(new FileImpl($this, $path, $this->caster));
             }
 
             yield $path;
@@ -185,7 +187,7 @@ class FileSystem {
         // File?
         $file ??= $this->exists($path) ? $this->get($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new File($this, $path, $this->caster));
+        $file ??= $this->cache(new FileImpl($this, $path, $this->caster));
 
         // Changed?
         if (!is_string($content)) {

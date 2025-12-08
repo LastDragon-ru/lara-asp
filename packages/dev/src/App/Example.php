@@ -7,7 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ApplicationResolver;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\ConfigurationResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LogicException;

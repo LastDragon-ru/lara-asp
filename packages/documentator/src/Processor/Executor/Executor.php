@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Exception;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
@@ -22,7 +23,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailabl
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
