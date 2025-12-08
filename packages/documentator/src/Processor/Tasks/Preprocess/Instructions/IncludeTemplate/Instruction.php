@@ -4,8 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -56,18 +54,13 @@ readonly class Instruction implements InstructionContract {
             throw new TemplateDataMissed($context, $parameters);
         }
 
-        if ($parameters->target === '') {
-            return '';
-        }
-
         // Replace
         $vars    = array_keys($parameters->data);
         $used    = [];
         $known   = [];
         $count   = 0;
-        $target  = $context->file->getFilePath($parameters->target);
-        $target  = $context->resolver->resolve(new FileReference($target));
-        $content = $target->as(Content::class)->content;
+        $target  = $context->resolver->get($parameters->target);
+        $content = $target->content;
 
         do {
             $content = (string) preg_replace_callback(

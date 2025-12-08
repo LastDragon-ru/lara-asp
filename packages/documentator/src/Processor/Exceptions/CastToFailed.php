@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\Path\FilePath;
 use Throwable;
 
 use function sprintf;
 
 class CastToFailed extends CastError {
     public function __construct(
-        protected readonly File $target,
+        protected readonly FilePath $target,
         /**
          * @var class-string
          */
@@ -26,7 +26,7 @@ class CastToFailed extends CastError {
         );
     }
 
-    public function getTarget(): File {
+    public function getTarget(): FilePath {
         return $this->target;
     }
 

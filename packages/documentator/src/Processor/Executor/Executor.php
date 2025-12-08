@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Exception;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
@@ -22,13 +23,13 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailabl
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
+use LastDragon_ru\Path\FilePath;
 
+use function array_last;
 use function array_values;
-use function end;
 
 /**
  * @internal
@@ -44,12 +45,12 @@ class Executor {
     private array $processed = [];
 
     /**
-     * @var array<string, File>
+     * @var array<string, FilePath>
      */
     private array $stack = [];
 
     /**
-     * @param iterable<mixed, File> $files
+     * @param iterable<mixed, FilePath> $files
      */
     public function __construct(
         private readonly Dispatcher $dispatcher,
@@ -108,7 +109,7 @@ class Executor {
 
     protected function file(File $file): void {
         // Processed?
-        $path = (string) $file;
+        $path = (string) $file->path;
 
         if (isset($this->processed[$path])) {
             return;
@@ -122,7 +123,7 @@ class Executor {
                 $this->dispatcher->notify(new FileStarted($file->path));
                 $this->dispatcher->notify(new FileFinished(FileFinishedResult::Failed));
 
-                throw new DependencyCircularDependency($file, array_values($this->stack));
+                throw new DependencyCircularDependency($file->path, array_values($this->stack));
             } else {
                 return;
             }
@@ -141,7 +142,7 @@ class Executor {
         }
 
         // Process
-        $this->stack[$path] = $file;
+        $this->stack[$path] = $file->path;
 
         try {
             $this->tasks($this->tasks->get($file), Hook::File, $file);
@@ -164,12 +165,10 @@ class Executor {
      * @param iterable<int, Task> $tasks
      */
     protected function tasks(iterable $tasks, Hook $hook, File $file): void {
-        $this->fs->begin();
+        $this->fs->begin($file->path->directory());
 
         foreach ($tasks as $task) {
             $this->task($task, $hook, $file);
-
-            $this->resolver->check();
         }
 
         $this->fs->commit();
@@ -185,14 +184,12 @@ class Executor {
                 } elseif ($task instanceof HookTask) {
                     $task($this->resolver, $file, $hook);
                 } else {
-                    throw new TaskNotInvokable($task, $hook, $file);
+                    throw new TaskNotInvokable($task, $hook, $file->path);
                 }
-
-                $this->resolver->check();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
-                throw new TaskFailed($task, $hook, $file, $exception);
+                throw new TaskFailed($task, $hook, $file->path, $exception);
             }
 
             $this->dispatcher->notify(new TaskFinished(TaskFinishedResult::Success));
@@ -204,13 +201,13 @@ class Executor {
     }
 
     protected function queue(File $file): void {
-        $this->iterator->push($file->path);
+        $this->iterator->push($file);
     }
 
     protected function onResolve(File $resolved): void {
         // Possible?
         if ($this->state->is(State::Created)) {
-            throw new DependencyUnavailable();
+            throw new DependencyUnavailable($resolved->path);
         }
 
         // Skipped?
@@ -219,7 +216,7 @@ class Executor {
         }
 
         // Process
-        if (!$this->state->is(State::Preparation) && end($this->stack) !== $resolved) {
+        if (!$this->state->is(State::Preparation) && !$resolved->path->equals(array_last($this->stack))) {
             $this->file($resolved);
         }
     }
@@ -227,7 +224,7 @@ class Executor {
     protected function onQueue(File $resolved): void {
         // Possible?
         if ($this->state->is(State::Finished)) {
-            throw new DependencyUnavailable();
+            throw new DependencyUnavailable($resolved->path);
         }
 
         // Skipped?

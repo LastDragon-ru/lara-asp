@@ -5,7 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
@@ -36,8 +38,10 @@ final class CastsTest extends TestCase {
         $casts->add($bCast, 200);
         $casts->add($cCast, 100);
 
-        $aFile = Mockery::mock(File::class, [new FilePath('/file.md'), Mockery::mock(Caster::class)]);
-        $bFile = Mockery::mock(File::class, [new FilePath('/file.txt'), Mockery::mock(Caster::class)]);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md'), $caster]);
+        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.txt'), $caster]);
 
         self::assertSame([$bCast, $cCast, $aCast], iterator_to_array($casts->get($aFile), false));
         self::assertSame([$cCast, $aCast], iterator_to_array($casts->get($bFile), false));

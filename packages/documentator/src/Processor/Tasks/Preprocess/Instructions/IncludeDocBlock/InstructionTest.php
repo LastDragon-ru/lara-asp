@@ -30,7 +30,7 @@ final class InstructionTest extends TestCase {
     public function testInvoke(Closure|string $expected, string $file, Parameters $params): void {
         $path     = (new FilePath(self::getTestData()->path($file)))->normalized();
         $fs       = $this->getFileSystem($path->directory());
-        $file     = $fs->getFile($path);
+        $file     = $fs->get($path);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
 

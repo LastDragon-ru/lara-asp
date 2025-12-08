@@ -4,34 +4,54 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
 use InvalidArgumentException;
-use Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileCreateFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathWriteFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
+use WeakMap;
+use WeakReference;
 
+use function array_last;
+use function array_pop;
+use function count;
 use function is_string;
+use function spl_object_id;
 use function sprintf;
+use function str_starts_with;
 
+/**
+ * By default, relative paths will be resolved based on {@see self::$directory}.
+ *
+ * @property-read DirectoryPath $directory
+ */
 class FileSystem {
     /**
-     * @var array<string, File>
+     * @var array<string, WeakReference<File>>
      */
     private array $cache = [];
     /**
-     * @var array<int, array<string, array{FilePath, string}>>
+     * @var array<int, File>
      */
-    private array $changes = [];
-    private int   $level   = 0;
+    private array $queue = [];
+    /**
+     * @var array<int, DirectoryPath>
+     */
+    private array $level = [];
+
+    /**
+     * @var WeakMap<File, string>
+     */
+    private WeakMap $content;
 
     public function __construct(
         private readonly Adapter $adapter,
@@ -57,25 +77,21 @@ class FileSystem {
                 ),
             );
         }
+
+        $this->content = new WeakMap();
     }
 
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
-     */
-    protected function isFile(FilePath $path): bool {
-        $path = $this->input->resolve($path);
+    public function exists(FilePath $path): bool {
+        $path = $this->path($path);
         $file = $this->cached($path);
-        $is   = $file !== null || $this->adapter->isFile($path);
+        $is   = $file !== null || $this->adapter->exists($path);
 
         return $is;
     }
 
-    /**
-     * Relative path will be resolved based on {@see self::$input}.
-     */
-    public function getFile(FilePath $path): File {
+    public function get(FilePath $path): File {
         // Cached?
-        $path = $this->input->resolve($path);
+        $path = $this->path($path);
         $file = $this->cached($path);
 
         if ($file instanceof File) {
@@ -83,44 +99,65 @@ class FileSystem {
         }
 
         // Create
-        if ($this->adapter->isFile($path)) {
-            $file = new File($path, $this->caster);
+        if ($this->adapter->exists($path)) {
+            $file = new FileImpl($this, $path, $this->caster);
         } else {
-            throw new FileNotFound($path);
+            throw new PathNotFound($path);
         }
 
         return $this->cache($file);
     }
 
     /**
-     * Relative path will be resolved based on {@see self::$input}.
+     * @param list<non-empty-string> $include
+     * @param list<non-empty-string> $exclude
+     * @param ?int<0, max>           $depth
      *
-     * @param list<string> $include
-     * @param list<string> $exclude
-     *
-     * @return Iterator<array-key, File>
+     * @return iterable<mixed, FilePath>
      */
-    public function getFilesIterator(
+    public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
-    ): Iterator {
+    ): iterable {
         // Exist?
-        $directory = $this->input->resolve($directory);
+        $directory = $this->path($directory);
 
-        if (!$this->adapter->isDirectory($directory)) {
-            throw new DirectoryNotFound($directory);
+        if (!$this->adapter->exists($directory)) {
+            throw new PathNotFound($directory);
         }
 
         // Search
-        $iterator = $this->adapter->getFilesIterator($directory, $include, $exclude, $depth);
+        $iterator = $this->adapter->search($directory, $include, $exclude, $depth);
 
         foreach ($iterator as $path) {
-            yield $this->getFile($path);
+            $path = $this->path($directory->resolve($path));
+
+            if ($this->cached($path) === null) {
+                /**
+                 * We are expecting all files are exist, so add them into the
+                 * cache to avoid another {@see Adapter::exists()} call.
+                 */
+                $this->cache(new FileImpl($this, $path, $this->caster));
+            }
+
+            yield $path;
         }
 
         yield from [];
+    }
+
+    public function read(File $file): string {
+        if (!isset($this->content[$file])) {
+            try {
+                $this->content[$file] = $this->adapter->read($file->path);
+            } catch (Exception $exception) {
+                throw new PathReadFailed($file->path, $exception);
+            }
+        }
+
+        return $this->content[$file];
     }
 
     /**
@@ -139,37 +176,34 @@ class FileSystem {
             // as is
         }
 
-        // Relative?
-        $path = $this->output->resolve($path);
-
         // Writable?
+        $path = $this->path($path);
+
         if (!$this->output->contains($path)) {
-            throw new FileNotWritable($path);
+            throw new PathNotWritable($path);
         }
 
         // File?
-        $file ??= $this->isFile($path) ? $this->getFile($path) : null;
+        $file ??= $this->exists($path) ? $this->get($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new File($path, $this->caster));
+        $file ??= $this->cache(new FileImpl($this, $path, $this->caster));
 
         // Changed?
-        $content = is_string($content)
-            ? $this->caster->castFrom($file, new Content($content))
-            : $this->caster->castFrom($file, $content);
+        if (!is_string($content)) {
+            $content = $this->caster->castFrom($file, $content);
+        }
 
-        if ($content === null) {
+        if ($content === null || (($this->content[$file] ?? null) === $content)) {
             return $file;
         }
 
         // Update
+        $this->content[$file] = $content;
+
         if ($exists) {
-            $this->change($file, $content);
+            $this->queue($file);
         } else {
-            try {
-                $this->adapter->write($path, $content);
-            } catch (Exception $exception) {
-                throw new FileCreateFailed($path, $exception);
-            }
+            $this->save($file);
         }
 
         // Event
@@ -186,40 +220,63 @@ class FileSystem {
         return $file;
     }
 
-    public function begin(): void {
-        $this->level++;
-        $this->changes[$this->level] = [];
+    public function begin(DirectoryPath $path): void {
+        $this->level[] = $this->path($path);
     }
 
     public function commit(): void {
-        // Commit
-        foreach ($this->changes[$this->level] ?? [] as [$path, $content]) {
-            try {
-                $this->adapter->write($path, $content);
-            } catch (Exception $exception) {
-                throw new FileSaveFailed($path, $exception);
-            }
+        // Level
+        array_pop($this->level);
+
+        // Dump
+        while (count($this->queue) > 0) {
+            $this->save(array_pop($this->queue));
         }
 
-        unset($this->changes[$this->level]);
-
-        // Decrease
-        $this->level--;
+        // Top?
+        if (count($this->level) > 0) {
+            return;
+        }
 
         // Cleanup
-        if ($this->level === 0) {
-            $this->changes = [];
-            $this->cache   = [];
+        foreach ($this->cache as $path => $reference) {
+            if ($reference->get() === null) {
+                unset($this->cache[$path]);
+            }
         }
     }
 
-    protected function change(File $file, string $content): void {
-        $string                               = (string) $file->path;
-        $this->changes[$this->level][$string] = [$file->path, $content];
-
-        for ($level = $this->level - 1; $level >= 0; $level--) {
-            unset($this->changes[$level][$string]);
+    protected function queue(File $file): void {
+        if (count($this->level) > 0) {
+            $this->queue[spl_object_id($file)] = $file;
+        } else {
+            $this->save($file);
         }
+    }
+
+    protected function save(File $file): void {
+        try {
+            if (isset($this->content[$file])) {
+                $this->adapter->write($file->path, $this->content[$file]);
+            }
+        } catch (Exception $exception) {
+            throw new PathWriteFailed($file->path, $exception);
+        }
+    }
+
+    /**
+     * @template T of DirectoryPath|FilePath
+     *
+     * @param T $path
+     *
+     * @return T
+     */
+    protected function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
+        if (!str_starts_with($path->path, $this->input->path) && !str_starts_with($path->path, $this->output->path)) {
+            throw new PathUnavailable($path);
+        }
+
+        return $path;
     }
 
     /**
@@ -229,15 +286,30 @@ class FileSystem {
      *
      * @return T
      */
-    protected function cache(File $object): File {
-        $this->cache[(string) $object] = $object;
+    private function cache(File $object): File {
+        $this->cache[$object->path->normalized()->path] = WeakReference::create($object);
 
         return $object;
     }
 
-    protected function cached(DirectoryPath|FilePath $path): ?File {
-        $cached = $this->cache[(string) $path] ?? null;
+    private function cached(FilePath $path): ?File {
+        return ($this->cache[$path->normalized()->path] ?? null)?->get();
+    }
 
-        return $cached;
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __isset(string $name): bool {
+        return $this->__get($name) !== null;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __get(string $name): mixed {
+        return match ($name) {
+            'directory' => array_last($this->level) ?? $this->input,
+            default     => null,
+        };
     }
 }

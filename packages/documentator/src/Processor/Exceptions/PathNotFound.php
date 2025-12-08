@@ -3,25 +3,26 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
 use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Throwable;
 
 use function sprintf;
 
-class DirectoryNotFound extends FileSystemError {
+class PathNotFound extends FileSystemError {
     public function __construct(
-        protected readonly DirectoryPath $target,
+        protected readonly DirectoryPath|FilePath $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'Directory `%s` does not exist.',
+                'Path `%s` does not exist.',
                 $this->target,
             ),
             $previous,
         );
     }
 
-    public function getTarget(): DirectoryPath {
+    public function getTarget(): DirectoryPath|FilePath {
         return $this->target;
     }
 }

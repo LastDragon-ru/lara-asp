@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 
 interface HookTask extends Task {
@@ -13,5 +13,5 @@ interface HookTask extends Task {
      */
     public static function hook(): array|Hook;
 
-    public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void;
+    public function __invoke(Resolver $resolver, File $file, Hook $hook): void;
 }

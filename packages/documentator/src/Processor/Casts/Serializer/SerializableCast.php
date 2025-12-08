@@ -2,9 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Serializer;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializable;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
@@ -34,7 +33,7 @@ readonly class SerializableCast implements Cast {
 
     #[Override]
     public function castTo(File $file, string $class): ?object {
-        return $this->serializer->deserialize($class, $file->as(Content::class)->content, $file->extension);
+        return $this->serializer->deserialize($class, $file->content, $file->extension);
     }
 
     #[Override]

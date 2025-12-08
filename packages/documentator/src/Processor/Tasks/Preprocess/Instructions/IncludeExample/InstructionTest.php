@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\Path\FilePath;
 use Mockery\MockInterface;
@@ -29,7 +29,7 @@ final class InstructionTest extends TestCase {
     public function testInvoke(string $expected, string $output): void {
         $path    = (new FilePath(__FILE__))->normalized();
         $fs      = $this->getFileSystem($path->directory());
-        $file    = $fs->getFile($path);
+        $file    = $fs->get($path);
         $params  = new Parameters(self::getTestData()->path('Example.md'));
         $target  = $params->target;
         $context = $this->getPreprocessInstructionContext($fs, $file);
@@ -55,7 +55,7 @@ final class InstructionTest extends TestCase {
 
         $path     = (new FilePath(self::getTestData()->path('Example.md')))->normalized();
         $fs       = $this->getFileSystem($path->directory());
-        $file     = $fs->getFile($path);
+        $file     = $fs->get($path);
         $params   = new Parameters($file->name);
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $expected = mb_trim((string) file_get_contents((string) $path));

@@ -2,26 +2,27 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Throwable;
 
 use function sprintf;
 
-class FileNotWritable extends FileSystemError {
+class PathWriteFailed extends FileSystemError {
     public function __construct(
-        protected readonly FilePath $target,
+        protected readonly DirectoryPath|FilePath $target,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
             sprintf(
-                'File `%s` is not writable.',
+                'Path `%s` failed to write.',
                 $this->target,
             ),
             $previous,
         );
     }
 
-    public function getTarget(): FilePath {
+    public function getTarget(): DirectoryPath|FilePath {
         return $this->target;
     }
 }

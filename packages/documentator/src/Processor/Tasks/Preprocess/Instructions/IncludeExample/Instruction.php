@@ -7,9 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\MakeInlinable;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -65,16 +63,10 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        // Valid?
-        if ($parameters->target === '') {
-            return '';
-        }
-
         // Content
-        $target   = $context->file->getFilePath($parameters->target);
-        $target   = $context->resolver->resolve(new FileReference($target));
+        $target   = $context->resolver->get($parameters->target);
         $language = $this->getLanguage($context, $target, $parameters);
-        $content  = mb_trim($target->as(Content::class)->content);
+        $content  = mb_trim($target->content);
         $content  = <<<CODE
             ```{$language}
             $content

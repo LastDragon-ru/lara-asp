@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
+use Closure;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
@@ -27,11 +28,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Iterator;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -79,7 +80,6 @@ final class ProcessorTest extends TestCase {
             'bb.txt' => [
                 '../../b/a/ba.txt',
                 '../../c.txt',
-                '../../../../../README.md',
             ],
         ]);
         $taskC = new class() extends ProcessorTest__Task {
@@ -89,11 +89,11 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file): void {
+            public function __invoke(ResolverContract $resolver, File $file): void {
                 parent::__invoke($resolver, $file);
 
                 $resolver->queue(
-                    new FileReference('../'.basename(__FILE__)),
+                    new FilePath('../'.basename(__FILE__)),
                 );
             }
         };
@@ -104,7 +104,7 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
                 // empty
             }
         };
@@ -124,11 +124,11 @@ final class ProcessorTest extends TestCase {
             },
         );
 
-        $processor($input, null, ['excluded.txt', '**/**/excluded.txt']);
+        $processor($input, $input->parent(), ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
-                new ProcessingStarted($input, $input),
+                new ProcessingStarted($input, $input->parent()),
                 new FileStarted($input->file('a/a.txt')),
                 new TaskStarted($taskB::class),
                 new DependencyResolved($input->file('b/b/bb.txt'), DependencyResolvedResult::Success),
@@ -148,10 +148,6 @@ final class ProcessorTest extends TestCase {
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
                 new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved(
-                    $input->file('../../../README.md'),
-                    DependencyResolvedResult::Success,
-                ),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskD::class),
                 new TaskFinished(TaskFinishedResult::Success),
@@ -223,9 +219,8 @@ final class ProcessorTest extends TestCase {
                 [
                     (string) $input->file('b/b/bb.txt'),
                     [
-                        '../../b/a/ba.txt'         => (string) $input->file('b/a/ba.txt'),
-                        '../../c.txt'              => (string) $input->file('c.txt'),
-                        '../../../../../README.md' => (string) $input->file('../../../README.md'),
+                        '../../b/a/ba.txt' => (string) $input->file('b/a/ba.txt'),
+                        '../../c.txt'      => (string) $input->file('c.txt'),
                     ],
                 ],
                 [
@@ -361,7 +356,6 @@ final class ProcessorTest extends TestCase {
         $events    = [];
         $taskA     = new class([
             'b.html' => [
-                '../../../../README.md',
                 '../a/excluded.txt',
             ],
         ]) extends ProcessorTest__Task {
@@ -418,10 +412,6 @@ final class ProcessorTest extends TestCase {
                 new FileFinished(FileFinishedResult::Success),
                 new FileStarted($input->file('b/b.html')),
                 new TaskStarted($taskA::class),
-                new DependencyResolved(
-                    $input->file('../../../README.md'),
-                    DependencyResolvedResult::Success,
-                ),
                 new DependencyResolved($input->file('a/excluded.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new TaskStarted($taskB::class),
@@ -462,8 +452,7 @@ final class ProcessorTest extends TestCase {
                 [
                     (string) $input->file('b/b.html'),
                     [
-                        '../../../../README.md' => (string) $input->file('../../../README.md'),
-                        '../a/excluded.txt'     => (string) $input->file('a/excluded.txt'),
+                        '../a/excluded.txt' => (string) $input->file('a/excluded.txt'),
                     ],
                 ],
                 [
@@ -599,6 +588,7 @@ final class ProcessorTest extends TestCase {
     public function testRunFileNotFound(): void {
         $input     = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $task      = new ProcessorTest__Task(['*' => ['404.html']]);
+        $path      = $input->file('a/404.html');
         $processor = new Processor(
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
@@ -606,8 +596,9 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        self::expectException(DependencyUnresolvable::class);
-        self::expectExceptionMessage('Dependency not found.');
+        self::expectExceptionObject(
+            new DependencyUnresolvable($path, new PathNotFound($path)),
+        );
 
         $processor($input);
     }
@@ -777,9 +768,9 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
-                $resolver->resolve(new FileReference('c.txt'));
-                $resolver->queue(new FileReference('c.htm'));
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
+                $resolver->get('c.txt');
+                $resolver->queue('c.htm');
             }
         };
         $processor = new Processor(
@@ -801,7 +792,7 @@ final class ProcessorTest extends TestCase {
                 new ProcessingStarted($input->directory(), $input->directory()),
                 new HookStarted(Hook::BeforeProcessing, $input->file('excluded.txt')),
                 new TaskStarted($task::class),
-                new DependencyResolved(new FilePath('c.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
                 new DependencyResolved($input->file('c.htm'), DependencyResolvedResult::Queued),
                 new TaskFinished(TaskFinishedResult::Success),
                 new HookFinished(HookFinishedResult::Success),
@@ -823,8 +814,8 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
-                $resolver->resolve(new FileReference('c.txt'));
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
+                $resolver->get('c.txt');
             }
         };
         $processor = new Processor(
@@ -848,7 +839,7 @@ final class ProcessorTest extends TestCase {
                 new FileFinished(FileFinishedResult::Skipped),
                 new HookStarted(Hook::AfterProcessing, $input->file('excluded.txt')),
                 new TaskStarted($task::class),
-                new DependencyResolved(new FilePath('c.txt'), DependencyResolvedResult::Success),
+                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
                 new TaskFinished(TaskFinishedResult::Success),
                 new HookFinished(HookFinishedResult::Success),
                 new ProcessingFinished(ProcessingFinishedResult::Success),
@@ -869,8 +860,8 @@ final class ProcessorTest extends TestCase {
             }
 
             #[Override]
-            public function __invoke(DependencyResolver $resolver, File $file, Hook $hook): void {
-                $resolver->queue(new FileReference('c.txt'));
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
+                $resolver->queue(new FilePath('c.txt'));
             }
         };
         $processor = new Processor(
@@ -917,19 +908,19 @@ class ProcessorTest__Task implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(ResolverContract $resolver, File $file): void {
         $resolved     = [];
         $dependencies = $this->dependencies[$file->name] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = $resolver->resolve(new FileReference($file->getFilePath($dependency)));
+            $resolved[$dependency] = $resolver->get($dependency);
         }
 
         $this->processed[] = [
-            (string) $file,
+            (string) $file->path,
             array_map(
-                static function (mixed $file): string {
-                    return (string) $file;
+                static function (File $file): string {
+                    return (string) $file->path;
                 },
                 $resolved,
             ),
@@ -948,8 +939,8 @@ class ProcessorTest__Adapter extends SymfonyFileSystem {
     #[Override]
     protected function getFinder(
         DirectoryPath $directory,
-        array $include = [],
-        array $exclude = [],
+        ?Closure $include = null,
+        ?Closure $exclude = null,
         ?int $depth = null,
     ): Finder {
         return parent::getFinder($directory, $include, $exclude, $depth)

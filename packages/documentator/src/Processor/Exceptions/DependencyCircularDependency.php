@@ -2,7 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Throwable;
 
 use function implode;
@@ -10,10 +11,10 @@ use function sprintf;
 
 class DependencyCircularDependency extends DependencyError {
     /**
-     * @param list<File> $stack
+     * @param list<FilePath> $stack
      */
     public function __construct(
-        protected readonly File $target,
+        protected readonly DirectoryPath|FilePath $target,
         protected readonly array $stack,
         ?Throwable $previous = null,
     ) {
@@ -32,12 +33,12 @@ class DependencyCircularDependency extends DependencyError {
         );
     }
 
-    public function getTarget(): File {
+    public function getTarget(): DirectoryPath|FilePath {
         return $this->target;
     }
 
     /**
-     * @return list<File>
+     * @return list<FilePath>
      */
     public function getStack(): array {
         return $this->stack;

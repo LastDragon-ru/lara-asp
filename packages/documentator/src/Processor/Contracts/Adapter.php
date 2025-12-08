@@ -6,17 +6,16 @@ use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
 interface Adapter {
-    public function isFile(FilePath $path): bool;
-
-    public function isDirectory(DirectoryPath $path): bool;
+    public function exists(DirectoryPath|FilePath $path): bool;
 
     /**
-     * @param list<string> $exclude
-     * @param list<string> $include
+     * @param list<non-empty-string> $exclude globs
+     * @param list<non-empty-string> $include globs
+     * @param ?int<0, max>           $depth
      *
-     * @return iterable<array-key, FilePath>
+     * @return iterable<mixed, FilePath>
      */
-    public function getFilesIterator(
+    public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
@@ -26,4 +25,6 @@ interface Adapter {
     public function read(FilePath $path): string;
 
     public function write(FilePath $path, string $content): void;
+
+    public function reset(): void;
 }

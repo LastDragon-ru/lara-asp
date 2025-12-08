@@ -2,13 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 
+use Closure;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 use function is_dir;
 use function is_file;
@@ -21,30 +22,32 @@ class SymfonyFileSystem implements Adapter {
     }
 
     #[Override]
-    public function isFile(FilePath $path): bool {
-        return is_file((string) $path);
-    }
-
-    #[Override]
-    public function isDirectory(DirectoryPath $path): bool {
-        return is_dir((string) $path);
+    public function exists(DirectoryPath|FilePath $path): bool {
+        return $path instanceof FilePath
+            ? is_file((string) $path)
+            : is_dir((string) $path);
     }
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function getFilesIterator(
+    public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
         ?int $depth = null,
     ): iterable {
-        foreach ($this->getFinder($directory, $include, $exclude, $depth)->files() as $file) {
-            $pathname = $file->getPathname();
+        $map      = new SymfonyPathMap();
+        $include  = $include !== [] ? (new SymfonyGlob($map, $include))->match(...) : null;
+        $exclude  = $exclude !== [] ? (new SymfonyGlob($map, $exclude))->mismatch(...) : null;
+        $iterator = $this->getFinder($directory, $include, $exclude, $depth)->files();
 
-            if ($pathname !== '') {
-                yield new FilePath($pathname);
+        foreach ($iterator as $file) {
+            $path = $map->get($file);
+
+            if ($path instanceof FilePath) {
+                yield $path;
             }
         }
 
@@ -61,14 +64,20 @@ class SymfonyFileSystem implements Adapter {
         $this->filesystem->dumpFile((string) $path, $content);
     }
 
+    #[Override]
+    public function reset(): void {
+        // empty
+    }
+
     /**
-     * @param list<string> $include
-     * @param list<string> $exclude
+     * @param Closure(SplFileInfo): bool|null $include
+     * @param Closure(SplFileInfo): bool|null $exclude
+     * @param ?int<0, max>                    $depth
      */
     protected function getFinder(
         DirectoryPath $directory,
-        array $include = [],
-        array $exclude = [],
+        ?Closure $include = null,
+        ?Closure $exclude = null,
         ?int $depth = null,
     ): Finder {
         $finder = Finder::create()
@@ -82,17 +91,12 @@ class SymfonyFileSystem implements Adapter {
             $finder = $finder->depth("<= {$depth}");
         }
 
-        if ($include !== []) {
-            $finder = $finder->filter(
-                (new Glob($directory, $include))->match(...),
-            );
+        if ($include !== null) {
+            $finder = $finder->filter($include);
         }
 
-        if ($exclude !== []) {
-            $finder = $finder->filter(
-                (new Glob($directory, $exclude))->mismatch(...),
-                true,
-            );
+        if ($exclude !== null) {
+            $finder = $finder->filter($exclude, true);
         }
 
         return $finder;

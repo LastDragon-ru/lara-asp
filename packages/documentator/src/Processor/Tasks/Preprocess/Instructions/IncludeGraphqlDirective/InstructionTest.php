@@ -11,7 +11,6 @@ use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPreprocess;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\DependencyIsMissing;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeGraphqlDirective\Exceptions\TargetIsNotDirective;
-use LastDragon_ru\Path\FilePath;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -46,7 +45,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get($fs->input->file(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -72,7 +71,7 @@ final class InstructionTest extends TestCase {
 
         // Test
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get($fs->input->file(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -99,7 +98,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get($fs->input->file(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);
@@ -117,7 +116,7 @@ final class InstructionTest extends TestCase {
         });
 
         $fs       = $this->getFileSystem(__DIR__);
-        $file     = $fs->getFile(new FilePath(__FILE__));
+        $file     = $fs->get($fs->input->file(__FILE__));
         $params   = new Parameters('@test');
         $context  = $this->getPreprocessInstructionContext($fs, $file);
         $instance = $this->app()->make(Instruction::class);

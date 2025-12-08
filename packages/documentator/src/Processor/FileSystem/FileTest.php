@@ -19,10 +19,11 @@ final class FileTest extends TestCase {
     use WithProcessor;
 
     public function testAs(): void {
-        $caster = Mockery::mock(Caster::class);
-        $value  = new stdClass();
-        $path   = (new FilePath(__FILE__))->normalized();
-        $file   = new class($path, $caster) extends File {
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $value      = new stdClass();
+        $path       = (new FilePath(__FILE__))->normalized();
+        $file       = new class($filesystem, $path, $caster) extends File {
             // empty
         };
 
@@ -39,7 +40,11 @@ final class FileTest extends TestCase {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
 
-        new class(new FilePath('/../path'), Mockery::mock(Caster::class)) extends File {
+        new class(
+            Mockery::mock(FileSystem::class),
+            new FilePath('/../path'),
+            Mockery::mock(Caster::class),
+        ) extends File {
             // empty
         };
     }
@@ -49,6 +54,7 @@ final class FileTest extends TestCase {
         self::expectExceptionMessage('Path must be absolute, `../path` given.');
 
         new class(
+            Mockery::mock(FileSystem::class),
             (new FilePath('../path'))->normalized(),
             Mockery::mock(Caster::class),
         ) extends File {
@@ -56,40 +62,38 @@ final class FileTest extends TestCase {
         };
     }
 
-    public function testGetRelativePath(): void {
-        $fs      = $this->getFileSystem(__DIR__);
-        $file    = $fs->getFile(new FilePath(__FILE__));
-        $path    = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
-        $another = new class(
-            (new FilePath(__FILE__))->normalized(),
-            Mockery::mock(Caster::class),
-        ) extends File {
-            // empty
-        };
+    public function testPropertyName(): void {
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'), $caster);
+        $fileB      = new File($filesystem, new FilePath('/path/to/file'), $caster);
 
-        self::assertSame('FileTest.php', (string) $another->getRelativePath($file));
-        self::assertSame('FileTest/a/a.txt', (string) $another->getRelativePath($path));
+        self::assertSame('file.txt', $fileA->name);
+        self::assertSame('file', $fileB->name);
     }
 
-    public function testIsEqual(): void {
-        $path = (new FilePath(self::getTestData()->path('a/a.txt')))->normalized();
-        $a    = new class($path, Mockery::mock(Caster::class)) extends File {
-            // empty
-        };
-        $b    = new class($path, Mockery::mock(Caster::class)) extends File {
-            // empty
-        };
+    public function testPropertyExtension(): void {
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'), $caster);
+        $fileB      = new File($filesystem, new FilePath('/path/to/file'), $caster);
 
-        self::assertTrue($a->isEqual($a));
-        self::assertFalse($a->isEqual($b));
+        self::assertSame('txt', $fileA->extension);
+        self::assertNull($fileB->extension);
     }
 
-    public function testProperties(): void {
-        $path = new FilePath('/path/to/file.txt');
-        $file = new File($path, Mockery::mock(Caster::class));
+    public function testPropertyContent(): void {
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $content    = 'content';
+        $file       = new File($filesystem, new FilePath('/file.txt'), $caster);
 
-        self::assertSame($path, $file->path);
-        self::assertSame('file.txt', $file->name);
-        self::assertSame('txt', $file->extension);
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
+            ->once()
+            ->andReturn($content);
+
+        self::assertSame($content, $file->content);
     }
 }

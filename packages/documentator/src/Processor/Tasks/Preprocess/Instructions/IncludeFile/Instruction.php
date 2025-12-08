@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\FileSystem\Content;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -37,14 +35,9 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        if ($parameters->target === '') {
-            return '';
-        }
-
-        $target  = $context->file->getFilePath($parameters->target);
-        $target  = $context->resolver->resolve(new FileReference($target));
+        $target  = $context->resolver->get($parameters->target);
         $content = $target->extension !== 'md'
-            ? $target->as(Content::class)->content
+            ? $target->content
             : $target->as(Document::class);
 
         return $content;

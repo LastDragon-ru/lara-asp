@@ -11,6 +11,8 @@ readonly class Parameters implements InstructionParameters {
          *
          * * `{$directory}` - path of the directory where the file is located.
          * * `{$file}` - path of the file.
+         *
+         * @var non-empty-string
          */
         public string $target,
     ) {

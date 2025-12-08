@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassComment;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
@@ -77,7 +77,7 @@ abstract class Base implements Link {
         }
 
         // Resolve
-        $path       = $file->getRelativePath($source);
+        $path       = $file->path->relative($source->path);
         $node       = $this->getTargetNode($comment->class);
         $deprecated = $comment->comment->isDeprecated();
         $target     = $this->target($path, $node, $deprecated);

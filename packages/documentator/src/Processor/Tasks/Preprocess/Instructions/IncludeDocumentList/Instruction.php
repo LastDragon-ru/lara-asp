@@ -2,14 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList;
 
-use LastDragon_ru\LaraASP\Core\Utils\Cast;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
 use LastDragon_ru\LaraASP\Documentator\PackageViewer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileIterator;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -20,6 +17,8 @@ use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Node;
 use Override;
 
+use function array_filter;
+use function array_values;
 use function max;
 use function mb_trim;
 use function min;
@@ -57,25 +56,24 @@ readonly class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        $target    = $context->file->getDirectoryPath($parameters->target);
-        $iterator  = $context->resolver->resolve(
-            new FileIterator($target, $parameters->include, $parameters->exclude, $parameters->depth),
-        );
+        $base      = $context->file->path;
+        $depth     = $parameters->depth !== null ? max($parameters->depth, 0) : null;
+        $include   = array_values(array_filter($parameters->include, static fn ($s) => $s !== ''));
+        $exclude   = array_values(array_filter($parameters->exclude, static fn ($s) => $s !== ''));
+        $iterator  = $context->resolver->search($include, $exclude, $depth, $parameters->target);
         $documents = [];
 
-        foreach ($iterator as $file) {
-            // Prepare
-            $file = Cast::to(File::class, $file);
-
+        foreach ($iterator as $path) {
             // Same?
-            if ($context->file->isEqual($file)) {
+            if ($base->equals($path)) {
                 continue;
             }
 
             // Add
+            $file     = $context->resolver->get($path);
             $document = $file->as(Document::class);
-            $move     = new Move($context->file->getFilePath($file->name));
-            $path     = $context->file->getRelativePath($file);
+            $move     = new Move($base->file($file->name));
+            $path     = $base->relative($file->path);
             $title    = Utils::getTitle($document) ?? '';
             $summary  = mb_trim((string) $document->mutate(new Summary())->mutate($move));
 

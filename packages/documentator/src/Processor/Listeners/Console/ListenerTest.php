@@ -4,7 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
 use LastDragon_ru\LaraASP\Documentator\Package\RawOutputFormatter;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
@@ -20,7 +21,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\Path\DirectoryPath;
@@ -467,7 +467,7 @@ class ListenerTest__TaskA implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // empty
     }
 }
@@ -490,7 +490,7 @@ class ListenerTest__TaskB implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // empty;
     }
 }

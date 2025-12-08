@@ -4,20 +4,18 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File as Contract;
 use LastDragon_ru\Path\FilePath;
-use LastDragon_ru\Path\Path;
 use Override;
-use Stringable;
 
 use function sprintf;
 
 /**
- * @property-read non-empty-string  $name
- * @property-read ?non-empty-string $extension
+ * @internal
  */
-class File implements Stringable {
+class File implements Contract {
     public function __construct(
+        private readonly FileSystem $fs,
         public readonly FilePath $path,
         private readonly Caster $caster,
     ) {
@@ -47,38 +45,9 @@ class File implements Stringable {
      *
      * @return T
      */
+    #[Override]
     public function as(string $class): object {
         return $this->caster->castTo($this, $class);
-    }
-
-    /**
-     * @param non-empty-string $path
-     */
-    public function getFilePath(string $path): FilePath {
-        return $this->path->file($path);
-    }
-
-    public function getDirectoryPath(?string $path = null): DirectoryPath {
-        return $this->path->directory($path);
-    }
-
-    /**
-     * @return ($path is DirectoryPath ? DirectoryPath|null : FilePath|null)
-     */
-    public function getRelativePath(self|DirectoryPath|FilePath $path): DirectoryPath|FilePath|null {
-        $path = $path instanceof Path ? $path : $path->path;
-        $path = $this->path->relative($path);
-
-        return $path;
-    }
-
-    public function isEqual(self $object): bool {
-        return ($this === $object) || ($this::class === $object::class && $this->path->equals($object->path));
-    }
-
-    #[Override]
-    public function __toString(): string {
-        return (string) $this->path;
     }
 
     /**
@@ -93,6 +62,7 @@ class File implements Stringable {
      */
     public function __get(string $name): mixed {
         return match ($name) {
+            'content'   => $this->fs->read($this),
             'extension' => $this->path->extension,
             'name'      => $this->path->name,
             default     => null,

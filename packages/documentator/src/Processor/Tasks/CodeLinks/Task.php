@@ -11,12 +11,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileReference;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\Optional;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\LinkFactory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Exceptions\CodeLinkUnresolved;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
@@ -47,6 +44,7 @@ use function str_starts_with;
  * automatically.
  *
  * Supported links:
+ *
  * * `\App\Class`
  * * `\App\Class::method()`
  * * `\App\Class::$property`
@@ -71,12 +69,12 @@ class Task implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // Composer?
-        $composer = $resolver->resolve(new Optional(new FileReference('composer.json')));
-        $composer = $composer?->as(Package::class);
+        $composer = $resolver->find('~input/composer.json');
+        $package  = $composer?->as(Package::class);
 
-        if (!($composer instanceof Package)) {
+        if (!($package instanceof Package)) {
             return;
         }
 
@@ -89,7 +87,7 @@ class Task implements FileTask {
         // Links
         foreach ($parsed['links'] as $token) {
             // External?
-            $paths = $token->link->getSource($file, $composer);
+            $paths = $token->link->getSource($file, $package);
 
             if ($paths === null) {
                 continue;
@@ -100,7 +98,7 @@ class Task implements FileTask {
             $paths  = is_array($paths) ? $paths : [$paths];
 
             foreach ($paths as $path) {
-                $source = $resolver->resolve(new Optional(new FileReference($path)));
+                $source = $resolver->find($composer->path->resolve($path));
 
                 if ($source !== null) {
                     break;
@@ -141,7 +139,7 @@ class Task implements FileTask {
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            $resolver->resolve(new FileSave($file, $document->mutate(new Changeset($changes))));
+            $resolver->save($file, $document->mutate(new Changeset($changes)));
         }
     }
 

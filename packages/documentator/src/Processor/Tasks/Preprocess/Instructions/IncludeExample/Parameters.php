@@ -8,6 +8,8 @@ readonly class Parameters implements InstructionParameters {
     public function __construct(
         /**
          * File path.
+         *
+         * @var non-empty-string
          */
         public string $target,
     ) {

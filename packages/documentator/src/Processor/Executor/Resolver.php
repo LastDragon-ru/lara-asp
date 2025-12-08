@@ -4,21 +4,26 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 use Override;
-use Traversable;
+
+use function is_string;
 
 /**
  * @internal
  */
-class Resolver implements DependencyResolver {
-    protected ?Exception $exception = null;
+class Resolver implements ResolverContract {
+    private readonly DirectoryPath $iHome;
+    private readonly DirectoryPath $oHome;
 
     public function __construct(
         protected readonly Dispatcher $dispatcher,
@@ -32,128 +37,174 @@ class Resolver implements DependencyResolver {
          */
         protected readonly Closure $queue,
     ) {
-        // empty
+        $this->iHome = (new DirectoryPath('~input'))->normalized();
+        $this->oHome = (new DirectoryPath('~output'))->normalized();
     }
 
     #[Override]
-    public function resolve(Dependency $dependency): Traversable|File|null {
+    public function get(FilePath|string $path): File {
+        $path = $this->path($path);
+
         try {
-            $resolved = $dependency($this->fs);
-            $result   = $resolved === null ? Result::Null : Result::Success;
+            $file = $this->fs->get($path);
 
-            $this->notify($dependency, $result);
+            $this->notify($path, Result::Success);
 
-            if ($resolved instanceof File) {
-                ($this->run)($resolved);
-            } elseif ($resolved instanceof Traversable) {
-                $resolved = $this->iterate($dependency, $resolved);
-            } else {
-                // empty
-            }
+            ($this->run)($file);
         } catch (Exception $exception) {
-            $this->exception = $exception;
+            $this->notify($path, Result::Failed);
 
-            $this->notify($dependency, Result::Failed);
-
-            throw $exception;
+            throw $this->exception($path, $exception);
         }
 
-        return $resolved;
+        return $file;
+    }
+
+    /**
+     * @param FilePath|non-empty-string $path
+     */
+    #[Override]
+    public function find(FilePath|string $path): ?File {
+        $path = $this->path($path);
+
+        try {
+            $file = $this->fs->exists($path)
+                ? $this->fs->get($path)
+                : null;
+
+            if ($file !== null) {
+                $this->notify($path, Result::Success);
+
+                ($this->run)($file);
+            } else {
+                $this->notify($path, Result::Null);
+            }
+        } catch (Exception $exception) {
+            $this->notify($path, Result::Failed);
+
+            throw $this->exception($path, $exception);
+        }
+
+        return $file;
     }
 
     #[Override]
-    public function queue(Dependency $dependency): void {
+    public function save(File|FilePath|string $path, object|string $content): File {
+        $file = $path instanceof File ? $path : null;
+        $path = $this->path($path instanceof File ? $path->path : $path);
+
         try {
-            $resolved = $dependency($this->fs);
+            $file = $this->fs->write($file ?? $path, $content);
 
-            if ($resolved instanceof File) {
-                ($this->queue)($resolved);
+            $this->notify($path, Result::Success);
 
-                $this->notify($resolved, Result::Queued);
-            } elseif ($resolved instanceof Traversable) {
-                $this->notify($dependency, Result::Success);
-
-                foreach ($resolved as $file) {
-                    ($this->queue)($file);
-
-                    $this->notify($file, Result::Queued);
-                }
-            } else {
-                $this->notify($dependency, Result::Null);
-            }
+            ($this->run)($file);
         } catch (Exception $exception) {
-            $this->exception = $exception;
+            $this->notify($path, Result::Failed);
 
-            $this->notify($dependency, Result::Failed);
-
-            throw $exception;
-        }
-    }
-
-    public function check(): void {
-        if ($this->exception === null) {
-            return;
+            throw $this->exception($path, $exception);
         }
 
-        $exception       = $this->exception;
-        $this->exception = null;
-
-        throw $exception;
+        return $file;
     }
 
     /**
-     * @template D of Dependency<Traversable<mixed, File>|File|null>
-     * @template T of Traversable<mixed, File>
-     *
-     * @param D $dependency
-     * @param T $resolved
-     *
-     * @return T
+     * @inheritDoc
      */
-    protected function iterate(Dependency $dependency, Traversable $resolved): Traversable {
-        // Process
-        try {
-            $last = null;
+    #[Override]
+    public function queue(FilePath|iterable|string $path): void {
+        $iterator = $path instanceof FilePath || is_string($path) ? [$path] : $path;
 
-            foreach ($resolved as $key => $value) {
-                $last = $value;
+        foreach ($iterator as $file) {
+            $filepath = $this->path($file);
 
-                $this->notify($value, Result::Success);
+            try {
+                $file = $this->fs->get($filepath);
 
-                ($this->run)($value);
+                $this->notify($filepath, Result::Queued);
 
-                yield $key => $value;
+                ($this->queue)($file);
+            } catch (Exception $exception) {
+                $this->notify($filepath, Result::Failed);
+
+                throw $this->exception($filepath, $exception);
             }
-        } catch (Exception $exception) {
-            $this->exception = $exception;
-
-            $this->notify($last ?? $dependency, Result::Failed);
-
-            throw $exception;
         }
-
-        // Just for the case
-        yield from [];
     }
 
     /**
-     * @template V of Traversable<mixed, File>|File|null
-     * @template D of Dependency<V>
-     *
-     * @param D|File $dependency
+     * @inheritDoc
      */
-    protected function notify(Dependency|File $dependency, Result $result): void {
+    #[Override]
+    public function search(
+        array|string $include,
+        array|string $exclude,
+        ?int $depth,
+        DirectoryPath|string|null $directory = null,
+    ): iterable {
         $path = match (true) {
-            $dependency instanceof Dependency => $dependency->getPath($this->fs),
-            default                           => $dependency,
+            $directory instanceof DirectoryPath => $directory,
+            is_string($directory)               => new DirectoryPath($directory),
+            $directory === null                 => new DirectoryPath('.'),
         };
-        $path = match (true) {
-            $path instanceof File => $path->path,
-            default               => $path,
-        };
+        $path    = $this->path($path);
+        $include = (array) $include;
+        $exclude = (array) $exclude;
 
+        try {
+            $files = $this->fs->search($path, $include, $exclude, $depth);
+        } catch (Exception $exception) {
+            throw $this->exception($path, $exception);
+        }
+
+        return $files;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __isset(string $name): bool {
+        return $this->__get($name) !== null;
+    }
+
+    /**
+     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     */
+    public function __get(string $name): mixed {
+        return match ($name) {
+            'input'     => $this->fs->input,
+            'output'    => $this->fs->output,
+            'directory' => $this->fs->directory,
+            default     => null,
+        };
+    }
+
+    protected function notify(FilePath $path, Result $result): void {
         $this->dispatcher->notify(
             new Event($path, $result),
         );
+    }
+
+    /**
+     * @template T of DirectoryPath|FilePath|non-empty-string
+     *
+     * @param T $path
+     *
+     * @return (T is string ? FilePath : new<T>)
+     */
+    protected function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
+        $path = is_string($path) ? new FilePath($path) : $path;
+        $path = match (true) {
+            $path->parts[0] === $this->oHome->parts[0] => $this->output->resolve($this->oHome->relative($path) ?? $path),
+            $path->parts[0] === $this->iHome->parts[0] => $this->input->resolve($this->iHome->relative($path) ?? $path),
+            $path->relative                            => $this->directory->resolve($path),
+            default                                    => $path->normalized(),
+        };
+
+        return $path;
+    }
+
+    private function exception(DirectoryPath|FilePath $path, Exception $exception): Exception {
+        return $exception instanceof DependencyError ? $exception : new DependencyUnresolvable($path, $exception);
     }
 }

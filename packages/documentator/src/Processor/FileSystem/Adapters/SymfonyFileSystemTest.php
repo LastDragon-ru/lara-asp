@@ -15,21 +15,16 @@ use function sort;
  */
 #[CoversClass(SymfonyFileSystem::class)]
 final class SymfonyFileSystemTest extends TestCase {
-    public function testIsFile(): void {
+    public function testExists(): void {
         $adapter = new SymfonyFileSystem();
 
-        self::assertTrue($adapter->isFile(new FilePath(__FILE__)));
-        self::assertFalse($adapter->isFile(new FilePath(__DIR__)));
+        self::assertTrue($adapter->exists(new FilePath(__FILE__)));
+        self::assertFalse($adapter->exists(new FilePath(__DIR__)));
+        self::assertFalse($adapter->exists(new DirectoryPath(__FILE__)));
+        self::assertTrue($adapter->exists(new DirectoryPath(__DIR__)));
     }
 
-    public function testIsDirectory(): void {
-        $adapter = new SymfonyFileSystem();
-
-        self::assertFalse($adapter->isDirectory(new DirectoryPath(__FILE__)));
-        self::assertTrue($adapter->isDirectory(new DirectoryPath(__DIR__)));
-    }
-
-    public function testGetFilesIterator(): void {
+    public function testSearch(): void {
         $path    = new DirectoryPath(self::getTestData()->path(''));
         $adapter = new SymfonyFileSystem();
 
@@ -42,14 +37,14 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path)),
+            $this->asArray($path, $adapter->search($path)),
         );
         self::assertSame(
             [
                 'a.txt',
                 'b.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, depth: 0)),
+            $this->asArray($path, $adapter->search($path, depth: 0)),
         );
         self::assertSame(
             [
@@ -58,13 +53,13 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, exclude: ['a/**/*.txt'])),
+            $this->asArray($path, $adapter->search($path, exclude: ['a/**/*.txt'])),
         );
         self::assertSame(
             [
                 'a.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: ['a.txt'])),
+            $this->asArray($path, $adapter->search($path, include: ['a.txt'])),
         );
         self::assertSame(
             [
@@ -75,7 +70,7 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'])),
+            $this->asArray($path, $adapter->search($path, include: ['**/*.txt'])),
         );
         self::assertSame(
             [
@@ -85,7 +80,7 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->getFilesIterator($path, include: ['**/*.txt'], exclude: ['**/aa/*'])),
+            $this->asArray($path, $adapter->search($path, include: ['**/*.txt'], exclude: ['**/aa/*'])),
         );
     }
 
@@ -110,7 +105,7 @@ final class SymfonyFileSystemTest extends TestCase {
     }
 
     /**
-     * @param iterable<array-key, FilePath|DirectoryPath> $iterable
+     * @param iterable<mixed, FilePath|DirectoryPath> $iterable
      *
      * @return array<array-key, string>
      */

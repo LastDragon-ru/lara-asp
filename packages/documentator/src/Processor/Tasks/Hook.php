@@ -15,7 +15,7 @@ enum Hook {
      * The {@see HookTask::__invoke($file)} is the file that will be processed
      * first.
      *
-     * Calling the {@see DependencyResolver::resolve()} will return the original
+     * Calling the {@see Resolver::get()} will return the original
      * (= without processing by any of the tasks) dependency.
      */
     case BeforeProcessing;
@@ -25,7 +25,7 @@ enum Hook {
      *
      * The {@see HookTask::__invoke($file)} is the file that was processed last.
      *
-     * Calling the {@see DependencyResolver::queue()} will throw an error
+     * Calling the {@see Resolver::queue()} will throw an error
      * because it makes no sense.
      */
     case AfterProcessing;

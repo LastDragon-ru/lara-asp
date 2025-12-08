@@ -15,10 +15,9 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\DependencyResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Dependencies\FileSave;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Exceptions\PreprocessError;
@@ -134,7 +133,7 @@ class Task implements FileTask {
     }
 
     #[Override]
-    public function __invoke(DependencyResolver $resolver, File $file): void {
+    public function __invoke(Resolver $resolver, File $file): void {
         // Process
         $document = $file->as(Document::class);
         $parsed   = $this->parse($resolver, $file, $document);
@@ -198,14 +197,14 @@ class Task implements FileTask {
 
         // Mutate
         if ($mutated) {
-            $resolver->resolve(new FileSave($file, $document));
+            $resolver->save($file, $document);
         }
     }
 
     /**
      * @return array<int, array<string, Token<*>>>
      */
-    protected function parse(DependencyResolver $resolver, File $file, Document $document): array {
+    protected function parse(Resolver $resolver, File $file, Document $document): array {
         // Empty?
         if (!$this->instructions->has()) {
             return [];
@@ -222,15 +221,15 @@ class Task implements FileTask {
 
             // Exists?
             $name        = $node->getLabel();
+            $target      = rawurldecode($node->getDestination());
             $instruction = $this->instructions->first($name);
 
-            if ($instruction === null) {
+            if ($instruction === null || $target === '') {
                 continue;
             }
 
             // Hash
             $priority = $instruction::getPriority() ?? 0;
-            $target   = rawurldecode($node->getDestination());
             $params   = $this->getParametersJson($target, $node->getTitle());
             $hash     = Text::hash("{$name}({$params})");
 
@@ -263,6 +262,9 @@ class Task implements FileTask {
         return $tokens;
     }
 
+    /**
+     * @param non-empty-string $target
+     */
     private function getParametersJson(string $target, ?string $json): string {
         $parameters           = $json !== null && $json !== ''
             ? (array) json_decode($json, true, flags: JSON_THROW_ON_ERROR)
