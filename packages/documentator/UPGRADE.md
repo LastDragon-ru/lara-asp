@@ -43,6 +43,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Directories concept was removed to simplify API.
 
+* [ ] Completely reworked [`Resolver`][code-links/73efdc4c56c9ba17] simplify API.
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -107,6 +109,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/6a213cdb7ed49c73]: src/Processor/Contracts/Cast.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast"
+
+[code-links/73efdc4c56c9ba17]: src/Processor/Contracts/Resolver.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver"
 
 [code-links/405a2082bc21eb5b]: src/Processor/Contracts/Task.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task"
