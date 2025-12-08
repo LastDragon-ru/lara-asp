@@ -9,6 +9,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverC
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -52,7 +54,7 @@ class Resolver implements ResolverContract {
         } catch (Exception $exception) {
             $this->notify($path, Result::Failed);
 
-            throw $exception;
+            throw $this->exception($path, $exception);
         }
 
         return $file;
@@ -80,7 +82,7 @@ class Resolver implements ResolverContract {
         } catch (Exception $exception) {
             $this->notify($path, Result::Failed);
 
-            throw $exception;
+            throw $this->exception($path, $exception);
         }
 
         return $file;
@@ -100,7 +102,7 @@ class Resolver implements ResolverContract {
         } catch (Exception $exception) {
             $this->notify($path, Result::Failed);
 
-            throw $exception;
+            throw $this->exception($path, $exception);
         }
 
         return $file;
@@ -125,7 +127,7 @@ class Resolver implements ResolverContract {
             } catch (Exception $exception) {
                 $this->notify($filepath, Result::Failed);
 
-                throw $exception;
+                throw $this->exception($filepath, $exception);
             }
         }
     }
@@ -140,15 +142,20 @@ class Resolver implements ResolverContract {
         ?int $depth,
         DirectoryPath|string|null $directory = null,
     ): iterable {
-        $directory = match (true) {
+        $path = match (true) {
             $directory instanceof DirectoryPath => $directory,
             is_string($directory)               => new DirectoryPath($directory),
             $directory === null                 => new DirectoryPath('.'),
         };
-        $directory = $this->path($directory);
-        $include   = (array) $include;
-        $exclude   = (array) $exclude;
-        $files     = $this->fs->search($directory, $include, $exclude, $depth);
+        $path    = $this->path($path);
+        $include = (array) $include;
+        $exclude = (array) $exclude;
+
+        try {
+            $files = $this->fs->search($path, $include, $exclude, $depth);
+        } catch (Exception $exception) {
+            throw $this->exception($path, $exception);
+        }
 
         return $files;
     }
@@ -195,5 +202,9 @@ class Resolver implements ResolverContract {
         };
 
         return $path;
+    }
+
+    private function exception(DirectoryPath|FilePath $path, Exception $exception): Exception {
+        return $exception instanceof DependencyError ? $exception : new DependencyUnresolvable($path, $exception);
     }
 }

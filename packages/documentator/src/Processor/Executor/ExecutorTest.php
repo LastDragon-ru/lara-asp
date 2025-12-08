@@ -60,7 +60,11 @@ final class ExecutorTest extends TestCase {
 
     #[DataProvider('dataProviderOnQueue')]
     public function testOnQueue(bool $expected, State $state): void {
-        $file     = Mockery::mock(File::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $caster     = Mockery::mock(Caster::class);
+        $path       = new FilePath('/file.md');
+        $file       = new FileImpl($filesystem, $path, $caster);
+
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
         $executor->makePartial();

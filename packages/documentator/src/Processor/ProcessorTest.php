@@ -26,6 +26,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Iterator;
@@ -586,6 +587,7 @@ final class ProcessorTest extends TestCase {
     public function testRunFileNotFound(): void {
         $input     = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $task      = new ProcessorTest__Task(['*' => ['404.html']]);
+        $path      = $input->file('a/404.html');
         $processor = new Processor(
             $this->app()->make(ContainerResolver::class),
             new ProcessorTest__Adapter(),
@@ -594,7 +596,7 @@ final class ProcessorTest extends TestCase {
         $processor->task($task);
 
         self::expectExceptionObject(
-            new FileNotFound($input->file('a/404.html')),
+            new DependencyUnresolvable($path, new FileNotFound($path)),
         );
 
         $processor($input);

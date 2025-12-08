@@ -207,7 +207,7 @@ class Executor {
     protected function onResolve(File $resolved): void {
         // Possible?
         if ($this->state->is(State::Created)) {
-            throw new DependencyUnavailable();
+            throw new DependencyUnavailable($resolved->path);
         }
 
         // Skipped?
@@ -224,7 +224,7 @@ class Executor {
     protected function onQueue(File $resolved): void {
         // Possible?
         if ($this->state->is(State::Finished)) {
-            throw new DependencyUnavailable();
+            throw new DependencyUnavailable($resolved->path);
         }
 
         // Skipped?

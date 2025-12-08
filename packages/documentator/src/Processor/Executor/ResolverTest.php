@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -98,7 +99,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        self::expectExceptionObject($exception);
+        self::expectExceptionObject(new DependencyUnresolvable($filepath, $exception));
 
         $resolver->get($filepath);
     }
@@ -224,7 +225,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        self::expectExceptionObject($exception);
+        self::expectExceptionObject(new DependencyUnresolvable($filepath, $exception));
 
         $resolver->find($filepath);
     }
@@ -305,7 +306,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        self::expectExceptionObject($exception);
+        self::expectExceptionObject(new DependencyUnresolvable($filepath, $exception));
 
         $resolver->save($filepath, $content);
     }
