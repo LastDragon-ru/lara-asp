@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Exceptions;
 
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Throwable;
 
@@ -13,7 +14,7 @@ class DependencyCircularDependency extends DependencyError {
      * @param list<FilePath> $stack
      */
     public function __construct(
-        protected readonly FilePath $target,
+        protected readonly DirectoryPath|FilePath $target,
         protected readonly array $stack,
         ?Throwable $previous = null,
     ) {
@@ -32,7 +33,7 @@ class DependencyCircularDependency extends DependencyError {
         );
     }
 
-    public function getTarget(): FilePath {
+    public function getTarget(): DirectoryPath|FilePath {
         return $this->target;
     }
 

@@ -10,12 +10,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathWriteFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -103,7 +102,7 @@ class FileSystem {
         if ($this->adapter->exists($path)) {
             $file = new FileImpl($this, $path, $this->caster);
         } else {
-            throw new FileNotFound($path);
+            throw new PathNotFound($path);
         }
 
         return $this->cache($file);
@@ -126,7 +125,7 @@ class FileSystem {
         $directory = $this->path($directory);
 
         if (!$this->adapter->exists($directory)) {
-            throw new DirectoryNotFound($directory);
+            throw new PathNotFound($directory);
         }
 
         // Search
@@ -154,7 +153,7 @@ class FileSystem {
             try {
                 $this->content[$file] = $this->adapter->read($file->path);
             } catch (Exception $exception) {
-                throw new FileReadFailed($file->path, $exception);
+                throw new PathReadFailed($file->path, $exception);
             }
         }
 
@@ -181,7 +180,7 @@ class FileSystem {
         $path = $this->path($path);
 
         if (!$this->output->contains($path)) {
-            throw new FileNotWritable($path);
+            throw new PathNotWritable($path);
         }
 
         // File?
@@ -261,7 +260,7 @@ class FileSystem {
                 $this->adapter->write($file->path, $this->content[$file]);
             }
         } catch (Exception $exception) {
-            throw new FileSaveFailed($file->path, $exception);
+            throw new PathWriteFailed($file->path, $exception);
         }
     }
 

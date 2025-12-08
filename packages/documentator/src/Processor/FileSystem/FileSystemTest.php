@@ -11,12 +11,11 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DirectoryNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotFound;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileReadFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\FileSaveFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathWriteFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
@@ -85,7 +84,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testGetFileNotFound(): void {
-        self::expectException(FileNotFound::class);
+        self::expectException(PathNotFound::class);
 
         $fs   = $this->getFileSystem(__DIR__);
         $file = $fs->input->resolve(new FilePath('not found'));
@@ -162,7 +161,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testSearchDirectoryNotFound(): void {
-        self::expectException(DirectoryNotFound::class);
+        self::expectException(PathNotFound::class);
 
         $fs        = $this->getFileSystem(__DIR__);
         $directory = $fs->input->resolve(new DirectoryPath('not found'));
@@ -209,7 +208,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
 
-        self::expectException(FileReadFailed::class);
+        self::expectException(PathReadFailed::class);
 
         $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
 
@@ -322,7 +321,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteCreateFailed(): void {
-        self::expectException(FileSaveFailed::class);
+        self::expectException(PathWriteFailed::class);
 
         $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path    = $input->file('file.md');
@@ -363,7 +362,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteOutsideOutput(): void {
-        self::expectException(FileNotWritable::class);
+        self::expectException(PathNotWritable::class);
 
         $base   = new DirectoryPath(__DIR__);
         $input  = $base->directory('input');
