@@ -25,7 +25,7 @@ final class MarkdownCastTest extends TestCase {
         $content    = 'content';
         $cast       = new MarkdownCast($markdown);
         $path       = new FilePath('/path/to/file.md');
-        $file       = Mockery::mock(File::class, [$filesystem, $path, $caster]);
+        $file       = Mockery::mock(File::class, [$filesystem, $caster, $path]);
         $filesystem
             ->shouldReceive('read')
             ->with($file)

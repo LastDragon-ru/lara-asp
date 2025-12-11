@@ -46,7 +46,7 @@ final class ClassConstantLinkTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($filesystem, $path, $caster);
+        $file       = new File($filesystem, $caster, $path);
 
         $filesystem
             ->shouldReceive('read')
@@ -89,7 +89,7 @@ final class ClassConstantLinkTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($filesystem, $path, $caster);
+        $file       = new File($filesystem, $caster, $path);
 
         $filesystem
             ->shouldReceive('read')

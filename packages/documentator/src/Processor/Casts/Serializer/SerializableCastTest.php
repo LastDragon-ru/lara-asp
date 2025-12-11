@@ -30,7 +30,7 @@ final class SerializableCastTest extends TestCase {
 
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
-        $file       = Mockery::mock(File::class, [$filesystem, new FilePath("/file.{$extension}"), $caster]);
+        $file       = Mockery::mock(File::class, [$filesystem, $caster, new FilePath("/file.{$extension}")]);
 
         $filesystem
             ->shouldReceive('read')
@@ -48,7 +48,7 @@ final class SerializableCastTest extends TestCase {
         $extension  = 'json';
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
-        $file       = Mockery::mock(File::class, [$filesystem, new FilePath("/file.{$extension}"), $caster]);
+        $file       = Mockery::mock(File::class, [$filesystem, $caster, new FilePath("/file.{$extension}")]);
         $object     = Mockery::mock(Serializable::class);
         $content    = 'content';
         $serializer = Mockery::mock(Serializer::class);

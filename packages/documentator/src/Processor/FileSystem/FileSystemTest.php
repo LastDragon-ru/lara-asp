@@ -186,7 +186,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
 
-        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file = Mockery::mock(File::class, [$filesystem, $caster, $path]);
 
         self::assertSame($content, $filesystem->read($file));
         self::assertSame($content, $filesystem->read($file)); // should be cached
@@ -210,7 +210,7 @@ final class FileSystemTest extends TestCase {
 
         self::expectException(PathReadFailed::class);
 
-        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file = Mockery::mock(File::class, [$filesystem, $caster, $path]);
 
         $filesystem->read($file);
     }
@@ -238,7 +238,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
 
-        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file = Mockery::mock(File::class, [$filesystem, $caster, $path]);
 
         $filesystem
             ->shouldReceive('queue')
@@ -263,7 +263,7 @@ final class FileSystemTest extends TestCase {
             ->never();
 
         $path = $input->file('file.md');
-        $file = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file = Mockery::mock(File::class, [$filesystem, $caster, $path]);
 
         $caster
             ->shouldReceive('castFrom')
@@ -400,7 +400,7 @@ final class FileSystemTest extends TestCase {
         $value   = new stdClass();
         $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path    = $input->file('file.md');
-        $file    = Mockery::mock(File::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file    = Mockery::mock(File::class, [$filesystem, $caster, $path]);
 
         $caster
             ->shouldReceive('castFrom')

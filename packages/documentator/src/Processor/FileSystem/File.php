@@ -16,8 +16,8 @@ use function sprintf;
 class File implements Contract {
     public function __construct(
         private readonly FileSystem $fs,
-        public readonly FilePath $path,
         private readonly Caster $caster,
+        public readonly FilePath $path,
     ) {
         if (!$this->path->normalized) {
             throw new InvalidArgumentException(

@@ -27,7 +27,7 @@ final class ExecutorTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new FileImpl($filesystem, $path, $caster);
+        $file       = new FileImpl($filesystem, $caster, $path);
 
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
@@ -63,7 +63,7 @@ final class ExecutorTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new FileImpl($filesystem, $path, $caster);
+        $file       = new FileImpl($filesystem, $caster, $path);
 
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();

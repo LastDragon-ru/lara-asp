@@ -100,7 +100,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->exists($path)) {
-            $file = new FileImpl($this, $path, $this->caster);
+            $file = new FileImpl($this, $this->caster, $path);
         } else {
             throw new PathNotFound($path);
         }
@@ -139,7 +139,7 @@ class FileSystem {
                  * We are expecting all files are exist, so add them into the
                  * cache to avoid another {@see Adapter::exists()} call.
                  */
-                $this->cache(new FileImpl($this, $path, $this->caster));
+                $this->cache(new FileImpl($this, $this->caster, $path));
             }
 
             yield $path;
@@ -186,7 +186,7 @@ class FileSystem {
         // File?
         $file ??= $this->exists($path) ? $this->get($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new FileImpl($this, $path, $this->caster));
+        $file ??= $this->cache(new FileImpl($this, $this->caster, $path));
 
         // Changed?
         if (!is_string($content)) {

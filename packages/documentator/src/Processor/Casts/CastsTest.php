@@ -40,8 +40,8 @@ final class CastsTest extends TestCase {
 
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
-        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md'), $caster]);
-        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.txt'), $caster]);
+        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, $caster, new FilePath('/file.md')]);
+        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, $caster, new FilePath('/file.txt')]);
 
         self::assertSame([$bCast, $cCast, $aCast], iterator_to_array($casts->get($aFile), false));
         self::assertSame([$cCast, $aCast], iterator_to_array($casts->get($bFile), false));

@@ -23,7 +23,7 @@ final class FileTest extends TestCase {
         $caster     = Mockery::mock(Caster::class);
         $value      = new stdClass();
         $path       = (new FilePath(__FILE__))->normalized();
-        $file       = new class($filesystem, $path, $caster) extends File {
+        $file       = new class($filesystem, $caster, $path) extends File {
             // empty
         };
 
@@ -42,8 +42,8 @@ final class FileTest extends TestCase {
 
         new class(
             Mockery::mock(FileSystem::class),
-            new FilePath('/../path'),
             Mockery::mock(Caster::class),
+            new FilePath('/../path'),
         ) extends File {
             // empty
         };
@@ -55,8 +55,8 @@ final class FileTest extends TestCase {
 
         new class(
             Mockery::mock(FileSystem::class),
-            (new FilePath('../path'))->normalized(),
             Mockery::mock(Caster::class),
+            (new FilePath('../path'))->normalized(),
         ) extends File {
             // empty
         };
@@ -65,8 +65,8 @@ final class FileTest extends TestCase {
     public function testPropertyName(): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
-        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'), $caster);
-        $fileB      = new File($filesystem, new FilePath('/path/to/file'), $caster);
+        $fileA      = new File($filesystem, $caster, new FilePath('/path/to/file.txt'));
+        $fileB      = new File($filesystem, $caster, new FilePath('/path/to/file'));
 
         self::assertSame('file.txt', $fileA->name);
         self::assertSame('file', $fileB->name);
@@ -75,8 +75,8 @@ final class FileTest extends TestCase {
     public function testPropertyExtension(): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
-        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'), $caster);
-        $fileB      = new File($filesystem, new FilePath('/path/to/file'), $caster);
+        $fileA      = new File($filesystem, $caster, new FilePath('/path/to/file.txt'));
+        $fileB      = new File($filesystem, $caster, new FilePath('/path/to/file'));
 
         self::assertSame('txt', $fileA->extension);
         self::assertNull($fileB->extension);
@@ -86,7 +86,7 @@ final class FileTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $content    = 'content';
-        $file       = new File($filesystem, new FilePath('/file.txt'), $caster);
+        $file       = new File($filesystem, $caster, new FilePath('/file.txt'));
 
         $filesystem
             ->shouldReceive('read')

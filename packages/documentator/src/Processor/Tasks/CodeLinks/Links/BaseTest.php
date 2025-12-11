@@ -85,14 +85,14 @@ final class BaseTest extends TestCase {
         $fs     = Mockery::mock(FileSystem::class);
         $data   = new ClassComment($class, $context, $comment);
         $caster = Mockery::mock(Caster::class);
-        $source = Mockery::mock(FileImpl::class, [$fs, new FilePath('/relative/path/to/class/a.php'), $caster]);
+        $source = Mockery::mock(FileImpl::class, [$fs, $caster, new FilePath('/relative/path/to/class/a.php')]);
         $source
             ->shouldReceive('as')
             ->with(ClassComment::class)
             ->twice()
             ->andReturn($data);
 
-        $file = Mockery::mock(FileImpl::class, [$fs, new FilePath('/file.txt'), $caster]);
+        $file = Mockery::mock(FileImpl::class, [$fs, $caster, new FilePath('/file.txt')]);
         $doc  = Mockery::mock(Doc::class);
         $doc
             ->shouldReceive('getStartLine')

@@ -27,8 +27,8 @@ final class TasksTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $tasks      = new Tasks(Mockery::mock(ContainerResolver::class));
-        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md'), $caster]);
-        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.task'), $caster]);
+        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, $caster, new FilePath('/file.md')]);
+        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, $caster, new FilePath('/file.task')]);
 
         self::assertFalse($tasks->has($aFile));
         self::assertFalse($tasks->has(Hook::File));
@@ -63,8 +63,8 @@ final class TasksTest extends TestCase {
                 // empty
             }
         };
-        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md'), $caster]);
-        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.task'), $caster]);
+        $aFile      = Mockery::mock(FileImpl::class, [$filesystem, $caster, new FilePath('/file.md')]);
+        $bFile      = Mockery::mock(FileImpl::class, [$filesystem, $caster, new FilePath('/file.task')]);
 
         $tasks->add($taskD, 200);
         $tasks->add($taskA, 100);

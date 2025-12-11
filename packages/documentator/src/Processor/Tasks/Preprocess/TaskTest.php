@@ -165,7 +165,7 @@ final class TaskTest extends TestCase {
         $actual     = '';
         $path       = new FilePath('/path/to/file.md');
         $filesystem = Mockery::mock(FileSystem::class);
-        $file       = Mockery::mock(FileImpl::class, [$filesystem, $path, Mockery::mock(Caster::class)]);
+        $file       = Mockery::mock(FileImpl::class, [$filesystem, Mockery::mock(Caster::class), $path]);
         $file->makePartial();
         $file
             ->shouldReceive('as')
