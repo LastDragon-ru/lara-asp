@@ -32,6 +32,16 @@ interface Resolver {
     public function find(FilePath|string $path): ?File;
 
     /**
+     * @template T of object
+     *
+     * @param File|FilePath|non-empty-string $path
+     * @param class-string<FileCast<T>>      $cast
+     *
+     * @return T
+     */
+    public function cast(File|FilePath|string $path, string $cast): object;
+
+    /**
      * If the file exists, it will be overwritten.
      *
      * @param File|FilePath|non-empty-string $path

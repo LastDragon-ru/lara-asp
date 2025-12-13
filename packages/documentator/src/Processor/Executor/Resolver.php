@@ -4,7 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
@@ -15,6 +17,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
+use WeakMap;
 
 use function is_string;
 
@@ -22,10 +25,20 @@ use function is_string;
  * @internal
  */
 class Resolver implements ResolverContract {
+    /**
+     * @var array<class-string<FileCast<object>>, FileCast<object>>
+     */
+    private array $casts;
+    /**
+     * @var WeakMap<File, array<class-string<FileCast<object>>, object>>
+     */
+    private WeakMap $files;
+
     private readonly DirectoryPath $iHome;
     private readonly DirectoryPath $oHome;
 
     public function __construct(
+        private readonly ContainerResolver $container,
         protected readonly Dispatcher $dispatcher,
         protected readonly FileSystem $fs,
         /**
@@ -37,6 +50,8 @@ class Resolver implements ResolverContract {
          */
         protected readonly Closure $queue,
     ) {
+        $this->casts = [];
+        $this->files = new WeakMap();
         $this->iHome = (new DirectoryPath('~input'))->normalized();
         $this->oHome = (new DirectoryPath('~output'))->normalized();
     }
@@ -89,12 +104,27 @@ class Resolver implements ResolverContract {
     }
 
     #[Override]
+    public function cast(File|FilePath|string $path, string $cast): object {
+        $file = $path instanceof File ? $path : $this->get($path);
+
+        if (!isset($this->files[$file][$cast])) {
+            $this->casts[$cast]      ??= $this->container->getInstance()->make($cast);
+            $this->files[$file]      ??= [];
+            $this->files[$file][$cast] = ($this->casts[$cast])($this, $file);
+        }
+
+        return $this->files[$file][$cast]; // @phpstan-ignore return.type (https://github.com/phpstan/phpstan/issues/9521)
+    }
+
+    #[Override]
     public function save(File|FilePath|string $path, object|string $content): File {
         $file = $path instanceof File ? $path : null;
         $path = $this->path($path instanceof File ? $path->path : $path);
 
         try {
             $file = $this->fs->write($file ?? $path, $content);
+
+            unset($this->files[$file]);
 
             $this->notify($path, Result::Success);
 

@@ -2,14 +2,18 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
-use Closure;
 use Exception;
+use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -39,6 +43,7 @@ final class ResolverTest extends TestCase {
 
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -47,7 +52,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -77,6 +82,7 @@ final class ResolverTest extends TestCase {
 
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -85,7 +91,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andThrow($exception);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -118,6 +124,7 @@ final class ResolverTest extends TestCase {
 
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -131,7 +138,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -160,6 +167,7 @@ final class ResolverTest extends TestCase {
             ->never();
 
         $filepath   = new FilePath('file.txt');
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -168,7 +176,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn(false);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -198,6 +206,7 @@ final class ResolverTest extends TestCase {
 
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -211,7 +220,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andThrow($exception);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -245,6 +254,7 @@ final class ResolverTest extends TestCase {
         $content    = 'content';
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -253,7 +263,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -284,6 +294,7 @@ final class ResolverTest extends TestCase {
         $content    = 'content';
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -292,7 +303,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andThrow($exception);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -311,6 +322,40 @@ final class ResolverTest extends TestCase {
         $resolver->save($filepath, $content);
     }
 
+    public function testSaveCastReset(): void {
+        $container = Mockery::mock(ContainerResolver::class);
+        $container
+            ->shouldReceive('getInstance')
+            ->once()
+            ->andReturn($this->app());
+
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher
+            ->shouldReceive('notify')
+            ->once()
+            ->andReturns();
+
+        $run        = (new ResolverTest__Invokable())(...);
+        $queue      = (new ResolverTest__Invokable())(...);
+        $content    = 'content';
+        $filepath   = new FilePath('/file.txt');
+        $caster     = Mockery::mock(Caster::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $resolver   = new Resolver($container, $dispatcher, $filesystem, $run, $queue);
+        $file       = new FileImpl($filesystem, $caster, $filepath);
+        $value      = $resolver->cast($file, ResolverTest__Cast::class);
+
+        $filesystem
+            ->shouldReceive('write')
+            ->with($filepath, $content)
+            ->once()
+            ->andReturn($file);
+
+        $resolver->save($filepath, $content);
+
+        self::assertNotSame($value, $resolver->cast($file, ResolverTest__Cast::class));
+    }
+
     public function testQueue(): void {
         $run   = static function (): void {
             // empty
@@ -323,6 +368,7 @@ final class ResolverTest extends TestCase {
 
         $filepath   = new FilePath('/file.txt');
         $resolved   = Mockery::mock(File::class);
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -331,7 +377,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run, Closure::fromCallable($queue)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run, $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -368,6 +414,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -381,7 +428,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($bFile);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run, Closure::fromCallable($queue)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run, $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -424,6 +471,7 @@ final class ResolverTest extends TestCase {
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
         $resolved   = [new FilePath('file.txt')];
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -432,7 +480,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -465,6 +513,7 @@ final class ResolverTest extends TestCase {
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
         $resolved   = [new FilePath('file.txt')];
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -473,7 +522,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -507,6 +556,7 @@ final class ResolverTest extends TestCase {
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
         $resolved   = [new FilePath('file.txt')];
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -515,7 +565,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($resolved);
 
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $run(...), $queue(...)]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $run(...), $queue(...)]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
         $resolver
@@ -529,6 +579,7 @@ final class ResolverTest extends TestCase {
 
     public function testNotify(): void {
         $path       = new FilePath('path/to/file.txt');
+        $container  = Mockery::mock(ContainerResolver::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
@@ -547,7 +598,7 @@ final class ResolverTest extends TestCase {
         $callback = static function (File $file): void {
             // empty
         };
-        $resolver = Mockery::mock(Resolver::class, [$dispatcher, $filesystem, $callback, $callback]);
+        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $callback, $callback]);
         $resolver->shouldAllowMockingProtectedMethods();
         $resolver->makePartial();
 
@@ -561,9 +612,10 @@ final class ResolverTest extends TestCase {
     public function testPath(DirectoryPath|FilePath $expected, DirectoryPath|FilePath|string $path): void {
         $run        = (new ResolverTest__Invokable())(...);
         $queue      = (new ResolverTest__Invokable())(...);
+        $container  = Mockery::mock(ContainerResolver::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
-        $resolver   = new class($dispatcher, $filesystem, $run, $queue) extends Resolver {
+        $resolver   = new class($container, $dispatcher, $filesystem, $run, $queue) extends Resolver {
             #[Override]
             public function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
                 return parent::path($path);
@@ -581,6 +633,27 @@ final class ResolverTest extends TestCase {
         };
 
         self::assertEquals($expected->normalized(), $resolver->path($path));
+    }
+
+    public function testCast(): void {
+        $container = Mockery::mock(ContainerResolver::class);
+        $container
+            ->shouldReceive('getInstance')
+            ->once()
+            ->andReturn($this->app());
+
+        $run        = (new ResolverTest__Invokable())(...);
+        $queue      = (new ResolverTest__Invokable())(...);
+        $caster     = Mockery::mock(Caster::class);
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $filesystem = Mockery::mock(FileSystem::class);
+        $resolver   = new Resolver($container, $dispatcher, $filesystem, $run, $queue);
+        $file       = new FileImpl($filesystem, $caster, new FilePath('/file.txt'));
+
+        self::assertSame(
+            $resolver->cast($file, ResolverTest__Cast::class),
+            $resolver->cast($file, ResolverTest__Cast::class),
+        );
     }
     //</editor-fold>
 
@@ -616,5 +689,24 @@ final class ResolverTest extends TestCase {
 class ResolverTest__Invokable {
     public function __invoke(File $file): void {
         // empty
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ *
+ * @implements FileCast<object>
+ */
+class ResolverTest__Cast implements FileCast {
+    #[Override]
+    public function __invoke(ResolverContract $resolver, File $file): object {
+        return new class($file->path->path) {
+            public function __construct(
+                public string $path,
+            ) {
+                // empty
+            }
+        };
     }
 }

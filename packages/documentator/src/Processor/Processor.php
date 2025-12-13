@@ -154,7 +154,7 @@ class Processor {
      * @param iterable<mixed, FilePath> $files
      */
     protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
-        $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $skipped);
+        $executor = new Executor($this->container, $this->dispatcher, $this->tasks, $fs, $files, $skipped);
 
         $executor->run();
     }
