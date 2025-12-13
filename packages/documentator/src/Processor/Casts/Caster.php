@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown\MarkdownCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassCommentCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassMarkdownCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
@@ -44,7 +43,6 @@ class Caster {
         $this->casts->add(ClassCommentCast::class);
         $this->casts->add(ClassObjectCast::class);
         $this->casts->add(SerializableCast::class);
-        $this->casts->add(MarkdownCast::class);
     }
 
     /**

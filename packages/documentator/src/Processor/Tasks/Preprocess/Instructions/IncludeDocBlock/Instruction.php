@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Body;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -40,8 +41,11 @@ class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target   = $context->resolver->get($parameters->target);
-        $document = $target->as(Document::class);
-        $result   = match (true) {
+        $document = match ($target->extension) {
+            'md'    => $context->resolver->cast($target, Markdown::class),
+            default => $target->as(Document::class)
+        };
+        $result = match (true) {
             $parameters->summary && $parameters->description => $document,
             $parameters->summary                             => $document->mutate(new Summary()),
             $parameters->description                         => $document->mutate(new Body()),

@@ -11,6 +11,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -81,7 +82,7 @@ class Task implements FileTask {
         // Parse
         $unresolved = [];
         $resolved   = [];
-        $document   = $file->as(Document::class);
+        $document   = $resolver->cast($file, Markdown::class);
         $parsed     = $this->parse($document);
 
         // Links

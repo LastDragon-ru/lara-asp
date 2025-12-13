@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeFile;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
@@ -38,7 +39,7 @@ class Instruction implements InstructionContract {
         $target  = $context->resolver->get($parameters->target);
         $content = $target->extension !== 'md'
             ? $target->content
-            : $target->as(Document::class);
+            : $context->resolver->cast($target, Markdown::class);
 
         return $content;
     }

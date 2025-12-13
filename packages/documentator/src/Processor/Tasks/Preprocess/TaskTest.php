@@ -166,15 +166,12 @@ final class TaskTest extends TestCase {
         $path       = new FilePath('/path/to/file.md');
         $filesystem = Mockery::mock(FileSystem::class);
         $file       = Mockery::mock(FileImpl::class, [$filesystem, Mockery::mock(Caster::class), $path]);
-        $file->makePartial();
-        $file
-            ->shouldReceive('as')
-            ->with(Document::class)
-            ->once()
-            ->andReturn(
-                $this->app()->make(Markdown::class)->parse(self::MARKDOWN, $path),
-            );
 
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
+            ->once()
+            ->andReturn(self::MARKDOWN);
         $filesystem
             ->shouldReceive('write')
             ->once()
