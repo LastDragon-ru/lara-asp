@@ -46,7 +46,7 @@ interface Resolver {
      *
      * @param File|FilePath|non-empty-string $path
      */
-    public function save(File|FilePath|string $path, object|string $content): File;
+    public function save(File|FilePath|string $path, string $content): File;
 
     /**
      * @param FilePath|iterable<mixed, FilePath|non-empty-string>|non-empty-string $path

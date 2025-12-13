@@ -117,7 +117,7 @@ class Resolver implements ResolverContract {
     }
 
     #[Override]
-    public function save(File|FilePath|string $path, object|string $content): File {
+    public function save(File|FilePath|string $path, string $content): File {
         $file = $path instanceof File ? $path : null;
         $path = $this->path($path instanceof File ? $path->path : $path);
 

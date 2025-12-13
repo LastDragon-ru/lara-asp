@@ -197,7 +197,7 @@ class Task implements FileTask {
 
         // Mutate
         if ($mutated) {
-            $resolver->save($file, $document);
+            $resolver->save($file, (string) $document);
         }
     }
 

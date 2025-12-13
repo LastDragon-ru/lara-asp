@@ -24,7 +24,6 @@ use WeakReference;
 use function array_last;
 use function array_pop;
 use function count;
-use function is_string;
 use function spl_object_id;
 use function sprintf;
 use function str_starts_with;
@@ -165,7 +164,7 @@ class FileSystem {
      * if not, it will be created immediately. Relative path will be resolved
      * based on {@see self::$output}.
      */
-    public function write(File|FilePath $path, object|string $content): File {
+    public function write(File|FilePath $path, string $content): File {
         // Prepare
         $file = null;
 
@@ -189,11 +188,7 @@ class FileSystem {
         $file ??= $this->cache(new FileImpl($this, $this->caster, $path));
 
         // Changed?
-        if (!is_string($content)) {
-            $content = $this->caster->castFrom($file, $content);
-        }
-
-        if ($content === null || (($this->content[$file] ?? null) === $content)) {
+        if (($this->content[$file] ?? null) === $content) {
             return $file;
         }
 
