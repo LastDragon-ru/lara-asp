@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
  */
 #[CoversClass(Markdown::class)]
 final class MarkdownTest extends TestCase {
-    public function testCastTo(): void {
+    public function testInvoke(): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $caster     = Mockery::mock(Caster::class);
         $resolver   = Mockery::mock(Resolver::class);
