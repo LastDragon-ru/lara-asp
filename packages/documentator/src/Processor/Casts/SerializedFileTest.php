@@ -19,7 +19,7 @@ final class SerializedFileTest extends TestCase {
     public function testTo(): void {
         $fs         = Mockery::mock(FileSystem::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($fs, Mockery::mock(Caster::class), $path);
+        $file       = new File($fs, $path);
         $content    = 'content';
         $serializer = Mockery::mock(Serializer::class);
         $serialized = new SerializedFile($serializer, $file);
@@ -60,7 +60,7 @@ final class SerializedFileTest extends TestCase {
     public function testToString(): void {
         $fs         = Mockery::mock(FileSystem::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($fs, Mockery::mock(Caster::class), $path);
+        $file       = new File($fs, $path);
         $object     = new SerializedFileTest__SerializableA();
         $content    = 'content';
         $serializer = Mockery::mock(Serializer::class);

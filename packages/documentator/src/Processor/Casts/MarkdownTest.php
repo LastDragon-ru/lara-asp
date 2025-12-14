@@ -19,14 +19,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class MarkdownTest extends TestCase {
     public function testInvoke(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $resolver   = Mockery::mock(Resolver::class);
         $markdown   = Mockery::mock(MarkdownContract::class);
         $document   = Mockery::mock(Document::class);
         $content    = 'content';
         $cast       = new Markdown($markdown);
         $path       = new FilePath('/path/to/file.md');
-        $file       = Mockery::mock(File::class, [$filesystem, $caster, $path]);
+        $file       = Mockery::mock(File::class, [$filesystem, $path]);
         $filesystem
             ->shouldReceive('read')
             ->with($file)

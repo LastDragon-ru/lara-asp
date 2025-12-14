@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ParsedClass;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ParsedFile;
@@ -71,10 +70,9 @@ final class BaseTest extends TestCase {
     public function testGetTarget(): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = $this->getDependencyResolver($filesystem);
-        $caster     = Mockery::mock(Caster::class);
         $base       = new DirectoryPath('/path/to/directory');
         $path       = new FilePath('/path/to/directory/file.md');
-        $file       = new FileImpl($filesystem, $caster, $path);
+        $file       = new FileImpl($filesystem, $path);
 
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem

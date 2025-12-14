@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
@@ -22,11 +21,10 @@ final class ComposerTest extends TestCase {
     public function testInvoke(): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = $this->getDependencyResolver($filesystem);
-        $caster     = Mockery::mock(Caster::class);
         $content    = '{"name": "test"}';
         $cast       = new Composer();
         $path       = new FilePath('/path/to/file.json');
-        $file       = Mockery::mock(File::class, [$filesystem, $caster, $path]);
+        $file       = Mockery::mock(File::class, [$filesystem, $path]);
         $filesystem
             ->shouldReceive('read')
             ->with($file)

@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
@@ -339,10 +338,9 @@ final class ResolverTest extends TestCase {
         $queue      = (new ResolverTest__Invokable())(...);
         $content    = 'content';
         $filepath   = new FilePath('/file.txt');
-        $caster     = Mockery::mock(Caster::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = new Resolver($container, $dispatcher, $filesystem, $run, $queue);
-        $file       = new FileImpl($filesystem, $caster, $filepath);
+        $file       = new FileImpl($filesystem, $filepath);
         $value      = $resolver->cast($file, ResolverTest__Cast::class);
 
         $filesystem
@@ -644,11 +642,10 @@ final class ResolverTest extends TestCase {
 
         $run        = (new ResolverTest__Invokable())(...);
         $queue      = (new ResolverTest__Invokable())(...);
-        $caster     = Mockery::mock(Caster::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = new Resolver($container, $dispatcher, $filesystem, $run, $queue);
-        $file       = new FileImpl($filesystem, $caster, new FilePath('/file.txt'));
+        $file       = new FileImpl($filesystem, new FilePath('/file.txt'));
 
         self::assertSame(
             $resolver->cast($file, ResolverTest__Cast::class),

@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
@@ -43,10 +42,9 @@ final class ParsedTest extends TestCase {
             PHP;
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = $this->getDependencyResolver($filesystem);
-        $caster     = Mockery::mock(Caster::class);
         $cast       = $this->app()->make(Parsed::class);
         $path       = new FilePath('/path/to/file.json');
-        $file       = Mockery::mock(File::class, [$filesystem, $caster, $path]);
+        $file       = Mockery::mock(File::class, [$filesystem, $path]);
         $filesystem
             ->shouldReceive('read')
             ->with($file)

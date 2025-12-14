@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
@@ -37,9 +36,8 @@ final class ClassMethodLinkTest extends TestCase {
 
     public function testGetTargetNode(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($filesystem, $caster, $path);
+        $file       = new File($filesystem, $path);
 
         $filesystem
             ->shouldReceive('read')

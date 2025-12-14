@@ -5,8 +5,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -55,9 +53,8 @@ trait WithProcessor {
                 // Skip
             }
         };
-        $caster     = new Caster($this->app()->make(Casts::class));
         $dispatcher = new Dispatcher();
-        $filesystem = new FileSystem($adapter, $dispatcher, $caster, $input, $output);
+        $filesystem = new FileSystem($adapter, $dispatcher, $input, $output);
 
         return $filesystem;
     }

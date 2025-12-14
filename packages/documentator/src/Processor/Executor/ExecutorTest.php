@@ -3,7 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
@@ -25,9 +24,8 @@ final class ExecutorTest extends TestCase {
     #[DataProvider('dataProviderOnResolve')]
     public function testOnResolve(?bool $expected, State $state): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new FileImpl($filesystem, $caster, $path);
+        $file       = new FileImpl($filesystem, $path);
 
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
@@ -61,9 +59,8 @@ final class ExecutorTest extends TestCase {
     #[DataProvider('dataProviderOnQueue')]
     public function testOnQueue(bool $expected, State $state): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new FileImpl($filesystem, $caster, $path);
+        $file       = new FileImpl($filesystem, $path);
 
         $executor = Mockery::mock(ExecutorTest__Executor::class);
         $executor->shouldAllowMockingProtectedMethods();
