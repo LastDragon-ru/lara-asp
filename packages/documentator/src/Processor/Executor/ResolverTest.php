@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
@@ -693,9 +693,9 @@ class ResolverTest__Invokable {
  * @internal
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  *
- * @implements FileCast<object>
+ * @implements Cast<object>
  */
-class ResolverTest__Cast implements FileCast {
+class ResolverTest__Cast implements Cast {
     #[Override]
     public function __invoke(ResolverContract $resolver, File $file): object {
         return new class($file->path->path) {

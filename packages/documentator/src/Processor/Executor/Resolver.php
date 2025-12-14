@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 use Closure;
 use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
@@ -26,11 +26,11 @@ use function is_string;
  */
 class Resolver implements ResolverContract {
     /**
-     * @var array<class-string<FileCast<object>>, FileCast<object>>
+     * @var array<class-string<Cast<object>>, Cast<object>>
      */
     private array $casts;
     /**
-     * @var WeakMap<File, array<class-string<FileCast<object>>, object>>
+     * @var WeakMap<File, array<class-string<Cast<object>>, object>>
      */
     private WeakMap $files;
 

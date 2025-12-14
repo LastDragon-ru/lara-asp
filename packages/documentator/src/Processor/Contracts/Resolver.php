@@ -35,7 +35,7 @@ interface Resolver {
      * @template T of object
      *
      * @param File|FilePath|non-empty-string $path
-     * @param class-string<FileCast<T>>      $cast
+     * @param class-string<Cast<T>>          $cast
      *
      * @return T
      */

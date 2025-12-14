@@ -4,15 +4,15 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Markdown as MarkdownContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use Override;
 
 /**
- * @implements FileCast<Document>
+ * @implements Cast<Document>
  */
-readonly class Markdown implements FileCast {
+readonly class Markdown implements Cast {
     public function __construct(
         protected MarkdownContract $markdown,
     ) {

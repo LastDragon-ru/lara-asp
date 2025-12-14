@@ -2,16 +2,16 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Serializer\Contracts\Serializer;
 use Override;
 
 /**
- * @implements FileCast<SerializedFile>
+ * @implements Cast<SerializedFile>
  */
-readonly class Serialized implements FileCast {
+readonly class Serialized implements Cast {
     public function __construct(
         protected Serializer $serializer,
     ) {

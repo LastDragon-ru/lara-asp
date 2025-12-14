@@ -5,15 +5,15 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 use LastDragon_ru\LaraASP\Documentator\Composer\ComposerJson;
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Serialized;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use Override;
 
 /**
- * @implements FileCast<Package>
+ * @implements Cast<Package>
  */
-readonly class Composer implements FileCast {
+readonly class Composer implements Cast {
     public function __construct() {
         // empty
     }

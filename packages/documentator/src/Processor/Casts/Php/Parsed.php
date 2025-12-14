@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\FileCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use Override;
@@ -14,9 +14,9 @@ use PhpParser\ParserFactory;
 use function array_map;
 
 /**
- * @implements FileCast<ParsedFile>
+ * @implements Cast<ParsedFile>
  */
-class Parsed implements FileCast {
+class Parsed implements Cast {
     public function __construct(
         protected readonly PhpDocumentFactory $factory,
     ) {

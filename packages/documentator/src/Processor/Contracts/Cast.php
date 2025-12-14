@@ -5,7 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Contracts;
 /**
  * @template TObject of object
  */
-interface FileCast {
+interface Cast {
     /**
      * @return TObject
      */
