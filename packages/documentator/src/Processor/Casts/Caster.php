@@ -3,9 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Casts;
 
 use Exception;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassCommentCast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassMarkdownCast;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\CastFromFailed;
@@ -36,9 +33,7 @@ class Caster {
     }
 
     protected function addBuiltInCasts(): void {
-        $this->casts->add(ClassMarkdownCast::class);
-        $this->casts->add(ClassCommentCast::class);
-        $this->casts->add(ClassObjectCast::class);
+        // empty
     }
 
     /**

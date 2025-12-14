@@ -4,8 +4,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObject;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
@@ -70,10 +70,11 @@ final class ClassPropertyLinkTest extends TestCase {
             }
         };
 
-        $resolver = $this->app()->make(ClassObjectCast::class);
-        $class    = $resolver->castTo($file, ClassObject::class);
+        $resolver = Mockery::mock(Resolver::class);
+        $parsed   = ($this->app()->make(Parsed::class))($resolver, $file);
+        $class    = array_first($parsed->classes);
         $actual   = $class !== null
-            ? $link->getTargetNode($class->class)
+            ? $link->getTargetNode($class->node)
             : null;
 
         self::assertInstanceOf(Property::class, $actual);
@@ -117,10 +118,11 @@ final class ClassPropertyLinkTest extends TestCase {
             }
         };
 
-        $resolver = $this->app()->make(ClassObjectCast::class);
-        $class    = $resolver->castTo($file, ClassObject::class);
+        $resolver = Mockery::mock(Resolver::class);
+        $parsed   = ($this->app()->make(Parsed::class))($resolver, $file);
+        $class    = array_first($parsed->classes);
         $actual   = $class !== null
-            ? $link->getTargetNode($class->class)
+            ? $link->getTargetNode($class->node)
             : null;
 
         self::assertInstanceOf(Param::class, $actual);

@@ -3,8 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassComment;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
@@ -13,6 +14,7 @@ use Override;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 
+use function array_find;
 use function mb_ltrim;
 use function mb_strrpos;
 use function mb_substr;
@@ -68,18 +70,20 @@ abstract class Base implements Link {
     }
 
     #[Override]
-    public function getTarget(File $file, File $source): ?LinkTarget {
+    public function getTarget(Resolver $resolver, File $source): ?LinkTarget {
         // Class?
-        $comment = $source->as(ClassComment::class);
+        $expected = mb_ltrim($this->class, '\\');
+        $parsed   = $resolver->cast($source, Parsed::class);
+        $class    = array_find($parsed->classes, static fn ($class) => (string) $class->node->namespacedName === $expected);
 
-        if ((string) $comment->class->namespacedName !== mb_ltrim($this->class, '\\')) {
+        if ($class === null) {
             return null;
         }
 
         // Resolve
-        $path       = $file->path->relative($source->path);
-        $node       = $this->getTargetNode($comment->class);
-        $deprecated = $comment->comment->isDeprecated();
+        $path       = $resolver->directory->relative($source->path);
+        $node       = $this->getTargetNode($class->node);
+        $deprecated = $class->comment->isDeprecated();
         $target     = $this->target($path, $node, $deprecated);
 
         // Return

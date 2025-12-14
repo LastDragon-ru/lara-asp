@@ -4,25 +4,28 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Composer\Package;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassComment;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ParsedClass;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ParsedFile;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Contracts\Link;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\LinkTarget;
-use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
+use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
 use Override;
-use PhpParser\Comment\Doc;
 use PhpParser\NameContext;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\ClassMethod;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -31,6 +34,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 #[CoversClass(Base::class)]
 final class BaseTest extends TestCase {
+    use WithProcessor;
+
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderGetTitle')]
@@ -64,92 +69,78 @@ final class BaseTest extends TestCase {
     }
 
     public function testGetTarget(): void {
-        $class = Mockery::mock(ClassLike::class, new WithProperties(), PropertiesMock::class);
-        $class
-            ->shouldUseProperty('namespacedName')
-            ->value(new Name('App\\A'));
-        $class
-            ->shouldReceive('getDocComment')
+        $filesystem = Mockery::mock(FileSystem::class);
+        $resolver   = $this->getDependencyResolver($filesystem);
+        $caster     = Mockery::mock(Caster::class);
+        $base       = new DirectoryPath('/path/to/directory');
+        $path       = new FilePath('/path/to/directory/file.md');
+        $file       = new FileImpl($filesystem, $caster, $path);
+
+        $filesystem->shouldAllowMockingProtectedMethods();
+        $filesystem
+            ->shouldReceive('path')
+            ->once()
+            ->andReturn($base);
+        $filesystem
+            ->shouldReceive('begin')
+            ->once()
+            ->passthru();
+        $filesystem
+            ->shouldReceive('read')
+            ->with($file)
             ->once()
             ->andReturn(
-                Mockery::mock(Doc::class),
+                <<<'PHP'
+                <?php declare(strict_types = 1);
+
+                /**
+                 * @deprecated for testing
+                 */
+                class A {
+                    public const Constant = 123;
+                }
+                PHP,
             );
 
-        $context = Mockery::mock(NameContext::class);
-        $comment = Mockery::mock(PhpDoc::class);
-        $comment
-            ->shouldReceive('isDeprecated')
-            ->twice()
-            ->andReturn(true, false);
+        $filesystem->begin($base);
 
-        $fs     = Mockery::mock(FileSystem::class);
-        $data   = new ClassComment($class, $context, $comment);
-        $caster = Mockery::mock(Caster::class);
-        $source = Mockery::mock(FileImpl::class, [$fs, $caster, new FilePath('/relative/path/to/class/a.php')]);
-        $source
-            ->shouldReceive('as')
-            ->with(ClassComment::class)
-            ->twice()
-            ->andReturn($data);
+        $link = new class('A') extends Base {
+            #[Override]
+            protected function getTargetNode(ClassLike $class): Node {
+                return $class;
+            }
 
-        $file = Mockery::mock(FileImpl::class, [$fs, $caster, new FilePath('/file.txt')]);
-        $doc  = Mockery::mock(Doc::class);
-        $doc
-            ->shouldReceive('getStartLine')
-            ->once()
-            ->andReturn(234);
-        $doc
-            ->shouldReceive('getText')
-            ->once()
-            ->andReturn('/** @deprecated */');
-
-        $node = Mockery::mock(ClassMethod::class);
-        $node
-            ->shouldReceive('getStartLine')
-            ->never();
-        $node
-            ->shouldReceive('getEndLine')
-            ->once()
-            ->andReturn(321);
-        $node
-            ->shouldReceive('getDocComment')
-            ->once()
-            ->andReturn($doc);
-
-        $link = Mockery::mock(Base::class, ['\\App\\A']);
-        $link->shouldAllowMockingProtectedMethods();
-        $link->makePartial();
-        $link
-            ->shouldReceive('getTargetNode')
-            ->twice()
-            ->andReturn($class, $node);
+            #[Override]
+            public function __toString(): string {
+                return '';
+            }
+        };
 
         self::assertEquals(
-            new LinkTarget((new FilePath('relative/path/to/class/a.php'))->normalized(), true, null, null),
-            $link->getTarget($file, $source),
-        );
-
-        self::assertEquals(
-            new LinkTarget((new FilePath('relative/path/to/class/a.php'))->normalized(), true, 234, 321),
-            $link->getTarget($file, $source),
+            new LinkTarget((new FilePath('file.md'))->normalized(), true, null, null),
+            $link->getTarget($resolver, $file),
         );
     }
 
     public function testGetTargetClassNotMatch(): void {
-        $file  = Mockery::mock(File::class);
+        $file  = new FilePath('file.php');
         $class = Mockery::mock(ClassLike::class, new WithProperties(), PropertiesMock::class);
         $class
             ->shouldUseProperty('namespacedName')
             ->value(new Name('App\\A'));
-        $context = Mockery::mock(NameContext::class);
-        $comment = Mockery::mock(PhpDoc::class);
-        $data    = new ClassComment($class, $context, $comment);
-        $source  = Mockery::mock(File::class);
-        $source
-            ->shouldReceive('as')
-            ->with(ClassComment::class)
+        $source   = Mockery::mock(File::class);
+        $classes  = static function (ParsedFile $file) use ($class): array {
+            return [
+                new ParsedClass(Mockery::mock(PhpDocumentFactory::class), $file, $class),
+            ];
+        };
+        $parsed   = new ParsedFile($file, Mockery::mock(NameContext::class), $classes);
+        $resolver = Mockery::mock(Resolver::class);
+        $resolver
+            ->shouldReceive('cast')
+            ->with($source, Parsed::class)
             ->once()
-            ->andReturn($data);
+            ->andReturn($parsed);
 
         $link = Mockery::mock(Base::class, [$this::class]);
         $link->shouldAllowMockingProtectedMethods();
@@ -158,7 +149,7 @@ final class BaseTest extends TestCase {
             ->shouldReceive('getTargetNode')
             ->never();
 
-        self::assertNull($link->getTarget($file, $source));
+        self::assertNull($link->getTarget($resolver, $source));
     }
     // </editor-fold>
 
@@ -262,7 +253,7 @@ readonly class BaseTest_Link implements Link {
     }
 
     #[Override]
-    public function getTarget(File $file, File $source): ?LinkTarget {
+    public function getTarget(Resolver $resolver, File $source): ?LinkTarget {
         return null;
     }
 }

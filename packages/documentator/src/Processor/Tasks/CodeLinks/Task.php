@@ -116,7 +116,7 @@ class Task implements FileTask {
             $target = null;
 
             if ($source !== null) {
-                $target = $token->link->getTarget($file, $source);
+                $target = $token->link->getTarget($resolver, $source);
 
                 if ($target === null && !$token->deprecated) {
                     $unresolved[] = $token;
