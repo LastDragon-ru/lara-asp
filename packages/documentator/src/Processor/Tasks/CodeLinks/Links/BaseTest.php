@@ -69,7 +69,7 @@ final class BaseTest extends TestCase {
 
     public function testGetTarget(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $resolver   = $this->getDependencyResolver($filesystem);
+        $resolver   = $this->getProcessorResolver($filesystem);
         $base       = new DirectoryPath('/path/to/directory');
         $path       = new FilePath('/path/to/directory/file.md');
         $file       = new FileImpl($filesystem, $path);

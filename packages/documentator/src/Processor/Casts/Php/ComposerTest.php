@@ -20,7 +20,7 @@ final class ComposerTest extends TestCase {
 
     public function testInvoke(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $resolver   = $this->getDependencyResolver($filesystem);
+        $resolver   = $this->getProcessorResolver($filesystem);
         $content    = '{"name": "test"}';
         $cast       = new Composer();
         $path       = new FilePath('/path/to/file.json');

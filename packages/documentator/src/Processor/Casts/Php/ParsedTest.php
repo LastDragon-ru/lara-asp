@@ -41,7 +41,7 @@ final class ParsedTest extends TestCase {
             }
             PHP;
         $filesystem = Mockery::mock(FileSystem::class);
-        $resolver   = $this->getDependencyResolver($filesystem);
+        $resolver   = $this->getProcessorResolver($filesystem);
         $cast       = $this->app()->make(Parsed::class);
         $path       = new FilePath('/path/to/file.json');
         $file       = Mockery::mock(File::class, [$filesystem, $path]);

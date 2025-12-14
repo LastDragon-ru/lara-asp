@@ -60,10 +60,10 @@ trait WithProcessor {
     }
 
     protected function runProcessorFileTask(FileTask $task, FileSystem $fs, File $file): void {
-        $task($this->getDependencyResolver($fs), $file);
+        $task($this->getProcessorResolver($fs), $file);
     }
 
-    protected function getDependencyResolver(FileSystem $fs): ResolverContract {
+    protected function getProcessorResolver(FileSystem $fs): ResolverContract {
         $dispatcher = new Dispatcher();
         $container  = $this->app()->make(ContainerResolver::class);
         $callback   = static function (): void {
