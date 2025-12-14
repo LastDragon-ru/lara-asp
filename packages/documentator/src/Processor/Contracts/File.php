@@ -14,12 +14,5 @@ use LastDragon_ru\Path\FilePath;
  * @phpstan-require-extends FileImpl
  */
 interface File {
-    /**
-     * @template T of object
-     *
-     * @param class-string<T> $class
-     *
-     * @return T
-     */
-    public function as(string $class): object;
+    // empty
 }

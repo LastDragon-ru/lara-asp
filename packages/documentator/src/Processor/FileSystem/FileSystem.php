@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 
 use Exception;
 use InvalidArgumentException;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
@@ -24,7 +23,6 @@ use WeakReference;
 use function array_last;
 use function array_pop;
 use function count;
-use function is_string;
 use function spl_object_id;
 use function sprintf;
 use function str_starts_with;
@@ -56,7 +54,6 @@ class FileSystem {
     public function __construct(
         private readonly Adapter $adapter,
         private readonly Dispatcher $dispatcher,
-        private readonly Caster $caster,
         public readonly DirectoryPath $input,
         public readonly DirectoryPath $output,
     ) {
@@ -100,7 +97,7 @@ class FileSystem {
 
         // Create
         if ($this->adapter->exists($path)) {
-            $file = new FileImpl($this, $path, $this->caster);
+            $file = new FileImpl($this, $path);
         } else {
             throw new PathNotFound($path);
         }
@@ -139,7 +136,7 @@ class FileSystem {
                  * We are expecting all files are exist, so add them into the
                  * cache to avoid another {@see Adapter::exists()} call.
                  */
-                $this->cache(new FileImpl($this, $path, $this->caster));
+                $this->cache(new FileImpl($this, $path));
             }
 
             yield $path;
@@ -165,7 +162,7 @@ class FileSystem {
      * if not, it will be created immediately. Relative path will be resolved
      * based on {@see self::$output}.
      */
-    public function write(File|FilePath $path, object|string $content): File {
+    public function write(File|FilePath $path, string $content): File {
         // Prepare
         $file = null;
 
@@ -186,14 +183,10 @@ class FileSystem {
         // File?
         $file ??= $this->exists($path) ? $this->get($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new FileImpl($this, $path, $this->caster));
+        $file ??= $this->cache(new FileImpl($this, $path));
 
         // Changed?
-        if (!is_string($content)) {
-            $content = $this->caster->castFrom($file, $content);
-        }
-
-        if ($content === null || (($this->content[$file] ?? null) === $content)) {
+        if (($this->content[$file] ?? null) === $content) {
             return $file;
         }
 

@@ -15,6 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Move;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Generated\Unwrap;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Text as TextMutation;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -135,7 +136,7 @@ class Task implements FileTask {
     #[Override]
     public function __invoke(Resolver $resolver, File $file): void {
         // Process
-        $document = $file->as(Document::class);
+        $document = $resolver->cast($file, Markdown::class);
         $parsed   = $this->parse($resolver, $file, $document);
         $mutated  = false;
 
@@ -197,7 +198,7 @@ class Task implements FileTask {
 
         // Mutate
         if ($mutated) {
-            $resolver->save($file, $document);
+            $resolver->save($file, (string) $document);
         }
     }
 

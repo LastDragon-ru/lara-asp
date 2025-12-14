@@ -5,11 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem;
 use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 
 /**
  * @internal
@@ -18,24 +16,6 @@ use stdClass;
 final class FileTest extends TestCase {
     use WithProcessor;
 
-    public function testAs(): void {
-        $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
-        $value      = new stdClass();
-        $path       = (new FilePath(__FILE__))->normalized();
-        $file       = new class($filesystem, $path, $caster) extends File {
-            // empty
-        };
-
-        $caster
-            ->shouldReceive('castTo')
-            ->with($file, $value::class)
-            ->once()
-            ->andReturn($value);
-
-        self::assertSame($value, $file->as($value::class));
-    }
-
     public function testConstructNotNormalized(): void {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage('Path must be normalized, `/../path` given.');
@@ -43,7 +23,6 @@ final class FileTest extends TestCase {
         new class(
             Mockery::mock(FileSystem::class),
             new FilePath('/../path'),
-            Mockery::mock(Caster::class),
         ) extends File {
             // empty
         };
@@ -56,7 +35,6 @@ final class FileTest extends TestCase {
         new class(
             Mockery::mock(FileSystem::class),
             (new FilePath('../path'))->normalized(),
-            Mockery::mock(Caster::class),
         ) extends File {
             // empty
         };
@@ -64,9 +42,8 @@ final class FileTest extends TestCase {
 
     public function testPropertyName(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
-        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'), $caster);
-        $fileB      = new File($filesystem, new FilePath('/path/to/file'), $caster);
+        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'));
+        $fileB      = new File($filesystem, new FilePath('/path/to/file'));
 
         self::assertSame('file.txt', $fileA->name);
         self::assertSame('file', $fileB->name);
@@ -74,9 +51,8 @@ final class FileTest extends TestCase {
 
     public function testPropertyExtension(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
-        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'), $caster);
-        $fileB      = new File($filesystem, new FilePath('/path/to/file'), $caster);
+        $fileA      = new File($filesystem, new FilePath('/path/to/file.txt'));
+        $fileB      = new File($filesystem, new FilePath('/path/to/file'));
 
         self::assertSame('txt', $fileA->extension);
         self::assertNull($fileB->extension);
@@ -84,9 +60,8 @@ final class FileTest extends TestCase {
 
     public function testPropertyContent(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $content    = 'content';
-        $file       = new File($filesystem, new FilePath('/file.txt'), $caster);
+        $file       = new File($filesystem, new FilePath('/file.txt'));
 
         $filesystem
             ->shouldReceive('read')

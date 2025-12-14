@@ -8,10 +8,7 @@ use IteratorAggregate;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Casts;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
@@ -35,7 +32,6 @@ use function array_map;
  */
 class Processor {
     protected readonly Tasks      $tasks;
-    protected readonly Casts      $casts;
     protected readonly Dispatcher $dispatcher;
 
     public function __construct(
@@ -43,7 +39,6 @@ class Processor {
         protected readonly Adapter $adapter,
     ) {
         $this->tasks      = new Tasks($container);
-        $this->casts      = new Casts($container);
         $this->dispatcher = new Dispatcher();
     }
 
@@ -56,20 +51,6 @@ class Processor {
      */
     public function task(Task|string $task, ?int $priority = null): static {
         $this->tasks->add($task, $priority);
-
-        return $this;
-    }
-
-    /**
-     * The last added resolvers have a bigger priority.
-     *
-     * @template V of object
-     * @template R of Cast<V>
-     *
-     * @param R|class-string<R> $cast
-     */
-    public function cast(Cast|string $cast, ?int $priority = null): static {
-        $this->casts->add($cast, $priority);
 
         return $this;
     }
@@ -112,10 +93,9 @@ class Processor {
             $this->dispatcher->notify(new ProcessingStarted($root, $output));
 
             try {
-                $caster = new Caster($this->casts);
-                $fs     = new FileSystem($this->adapter, $this->dispatcher, $caster, $root, $output);
-                $globs  = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
-                $files  = match (true) {
+                $fs    = new FileSystem($this->adapter, $this->dispatcher, $root, $output);
+                $globs = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
+                $files = match (true) {
                     default                    => $fs->search($root, $globs, $skip),
                     $input instanceof FilePath => new readonly class($input) implements IteratorAggregate {
                         public function __construct(
@@ -154,7 +134,7 @@ class Processor {
      * @param iterable<mixed, FilePath> $files
      */
     protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
-        $executor = new Executor($this->dispatcher, $this->tasks, $fs, $files, $skipped);
+        $executor = new Executor($this->container, $this->dispatcher, $this->tasks, $fs, $files, $skipped);
 
         $executor->run();
     }
@@ -162,6 +142,5 @@ class Processor {
     protected function reset(): void {
         $this->adapter->reset();
         $this->tasks->reset();
-        $this->casts->reset();
     }
 }

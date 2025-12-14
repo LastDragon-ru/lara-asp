@@ -5,10 +5,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instruct
 use LastDragon_ru\LaraASP\Documentator\Markdown\Contracts\Document;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Body;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Document\Summary;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
 use Override;
+
+use function array_first;
 
 /**
  * Includes the docblock of the first PHP class/interface/trait/enum/etc
@@ -40,14 +43,14 @@ class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $target   = $context->resolver->get($parameters->target);
-        $document = $target->as(Document::class);
+        $document = array_first($context->resolver->cast($target, Parsed::class)->classes)?->markdown;
         $result   = match (true) {
             $parameters->summary && $parameters->description => $document,
-            $parameters->summary                             => $document->mutate(new Summary()),
-            $parameters->description                         => $document->mutate(new Body()),
-            default                                          => '',
+            $parameters->summary                             => $document?->mutate(new Summary()),
+            $parameters->description                         => $document?->mutate(new Body()),
+            default                                          => null,
         };
 
-        return $result;
+        return $result ?? '';
     }
 }

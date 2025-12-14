@@ -11,6 +11,8 @@ use LastDragon_ru\LaraASP\Documentator\Markdown\Mutations\Changeset;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Delete;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Mutator\Mutagens\Replace;
 use LastDragon_ru\LaraASP\Documentator\Markdown\Utils;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Composer;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -72,7 +74,7 @@ class Task implements FileTask {
     public function __invoke(Resolver $resolver, File $file): void {
         // Composer?
         $composer = $resolver->find('~input/composer.json');
-        $package  = $composer?->as(Package::class);
+        $package  = $composer !== null ? $resolver->cast($composer, Composer::class) : null;
 
         if (!($package instanceof Package)) {
             return;
@@ -81,7 +83,7 @@ class Task implements FileTask {
         // Parse
         $unresolved = [];
         $resolved   = [];
-        $document   = $file->as(Document::class);
+        $document   = $resolver->cast($file, Markdown::class);
         $parsed     = $this->parse($document);
 
         // Links
@@ -114,7 +116,7 @@ class Task implements FileTask {
             $target = null;
 
             if ($source !== null) {
-                $target = $token->link->getTarget($file, $source);
+                $target = $token->link->getTarget($resolver, $source);
 
                 if ($target === null && !$token->deprecated) {
                     $unresolved[] = $token;
@@ -139,7 +141,7 @@ class Task implements FileTask {
         $changes = $this->getChanges($document, $parsed['blocks'], $resolved);
 
         if ($changes !== []) {
-            $resolver->save($file, $document->mutate(new Changeset($changes)));
+            $resolver->save($file, (string) $document->mutate(new Changeset($changes)));
         }
     }
 

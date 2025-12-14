@@ -3,9 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Links;
 
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Caster;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObject;
-use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\ClassObjectCast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\FilePath;
@@ -44,9 +43,8 @@ final class ClassConstantLinkTest extends TestCase {
 
     public function testGetTargetNodeClassConstant(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($filesystem, $path, $caster);
+        $file       = new File($filesystem, $path);
 
         $filesystem
             ->shouldReceive('read')
@@ -69,10 +67,11 @@ final class ClassConstantLinkTest extends TestCase {
             }
         };
 
-        $resolver = $this->app()->make(ClassObjectCast::class);
-        $class    = $resolver->castTo($file, ClassObject::class);
+        $resolver = Mockery::mock(Resolver::class);
+        $parsed   = ($this->app()->make(Parsed::class))($resolver, $file);
+        $class    = array_first($parsed->classes);
         $actual   = $class !== null
-            ? $link->getTargetNode($class->class)
+            ? $link->getTargetNode($class->node)
             : null;
 
         self::assertInstanceOf(ClassConst::class, $actual);
@@ -87,9 +86,8 @@ final class ClassConstantLinkTest extends TestCase {
 
     public function testGetTargetNodeEnum(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $caster     = Mockery::mock(Caster::class);
         $path       = new FilePath('/file.md');
-        $file       = new File($filesystem, $path, $caster);
+        $file       = new File($filesystem, $path);
 
         $filesystem
             ->shouldReceive('read')
@@ -112,10 +110,11 @@ final class ClassConstantLinkTest extends TestCase {
             }
         };
 
-        $resolver = $this->app()->make(ClassObjectCast::class);
-        $class    = $resolver->castTo($file, ClassObject::class);
+        $resolver = Mockery::mock(Resolver::class);
+        $parsed   = ($this->app()->make(Parsed::class))($resolver, $file);
+        $class    = array_first($parsed->classes);
         $actual   = $class !== null
-            ? $link->getTargetNode($class->class)
+            ? $link->getTargetNode($class->node)
             : null;
 
         self::assertInstanceOf(EnumCase::class, $actual);
