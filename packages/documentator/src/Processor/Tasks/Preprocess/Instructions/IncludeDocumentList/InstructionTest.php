@@ -131,7 +131,7 @@ final class InstructionTest extends TestCase {
                 MARKDOWN,
                 'nested/Document.md',
                 <<<'MARKDOWN'
-                [include:document-list]: . ({"depth": null, "order": "Desc"})
+                [include:document-list]: . ({"include": ["**/*.md"], "order": "Desc"})
                 MARKDOWN,
             ],
             'Level `null`'                           => [
@@ -217,7 +217,7 @@ final class InstructionTest extends TestCase {
                 MARKDOWN,
                 'nested/Document.md',
                 <<<'MARKDOWN'
-                [include:document-list]: . ({"include": ["**/*B.md"], "depth": null})
+                [include:document-list]: . ({"include": ["**/*B.md"]})
                 MARKDOWN,
             ],
         ];

@@ -11,7 +11,6 @@ interface Adapter {
     /**
      * @param list<non-empty-string> $exclude globs
      * @param list<non-empty-string> $include globs
-     * @param ?int<0, max>           $depth
      *
      * @return iterable<mixed, FilePath>
      */
@@ -19,7 +18,6 @@ interface Adapter {
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
-        ?int $depth = null,
     ): iterable;
 
     public function read(FilePath $path): string;

@@ -42,9 +42,8 @@ trait WithProcessor {
                 DirectoryPath $directory,
                 ?Closure $include = null,
                 ?Closure $exclude = null,
-                ?int $depth = null,
             ): Finder {
-                return parent::getFinder($directory, $include, $exclude, $depth)
+                return parent::getFinder($directory, $include, $exclude)
                     ->sortByName(true);
             }
 

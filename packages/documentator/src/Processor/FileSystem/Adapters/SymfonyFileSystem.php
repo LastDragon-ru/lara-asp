@@ -36,12 +36,11 @@ class SymfonyFileSystem implements Adapter {
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
-        ?int $depth = null,
     ): iterable {
         $map      = new SymfonyPathMap();
         $include  = $include !== [] ? (new SymfonyGlob($map, $include))->match(...) : null;
         $exclude  = $exclude !== [] ? (new SymfonyGlob($map, $exclude))->mismatch(...) : null;
-        $iterator = $this->getFinder($directory, $include, $exclude, $depth)->files();
+        $iterator = $this->getFinder($directory, $include, $exclude)->files();
 
         foreach ($iterator as $file) {
             $path = $map->get($file);
@@ -70,15 +69,13 @@ class SymfonyFileSystem implements Adapter {
     }
 
     /**
-     * @param Closure(SplFileInfo): bool|null $include
      * @param Closure(SplFileInfo): bool|null $exclude
-     * @param ?int<0, max>                    $depth
+     * @param Closure(SplFileInfo): bool|null $include
      */
     protected function getFinder(
         DirectoryPath $directory,
         ?Closure $include = null,
         ?Closure $exclude = null,
-        ?int $depth = null,
     ): Finder {
         $finder = Finder::create()
             ->ignoreVCSIgnored(true)
@@ -86,10 +83,6 @@ class SymfonyFileSystem implements Adapter {
             ->exclude('vendor-bin')
             ->exclude('vendor')
             ->in((string) $directory);
-
-        if ($depth !== null) {
-            $finder = $finder->depth("<= {$depth}");
-        }
 
         if ($include !== null) {
             $finder = $finder->filter($include);

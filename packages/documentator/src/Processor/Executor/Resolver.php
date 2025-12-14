@@ -169,7 +169,6 @@ class Resolver implements ResolverContract {
     public function search(
         array|string $include,
         array|string $exclude,
-        ?int $depth,
         DirectoryPath|string|null $directory = null,
     ): iterable {
         $path = match (true) {
@@ -182,7 +181,7 @@ class Resolver implements ResolverContract {
         $exclude = (array) $exclude;
 
         try {
-            $files = $this->fs->search($path, $include, $exclude, $depth);
+            $files = $this->fs->search($path, $include, $exclude);
         } catch (Exception $exception) {
             throw $this->exception($path, $exception);
         }
