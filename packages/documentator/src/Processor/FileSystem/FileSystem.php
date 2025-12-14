@@ -106,9 +106,8 @@ class FileSystem {
     }
 
     /**
-     * @param list<non-empty-string> $include
      * @param list<non-empty-string> $exclude
-     * @param ?int<0, max>           $depth
+     * @param list<non-empty-string> $include
      *
      * @return iterable<mixed, FilePath>
      */
@@ -116,7 +115,6 @@ class FileSystem {
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
-        ?int $depth = null,
     ): iterable {
         // Exist?
         $directory = $this->path($directory);
@@ -126,7 +124,7 @@ class FileSystem {
         }
 
         // Search
-        $iterator = $this->adapter->search($directory, $include, $exclude, $depth);
+        $iterator = $this->adapter->search($directory, $include, $exclude);
 
         foreach ($iterator as $path) {
             $path = $this->path($directory->resolve($path));

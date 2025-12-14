@@ -44,8 +44,8 @@ composer require lastdragon-ru/lara-asp-<package>
 | 🐝 | Package intended to use in dev. |
 |:--:|---------------------------------|
 
-[include:document-list]: ./packages ({"include": ["*/README.md"], "depth": 1})
-[//]: # (start: preprocess/f3f343cc508e884a)
+[include:document-list]: ./packages ({"include": ["*/README.md"]})
+[//]: # (start: preprocess/2814e5e8c6b59bac)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## [(Laravel) Core](<packages/core/README.md>)
@@ -142,7 +142,7 @@ Provides utilities for working with file and directory paths in an object-orient
 
 [Read more](<packages/path/README.md>).
 
-[//]: # (end: preprocess/f3f343cc508e884a)
+[//]: # (end: preprocess/2814e5e8c6b59bac)
 
 # Upgrading
 

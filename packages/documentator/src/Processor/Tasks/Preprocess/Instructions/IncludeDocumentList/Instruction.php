@@ -58,10 +58,9 @@ readonly class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         $base      = $context->file->path;
-        $depth     = $parameters->depth !== null ? max($parameters->depth, 0) : null;
         $include   = array_values(array_filter($parameters->include, static fn ($s) => $s !== ''));
         $exclude   = array_values(array_filter($parameters->exclude, static fn ($s) => $s !== ''));
-        $iterator  = $context->resolver->search($include, $exclude, $depth, $parameters->target);
+        $iterator  = $context->resolver->search($include, $exclude, $parameters->target);
         $documents = [];
 
         foreach ($iterator as $path) {

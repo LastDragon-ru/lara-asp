@@ -38,18 +38,13 @@ readonly class Parameters implements InstructionParameters {
          *
          * @var list<string>
          */
-        public array $include = ['**/*.md'],
+        public array $include = ['*.md'],
         /**
          * Glob(s) to exclude.
          *
          * @var list<string>
          */
         public array $exclude = [],
-        /**
-         * Maximum depth (eg the `0` means no nested directories, the `null`
-         * removes limits).
-         */
-        public ?int $depth = 0,
     ) {
         // empty
     }

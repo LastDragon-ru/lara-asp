@@ -43,13 +43,6 @@ final class SymfonyFileSystemTest extends TestCase {
             [
                 'a.txt',
                 'b.txt',
-            ],
-            $this->asArray($path, $adapter->search($path, depth: 0)),
-        );
-        self::assertSame(
-            [
-                'a.txt',
-                'b.txt',
                 'b/bb.txt',
                 'b/bb/bbb.txt',
             ],

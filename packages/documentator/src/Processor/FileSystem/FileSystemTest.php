@@ -123,26 +123,11 @@ final class FileSystemTest extends TestCase {
 
         self::assertEquals(
             [
-                'c.html',
-                'c.txt',
-            ],
-            array_map($map, iterator_to_array($filesystem->search($directory, depth: 0), false)),
-        );
-
-        self::assertEquals(
-            [
                 'a/a.html',
                 'b/b.html',
                 'c.html',
             ],
             array_map($map, iterator_to_array($filesystem->search($directory, ['**/*.html']), false)),
-        );
-
-        self::assertEquals(
-            [
-                'c.html',
-            ],
-            array_map($map, iterator_to_array($filesystem->search($directory, ['**/*.html'], [], 0), false)),
         );
 
         self::assertEquals(

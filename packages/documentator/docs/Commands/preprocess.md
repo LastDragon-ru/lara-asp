@@ -70,8 +70,6 @@ which will be replaced to FQCN (if possible). Other tags are ignored.
 
 * `<target>` - Directory path.
 * `<parameters>` - additional parameters
-  * `depth`: `?int` = `0` - Maximum depth (eg the `0` means no nested directories, the `null`
-    removes limits).
   * `exclude`: `array` = `<array>` - Glob(s) to exclude.
   * `include`: `array` = `<array>` - Glob(s) to include (only Markdown documents expected).
   * `level`: `?int` = `null` - Headings level. Possible values are

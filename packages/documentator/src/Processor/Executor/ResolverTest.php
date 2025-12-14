@@ -464,7 +464,6 @@ final class ResolverTest extends TestCase {
             ->shouldReceive('__invoke')
             ->never();
 
-        $depth      = 5;
         $include    = ['include'];
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
@@ -474,7 +473,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('search')
-            ->with($directory, $include, $exclude, $depth)
+            ->with($directory, $include, $exclude)
             ->once()
             ->andReturn($resolved);
 
@@ -492,7 +491,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($directory);
 
-        self::assertSame($resolved, $resolver->search($include, $exclude, $depth));
+        self::assertSame($resolved, $resolver->search($include, $exclude));
     }
 
     public function testSearchString(): void {
@@ -506,7 +505,6 @@ final class ResolverTest extends TestCase {
             ->shouldReceive('__invoke')
             ->never();
 
-        $depth      = 5;
         $include    = ['include'];
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
@@ -516,7 +514,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('search')
-            ->with($directory, $include, $exclude, $depth)
+            ->with($directory, $include, $exclude)
             ->once()
             ->andReturn($resolved);
 
@@ -535,7 +533,7 @@ final class ResolverTest extends TestCase {
             ->andReturn($directory);
 
         self::assertNotEmpty($directory->path);
-        self::assertSame($resolved, $resolver->search($include, $exclude, $depth, $directory->path));
+        self::assertSame($resolved, $resolver->search($include, $exclude, $directory->path));
     }
 
     public function testSearchDirectoryPath(): void {
@@ -549,7 +547,6 @@ final class ResolverTest extends TestCase {
             ->shouldReceive('__invoke')
             ->never();
 
-        $depth      = 5;
         $include    = ['include'];
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
@@ -559,7 +556,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('search')
-            ->with($directory, $include, $exclude, $depth)
+            ->with($directory, $include, $exclude)
             ->once()
             ->andReturn($resolved);
 
@@ -572,7 +569,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($directory);
 
-        self::assertSame($resolved, $resolver->search($include, $exclude, $depth, $directory));
+        self::assertSame($resolved, $resolver->search($include, $exclude, $directory));
     }
 
     public function testNotify(): void {

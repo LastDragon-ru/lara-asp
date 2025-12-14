@@ -56,7 +56,6 @@ interface Resolver {
     /**
      * @param list<non-empty-string>|non-empty-string $include Glob(s) to include.
      * @param list<non-empty-string>|non-empty-string $exclude Glob(s) to exclude.
-     * @param ?int<0, max>                            $depth   Maximum depth.
      * @param DirectoryPath|non-empty-string|null     $directory
      *
      * @return iterable<mixed, FilePath>
@@ -64,7 +63,6 @@ interface Resolver {
     public function search(
         array|string $include,
         array|string $exclude,
-        ?int $depth,
         DirectoryPath|string|null $directory = null,
     ): iterable;
 }
