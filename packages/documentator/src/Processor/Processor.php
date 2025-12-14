@@ -4,7 +4,6 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
-use IteratorAggregate;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
@@ -22,8 +21,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use Override;
-use Traversable;
 
 use function array_map;
 
@@ -97,25 +94,10 @@ class Processor {
                 $globs = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
                 $files = match (true) {
                     default                    => $fs->search($root, $globs, $skip),
-                    $input instanceof FilePath => new readonly class($input) implements IteratorAggregate {
-                        public function __construct(
-                            private FilePath $path,
-                        ) {
-                            // empty
-                        }
-
-                        /**
-                         * @return Traversable<int, FilePath>
-                         */
-                        #[Override]
-                        public function getIterator(): Traversable {
-                            yield $this->path;
-                        }
-                    },
+                    $input instanceof FilePath => [$input],
                 };
 
                 $this->run($fs, $files, new Glob($skip));
-                $this->reset();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
@@ -127,6 +109,8 @@ class Processor {
             $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Failed));
 
             throw $exception;
+        } finally {
+            $this->reset();
         }
     }
 
