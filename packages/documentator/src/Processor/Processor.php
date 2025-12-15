@@ -43,10 +43,8 @@ class Processor {
      *
      * @param T|class-string<T> $task
      */
-    public function task(Task|string $task, ?int $priority = null): static {
+    public function task(Task|string $task, ?int $priority = null): void {
         $this->tasks->add($task, $priority);
-
-        return $this;
     }
 
     /**
