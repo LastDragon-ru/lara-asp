@@ -209,7 +209,7 @@ class Resolver implements ResolverContract {
     }
 
     protected function notify(FilePath $path, Result $result): void {
-        $this->dispatcher->notify(
+        $this->dispatcher->dispatch(
             new Event($path, $result),
         );
     }

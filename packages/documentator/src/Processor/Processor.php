@@ -4,12 +4,11 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
-use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
@@ -28,15 +27,13 @@ use function array_map;
  * Perform one or more task on the file(s).
  */
 class Processor {
-    protected readonly Tasks      $tasks;
-    protected readonly Dispatcher $dispatcher;
+    protected readonly Tasks $tasks;
 
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly Adapter $adapter,
     ) {
-        $this->tasks      = new Tasks($container);
-        $this->dispatcher = new Dispatcher();
+        $this->tasks = new Tasks($container);
     }
 
     /**
@@ -53,28 +50,18 @@ class Processor {
     }
 
     /**
-     * @param callable(Event): void $listener
-     */
-    public function listen(callable $listener): static {
-        if (!($listener instanceof Closure)) {
-            $listener = $listener(...);
-        }
-
-        $this->dispatcher->attach($listener);
-
-        return $this;
-    }
-
-    /**
-     * @param list<non-empty-string> $skip Globs that shouldn't be processed.
+     * @param list<non-empty-string>    $skip Globs that shouldn't be processed.
+     * @param Closure(Event): void|null $on
      */
     public function __invoke(
         DirectoryPath|FilePath $input,
         ?DirectoryPath $output = null,
         array $skip = [],
+        ?Closure $on = null,
     ): void {
         // Prepare
-        $root = $input->directory('.');
+        $root       = $input->directory('.');
+        $dispatcher = new Dispatcher($on);
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
@@ -87,40 +74,30 @@ class Processor {
 
         // Start
         try {
-            $this->dispatcher->notify(new ProcessingStarted($root, $output));
+            $dispatcher->dispatch(new ProcessingStarted($root, $output));
 
             try {
-                $fs    = new FileSystem($this->adapter, $this->dispatcher, $root, $output);
-                $globs = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
-                $files = match (true) {
-                    default                    => $fs->search($root, $globs, $skip),
-                    $input instanceof FilePath => [$input],
-                };
+                $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
+                $globs    = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
+                $files    = $input instanceof FilePath ? [$input] : $fs->search($root, $globs, $skip);
+                $skipped  = new Glob($skip);
+                $executor = new Executor($this->container, $dispatcher, $this->tasks, $fs, $files, $skipped);
 
-                $this->run($fs, $files, new Glob($skip));
+                $executor->run();
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
                 throw new ProcessingFailed($exception);
             }
 
-            $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Success));
+            $dispatcher->dispatch(new ProcessingFinished(ProcessingFinishedResult::Success));
         } catch (Exception $exception) {
-            $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Failed));
+            $dispatcher->dispatch(new ProcessingFinished(ProcessingFinishedResult::Failed));
 
             throw $exception;
         } finally {
             $this->reset();
         }
-    }
-
-    /**
-     * @param iterable<mixed, FilePath> $files
-     */
-    protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
-        $executor = new Executor($this->container, $this->dispatcher, $this->tasks, $fs, $files, $skipped);
-
-        $executor->run();
     }
 
     protected function reset(): void {

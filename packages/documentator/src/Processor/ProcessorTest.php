@@ -6,13 +6,13 @@ use Closure;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
@@ -118,13 +118,15 @@ final class ProcessorTest extends TestCase {
         $processor->task($taskB);
         $processor->task($taskC);
         $processor->task($taskD);
-        $processor->listen(
+
+        $processor(
+            $input,
+            $input->parent(),
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
-
-        $processor($input, $input->parent(), ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
@@ -259,13 +261,10 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, on: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
@@ -315,13 +314,10 @@ final class ProcessorTest extends TestCase {
         $processor->task($taskA);
         $processor->task($taskB);
         $processor->task($taskC, -1);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, on: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
@@ -377,13 +373,15 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($taskA);
         $processor->task($taskB);
-        $processor->listen(
+
+        $processor(
+            $input,
+            null,
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
-
-        $processor($input, null, ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
@@ -528,13 +526,15 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
+
+        $processor(
+            $input,
+            $output,
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
-
-        $processor($input, $output, ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
@@ -706,13 +706,15 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
+
+        $processor(
+            $input,
+            $output,
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
-
-        $processor($input, $output, ['excluded.txt', '**/**/excluded.txt']);
 
         self::assertEquals(
             [
@@ -779,13 +781,10 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, on: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
@@ -824,13 +823,10 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, on: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [

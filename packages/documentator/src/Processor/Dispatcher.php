@@ -2,12 +2,28 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
-use LastDragon_ru\LaraASP\Core\Observer\Dispatcher as CoreDispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
+use Closure;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 
 /**
- * @extends CoreDispatcher<Event>
+ * @internal
  */
-class Dispatcher extends CoreDispatcher {
-    // empty
+class Dispatcher {
+    /**
+     * @var Closure(Event): void
+     */
+    private Closure $listener;
+
+    /**
+     * @param Closure(Event): void|null $listener
+     */
+    public function __construct(?Closure $listener) {
+        $this->listener = $listener ?? static function (Event $event): void {
+            // empty
+        };
+    }
+
+    public function dispatch(Event $event): void {
+        ($this->listener)($event);
+    }
 }

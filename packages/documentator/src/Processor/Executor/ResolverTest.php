@@ -330,7 +330,7 @@ final class ResolverTest extends TestCase {
 
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
-            ->shouldReceive('notify')
+            ->shouldReceive('dispatch')
             ->once()
             ->andReturns();
 
@@ -578,7 +578,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
-            ->shouldReceive('notify')
+            ->shouldReceive('dispatch')
             ->once()
             ->with(
                 Mockery::isEqual(

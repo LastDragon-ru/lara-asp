@@ -6,8 +6,8 @@ use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
@@ -202,7 +202,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->file('file.md');
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
-            ->shouldReceive('notify')
+            ->shouldReceive('dispatch')
             ->withArgs(
                 static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
@@ -261,7 +261,7 @@ final class FileSystemTest extends TestCase {
         $content    = 'content';
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
-            ->shouldReceive('notify')
+            ->shouldReceive('dispatch')
             ->withArgs(
                 static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified

@@ -52,7 +52,7 @@ trait WithProcessor {
                 // Skip
             }
         };
-        $dispatcher = new Dispatcher();
+        $dispatcher = new Dispatcher(null);
         $filesystem = new FileSystem($adapter, $dispatcher, $input, $output);
 
         return $filesystem;
@@ -63,7 +63,7 @@ trait WithProcessor {
     }
 
     protected function getProcessorResolver(FileSystem $fs): ResolverContract {
-        $dispatcher = new Dispatcher();
+        $dispatcher = new Dispatcher(null);
         $container  = $this->app()->make(ContainerResolver::class);
         $callback   = static function (): void {
             // empty
