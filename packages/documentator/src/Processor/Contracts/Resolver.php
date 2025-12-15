@@ -7,6 +7,8 @@ use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
 /**
+ * Resolves task dependencies. The dependency will be processed before returning.
+ *
  * Paths solution:
  *
  * + Relative - relative to {@see self::$directory}.
@@ -32,6 +34,9 @@ interface Resolver {
     public function find(FilePath|string $path): ?File;
 
     /**
+     * Converts the file into the object. The result will be cached until the
+     * file is changed.
+     *
      * @template T of object
      *
      * @param File|FilePath|non-empty-string $path
@@ -49,6 +54,8 @@ interface Resolver {
     public function save(File|FilePath|string $path, string $content): File;
 
     /**
+     * The file(s) will be processed after the current file (in undefined order).
+     *
      * @param FilePath|iterable<mixed, FilePath|non-empty-string>|non-empty-string $path
      */
     public function queue(FilePath|iterable|string $path): void;
