@@ -72,7 +72,7 @@ class Processor {
 
         // Start
         try {
-            $dispatcher->dispatch(new ProcessingStarted($root, $output));
+            $dispatcher(new ProcessingStarted($root, $output));
 
             try {
                 $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
@@ -88,9 +88,9 @@ class Processor {
                 throw new ProcessingFailed($exception);
             }
 
-            $dispatcher->dispatch(new ProcessingFinished(ProcessingFinishedResult::Success));
+            $dispatcher(new ProcessingFinished(ProcessingFinishedResult::Success));
         } catch (Exception $exception) {
-            $dispatcher->dispatch(new ProcessingFinished(ProcessingFinishedResult::Failed));
+            $dispatcher(new ProcessingFinished(ProcessingFinishedResult::Failed));
 
             throw $exception;
         } finally {

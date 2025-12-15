@@ -202,7 +202,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->file('file.md');
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
-            ->shouldReceive('dispatch')
+            ->shouldReceive('__invoke')
             ->withArgs(
                 static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified
@@ -261,7 +261,7 @@ final class FileSystemTest extends TestCase {
         $content    = 'content';
         $dispatcher = Mockery::mock(Dispatcher::class);
         $dispatcher
-            ->shouldReceive('dispatch')
+            ->shouldReceive('__invoke')
             ->withArgs(
                 static function (Event $event) use ($path): bool {
                     return $event instanceof FileSystemModified

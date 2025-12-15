@@ -23,7 +23,7 @@ class Dispatcher {
         };
     }
 
-    public function dispatch(Event $event): void {
+    public function __invoke(Event $event): void {
         ($this->listener)($event);
     }
 }

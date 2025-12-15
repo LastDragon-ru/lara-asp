@@ -198,7 +198,7 @@ class FileSystem {
         }
 
         // Event
-        $this->dispatcher->dispatch(
+        ($this->dispatcher)(
             new FileSystemModified(
                 $file->path,
                 $exists

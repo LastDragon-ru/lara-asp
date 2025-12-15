@@ -102,17 +102,17 @@ class Executor {
         }
 
         // Run
-        $this->dispatcher->dispatch(new HookStarted($hook, $file->path));
+        ($this->dispatcher)(new HookStarted($hook, $file->path));
 
         try {
             $this->tasks($this->tasks->get($hook), $hook, $file);
         } catch (Exception $exception) {
-            $this->dispatcher->dispatch(new HookFinished(HookFinishedResult::Failed));
+            ($this->dispatcher)(new HookFinished(HookFinishedResult::Failed));
 
             throw $exception;
         }
 
-        $this->dispatcher->dispatch(new HookFinished(HookFinishedResult::Success));
+        ($this->dispatcher)(new HookFinished(HookFinishedResult::Success));
     }
 
     protected function file(File $file): void {
@@ -128,8 +128,8 @@ class Executor {
             // The $file cannot be processed if it is skipped, so we can return
             // it safely in this case.
             if (!$this->isSkipped($file)) {
-                $this->dispatcher->dispatch(new FileStarted($file->path));
-                $this->dispatcher->dispatch(new FileFinished(FileFinishedResult::Failed));
+                ($this->dispatcher)(new FileStarted($file->path));
+                ($this->dispatcher)(new FileFinished(FileFinishedResult::Failed));
 
                 throw new DependencyCircularDependency($file->path, array_values($this->stack));
             } else {
@@ -138,11 +138,11 @@ class Executor {
         }
 
         // Event
-        $this->dispatcher->dispatch(new FileStarted($file->path));
+        ($this->dispatcher)(new FileStarted($file->path));
 
         // Skipped?
         if ($this->isSkipped($file)) {
-            $this->dispatcher->dispatch(new FileFinished(FileFinishedResult::Skipped));
+            ($this->dispatcher)(new FileFinished(FileFinishedResult::Skipped));
 
             $this->processed[$path] = true;
 
@@ -155,7 +155,7 @@ class Executor {
         try {
             $this->tasks($this->tasks->get($file), Hook::File, $file);
         } catch (Exception $exception) {
-            $this->dispatcher->dispatch(new FileFinished(FileFinishedResult::Failed));
+            ($this->dispatcher)(new FileFinished(FileFinishedResult::Failed));
 
             throw $exception;
         } finally {
@@ -163,7 +163,7 @@ class Executor {
         }
 
         // Event
-        $this->dispatcher->dispatch(new FileFinished(FileFinishedResult::Success));
+        ($this->dispatcher)(new FileFinished(FileFinishedResult::Success));
 
         // Reset
         unset($this->stack[$path]);
@@ -183,7 +183,7 @@ class Executor {
     }
 
     protected function task(Task $task, Hook $hook, File $file): void {
-        $this->dispatcher->dispatch(new TaskStarted($task::class));
+        ($this->dispatcher)(new TaskStarted($task::class));
 
         try {
             try {
@@ -200,9 +200,9 @@ class Executor {
                 throw new TaskFailed($task, $hook, $file->path, $exception);
             }
 
-            $this->dispatcher->dispatch(new TaskFinished(TaskFinishedResult::Success));
+            ($this->dispatcher)(new TaskFinished(TaskFinishedResult::Success));
         } catch (Exception $exception) {
-            $this->dispatcher->dispatch(new TaskFinished(TaskFinishedResult::Failed));
+            ($this->dispatcher)(new TaskFinished(TaskFinishedResult::Failed));
 
             throw $exception;
         }
