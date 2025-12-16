@@ -9,7 +9,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -52,7 +51,7 @@ trait WithProcessor {
                 // Skip
             }
         };
-        $dispatcher = new Dispatcher();
+        $dispatcher = new Dispatcher(null);
         $filesystem = new FileSystem($adapter, $dispatcher, $input, $output);
 
         return $filesystem;
@@ -63,16 +62,13 @@ trait WithProcessor {
     }
 
     protected function getProcessorResolver(FileSystem $fs): ResolverContract {
-        $dispatcher = new Dispatcher();
+        $dispatcher = new Dispatcher(null);
         $container  = $this->app()->make(ContainerResolver::class);
         $callback   = static function (): void {
             // empty
         };
         $resolver   = new class($container, $dispatcher, $fs, $callback, $callback) extends Resolver {
-            #[Override]
-            protected function notify(FilePath|File|string $path, Result $result): void {
-                // Makes no sense anyway
-            }
+            // empty
         };
 
         return $resolver;

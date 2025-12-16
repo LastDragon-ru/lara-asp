@@ -2,14 +2,14 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 
-readonly class Item {
+class Item {
     public function __construct(
         public string $title,
         public ?float $time,
-        public TaskFinishedResult|DependencyResolvedResult $result,
+        public TaskResult|DependencyResult $result,
         /**
          * @var list<Change>
          */

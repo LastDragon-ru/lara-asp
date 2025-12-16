@@ -2,20 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -26,7 +25,7 @@ use UnexpectedValueException;
 use function array_filter;
 use function array_intersect_key;
 use function array_key_last;
-use function array_keys;
+use function array_last;
 use function array_map;
 use function array_merge;
 use function array_pop;
@@ -36,7 +35,6 @@ use function array_values;
 use function count;
 use function end;
 use function implode;
-use function ksort;
 use function mb_strlen;
 use function mb_substr;
 use function memory_get_peak_usage;
@@ -65,8 +63,6 @@ class Listener {
     private float          $start          = 0;
     private int            $startMemory    = 0;
     private int            $peakMemory     = 0;
-    private int            $filesCreated   = 0;
-    private int            $filesUpdated   = 0;
     private int            $filesProcessed = 0;
 
     public function __construct(
@@ -77,28 +73,26 @@ class Listener {
     }
 
     public function __invoke(Event $event): void {
-        if ($event instanceof ProcessingStarted) {
+        if ($event instanceof ProcessBegin) {
             $this->processingStarted($event);
-        } elseif ($event instanceof ProcessingFinished) {
+        } elseif ($event instanceof ProcessEnd) {
             $this->processingFinished($event);
-        } elseif ($event instanceof FileStarted) {
+        } elseif ($event instanceof FileBegin) {
             $this->fileStarted($event);
-        } elseif ($event instanceof FileFinished) {
+        } elseif ($event instanceof FileEnd) {
             $this->fileFinished($event);
-        } elseif ($event instanceof TaskStarted) {
+        } elseif ($event instanceof TaskBegin) {
             $this->taskStarted($event);
-        } elseif ($event instanceof TaskFinished) {
+        } elseif ($event instanceof TaskEnd) {
             $this->taskFinished($event);
-        } elseif ($event instanceof DependencyResolved) {
+        } elseif ($event instanceof DependencyBegin || $event instanceof DependencyEnd) {
             $this->dependency($event);
-        } elseif ($event instanceof FileSystemModified) {
-            $this->filesystem($event);
         } else {
             // empty
         }
     }
 
-    protected function processingStarted(ProcessingStarted $event): void {
+    protected function processingStarted(ProcessBegin $event): void {
         $this->input          = $event->input;
         $this->output         = $event->output;
         $this->width          = $this->getTerminalWidth();
@@ -107,20 +101,16 @@ class Listener {
         $this->start          = microtime(true);
         $this->peakMemory     = memory_get_peak_usage(true);
         $this->startMemory    = memory_get_usage(true);
-        $this->filesCreated   = 0;
-        $this->filesUpdated   = 0;
         $this->filesProcessed = 0;
     }
 
-    protected function processingFinished(ProcessingFinished $event): void {
+    protected function processingFinished(ProcessEnd $event): void {
         // Write
         $time    = microtime(true) - $this->start;
         $peak    = memory_get_peak_usage(true);
         $memory  = $peak > $this->peakMemory ? $peak - $this->startMemory : 0;
-        $message = $this->message('✓', ProcessingFinishedResult::Success)
+        $message = $this->message('✓', ProcessResult::Success)
             ." Files: {$this->formatter->integer($this->filesProcessed)}"
-            .", [{$this->message('U', FileSystemModifiedType::Updated)}]pdated: {$this->message($this->formatter->integer($this->filesUpdated), FileSystemModifiedType::Updated)}"
-            .", [{$this->message('C', FileSystemModifiedType::Created)}]reated: {$this->message($this->formatter->integer($this->filesCreated), FileSystemModifiedType::Created)}"
             .", Memory: {$this->formatter->filesize($memory)}";
 
         $this->line(0, $message, $time, $event->result, []);
@@ -135,19 +125,17 @@ class Listener {
         $this->changes        = [];
         $this->peakMemory     = 0;
         $this->startMemory    = 0;
-        $this->filesCreated   = 0;
-        $this->filesUpdated   = 0;
         $this->filesProcessed = 0;
     }
 
-    protected function fileStarted(FileStarted $event): void {
+    protected function fileStarted(FileBegin $event): void {
         $pathname      = $this->pathname($event->path);
         $this->stack[] = new File($pathname, microtime(true), changes: $this->changes($pathname));
 
         $this->filesProcessed++;
     }
 
-    protected function fileFinished(FileFinished $event): void {
+    protected function fileFinished(FileEnd $event): void {
         // File?
         $file = array_pop($this->stack);
 
@@ -172,11 +160,11 @@ class Listener {
         $this->changes = [];
     }
 
-    protected function taskStarted(TaskStarted $event): void {
+    protected function taskStarted(TaskBegin $event): void {
         $this->stack[] = new Task($event->task, microtime(true));
     }
 
-    protected function taskFinished(TaskFinished $event): void {
+    protected function taskFinished(TaskEnd $event): void {
         // Task?
         $task = array_pop($this->stack);
 
@@ -206,7 +194,7 @@ class Listener {
         $this->changes = [];
     }
 
-    protected function dependency(DependencyResolved $event): void {
+    protected function dependency(DependencyBegin|DependencyEnd $event): void {
         // Task?
         $task = end($this->stack);
 
@@ -215,20 +203,16 @@ class Listener {
         }
 
         // Save
-        $task->children[] = new Item($this->pathname($event->path), null, $event->result, $this->changes);
-        $task->changes    = array_values(array_unique(array_merge($task->changes, $this->changes), SORT_REGULAR));
-
-        // Clear
-        $this->changes = [];
-    }
-
-    protected function filesystem(FileSystemModified $event): void {
-        $this->changes[] = new Change($this->pathname($event->path), $event->type);
-
-        if ($event->type === FileSystemModifiedType::Created) {
-            $this->filesCreated++;
+        if ($event instanceof DependencyBegin) {
+            $task->children[] = new Item($this->pathname($event->path), null, DependencyResult::Resolved, $this->changes);
+            $task->changes    = array_values(array_unique(array_merge($task->changes, $this->changes), SORT_REGULAR));
+            $this->changes    = [];
         } else {
-            $this->filesUpdated++;
+            $item = array_last($task->children);
+
+            if ($item !== null) {
+                $item->result = $event->result;
+            }
         }
     }
 
@@ -239,7 +223,7 @@ class Listener {
         int $level,
         string $path,
         ?float $time,
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
+        ProcessResult|FileResult|TaskResult|DependencyResult $result,
         array $changes,
     ): void {
         if ((!$this->isLevelVisible($level) || !$this->isResultVisible($result))) {
@@ -276,27 +260,8 @@ class Listener {
      *
      * @return list<string>
      */
-    protected function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): array {
-        // Collect
-        $flag  = null;
-        $flags = [];
-
-        foreach ($changes as $change) {
-            // Type
-            $result         = $this->message($this->result($change->type), $change->type);
-            $flags[$result] = ($flags[$result] ?? 0) + 1;
-
-            // Path
-            if ($path === $change->path) {
-                $flag = $flag === null || $flag === $change->type ? $change->type : Flag::Mixed;
-            }
-        }
-
-        // Sort
-        ksort($flags);
-
-        // Return
-        return array_keys($flags);
+    protected function flags(array $changes, string $path, ?Flag &$flag): array {
+        return [];
     }
 
     protected function length(string $message): int {
@@ -305,7 +270,7 @@ class Listener {
 
     protected function message(
         string $message,
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult|FileSystemModifiedType|Flag|null $status = null,
+        ProcessResult|FileResult|TaskResult|DependencyResult|Flag|null $status = null,
     ): string {
         $style   = $this->style($status);
         $message = $style !== null ? "<{$style}>{$message}</>" : $message;
@@ -314,46 +279,40 @@ class Listener {
     }
 
     protected function style(
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult|FileSystemModifiedType|Flag|null $result,
+        ProcessResult|FileResult|TaskResult|DependencyResult|Flag|null $result,
     ): ?string {
         return match ($result) {
-            ProcessingFinishedResult::Success => 'fg=green;options=bold',
-            ProcessingFinishedResult::Failed  => 'fg=red;options=bold',
-            FileFinishedResult::Success       => 'fg=green',
-            FileFinishedResult::Failed        => 'fg=red',
-            FileFinishedResult::Skipped       => 'fg=gray',
-            TaskFinishedResult::Success       => 'fg=green',
-            TaskFinishedResult::Failed        => 'fg=red',
-            DependencyResolvedResult::Success => 'fg=green',
-            DependencyResolvedResult::Failed  => 'fg=red',
-            DependencyResolvedResult::Missed  => 'fg=yellow',
-            DependencyResolvedResult::Null    => 'fg=gray',
-            DependencyResolvedResult::Queued  => null,
-            FileSystemModifiedType::Created   => 'fg=green',
-            FileSystemModifiedType::Updated   => 'fg=yellow',
-            Flag::Mixed                       => 'options=underscore',
-            null                              => null,
+            ProcessResult::Success     => 'fg=green;options=bold',
+            ProcessResult::Error       => 'fg=red;options=bold',
+            FileResult::Success        => 'fg=green',
+            FileResult::Error          => 'fg=red',
+            FileResult::Skipped        => 'fg=gray',
+            TaskResult::Success        => 'fg=green',
+            TaskResult::Error          => 'fg=red',
+            DependencyResult::Resolved => 'fg=green',
+            DependencyResult::Error    => 'fg=red',
+            DependencyResult::NotFound => 'fg=gray',
+            DependencyResult::Queued   => null,
+            Flag::Mixed                => 'options=underscore',
+            null                       => null,
         };
     }
 
     protected function result(
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult|FileSystemModifiedType $result,
+        ProcessResult|FileResult|TaskResult|DependencyResult $result,
     ): string {
         return match ($result) {
-            ProcessingFinishedResult::Success => 'DONE',
-            ProcessingFinishedResult::Failed  => 'FAIL',
-            FileFinishedResult::Success       => 'DONE',
-            FileFinishedResult::Failed        => 'FAIL',
-            FileFinishedResult::Skipped       => 'SKIP',
-            TaskFinishedResult::Success       => 'DONE',
-            TaskFinishedResult::Failed        => 'FAIL',
-            DependencyResolvedResult::Success => 'DONE',
-            DependencyResolvedResult::Failed  => 'FAIL',
-            DependencyResolvedResult::Missed  => 'MISS',
-            DependencyResolvedResult::Null    => 'NULL',
-            DependencyResolvedResult::Queued  => 'NEXT',
-            FileSystemModifiedType::Created   => 'C',
-            FileSystemModifiedType::Updated   => 'U',
+            ProcessResult::Success     => 'DONE',
+            ProcessResult::Error       => 'FAIL',
+            FileResult::Success        => 'DONE',
+            FileResult::Error          => 'FAIL',
+            FileResult::Skipped        => 'SKIP',
+            TaskResult::Success        => 'DONE',
+            TaskResult::Error          => 'FAIL',
+            DependencyResult::Resolved => 'DONE',
+            DependencyResult::Error    => 'FAIL',
+            DependencyResult::NotFound => 'NULL',
+            DependencyResult::Queued   => 'NEXT',
         };
     }
 
@@ -368,11 +327,11 @@ class Listener {
     }
 
     protected function isResultVisible(
-        ProcessingFinishedResult|FileFinishedResult|TaskFinishedResult|DependencyResolvedResult $result,
+        ProcessResult|FileResult|TaskResult|DependencyResult $result,
     ): bool {
         return match ($result) {
-            FileFinishedResult::Skipped => $this->writer->isDebug(),
-            default                     => true,
+            FileResult::Skipped => $this->writer->isDebug(),
+            default             => true,
         };
     }
 

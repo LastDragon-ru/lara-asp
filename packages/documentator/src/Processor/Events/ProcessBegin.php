@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\Path\DirectoryPath;
-use LastDragon_ru\Path\FilePath;
 
-readonly class DependencyResolved implements Event {
+readonly class ProcessBegin implements Event {
     public function __construct(
-        public DirectoryPath|FilePath $path,
-        public DependencyResolvedResult $result,
+        public DirectoryPath $input,
+        public DirectoryPath $output,
     ) {
         // empty
     }

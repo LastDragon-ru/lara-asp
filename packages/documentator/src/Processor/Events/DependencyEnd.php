@@ -2,12 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 
-readonly class ProcessingStarted implements Event {
+readonly class DependencyEnd implements Event {
     public function __construct(
-        public DirectoryPath $input,
-        public DirectoryPath $output,
+        public DependencyResult $result,
     ) {
         // empty
     }

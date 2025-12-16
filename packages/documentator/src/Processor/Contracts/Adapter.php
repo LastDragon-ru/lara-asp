@@ -23,6 +23,4 @@ interface Adapter {
     public function read(FilePath $path): string;
 
     public function write(FilePath $path, string $content): void;
-
-    public function reset(): void;
 }

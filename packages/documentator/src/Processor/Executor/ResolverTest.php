@@ -6,12 +6,13 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as Contract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
@@ -20,6 +21,7 @@ use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnitEnum;
 
 /**
  * @internal
@@ -43,7 +45,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('get')
@@ -59,13 +61,15 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Success)
-            ->once()
-            ->andReturns();
 
         self::assertSame($resolved, $resolver->get($filepath));
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Resolved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testGetException(): void {
@@ -82,7 +86,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('get')
@@ -98,15 +102,20 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Failed)
-            ->once()
-            ->andReturns();
 
-        self::expectExceptionObject(new DependencyUnresolvable($filepath, $exception));
+        self::expectExceptionObject($exception);
 
-        $resolver->get($filepath);
+        try {
+            $resolver->get($filepath);
+        } finally {
+            self::assertEquals(
+                [
+                    new DependencyBegin($filepath),
+                    new DependencyEnd(DependencyResult::Error),
+                ],
+                $dispatcher->events,
+            );
+        }
     }
 
     public function testFind(): void {
@@ -124,7 +133,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('exists')
@@ -145,13 +154,15 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Success)
-            ->once()
-            ->andReturns();
 
         self::assertSame($resolved, $resolver->find($filepath));
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Resolved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testFindNotFound(): void {
@@ -167,7 +178,7 @@ final class ResolverTest extends TestCase {
 
         $filepath   = new FilePath('file.txt');
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('exists')
@@ -183,13 +194,15 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Null)
-            ->once()
-            ->andReturns();
 
         self::assertNull($resolver->find($filepath));
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::NotFound),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testFindException(): void {
@@ -206,7 +219,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('exists')
@@ -227,15 +240,20 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Failed)
-            ->once()
-            ->andReturns();
 
-        self::expectExceptionObject(new DependencyUnresolvable($filepath, $exception));
+        self::expectExceptionObject($exception);
 
-        $resolver->find($filepath);
+        try {
+            $resolver->find($filepath);
+        } finally {
+            self::assertEquals(
+                [
+                    new DependencyBegin($filepath),
+                    new DependencyEnd(DependencyResult::Error),
+                ],
+                $dispatcher->events,
+            );
+        }
     }
 
     public function testSave(): void {
@@ -254,7 +272,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('write')
@@ -270,13 +288,15 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Success)
-            ->once()
-            ->andReturns();
 
         self::assertSame($resolved, $resolver->save($filepath, $content));
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Resolved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testSaveException(): void {
@@ -294,7 +314,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('write')
@@ -310,29 +330,29 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Failed)
-            ->once()
-            ->andReturns();
 
-        self::expectExceptionObject(new DependencyUnresolvable($filepath, $exception));
+        self::expectExceptionObject($exception);
 
-        $resolver->save($filepath, $content);
+        try {
+            $resolver->save($filepath, $content);
+        } finally {
+            self::assertEquals(
+                [
+                    new DependencyBegin($filepath),
+                    new DependencyEnd(DependencyResult::Error),
+                ],
+                $dispatcher->events,
+            );
+        }
     }
 
     public function testSaveCastReset(): void {
-        $container = Mockery::mock(ContainerResolver::class);
+        $dispatcher = new ResolverTest__Dispatcher();
+        $container  = Mockery::mock(ContainerResolver::class);
         $container
             ->shouldReceive('getInstance')
             ->once()
             ->andReturn($this->app());
-
-        $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher
-            ->shouldReceive('notify')
-            ->once()
-            ->andReturns();
 
         $run        = (new ResolverTest__Invokable())(...);
         $queue      = (new ResolverTest__Invokable())(...);
@@ -352,6 +372,13 @@ final class ResolverTest extends TestCase {
         $resolver->save($filepath, $content);
 
         self::assertNotSame($value, $resolver->cast($file, ResolverTest__Cast::class));
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Resolved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testQueue(): void {
@@ -367,7 +394,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('/file.txt');
         $resolved   = Mockery::mock(File::class);
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('get')
@@ -383,13 +410,16 @@ final class ResolverTest extends TestCase {
             ->with($filepath)
             ->once()
             ->andReturn($filepath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($filepath, DependencyResolvedResult::Queued)
-            ->once()
-            ->andReturns();
 
         $resolver->queue($filepath);
+
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Queued),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testQueueIterable(): void {
@@ -413,7 +443,7 @@ final class ResolverTest extends TestCase {
             ->andReturns();
 
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('get')
@@ -439,18 +469,18 @@ final class ResolverTest extends TestCase {
             ->with($bPath)
             ->once()
             ->andReturn($bPath);
-        $resolver
-            ->shouldReceive('notify')
-            ->with($aPath, DependencyResolvedResult::Queued)
-            ->once()
-            ->andReturns();
-        $resolver
-            ->shouldReceive('notify')
-            ->with($bPath, DependencyResolvedResult::Queued)
-            ->once()
-            ->andReturns();
 
         $resolver->queue([$aPath, $bPath]);
+
+        self::assertEquals(
+            [
+                new DependencyBegin($aPath),
+                new DependencyEnd(DependencyResult::Queued),
+                new DependencyBegin($bPath),
+                new DependencyEnd(DependencyResult::Queued),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testSearchNull(): void {
@@ -572,34 +602,6 @@ final class ResolverTest extends TestCase {
         self::assertSame($resolved, $resolver->search($include, $exclude, $directory));
     }
 
-    public function testNotify(): void {
-        $path       = new FilePath('path/to/file.txt');
-        $container  = Mockery::mock(ContainerResolver::class);
-        $filesystem = Mockery::mock(FileSystem::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher
-            ->shouldReceive('notify')
-            ->once()
-            ->with(
-                Mockery::isEqual(
-                    new DependencyResolved(
-                        $path,
-                        DependencyResolvedResult::Success,
-                    ),
-                ),
-            )
-            ->andReturn();
-
-        $callback = static function (File $file): void {
-            // empty
-        };
-        $resolver = Mockery::mock(Resolver::class, [$container, $dispatcher, $filesystem, $callback, $callback]);
-        $resolver->shouldAllowMockingProtectedMethods();
-        $resolver->makePartial();
-
-        $resolver->notify($path, DependencyResolvedResult::Success);
-    }
-
     /**
      * @param DirectoryPath|FilePath|non-empty-string $path
      */
@@ -694,7 +696,7 @@ class ResolverTest__Invokable {
  */
 class ResolverTest__Cast implements Cast {
     #[Override]
-    public function __invoke(ResolverContract $resolver, File $file): object {
+    public function __invoke(Contract $resolver, File $file): object {
         return new class($file->path->path) {
             public function __construct(
                 public string $path,
@@ -702,5 +704,28 @@ class ResolverTest__Cast implements Cast {
                 // empty
             }
         };
+    }
+}
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class ResolverTest__Dispatcher extends Dispatcher {
+    /**
+     * @var list<Event>
+     */
+    public array $events = [];
+
+    public function __construct() {
+        parent::__construct(null);
+    }
+
+    #[Override]
+    public function __invoke(Event $event, ?UnitEnum $result = null): ?UnitEnum {
+        $result         = parent::__invoke($event, $result);
+        $this->events[] = $event;
+
+        return $result;
     }
 }

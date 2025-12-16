@@ -88,15 +88,13 @@ class Preprocess extends Command {
     }
 
     public function __invoke(Formatter $formatter): void {
-        $cwd  = getcwd();
-        $path = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
-        $skip = array_filter((array) $this->option('exclude'), static fn ($v) => is_string($v) && $v !== '');
-        $skip = array_values($skip);
-
+        $cwd       = getcwd();
+        $path      = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
+        $skip      = array_filter((array) $this->option('exclude'), static fn ($v) => is_string($v) && $v !== '');
+        $skip      = array_values($skip);
         $processor = $this->processor();
-        $processor->listen((new Listener($this->output, $formatter))(...));
 
-        $processor($path, null, $skip);
+        $processor($path, null, $skip, (new Listener($this->output, $formatter))(...));
     }
 
     protected function processor(): Processor {

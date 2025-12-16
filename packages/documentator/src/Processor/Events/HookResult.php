@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-enum ProcessingFinishedResult {
+enum HookResult {
     case Success;
-    case Failed;
+    case Error;
 }

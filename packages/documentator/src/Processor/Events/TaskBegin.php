@@ -2,9 +2,10 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 
-readonly class TaskStarted implements Event {
+readonly class TaskBegin implements Event {
     public function __construct(
         /**
          * @var class-string<Task>

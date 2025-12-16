@@ -3,31 +3,32 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
+use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Iterator;
@@ -118,82 +119,89 @@ final class ProcessorTest extends TestCase {
         $processor->task($taskB);
         $processor->task($taskC);
         $processor->task($taskD);
-        $processor->listen(
+
+        $result = $processor(
+            $input,
+            $input->parent(),
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
 
-        $processor($input, $input->parent(), ['excluded.txt', '**/**/excluded.txt']);
-
+        self::assertTrue($result);
         self::assertEquals(
             [
-                new ProcessingStarted($input, $input->parent()),
-                new FileStarted($input->file('a/a.txt')),
-                new TaskStarted($taskB::class),
-                new DependencyResolved($input->file('b/b/bb.txt'), DependencyResolvedResult::Success),
-                new FileStarted($input->file('b/b/bb.txt')),
-                new TaskStarted($taskB::class),
-                new DependencyResolved($input->file('b/a/ba.txt'), DependencyResolvedResult::Success),
-                new FileStarted($input->file('b/a/ba.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
-                new FileStarted($input->file('c.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
-                new DependencyResolved($input->file('c.html'), DependencyResolvedResult::Success),
-                new FileStarted($input->file('c.html')),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new DependencyResolved($input->file('a/excluded.txt'), DependencyResolvedResult::Success),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('a/a/aa.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('a/b/ab.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/b.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('c.htm')),
-                new TaskStarted($taskA::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskC::class),
-                new DependencyResolved(
-                    $input->file('../ProcessorTest.php'),
-                    DependencyResolvedResult::Queued,
-                ),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskD::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input, $input->parent()),
+                new FileBegin($input->file('a/a.txt')),
+                new TaskBegin($taskB::class),
+                new DependencyBegin($input->file('b/b/bb.txt')),
+                new FileBegin($input->file('b/b/bb.txt')),
+                new TaskBegin($taskB::class),
+                new DependencyBegin($input->file('b/a/ba.txt')),
+                new FileBegin($input->file('b/a/ba.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new DependencyEnd(DependencyResult::Resolved),
+                new DependencyBegin($input->file('c.txt')),
+                new FileBegin($input->file('c.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new DependencyEnd(DependencyResult::Resolved),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new DependencyEnd(DependencyResult::Resolved),
+                new DependencyBegin($input->file('c.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new DependencyBegin($input->file('c.html')),
+                new FileBegin($input->file('c.html')),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new DependencyEnd(DependencyResult::Resolved),
+                new DependencyBegin($input->file('a/excluded.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('a/a/aa.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('a/b/ab.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/b.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('c.htm')),
+                new TaskBegin($taskA::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskC::class),
+                new DependencyBegin($input->file('../ProcessorTest.php')),
+                new DependencyEnd(DependencyResult::Queued),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -259,22 +267,19 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->directory(), $input->directory()),
-                new FileStarted($input->file('excluded.txt')),
-                new TaskStarted(ProcessorTest__Task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input->directory(), $input->directory()),
+                new FileBegin($input->file('excluded.txt')),
+                new TaskBegin(ProcessorTest__Task::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -315,26 +320,23 @@ final class ProcessorTest extends TestCase {
         $processor->task($taskA);
         $processor->task($taskB);
         $processor->task($taskC, -1);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->directory(), $input->directory()),
-                new FileStarted($input->file('excluded.txt')),
-                new TaskStarted($taskC::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskA::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input->directory(), $input->directory()),
+                new FileBegin($input->file('excluded.txt')),
+                new TaskBegin($taskC::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskA::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -377,69 +379,72 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($taskA);
         $processor->task($taskB);
-        $processor->listen(
+
+        $processor(
+            $input,
+            null,
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
 
-        $processor($input, null, ['excluded.txt', '**/**/excluded.txt']);
-
         self::assertEquals(
             [
-                new ProcessingStarted($input, $input),
-                new FileStarted($input->file('a/a.html')),
-                new TaskStarted($taskA::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('a/a.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('a/a/aa.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('a/b/ab.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/a/ba.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/b.html')),
-                new TaskStarted($taskA::class),
-                new DependencyResolved($input->file('a/excluded.txt'), DependencyResolvedResult::Success),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/b.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/b/bb.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('c.htm')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('c.html')),
-                new TaskStarted($taskA::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('c.txt')),
-                new TaskStarted($taskB::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input, $input),
+                new FileBegin($input->file('a/a.html')),
+                new TaskBegin($taskA::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('a/a.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('a/a/aa.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('a/b/ab.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/a/ba.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/b.html')),
+                new TaskBegin($taskA::class),
+                new DependencyBegin($input->file('a/excluded.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/b.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/b/bb.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('c.htm')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('c.html')),
+                new TaskBegin($taskA::class),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('c.txt')),
+                new TaskBegin($taskB::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -528,35 +533,38 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
+
+        $processor(
+            $input,
+            $output,
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
 
-        $processor($input, $output, ['excluded.txt', '**/**/excluded.txt']);
-
         self::assertEquals(
             [
-                new ProcessingStarted($input, $output),
-                new FileStarted($input->file('b/a/ba.txt')),
-                new TaskStarted($task::class),
-                new DependencyResolved($output->file('a.txt'), DependencyResolvedResult::Success),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/b.txt')),
-                new TaskStarted($task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/b/bb.txt')),
-                new TaskStarted($task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('c.txt')),
-                new TaskStarted($task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input, $output),
+                new FileBegin($input->file('b/a/ba.txt')),
+                new TaskBegin($task::class),
+                new DependencyBegin($output->file('a.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/b.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/b/bb.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('c.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -596,9 +604,7 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        self::expectExceptionObject(
-            new DependencyUnresolvable($path, new PathNotFound($path)),
-        );
+        self::expectExceptionObject(new PathNotFound($path));
 
         $processor($input);
     }
@@ -706,31 +712,34 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
+
+        $processor(
+            $input,
+            $output,
+            ['excluded.txt', '**/**/excluded.txt'],
             static function (Event $event) use (&$events): void {
                 $events[] = $event;
             },
         );
 
-        $processor($input, $output, ['excluded.txt', '**/**/excluded.txt']);
-
         self::assertEquals(
             [
-                new ProcessingStarted($input, $output),
-                new FileStarted($input->file('a.txt')),
-                new TaskStarted($task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('a/aa.txt')),
-                new TaskStarted($task::class),
-                new DependencyResolved($input->file('a.txt'), DependencyResolvedResult::Success),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($input->file('b/ab.txt')),
-                new TaskStarted($task::class),
-                new TaskFinished(TaskFinishedResult::Success),
-                new FileFinished(FileFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input, $output),
+                new FileBegin($input->file('a.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('a/aa.txt')),
+                new TaskBegin($task::class),
+                new DependencyBegin($input->file('a.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new FileBegin($input->file('b/ab.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Success),
+                new FileEnd(FileResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -779,26 +788,25 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->directory(), $input->directory()),
-                new HookStarted(Hook::BeforeProcessing, $input->file('excluded.txt')),
-                new TaskStarted($task::class),
-                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
-                new DependencyResolved($input->file('c.htm'), DependencyResolvedResult::Queued),
-                new TaskFinished(TaskFinishedResult::Success),
-                new HookFinished(HookFinishedResult::Success),
-                new FileStarted($input->file('excluded.txt')),
-                new FileFinished(FileFinishedResult::Skipped),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input->directory(), $input->directory()),
+                new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
+                new TaskBegin($task::class),
+                new DependencyBegin($input->file('c.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new DependencyBegin($input->file('c.htm')),
+                new DependencyEnd(DependencyResult::Queued),
+                new TaskEnd(TaskResult::Success),
+                new HookEnd(HookResult::Success),
+                new FileBegin($input->file('excluded.txt')),
+                new FileEnd(FileResult::Skipped),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -824,25 +832,23 @@ final class ProcessorTest extends TestCase {
         );
 
         $processor->task($task);
-        $processor->listen(
-            static function (Event $event) use (&$events): void {
-                $events[] = $event;
-            },
-        );
 
-        $processor($input);
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         self::assertEquals(
             [
-                new ProcessingStarted($input->directory(), $input->directory()),
-                new FileStarted($input->file('excluded.txt')),
-                new FileFinished(FileFinishedResult::Skipped),
-                new HookStarted(Hook::AfterProcessing, $input->file('excluded.txt')),
-                new TaskStarted($task::class),
-                new DependencyResolved($input->file('c.txt'), DependencyResolvedResult::Success),
-                new TaskFinished(TaskFinishedResult::Success),
-                new HookFinished(HookFinishedResult::Success),
-                new ProcessingFinished(ProcessingFinishedResult::Success),
+                new ProcessBegin($input->directory(), $input->directory()),
+                new FileBegin($input->file('excluded.txt')),
+                new FileEnd(FileResult::Skipped),
+                new HookBegin(Hook::AfterProcessing, $input->file('excluded.txt')),
+                new TaskBegin($task::class),
+                new DependencyBegin($input->file('c.txt')),
+                new DependencyEnd(DependencyResult::Resolved),
+                new TaskEnd(TaskResult::Success),
+                new HookEnd(HookResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
@@ -874,6 +880,56 @@ final class ProcessorTest extends TestCase {
         self::expectException(DependencyUnavailable::class);
 
         $processor($input);
+    }
+
+    public function testRunOnError(): void {
+        $exception = null;
+        $events    = [];
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
+        $task      = new class() implements HookTask {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function hook(): array {
+                return [Hook::BeforeProcessing];
+            }
+
+            #[Override]
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
+                throw new Exception();
+            }
+        };
+        $processor = new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__Adapter(),
+        );
+
+        $processor->task($task);
+
+        $result = $processor(
+            $input,
+            onEvent: static function (Event $event) use (&$events): void {
+                $events[] = $event;
+            },
+            onError: static function (Exception $e) use (&$exception): void {
+                $exception = $e;
+            },
+        );
+
+        self::assertFalse($result);
+        self::assertInstanceOf(Exception::class, $exception);
+        self::assertEquals(
+            [
+                new ProcessBegin($input->directory(), $input->directory()),
+                new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Error),
+                new HookEnd(HookResult::Error),
+                new ProcessEnd(ProcessResult::Error),
+            ],
+            $events,
+        );
     }
 }
 

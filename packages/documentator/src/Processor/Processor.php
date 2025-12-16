@@ -4,26 +4,20 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
-use IteratorAggregate;
-use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use Override;
-use Traversable;
 
 use function array_map;
 
@@ -31,15 +25,13 @@ use function array_map;
  * Perform one or more task on the file(s).
  */
 class Processor {
-    protected readonly Tasks      $tasks;
-    protected readonly Dispatcher $dispatcher;
+    protected readonly Tasks $tasks;
 
     public function __construct(
         protected readonly ContainerResolver $container,
         protected readonly Adapter $adapter,
     ) {
-        $this->tasks      = new Tasks($container);
-        $this->dispatcher = new Dispatcher();
+        $this->tasks = new Tasks($container);
     }
 
     /**
@@ -49,35 +41,25 @@ class Processor {
      *
      * @param T|class-string<T> $task
      */
-    public function task(Task|string $task, ?int $priority = null): static {
+    public function task(Task|string $task, ?int $priority = null): void {
         $this->tasks->add($task, $priority);
-
-        return $this;
     }
 
     /**
-     * @param callable(Event): void $listener
-     */
-    public function listen(callable $listener): static {
-        if (!($listener instanceof Closure)) {
-            $listener = $listener(...);
-        }
-
-        $this->dispatcher->attach($listener);
-
-        return $this;
-    }
-
-    /**
-     * @param list<non-empty-string> $skip Globs that shouldn't be processed.
+     * @param list<non-empty-string>        $skip Globs that shouldn't be processed.
+     * @param Closure(Event): void|null     $onEvent
+     * @param Closure(Exception): void|null $onError
      */
     public function __invoke(
         DirectoryPath|FilePath $input,
         ?DirectoryPath $output = null,
         array $skip = [],
-    ): void {
+        ?Closure $onEvent = null,
+        ?Closure $onError = null,
+    ): bool {
         // Prepare
-        $root = $input->directory('.');
+        $root       = $input->directory();
+        $dispatcher = new Dispatcher($onEvent);
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
@@ -89,58 +71,35 @@ class Processor {
         }
 
         // Start
+        $result = $dispatcher(new ProcessBegin($root, $output), ProcessResult::Success);
+
         try {
-            $this->dispatcher->notify(new ProcessingStarted($root, $output));
+            $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
+            $globs    = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
+            $files    = $input instanceof FilePath ? [$input] : $fs->search($root, $globs, $skip);
+            $skipped  = new Glob($skip);
+            $executor = new Executor($this->container, $dispatcher, $this->tasks, $fs, $files, $skipped);
 
-            try {
-                $fs    = new FileSystem($this->adapter, $this->dispatcher, $root, $output);
-                $globs = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
-                $files = match (true) {
-                    default                    => $fs->search($root, $globs, $skip),
-                    $input instanceof FilePath => new readonly class($input) implements IteratorAggregate {
-                        public function __construct(
-                            private FilePath $path,
-                        ) {
-                            // empty
-                        }
-
-                        /**
-                         * @return Traversable<int, FilePath>
-                         */
-                        #[Override]
-                        public function getIterator(): Traversable {
-                            yield $this->path;
-                        }
-                    },
-                };
-
-                $this->run($fs, $files, new Glob($skip));
-                $this->reset();
-            } catch (ProcessorError $exception) {
-                throw $exception;
-            } catch (Exception $exception) {
-                throw new ProcessingFailed($exception);
-            }
-
-            $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Success));
+            $executor->run();
         } catch (Exception $exception) {
-            $this->dispatcher->notify(new ProcessingFinished(ProcessingFinishedResult::Failed));
+            $result = ProcessResult::Error;
 
-            throw $exception;
+            if ($onError !== null) {
+                $onError($exception);
+            } else {
+                throw $exception;
+            }
+        } finally {
+            $dispatcher(new ProcessEnd($result));
+
+            $this->reset();
         }
-    }
 
-    /**
-     * @param iterable<mixed, FilePath> $files
-     */
-    protected function run(FileSystem $fs, iterable $files, Matcher $skipped): void {
-        $executor = new Executor($this->container, $this->dispatcher, $this->tasks, $fs, $files, $skipped);
-
-        $executor->run();
+        // Return
+        return $result === ProcessResult::Success;
     }
 
     protected function reset(): void {
-        $this->adapter->reset();
         $this->tasks->reset();
     }
 }

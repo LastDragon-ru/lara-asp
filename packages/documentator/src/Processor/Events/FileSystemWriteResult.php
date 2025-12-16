@@ -2,10 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-enum DependencyResolvedResult {
+enum FileSystemWriteResult {
     case Success;
-    case Missed;
-    case Failed;
-    case Null;
-    case Queued;
+    case Error;
 }

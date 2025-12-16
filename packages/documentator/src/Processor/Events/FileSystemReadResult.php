@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-interface Event {
-    // empty
+enum FileSystemReadResult {
+    case Success;
+    case Error;
 }

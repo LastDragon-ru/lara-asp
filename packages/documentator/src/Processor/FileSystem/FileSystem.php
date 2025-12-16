@@ -7,13 +7,15 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathWriteFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -26,6 +28,7 @@ use function count;
 use function spl_object_id;
 use function sprintf;
 use function str_starts_with;
+use function strlen;
 
 /**
  * By default, relative paths will be resolved based on {@see self::$directory}.
@@ -145,10 +148,18 @@ class FileSystem {
 
     public function read(File $file): string {
         if (!isset($this->content[$file])) {
+            $result = ($this->dispatcher)(new FileSystemReadBegin($file->path), FileSystemReadResult::Success);
+            $bytes  = 0;
+
             try {
                 $this->content[$file] = $this->adapter->read($file->path);
+                $bytes                = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
             } catch (Exception $exception) {
-                throw new PathReadFailed($file->path, $exception);
+                $result = FileSystemReadResult::Error;
+
+                throw $exception;
+            } finally {
+                ($this->dispatcher)(new FileSystemReadEnd($result, $bytes));
             }
         }
 
@@ -197,16 +208,6 @@ class FileSystem {
             $this->save($file);
         }
 
-        // Event
-        $this->dispatcher->notify(
-            new FileSystemModified(
-                $file->path,
-                $exists
-                    ? FileSystemModifiedType::Updated
-                    : FileSystemModifiedType::Created,
-            ),
-        );
-
         // Return
         return $file;
     }
@@ -246,12 +247,23 @@ class FileSystem {
     }
 
     protected function save(File $file): void {
+        if (!isset($this->content[$file])) {
+            return;
+        }
+
+        $result = ($this->dispatcher)(new FileSystemWriteBegin($file->path), FileSystemWriteResult::Success);
+        $bytes  = 0;
+
         try {
-            if (isset($this->content[$file])) {
-                $this->adapter->write($file->path, $this->content[$file]);
-            }
+            $this->adapter->write($file->path, $this->content[$file]);
+
+            $bytes = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
         } catch (Exception $exception) {
-            throw new PathWriteFailed($file->path, $exception);
+            $result = FileSystemWriteResult::Error;
+
+            throw $exception;
+        } finally {
+            ($this->dispatcher)(new FileSystemWriteEnd($result, $bytes));
         }
     }
 

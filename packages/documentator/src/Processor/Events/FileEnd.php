@@ -2,9 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-readonly class TaskFinished implements Event {
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
+
+readonly class FileEnd implements Event {
     public function __construct(
-        public TaskFinishedResult $result,
+        public FileResult $result,
     ) {
         // empty
     }

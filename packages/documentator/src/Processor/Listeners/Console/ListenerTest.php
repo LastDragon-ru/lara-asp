@@ -4,23 +4,22 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console;
 
 use LastDragon_ru\LaraASP\Documentator\Package\RawOutputFormatter;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
 use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\Path\DirectoryPath;
@@ -77,33 +76,6 @@ final class ListenerTest extends TestCase {
         );
     }
 
-    /**
-     * @param array{FileSystemModifiedType|Flag|null, list<string>} $expected
-     * @param list<Change>                                          $changes
-     */
-    #[DataProvider('dataProviderFlags')]
-    public function testFlags(array $expected, array $changes, string $path): void {
-        $writer = new class () extends Listener {
-            /** @noinspection PhpMissingParentConstructorInspection */
-            public function __construct() {
-                // empty
-            }
-
-            /**
-             * @inheritDoc
-             */
-            #[Override]
-            public function flags(array $changes, string $path, FileSystemModifiedType|Flag|null &$flag): array {
-                return parent::flags($changes, $path, $flag);
-            }
-        };
-
-        $flag  = null;
-        $flags = $writer->flags($changes, $path, $flag);
-
-        self::assertEquals($expected, [$flag, $flags]);
-    }
-
     #[DataProvider('dataProviderGetPathname')]
     public function testGetPathname(
         string $expected,
@@ -127,7 +99,7 @@ final class ListenerTest extends TestCase {
             $input  ??= $output;
             $output ??= $input;
 
-            $listener(new ProcessingStarted($input, $output));
+            $listener(new ProcessBegin($input, $output));
         }
 
         self::assertSame($expected, $listener->pathname($path));
@@ -142,127 +114,116 @@ final class ListenerTest extends TestCase {
     public static function dataProviderInvoke(): array {
         $root = new DirectoryPath('/inout');
         $tree = [
-            new ProcessingStarted($root, $root),
+            new ProcessBegin($root, $root),
             [
-                new FileStarted($root->file('a/a.txt')),
+                new FileBegin($root->file('a/a.txt')),
                 [
-                    new TaskStarted(ListenerTest__TaskA::class),
+                    new TaskBegin(ListenerTest__TaskA::class),
                     [
-                        new DependencyResolved($root->file('b/b/bb.txt'), DependencyResolvedResult::Success),
+                        new DependencyBegin($root->file('b/b/bb.txt')),
                         [
-                            new FileStarted($root->file('b/b/bb.txt')),
+                            new FileBegin($root->file('b/b/bb.txt')),
                             [
-                                new TaskStarted(ListenerTest__TaskA::class),
+                                new TaskBegin(ListenerTest__TaskA::class),
                                 [
-                                    new DependencyResolved(
-                                        $root->file('b/a/ba.txt'),
-                                        DependencyResolvedResult::Success,
-                                    ),
+                                    new DependencyBegin($root->file('b/a/ba.txt')),
                                     [
-                                        new FileStarted($root->file('b/a/ba.txt')),
+                                        new FileBegin($root->file('b/a/ba.txt')),
                                         [
-                                            new TaskStarted(ListenerTest__TaskA::class),
-                                            new TaskFinished(TaskFinishedResult::Success),
+                                            new TaskBegin(ListenerTest__TaskA::class),
+                                            new TaskEnd(TaskResult::Success),
                                         ],
-                                        new FileFinished(FileFinishedResult::Success),
+                                        new FileEnd(FileResult::Success),
                                     ],
-                                    new DependencyResolved(
-                                        $root->file('c.txt'),
-                                        DependencyResolvedResult::Success,
-                                    ),
+                                    new DependencyEnd(DependencyResult::Resolved),
+                                    new DependencyBegin($root->file('c.txt')),
                                     [
-                                        new FileStarted($root->file('c.txt')),
+                                        new FileBegin($root->file('c.txt')),
                                         [
-                                            new TaskStarted(ListenerTest__TaskA::class),
+                                            new TaskBegin(ListenerTest__TaskA::class),
                                             [
-                                                new FileSystemModified(
-                                                    $root->file('c.txt'),
-                                                    FileSystemModifiedType::Updated,
-                                                ),
-                                                new DependencyResolved(
-                                                    $root->file('c.txt'),
-                                                    DependencyResolvedResult::Null,
-                                                ),
+                                                new DependencyBegin($root->file('c.txt')),
+                                                new DependencyEnd(DependencyResult::NotFound),
                                             ],
-                                            new TaskFinished(TaskFinishedResult::Success),
+                                            new TaskEnd(TaskResult::Success),
                                         ],
-                                        new FileFinished(FileFinishedResult::Success),
+                                        new FileEnd(FileResult::Success),
                                     ],
-                                    new FileSystemModified(
-                                        $root->file('../../../README.md'),
-                                        FileSystemModifiedType::Created,
-                                    ),
-                                    new DependencyResolved(
-                                        $root->file('../../../README.md'),
-                                        DependencyResolvedResult::Null,
-                                    ),
+                                    new DependencyEnd(DependencyResult::Resolved),
+                                    new DependencyBegin($root->file('../../../README.md'),),
                                     [
-                                        new FileStarted($root->file('../../../README.md')),
-                                        new FileFinished(FileFinishedResult::Skipped),
+                                        new FileBegin($root->file('../../../README.md')),
+                                        new FileEnd(FileResult::Skipped),
                                     ],
+                                    new DependencyEnd(DependencyResult::NotFound),
                                 ],
-                                new TaskFinished(TaskFinishedResult::Success),
+                                new TaskEnd(TaskResult::Success),
                             ],
-                            new FileFinished(FileFinishedResult::Success),
+                            new FileEnd(FileResult::Success),
                         ],
-                        new DependencyResolved($root->file('c.txt'), DependencyResolvedResult::Success),
-                        new DependencyResolved($root->file('c.html'), DependencyResolvedResult::Success),
+                        new DependencyEnd(DependencyResult::Resolved),
+                        new DependencyBegin($root->file('c.txt')),
+                        new DependencyEnd(DependencyResult::Resolved),
+                        new DependencyBegin($root->file('c.html')),
                         [
-                            new FileStarted($root->file('c.html')),
-                            new FileFinished(FileFinishedResult::Skipped),
+                            new FileBegin($root->file('c.html')),
+                            new FileEnd(FileResult::Skipped),
                         ],
-                        new DependencyResolved($root->file('a/excluded.txt'), DependencyResolvedResult::Success),
+                        new DependencyEnd(DependencyResult::Resolved),
+                        new DependencyBegin($root->file('a/excluded.txt')),
                         [
-                            new FileStarted($root->file('a/excluded.txt')),
-                            new FileFinished(FileFinishedResult::Skipped),
+                            new FileBegin($root->file('a/excluded.txt')),
+                            new FileEnd(FileResult::Skipped),
                         ],
+                        new DependencyEnd(DependencyResult::Resolved),
                     ],
-                    new TaskFinished(TaskFinishedResult::Success),
+                    new TaskEnd(TaskResult::Success),
                 ],
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->file('a/a/aa.txt')),
+                new FileEnd(FileResult::Success),
+                new FileBegin($root->file('a/a/aa.txt')),
                 [
-                    new TaskStarted(ListenerTest__TaskA::class),
-                    new TaskFinished(TaskFinishedResult::Success),
+                    new TaskBegin(ListenerTest__TaskA::class),
+                    new TaskEnd(TaskResult::Success),
                 ],
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->file('a/b/ab.txt')),
+                new FileEnd(FileResult::Success),
+                new FileBegin($root->file('a/b/ab.txt')),
                 [
-                    new TaskStarted(ListenerTest__TaskA::class),
-                    new TaskFinished(TaskFinishedResult::Success),
+                    new TaskBegin(ListenerTest__TaskA::class),
+                    new TaskEnd(TaskResult::Success),
                 ],
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->file('b/b.txt')),
+                new FileEnd(FileResult::Success),
+                new FileBegin($root->file('b/b.txt')),
                 [
-                    new TaskStarted(ListenerTest__TaskA::class),
-                    new TaskFinished(TaskFinishedResult::Success),
+                    new TaskBegin(ListenerTest__TaskA::class),
+                    new TaskEnd(TaskResult::Success),
                 ],
-                new FileFinished(FileFinishedResult::Success),
-                new FileStarted($root->file('c.htm')),
+                new FileEnd(FileResult::Success),
+                new FileBegin($root->file('c.htm')),
                 [
-                    new TaskStarted(ListenerTest__TaskA::class),
+                    new TaskBegin(ListenerTest__TaskA::class),
                     [
-                        new FileSystemModified($root->file('c.htm'), FileSystemModifiedType::Updated),
-                        new DependencyResolved($root->file('c.htm'), DependencyResolvedResult::Null),
-                        new FileSystemModified($root->file('c.new'), FileSystemModifiedType::Created),
-                        new DependencyResolved($root->file('c.new'), DependencyResolvedResult::Success),
+                        new DependencyBegin($root->file('c.htm')),
+                        new DependencyEnd(DependencyResult::NotFound),
+                        new DependencyBegin($root->file('c.new')),
                         [
-                            new FileStarted($root->file('c.new')),
-                            new FileFinished(FileFinishedResult::Failed),
+                            new FileBegin($root->file('c.new')),
+                            new FileEnd(FileResult::Error),
                         ],
-                        new DependencyResolved($root->file('c.next'), DependencyResolvedResult::Queued),
+                        new DependencyEnd(DependencyResult::Resolved),
+                        new DependencyBegin($root->file('c.next')),
+                        new DependencyEnd(DependencyResult::Queued),
                     ],
-                    new TaskFinished(TaskFinishedResult::Success),
-                    new TaskStarted(ListenerTest__TaskB::class),
+                    new TaskEnd(TaskResult::Success),
+                    new TaskBegin(ListenerTest__TaskB::class),
                     [
-                        new FileSystemModified($root->file('c.new'), FileSystemModifiedType::Updated),
-                        new DependencyResolved($root->file('c.new'), DependencyResolvedResult::Null),
+                        new DependencyBegin($root->file('c.new')),
+                        new DependencyEnd(DependencyResult::NotFound),
                     ],
-                    new TaskFinished(TaskFinishedResult::Success),
+                    new TaskEnd(TaskResult::Success),
                 ],
-                new FileFinished(FileFinishedResult::Success),
+                new FileEnd(FileResult::Success),
             ],
-            new ProcessingFinished(ProcessingFinishedResult::Success),
+            new ProcessEnd(ProcessResult::Success),
         ];
 
         $events = [];
@@ -278,8 +239,8 @@ final class ListenerTest extends TestCase {
                 '~NoFiles.txt',
                 OutputInterface::VERBOSITY_NORMAL,
                 [
-                    new ProcessingStarted($root, $root),
-                    new ProcessingFinished(ProcessingFinishedResult::Success),
+                    new ProcessBegin($root, $root),
+                    new ProcessEnd(ProcessResult::Success),
                 ],
             ],
             'Normal'      => [
@@ -301,68 +262,6 @@ final class ListenerTest extends TestCase {
                 '~Debug.txt',
                 OutputInterface::VERBOSITY_DEBUG,
                 $events,
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, array{array{FileSystemModifiedType|Flag|null, list<string>}, list<Change>, string}>
-     */
-    public static function dataProviderFlags(): array {
-        return [
-            'Path doesn\'t match'            => [
-                [null, ['<fg=green>C</>', '<fg=yellow>U</>']],
-                [
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('a', FileSystemModifiedType::Updated),
-                    new Change('b', FileSystemModifiedType::Updated),
-                    new Change('c', FileSystemModifiedType::Created),
-                ],
-                'd',
-            ],
-            'Path match to one'              => [
-                [FileSystemModifiedType::Updated, ['<fg=green>C</>', '<fg=yellow>U</>']],
-                [
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('b', FileSystemModifiedType::Updated),
-                    new Change('c', FileSystemModifiedType::Created),
-                ],
-                'b',
-            ],
-            'Path match to multiple (same)'  => [
-                [FileSystemModifiedType::Created, ['<fg=green>C</>', '<fg=yellow>U</>']],
-                [
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('b', FileSystemModifiedType::Updated),
-                ],
-                'a',
-            ],
-            'Path match to multiple (mixed)' => [
-                [Flag::Mixed, ['<fg=green>C</>', '<fg=yellow>U</>']],
-                [
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('a', FileSystemModifiedType::Updated),
-                    new Change('b', FileSystemModifiedType::Updated),
-                ],
-                'a',
-            ],
-            'Path only (same)'               => [
-                [FileSystemModifiedType::Created, ['<fg=green>C</>']],
-                [
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('a', FileSystemModifiedType::Created),
-                ],
-                'a',
-            ],
-            'Path only (mixed)'              => [
-                [Flag::Mixed, ['<fg=green>C</>', '<fg=yellow>U</>']],
-                [
-                    new Change('a', FileSystemModifiedType::Created),
-                    new Change('a', FileSystemModifiedType::Updated),
-                ],
-                'a',
             ],
         ];
     }
