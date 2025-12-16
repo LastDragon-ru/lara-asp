@@ -46,18 +46,20 @@ class Processor {
     }
 
     /**
-     * @param list<non-empty-string>    $skip Globs that shouldn't be processed.
-     * @param Closure(Event): void|null $on
+     * @param list<non-empty-string>        $skip Globs that shouldn't be processed.
+     * @param Closure(Event): void|null     $onEvent
+     * @param Closure(Exception): void|null $onError
      */
     public function __invoke(
         DirectoryPath|FilePath $input,
         ?DirectoryPath $output = null,
         array $skip = [],
-        ?Closure $on = null,
-    ): void {
+        ?Closure $onEvent = null,
+        ?Closure $onError = null,
+    ): bool {
         // Prepare
         $root       = $input->directory();
-        $dispatcher = new Dispatcher($on);
+        $dispatcher = new Dispatcher($onEvent);
 
         // If `$output` specified and inside `$input` we should not process it.
         if ($output !== null) {
@@ -82,12 +84,19 @@ class Processor {
         } catch (Exception $exception) {
             $result = ProcessResult::Error;
 
-            throw $exception;
+            if ($onError !== null) {
+                $onError($exception);
+            } else {
+                throw $exception;
+            }
         } finally {
             $dispatcher(new ProcessEnd($result));
 
             $this->reset();
         }
+
+        // Return
+        return $result === ProcessResult::Success;
     }
 
     protected function reset(): void {

@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
+use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
@@ -119,7 +120,7 @@ final class ProcessorTest extends TestCase {
         $processor->task($taskC);
         $processor->task($taskD);
 
-        $processor(
+        $result = $processor(
             $input,
             $input->parent(),
             ['excluded.txt', '**/**/excluded.txt'],
@@ -128,6 +129,7 @@ final class ProcessorTest extends TestCase {
             },
         );
 
+        self::assertTrue($result);
         self::assertEquals(
             [
                 new ProcessBegin($input, $input->parent()),
@@ -266,7 +268,7 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        $processor($input, on: static function (Event $event) use (&$events): void {
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
             $events[] = $event;
         });
 
@@ -319,7 +321,7 @@ final class ProcessorTest extends TestCase {
         $processor->task($taskB);
         $processor->task($taskC, -1);
 
-        $processor($input, on: static function (Event $event) use (&$events): void {
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
             $events[] = $event;
         });
 
@@ -787,7 +789,7 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        $processor($input, on: static function (Event $event) use (&$events): void {
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
             $events[] = $event;
         });
 
@@ -831,7 +833,7 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        $processor($input, on: static function (Event $event) use (&$events): void {
+        $processor($input, onEvent: static function (Event $event) use (&$events): void {
             $events[] = $event;
         });
 
@@ -878,6 +880,56 @@ final class ProcessorTest extends TestCase {
         self::expectException(DependencyUnavailable::class);
 
         $processor($input);
+    }
+
+    public function testRunOnError(): void {
+        $exception = null;
+        $events    = [];
+        $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
+        $task      = new class() implements HookTask {
+            /**
+             * @inheritDoc
+             */
+            #[Override]
+            public static function hook(): array {
+                return [Hook::BeforeProcessing];
+            }
+
+            #[Override]
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
+                throw new Exception();
+            }
+        };
+        $processor = new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__Adapter(),
+        );
+
+        $processor->task($task);
+
+        $result = $processor(
+            $input,
+            onEvent: static function (Event $event) use (&$events): void {
+                $events[] = $event;
+            },
+            onError: static function (Exception $e) use (&$exception): void {
+                $exception = $e;
+            },
+        );
+
+        self::assertFalse($result);
+        self::assertInstanceOf(Exception::class, $exception);
+        self::assertEquals(
+            [
+                new ProcessBegin($input->directory(), $input->directory()),
+                new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
+                new TaskBegin($task::class),
+                new TaskEnd(TaskResult::Error),
+                new HookEnd(HookResult::Error),
+                new ProcessEnd(ProcessResult::Error),
+            ],
+            $events,
+        );
     }
 }
 
