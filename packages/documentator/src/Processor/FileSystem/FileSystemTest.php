@@ -6,7 +6,14 @@ use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
@@ -18,6 +25,7 @@ use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnitEnum;
 
 use function array_map;
 use function iterator_to_array;
@@ -160,7 +168,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andReturn($content);
 
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new FileSystemTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
@@ -169,6 +177,13 @@ final class FileSystemTest extends TestCase {
 
         self::assertSame($content, $filesystem->read($file));
         self::assertSame($content, $filesystem->read($file)); // should be cached
+        self::assertEquals(
+            [
+                new FileSystemReadBegin($file->path),
+                new FileSystemReadEnd(FileSystemReadResult::Success, 7),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testReadError(): void {
@@ -181,7 +196,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andThrow(new Exception());
 
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new FileSystemTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
@@ -190,7 +205,17 @@ final class FileSystemTest extends TestCase {
 
         $file = Mockery::mock(File::class, [$filesystem, $path]);
 
-        $filesystem->read($file);
+        try {
+            $filesystem->read($file);
+        } finally {
+            self::assertEquals(
+                [
+                    new FileSystemReadBegin($file->path),
+                    new FileSystemReadEnd(FileSystemReadResult::Error, 0),
+                ],
+                $dispatcher->events,
+            );
+        }
     }
 
     public function testWriteFile(): void {
@@ -219,7 +244,7 @@ final class FileSystemTest extends TestCase {
         $content    = 'content';
         $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $adapter    = Mockery::mock(Adapter::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new FileSystemTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
@@ -238,20 +263,28 @@ final class FileSystemTest extends TestCase {
 
         $filesystem->read($file);
         $filesystem->write($file, $content);
+
+        self::assertEquals(
+            [
+                new FileSystemReadBegin($file->path),
+                new FileSystemReadEnd(FileSystemReadResult::Success, 7),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testWriteCreate(): void {
-        $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
-        $path       = $input->file('file.md');
-        $content    = 'content';
-        $dispatcher = Mockery::mock(Dispatcher::class);
-        $adapter    = Mockery::mock(Adapter::class);
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path    = $input->file('file.md');
+        $content = 'content';
+        $adapter = Mockery::mock(Adapter::class);
         $adapter
             ->shouldReceive('write')
             ->with((string) $path, $content)
             ->once()
             ->andReturns();
 
+        $dispatcher = new FileSystemTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
@@ -271,6 +304,13 @@ final class FileSystemTest extends TestCase {
 
         self::assertSame($path, $file->path);
         self::assertSame($content, $filesystem->read($file));
+        self::assertEquals(
+            [
+                new FileSystemWriteBegin($file->path),
+                new FileSystemWriteEnd(FileSystemWriteResult::Success, 7),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testWriteCreateFailed(): void {
@@ -286,7 +326,7 @@ final class FileSystemTest extends TestCase {
             ->once()
             ->andThrow(Exception::class);
 
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new FileSystemTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
@@ -302,7 +342,17 @@ final class FileSystemTest extends TestCase {
             ->shouldReceive('queue')
             ->never();
 
-        $filesystem->write($path, $content);
+        try {
+            $filesystem->write($path, $content);
+        } finally {
+            self::assertEquals(
+                [
+                    new FileSystemWriteBegin($path),
+                    new FileSystemWriteEnd(FileSystemWriteResult::Error, 0),
+                ],
+                $dispatcher->events,
+            );
+        }
     }
 
     public function testWriteExternal(): void {
@@ -407,4 +457,30 @@ final class FileSystemTest extends TestCase {
         ];
     }
     // </editor-fold>
+}
+
+// @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
+// @phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
+
+/**
+ * @internal
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ */
+class FileSystemTest__Dispatcher extends Dispatcher {
+    /**
+     * @var list<Event>
+     */
+    public array $events = [];
+
+    public function __construct() {
+        parent::__construct(null);
+    }
+
+    #[Override]
+    public function __invoke(Event $event, ?UnitEnum $result = null): ?UnitEnum {
+        $result         = parent::__invoke($event, $result);
+        $this->events[] = $event;
+
+        return $result;
+    }
 }

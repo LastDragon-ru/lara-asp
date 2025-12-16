@@ -7,6 +7,12 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
@@ -24,6 +30,7 @@ use function count;
 use function spl_object_id;
 use function sprintf;
 use function str_starts_with;
+use function strlen;
 
 /**
  * By default, relative paths will be resolved based on {@see self::$directory}.
@@ -143,10 +150,18 @@ class FileSystem {
 
     public function read(File $file): string {
         if (!isset($this->content[$file])) {
+            $result = ($this->dispatcher)(new FileSystemReadBegin($file->path), FileSystemReadResult::Success);
+            $bytes  = 0;
+
             try {
                 $this->content[$file] = $this->adapter->read($file->path);
+                $bytes                = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
             } catch (Exception $exception) {
+                $result = FileSystemReadResult::Error;
+
                 throw new PathReadFailed($file->path, $exception);
+            } finally {
+                ($this->dispatcher)(new FileSystemReadEnd($result, $bytes));
             }
         }
 
@@ -234,12 +249,23 @@ class FileSystem {
     }
 
     protected function save(File $file): void {
+        if (!isset($this->content[$file])) {
+            return;
+        }
+
+        $result = ($this->dispatcher)(new FileSystemWriteBegin($file->path), FileSystemWriteResult::Success);
+        $bytes  = 0;
+
         try {
-            if (isset($this->content[$file])) {
-                $this->adapter->write($file->path, $this->content[$file]);
-            }
+            $this->adapter->write($file->path, $this->content[$file]);
+
+            $bytes = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
         } catch (Exception $exception) {
+            $result = FileSystemWriteResult::Error;
+
             throw new PathWriteFailed($file->path, $exception);
+        } finally {
+            ($this->dispatcher)(new FileSystemWriteEnd($result, $bytes));
         }
     }
 
