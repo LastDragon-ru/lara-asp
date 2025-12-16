@@ -100,7 +100,6 @@ class Processor {
     }
 
     protected function reset(): void {
-        $this->adapter->reset();
         $this->tasks->reset();
     }
 }
