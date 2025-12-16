@@ -15,9 +15,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathWriteFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -159,7 +157,7 @@ class FileSystem {
             } catch (Exception $exception) {
                 $result = FileSystemReadResult::Error;
 
-                throw new PathReadFailed($file->path, $exception);
+                throw $exception;
             } finally {
                 ($this->dispatcher)(new FileSystemReadEnd($result, $bytes));
             }
@@ -263,7 +261,7 @@ class FileSystem {
         } catch (Exception $exception) {
             $result = FileSystemWriteResult::Error;
 
-            throw new PathWriteFailed($file->path, $exception);
+            throw $exception;
         } finally {
             ($this->dispatcher)(new FileSystemWriteEnd($result, $bytes));
         }

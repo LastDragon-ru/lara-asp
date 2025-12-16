@@ -28,7 +28,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Iterator;
@@ -603,9 +602,7 @@ final class ProcessorTest extends TestCase {
 
         $processor->task($task);
 
-        self::expectExceptionObject(
-            new DependencyUnresolvable($path, new PathNotFound($path)),
-        );
+        self::expectExceptionObject(new PathNotFound($path));
 
         $processor($input);
     }

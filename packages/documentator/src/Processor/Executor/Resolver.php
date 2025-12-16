@@ -12,8 +12,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyError;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
@@ -67,8 +65,7 @@ class Resolver implements Contract {
 
             ($this->run)($file);
         } catch (Exception $exception) {
-            $result    = DependencyResult::Error;
-            $exception = $this->exception($path, $exception);
+            $result = DependencyResult::Error;
 
             throw $exception;
         } finally {
@@ -97,8 +94,7 @@ class Resolver implements Contract {
                 ($this->run)($file);
             }
         } catch (Exception $exception) {
-            $result    = DependencyResult::Error;
-            $exception = $this->exception($path, $exception);
+            $result = DependencyResult::Error;
 
             throw $exception;
         } finally {
@@ -134,8 +130,7 @@ class Resolver implements Contract {
 
             ($this->run)($file);
         } catch (Exception $exception) {
-            $result    = DependencyResult::Error;
-            $exception = $this->exception($path, $exception);
+            $result = DependencyResult::Error;
 
             throw $exception;
         } finally {
@@ -161,8 +156,7 @@ class Resolver implements Contract {
 
                 ($this->queue)($file);
             } catch (Exception $exception) {
-                $result    = DependencyResult::Error;
-                $exception = $this->exception($filepath, $exception);
+                $result = DependencyResult::Error;
 
                 throw $exception;
             } finally {
@@ -185,15 +179,8 @@ class Resolver implements Contract {
             is_string($directory)               => new DirectoryPath($directory),
             $directory === null                 => new DirectoryPath('.'),
         };
-        $path    = $this->path($path);
-        $include = (array) $include;
-        $exclude = (array) $exclude;
-
-        try {
-            $files = $this->fs->search($path, $include, $exclude);
-        } catch (Exception $exception) {
-            throw $this->exception($path, $exception);
-        }
+        $path  = $this->path($path);
+        $files = $this->fs->search($path, (array) $include, (array) $exclude);
 
         return $files;
     }
@@ -236,9 +223,5 @@ class Resolver implements Contract {
         };
 
         return $path;
-    }
-
-    private function exception(DirectoryPath|FilePath $path, Exception $exception): Exception {
-        return $exception instanceof DependencyError ? $exception : new DependencyUnresolvable($path, $exception);
     }
 }

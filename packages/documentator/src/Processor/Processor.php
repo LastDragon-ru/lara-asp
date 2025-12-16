@@ -12,8 +12,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessFailed;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Glob;
@@ -74,19 +72,13 @@ class Processor {
         $result = $dispatcher(new ProcessBegin($root, $output), ProcessResult::Success);
 
         try {
-            try {
-                $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
-                $globs    = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
-                $files    = $input instanceof FilePath ? [$input] : $fs->search($root, $globs, $skip);
-                $skipped  = new Glob($skip);
-                $executor = new Executor($this->container, $dispatcher, $this->tasks, $fs, $files, $skipped);
+            $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
+            $globs    = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
+            $files    = $input instanceof FilePath ? [$input] : $fs->search($root, $globs, $skip);
+            $skipped  = new Glob($skip);
+            $executor = new Executor($this->container, $dispatcher, $this->tasks, $fs, $files, $skipped);
 
-                $executor->run();
-            } catch (ProcessorError $exception) {
-                throw $exception;
-            } catch (Exception $exception) {
-                throw new ProcessFailed($exception);
-            }
+            $executor->run();
         } catch (Exception $exception) {
             $result = ProcessResult::Error;
 

@@ -16,9 +16,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathWriteFailed;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Mockery;
@@ -201,7 +199,7 @@ final class FileSystemTest extends TestCase {
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
 
-        self::expectException(PathReadFailed::class);
+        self::expectException(Exception::class);
 
         $file = Mockery::mock(File::class, [$filesystem, $path]);
 
@@ -314,7 +312,7 @@ final class FileSystemTest extends TestCase {
     }
 
     public function testWriteCreateFailed(): void {
-        self::expectException(PathWriteFailed::class);
+        self::expectException(Exception::class);
 
         $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path    = $input->file('file.md');

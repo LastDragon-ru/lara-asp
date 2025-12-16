@@ -21,8 +21,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
@@ -177,18 +175,12 @@ class Executor {
         $result = ($this->dispatcher)(new TaskBegin($task::class), TaskResult::Success);
 
         try {
-            try {
-                if ($task instanceof FileTask) {
-                    $task($this->resolver, $file);
-                } elseif ($task instanceof HookTask) {
-                    $task($this->resolver, $file, $hook);
-                } else {
-                    throw new TaskNotInvokable($task, $hook, $file->path);
-                }
-            } catch (ProcessorError $exception) {
-                throw $exception;
-            } catch (Exception $exception) {
-                throw new TaskFailed($task, $hook, $file->path, $exception);
+            if ($task instanceof FileTask) {
+                $task($this->resolver, $file);
+            } elseif ($task instanceof HookTask) {
+                $task($this->resolver, $file, $hook);
+            } else {
+                throw new TaskNotInvokable($task, $hook, $file->path);
             }
         } catch (Exception $exception) {
             $result = TaskResult::Error;
