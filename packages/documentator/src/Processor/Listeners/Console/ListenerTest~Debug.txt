@@ -1,14 +1,14 @@
 ↔ b/a/ba.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
-<fg=yellow>↔ c.txt</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
-<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
-<fg=gray>·</> <fg=gray>·</> <fg=yellow>↔ c.txt</> <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=gray>NULL</>
-<fg=green>! /README.md</> <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=gray>SKIP</>
-↔ b/b/bb.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=green>DONE</>
-<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=green>DONE</>
+↔ c.txt <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=gray>·</> <fg=gray>·</> ↔ c.txt <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>NULL</>
+! /README.md <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>SKIP</>
+↔ b/b/bb.txt <fg=gray>...........................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> ↔ b/a/ba.txt <fg=gray>....................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> ↔ c.txt <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
-<fg=gray>·</> <fg=gray>·</> <fg=green>! /README.md</> <fg=gray>....................................................</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=gray>NULL</>
+<fg=gray>·</> <fg=gray>·</> ! /README.md <fg=gray>....................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>NULL</>
 ↔ c.html <fg=gray>...............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>SKIP</>
 ↔ a/excluded.txt <fg=gray>.......................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>SKIP</>
 ↔ a/a.txt <fg=gray>..............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
@@ -23,12 +23,12 @@
 <fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 ↔ b/b.txt <fg=gray>..............................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
-<fg=green>↔ c.new</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=red>FAIL</>
-<fg=yellow>↔ c.htm</> <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=green>C</><fg=yellow>U</> <fg=green>DONE</>
-<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=green>C</><fg=yellow>U</> <fg=green>DONE</>
-<fg=gray>·</> <fg=gray>·</> <fg=yellow>↔ c.htm</> <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=gray>NULL</>
-<fg=gray>·</> <fg=gray>·</> <fg=green>↔ c.new</> <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=green>C</> <fg=green>DONE</>
+↔ c.new <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=red>FAIL</>
+↔ c.htm <fg=gray>................................................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskA <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=gray>·</> <fg=gray>·</> ↔ c.htm <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>NULL</>
+<fg=gray>·</> <fg=gray>·</> ↔ c.new <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
 <fg=gray>·</> <fg=gray>·</> ↔ c.next <fg=gray>........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> NEXT
-<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=green>DONE</>
-<fg=gray>·</> <fg=gray>·</> <fg=yellow>↔ c.new</> <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=yellow>U</> <fg=gray>NULL</>
-<fg=green;options=bold>✓</> Files: 12, [<fg=yellow>U</>]pdated: <fg=yellow>3</>, [<fg=green>C</>]reated: <fg=green>2</>, Memory: 14.00 MiB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>
+<fg=gray>·</> LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\ListenerTest__TaskB <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green>DONE</>
+<fg=gray>·</> <fg=gray>·</> ↔ c.new <fg=gray>.........................................................</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=gray>NULL</>
+<fg=green;options=bold>✓</> Files: 12, Memory: 14.00 MiB <fg=gray>.........................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>
