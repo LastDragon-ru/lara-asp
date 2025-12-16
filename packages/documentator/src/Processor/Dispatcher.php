@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
+use UnitEnum;
 
 /**
  * @internal
@@ -23,7 +24,16 @@ class Dispatcher {
         };
     }
 
-    public function __invoke(Event $event): void {
+    /**
+     * @template T of ?UnitEnum
+     *
+     * @param T $result
+     *
+     * @return T
+     */
+    public function __invoke(Event $event, ?UnitEnum $result = null): ?UnitEnum {
         ($this->listener)($event);
+
+        return $result;
     }
 }

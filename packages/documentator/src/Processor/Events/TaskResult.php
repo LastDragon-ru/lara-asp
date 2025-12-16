@@ -2,8 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-enum FileFinishedResult {
+enum TaskResult {
     case Success;
-    case Skipped;
-    case Failed;
+    case Error;
 }

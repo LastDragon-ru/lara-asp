@@ -3,12 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
-use LastDragon_ru\Path\FilePath;
 
-readonly class FileSystemModified implements Event {
+readonly class FileEnd implements Event {
     public function __construct(
-        public FilePath $path,
-        public FileSystemModifiedType $type,
+        public FileResult $result,
     ) {
         // empty
     }

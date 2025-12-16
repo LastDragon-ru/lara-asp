@@ -3,10 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
+use LastDragon_ru\Path\DirectoryPath;
 
-readonly class FileFinished implements Event {
+readonly class ProcessBegin implements Event {
     public function __construct(
-        public FileFinishedResult $result,
+        public DirectoryPath $input,
+        public DirectoryPath $output,
     ) {
         // empty
     }

@@ -7,8 +7,6 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
@@ -196,16 +194,6 @@ class FileSystem {
         } else {
             $this->save($file);
         }
-
-        // Event
-        ($this->dispatcher)(
-            new FileSystemModified(
-                $file->path,
-                $exists
-                    ? FileSystemModifiedType::Updated
-                    : FileSystemModifiedType::Created,
-            ),
-        );
 
         // Return
         return $file;

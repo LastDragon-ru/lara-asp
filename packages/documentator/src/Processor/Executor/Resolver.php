@@ -7,10 +7,11 @@ use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as Contract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolved as Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResolvedResult as Result;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnresolvable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -24,7 +25,7 @@ use function is_string;
 /**
  * @internal
  */
-class Resolver implements ResolverContract {
+class Resolver implements Contract {
     /**
      * @var array<class-string<Cast<object>>, Cast<object>>
      */
@@ -58,18 +59,20 @@ class Resolver implements ResolverContract {
 
     #[Override]
     public function get(FilePath|string $path): File {
-        $path = $this->path($path);
+        $path   = $this->path($path);
+        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
 
         try {
             $file = $this->fs->get($path);
 
-            $this->notify($path, Result::Success);
-
             ($this->run)($file);
         } catch (Exception $exception) {
-            $this->notify($path, Result::Failed);
+            $result    = DependencyResult::Error;
+            $exception = $this->exception($path, $exception);
 
-            throw $this->exception($path, $exception);
+            throw $exception;
+        } finally {
+            ($this->dispatcher)(new DependencyEnd($result));
         }
 
         return $file;
@@ -80,24 +83,26 @@ class Resolver implements ResolverContract {
      */
     #[Override]
     public function find(FilePath|string $path): ?File {
-        $path = $this->path($path);
+        $path   = $this->path($path);
+        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
 
         try {
             $file = $this->fs->exists($path)
                 ? $this->fs->get($path)
                 : null;
 
-            if ($file !== null) {
-                $this->notify($path, Result::Success);
-
-                ($this->run)($file);
+            if ($file === null) {
+                $result = DependencyResult::NotFound;
             } else {
-                $this->notify($path, Result::Null);
+                ($this->run)($file);
             }
         } catch (Exception $exception) {
-            $this->notify($path, Result::Failed);
+            $result    = DependencyResult::Error;
+            $exception = $this->exception($path, $exception);
 
-            throw $this->exception($path, $exception);
+            throw $exception;
+        } finally {
+            ($this->dispatcher)(new DependencyEnd($result));
         }
 
         return $file;
@@ -118,21 +123,23 @@ class Resolver implements ResolverContract {
 
     #[Override]
     public function save(File|FilePath|string $path, string $content): File {
-        $file = $path instanceof File ? $path : null;
-        $path = $this->path($path instanceof File ? $path->path : $path);
+        $file   = $path instanceof File ? $path : null;
+        $path   = $this->path($path instanceof File ? $path->path : $path);
+        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
 
         try {
             $file = $this->fs->write($file ?? $path, $content);
 
             unset($this->files[$file]);
 
-            $this->notify($path, Result::Success);
-
             ($this->run)($file);
         } catch (Exception $exception) {
-            $this->notify($path, Result::Failed);
+            $result    = DependencyResult::Error;
+            $exception = $this->exception($path, $exception);
 
-            throw $this->exception($path, $exception);
+            throw $exception;
+        } finally {
+            ($this->dispatcher)(new DependencyEnd($result));
         }
 
         return $file;
@@ -147,17 +154,19 @@ class Resolver implements ResolverContract {
 
         foreach ($iterator as $file) {
             $filepath = $this->path($file);
+            $result   = ($this->dispatcher)(new DependencyBegin($filepath), DependencyResult::Queued);
 
             try {
                 $file = $this->fs->get($filepath);
 
-                $this->notify($filepath, Result::Queued);
-
                 ($this->queue)($file);
             } catch (Exception $exception) {
-                $this->notify($filepath, Result::Failed);
+                $result    = DependencyResult::Error;
+                $exception = $this->exception($filepath, $exception);
 
-                throw $this->exception($filepath, $exception);
+                throw $exception;
+            } finally {
+                ($this->dispatcher)(new DependencyEnd($result));
             }
         }
     }
@@ -208,10 +217,6 @@ class Resolver implements ResolverContract {
         };
     }
 
-    protected function notify(FilePath $path, Result $result): void {
-        ($this->dispatcher)(new Event($path, $result));
-    }
-
     /**
      * @template T of DirectoryPath|FilePath|non-empty-string
      *
@@ -222,7 +227,9 @@ class Resolver implements ResolverContract {
     protected function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
         $path = is_string($path) ? new FilePath($path) : $path;
         $path = match (true) {
-            $path->parts[0] === $this->oHome->parts[0] => $this->output->resolve($this->oHome->relative($path) ?? $path),
+            $path->parts[0] === $this->oHome->parts[0] => $this->output->resolve(
+                $this->oHome->relative($path) ?? $path,
+            ),
             $path->parts[0] === $this->iHome->parts[0] => $this->input->resolve($this->iHome->relative($path) ?? $path),
             $path->relative                            => $this->directory->resolve($path),
             default                                    => $path->normalized(),

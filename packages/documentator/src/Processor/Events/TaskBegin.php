@@ -3,13 +3,14 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
-use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 
-readonly class HookStarted implements Event {
+readonly class TaskBegin implements Event {
     public function __construct(
-        public Hook $hook,
-        public FilePath $path,
+        /**
+         * @var class-string<Task>
+         */
+        public string $task,
     ) {
         // empty
     }

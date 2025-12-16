@@ -2,7 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
-enum FileSystemModifiedType {
-    case Created;
-    case Updated;
+enum DependencyResult {
+    case Resolved;
+    case NotFound;
+    case Queued;
+    case Error;
 }

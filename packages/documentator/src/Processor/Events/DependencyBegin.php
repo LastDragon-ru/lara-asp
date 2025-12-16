@@ -3,14 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
+use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\Path\FilePath;
 
-readonly class TaskStarted implements Event {
+readonly class DependencyBegin implements Event {
     public function __construct(
-        /**
-         * @var class-string<Task>
-         */
-        public string $task,
+        public DirectoryPath|FilePath $path,
     ) {
         // empty
     }

@@ -6,10 +6,7 @@ use Exception;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModified;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemModifiedType;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotFound;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathNotWritable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathReadFailed;
@@ -201,18 +198,6 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $path       = $input->file('file.md');
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher
-            ->shouldReceive('__invoke')
-            ->withArgs(
-                static function (Event $event) use ($path): bool {
-                    return $event instanceof FileSystemModified
-                        && $event->path === $path
-                        && $event->type === FileSystemModifiedType::Updated;
-                },
-            )
-            ->once()
-            ->andReturns();
-
         $adapter    = Mockery::mock(Adapter::class);
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
@@ -260,19 +245,7 @@ final class FileSystemTest extends TestCase {
         $path       = $input->file('file.md');
         $content    = 'content';
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher
-            ->shouldReceive('__invoke')
-            ->withArgs(
-                static function (Event $event) use ($path): bool {
-                    return $event instanceof FileSystemModified
-                        && $event->type === FileSystemModifiedType::Created
-                        && $event->path->equals($path);
-                },
-            )
-            ->once()
-            ->andReturns();
-
-        $adapter = Mockery::mock(Adapter::class);
+        $adapter    = Mockery::mock(Adapter::class);
         $adapter
             ->shouldReceive('write')
             ->with((string) $path, $content)

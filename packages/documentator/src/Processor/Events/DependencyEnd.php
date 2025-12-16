@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 
-readonly class HookFinished implements Event {
+readonly class DependencyEnd implements Event {
     public function __construct(
-        public HookFinishedResult $result,
+        public DependencyResult $result,
     ) {
         // empty
     }

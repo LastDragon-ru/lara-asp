@@ -10,15 +10,15 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskStarted;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
@@ -102,17 +102,17 @@ class Executor {
         }
 
         // Run
-        ($this->dispatcher)(new HookStarted($hook, $file->path));
+        $result = ($this->dispatcher)(new HookBegin($hook, $file->path), HookResult::Success);
 
         try {
             $this->tasks($this->tasks->get($hook), $hook, $file);
         } catch (Exception $exception) {
-            ($this->dispatcher)(new HookFinished(HookFinishedResult::Failed));
+            $result = HookResult::Error;
 
             throw $exception;
+        } finally {
+            ($this->dispatcher)(new HookEnd($result));
         }
-
-        ($this->dispatcher)(new HookFinished(HookFinishedResult::Success));
     }
 
     protected function file(File $file): void {
@@ -128,8 +128,8 @@ class Executor {
             // The $file cannot be processed if it is skipped, so we can return
             // it safely in this case.
             if (!$this->isSkipped($file)) {
-                ($this->dispatcher)(new FileStarted($file->path));
-                ($this->dispatcher)(new FileFinished(FileFinishedResult::Failed));
+                ($this->dispatcher)(new FileBegin($file->path));
+                ($this->dispatcher)(new FileEnd(FileResult::Error));
 
                 throw new DependencyCircularDependency($file->path, array_values($this->stack));
             } else {
@@ -137,36 +137,27 @@ class Executor {
             }
         }
 
-        // Event
-        ($this->dispatcher)(new FileStarted($file->path));
-
-        // Skipped?
-        if ($this->isSkipped($file)) {
-            ($this->dispatcher)(new FileFinished(FileFinishedResult::Skipped));
-
-            $this->processed[$path] = true;
-
-            return;
-        }
-
         // Process
+        $result             = ($this->dispatcher)(new FileBegin($file->path), FileResult::Success);
         $this->stack[$path] = $file->path;
 
         try {
-            $this->tasks($this->tasks->get($file), Hook::File, $file);
+            if (!$this->isSkipped($file)) {
+                $this->tasks($this->tasks->get($file), Hook::File, $file);
+            } else {
+                $result = FileResult::Skipped;
+            }
         } catch (Exception $exception) {
-            ($this->dispatcher)(new FileFinished(FileFinishedResult::Failed));
+            $result = FileResult::Error;
 
             throw $exception;
         } finally {
+            ($this->dispatcher)(new FileEnd($result));
+
             $this->processed[$path] = true;
+
+            unset($this->stack[$path]);
         }
-
-        // Event
-        ($this->dispatcher)(new FileFinished(FileFinishedResult::Success));
-
-        // Reset
-        unset($this->stack[$path]);
     }
 
     /**
@@ -183,7 +174,7 @@ class Executor {
     }
 
     protected function task(Task $task, Hook $hook, File $file): void {
-        ($this->dispatcher)(new TaskStarted($task::class));
+        $result = ($this->dispatcher)(new TaskBegin($task::class), TaskResult::Success);
 
         try {
             try {
@@ -199,12 +190,12 @@ class Executor {
             } catch (Exception $exception) {
                 throw new TaskFailed($task, $hook, $file->path, $exception);
             }
-
-            ($this->dispatcher)(new TaskFinished(TaskFinishedResult::Success));
         } catch (Exception $exception) {
-            ($this->dispatcher)(new TaskFinished(TaskFinishedResult::Failed));
+            $result = TaskResult::Error;
 
             throw $exception;
+        } finally {
+            ($this->dispatcher)(new TaskEnd($result));
         }
     }
 

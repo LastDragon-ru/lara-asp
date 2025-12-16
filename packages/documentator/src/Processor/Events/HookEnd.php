@@ -3,12 +3,10 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
-use LastDragon_ru\Path\DirectoryPath;
 
-readonly class ProcessingStarted implements Event {
+readonly class HookEnd implements Event {
     public function __construct(
-        public DirectoryPath $input,
-        public DirectoryPath $output,
+        public HookResult $result,
     ) {
         // empty
     }

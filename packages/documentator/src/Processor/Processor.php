@@ -9,10 +9,10 @@ use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinished;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingFinishedResult;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessingStarted;
-use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessingFailed;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\ProcessorError;
 use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Executor;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -58,7 +58,7 @@ class Processor {
         ?Closure $on = null,
     ): void {
         // Prepare
-        $root       = $input->directory('.');
+        $root       = $input->directory();
         $dispatcher = new Dispatcher($on);
 
         // If `$output` specified and inside `$input` we should not process it.
@@ -71,9 +71,9 @@ class Processor {
         }
 
         // Start
-        try {
-            $dispatcher(new ProcessingStarted($root, $output));
+        $result = $dispatcher(new ProcessBegin($root, $output), ProcessResult::Success);
 
+        try {
             try {
                 $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
                 $globs    = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
@@ -85,15 +85,15 @@ class Processor {
             } catch (ProcessorError $exception) {
                 throw $exception;
             } catch (Exception $exception) {
-                throw new ProcessingFailed($exception);
+                throw new ProcessFailed($exception);
             }
-
-            $dispatcher(new ProcessingFinished(ProcessingFinishedResult::Success));
         } catch (Exception $exception) {
-            $dispatcher(new ProcessingFinished(ProcessingFinishedResult::Failed));
+            $result = ProcessResult::Error;
 
             throw $exception;
         } finally {
+            $dispatcher(new ProcessEnd($result));
+
             $this->reset();
         }
     }
