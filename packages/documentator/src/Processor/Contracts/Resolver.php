@@ -51,7 +51,7 @@ interface Resolver {
      *
      * @param File|FilePath|non-empty-string $path
      */
-    public function save(File|FilePath|string $path, string $content): File;
+    public function save(File|FilePath|string $path, string $content): void;
 
     /**
      * The file(s) will be processed after the current file (in undefined order).
