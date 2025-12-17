@@ -118,26 +118,17 @@ class Resolver implements Contract {
     }
 
     #[Override]
-    public function save(File|FilePath|string $path, string $content): File {
-        $file   = $path instanceof File ? $path : null;
-        $path   = $this->path($path instanceof File ? $path->path : $path);
-        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
+    public function save(File|FilePath|string $path, string $content): void {
+        $file = $path instanceof File ? $path : null;
+        $path = $this->path($path instanceof File ? $path->path : $path);
 
         try {
-            $file = $this->fs->write($file ?? $path, $content);
-
-            unset($this->files[$file]);
-
-            ($this->run)($file);
-        } catch (Exception $exception) {
-            $result = DependencyResult::Error;
-
-            throw $exception;
+            $saved = $this->fs->write($file ?? $path, $content);
         } finally {
-            ($this->dispatcher)(new DependencyEnd($result));
+            if (($saved ?? $file) !== null) {
+                unset($this->files[$saved ?? $file]);
+            }
         }
-
-        return $file;
     }
 
     /**
