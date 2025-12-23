@@ -71,11 +71,11 @@ class Processor {
         }
 
         // Start
-        $result = $dispatcher(new ProcessBegin($root, $output), ProcessResult::Success);
+        $globs  = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
+        $result = $dispatcher(new ProcessBegin($root, $output, $globs, $skip), ProcessResult::Success);
 
         try {
             $fs       = new FileSystem($this->adapter, $dispatcher, $root, $output);
-            $globs    = array_map(static fn ($glob) => "**/{$glob}", $this->tasks->globs());
             $files    = $input instanceof FilePath ? [$input] : $fs->search($root, $globs, $skip);
             $skipped  = new Glob($skip);
             $executor = new Executor($this->container, $dispatcher, $this->tasks, $fs, $files, $skipped);

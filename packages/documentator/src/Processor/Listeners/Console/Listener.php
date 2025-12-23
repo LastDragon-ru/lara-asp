@@ -9,389 +9,265 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemWriteResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\TaskResult;
-use LastDragon_ru\LaraASP\Formatter\Formatter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Contracts\Formatter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Contracts\Output;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Enums\Mark;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Enums\Status;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Block;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Changes\Read;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Changes\Write;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Dependency;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Root;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Source;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Sources\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Sources\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Memory;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Renderer;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Terminal;
 use UnexpectedValueException;
 
-use function array_filter;
-use function array_intersect_key;
-use function array_key_last;
+use function array_first;
 use function array_last;
-use function array_map;
-use function array_merge;
 use function array_pop;
-use function array_sum;
-use function array_unique;
-use function array_values;
-use function count;
-use function end;
-use function implode;
-use function mb_strlen;
-use function mb_substr;
-use function memory_get_peak_usage;
-use function memory_get_usage;
 use function microtime;
-use function min;
-use function str_repeat;
-use function strip_tags;
-
-use const SORT_REGULAR;
+use function sprintf;
 
 class Listener {
     /**
-     * @var list<File|Task>
+     * @var list<Block>
      */
-    private array $stack = [];
-
-    /**
-     * @var list<Change>
-     */
-    private array $changes = [];
-
-    private ?DirectoryPath $input          = null;
-    private ?DirectoryPath $output         = null;
-    private int            $width          = 150;
-    private float          $start          = 0;
-    private int            $startMemory    = 0;
-    private int            $peakMemory     = 0;
-    private int            $filesProcessed = 0;
+    private array    $stack = [];
+    private Renderer $renderer;
 
     public function __construct(
-        protected readonly OutputInterface $writer,
+        protected readonly Output $output,
         protected readonly Formatter $formatter,
     ) {
-        // empty
+        $this->renderer = new Renderer($this->output, $this->formatter);
     }
 
     public function __invoke(Event $event): void {
+        // Create
+        $time  = $this->time();
+        $block = null;
+
         if ($event instanceof ProcessBegin) {
-            $this->processingStarted($event);
+            $block         = new Root(
+                $time,
+                $this->memory(),
+                $event->input,
+                $event->output,
+                $event->include,
+                $event->exclude,
+            );
+            $this->stack[] = $block;
         } elseif ($event instanceof ProcessEnd) {
-            $this->processingFinished($event);
+            $block = $this->pop(Root::class)->end(
+                match ($event->result) {
+                    ProcessResult::Success => Status::Done,
+                    ProcessResult::Error   => Status::Fail,
+                },
+                $time,
+                $this->memory(),
+            );
+        } elseif ($event instanceof HookBegin) {
+            $this->stack[] = new Hook($time, $event->hook, ...$this->path($event->path));
+        } elseif ($event instanceof HookEnd) {
+            $block = $this->pop(Source::class)->end(
+                match ($event->result) {
+                    HookResult::Success => Status::Done,
+                    HookResult::Error   => Status::Fail,
+                },
+                $time,
+            );
         } elseif ($event instanceof FileBegin) {
-            $this->fileStarted($event);
+            $this->stack[] = new File($time, ...$this->path($event->path));
         } elseif ($event instanceof FileEnd) {
-            $this->fileFinished($event);
+            $block = $this->pop(Source::class)->end(
+                match ($event->result) {
+                    FileResult::Success => Status::Done,
+                    FileResult::Skipped => Status::Skip,
+                    FileResult::Error   => Status::Fail,
+                },
+                $time,
+            );
         } elseif ($event instanceof TaskBegin) {
-            $this->taskStarted($event);
+            $this->stack[] = new Task($time, $event->task);
         } elseif ($event instanceof TaskEnd) {
-            $this->taskFinished($event);
-        } elseif ($event instanceof DependencyBegin || $event instanceof DependencyEnd) {
-            $this->dependency($event);
+            $block = $this->pop(Task::class)->end(
+                match ($event->result) {
+                    TaskResult::Success => Status::Done,
+                    TaskResult::Error   => Status::Fail,
+                },
+                $time,
+            );
+        } elseif ($event instanceof DependencyBegin) {
+            $this->stack[] = new Dependency($time, ...$this->path($event->path));
+        } elseif ($event instanceof DependencyEnd) {
+            $block = $this->pop(Dependency::class)->end(
+                match ($event->result) {
+                    DependencyResult::Resolved => Status::Done,
+                    DependencyResult::NotFound => Status::Null,
+                    DependencyResult::Queued   => Status::Next,
+                    DependencyResult::Error    => Status::Fail,
+                },
+                $time,
+            );
+        } elseif ($event instanceof FileSystemReadBegin) {
+            $this->stack[] = new Read($time, ...$this->path($event->path));
+        } elseif ($event instanceof FileSystemReadEnd) {
+            $block = $this->pop(Read::class)->end(
+                match ($event->result) {
+                    FileSystemReadResult::Success => Status::Done,
+                    FileSystemReadResult::Error   => Status::Fail,
+                },
+                $time,
+                $event->bytes,
+            );
+        } elseif ($event instanceof FileSystemWriteBegin) {
+            $this->stack[] = new Write($time, ...$this->path($event->path));
+        } elseif ($event instanceof FileSystemWriteEnd) {
+            $block = $this->pop(Write::class)->end(
+                match ($event->result) {
+                    FileSystemWriteResult::Success => Status::Done,
+                    FileSystemWriteResult::Error   => Status::Fail,
+                },
+                $time,
+                $event->bytes,
+            );
         } else {
             // empty
         }
-    }
 
-    protected function processingStarted(ProcessBegin $event): void {
-        $this->input          = $event->input;
-        $this->output         = $event->output;
-        $this->width          = $this->getTerminalWidth();
-        $this->stack          = [];
-        $this->changes        = [];
-        $this->start          = microtime(true);
-        $this->peakMemory     = memory_get_peak_usage(true);
-        $this->startMemory    = memory_get_usage(true);
-        $this->filesProcessed = 0;
-    }
+        // Add
+        if ($block !== null && !($block instanceof Root)) {
+            $parent = $this->current();
 
-    protected function processingFinished(ProcessEnd $event): void {
-        // Write
-        $time    = microtime(true) - $this->start;
-        $peak    = memory_get_peak_usage(true);
-        $memory  = $peak > $this->peakMemory ? $peak - $this->startMemory : 0;
-        $message = $this->message('✓', ProcessResult::Success)
-            ." Files: {$this->formatter->integer($this->filesProcessed)}"
-            .", Memory: {$this->formatter->filesize($memory)}";
-
-        $this->line(0, $message, $time, $event->result, []);
-
-        // Reset
-        // (should we throw error if any of the stacks are not empty?)
-        $this->input          = null;
-        $this->output         = null;
-        $this->width          = 0;
-        $this->start          = 0;
-        $this->stack          = [];
-        $this->changes        = [];
-        $this->peakMemory     = 0;
-        $this->startMemory    = 0;
-        $this->filesProcessed = 0;
-    }
-
-    protected function fileStarted(FileBegin $event): void {
-        $pathname      = $this->pathname($event->path);
-        $this->stack[] = new File($pathname, microtime(true), changes: $this->changes($pathname));
-
-        $this->filesProcessed++;
-    }
-
-    protected function fileFinished(FileEnd $event): void {
-        // File?
-        $file = array_pop($this->stack);
-
-        if (!($file instanceof File)) {
-            throw new UnexpectedValueException('The pop item in the stack is not a file.');
+            if ($parent->child($block)) {
+                $block = $parent->add($block);
+            } else {
+                $block = $parent->subtract($block);
+                $block = $this->root()->add($block);
+            }
         }
 
-        // Previous?
-        $previous = array_key_last($this->stack);
-        $time     = microtime(true) - $file->start - $file->paused;
-
-        if ($previous !== null) {
-            $this->stack[$previous]->paused += $time;
+        // Render
+        if ($block !== null) {
+            $this->write($block);
         }
-
-        // Message
-        $this->line(0, $file->path, $time, $event->result, $file->changes);
-
-        $this->children(1, $file->children);
-
-        // Clear
-        $this->changes = [];
     }
 
-    protected function taskStarted(TaskBegin $event): void {
-        $this->stack[] = new Task($event->task, microtime(true));
-    }
+    private function write(Block $block): void {
+        $rendered = $block->render($this->renderer, $this->formatter, 0);
 
-    protected function taskFinished(TaskEnd $event): void {
-        // Task?
-        $task = array_pop($this->stack);
-
-        if (!($task instanceof Task)) {
-            throw new UnexpectedValueException('The pop item in the stack is not a task.');
-        }
-
-        // File?
-        $file = end($this->stack);
-
-        if (!($file instanceof File)) {
-            throw new UnexpectedValueException('The top item in the stack is not a file.');
-        }
-
-        // Save
-        $file->paused    += $task->paused;
-        $file->changes    = array_values(array_unique(array_merge($file->changes, $task->changes), SORT_REGULAR));
-        $file->children[] = new Item(
-            $task->title,
-            microtime(true) - $task->start - $task->paused,
-            $event->result,
-            $task->changes,
-            $task->children,
-        );
-
-        // Clear
-        $this->changes = [];
-    }
-
-    protected function dependency(DependencyBegin|DependencyEnd $event): void {
-        // Task?
-        $task = end($this->stack);
-
-        if (!($task instanceof Task)) {
-            throw new UnexpectedValueException('The top item in the stack is not a task.');
-        }
-
-        // Save
-        if ($event instanceof DependencyBegin) {
-            $task->children[] = new Item($this->pathname($event->path), null, DependencyResult::Resolved, $this->changes);
-            $task->changes    = array_values(array_unique(array_merge($task->changes, $this->changes), SORT_REGULAR));
-            $this->changes    = [];
-        } else {
-            $item = array_last($task->children);
-
-            if ($item !== null) {
-                $item->result = $event->result;
+        foreach ($rendered as $verbosity => $lines) {
+            foreach ($lines as $line) {
+                $this->output->write($line, $verbosity);
             }
         }
     }
 
-    /**
-     * @param list<Change> $changes
-     */
-    protected function line(
-        int $level,
-        string $path,
-        ?float $time,
-        ProcessResult|FileResult|TaskResult|DependencyResult $result,
-        array $changes,
-    ): void {
-        if ((!$this->isLevelVisible($level) || !$this->isResultVisible($result))) {
-            return;
+    private function root(): Root {
+        $block = array_first($this->stack);
+
+        if (!($block instanceof Root)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Expected root block to be an instance of `%s`, got `%s`.',
+                    Root::class,
+                    $block !== null ? $block::class : 'null',
+                ),
+            );
         }
 
-        $flag     = null;
-        $flags    = $this->flags($changes, $path, $flag);
-        $template = [
-            'prefix'   => mb_substr(str_repeat('<fg=gray>·</> ', $level), 0, -1),
-            'message'  => $this->message($path, $flag),
-            'spacer'   => '',
-            'duration' => $time !== null ? "<fg=gray>{$this->formatter->duration($time)}</>" : '',
-            'flags'    => str_repeat('<fg=gray>.</>', 3 - count($flags)).implode('', $flags),
-            'suffix'   => $this->message($this->result($result), $result),
-        ];
-        $length   = array_map($this->length(...), $template);
-        $filled   = array_filter($length, static fn ($value) => $value > 0);
-        $spacer   = $this->width - array_sum($length) - count($filled) - 2;
+        return $block;
+    }
 
-        if ($spacer > 0) {
-            $template['spacer'] = '<fg=gray>'.str_repeat('.', $spacer).'</>';
-            $filled['spacer']   = '';
+    private function current(): Block {
+        $block = array_last($this->stack);
+
+        if ($block === null) {
+            throw new UnexpectedValueException('Expected block, got `null`.');
         }
 
-        $template = array_intersect_key($template, $filled);
-        $template = implode(' ', $template);
-
-        $this->writer->writeln($template);
+        return $block;
     }
 
     /**
-     * @param list<Change> $changes
+     * @template T of Block
      *
-     * @return list<string>
+     * @param class-string<T> $expected
+     *
+     * @return T
      */
-    protected function flags(array $changes, string $path, ?Flag &$flag): array {
-        return [];
-    }
+    private function pop(string $expected): Block {
+        $block = array_pop($this->stack);
 
-    protected function length(string $message): int {
-        return mb_strlen(strip_tags($message));
-    }
+        if (!($block instanceof $expected)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Expected block to be an instance of `%s`, got `%s`.',
+                    $expected,
+                    $block !== null ? $block::class : 'null',
+                ),
+            );
+        }
 
-    protected function message(
-        string $message,
-        ProcessResult|FileResult|TaskResult|DependencyResult|Flag|null $status = null,
-    ): string {
-        $style   = $this->style($status);
-        $message = $style !== null ? "<{$style}>{$message}</>" : $message;
-
-        return $message;
-    }
-
-    protected function style(
-        ProcessResult|FileResult|TaskResult|DependencyResult|Flag|null $result,
-    ): ?string {
-        return match ($result) {
-            ProcessResult::Success     => 'fg=green;options=bold',
-            ProcessResult::Error       => 'fg=red;options=bold',
-            FileResult::Success        => 'fg=green',
-            FileResult::Error          => 'fg=red',
-            FileResult::Skipped        => 'fg=gray',
-            TaskResult::Success        => 'fg=green',
-            TaskResult::Error          => 'fg=red',
-            DependencyResult::Resolved => 'fg=green',
-            DependencyResult::Error    => 'fg=red',
-            DependencyResult::NotFound => 'fg=gray',
-            DependencyResult::Queued   => null,
-            Flag::Mixed                => 'options=underscore',
-            null                       => null,
-        };
-    }
-
-    protected function result(
-        ProcessResult|FileResult|TaskResult|DependencyResult $result,
-    ): string {
-        return match ($result) {
-            ProcessResult::Success     => 'DONE',
-            ProcessResult::Error       => 'FAIL',
-            FileResult::Success        => 'DONE',
-            FileResult::Error          => 'FAIL',
-            FileResult::Skipped        => 'SKIP',
-            TaskResult::Success        => 'DONE',
-            TaskResult::Error          => 'FAIL',
-            DependencyResult::Resolved => 'DONE',
-            DependencyResult::Error    => 'FAIL',
-            DependencyResult::NotFound => 'NULL',
-            DependencyResult::Queued   => 'NEXT',
-        };
-    }
-
-    protected function isLevelVisible(int $level): bool {
-        return match ($level) {
-            0       => true,
-            1       => $this->writer->isVerbose(),
-            2       => $this->writer->isVeryVerbose(),
-            3       => $this->writer->isDebug(),
-            default => false,
-        };
-    }
-
-    protected function isResultVisible(
-        ProcessResult|FileResult|TaskResult|DependencyResult $result,
-    ): bool {
-        return match ($result) {
-            FileResult::Skipped => $this->writer->isDebug(),
-            default             => true,
-        };
-    }
-
-    protected function getTerminalWidth(): int {
-        return min((new Terminal())->getWidth(), 150);
+        return $block;
     }
 
     /**
-     * @param list<Item> $children
+     * @private `protected` is used for tests
+     *
+     * @return array{Mark, string}
      */
-    private function children(int $level, array $children): void {
-        if (!$this->isLevelVisible($level)) {
-            return;
-        }
-
-        foreach ($children as $child) {
-            $this->line($level, $child->title, $child->time, $child->result, $child->changes);
-            $this->children($level + 1, $child->children);
-        }
-    }
-
-    /**
-     * @return list<Change>
-     */
-    private function changes(string $path): array {
-        $changes = [];
-
-        foreach ($this->stack as $item) {
-            foreach ($item->changes as $change) {
-                if ($change->path === $path) {
-                    $changes[] = $change;
-                }
-            }
-        }
-
-        return array_values(array_unique($changes, SORT_REGULAR));
-    }
-
-    /**
-     * @return non-empty-string
-     */
-    protected function pathname(DirectoryPath|FilePath $path): string {
-        if ($this->input === null || $this->output === null) {
-            return Mark::Unknown->value.' '.$path;
-        }
-
-        $path = $this->input->resolve($path);
-        $name = match (true) {
-            $this->input->equals($this->output) && $this->input->contains($path),
-                => Mark::Inout->value.' '.$this->output->relative($path),
-            $this->output->contains($path),
-            $this->output->equals($path),
-                => Mark::Output->value.' '.$this->output->relative($path),
-            $this->input->contains($path),
-            $this->input->equals($path),
-                => Mark::Input->value.' '.$this->input->relative($path),
+    protected function path(DirectoryPath|FilePath $path): array {
+        $block = $this->root();
+        $path  = $block->input->resolve($path);
+        $name  = match (true) {
+            $block->input->equals($block->output) && $block->input->contains($path),
+                => [Mark::Inout, $block->output->relative($path)->path ?? $path->path],
+            $block->output->contains($path),
+            $block->output->equals($path),
+                => [Mark::Output, $block->output->relative($path)->path ?? $path->path],
+            $block->input->contains($path),
+            $block->input->equals($path),
+                => [Mark::Input, $block->input->relative($path)->path ?? $path->path],
             default
-                => Mark::External->value.' '.$path,
+                => [Mark::External, $path->path],
         };
 
         return $name;
+    }
+
+    /**
+     * @private `protected` is used for tests
+     */
+    protected function time(): float {
+        return microtime(true);
+    }
+
+    /**
+     * @private `protected` is used for tests
+     */
+    protected function memory(): Memory {
+        return new Memory();
     }
 }
