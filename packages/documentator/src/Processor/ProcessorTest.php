@@ -132,7 +132,20 @@ final class ProcessorTest extends TestCase {
         self::assertTrue($result);
         self::assertEquals(
             [
-                new ProcessBegin($input, $input->parent()),
+                new ProcessBegin(
+                    $input,
+                    $input->parent(),
+                    [
+                        '**/*.php',
+                        '**/*.htm',
+                        '**/*.txt',
+                        '**/*.md',
+                    ],
+                    [
+                        'excluded.txt',
+                        '**/**/excluded.txt',
+                    ],
+                ),
                 new FileBegin($input->file('a/a.txt')),
                 new TaskBegin($taskB::class),
                 new DependencyBegin($input->file('b/b/bb.txt')),
@@ -274,7 +287,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input->directory(), $input->directory()),
+                new ProcessBegin($input->directory(), $input->directory(), ['**/*.txt', '**/*.md'], []),
                 new FileBegin($input->file('excluded.txt')),
                 new TaskBegin(ProcessorTest__Task::class),
                 new TaskEnd(TaskResult::Success),
@@ -327,7 +340,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input->directory(), $input->directory()),
+                new ProcessBegin($input->directory(), $input->directory(), ['**/*.txt', '**/*.md', '**/*'], []),
                 new FileBegin($input->file('excluded.txt')),
                 new TaskBegin($taskC::class),
                 new TaskEnd(TaskResult::Success),
@@ -391,7 +404,18 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input, $input),
+                new ProcessBegin(
+                    $input,
+                    $input,
+                    [
+                        '**/*.html',
+                        '**/*',
+                    ],
+                    [
+                        'excluded.txt',
+                        '**/**/excluded.txt',
+                    ],
+                ),
                 new FileBegin($input->file('a/a.html')),
                 new TaskBegin($taskA::class),
                 new TaskEnd(TaskResult::Success),
@@ -545,7 +569,19 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input, $output),
+                new ProcessBegin(
+                    $input,
+                    $output,
+                    [
+                        '**/*.txt',
+                        '**/*.md',
+                    ],
+                    [
+                        'excluded.txt',
+                        '**/**/excluded.txt',
+                        'a/**',
+                    ],
+                ),
                 new FileBegin($input->file('b/a/ba.txt')),
                 new TaskBegin($task::class),
                 new DependencyBegin($output->file('a.txt')),
@@ -724,7 +760,18 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input, $output),
+                new ProcessBegin(
+                    $input,
+                    $output,
+                    [
+                        '**/*.txt',
+                        '**/*.md',
+                    ],
+                    [
+                        'excluded.txt',
+                        '**/**/excluded.txt',
+                    ],
+                ),
                 new FileBegin($input->file('a.txt')),
                 new TaskBegin($task::class),
                 new TaskEnd(TaskResult::Success),
@@ -795,7 +842,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input->directory(), $input->directory()),
+                new ProcessBegin($input->directory(), $input->directory(), [], []),
                 new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
                 new TaskBegin($task::class),
                 new DependencyBegin($input->file('c.txt')),
@@ -839,7 +886,7 @@ final class ProcessorTest extends TestCase {
 
         self::assertEquals(
             [
-                new ProcessBegin($input->directory(), $input->directory()),
+                new ProcessBegin($input->directory(), $input->directory(), [], []),
                 new FileBegin($input->file('excluded.txt')),
                 new FileEnd(FileResult::Skipped),
                 new HookBegin(Hook::AfterProcessing, $input->file('excluded.txt')),
@@ -921,7 +968,7 @@ final class ProcessorTest extends TestCase {
         self::assertInstanceOf(Exception::class, $exception);
         self::assertEquals(
             [
-                new ProcessBegin($input->directory(), $input->directory()),
+                new ProcessBegin($input->directory(), $input->directory(), [], []),
                 new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
                 new TaskBegin($task::class),
                 new TaskEnd(TaskResult::Error),

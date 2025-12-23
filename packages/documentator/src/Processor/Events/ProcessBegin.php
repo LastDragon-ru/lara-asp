@@ -9,6 +9,14 @@ readonly class ProcessBegin implements Event {
     public function __construct(
         public DirectoryPath $input,
         public DirectoryPath $output,
+        /**
+         * @var list<non-empty-string>
+         */
+        public array $include,
+        /**
+         * @var list<non-empty-string>
+         */
+        public array $exclude,
     ) {
         // empty
     }

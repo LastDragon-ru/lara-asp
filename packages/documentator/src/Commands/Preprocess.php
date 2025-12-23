@@ -12,6 +12,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Defaults\Laravel\Formatter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Defaults\Laravel\Output;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Listener;
 use LastDragon_ru\LaraASP\Documentator\Processor\Processor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\CodeLinks\Task as CodeLinksTask;
@@ -21,7 +23,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Task as Prepro
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDoc;
 use LastDragon_ru\LaraASP\Documentator\Utils\PhpDocumentFactory;
 use LastDragon_ru\LaraASP\Documentator\Utils\Text;
-use LastDragon_ru\LaraASP\Formatter\Formatter;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
@@ -92,9 +93,10 @@ class Preprocess extends Command {
         $path      = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
         $skip      = array_filter((array) $this->option('exclude'), static fn ($v) => is_string($v) && $v !== '');
         $skip      = array_values($skip);
+        $output    = new Output($this->output);
         $processor = $this->processor();
 
-        $processor($path, null, $skip, (new Listener($this->output, $formatter))(...));
+        $processor($path, null, $skip, (new Listener($output, $formatter))(...));
     }
 
     protected function processor(): Processor {

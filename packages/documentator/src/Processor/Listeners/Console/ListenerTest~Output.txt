@@ -1,0 +1,179 @@
+N  | Processing
+N  | · ↔ Input/Output /project/
+N  | · ? Include      '**/*.md'
+N  | · ? Exclude      '**/**/*Test/**', '**/**/*Test.md', '**/**/*Test~*.md'
+N  | ↔ docs/Shared/Installation.md ............................. R..     0.052 s DONE
+D  | · ? Self .................................................. ...     0.018 s
+D  | · ? Reads ................................... 2 / 10.40 KiB ...     0.003 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.005 s DONE
+D  | · · ? Self ................................................ ...     0.004 s
+D  | · · ? Reads .................................. 1 / 0.08 KiB ...     0.001 s
+VV | · · ↔ docs/Shared/Installation.md ................ 0.08 KiB R..     0.001 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ R..     0.029 s DONE
+D  | · · ? Self ................................................ ...     0.023 s
+D  | · · ? Reads ................................. 1 / 10.32 KiB ...     0.001 s
+VV | · · ↔ composer.json ....................................... ...     0.004 s DONE
+VV | · · ↔ composer.json ............................. 10.32 KiB R..     0.001 s DONE
+N  | ↔ packages/graphql/docs/Directives/@searchBy.md ........... R..     1.276 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads ................................... 4 / 20.82 KiB ...     0.006 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     1.233 s DONE
+D  | · · ? Self ................................................ ...     1.223 s
+D  | · · ? Reads ................................. 3 / 10.50 KiB ...     0.005 s
+VV | · · ↔ packages/graphql/docs/Directives/@searchBy.md
+VV | · · · ............................................ 9.10 KiB R..     0.001 s DONE
+VV | · · ↔ packages/graphql/src/SearchBy/Directives/DirectiveTes
+VV | · · · t/Example.schema.graphql ............................ ...     0.003 s DONE
+VV | · · ↔ packages/graphql/src/SearchBy/Directives/DirectiveTes
+VV | · · · t/Example.schema.graphql ................... 0.45 KiB R..     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@searchByConfigOpera
+VV | · · · tors.php ............................................ ...     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@searchByConfigOpera
+VV | · · · tors.php ................................... 0.96 KiB R..     0.001 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ R..     0.043 s DONE
+D  | · · ? Self ................................................ ...     0.041 s
+D  | · · ? Reads ................................. 1 / 10.32 KiB ...     0.002 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+VV | · · ↔ composer.json ............................. 10.32 KiB R..     0.002 s DONE
+N  | ↔ packages/graphql/docs/Directives/@sortBy.md ............. R..     0.075 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads .................................... 5 / 7.02 KiB ...     0.008 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.067 s DONE
+D  | · · ? Self ................................................ ...     0.050 s
+D  | · · ? Reads .................................. 5 / 7.02 KiB ...     0.008 s
+VV | · · ↔ packages/graphql/docs/Directives/@sortBy.md  5.71 KiB R..     0.002 s DONE
+VV | · · ↔ packages/graphql/src/SortBy/Directives/DirectiveTest/
+VV | · · · Example.schema.graphql .............................. ...     0.003 s DONE
+VV | · · ↔ packages/graphql/src/SortBy/Directives/DirectiveTest/
+VV | · · · Example.schema.graphql ..................... 0.34 KiB R..     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortByConfigOrderBy
+VV | · · · Random.php .......................................... ...     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortByConfigOrderBy
+VV | · · · Random.php ................................. 0.37 KiB R..     0.001 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortByConfigNullsSi
+VV | · · · ngleValue.php ....................................... ...     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortByConfigNullsSi
+VV | · · · ngleValue.php .............................. 0.23 KiB R..     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortByConfigNullsAr
+VV | · · · rayValue.php ........................................ ...     0.001 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortByConfigNullsAr
+VV | · · · rayValue.php ............................... 0.37 KiB R..     0.002 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.009 s DONE
+D  | · · ? Self ................................................ ...     0.009 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+N  | ↔ packages/graphql/docs/Directives/@stream.md ............. R..     0.078 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads .................................... 1 / 4.38 KiB ...     0.002 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.072 s DONE
+D  | · · ? Self ................................................ ...     0.070 s
+D  | · · ? Reads .................................. 1 / 4.38 KiB ...     0.002 s
+VV | · · ↔ packages/graphql/docs/Directives/@stream.md  4.38 KiB R..     0.002 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.006 s DONE
+D  | · · ? Self ................................................ ...     0.006 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+N  | ↔ packages/graphql/docs/Directives/@type.md ............... R..     0.033 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads .................................... 1 / 1.11 KiB ...     0.002 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.032 s DONE
+D  | · · ? Self ................................................ ...     0.030 s
+D  | · · ? Reads .................................. 1 / 1.11 KiB ...     0.002 s
+VV | · · ↔ packages/graphql/docs/Directives/@type.md .. 1.11 KiB R..     0.002 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.001 s DONE
+D  | · · ? Self ................................................ ...     0.001 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+N  | ↔ packages/graphql/docs/Scalars/JsonString.md ............. R..     0.003 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads .................................... 1 / 0.74 KiB ...     0.002 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.003 s DONE
+D  | · · ? Self ................................................ ...     0.001 s
+D  | · · ? Reads .................................. 1 / 0.74 KiB ...     0.002 s
+VV | · · ↔ packages/graphql/docs/Scalars/JsonString.md  0.74 KiB R..     0.002 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.000 s DONE
+D  | · · ? Self ................................................ ...     0.000 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+N  | ↔ docs/Shared/Contributing.md ............................. R..     0.004 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads .................................... 1 / 0.36 KiB ...     0.003 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.004 s DONE
+D  | · · ? Self ................................................ ...     0.001 s
+D  | · · ? Reads .................................. 1 / 0.36 KiB ...     0.003 s
+VV | · · ↔ docs/Shared/Contributing.md ................ 0.36 KiB R..     0.003 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.000 s DONE
+D  | · · ? Self ................................................ ...     0.000 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+N  | ↔ packages/graphql/README.md .............................. R..     1.204 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads ................................... 4 / 18.73 KiB ...     0.007 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     1.026 s DONE
+D  | · · ? Self ................................................ ...     1.004 s
+D  | · · ? Reads ................................. 3 / 17.67 KiB ...     0.005 s
+VV | · · ↔ packages/graphql/README.md ................ 16.13 KiB R..     0.002 s DONE
+VV | · · ↔ docs/Shared/Installation.md ......................... ...     0.004 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@searchBy.md ....... ...     0.001 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@sortBy.md ......... ...     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@stream.md ......... ...     0.001 s DONE
+VV | · · ↔ packages/graphql/docs/Directives/@type.md ........... ...     0.001 s DONE
+VV | · · ↔ packages/graphql/docs/Scalars/JsonString.md ......... ...     0.001 s DONE
+VV | · · ↔ packages/graphql/docs/Examples/BuilderInfoProvider.ph
+VV | · · · p ................................................... ...     0.003 s DONE
+VV | · · ↔ packages/graphql/docs/Examples/BuilderInfoProvider.ph
+VV | · · · p .......................................... 0.74 KiB R..     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Examples/Printer.php .......... ...     0.002 s DONE
+VV | · · ↔ packages/graphql/docs/Examples/Printer.php . 0.80 KiB R..     0.002 s DONE
+VV | · · ↔ docs/Shared/Contributing.md ......................... ...     0.003 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ R..     0.178 s DONE
+D  | · · ? Self ................................................ ...     0.176 s
+D  | · · ? Reads .................................. 1 / 1.06 KiB ...     0.002 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+VV | · · ↔ packages/graphql/src/Builder/Config.php ............. ...     0.000 s DONE
+VV | · · ↔ packages/graphql/src/Builder/Config.php .... 1.06 KiB R..     0.002 s DONE
+N  | ↔ docs/Legend.md .......................................... R..     0.006 s DONE
+D  | · ? Self .................................................. ...     0.000 s
+D  | · ? Reads .................................... 1 / 1.10 KiB ...     0.002 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     0.005 s DONE
+D  | · · ? Self ................................................ ...     0.004 s
+D  | · · ? Reads .................................. 1 / 1.10 KiB ...     0.002 s
+VV | · · ↔ docs/Legend.md ............................. 1.10 KiB R..     0.002 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.000 s DONE
+D  | · · ? Self ................................................ ...     0.000 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+N  | ↔ README.md ............................................... RW.     1.937 s DONE
+D  | · ? Self .................................................. ...     0.186 s
+D  | · ? Reads .................................... 1 / 9.23 KiB ...     0.016 s
+D  | · ? Writes ................................... 1 / 4.79 KiB ...     0.036 s
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Prep
+V  | · · rocess\Task ........................................... R..     1.699 s DONE
+D  | · · ? Self ................................................ ...     1.659 s
+D  | · · ? Reads .................................. 1 / 9.23 KiB ...     0.016 s
+VV | · · ↔ README.md .................................. 9.23 KiB R..     0.016 s DONE
+VV | · · ↔ packages/graphql/README.md .......................... ...     0.007 s DONE
+VV | · · ↔ docs/Legend.md ...................................... ...     0.018 s DONE
+V  | · ● LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Code
+V  | · · Links\Task ............................................ ...     0.015 s DONE
+D  | · · ? Self ................................................ ...     0.015 s
+VV | · · ↔ composer.json ....................................... ...     0.000 s DONE
+VV | · ↔ README.md .................................... 4.79 KiB .W.     0.036 s DONE
+D  | ? Self .................................................... ...     0.087 s
+D  | ? Reads .................................... 21 / 73.88 KiB ...     0.049 s
+D  | ? Writes ..................................... 1 / 4.79 KiB ...     0.036 s
+V  | ? Files ................................................ 10 ...
+V  | ? Memory ......................................... 8.00 MiB ...
+N  | ✓ Completed ............................................... ...     4.756 s DONE

@@ -1,1 +1,0 @@
-<fg=green;options=bold>✓</> Files: 0, Memory: 14.00 MiB <fg=gray>..........................</> <fg=gray>00:00:00.000</> <fg=gray>.</><fg=gray>.</><fg=gray>.</> <fg=green;options=bold>DONE</>
