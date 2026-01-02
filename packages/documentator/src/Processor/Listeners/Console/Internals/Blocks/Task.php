@@ -47,7 +47,8 @@ class Task extends Block {
             $this->timeTotal,
         );
 
-        yield Verbosity::Debug => $this->statistics($renderer, $formatter, $padding + 1);
+        yield Verbosity::Debug => $this->times($renderer, $formatter, $padding + 1);
+        yield Verbosity::VeryVerbose => $this->statistics($renderer, $formatter, $padding + 1);
 
         yield from $this->children($renderer, $formatter, $padding);
     }

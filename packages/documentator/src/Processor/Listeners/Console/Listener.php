@@ -123,9 +123,10 @@ class Listener {
         } elseif ($event instanceof DependencyEnd) {
             $block = $this->pop(Dependency::class)->end(
                 match ($event->result) {
-                    DependencyResult::Resolved => Status::Done,
+                    DependencyResult::Resolved => Status::Use,
                     DependencyResult::NotFound => Status::Null,
                     DependencyResult::Queued   => Status::Next,
+                    DependencyResult::Saved    => Status::Save,
                     DependencyResult::Error    => Status::Fail,
                 },
                 $time,

@@ -7,5 +7,7 @@ enum Status {
     case Null;
     case Skip;
     case Next;
+    case Use;
+    case Save;
     case Fail;
 }

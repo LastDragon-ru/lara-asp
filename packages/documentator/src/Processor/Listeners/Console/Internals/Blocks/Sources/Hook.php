@@ -40,7 +40,8 @@ class Hook extends Source {
             $this->timeTotal,
         );
 
-        yield Verbosity::Debug => $this->statistics($renderer, $formatter, $padding + 1);
+        yield Verbosity::Debug => $this->times($renderer, $formatter, $padding + 1);
+        yield Verbosity::Verbose => $this->statistics($renderer, $formatter, $padding + 1);
 
         yield from $this->children($renderer, $formatter, $padding);
     }
