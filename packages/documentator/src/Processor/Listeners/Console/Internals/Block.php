@@ -122,9 +122,16 @@ abstract class Block {
      *
      * @return iterable<mixed, string>
      */
-    protected function statistics(Renderer $renderer, Formatter $formatter, int $padding): iterable {
+    protected function times(Renderer $renderer, Formatter $formatter, int $padding): iterable {
         yield from $renderer->run(Message::Self, $padding, Mark::Info, duration: $this->timeSelf);
+    }
 
+    /**
+     * @param int<0, max> $padding
+     *
+     * @return iterable<mixed, string>
+     */
+    protected function statistics(Renderer $renderer, Formatter $formatter, int $padding): iterable {
         foreach (Flag::cases() as $flag) {
             if (!isset($this->statistics[$flag])) {
                 continue;

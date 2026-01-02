@@ -33,14 +33,13 @@ class Dependency extends Block {
      */
     #[Override]
     public function render(Renderer $renderer, Formatter $formatter, int $padding): iterable {
-        yield Verbosity::VeryVerbose => $renderer->run(
+        yield Verbosity::Debug => $renderer->run(
             $this->path,
             $padding,
             $this->mark,
             null,
             $this->statistics->flags(),
             $this->status,
-            $this->timeTotal,
         );
     }
 }

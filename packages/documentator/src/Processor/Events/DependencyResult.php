@@ -6,5 +6,6 @@ enum DependencyResult {
     case Resolved;
     case NotFound;
     case Queued;
+    case Saved;
     case Error;
 }

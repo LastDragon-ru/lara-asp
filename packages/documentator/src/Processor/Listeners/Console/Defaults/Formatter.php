@@ -60,10 +60,12 @@ class Formatter implements Contract {
     #[Override]
     public function status(Status $status): string {
         return match ($status) {
+            Status::Use  => 'USE',
             Status::Done => 'DONE',
             Status::Null => 'NULL',
             Status::Skip => 'SKIP',
             Status::Next => 'NEXT',
+            Status::Save => 'SAVE',
             Status::Fail => 'FAIL',
         };
     }

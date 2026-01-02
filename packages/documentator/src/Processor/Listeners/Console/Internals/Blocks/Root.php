@@ -88,8 +88,9 @@ class Root extends Block {
             yield Verbosity::Normal => $renderer->title(Message::Title, $padding);
             yield Verbosity::Normal => $renderer->properties($this->properties(), $padding + 1);
         } else {
-            yield Verbosity::Debug => $this->statistics($renderer, $formatter, $padding);
-            yield Verbosity::Verbose => $renderer->run(
+            yield Verbosity::Debug => $this->times($renderer, $formatter, $padding);
+            yield Verbosity::Verbose => $this->statistics($renderer, $formatter, $padding);
+            yield Verbosity::Normal => $renderer->run(
                 title  : Message::Files,
                 padding: $padding,
                 mark   : Mark::Info,

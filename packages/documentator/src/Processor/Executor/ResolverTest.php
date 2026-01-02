@@ -260,7 +260,7 @@ final class ResolverTest extends TestCase {
         $run        = Mockery::mock(ResolverTest__Invokable::class);
         $queue      = Mockery::mock(ResolverTest__Invokable::class);
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filepath   = new FilePath('/file.txt');
         $resolved   = Mockery::mock(FileImpl::class, [$filesystem, $filepath]);
@@ -282,6 +282,14 @@ final class ResolverTest extends TestCase {
             ->andReturn($filepath);
 
         $resolver->save($filepath, $content);
+
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Saved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testSaveException(): void {
@@ -291,7 +299,7 @@ final class ResolverTest extends TestCase {
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
         $container  = Mockery::mock(ContainerResolver::class);
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('write')
@@ -311,10 +319,18 @@ final class ResolverTest extends TestCase {
         self::expectExceptionObject($exception);
 
         $resolver->save($filepath, $content);
+
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Saved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testSaveCastReset(): void {
-        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher = new ResolverTest__Dispatcher();
         $container  = Mockery::mock(ContainerResolver::class);
         $container
             ->shouldReceive('getInstance')
@@ -339,6 +355,13 @@ final class ResolverTest extends TestCase {
         $resolver->save($filepath, $content);
 
         self::assertNotSame($value, $resolver->cast($file, ResolverTest__Cast::class));
+        self::assertEquals(
+            [
+                new DependencyBegin($filepath),
+                new DependencyEnd(DependencyResult::Saved),
+            ],
+            $dispatcher->events,
+        );
     }
 
     public function testQueue(): void {
