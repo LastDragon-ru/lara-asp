@@ -23,8 +23,8 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyCircularDe
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\DependencyUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Tasks;
+use LastDragon_ru\LaraASP\Documentator\Processor\Hook;
+use LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
 use LastDragon_ru\Path\FilePath;
 
 use function array_last;

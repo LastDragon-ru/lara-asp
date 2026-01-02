@@ -2,12 +2,12 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Sources;
 
+use LastDragon_ru\LaraASP\Documentator\Processor\Hook as HookEnum;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Contracts\Formatter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Enums\Mark;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Enums\Verbosity;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Blocks\Source;
 use LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Internals\Renderer;
-use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Hook as HookEnum;
 use Override;
 
 /**

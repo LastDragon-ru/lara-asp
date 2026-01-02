@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
+namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use IteratorAggregate;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
