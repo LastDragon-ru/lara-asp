@@ -45,6 +45,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 * [ ] Completely reworked [`Resolver`][code-links/73efdc4c56c9ba17] simplify API.
 
+* [ ] `💀\LastDragon_ru\LaraASP\Documentator\Processor\Listeners\Console\Listener` reworked and renamed to [`Logger`][code-links/0bb2628489974fd3].
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -121,6 +123,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/b3d5664fcbd8bbf1]: src/Processor/Contracts/Tasks/HookTask.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask"
+
+[code-links/0bb2628489974fd3]: src/Processor/Logger/Logger.php
+    "\LastDragon_ru\LaraASP\Documentator\Processor\Logger\Logger"
 
 [code-links/e7daa686f09d9cc3]: src/Processor/Processor.php
     "\LastDragon_ru\LaraASP\Documentator\Processor\Processor"
