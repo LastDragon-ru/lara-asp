@@ -25,9 +25,9 @@ class Formatter implements Contract {
     #[Override]
     public function hook(Hook $hook): string {
         return match ($hook) {
-            Hook::BeforeProcessing => 'Initialize',
-            Hook::AfterProcessing  => 'Finalize',
-            Hook::File             => 'File',
+            Hook::Before => 'before',
+            Hook::After  => 'after',
+            Hook::File   => 'file',
         };
     }
 

@@ -18,7 +18,7 @@ enum Hook {
      * Calling the {@see Resolver::get()} will return the original
      * (= without processing by any of the tasks) dependency.
      */
-    case BeforeProcessing;
+    case Before;
 
     /**
      * To run task after all files.
@@ -28,7 +28,7 @@ enum Hook {
      * Calling the {@see Resolver::queue()} will throw an error
      * because it makes no sense.
      */
-    case AfterProcessing;
+    case After;
 
     /**
      * To run task for each file.

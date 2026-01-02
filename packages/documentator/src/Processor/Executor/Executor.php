@@ -76,7 +76,7 @@ class Executor {
 
         foreach ($this->iterator as $item) {
             if ($file === null) {
-                $this->hook(Hook::BeforeProcessing, $item);
+                $this->hook(Hook::Before, $item);
 
                 $this->state = State::Iteration;
             }
@@ -89,7 +89,7 @@ class Executor {
         if ($file !== null) {
             $this->state = State::Finished;
 
-            $this->hook(Hook::AfterProcessing, $file);
+            $this->hook(Hook::After, $file);
         }
     }
 

@@ -31,7 +31,7 @@ final class TasksTest extends TestCase {
         self::assertFalse($tasks->has($aFile));
         self::assertFalse($tasks->has(Hook::File));
         self::assertFalse($tasks->has($bFile));
-        self::assertFalse($tasks->has(Hook::BeforeProcessing));
+        self::assertFalse($tasks->has(Hook::Before));
 
         $tasks->add(new TasksTest__FileTask());
         $tasks->add(TasksTest__HookTask::class);
@@ -40,7 +40,7 @@ final class TasksTest extends TestCase {
         self::assertTrue($tasks->has($aFile));
         self::assertTrue($tasks->has(Hook::File));
         self::assertTrue($tasks->has($bFile));
-        self::assertTrue($tasks->has(Hook::BeforeProcessing));
+        self::assertTrue($tasks->has(Hook::Before));
     }
 
     public function testGet(): void {
@@ -93,7 +93,7 @@ final class TasksTest extends TestCase {
             [
                 $taskC,
             ],
-            iterator_to_array($tasks->get(Hook::BeforeProcessing), false),
+            iterator_to_array($tasks->get(Hook::Before), false),
         );
     }
 
@@ -214,7 +214,7 @@ class TasksTest__Task implements FileTask, HookTask {
      */
     #[Override]
     public static function hook(): array|Hook {
-        return [Hook::BeforeProcessing];
+        return [Hook::Before];
     }
 
     /**

@@ -820,7 +820,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function hook(): array {
-                return [Hook::BeforeProcessing];
+                return [Hook::Before];
             }
 
             #[Override]
@@ -843,7 +843,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessBegin($input->directory(), $input->directory(), [], []),
-                new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
+                new HookBegin(Hook::Before, $input->file('excluded.txt')),
                 new TaskBegin($task::class),
                 new DependencyBegin($input->file('c.txt')),
                 new DependencyEnd(DependencyResult::Resolved),
@@ -865,7 +865,7 @@ final class ProcessorTest extends TestCase {
         $task      = new class() implements HookTask {
             #[Override]
             public static function hook(): Hook {
-                return Hook::AfterProcessing;
+                return Hook::After;
             }
 
             #[Override]
@@ -889,7 +889,7 @@ final class ProcessorTest extends TestCase {
                 new ProcessBegin($input->directory(), $input->directory(), [], []),
                 new FileBegin($input->file('excluded.txt')),
                 new FileEnd(FileResult::Skipped),
-                new HookBegin(Hook::AfterProcessing, $input->file('excluded.txt')),
+                new HookBegin(Hook::After, $input->file('excluded.txt')),
                 new TaskBegin($task::class),
                 new DependencyBegin($input->file('c.txt')),
                 new DependencyEnd(DependencyResult::Resolved),
@@ -909,7 +909,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function hook(): array {
-                return [Hook::AfterProcessing];
+                return [Hook::After];
             }
 
             #[Override]
@@ -939,7 +939,7 @@ final class ProcessorTest extends TestCase {
              */
             #[Override]
             public static function hook(): array {
-                return [Hook::BeforeProcessing];
+                return [Hook::Before];
             }
 
             #[Override]
@@ -969,7 +969,7 @@ final class ProcessorTest extends TestCase {
         self::assertEquals(
             [
                 new ProcessBegin($input->directory(), $input->directory(), [], []),
-                new HookBegin(Hook::BeforeProcessing, $input->file('excluded.txt')),
+                new HookBegin(Hook::Before, $input->file('excluded.txt')),
                 new TaskBegin($task::class),
                 new TaskEnd(TaskResult::Error),
                 new HookEnd(HookResult::Error),
