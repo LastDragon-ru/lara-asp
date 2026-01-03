@@ -36,14 +36,24 @@ class Iterator implements IteratorAggregate {
     public function getIterator(): Traversable {
         foreach ($this->files as $path) {
             yield $this->fs->get($path);
+            yield from $this->queue();
         }
 
-        while (count($this->queue) > 0) {
-            yield array_pop($this->queue);
-        }
+        yield from $this->queue();
     }
 
     public function push(File $file): void {
         $this->queue[] = $file;
+    }
+
+    /**
+     * @return iterable<mixed, File>
+     */
+    private function queue(): iterable {
+        while (count($this->queue) > 0) {
+            yield array_pop($this->queue);
+        }
+
+        yield from [];
     }
 }
