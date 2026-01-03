@@ -20,7 +20,6 @@ use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use WeakMap;
-use WeakReference;
 
 use function array_last;
 use function array_pop;
@@ -36,10 +35,7 @@ use function strlen;
  * @property-read DirectoryPath $directory
  */
 class FileSystem {
-    /**
-     * @var array<string, WeakReference<File>>
-     */
-    private array $cache = [];
+    private Cache $cache;
     /**
      * @var array<int, File>
      */
@@ -78,34 +74,37 @@ class FileSystem {
             );
         }
 
+        $this->cache   = new Cache(50);
         $this->content = new WeakMap();
     }
 
     public function exists(FilePath $path): bool {
-        $path = $this->path($path);
-        $file = $this->cached($path);
-        $is   = $file !== null || $this->adapter->exists($path);
+        $path   = $this->path($path);
+        $file   = $this->cache[$path];
+        $file   = $file === null && $this->adapter->exists($path)
+            ? $this->make($path) // cache to prevent another `exists()` call
+            : $file;
+        $exists = $file !== null;
 
-        return $is;
+        return $exists;
     }
 
     public function get(FilePath $path): File {
         // Cached?
         $path = $this->path($path);
-        $file = $this->cached($path);
+        $file = $this->cache[$path];
 
         if ($file instanceof File) {
             return $file;
         }
 
-        // Create
-        if ($this->adapter->exists($path)) {
-            $file = new FileImpl($this, $path);
-        } else {
+        // Exists?
+        if (!$this->adapter->exists($path)) {
             throw new PathNotFound($path);
         }
 
-        return $this->cache($file);
+        // Create
+        return $this->make($path);
     }
 
     /**
@@ -132,12 +131,12 @@ class FileSystem {
         foreach ($iterator as $path) {
             $path = $this->path($directory->resolve($path));
 
-            if ($this->cached($path) === null) {
+            if (!isset($this->cache[$path])) {
                 /**
                  * We are expecting all files are exist, so add them into the
                  * cache to avoid another {@see Adapter::exists()} call.
                  */
-                $this->cache(new FileImpl($this, $path));
+                $this->cache[$path] = new FileImpl($this, $path);
             }
 
             yield $path;
@@ -192,7 +191,7 @@ class FileSystem {
         // File?
         $file ??= $this->exists($path) ? $this->get($path) : null;
         $exists = $file !== null;
-        $file ??= $this->cache(new FileImpl($this, $path));
+        $file ??= $this->make($path);
 
         // Changed?
         if (($this->content[$file] ?? null) === $content) {
@@ -225,17 +224,8 @@ class FileSystem {
             $this->save(array_pop($this->queue));
         }
 
-        // Top?
-        if (count($this->level) > 0) {
-            return;
-        }
-
         // Cleanup
-        foreach ($this->cache as $path => $reference) {
-            if ($reference->get() === null) {
-                unset($this->cache[$path]);
-            }
-        }
+        $this->cache->cleanup();
     }
 
     protected function queue(File $file): void {
@@ -272,31 +262,16 @@ class FileSystem {
      *
      * @param T $path
      *
-     * @return T
+     * @return new<T>
      */
-    protected function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
+    protected function path(DirectoryPath|FilePath $path): DirectoryPath|FilePath {
+        $path = $path->normalized();
+
         if (!str_starts_with($path->path, $this->input->path) && !str_starts_with($path->path, $this->output->path)) {
             throw new PathUnavailable($path);
         }
 
         return $path;
-    }
-
-    /**
-     * @template T of File
-     *
-     * @param T $object
-     *
-     * @return T
-     */
-    private function cache(File $object): File {
-        $this->cache[$object->path->normalized()->path] = WeakReference::create($object);
-
-        return $object;
-    }
-
-    private function cached(FilePath $path): ?File {
-        return ($this->cache[$path->normalized()->path] ?? null)?->get();
     }
 
     /**
@@ -314,5 +289,12 @@ class FileSystem {
             'directory' => array_last($this->level) ?? $this->input,
             default     => null,
         };
+    }
+
+    protected function make(FilePath $path): File {
+        $file               = new FileImpl($this, $path);
+        $this->cache[$path] = $file;
+
+        return $file;
     }
 }

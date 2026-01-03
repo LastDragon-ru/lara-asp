@@ -412,8 +412,8 @@ final class FileSystemTest extends TestCase {
         $input      = new DirectoryPath('/input');
         $fs         = new class($adapter, $dispatcher, $input, $output) extends FileSystem {
             #[Override]
-            public function path(DirectoryPath|FilePath $path, ?DirectoryPath $base = null): DirectoryPath|FilePath {
-                return parent::path($path, $base);
+            public function path(DirectoryPath|FilePath $path): DirectoryPath|FilePath {
+                return parent::path($path);
             }
         };
 
@@ -449,8 +449,8 @@ final class FileSystemTest extends TestCase {
                 new FilePath('/input/file.txt'),
             ],
             'inside output' => [
-                new DirectoryPath('/output/file.txt'),
-                new DirectoryPath('/output/file.txt'),
+                new DirectoryPath('/output/directory/'),
+                new DirectoryPath('/output/directory'),
             ],
         ];
     }
