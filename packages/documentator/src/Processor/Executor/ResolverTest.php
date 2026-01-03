@@ -546,7 +546,7 @@ final class ResolverTest extends TestCase {
             ->andReturn($directory);
 
         self::assertNotEmpty($directory->path);
-        self::assertSame($resolved, $resolver->search($include, $exclude, $directory->path));
+        self::assertSame($resolved, $resolver->search($include, $exclude, $directory));
     }
 
     public function testSearchDirectoryPath(): void {
@@ -585,11 +585,8 @@ final class ResolverTest extends TestCase {
         self::assertSame($resolved, $resolver->search($include, $exclude, $directory));
     }
 
-    /**
-     * @param DirectoryPath|FilePath|non-empty-string $path
-     */
     #[DataProvider('dataProviderPath')]
-    public function testPath(DirectoryPath|FilePath $expected, DirectoryPath|FilePath|string $path): void {
+    public function testPath(DirectoryPath|FilePath $expected, DirectoryPath|FilePath $path): void {
         $run        = (new ResolverTest__Invokable())(...);
         $queue      = (new ResolverTest__Invokable())(...);
         $container  = Mockery::mock(ContainerResolver::class);
@@ -597,7 +594,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = new class($container, $dispatcher, $filesystem, $run, $queue) extends Resolver {
             #[Override]
-            public function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
+            public function path(DirectoryPath|FilePath $path): DirectoryPath|FilePath {
                 return parent::path($path);
             }
 
@@ -639,20 +636,14 @@ final class ResolverTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{DirectoryPath|FilePath, DirectoryPath|FilePath|non-empty-string}>
+     * @return array<string, array{DirectoryPath|FilePath, DirectoryPath|FilePath}>
      */
     public static function dataProviderPath(): array {
         return [
-            'relative + directory' => [new DirectoryPath('/directory/relative'), new DirectoryPath('relative')],
-            'relative + file'      => [new FilePath('/directory/file.txt'), new FilePath('file.txt')],
-            'relative + string'    => [new FilePath('/directory/file.txt'), 'file.txt'],
-            'output + directory'   => [new DirectoryPath('/output/relative'), new DirectoryPath('~output/relative')],
-            'output + file'        => [new FilePath('/output/file.txt'), new FilePath('~output/file.txt')],
-            'output + string'      => [new FilePath('/output/file.txt'), '~output/file.txt'],
-            'input + directory'    => [new DirectoryPath('/input/relative'), new DirectoryPath('~input/relative')],
-            'input + file'         => [new FilePath('/input/file.txt'), new FilePath('~input/file.txt')],
-            'input + string'       => [new FilePath('/input/file.txt'), '~input/file.txt'],
-            'absolute'             => [new FilePath('/file.txt'), '/file.txt'],
+            'relative directory' => [new DirectoryPath('/directory/relative'), new DirectoryPath('relative')],
+            'relative file'      => [new FilePath('/directory/file.txt'), new FilePath('file.txt')],
+            'absolute directory' => [new DirectoryPath('/absolute'), new DirectoryPath('/absolute')],
+            'absolute file'      => [new FilePath('/file.txt'), new FilePath('/file.txt')],
         ];
     }
     //</editor-fold>

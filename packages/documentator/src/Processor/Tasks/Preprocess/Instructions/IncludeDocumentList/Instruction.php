@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Data as TemplateData;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeDocumentList\Template\Document as TemplateDocument;
 use LastDragon_ru\LaraASP\Documentator\Utils\Sorter;
+use LastDragon_ru\Path\DirectoryPath;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Node\Node;
 use Override;
@@ -60,7 +61,7 @@ readonly class Instruction implements InstructionContract {
         $base      = $context->file->path;
         $include   = array_values(array_filter($parameters->include, static fn ($s) => $s !== ''));
         $exclude   = array_values(array_filter($parameters->exclude, static fn ($s) => $s !== ''));
-        $iterator  = $context->resolver->search($include, $exclude, $parameters->target);
+        $iterator  = $context->resolver->search($include, $exclude, new DirectoryPath($parameters->target));
         $documents = [];
 
         foreach ($iterator as $path) {

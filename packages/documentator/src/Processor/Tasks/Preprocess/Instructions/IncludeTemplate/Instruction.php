@@ -10,6 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateDataMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesMissed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeTemplate\Exceptions\TemplateVariablesUnused;
+use LastDragon_ru\Path\FilePath;
 use Override;
 
 use function array_diff;
@@ -59,7 +60,7 @@ readonly class Instruction implements InstructionContract {
         $used    = [];
         $known   = [];
         $count   = 0;
-        $target  = $context->resolver->get($parameters->target);
+        $target  = $context->resolver->get(new FilePath($parameters->target));
         $content = $target->content;
 
         do {

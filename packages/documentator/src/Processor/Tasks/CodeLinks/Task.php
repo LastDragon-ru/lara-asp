@@ -73,7 +73,7 @@ class Task implements FileTask {
     #[Override]
     public function __invoke(Resolver $resolver, File $file): void {
         // Composer?
-        $composer = $resolver->find('~input/composer.json');
+        $composer = $resolver->find($resolver->input->file('composer.json'));
         $package  = $composer !== null ? $resolver->cast($composer, Composer::class) : null;
 
         if (!($package instanceof Package)) {
