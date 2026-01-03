@@ -824,8 +824,8 @@ final class ProcessorTest extends TestCase {
 
             #[Override]
             public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
-                $resolver->get('c.txt');
-                $resolver->queue('c.htm');
+                $resolver->get(new FilePath('c.txt'));
+                $resolver->queue(new FilePath('c.htm'));
             }
         };
         $processor = new Processor(
@@ -869,7 +869,7 @@ final class ProcessorTest extends TestCase {
 
             #[Override]
             public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
-                $resolver->get('c.txt');
+                $resolver->get(new FilePath('c.txt'));
             }
         };
         $processor = new Processor(
@@ -1015,7 +1015,7 @@ class ProcessorTest__Task implements FileTask {
         $dependencies = $this->dependencies[$file->name] ?? $this->dependencies['*'] ?? [];
 
         foreach ($dependencies as $dependency) {
-            $resolved[$dependency] = $resolver->get($dependency);
+            $resolved[$dependency] = $resolver->get(new FilePath($dependency));
         }
 
         $this->processed[] = [

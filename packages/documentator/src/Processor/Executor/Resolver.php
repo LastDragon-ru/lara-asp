@@ -18,8 +18,6 @@ use LastDragon_ru\Path\FilePath;
 use Override;
 use WeakMap;
 
-use function is_string;
-
 /**
  * @internal
  */
@@ -32,9 +30,6 @@ class Resolver implements Contract {
      * @var WeakMap<File, array<class-string<Cast<object>>, object>>
      */
     private WeakMap $files;
-
-    private readonly DirectoryPath $iHome;
-    private readonly DirectoryPath $oHome;
 
     public function __construct(
         private readonly ContainerResolver $container,
@@ -51,12 +46,10 @@ class Resolver implements Contract {
     ) {
         $this->casts = [];
         $this->files = new WeakMap();
-        $this->iHome = (new DirectoryPath('~input'))->normalized();
-        $this->oHome = (new DirectoryPath('~output'))->normalized();
     }
 
     #[Override]
-    public function get(FilePath|string $path): File {
+    public function get(FilePath $path): File {
         $path   = $this->path($path);
         $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
 
@@ -75,11 +68,8 @@ class Resolver implements Contract {
         return $file;
     }
 
-    /**
-     * @param FilePath|non-empty-string $path
-     */
     #[Override]
-    public function find(FilePath|string $path): ?File {
+    public function find(FilePath $path): ?File {
         $path   = $this->path($path);
         $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
 
@@ -105,7 +95,7 @@ class Resolver implements Contract {
     }
 
     #[Override]
-    public function cast(File|FilePath|string $path, string $cast): object {
+    public function cast(File|FilePath $path, string $cast): object {
         $file = $path instanceof File ? $path : $this->get($path);
 
         if (!isset($this->files[$file][$cast])) {
@@ -118,7 +108,7 @@ class Resolver implements Contract {
     }
 
     #[Override]
-    public function save(File|FilePath|string $path, string $content): void {
+    public function save(File|FilePath $path, string $content): void {
         $file   = $path instanceof File ? $path : null;
         $path   = $this->path($path instanceof File ? $path->path : $path);
         $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Saved);
@@ -142,8 +132,8 @@ class Resolver implements Contract {
      * @inheritDoc
      */
     #[Override]
-    public function queue(FilePath|iterable|string $path): void {
-        $iterator = $path instanceof FilePath || is_string($path) ? [$path] : $path;
+    public function queue(FilePath|iterable $path): void {
+        $iterator = $path instanceof FilePath ? [$path] : $path;
 
         foreach ($iterator as $file) {
             $filepath = $this->path($file);
@@ -170,11 +160,10 @@ class Resolver implements Contract {
     public function search(
         array|string $include,
         array|string $exclude,
-        DirectoryPath|string|null $directory = null,
+        ?DirectoryPath $directory = null,
     ): iterable {
         $path = match (true) {
             $directory instanceof DirectoryPath => $directory,
-            is_string($directory)               => new DirectoryPath($directory),
             $directory === null                 => new DirectoryPath('.'),
         };
         $path  = $this->path($path);
@@ -203,21 +192,16 @@ class Resolver implements Contract {
     }
 
     /**
-     * @template T of DirectoryPath|FilePath|non-empty-string
+     * @template T of DirectoryPath|FilePath
      *
      * @param T $path
      *
-     * @return (T is string ? FilePath : new<T>)
+     * @return new<T>
      */
-    protected function path(DirectoryPath|FilePath|string $path): DirectoryPath|FilePath {
-        $path = is_string($path) ? new FilePath($path) : $path;
+    protected function path(DirectoryPath|FilePath $path): DirectoryPath|FilePath {
         $path = match (true) {
-            $path->parts[0] === $this->oHome->parts[0] => $this->output->resolve(
-                $this->oHome->relative($path) ?? $path,
-            ),
-            $path->parts[0] === $this->iHome->parts[0] => $this->input->resolve($this->iHome->relative($path) ?? $path),
-            $path->relative                            => $this->directory->resolve($path),
-            default                                    => $path->normalized(),
+            $path->relative => $this->directory->resolve($path),
+            default         => $path->normalized(),
         };
 
         return $path;

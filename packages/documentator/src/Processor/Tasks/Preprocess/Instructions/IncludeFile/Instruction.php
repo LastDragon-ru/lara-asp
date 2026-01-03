@@ -7,6 +7,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Markdown;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
+use LastDragon_ru\Path\FilePath;
 use Override;
 
 /**
@@ -36,7 +37,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        $target  = $context->resolver->get($parameters->target);
+        $target  = $context->resolver->get(new FilePath($parameters->target));
         $content = $target->extension !== 'md'
             ? $target->content
             : $context->resolver->cast($target, Markdown::class);

@@ -14,6 +14,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Para
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Contracts\Runner;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Instructions\IncludeExample\Exceptions\ExampleFailed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Utils;
+use LastDragon_ru\Path\FilePath;
 use Override;
 use Throwable;
 
@@ -64,7 +65,7 @@ class Instruction implements InstructionContract {
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
         // Content
-        $target   = $context->resolver->get($parameters->target);
+        $target   = $context->resolver->get(new FilePath($parameters->target));
         $language = $this->getLanguage($context, $target, $parameters);
         $content  = mb_trim($target->content);
         $content  = <<<CODE

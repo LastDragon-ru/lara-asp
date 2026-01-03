@@ -9,6 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Casts\Php\Parsed;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction as InstructionContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters as InstructionParameters;
+use LastDragon_ru\Path\FilePath;
 use Override;
 
 use function array_first;
@@ -42,7 +43,7 @@ class Instruction implements InstructionContract {
 
     #[Override]
     public function __invoke(Context $context, InstructionParameters $parameters): Document|string {
-        $target   = $context->resolver->get($parameters->target);
+        $target   = $context->resolver->get(new FilePath($parameters->target));
         $document = array_first($context->resolver->cast($target, Parsed::class)->classes)?->markdown;
         $result   = match (true) {
             $parameters->summary && $parameters->description => $document,
