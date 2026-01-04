@@ -31,10 +31,14 @@ final class SymfonyFileSystemTest extends TestCase {
         self::assertSame(
             [
                 'a.txt',
+                'a/',
                 'a/aa.txt',
+                'a/aa/',
                 'a/aa/aaa.txt',
                 'b.txt',
+                'b/',
                 'b/bb.txt',
+                'b/bb/',
                 'b/bb/bbb.txt',
             ],
             $this->asArray($path, $adapter->search($path)),
@@ -43,10 +47,12 @@ final class SymfonyFileSystemTest extends TestCase {
             [
                 'a.txt',
                 'b.txt',
+                'b/',
                 'b/bb.txt',
+                'b/bb/',
                 'b/bb/bbb.txt',
             ],
-            $this->asArray($path, $adapter->search($path, exclude: ['a/**/*.txt'])),
+            $this->asArray($path, $adapter->search($path, exclude: ['a/**/*.txt', 'a/**/', 'a/'])),
         );
         self::assertSame(
             [
@@ -74,6 +80,34 @@ final class SymfonyFileSystemTest extends TestCase {
                 'b/bb/bbb.txt',
             ],
             $this->asArray($path, $adapter->search($path, include: ['**/*.txt'], exclude: ['**/aa/*'])),
+        );
+        self::assertSame(
+            [
+                'a/aa.txt',
+                'a/aa/aaa.txt',
+            ],
+            $this->asArray($path, $adapter->search($path, include: ['a/**/*.txt'])),
+        );
+        self::assertSame(
+            [
+                'a/.a.txt',
+                'a/aa.txt',
+                'a/aa/aaa.txt',
+            ],
+            $this->asArray($path, $adapter->search($path, include: ['a/**/*.txt'], hidden: true)),
+        );
+        self::assertSame(
+            [
+                'b/bb/',
+            ],
+            $this->asArray($path, $adapter->search($path, include: ['b/*/'])),
+        );
+        self::assertSame(
+            [
+                'b/.b/',
+                'b/bb/',
+            ],
+            $this->asArray($path, $adapter->search($path, include: ['b/*/'], hidden: true)),
         );
     }
 

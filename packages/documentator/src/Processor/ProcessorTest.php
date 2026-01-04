@@ -1041,10 +1041,11 @@ class ProcessorTest__Adapter extends SymfonyFileSystem {
     #[Override]
     protected function getFinder(
         DirectoryPath $directory,
-        ?Closure $include = null,
-        ?Closure $exclude = null,
+        ?Closure $include,
+        ?Closure $exclude,
+        bool $hidden,
     ): Finder {
-        return parent::getFinder($directory, $include, $exclude)
+        return parent::getFinder($directory, $include, $exclude, $hidden)
             ->sortByName(true);
     }
 }

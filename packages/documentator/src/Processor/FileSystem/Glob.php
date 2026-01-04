@@ -21,8 +21,8 @@ readonly class Glob implements Matcher {
     /**
      * @param list<non-empty-string> $patterns
      */
-    public function __construct(array $patterns) {
-        $this->regex = $this->regex($patterns);
+    public function __construct(array $patterns, bool $hidden) {
+        $this->regex = $this->regex($patterns, $hidden);
     }
 
     #[Override]
@@ -37,8 +37,9 @@ readonly class Glob implements Matcher {
     /**
      * @param list<string> $patterns
      */
-    protected function regex(array $patterns): ?Regex {
+    protected function regex(array $patterns, bool $hidden): ?Regex {
         $options = new Options(
+            hidden   : $hidden,
             matchMode: MatchMode::Match,
             matchCase: true,
         );

@@ -97,17 +97,23 @@ final class FileSystemTest extends TestCase {
         $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
         $filesystem = $this->getFileSystem($input);
         $directory  = $input;
-        $map        = static function (FilePath $path) use ($directory): string {
+        $map        = static function (DirectoryPath|FilePath $path) use ($directory): string {
             return (string) $directory->relative($path);
         };
 
         self::assertEquals(
             [
+                'a/',
+                'a/a/',
                 'a/a.html',
                 'a/a.txt',
                 'a/a/aa.txt',
+                'a/b/',
                 'a/b/ab.txt',
+                'b/',
+                'b/a/',
                 'b/a/ba.txt',
+                'b/b/',
                 'b/b.html',
                 'b/b.txt',
                 'b/b/bb.txt',
@@ -135,13 +141,44 @@ final class FileSystemTest extends TestCase {
 
         self::assertEquals(
             [
+                'a/',
+                'a/a/',
                 'a/a.html',
+                'a/b/',
+                'b/',
+                'b/a/',
+                'b/b/',
                 'b/b.html',
                 'c.html',
             ],
             array_map(
                 $map,
                 iterator_to_array($filesystem->search($directory, exclude: ['*.txt', '**/**/*.txt']), false),
+            ),
+        );
+
+        self::assertEquals(
+            [
+                'a/.a.txt',
+                'a/a.txt',
+                'a/a/aa.txt',
+                'a/b/ab.txt',
+            ],
+            array_map(
+                $map,
+                iterator_to_array($filesystem->search($directory, include: ['a/**/*.txt'], hidden: true), false),
+            ),
+        );
+
+        self::assertEquals(
+            [
+                'b/.b/',
+                'b/a/',
+                'b/b/',
+            ],
+            array_map(
+                $map,
+                iterator_to_array($filesystem->search($directory, include: ['b/*/'], hidden: true), false),
             ),
         );
     }

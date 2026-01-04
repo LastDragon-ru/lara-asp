@@ -158,18 +158,15 @@ class Resolver implements Contract {
      */
     #[Override]
     public function search(
-        array|string $include,
-        array|string $exclude,
         ?DirectoryPath $directory = null,
+        array|string $include = [],
+        array|string $exclude = [],
+        bool $hidden = false,
     ): iterable {
-        $path = match (true) {
-            $directory instanceof DirectoryPath => $directory,
-            $directory === null                 => new DirectoryPath('.'),
-        };
-        $path  = $this->path($path);
-        $files = $this->fs->search($path, (array) $include, (array) $exclude);
+        $path  = $this->path($directory ?? new DirectoryPath('.'));
+        $found = $this->fs->search($path, (array) $include, (array) $exclude, $hidden);
 
-        return $files;
+        return $found;
     }
 
     /**

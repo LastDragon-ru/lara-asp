@@ -486,7 +486,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('search')
-            ->with($directory, $include, $exclude)
+            ->with($directory, $include, $exclude, false)
             ->once()
             ->andReturn($resolved);
 
@@ -504,7 +504,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($directory);
 
-        self::assertSame($resolved, $resolver->search($include, $exclude));
+        self::assertSame($resolved, $resolver->search(include: $include, exclude: $exclude));
     }
 
     public function testSearchString(): void {
@@ -527,7 +527,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('search')
-            ->with($directory, $include, $exclude)
+            ->with($directory, $include, $exclude, true)
             ->once()
             ->andReturn($resolved);
 
@@ -546,7 +546,7 @@ final class ResolverTest extends TestCase {
             ->andReturn($directory);
 
         self::assertNotEmpty($directory->path);
-        self::assertSame($resolved, $resolver->search($include, $exclude, $directory));
+        self::assertSame($resolved, $resolver->search($directory, $include, $exclude, true));
     }
 
     public function testSearchDirectoryPath(): void {
@@ -569,7 +569,7 @@ final class ResolverTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
             ->shouldReceive('search')
-            ->with($directory, $include, $exclude)
+            ->with($directory, $include, $exclude, false)
             ->once()
             ->andReturn($resolved);
 
@@ -582,7 +582,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturn($directory);
 
-        self::assertSame($resolved, $resolver->search($include, $exclude, $directory));
+        self::assertSame($resolved, $resolver->search($directory, $include, $exclude));
     }
 
     #[DataProvider('dataProviderPath')]

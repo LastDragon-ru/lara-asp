@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class GlobTest extends TestCase {
     public function testMatch(): void {
         // Prepare
-        $glob = new Glob(['*.txt', '*.md', '**/*.tmp']);
+        $glob = new Glob(['*.txt', '*.md', '**/*.tmp'], false);
 
         // Strings
         self::assertFalse($glob->match('/file.txt'));
@@ -30,5 +30,9 @@ final class GlobTest extends TestCase {
         // Path
         self::assertTrue($glob->match(new FilePath('file.md')));
         self::assertTrue($glob->match(new DirectoryPath('dir.md')));
+
+        // Hidden
+        self::assertFalse((new Glob(['**/*.tmp'], false))->match('/a/.file.tmp'));
+        self::assertTrue((new Glob(['**/*.tmp'], true))->match('/a/.file.tmp'));
     }
 }
