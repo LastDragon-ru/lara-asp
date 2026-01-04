@@ -25,6 +25,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\TaskNotInvokable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\LaraASP\Documentator\Processor\Hook;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks;
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 
 use function array_last;
@@ -49,7 +50,7 @@ class Executor {
     private array $stack = [];
 
     /**
-     * @param iterable<mixed, FilePath> $files
+     * @param iterable<mixed, DirectoryPath|FilePath> $files
      */
     public function __construct(
         private readonly ContainerResolver $container,

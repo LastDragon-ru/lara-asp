@@ -17,8 +17,9 @@ readonly class SymfonyGlob extends Glob {
     public function __construct(
         protected SymfonyPathMap $map,
         array $patterns,
+        bool $hidden,
     ) {
-        parent::__construct($patterns);
+        parent::__construct($patterns, $hidden);
     }
 
     #[Override]

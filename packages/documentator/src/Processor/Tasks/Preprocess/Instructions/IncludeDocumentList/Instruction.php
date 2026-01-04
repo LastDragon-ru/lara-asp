@@ -61,12 +61,12 @@ readonly class Instruction implements InstructionContract {
         $base      = $context->file->path;
         $include   = array_values(array_filter($parameters->include, static fn ($s) => $s !== ''));
         $exclude   = array_values(array_filter($parameters->exclude, static fn ($s) => $s !== ''));
-        $iterator  = $context->resolver->search($include, $exclude, new DirectoryPath($parameters->target));
+        $iterator  = $context->resolver->search(new DirectoryPath($parameters->target), $include, $exclude);
         $documents = [];
 
         foreach ($iterator as $path) {
             // Same?
-            if ($base->equals($path)) {
+            if ($path instanceof DirectoryPath || $base->equals($path)) {
                 continue;
             }
 

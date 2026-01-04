@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 use IteratorAggregate;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
+use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
 use Traversable;
@@ -25,7 +26,7 @@ class Iterator implements IteratorAggregate {
     public function __construct(
         private readonly FileSystem $fs,
         /**
-         * @var iterable<mixed, FilePath>
+         * @var iterable<mixed, DirectoryPath|FilePath>
          */
         private readonly iterable $files,
     ) {
@@ -35,6 +36,10 @@ class Iterator implements IteratorAggregate {
     #[Override]
     public function getIterator(): Traversable {
         foreach ($this->files as $path) {
+            if ($path instanceof DirectoryPath) {
+                continue;
+            }
+
             yield $this->fs->get($path);
             yield from $this->queue();
         }

@@ -111,12 +111,13 @@ class FileSystem {
      * @param list<non-empty-string> $exclude
      * @param list<non-empty-string> $include
      *
-     * @return iterable<mixed, FilePath>
+     * @return iterable<mixed, DirectoryPath|FilePath>
      */
     public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
+        bool $hidden = false,
     ): iterable {
         // Exist?
         $directory = $this->path($directory);
@@ -126,12 +127,12 @@ class FileSystem {
         }
 
         // Search
-        $iterator = $this->adapter->search($directory, $include, $exclude);
+        $iterator = $this->adapter->search($directory, $include, $exclude, $hidden);
 
         foreach ($iterator as $path) {
             $path = $this->path($directory->resolve($path));
 
-            if (!isset($this->cache[$path])) {
+            if ($path instanceof FilePath && !isset($this->cache[$path])) {
                 /**
                  * We are expecting all files are exist, so add them into the
                  * cache to avoid another {@see Adapter::exists()} call.

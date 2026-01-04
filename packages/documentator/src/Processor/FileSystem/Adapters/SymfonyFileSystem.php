@@ -36,18 +36,15 @@ class SymfonyFileSystem implements Adapter {
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
+        bool $hidden = false,
     ): iterable {
         $map      = new SymfonyPathMap();
-        $include  = $include !== [] ? (new SymfonyGlob($map, $include))->match(...) : null;
-        $exclude  = $exclude !== [] ? (new SymfonyGlob($map, $exclude))->mismatch(...) : null;
-        $iterator = $this->getFinder($directory, $include, $exclude)->files();
+        $include  = $include !== [] ? (new SymfonyGlob($map, $include, $hidden))->match(...) : null;
+        $exclude  = $exclude !== [] ? (new SymfonyGlob($map, $exclude, $hidden))->mismatch(...) : null;
+        $iterator = $this->getFinder($directory, $include, $exclude, $hidden);
 
         foreach ($iterator as $file) {
-            $path = $map->get($file);
-
-            if ($path instanceof FilePath) {
-                yield $path;
-            }
+            yield $map->get($file);
         }
 
         yield from [];
@@ -69,14 +66,13 @@ class SymfonyFileSystem implements Adapter {
      */
     protected function getFinder(
         DirectoryPath $directory,
-        ?Closure $include = null,
-        ?Closure $exclude = null,
+        ?Closure $include,
+        ?Closure $exclude,
+        bool $hidden,
     ): Finder {
         $finder = Finder::create()
-            ->ignoreVCSIgnored(true)
-            ->exclude('node_modules')
-            ->exclude('vendor-bin')
-            ->exclude('vendor')
+            ->ignoreVCSIgnored($hidden === false)
+            ->ignoreDotFiles($hidden === false)
             ->in((string) $directory);
 
         if ($include !== null) {

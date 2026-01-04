@@ -14,9 +14,9 @@ final class SymfonyGlobTest extends TestCase {
     public function testMatch(): void {
         // Prepare
         $map  = new SymfonyPathMap();
-        $glob = new SymfonyGlob($map, ['*.txt', '*.md', '**/*.tmp']);
+        $glob = new SymfonyGlob($map, ['*.txt', '*.md', '**/*.tmp'], false);
 
-        // Strings
+        // Spl
         self::assertFalse($glob->match(new SplFileInfo('$file', '$path', '/file.txt')));
         self::assertTrue($glob->match(new SplFileInfo('$file', '$path', 'file.md')));
         self::assertFalse($glob->match(new SplFileInfo('$file', '$path', 'file.php')));
@@ -26,5 +26,11 @@ final class SymfonyGlobTest extends TestCase {
         self::assertTrue($glob->match(new SplFileInfo('$file', '$path', '/a/file.tmp')));
         self::assertTrue($glob->match(new SplFileInfo('$file', '$path', 'a/b/file.tmp')));
         self::assertTrue($glob->match(new SplFileInfo('$file', '$path', '/a/b/file.tmp')));
+
+        // Hidden
+        $file = new SplFileInfo('$file', '$path', '/a/b/.file.tmp');
+
+        self::assertFalse((new SymfonyGlob($map, ['**/*.tmp'], false))->match($file));
+        self::assertTrue((new SymfonyGlob($map, ['**/*.tmp'], true))->match($file));
     }
 }

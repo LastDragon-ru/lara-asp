@@ -12,12 +12,13 @@ interface Adapter {
      * @param list<non-empty-string> $exclude globs
      * @param list<non-empty-string> $include globs
      *
-     * @return iterable<mixed, FilePath>
+     * @return iterable<mixed, DirectoryPath|FilePath>
      */
     public function search(
         DirectoryPath $directory,
         array $include = [],
         array $exclude = [],
+        bool $hidden = false,
     ): iterable;
 
     public function read(FilePath $path): string;

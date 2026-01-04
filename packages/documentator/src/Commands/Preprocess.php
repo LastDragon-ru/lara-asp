@@ -32,6 +32,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use UnitEnum;
 
 use function array_filter;
+use function array_merge;
 use function array_values;
 use function getcwd;
 use function gettype;
@@ -93,6 +94,7 @@ class Preprocess extends Command {
         $path      = new DirectoryPath(Cast::toString($this->argument('path') ?? $cwd));
         $skip      = array_filter((array) $this->option('exclude'), static fn ($v) => is_string($v) && $v !== '');
         $skip      = array_values($skip);
+        $skip      = array_merge($skip, ['node_modules/', 'vendor-bin/', 'vendor/']);
         $output    = new Output($this->output);
         $processor = $this->processor();
 

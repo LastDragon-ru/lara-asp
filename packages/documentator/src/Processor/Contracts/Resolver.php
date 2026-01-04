@@ -53,11 +53,12 @@ interface Resolver {
      * @param list<non-empty-string>|non-empty-string $include Glob(s) to include.
      * @param list<non-empty-string>|non-empty-string $exclude Glob(s) to exclude.
      *
-     * @return iterable<mixed, FilePath>
+     * @return iterable<mixed, DirectoryPath|FilePath>
      */
     public function search(
-        array|string $include,
-        array|string $exclude,
         ?DirectoryPath $directory = null,
+        array|string $include = [],
+        array|string $exclude = [],
+        bool $hidden = false,
     ): iterable;
 }
