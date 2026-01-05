@@ -10,8 +10,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as Contract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
@@ -65,8 +64,7 @@ final class ResolverTest extends TestCase {
         self::assertSame($resolved, $resolver->get($filepath));
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::Resolved),
+                new Dependency($filepath, DependencyResult::Found),
             ],
             $dispatcher->events,
         );
@@ -110,8 +108,7 @@ final class ResolverTest extends TestCase {
         } finally {
             self::assertEquals(
                 [
-                    new DependencyBegin($filepath),
-                    new DependencyEnd(DependencyResult::Error),
+                    new Dependency($filepath, DependencyResult::Found),
                 ],
                 $dispatcher->events,
             );
@@ -158,8 +155,7 @@ final class ResolverTest extends TestCase {
         self::assertSame($resolved, $resolver->find($filepath));
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::Resolved),
+                new Dependency($filepath, DependencyResult::Found),
             ],
             $dispatcher->events,
         );
@@ -198,8 +194,7 @@ final class ResolverTest extends TestCase {
         self::assertNull($resolver->find($filepath));
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::NotFound),
+                new Dependency($filepath, DependencyResult::NotFound),
             ],
             $dispatcher->events,
         );
@@ -248,8 +243,7 @@ final class ResolverTest extends TestCase {
         } finally {
             self::assertEquals(
                 [
-                    new DependencyBegin($filepath),
-                    new DependencyEnd(DependencyResult::Error),
+                    new Dependency($filepath, DependencyResult::Found),
                 ],
                 $dispatcher->events,
             );
@@ -285,8 +279,7 @@ final class ResolverTest extends TestCase {
 
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::Saved),
+                new Dependency($filepath, DependencyResult::Saved),
             ],
             $dispatcher->events,
         );
@@ -322,8 +315,7 @@ final class ResolverTest extends TestCase {
 
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::Saved),
+                new Dependency($filepath, DependencyResult::Saved),
             ],
             $dispatcher->events,
         );
@@ -357,8 +349,7 @@ final class ResolverTest extends TestCase {
         self::assertNotSame($value, $resolver->cast($file, ResolverTest__Cast::class));
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::Saved),
+                new Dependency($filepath, DependencyResult::Saved),
             ],
             $dispatcher->events,
         );
@@ -398,8 +389,7 @@ final class ResolverTest extends TestCase {
 
         self::assertEquals(
             [
-                new DependencyBegin($filepath),
-                new DependencyEnd(DependencyResult::Queued),
+                new Dependency($filepath, DependencyResult::Queued),
             ],
             $dispatcher->events,
         );
@@ -457,10 +447,8 @@ final class ResolverTest extends TestCase {
 
         self::assertEquals(
             [
-                new DependencyBegin($aPath),
-                new DependencyEnd(DependencyResult::Queued),
-                new DependencyBegin($bPath),
-                new DependencyEnd(DependencyResult::Queued),
+                new Dependency($aPath, DependencyResult::Queued),
+                new Dependency($bPath, DependencyResult::Queued),
             ],
             $dispatcher->events,
         );

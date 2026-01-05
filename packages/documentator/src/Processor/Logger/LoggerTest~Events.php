@@ -1,8 +1,7 @@
 <?php declare(strict_types = 1);
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
@@ -78,10 +77,11 @@ $events = [
     ],
     [
         1767258561.265006,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/README.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -115,10 +115,11 @@ $events = [
     ],
     [
         1767258561.649566,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/docs/Shared/Installation.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -164,16 +165,11 @@ $events = [
     ],
     [
         1767258561.672146,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258561.676181,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -204,17 +200,12 @@ $events = [
         ),
     ],
     [
-        1767258561.706008,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258561.809199,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@searchBy.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -248,16 +239,11 @@ $events = [
     ],
     [
         1767258562.920702,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/src/SearchBy/Directives/DirectiveTest/Example.schema.graphql',
             ),
-        ),
-    ],
-    [
-        1767258562.923673,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -277,16 +263,11 @@ $events = [
     ],
     [
         1767258562.996843,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@searchByConfigOperators.php',
             ),
-        ),
-    ],
-    [
-        1767258562.998419,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -318,16 +299,11 @@ $events = [
     ],
     [
         1767258563.042488,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.042563,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -358,17 +334,12 @@ $events = [
         ),
     ],
     [
-        1767258563.08586,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258563.180834,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@sortBy.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -402,16 +373,11 @@ $events = [
     ],
     [
         1767258563.203856,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/src/SortBy/Directives/DirectiveTest/Example.schema.graphql',
             ),
-        ),
-    ],
-    [
-        1767258563.207031,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -431,16 +397,11 @@ $events = [
     ],
     [
         1767258563.235878,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@sortByConfigOrderByRandom.php',
             ),
-        ),
-    ],
-    [
-        1767258563.237474,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -460,16 +421,11 @@ $events = [
     ],
     [
         1767258563.239005,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@sortByConfigNullsSingleValue.php',
             ),
-        ),
-    ],
-    [
-        1767258563.240614,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -489,16 +445,11 @@ $events = [
     ],
     [
         1767258563.242408,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@sortByConfigNullsArrayValue.php',
             ),
-        ),
-    ],
-    [
-        1767258563.243856,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -530,16 +481,11 @@ $events = [
     ],
     [
         1767258563.247622,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.247675,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -555,17 +501,12 @@ $events = [
         ),
     ],
     [
-        1767258563.257803,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258563.26187,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@stream.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -611,16 +552,11 @@ $events = [
     ],
     [
         1767258563.333769,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.33383,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -636,17 +572,12 @@ $events = [
         ),
     ],
     [
-        1767258563.340056,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258563.370123,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Directives/@type.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -692,16 +623,11 @@ $events = [
     ],
     [
         1767258563.402072,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.402107,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -717,17 +643,12 @@ $events = [
         ),
     ],
     [
-        1767258563.403871,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258563.43315,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Scalars/JsonString.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -773,16 +694,11 @@ $events = [
     ],
     [
         1767258563.43649,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.436521,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -798,23 +714,12 @@ $events = [
         ),
     ],
     [
-        1767258563.437137,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258563.438173,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Examples/BuilderInfoProvider.php',
             ),
-        ),
-    ],
-    [
-        1767258563.441253,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -834,16 +739,11 @@ $events = [
     ],
     [
         1767258563.443634,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/docs/Examples/Printer.php',
             ),
-        ),
-    ],
-    [
-        1767258563.44557,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -863,10 +763,11 @@ $events = [
     ],
     [
         1767258563.806571,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/docs/Shared/Contributing.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -912,16 +813,11 @@ $events = [
     ],
     [
         1767258563.812382,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.812453,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -934,12 +830,6 @@ $events = [
         1767258563.812508,
         new FileEnd(
             FileResult::Success,
-        ),
-    ],
-    [
-        1767258563.812966,
-        new DependencyEnd(
-            DependencyResult::Resolved,
         ),
     ],
     [
@@ -956,30 +846,20 @@ $events = [
     ],
     [
         1767258563.817945,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258563.817979,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
         1767258563.872301,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/packages/graphql/src/Builder/Config.php',
             ),
-        ),
-    ],
-    [
-        1767258563.872403,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -1010,17 +890,12 @@ $events = [
         ),
     ],
     [
-        1767258563.997286,
-        new DependencyEnd(
-            DependencyResult::Resolved,
-        ),
-    ],
-    [
         1767258564.599376,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/docs/Legend.md',
             ),
+            DependencyResult::Found,
         ),
     ],
     [
@@ -1066,16 +941,11 @@ $events = [
     ],
     [
         1767258564.622447,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258564.622505,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [
@@ -1088,12 +958,6 @@ $events = [
         1767258564.622605,
         new FileEnd(
             FileResult::Success,
-        ),
-    ],
-    [
-        1767258564.622989,
-        new DependencyEnd(
-            DependencyResult::Resolved,
         ),
     ],
     [
@@ -1110,16 +974,11 @@ $events = [
     ],
     [
         1767258564.626175,
-        new DependencyBegin(
+        new Dependency(
             new FilePath(
                 '/project/composer.json',
             ),
-        ),
-    ],
-    [
-        1767258564.626216,
-        new DependencyEnd(
-            DependencyResult::Resolved,
+            DependencyResult::Found,
         ),
     ],
     [

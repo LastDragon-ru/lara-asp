@@ -3,14 +3,12 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Closure;
-use Exception;
 use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as Contract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
@@ -50,45 +48,31 @@ class Resolver implements Contract {
 
     #[Override]
     public function get(FilePath $path): File {
-        $path   = $this->path($path);
-        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
+        $path = $this->path($path);
 
-        try {
-            $file = $this->fs->get($path);
+        ($this->dispatcher)(new Dependency($path, DependencyResult::Found));
 
-            ($this->run)($file);
-        } catch (Exception $exception) {
-            $result = DependencyResult::Error;
+        $file = $this->fs->get($path);
 
-            throw $exception;
-        } finally {
-            ($this->dispatcher)(new DependencyEnd($result));
-        }
+        ($this->run)($file);
 
         return $file;
     }
 
     #[Override]
     public function find(FilePath $path): ?File {
+        $file   = null;
         $path   = $this->path($path);
-        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Resolved);
+        $exists = $this->fs->exists($path);
 
-        try {
-            $file = $this->fs->exists($path)
-                ? $this->fs->get($path)
-                : null;
+        if ($exists) {
+            ($this->dispatcher)(new Dependency($path, DependencyResult::Found));
 
-            if ($file === null) {
-                $result = DependencyResult::NotFound;
-            } else {
-                ($this->run)($file);
-            }
-        } catch (Exception $exception) {
-            $result = DependencyResult::Error;
+            $file = $this->fs->get($path);
 
-            throw $exception;
-        } finally {
-            ($this->dispatcher)(new DependencyEnd($result));
+            ($this->run)($file);
+        } else {
+            ($this->dispatcher)(new Dependency($path, DependencyResult::NotFound));
         }
 
         return $file;
@@ -109,22 +93,17 @@ class Resolver implements Contract {
 
     #[Override]
     public function save(File|FilePath $path, string $content): void {
-        $file   = $path instanceof File ? $path : null;
-        $path   = $this->path($path instanceof File ? $path->path : $path);
-        $result = ($this->dispatcher)(new DependencyBegin($path), DependencyResult::Saved);
+        $file = $path instanceof File ? $path : null;
+        $path = $this->path($path instanceof File ? $path->path : $path);
+
+        ($this->dispatcher)(new Dependency($path, DependencyResult::Saved));
 
         try {
             $saved = $this->fs->write($file ?? $path, $content);
-        } catch (Exception $exception) {
-            $result = DependencyResult::Error;
-
-            throw $exception;
         } finally {
             if (($saved ?? $file) !== null) {
                 unset($this->files[$saved ?? $file]);
             }
-
-            ($this->dispatcher)(new DependencyEnd($result));
         }
     }
 
@@ -137,19 +116,9 @@ class Resolver implements Contract {
 
         foreach ($iterator as $file) {
             $filepath = $this->path($file);
-            $result   = ($this->dispatcher)(new DependencyBegin($filepath), DependencyResult::Queued);
 
-            try {
-                $file = $this->fs->get($filepath);
-
-                ($this->queue)($file);
-            } catch (Exception $exception) {
-                $result = DependencyResult::Error;
-
-                throw $exception;
-            } finally {
-                ($this->dispatcher)(new DependencyEnd($result));
-            }
+            ($this->dispatcher)(new Dependency($filepath, DependencyResult::Queued));
+            ($this->queue)($this->fs->get($filepath));
         }
     }
 

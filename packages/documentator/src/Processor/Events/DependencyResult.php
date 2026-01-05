@@ -3,9 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Events;
 
 enum DependencyResult {
-    case Resolved;
+    case Found;
     case NotFound;
     case Queued;
     case Saved;
-    case Error;
 }
