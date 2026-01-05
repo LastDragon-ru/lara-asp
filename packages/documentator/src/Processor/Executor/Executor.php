@@ -66,7 +66,8 @@ class Executor {
             $this->container,
             $this->dispatcher,
             $this->fs,
-            $this->onResolve(...),
+            $this->onRun(...),
+            $this->onSave(...),
             $this->onQueue(...),
         );
     }
@@ -196,36 +197,58 @@ class Executor {
         $this->iterator->push($file);
     }
 
-    protected function onResolve(File $resolved): void {
+    protected function onRun(File $file): void {
         // Possible?
         if ($this->state->is(State::Created)) {
-            throw new DependencyUnavailable($resolved->path);
+            throw new DependencyUnavailable($file->path);
         }
 
         // Skipped?
-        if ($this->isSkipped($resolved)) {
+        if ($this->isSkipped($file)) {
             return;
         }
 
         // Process
-        if (!$this->state->is(State::Preparation) && !$resolved->path->equals(array_last($this->stack))) {
-            $this->file($resolved);
+        if (!$this->state->is(State::Preparation) && !$file->path->equals(array_last($this->stack))) {
+            $this->file($file);
         }
     }
 
-    protected function onQueue(File $resolved): void {
-        // Possible?
-        if ($this->state->is(State::Finished)) {
-            throw new DependencyUnavailable($resolved->path);
+    protected function onSave(File $file): void {
+        // Current?
+        if ($file->path->equals(array_last($this->stack))) {
+            return;
         }
 
         // Skipped?
-        if ($this->isSkipped($resolved)) {
+        if ($this->isSkipped($file)) {
+            return;
+        }
+
+        // Reset
+        unset($this->processed[$file->path->path]);
+
+        // Run/Queue
+        if ($this->state->is(State::Finished)) {
+            $this->file($file);
+        } else {
+            $this->queue($file);
+        }
+    }
+
+    protected function onQueue(File $file): void {
+        // Possible?
+        if ($this->state->is(State::Finished)) {
+            throw new DependencyUnavailable($file->path);
+        }
+
+        // Skipped?
+        if ($this->isSkipped($file)) {
             return;
         }
 
         // Queue
-        $this->queue($resolved);
+        $this->queue($file);
     }
 
     protected function isSkipped(File $file): bool {

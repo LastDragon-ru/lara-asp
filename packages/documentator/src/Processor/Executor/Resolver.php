@@ -40,6 +40,10 @@ class Resolver implements Contract {
         /**
          * @var Closure(File): void
          */
+        protected readonly Closure $save,
+        /**
+         * @var Closure(File): void
+         */
         protected readonly Closure $queue,
     ) {
         $this->casts = [];
@@ -100,6 +104,8 @@ class Resolver implements Contract {
 
         try {
             $saved = $this->fs->write($file ?? $path, $content);
+
+            ($this->save)($saved);
         } finally {
             if (($saved ?? $file) !== null) {
                 unset($this->files[$saved ?? $file]);
