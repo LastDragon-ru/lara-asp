@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\C
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Flag;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Mark;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Change;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\ChangeBlock;
 
 /**
  * @internal
  */
-class Write extends Change {
+class ReadBlock extends ChangeBlock {
     public function __construct(float $start, Mark $mark, string $path) {
-        parent::__construct($start, Flag::Write, $mark, $path);
+        parent::__construct($start, Flag::Read, $mark, $path);
     }
 }
