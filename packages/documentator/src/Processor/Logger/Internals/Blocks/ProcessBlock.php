@@ -9,7 +9,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Message;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Status;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Verbosity;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Block;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources\File;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources\FileBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Memory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Renderer;
 use LastDragon_ru\Path\DirectoryPath;
@@ -21,7 +21,7 @@ use function implode;
 /**
  * @internal
  */
-class Root extends Block {
+class ProcessBlock extends Block {
     protected int $memory          = 0;
     protected int $files           = 0;
     protected int $startMemory     = 0;
@@ -65,7 +65,7 @@ class Root extends Block {
         $block          = parent::add($block) ?? $block;
         $this->children = []; // to save memory
 
-        if ($block instanceof File) {
+        if ($block instanceof FileBlock) {
             $this->files++;
         }
 
@@ -74,7 +74,7 @@ class Root extends Block {
 
     #[Override]
     public function child(Block $block): bool {
-        return $block instanceof Source;
+        return $block instanceof SourceBlock;
     }
 
     /**

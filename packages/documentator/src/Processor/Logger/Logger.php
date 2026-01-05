@@ -29,14 +29,14 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Contracts\Output;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Mark;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Status;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Block;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\Read;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\Write;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Dependency;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Root;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Source;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources\Hook;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Task;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\ReadBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\WriteBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\DependencyBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\ProcessBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\SourceBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources\FileBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources\HookBlock;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\TaskBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Memory;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Renderer;
 use LastDragon_ru\Path\DirectoryPath;
@@ -69,7 +69,7 @@ class Logger {
         $block = null;
 
         if ($event instanceof ProcessBegin) {
-            $block         = new Root(
+            $block         = new ProcessBlock(
                 $time,
                 $this->memory(),
                 $event->input,
@@ -79,7 +79,7 @@ class Logger {
             );
             $this->stack[] = $block;
         } elseif ($event instanceof ProcessEnd) {
-            $block = $this->pop(Root::class)->end(
+            $block = $this->pop(ProcessBlock::class)->end(
                 match ($event->result) {
                     ProcessResult::Success => Status::Done,
                     ProcessResult::Error   => Status::Fail,
@@ -88,9 +88,9 @@ class Logger {
                 $this->memory(),
             );
         } elseif ($event instanceof HookBegin) {
-            $this->stack[] = new Hook($time, $event->hook, ...$this->path($event->path));
+            $this->stack[] = new HookBlock($time, $event->hook, ...$this->path($event->path));
         } elseif ($event instanceof HookEnd) {
-            $block = $this->pop(Source::class)->end(
+            $block = $this->pop(SourceBlock::class)->end(
                 match ($event->result) {
                     HookResult::Success => Status::Done,
                     HookResult::Error   => Status::Fail,
@@ -98,9 +98,9 @@ class Logger {
                 $time,
             );
         } elseif ($event instanceof FileBegin) {
-            $this->stack[] = new File($time, ...$this->path($event->path));
+            $this->stack[] = new FileBlock($time, ...$this->path($event->path));
         } elseif ($event instanceof FileEnd) {
-            $block = $this->pop(Source::class)->end(
+            $block = $this->pop(SourceBlock::class)->end(
                 match ($event->result) {
                     FileResult::Success => Status::Done,
                     FileResult::Skipped => Status::Skip,
@@ -109,9 +109,9 @@ class Logger {
                 $time,
             );
         } elseif ($event instanceof TaskBegin) {
-            $this->stack[] = new Task($time, $event->task);
+            $this->stack[] = new TaskBlock($time, $event->task);
         } elseif ($event instanceof TaskEnd) {
-            $block = $this->pop(Task::class)->end(
+            $block = $this->pop(TaskBlock::class)->end(
                 match ($event->result) {
                     TaskResult::Success => Status::Done,
                     TaskResult::Error   => Status::Fail,
@@ -119,9 +119,9 @@ class Logger {
                 $time,
             );
         } elseif ($event instanceof DependencyBegin) {
-            $this->stack[] = new Dependency($time, ...$this->path($event->path));
+            $this->stack[] = new DependencyBlock($time, ...$this->path($event->path));
         } elseif ($event instanceof DependencyEnd) {
-            $block = $this->pop(Dependency::class)->end(
+            $block = $this->pop(DependencyBlock::class)->end(
                 match ($event->result) {
                     DependencyResult::Resolved => Status::Use,
                     DependencyResult::NotFound => Status::Null,
@@ -132,9 +132,9 @@ class Logger {
                 $time,
             );
         } elseif ($event instanceof FileSystemReadBegin) {
-            $this->stack[] = new Read($time, ...$this->path($event->path));
+            $this->stack[] = new ReadBlock($time, ...$this->path($event->path));
         } elseif ($event instanceof FileSystemReadEnd) {
-            $block = $this->pop(Read::class)->end(
+            $block = $this->pop(ReadBlock::class)->end(
                 match ($event->result) {
                     FileSystemReadResult::Success => Status::Done,
                     FileSystemReadResult::Error   => Status::Fail,
@@ -143,9 +143,9 @@ class Logger {
                 $event->bytes,
             );
         } elseif ($event instanceof FileSystemWriteBegin) {
-            $this->stack[] = new Write($time, ...$this->path($event->path));
+            $this->stack[] = new WriteBlock($time, ...$this->path($event->path));
         } elseif ($event instanceof FileSystemWriteEnd) {
-            $block = $this->pop(Write::class)->end(
+            $block = $this->pop(WriteBlock::class)->end(
                 match ($event->result) {
                     FileSystemWriteResult::Success => Status::Done,
                     FileSystemWriteResult::Error   => Status::Fail,
@@ -158,7 +158,7 @@ class Logger {
         }
 
         // Add
-        if ($block !== null && !($block instanceof Root)) {
+        if ($block !== null && !($block instanceof ProcessBlock)) {
             $parent = $this->current();
 
             if ($parent->child($block)) {
@@ -185,14 +185,14 @@ class Logger {
         }
     }
 
-    private function root(): Root {
+    private function root(): ProcessBlock {
         $block = array_first($this->stack);
 
-        if (!($block instanceof Root)) {
+        if (!($block instanceof ProcessBlock)) {
             throw new UnexpectedValueException(
                 sprintf(
                     'Expected root block to be an instance of `%s`, got `%s`.',
-                    Root::class,
+                    ProcessBlock::class,
                     $block !== null ? $block::class : 'null',
                 ),
             );

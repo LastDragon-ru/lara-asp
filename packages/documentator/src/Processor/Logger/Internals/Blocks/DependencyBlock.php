@@ -1,24 +1,29 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Contracts\Formatter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Mark;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Verbosity;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Source;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Block;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Renderer;
 use Override;
 
 /**
  * @internal
  */
-class File extends Source {
+class DependencyBlock extends Block {
     public function __construct(
         float $start,
         protected Mark $mark,
         protected string $path,
     ) {
         parent::__construct($start);
+    }
+
+    #[Override]
+    public function child(Block $block): bool {
+        return false;
     }
 
     /**
@@ -28,19 +33,13 @@ class File extends Source {
      */
     #[Override]
     public function render(Renderer $renderer, Formatter $formatter, int $padding): iterable {
-        yield Verbosity::Normal => $renderer->run(
+        yield Verbosity::Debug => $renderer->run(
             $this->path,
             $padding,
             $this->mark,
             null,
             $this->statistics->flags(),
             $this->status,
-            $this->timeTotal,
         );
-
-        yield Verbosity::Debug => $this->times($renderer, $formatter, $padding + 1);
-        yield Verbosity::Verbose => $this->statistics($renderer, $formatter, $padding + 1);
-
-        yield from $this->children($renderer, $formatter, $padding);
     }
 }

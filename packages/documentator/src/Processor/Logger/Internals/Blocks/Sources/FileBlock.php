@@ -2,21 +2,19 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Sources;
 
-use LastDragon_ru\LaraASP\Documentator\Processor\Hook as HookEnum;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Contracts\Formatter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Mark;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Verbosity;
-use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Source;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\SourceBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Renderer;
 use Override;
 
 /**
  * @internal
  */
-class Hook extends Source {
+class FileBlock extends SourceBlock {
     public function __construct(
         float $start,
-        protected HookEnum $hook,
         protected Mark $mark,
         protected string $path,
     ) {
@@ -31,9 +29,9 @@ class Hook extends Source {
     #[Override]
     public function render(Renderer $renderer, Formatter $formatter, int $padding): iterable {
         yield Verbosity::Normal => $renderer->run(
-            "{$formatter->hook($this->hook)} {$formatter->mark($this->mark)} {$this->path}",
+            $this->path,
             $padding,
-            Mark::Hook,
+            $this->mark,
             null,
             $this->statistics->flags(),
             $this->status,

@@ -8,10 +8,10 @@ use Override;
 /**
  * @internal
  */
-abstract class Source extends Block {
+abstract class SourceBlock extends Block {
     #[Override]
     public function child(Block $block): bool {
-        return $block instanceof Task
-            || $block instanceof Change;
+        return $block instanceof TaskBlock
+            || $block instanceof ChangeBlock;
     }
 }

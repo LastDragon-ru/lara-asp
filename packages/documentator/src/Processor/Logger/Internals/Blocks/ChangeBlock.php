@@ -18,7 +18,7 @@ use function func_num_args;
 /**
  * @internal
  */
-abstract class Change extends Block {
+abstract class ChangeBlock extends Block {
     /**
      * @var ?int<0, max>
      */
