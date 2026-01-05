@@ -3,8 +3,7 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Logger;
 
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyBegin;
-use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\Dependency;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
@@ -118,16 +117,14 @@ class Logger {
                 },
                 $time,
             );
-        } elseif ($event instanceof DependencyBegin) {
-            $this->stack[] = new DependencyBlock($time, ...$this->path($event->path));
-        } elseif ($event instanceof DependencyEnd) {
-            $block = $this->pop(DependencyBlock::class)->end(
+        } elseif ($event instanceof Dependency) {
+            $block = new DependencyBlock($time, ...$this->path($event->path));
+            $block = $block->end(
                 match ($event->result) {
-                    DependencyResult::Resolved => Status::Use,
+                    DependencyResult::Found    => Status::Use,
                     DependencyResult::NotFound => Status::Null,
                     DependencyResult::Queued   => Status::Next,
                     DependencyResult::Saved    => Status::Save,
-                    DependencyResult::Error    => Status::Fail,
                 },
                 $time,
             );
