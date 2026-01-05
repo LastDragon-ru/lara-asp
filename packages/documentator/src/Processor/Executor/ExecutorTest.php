@@ -21,8 +21,8 @@ use ReflectionProperty;
 final class ExecutorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    #[DataProvider('dataProviderOnResolve')]
-    public function testOnResolve(?bool $expected, State $state): void {
+    #[DataProvider('dataProviderOnRun')]
+    public function testOnRun(?bool $expected, State $state): void {
         $filesystem = Mockery::mock(FileSystem::class);
         $path       = new FilePath('/file.md');
         $file       = new FileImpl($filesystem, $path);
@@ -53,7 +53,66 @@ final class ExecutorTest extends TestCase {
 
         (new ReflectionProperty(Executor::class, 'state'))->setValue($executor, $state);
 
-        $executor->onResolve($file);
+        $executor->onRun($file);
+    }
+
+    /**
+     * @param 'file'|'queue'|null $expected
+     * @param non-empty-string    $current
+     * @param non-empty-string    $path
+     */
+    #[DataProvider('dataProviderOnSave')]
+    public function testOnSave(?string $expected, State $state, string $current, ?bool $skipped, string $path): void {
+        $fs   = Mockery::mock(FileSystem::class);
+        $path = new FilePath($path);
+        $file = new FileImpl($fs, $path);
+
+        $executor = Mockery::mock(ExecutorTest__Executor::class);
+        $executor->shouldAllowMockingProtectedMethods();
+        $executor->makePartial();
+
+        if ($skipped !== null) {
+            $executor
+                ->shouldReceive('isSkipped')
+                ->with($file)
+                ->once()
+                ->andReturn($skipped);
+        } else {
+            $executor
+                ->shouldReceive('isSkipped')
+                ->never();
+        }
+
+        if ($expected !== null) {
+            $executor
+                ->shouldReceive($expected)
+                ->with($file)
+                ->once()
+                ->andReturns();
+        } else {
+            $executor
+                ->shouldReceive('file')
+                ->never();
+            $executor
+                ->shouldReceive('queue')
+                ->never();
+        }
+
+        (new ReflectionProperty(Executor::class, 'state'))->setValue($executor, $state);
+        (new ReflectionProperty(Executor::class, 'stack'))->setValue($executor, [$path->file($current)]);
+        (new ReflectionProperty(Executor::class, 'processed'))->setValue($executor, [
+            $path->path => true,
+            $current    => true,
+        ]);
+
+        $executor->onSave($file);
+
+        if ($expected !== null) {
+            self::assertSame(
+                [$current => true],
+                (new ReflectionProperty(Executor::class, 'processed'))->getValue($executor),
+            );
+        }
     }
 
     #[DataProvider('dataProviderOnQueue')]
@@ -92,12 +151,48 @@ final class ExecutorTest extends TestCase {
     /**
      * @return array<string, array{?bool, State}>
      */
-    public static function dataProviderOnResolve(): array {
+    public static function dataProviderOnRun(): array {
         return [
             State::Preparation->name => [null, State::Preparation],
             State::Iteration->name   => [true, State::Iteration],
             State::Finished->name    => [true, State::Finished],
             State::Created->name     => [false, State::Created],
+        ];
+    }
+
+    /**
+     * @return array<string, array{'file'|'queue'|null, State, non-empty-string, ?bool, non-empty-string}>
+     */
+    public static function dataProviderOnSave(): array {
+        return [
+            'equal to the current file'                  => [
+                null,
+                State::Iteration,
+                '/file.txt',
+                null,
+                '/file.txt',
+            ],
+            'not equal to the current file'              => [
+                'queue',
+                State::Iteration,
+                '/file.txt',
+                false,
+                '/file.md',
+            ],
+            'not equal to the current file but finished' => [
+                'file',
+                State::Finished,
+                '/file.txt',
+                false,
+                '/file.md',
+            ],
+            'not equal to the current file but skipped'  => [
+                null,
+                State::Iteration,
+                '/file.txt',
+                true,
+                '/file.md',
+            ],
         ];
     }
 
@@ -124,12 +219,17 @@ final class ExecutorTest extends TestCase {
  */
 class ExecutorTest__Executor extends Executor {
     #[Override]
-    public function onResolve(File $resolved): void {
-        parent::onResolve($resolved);
+    public function onRun(File $file): void {
+        parent::onRun($file);
     }
 
     #[Override]
-    public function onQueue(File $resolved): void {
-        parent::onQueue($resolved);
+    public function onSave(File $file): void {
+        parent::onSave($file);
+    }
+
+    #[Override]
+    public function onQueue(File $file): void {
+        parent::onQueue($file);
     }
 }

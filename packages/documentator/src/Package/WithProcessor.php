@@ -68,7 +68,7 @@ trait WithProcessor {
         $callback   = static function (): void {
             // empty
         };
-        $resolver   = new class($container, $dispatcher, $fs, $callback, $callback) extends Resolver {
+        $resolver   = new class($container, $dispatcher, $fs, $callback, $callback, $callback) extends Resolver {
             // empty
         };
 
