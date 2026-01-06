@@ -8,6 +8,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
@@ -28,6 +31,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Contracts\Output;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Mark;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Enums\Status;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Block;
+use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\DeleteBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\ReadBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\Changes\WriteBlock;
 use LastDragon_ru\LaraASP\Documentator\Processor\Logger\Internals\Blocks\DependencyBlock;
@@ -150,6 +154,17 @@ class Logger {
                 },
                 $time,
                 $event->bytes,
+            );
+        } elseif ($event instanceof FileSystemDeleteBegin) {
+            $this->stack[] = new DeleteBlock($time, ...$this->path($event->path));
+        } elseif ($event instanceof FileSystemDeleteEnd) {
+            $block = $this->pop(DeleteBlock::class)->end(
+                match ($event->result) {
+                    FileSystemDeleteResult::Success => Status::Done,
+                    FileSystemDeleteResult::Error   => Status::Fail,
+                },
+                $time,
+                null,
             );
         } else {
             // empty
