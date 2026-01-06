@@ -68,6 +68,12 @@ class FileSystem {
     }
 
     public function exists(FilePath $path): bool {
+        // Fast check
+        if (isset($this->cache[$path])) {
+            return true;
+        }
+
+        // Check
         $path   = $this->path($path);
         $file   = $this->cache[$path];
         $file   = $file === null && $this->adapter->exists($path)
@@ -79,6 +85,11 @@ class FileSystem {
     }
 
     public function get(FilePath $path): File {
+        // Fast check
+        if (isset($this->cache[$path])) {
+            return $this->cache[$path];
+        }
+
         // Cached?
         $path = $this->path($path);
         $file = $this->cache[$path];
