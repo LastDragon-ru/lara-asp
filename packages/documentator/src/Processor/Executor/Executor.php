@@ -61,7 +61,7 @@ class Executor {
         private readonly Matcher $skipped,
     ) {
         $this->state    = State::Created;
-        $this->iterator = new Iterator($this->fs, $files);
+        $this->iterator = new Iterator($files);
         $this->resolver = new Resolver(
             $this->container,
             $this->dispatcher,
@@ -77,6 +77,12 @@ class Executor {
         $this->state = State::Preparation;
 
         foreach ($this->iterator as $item) {
+            if (!$this->fs->exists($item)) {
+                continue;
+            }
+
+            $item = $this->fs->get($item);
+
             if ($file === null) {
                 $this->hook(Hook::Before, $item);
 
@@ -194,7 +200,7 @@ class Executor {
     }
 
     protected function queue(File $file): void {
-        $this->iterator->push($file);
+        $this->iterator->push($file->path);
     }
 
     protected function onRun(File $file): void {

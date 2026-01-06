@@ -3,8 +3,6 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use IteratorAggregate;
-use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
-use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\FileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
 use Override;
@@ -15,16 +13,15 @@ use function count;
 
 /**
  * @internal
- * @implements IteratorAggregate<mixed, File>
+ * @implements IteratorAggregate<mixed, FilePath>
  */
 class Iterator implements IteratorAggregate {
     /**
-     * @var array<mixed, File>
+     * @var array<string, FilePath>
      */
     private array $queue = [];
 
     public function __construct(
-        private readonly FileSystem $fs,
         /**
          * @var iterable<mixed, DirectoryPath|FilePath>
          */
@@ -40,19 +37,19 @@ class Iterator implements IteratorAggregate {
                 continue;
             }
 
-            yield $this->fs->get($path);
+            yield $path;
             yield from $this->queue();
         }
 
         yield from $this->queue();
     }
 
-    public function push(File $file): void {
-        $this->queue[] = $file;
+    public function push(FilePath $path): void {
+        $this->queue[$path->path] = $path;
     }
 
     /**
-     * @return iterable<mixed, File>
+     * @return iterable<mixed, FilePath>
      */
     private function queue(): iterable {
         while (count($this->queue) > 0) {
