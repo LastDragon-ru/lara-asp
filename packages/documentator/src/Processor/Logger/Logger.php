@@ -117,6 +117,7 @@ class Logger {
             $block = $this->pop(TaskBlock::class)->end(
                 match ($event->result) {
                     TaskResult::Success => Status::Done,
+                    TaskResult::Skipped => Status::Skip,
                     TaskResult::Error   => Status::Fail,
                 },
                 $time,

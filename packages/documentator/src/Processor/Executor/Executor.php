@@ -173,8 +173,17 @@ class Executor {
     protected function tasks(iterable $tasks, Hook $hook, File $file): void {
         $this->fs->begin($file->path->directory());
 
+        $exists = $this->fs->exists($file->path);
+
         foreach ($tasks as $task) {
-            $this->task($task, $hook, $file);
+            if ($exists) {
+                $this->task($task, $hook, $file);
+
+                $exists = $this->fs->exists($file->path);
+            } else {
+                ($this->dispatcher)(new TaskBegin($task::class));
+                ($this->dispatcher)(new TaskEnd(TaskResult::Skipped));
+            }
         }
 
         $this->fs->commit();

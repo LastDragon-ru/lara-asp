@@ -17,6 +17,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Events\DependencyResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileResult;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\HookResult;
@@ -42,6 +45,7 @@ use Symfony\Component\Finder\Finder;
 
 use function array_map;
 use function basename;
+use function file_put_contents;
 
 /**
  * @internal
@@ -959,6 +963,111 @@ final class ProcessorTest extends TestCase {
                 new TaskEnd(TaskResult::Error),
                 new HookEnd(HookResult::Error),
                 new ProcessEnd(ProcessResult::Error),
+            ],
+            $events,
+        );
+    }
+
+    public function testRunDelete(): void {
+        $input = (new DirectoryPath(self::getTempDirectory()))->normalized();
+        $taskA = new class() implements FileTask {
+            #[Override]
+            public static function glob(): string {
+                return '*.htm';
+            }
+
+            #[Override]
+            public function __invoke(ResolverContract $resolver, File $file): void {
+                $resolver->save($file, 'new content');
+            }
+        };
+        $taskB = new class() implements FileTask {
+            #[Override]
+            public static function glob(): string {
+                return '*.htm';
+            }
+
+            #[Override]
+            public function __invoke(ResolverContract $resolver, File $file): void {
+                $resolver->delete($file);
+            }
+        };
+        $taskC = new class() implements FileTask {
+            #[Override]
+            public static function glob(): string {
+                return '*.htm';
+            }
+
+            #[Override]
+            public function __invoke(ResolverContract $resolver, File $file): void {
+                // empty
+            }
+        };
+        $taskD = new class() implements HookTask {
+            #[Override]
+            public static function hook(): Hook {
+                return Hook::After;
+            }
+
+            #[Override]
+            public function __invoke(ResolverContract $resolver, File $file, Hook $hook): void {
+                // empty
+            }
+        };
+
+        $file = $input->file('file.htm');
+
+        self::assertNotFalse(file_put_contents($file->path, 'content'));
+
+        $processor = new Processor(
+            $this->app()->make(ContainerResolver::class),
+            new ProcessorTest__Adapter(),
+        );
+        $processor->task($taskA);
+        $processor->task($taskB);
+        $processor->task($taskC);
+        $processor->task($taskD);
+
+        $events = [];
+        $result = $processor(
+            $input,
+            $input,
+            [],
+            static function (Event $event) use (&$events): void {
+                $events[] = $event;
+            },
+        );
+
+        self::assertTrue($result);
+        self::assertEquals(
+            [
+                new ProcessBegin(
+                    $input,
+                    $input,
+                    [
+                        '**/*.htm',
+                    ],
+                    [
+                        // empty
+                    ],
+                ),
+                new FileBegin($file),
+                new TaskBegin($taskA::class),
+                new Dependency($file, DependencyResult::Saved),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskB::class),
+                new Dependency($file, DependencyResult::Deleted),
+                new FileSystemDeleteBegin($file),
+                new FileSystemDeleteEnd(FileSystemDeleteResult::Success),
+                new TaskEnd(TaskResult::Success),
+                new TaskBegin($taskC::class),
+                new TaskEnd(TaskResult::Skipped),
+                new FileEnd(FileResult::Success),
+                new HookBegin(Hook::After, $file),
+                new TaskBegin($taskD::class),
+                new TaskEnd(TaskResult::Skipped),
+                new HookEnd(HookResult::Success),
+                new ProcessEnd(ProcessResult::Success),
             ],
             $events,
         );
