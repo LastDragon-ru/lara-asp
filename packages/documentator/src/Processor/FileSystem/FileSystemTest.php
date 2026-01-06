@@ -8,6 +8,9 @@ use LastDragon_ru\LaraASP\Documentator\Package\WithProcessor;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
@@ -393,6 +396,78 @@ final class FileSystemTest extends TestCase {
         $this
             ->getFileSystem($input, $output)
             ->write($input->file('file.txt'), 'external');
+    }
+
+    public function testDelete(): void {
+        $input      = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $adapter    = Mockery::mock(Adapter::class);
+        $dispatcher = new FileSystemTest__Dispatcher();
+        $filesystem = new FileSystem($adapter, $dispatcher, $input, $input);
+        $path       = $input->file('file.md');
+
+        $adapter
+            ->shouldReceive('exists')
+            ->with($path)
+            ->twice()
+            ->andReturn(true, false);
+        $adapter
+            ->shouldReceive('delete')
+            ->with($path)
+            ->once()
+            ->andReturns();
+
+        self::assertSame($filesystem->get($path), $filesystem->get($path));
+
+        $filesystem->delete($path);
+
+        self::assertFalse($filesystem->exists($path));
+        self::assertEquals(
+            [
+                new FileSystemDeleteBegin($path),
+                new FileSystemDeleteEnd(FileSystemDeleteResult::Success),
+            ],
+            $dispatcher->events,
+        );
+    }
+
+    public function testDeleteFailed(): void {
+        self::expectException(Exception::class);
+
+        $input   = (new DirectoryPath(self::getTestData()->path('')))->normalized();
+        $path    = $input->file('file.md');
+        $adapter = Mockery::mock(Adapter::class);
+        $adapter
+            ->shouldReceive('delete')
+            ->with($path)
+            ->once()
+            ->andThrow(Exception::class);
+
+        $dispatcher = new FileSystemTest__Dispatcher();
+        $filesystem = new FileSystem($adapter, $dispatcher, $input, $input);
+
+        try {
+            $filesystem->delete($path);
+        } finally {
+            self::assertEquals(
+                [
+                    new FileSystemDeleteBegin($path),
+                    new FileSystemDeleteEnd(FileSystemDeleteResult::Error),
+                ],
+                $dispatcher->events,
+            );
+        }
+    }
+
+    public function testDeleteOutsideOutput(): void {
+        self::expectException(PathNotWritable::class);
+
+        $base   = new DirectoryPath(__DIR__);
+        $input  = $base->directory('input');
+        $output = $base->directory('output');
+
+        $this
+            ->getFileSystem($input, $output)
+            ->delete($input->file('file.txt'));
     }
 
     public function testCache(): void {

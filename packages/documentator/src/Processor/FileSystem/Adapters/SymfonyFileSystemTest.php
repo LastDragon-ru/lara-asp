@@ -8,6 +8,10 @@ use LastDragon_ru\Path\FilePath;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function file_get_contents;
+use function file_put_contents;
+use function is_dir;
+use function is_file;
+use function mkdir;
 use function sort;
 
 /**
@@ -129,6 +133,27 @@ final class SymfonyFileSystemTest extends TestCase {
         $adapter->write(new FilePath($path), $expected);
 
         self::assertSame($expected, file_get_contents($path));
+    }
+
+    public function testDelete(): void {
+        // Prepare
+        $adapter = new SymfonyFileSystem();
+        $path    = new DirectoryPath(self::getTempDirectory());
+        $file    = $path->file('file.txt');
+        $dir     = $path->directory('dir/a/b/c');
+
+        self::assertNotFalse(file_put_contents($file->path, 'content'));
+        self::assertTrue(mkdir($dir->path, 0777, true));
+        self::assertNotFalse(file_put_contents($dir->file('../file.txt')->path, 'content'));
+
+        $adapter->delete($file);
+
+        self::assertFalse(is_file($file->path));
+        self::assertTrue(is_dir($dir->path));
+
+        $adapter->delete($dir);
+
+        self::assertFalse(is_dir($dir->path));
     }
 
     /**

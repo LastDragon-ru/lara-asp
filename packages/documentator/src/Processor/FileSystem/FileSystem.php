@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
@@ -130,17 +133,7 @@ class FileSystem {
         $iterator = $this->adapter->search($directory, $include, $exclude, $hidden);
 
         foreach ($iterator as $path) {
-            $path = $this->path($directory->resolve($path));
-
-            if ($path instanceof FilePath && !isset($this->cache[$path])) {
-                /**
-                 * We are expecting all files are exist, so add them into the
-                 * cache to avoid another {@see Adapter::exists()} call.
-                 */
-                $this->cache[$path] = new FileImpl($this, $path);
-            }
-
-            yield $path;
+            yield $directory->resolve($path);
         }
 
         yield from [];
@@ -203,6 +196,30 @@ class FileSystem {
 
         // Return
         return $file;
+    }
+
+    public function delete(DirectoryPath|FilePath $path): void {
+        // Writable?
+        $path = $this->path($path);
+
+        if (!$this->output->contains($path)) {
+            throw new PathNotWritable($path);
+        }
+
+        // Delete
+        $result = ($this->dispatcher)(new FileSystemDeleteBegin($path), FileSystemDeleteResult::Success);
+
+        try {
+            $this->adapter->delete($path);
+            $this->content->delete($path);
+            $this->cache->delete($path);
+        } catch (Exception $exception) {
+            $result = FileSystemDeleteResult::Error;
+
+            throw $exception;
+        } finally {
+            ($this->dispatcher)(new FileSystemDeleteEnd($result));
+        }
     }
 
     public function begin(DirectoryPath $path): void {

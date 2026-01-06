@@ -24,4 +24,6 @@ interface Adapter {
     public function read(FilePath $path): string;
 
     public function write(FilePath $path, string $content): void;
+
+    public function delete(DirectoryPath|FilePath $path): void;
 }
