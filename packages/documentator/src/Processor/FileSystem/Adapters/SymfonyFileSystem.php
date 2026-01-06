@@ -60,6 +60,11 @@ class SymfonyFileSystem implements Adapter {
         $this->filesystem->dumpFile((string) $path, $content);
     }
 
+    #[Override]
+    public function delete(DirectoryPath|FilePath $path): void {
+        $this->filesystem->remove($path->path);
+    }
+
     /**
      * @param Closure(SplFileInfo): bool|null $exclude
      * @param Closure(SplFileInfo): bool|null $include

@@ -9,5 +9,6 @@ enum Status {
     case Next;
     case Use;
     case Save;
+    case Delete;
     case Fail;
 }

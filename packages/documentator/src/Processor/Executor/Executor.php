@@ -61,7 +61,7 @@ class Executor {
         private readonly Matcher $skipped,
     ) {
         $this->state    = State::Created;
-        $this->iterator = new Iterator($this->fs, $files);
+        $this->iterator = new Iterator($files);
         $this->resolver = new Resolver(
             $this->container,
             $this->dispatcher,
@@ -69,6 +69,7 @@ class Executor {
             $this->onRun(...),
             $this->onSave(...),
             $this->onQueue(...),
+            $this->onDelete(...),
         );
     }
 
@@ -77,6 +78,12 @@ class Executor {
         $this->state = State::Preparation;
 
         foreach ($this->iterator as $item) {
+            if (!$this->fs->exists($item)) {
+                continue;
+            }
+
+            $item = $this->fs->get($item);
+
             if ($file === null) {
                 $this->hook(Hook::Before, $item);
 
@@ -166,8 +173,17 @@ class Executor {
     protected function tasks(iterable $tasks, Hook $hook, File $file): void {
         $this->fs->begin($file->path->directory());
 
+        $exists = $this->fs->exists($file->path);
+
         foreach ($tasks as $task) {
-            $this->task($task, $hook, $file);
+            if ($exists) {
+                $this->task($task, $hook, $file);
+
+                $exists = $this->fs->exists($file->path);
+            } else {
+                ($this->dispatcher)(new TaskBegin($task::class));
+                ($this->dispatcher)(new TaskEnd(TaskResult::Skipped));
+            }
         }
 
         $this->fs->commit();
@@ -194,7 +210,7 @@ class Executor {
     }
 
     protected function queue(File $file): void {
-        $this->iterator->push($file);
+        $this->iterator->push($file->path);
     }
 
     protected function onRun(File $file): void {
@@ -249,6 +265,10 @@ class Executor {
 
         // Queue
         $this->queue($file);
+    }
+
+    protected function onDelete(DirectoryPath|FilePath $path): void {
+        // empty
     }
 
     protected function isSkipped(File $file): bool {

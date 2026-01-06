@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteBegin;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteEnd;
+use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemDeleteResult;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadBegin;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadEnd;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\FileSystemReadResult;
@@ -19,12 +22,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use WeakMap;
 
 use function array_last;
 use function array_pop;
-use function count;
-use function spl_object_id;
 use function sprintf;
 use function str_starts_with;
 use function strlen;
@@ -35,20 +35,12 @@ use function strlen;
  * @property-read DirectoryPath $directory
  */
 class FileSystem {
-    private Cache $cache;
-    /**
-     * @var array<int, File>
-     */
-    private array $queue = [];
+    private Cache   $cache;
+    private Content $content;
     /**
      * @var array<int, DirectoryPath>
      */
     private array $level = [];
-
-    /**
-     * @var WeakMap<File, string>
-     */
-    private WeakMap $content;
 
     public function __construct(
         private readonly Adapter $adapter,
@@ -75,10 +67,16 @@ class FileSystem {
         }
 
         $this->cache   = new Cache(50);
-        $this->content = new WeakMap();
+        $this->content = new Content();
     }
 
     public function exists(FilePath $path): bool {
+        // Fast check
+        if (isset($this->cache[$path])) {
+            return true;
+        }
+
+        // Check
         $path   = $this->path($path);
         $file   = $this->cache[$path];
         $file   = $file === null && $this->adapter->exists($path)
@@ -90,6 +88,11 @@ class FileSystem {
     }
 
     public function get(FilePath $path): File {
+        // Fast check
+        if (isset($this->cache[$path])) {
+            return $this->cache[$path];
+        }
+
         // Cached?
         $path = $this->path($path);
         $file = $this->cache[$path];
@@ -130,17 +133,7 @@ class FileSystem {
         $iterator = $this->adapter->search($directory, $include, $exclude, $hidden);
 
         foreach ($iterator as $path) {
-            $path = $this->path($directory->resolve($path));
-
-            if ($path instanceof FilePath && !isset($this->cache[$path])) {
-                /**
-                 * We are expecting all files are exist, so add them into the
-                 * cache to avoid another {@see Adapter::exists()} call.
-                 */
-                $this->cache[$path] = new FileImpl($this, $path);
-            }
-
-            yield $path;
+            yield $directory->resolve($path);
         }
 
         yield from [];
@@ -153,7 +146,7 @@ class FileSystem {
 
             try {
                 $this->content[$file] = $this->adapter->read($file->path);
-                $bytes                = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
+                $bytes                = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (ok)
             } catch (Exception $exception) {
                 $result = FileSystemReadResult::Error;
 
@@ -194,22 +187,39 @@ class FileSystem {
         $exists = $file !== null;
         $file ??= $this->make($path);
 
-        // Changed?
-        if (($this->content[$file] ?? null) === $content) {
-            return $file;
-        }
-
-        // Update
+        // Change
         $this->content[$file] = $content;
 
-        if ($exists) {
-            $this->queue($file);
-        } else {
+        if (!$exists) {
             $this->save($file);
         }
 
         // Return
         return $file;
+    }
+
+    public function delete(DirectoryPath|FilePath $path): void {
+        // Writable?
+        $path = $this->path($path);
+
+        if (!$this->output->contains($path)) {
+            throw new PathNotWritable($path);
+        }
+
+        // Delete
+        $result = ($this->dispatcher)(new FileSystemDeleteBegin($path), FileSystemDeleteResult::Success);
+
+        try {
+            $this->adapter->delete($path);
+            $this->content->delete($path);
+            $this->cache->delete($path);
+        } catch (Exception $exception) {
+            $result = FileSystemDeleteResult::Error;
+
+            throw $exception;
+        } finally {
+            ($this->dispatcher)(new FileSystemDeleteEnd($result));
+        }
     }
 
     public function begin(DirectoryPath $path): void {
@@ -221,20 +231,13 @@ class FileSystem {
         array_pop($this->level);
 
         // Dump
-        while (count($this->queue) > 0) {
-            $this->save(array_pop($this->queue));
+        foreach ($this->content->changes() as $file) {
+            $this->save($file);
         }
 
         // Cleanup
         $this->cache->cleanup();
-    }
-
-    protected function queue(File $file): void {
-        if (count($this->level) > 0) {
-            $this->queue[spl_object_id($file)] = $file;
-        } else {
-            $this->save($file);
-        }
+        $this->content->cleanup();
     }
 
     protected function save(File $file): void {
@@ -247,8 +250,9 @@ class FileSystem {
 
         try {
             $this->adapter->write($file->path, $this->content[$file]);
+            $this->content->reset($file);
 
-            $bytes = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
+            $bytes = strlen($this->content[$file] ?? ''); // @phpstan-ignore disallowed.function (ok)
         } catch (Exception $exception) {
             $result = FileSystemWriteResult::Error;
 
