@@ -137,6 +137,9 @@ abstract class Block {
                 continue;
             }
 
+            $count = $formatter->integer($this->statistics[$flag]->count);
+            $bytes = $formatter->filesize($this->statistics[$flag]->bytes);
+
             yield from $renderer->run(
                 match ($flag) {
                     Flag::Read   => Message::Read,
@@ -145,10 +148,10 @@ abstract class Block {
                 },
                 $padding,
                 Mark::Info,
-                implode(' / ', [
-                    $formatter->integer($this->statistics[$flag]->count),
-                    $formatter->filesize($this->statistics[$flag]->bytes),
-                ]),
+                match ($flag) {
+                    Flag::Delete => $count,
+                    default      => implode(' / ', [$count, $bytes]),
+                },
                 [],
                 null,
                 $this->statistics[$flag]->time,

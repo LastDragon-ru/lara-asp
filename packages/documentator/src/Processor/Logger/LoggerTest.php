@@ -26,7 +26,8 @@ use function mb_rtrim;
 final class LoggerTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
-    public function testInvoke(): void {
+    #[DataProvider('dataProviderInvoke')]
+    public function testInvoke(string $expected, string $source): void {
         $formatter = new Formatter();
         $output    = new class(80, "\n") extends Output {
             public string $buffer = '';
@@ -59,7 +60,7 @@ final class LoggerTest extends TestCase {
         };
 
         /** @var list<array{float, Event}> $events */
-        $events = include_once self::getTestData()->path('~Events.php');
+        $events = include_once self::getTestData()->path($source);
 
         foreach ($events as [$time, $event]) {
             if ($event instanceof ProcessBegin) {
@@ -76,7 +77,7 @@ final class LoggerTest extends TestCase {
         }
 
         self::assertSame(
-            self::getTestData()->content('~Output.txt'),
+            self::getTestData()->content($expected),
             $output->buffer,
         );
     }
@@ -117,6 +118,16 @@ final class LoggerTest extends TestCase {
 
     // <editor-fold desc="DataProviders">
     // =========================================================================
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function dataProviderInvoke(): array {
+        return [
+            'Default' => ['~DefaultOutput.txt', '~DefaultEvents.php'],
+            'Delete'  => ['~DeleteOutput.txt', '~DeleteEvents.php'],
+        ];
+    }
+
     /**
      * @return array<string, array{array{Mark, string}, DirectoryPath, DirectoryPath, DirectoryPath|FilePath}>
      */

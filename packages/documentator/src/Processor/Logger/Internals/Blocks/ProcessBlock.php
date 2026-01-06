@@ -124,6 +124,9 @@ class ProcessBlock extends Block {
         }
 
         yield [Mark::Info, Message::Include, "'".implode("', '", $this->include)."'"];
-        yield [Mark::Info, Message::Exclude, "'".implode("', '", $this->exclude)."'"];
+
+        if ($this->exclude !== []) {
+            yield [Mark::Info, Message::Exclude, "'".implode("', '", $this->exclude)."'"];
+        }
     }
 }
