@@ -19,12 +19,9 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Exceptions\PathUnavailable;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\File as FileImpl;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
-use WeakMap;
 
 use function array_last;
 use function array_pop;
-use function count;
-use function spl_object_id;
 use function sprintf;
 use function str_starts_with;
 use function strlen;
@@ -35,20 +32,12 @@ use function strlen;
  * @property-read DirectoryPath $directory
  */
 class FileSystem {
-    private Cache $cache;
-    /**
-     * @var array<int, File>
-     */
-    private array $queue = [];
+    private Cache   $cache;
+    private Content $content;
     /**
      * @var array<int, DirectoryPath>
      */
     private array $level = [];
-
-    /**
-     * @var WeakMap<File, string>
-     */
-    private WeakMap $content;
 
     public function __construct(
         private readonly Adapter $adapter,
@@ -75,7 +64,7 @@ class FileSystem {
         }
 
         $this->cache   = new Cache(50);
-        $this->content = new WeakMap();
+        $this->content = new Content();
     }
 
     public function exists(FilePath $path): bool {
@@ -153,7 +142,7 @@ class FileSystem {
 
             try {
                 $this->content[$file] = $this->adapter->read($file->path);
-                $bytes                = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
+                $bytes                = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (ok)
             } catch (Exception $exception) {
                 $result = FileSystemReadResult::Error;
 
@@ -194,17 +183,10 @@ class FileSystem {
         $exists = $file !== null;
         $file ??= $this->make($path);
 
-        // Changed?
-        if (($this->content[$file] ?? null) === $content) {
-            return $file;
-        }
-
-        // Update
+        // Change
         $this->content[$file] = $content;
 
-        if ($exists) {
-            $this->queue($file);
-        } else {
+        if (!$exists) {
             $this->save($file);
         }
 
@@ -221,20 +203,13 @@ class FileSystem {
         array_pop($this->level);
 
         // Dump
-        while (count($this->queue) > 0) {
-            $this->save(array_pop($this->queue));
+        foreach ($this->content->changes() as $file) {
+            $this->save($file);
         }
 
         // Cleanup
         $this->cache->cleanup();
-    }
-
-    protected function queue(File $file): void {
-        if (count($this->level) > 0) {
-            $this->queue[spl_object_id($file)] = $file;
-        } else {
-            $this->save($file);
-        }
+        $this->content->cleanup();
     }
 
     protected function save(File $file): void {
@@ -247,8 +222,9 @@ class FileSystem {
 
         try {
             $this->adapter->write($file->path, $this->content[$file]);
+            $this->content->reset($file);
 
-            $bytes = strlen($this->content[$file]); // @phpstan-ignore disallowed.function (bytes)
+            $bytes = strlen($this->content[$file] ?? ''); // @phpstan-ignore disallowed.function (ok)
         } catch (Exception $exception) {
             $result = FileSystemWriteResult::Error;
 

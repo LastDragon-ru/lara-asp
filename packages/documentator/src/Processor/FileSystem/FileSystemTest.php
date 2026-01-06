@@ -265,12 +265,6 @@ final class FileSystemTest extends TestCase {
 
         $file = Mockery::mock(File::class, [$filesystem, $path]);
 
-        $filesystem
-            ->shouldReceive('queue')
-            ->with($file)
-            ->once()
-            ->andReturns();
-
         self::assertSame($file, $filesystem->write($file, $content));
         self::assertSame($content, $filesystem->read($file));
     }
@@ -283,9 +277,6 @@ final class FileSystemTest extends TestCase {
         $filesystem = Mockery::mock(FileSystem::class, [$adapter, $dispatcher, $input, $input]);
         $filesystem->shouldAllowMockingProtectedMethods();
         $filesystem->makePartial();
-        $filesystem
-            ->shouldReceive('queue')
-            ->never();
 
         $path = $input->file('file.md');
         $file = Mockery::mock(File::class, [$filesystem, $path]);
@@ -331,9 +322,6 @@ final class FileSystemTest extends TestCase {
         $filesystem
             ->shouldReceive('get')
             ->never();
-        $filesystem
-            ->shouldReceive('queue')
-            ->never();
 
         $file = $filesystem->write($path, $content);
 
@@ -372,9 +360,6 @@ final class FileSystemTest extends TestCase {
             ->andReturn(false);
         $filesystem
             ->shouldReceive('get')
-            ->never();
-        $filesystem
-            ->shouldReceive('queue')
             ->never();
 
         try {
