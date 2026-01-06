@@ -30,8 +30,6 @@ use function str_starts_with;
 use function strlen;
 
 /**
- * By default, relative paths will be resolved based on {@see self::$directory}.
- *
  * @property-read DirectoryPath $directory
  */
 class FileSystem {
@@ -161,8 +159,7 @@ class FileSystem {
 
     /**
      * If `$file` exists, it will be saved only after {@see self::commit()},
-     * if not, it will be created immediately. Relative path will be resolved
-     * based on {@see self::$output}.
+     * if not, it will be created immediately.
      */
     public function write(File|FilePath $path, string $content): File {
         // Prepare
