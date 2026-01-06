@@ -45,6 +45,10 @@ class Resolver implements Contract {
          * @var Closure(File): void
          */
         protected readonly Closure $queue,
+        /**
+         * @var Closure(DirectoryPath|FilePath): void
+         */
+        protected readonly Closure $delete,
     ) {
         $this->casts = [];
         $this->files = new WeakMap();
@@ -125,6 +129,28 @@ class Resolver implements Contract {
 
             ($this->dispatcher)(new Dependency($filepath, DependencyResult::Queued));
             ($this->queue)($this->fs->get($filepath));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function delete(DirectoryPath|FilePath|File|iterable $path): void {
+        $iterator = match (true) {
+            $path instanceof FilePath || $path instanceof DirectoryPath => [$path],
+            $path instanceof File                                       => [$path->path],
+            default                                                     => $path,
+        };
+
+        foreach ($iterator as $delete) {
+            $delete = $this->path($delete);
+
+            ($this->dispatcher)(new Dependency($delete, DependencyResult::Deleted));
+
+            $this->fs->delete($delete);
+
+            ($this->delete)($delete);
         }
     }
 

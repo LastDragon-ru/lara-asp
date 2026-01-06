@@ -125,6 +125,7 @@ class Logger {
                     DependencyResult::NotFound => Status::Null,
                     DependencyResult::Queued   => Status::Next,
                     DependencyResult::Saved    => Status::Save,
+                    DependencyResult::Deleted  => Status::Delete,
                 },
                 $time,
             );

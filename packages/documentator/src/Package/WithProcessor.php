@@ -62,13 +62,21 @@ trait WithProcessor {
         $task($this->getProcessorResolver($fs), $file);
     }
 
-    protected function getProcessorResolver(FileSystem $fs): ResolverContract {
+    protected function getProcessorResolver(FileSystem $filesystem): ResolverContract {
         $dispatcher = new Dispatcher(null);
         $container  = $this->app()->make(ContainerResolver::class);
         $callback   = static function (): void {
             // empty
         };
-        $resolver   = new class($container, $dispatcher, $fs, $callback, $callback, $callback) extends Resolver {
+        $resolver   = new class(
+            $container,
+            $dispatcher,
+            $filesystem,
+            $callback,
+            $callback,
+            $callback,
+            $callback,
+        ) extends Resolver {
             // empty
         };
 

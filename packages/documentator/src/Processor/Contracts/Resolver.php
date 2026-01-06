@@ -50,6 +50,11 @@ interface Resolver {
     public function queue(FilePath|iterable $path): void;
 
     /**
+     * @param DirectoryPath|FilePath|File|iterable<mixed, DirectoryPath|FilePath> $path
+     */
+    public function delete(DirectoryPath|FilePath|File|iterable $path): void;
+
+    /**
      * @param list<non-empty-string>|non-empty-string $include Glob(s) to include.
      * @param list<non-empty-string>|non-empty-string $exclude Glob(s) to exclude.
      *

@@ -69,6 +69,7 @@ class Executor {
             $this->onRun(...),
             $this->onSave(...),
             $this->onQueue(...),
+            $this->onDelete(...),
         );
     }
 
@@ -255,6 +256,10 @@ class Executor {
 
         // Queue
         $this->queue($file);
+    }
+
+    protected function onDelete(DirectoryPath|FilePath $path): void {
+        // empty
     }
 
     protected function isSkipped(File $file): bool {

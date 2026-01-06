@@ -7,4 +7,5 @@ enum DependencyResult {
     case NotFound;
     case Queued;
     case Saved;
+    case Deleted;
 }
