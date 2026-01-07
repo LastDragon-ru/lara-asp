@@ -78,6 +78,7 @@ class SymfonyFileSystem implements Adapter {
         $finder = Finder::create()
             ->ignoreVCSIgnored($hidden === false)
             ->ignoreDotFiles($hidden === false)
+            ->ignoreVCS($hidden === false)
             ->in((string) $directory);
 
         if ($include !== null) {
