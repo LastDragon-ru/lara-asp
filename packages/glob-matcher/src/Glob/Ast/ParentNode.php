@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 
-use LastDragon_ru\DiyParser\Ast\NodeParentImpl;
+use LastDragon_ru\TextParser\Ast\NodeParentImpl;
 
 /**
  * @template TChild of Node

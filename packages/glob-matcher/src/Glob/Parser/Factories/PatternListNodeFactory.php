@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Parser\Factories;
 
-use LastDragon_ru\DiyParser\Ast\NodeParentFactory;
 use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNode;
 use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNodeChild;
 use LastDragon_ru\GlobMatcher\Glob\Ast\PatternListQuantifier;
+use LastDragon_ru\TextParser\Ast\NodeParentFactory;
 use Override;
 
 /**

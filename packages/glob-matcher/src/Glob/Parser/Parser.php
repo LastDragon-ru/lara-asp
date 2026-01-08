@@ -3,8 +3,6 @@
 namespace LastDragon_ru\GlobMatcher\Glob\Parser;
 
 use Closure;
-use LastDragon_ru\DiyParser\Iterables\TransactionalIterable;
-use LastDragon_ru\DiyParser\Tokenizer\Token;
 use LastDragon_ru\GlobMatcher\Glob\Ast\AsteriskNode;
 use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterClass;
 use LastDragon_ru\GlobMatcher\Glob\Ast\CharacterClassNode;
@@ -28,6 +26,8 @@ use LastDragon_ru\GlobMatcher\Glob\Parser\Factories\GlobNodeFactory;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Factories\NameNodeFactory;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Factories\PatternListNodeFactory;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Factories\PatternNodeFactory;
+use LastDragon_ru\TextParser\Iterables\TransactionalIterable;
+use LastDragon_ru\TextParser\Tokenizer\Token;
 
 class Parser {
     public function __construct(

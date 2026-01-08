@@ -112,11 +112,11 @@ Various internal tools and helpers to develop the package itself.
 
 [Read more](<packages/dev/README.md>).
 
-## [DIY Parser](<packages/diy-parser/README.md>)
+## [DIY Parser](<packages/text-parser/README.md>)
 
 There are several tools to generate full-featured parsers even for PHP. They are overkill when you just need to parse something simple. In such cases, you might decide to create your own parser. There are a lot of articles/examples on the web, and actually it is not too difficult as you may think. This is yet another package to simplify writing fast and memory-effective parsers that can parse infinite strings.
 
-[Read more](<packages/diy-parser/README.md>).
+[Read more](<packages/text-parser/README.md>).
 
 ## [Glob](<packages/glob-matcher/README.md>)
 

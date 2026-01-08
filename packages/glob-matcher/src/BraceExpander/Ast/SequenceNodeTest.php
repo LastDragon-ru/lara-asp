@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
 use LastDragon_ru\GlobMatcher\Package\TestCase;
+use LastDragon_ru\TextParser\Ast\Cursor;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 

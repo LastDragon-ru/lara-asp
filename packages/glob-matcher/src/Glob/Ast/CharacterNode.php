@@ -2,13 +2,13 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Iterables\StringifyIterable;
-use LastDragon_ru\DiyParser\Iterables\TokenEscapeIterable;
-use LastDragon_ru\DiyParser\Tokenizer\Tokenizer;
-use LastDragon_ru\DiyParser\Utils;
 use LastDragon_ru\GlobMatcher\Glob\Options;
 use LastDragon_ru\GlobMatcher\Package;
+use LastDragon_ru\TextParser\Ast\Cursor;
+use LastDragon_ru\TextParser\Iterables\StringifyIterable;
+use LastDragon_ru\TextParser\Iterables\TokenEscapeIterable;
+use LastDragon_ru\TextParser\Tokenizer\Tokenizer;
+use LastDragon_ru\TextParser\Utils;
 use Override;
 
 use function mb_strpos;

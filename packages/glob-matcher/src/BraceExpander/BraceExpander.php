@@ -4,9 +4,9 @@ namespace LastDragon_ru\GlobMatcher\BraceExpander;
 
 use InvalidArgumentException;
 use IteratorAggregate;
-use LastDragon_ru\DiyParser\Ast\Cursor;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Parser\Parser;
+use LastDragon_ru\TextParser\Ast\Cursor;
 use Override;
 use Traversable;
 

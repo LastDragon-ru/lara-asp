@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Parser\Factories;
 
-use LastDragon_ru\DiyParser\Ast\NodeParentFactory;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNodeChild;
+use LastDragon_ru\TextParser\Ast\NodeParentFactory;
 use Override;
 
 /**

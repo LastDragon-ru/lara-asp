@@ -2,17 +2,17 @@
 
 namespace LastDragon_ru\GlobMatcher;
 
-use LastDragon_ru\DiyParser\Iterables\StringifyIterable;
-use LastDragon_ru\DiyParser\Iterables\TokenEscapeIterable;
-use LastDragon_ru\DiyParser\Tokenizer\Token;
-use LastDragon_ru\DiyParser\Tokenizer\Tokenizer;
-use LastDragon_ru\DiyParser\Utils;
 use LastDragon_ru\GlobMatcher\BraceExpander\BraceExpander;
 use LastDragon_ru\GlobMatcher\BraceExpander\Parser\Name as BraceExpanderName;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
 use LastDragon_ru\GlobMatcher\Glob\Glob;
 use LastDragon_ru\GlobMatcher\Glob\Options as GlobOptions;
 use LastDragon_ru\GlobMatcher\Glob\Parser\Name as GlobName;
+use LastDragon_ru\TextParser\Iterables\StringifyIterable;
+use LastDragon_ru\TextParser\Iterables\TokenEscapeIterable;
+use LastDragon_ru\TextParser\Tokenizer\Token;
+use LastDragon_ru\TextParser\Tokenizer\Tokenizer;
+use LastDragon_ru\TextParser\Utils;
 use Override;
 use Stringable;
 

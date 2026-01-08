@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Parser;
 
-use LastDragon_ru\DiyParser\Iterables\StringTokenizeIterable;
-use LastDragon_ru\DiyParser\Iterables\TokenUnescapeIterable;
-use LastDragon_ru\DiyParser\Tokenizer\Token;
+use LastDragon_ru\TextParser\Iterables\StringTokenizeIterable;
+use LastDragon_ru\TextParser\Iterables\TokenUnescapeIterable;
+use LastDragon_ru\TextParser\Tokenizer\Token;
 use Override;
 use Traversable;
 

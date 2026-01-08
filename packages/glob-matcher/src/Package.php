@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\GlobMatcher;
 
-use LastDragon_ru\DiyParser\Package as ParserPackage;
+use LastDragon_ru\TextParser\Package as ParserPackage;
 
 final class Package {
     public const string Name     = 'glob-matcher';

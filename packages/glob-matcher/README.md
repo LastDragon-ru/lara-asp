@@ -291,7 +291,7 @@ LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNode {
 
 # Constraints
 
-We are using PCRE to match and the [`lastdragon-ru/diy-parser`](../diy-parser/README.md) package to parse glob patterns. Both are limits encoding to `UTF-8` only.
+We are using PCRE to match and the [`lastdragon-ru/text-parser`](../text-parser/README.md) package to parse glob patterns. Both are limits encoding to `UTF-8` only.
 
 Path always checks as is. Unlike bash, there is no special processing of quotes/parentheses inside the pattern.
 

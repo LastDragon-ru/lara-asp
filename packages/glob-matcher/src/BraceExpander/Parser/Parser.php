@@ -2,9 +2,6 @@
 
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Parser;
 
-use LastDragon_ru\DiyParser\Iterables\TransactionalIterable;
-use LastDragon_ru\DiyParser\Tokenizer\Token;
-use LastDragon_ru\DiyParser\Tokenizer\Tokenizer;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\BraceExpansionNodeChild;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\CharacterSequenceNode;
@@ -15,6 +12,9 @@ use LastDragon_ru\GlobMatcher\BraceExpander\Ast\StringNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Parser\Factories\BraceExpansionNodeFactory;
 use LastDragon_ru\GlobMatcher\BraceExpander\Parser\Factories\SequenceNodeFactory;
 use LastDragon_ru\GlobMatcher\Package;
+use LastDragon_ru\TextParser\Iterables\TransactionalIterable;
+use LastDragon_ru\TextParser\Tokenizer\Token;
+use LastDragon_ru\TextParser\Tokenizer\Tokenizer;
 
 use function filter_var;
 use function mb_ltrim;

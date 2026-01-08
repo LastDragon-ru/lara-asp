@@ -19,10 +19,10 @@ parameters:
 			path: packages/core/src/Observer/DispatcherTest.php
 
 		-
-			rawMessage: 'Property LastDragon_ru\DiyParser\Iterables\BufferedIterable<TValue>::$iterator (Iterator<mixed, TValue>) does not accept (iterable<TValue>&Iterator)|IteratorIterator<mixed, mixed, Traversable<TKey, TValue>>.'
+			rawMessage: 'Property LastDragon_ru\TextParser\Iterables\BufferedIterable<TValue>::$iterator (Iterator<mixed, TValue>) does not accept (iterable<TValue>&Iterator)|IteratorIterator<mixed, mixed, Traversable<TKey, TValue>>.'
 			identifier: assign.propertyType
 			count: 1
-			path: packages/diy-parser/src/Iterables/BufferedIterable.php
+			path: packages/text-parser/src/Iterables/BufferedIterable.php
 
 		-
 			rawMessage: 'Parameter #1 $offset of method LastDragon_ru\LaraASP\Eloquent\Iterators\IteratorImpl<TItem of Illuminate\Database\Eloquent\Model>::setOffset() expects int|string|null, mixed given.'
@@ -55,13 +55,13 @@ parameters:
 			path: packages/formatter/src/Formatter.php
 
 		-
-			rawMessage: 'Parameter #2 $cursor of static method LastDragon_ru\GlobMatcher\Glob\Ast\Node::toRegex() expects LastDragon_ru\DiyParser\Ast\Cursor<covariant LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild>, LastDragon_ru\DiyParser\Ast\Cursor<LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild> given.'
+			rawMessage: 'Parameter #2 $cursor of static method LastDragon_ru\GlobMatcher\Glob\Ast\Node::toRegex() expects LastDragon_ru\TextParser\Ast\Cursor<covariant LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild>, LastDragon_ru\TextParser\Ast\Cursor<LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild> given.'
 			identifier: argument.type
 			count: 1
 			path: packages/glob-matcher/src/Glob/Ast/CharacterNode.php
 
 		-
-			rawMessage: 'Parameter #2 $cursor of static method LastDragon_ru\GlobMatcher\Glob\Ast\Node::toRegex() expects LastDragon_ru\DiyParser\Ast\Cursor<covariant LastDragon_ru\GlobMatcher\Glob\Ast\Node>, LastDragon_ru\DiyParser\Ast\Cursor<covariant static(LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNode)>|LastDragon_ru\DiyParser\Ast\Cursor<LastDragon_ru\GlobMatcher\Glob\Ast\Node> given.'
+			rawMessage: 'Parameter #2 $cursor of static method LastDragon_ru\GlobMatcher\Glob\Ast\Node::toRegex() expects LastDragon_ru\TextParser\Ast\Cursor<covariant LastDragon_ru\GlobMatcher\Glob\Ast\Node>, LastDragon_ru\TextParser\Ast\Cursor<covariant static(LastDragon_ru\GlobMatcher\Glob\Ast\PatternListNode)>|LastDragon_ru\TextParser\Ast\Cursor<LastDragon_ru\GlobMatcher\Glob\Ast\Node> given.'
 			identifier: argument.type
 			count: 1
 			path: packages/glob-matcher/src/Glob/Ast/PatternListNode.php

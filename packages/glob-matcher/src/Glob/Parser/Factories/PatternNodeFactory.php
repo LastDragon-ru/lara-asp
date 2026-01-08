@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Parser\Factories;
 
-use LastDragon_ru\DiyParser\Ast\NodeParentFactory;
 use LastDragon_ru\GlobMatcher\Glob\Ast\NameNodeChild;
 use LastDragon_ru\GlobMatcher\Glob\Ast\PatternNode;
+use LastDragon_ru\TextParser\Ast\NodeParentFactory;
 use Override;
 
 /**

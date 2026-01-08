@@ -125,7 +125,7 @@
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\": "packages/graphql-testing/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
       "LastDragon_ru\\Path\\": "packages/path/src/",
-      "LastDragon_ru\\DiyParser\\": "packages/diy-parser/src/",
+      "LastDragon_ru\\TextParser\\": "packages/text-parser/src/",
       "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/"
@@ -145,7 +145,7 @@
       "packages/migrator/docs/",
       "packages/migrator/src/Migrations/MigratorTest/raw/",
       "packages/path/docs/",
-      "packages/diy-parser/docs/",
+      "packages/text-parser/docs/",
       "packages/serializer/docs/",
       "packages/spa/docs/",
       "packages/testing/docs/",
@@ -164,7 +164,7 @@
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Docs\\": "packages/graphql-testing/docs",
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/migrator/docs",
       "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
-      "LastDragon_ru\\DiyParser\\Docs\\": "packages/diy-parser/docs",
+      "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs",
       "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/serializer/docs",
       "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/spa/docs",
       "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
@@ -196,8 +196,8 @@
         }
       },
       "sync-packages": {
-        "glob-matcher": [
-          "glob"
+        "text-parser": [
+          "diy-parser"
         ]
       }
     },
@@ -279,7 +279,7 @@
   },
   "replace": {
     "lastdragon-ru/path": "self.version",
-    "lastdragon-ru/diy-parser": "self.version",
+    "lastdragon-ru/text-parser": "self.version",
     "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/graphql-printer": "self.version",
     "lastdragon-ru/graphql-printer-testing": "self.version",

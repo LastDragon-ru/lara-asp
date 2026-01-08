@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Ast\NodeMergeable;
 use LastDragon_ru\GlobMatcher\Glob\Options;
+use LastDragon_ru\TextParser\Ast\Cursor;
+use LastDragon_ru\TextParser\Ast\NodeMergeable;
 use Override;
 
 class AsteriskNode implements Node, NameNodeChild, NodeMergeable {

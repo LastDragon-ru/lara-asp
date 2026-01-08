@@ -4,7 +4,7 @@
     "laravel/framework": "^12.0",
     "laravel/tinker": "^2.9",
     "lastdragon-ru/path": "self.version",
-    "lastdragon-ru/diy-parser": "self.version",
+    "lastdragon-ru/text-parser": "self.version",
     "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
@@ -17,7 +17,7 @@
       "App\\": "app/",
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/",
-      "LastDragon_ru\\DiyParser\\Docs\\": "vendor/lastdragon-ru/diy-parser/docs/"
+      "LastDragon_ru\\TextParser\\Docs\\": "vendor/lastdragon-ru/text-parser/docs/"
     }
   },
   "scripts": {

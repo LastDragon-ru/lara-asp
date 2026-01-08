@@ -60,9 +60,9 @@
             <directory suffix="Test.php">./packages/documentator/src</directory>
             <directory suffix="Test.php">./packages/documentator/docs</directory>
         </testsuite>
-        <testsuite name="diy-parser">
-            <directory suffix="Test.php">./packages/diy-parser/src</directory>
-            <directory suffix="Test.php">./packages/diy-parser/docs</directory>
+        <testsuite name="text-parser">
+            <directory suffix="Test.php">./packages/text-parser/src</directory>
+            <directory suffix="Test.php">./packages/text-parser/docs</directory>
         </testsuite>
         <testsuite name="glob-matcher">
             <directory suffix="Test.php">./packages/glob-matcher/src</directory>
@@ -101,8 +101,8 @@
             <directory suffix=".php">./packages/serializer/docs</directory>
             <directory suffix=".php">./packages/documentator/src</directory>
             <directory suffix=".php">./packages/documentator/docs</directory>
-            <directory suffix=".php">./packages/diy-parser/src</directory>
-            <directory suffix=".php">./packages/diy-parser/docs</directory>
+            <directory suffix=".php">./packages/text-parser/src</directory>
+            <directory suffix=".php">./packages/text-parser/docs</directory>
             <directory suffix=".php">./packages/glob-matcher/src</directory>
             <directory suffix=".php">./packages/glob-matcher/docs</directory>
             <directory suffix=".php">./packages/path/src</directory>
@@ -135,8 +135,8 @@
             <directory suffix="Test.php">./packages/serializer/docs</directory>
             <directory suffix="Test.php">./packages/documentator/src</directory>
             <directory suffix="Test.php">./packages/documentator/docs</directory>
-            <directory suffix="Test.php">./packages/diy-parser/src</directory>
-            <directory suffix="Test.php">./packages/diy-parser/docs</directory>
+            <directory suffix="Test.php">./packages/text-parser/src</directory>
+            <directory suffix="Test.php">./packages/text-parser/docs</directory>
             <directory suffix="Test.php">./packages/glob-matcher/src</directory>
             <directory suffix="Test.php">./packages/glob-matcher/docs</directory>
             <directory suffix="Test.php">./packages/path/src</directory>

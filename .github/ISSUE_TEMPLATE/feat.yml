@@ -9,7 +9,6 @@ body:
       options:
         - core
         - dev
-        - diy-parser
         - documentator
         - eloquent
         - formatter
@@ -22,6 +21,7 @@ body:
         - serializer
         - spa
         - testing
+        - text-parser
   - type: textarea
     attributes:
       label: Description

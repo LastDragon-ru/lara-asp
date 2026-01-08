@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Parser;
 
-use LastDragon_ru\DiyParser\Tokenizer\Token;
 use LastDragon_ru\GlobMatcher\Package\TestCase;
+use LastDragon_ru\TextParser\Tokenizer\Token;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use function iterator_to_array;

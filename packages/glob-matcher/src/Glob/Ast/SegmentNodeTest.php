@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
 use LastDragon_ru\GlobMatcher\Glob\Options;
 use LastDragon_ru\GlobMatcher\Package\TestCase;
+use LastDragon_ru\TextParser\Ast\Cursor;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

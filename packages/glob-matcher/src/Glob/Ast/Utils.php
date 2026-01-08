@@ -2,10 +2,10 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Iterables\TransformIterable;
-use LastDragon_ru\DiyParser\Utils as ParserUtils;
 use LastDragon_ru\GlobMatcher\Glob\Options;
+use LastDragon_ru\TextParser\Ast\Cursor;
+use LastDragon_ru\TextParser\Iterables\TransformIterable;
+use LastDragon_ru\TextParser\Utils as ParserUtils;
 
 use function count;
 

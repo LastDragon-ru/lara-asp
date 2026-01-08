@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\Glob\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
-use LastDragon_ru\DiyParser\Ast\NodeString;
 use LastDragon_ru\GlobMatcher\Glob\Options;
+use LastDragon_ru\TextParser\Ast\Cursor;
+use LastDragon_ru\TextParser\Ast\NodeString;
 use Override;
 
 use function preg_quote;

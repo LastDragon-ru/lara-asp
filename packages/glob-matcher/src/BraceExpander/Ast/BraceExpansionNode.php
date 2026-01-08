@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Ast;
 
-use LastDragon_ru\DiyParser\Ast\Cursor;
+use LastDragon_ru\TextParser\Ast\Cursor;
 use Override;
 
 /**

@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GlobMatcher\BraceExpander\Parser\Factories;
 
-use LastDragon_ru\DiyParser\Ast\NodeParentFactory;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\SequenceNode;
 use LastDragon_ru\GlobMatcher\BraceExpander\Ast\SequenceNodeChild;
+use LastDragon_ru\TextParser\Ast\NodeParentFactory;
 use Override;
 
 use function count;
