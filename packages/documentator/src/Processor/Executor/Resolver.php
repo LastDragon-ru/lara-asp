@@ -3,8 +3,8 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Closure;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as Contract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Dispatcher;
@@ -30,7 +30,7 @@ class Resolver implements Contract {
     private WeakMap $files;
 
     public function __construct(
-        private readonly ContainerResolver $container,
+        private readonly Container $container,
         protected readonly Dispatcher $dispatcher,
         protected readonly FileSystem $fs,
         /**
@@ -91,7 +91,7 @@ class Resolver implements Contract {
         $file = $path instanceof File ? $path : $this->get($path);
 
         if (!isset($this->files[$file][$cast])) {
-            $this->casts[$cast]      ??= $this->container->getInstance()->make($cast);
+            $this->casts[$cast]      ??= $this->container->make($cast);
             $this->files[$file]      ??= [];
             $this->files[$file][$cast] = ($this->casts[$cast])($this, $file);
         }

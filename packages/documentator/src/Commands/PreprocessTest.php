@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Commands;
 
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Context;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Instruction;
 use LastDragon_ru\LaraASP\Documentator\Processor\Tasks\Preprocess\Contracts\Parameters;
@@ -29,7 +29,7 @@ final class PreprocessTest extends TestCase {
                 PreprocessTest__InstructionNoParameters::class,
             ]);
 
-        $container = $this->app()->make(ContainerResolver::class);
+        $container = $this->app()->make(Container::class);
         $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
@@ -76,7 +76,7 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpTaskPreprocessInstructionTarget(): void {
-        $container = $this->app()->make(ContainerResolver::class);
+        $container = $this->app()->make(Container::class);
         $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
@@ -107,7 +107,7 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpTaskPreprocessParameters(): void {
-        $container = $this->app()->make(ContainerResolver::class);
+        $container = $this->app()->make(Container::class);
         $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]
@@ -142,7 +142,7 @@ final class PreprocessTest extends TestCase {
     }
 
     public function testGetProcessedHelpTaskPreprocessParametersNoParameters(): void {
-        $container = $this->app()->make(ContainerResolver::class);
+        $container = $this->app()->make(Container::class);
         $adapter   = $this->app()->make(Adapter::class);
         $command   = new class($container, $adapter) extends Preprocess {
             #[Override]

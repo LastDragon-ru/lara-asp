@@ -3,9 +3,9 @@
 namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Exception;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Cast;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as Contract;
@@ -41,7 +41,7 @@ final class ResolverTest extends TestCase {
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -83,7 +83,7 @@ final class ResolverTest extends TestCase {
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -135,7 +135,7 @@ final class ResolverTest extends TestCase {
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
         $filepath   = new FilePath('file.txt');
         $resolved   = Mockery::mock(File::class);
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -181,7 +181,7 @@ final class ResolverTest extends TestCase {
         $queue      = Mockery::mock(ResolverTest__Invokable::class);
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
         $filepath   = new FilePath('file.txt');
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -223,7 +223,7 @@ final class ResolverTest extends TestCase {
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -278,7 +278,7 @@ final class ResolverTest extends TestCase {
 
         $queue      = Mockery::mock(ResolverTest__Invokable::class);
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filepath   = new FilePath('/file.txt');
@@ -326,7 +326,7 @@ final class ResolverTest extends TestCase {
         $content    = 'content';
         $filepath   = new FilePath('file.txt');
         $exception  = new Exception();
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -366,11 +366,13 @@ final class ResolverTest extends TestCase {
 
     public function testSaveCastReset(): void {
         $dispatcher = new ResolverTest__Dispatcher();
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $container
-            ->shouldReceive('getInstance')
+            ->shouldReceive('make')
             ->once()
-            ->andReturn($this->app());
+            ->andReturn(
+                new ResolverTest__Cast(),
+            );
 
         $run        = (new ResolverTest__Invokable())(...);
         $save       = (new ResolverTest__Invokable())(...);
@@ -412,7 +414,7 @@ final class ResolverTest extends TestCase {
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
         $filepath   = new FilePath('/file.txt');
         $resolved   = Mockery::mock(File::class);
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -468,7 +470,7 @@ final class ResolverTest extends TestCase {
             ->andReturns();
 
         $delete     = Mockery::mock(ResolverTest__Invokable::class);
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -527,7 +529,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -575,7 +577,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -629,7 +631,7 @@ final class ResolverTest extends TestCase {
             ->once()
             ->andReturns();
 
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = new ResolverTest__Dispatcher();
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -685,7 +687,7 @@ final class ResolverTest extends TestCase {
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
         $resolved   = [new FilePath('file.txt')];
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -728,7 +730,7 @@ final class ResolverTest extends TestCase {
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
         $resolved   = [new FilePath('file.txt')];
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -772,7 +774,7 @@ final class ResolverTest extends TestCase {
         $exclude    = ['exclude'];
         $directory  = new DirectoryPath('directory');
         $resolved   = [new FilePath('file.txt')];
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $filesystem
@@ -807,7 +809,7 @@ final class ResolverTest extends TestCase {
         $save       = (new ResolverTest__Invokable())(...);
         $queue      = (new ResolverTest__Invokable())(...);
         $delete     = (new ResolverTest__Invokable())(...);
-        $container  = Mockery::mock(ContainerResolver::class);
+        $container  = Mockery::mock(Container::class);
         $dispatcher = Mockery::mock(Dispatcher::class);
         $filesystem = Mockery::mock(FileSystem::class);
         $resolver   = new class($container, $dispatcher, $filesystem, $run, $queue, $save, $delete) extends Resolver {
@@ -831,11 +833,13 @@ final class ResolverTest extends TestCase {
     }
 
     public function testCast(): void {
-        $container = Mockery::mock(ContainerResolver::class);
+        $container = Mockery::mock(Container::class);
         $container
-            ->shouldReceive('getInstance')
+            ->shouldReceive('make')
             ->once()
-            ->andReturn($this->app());
+            ->andReturn(
+                new ResolverTest__Cast(),
+            );
 
         $run        = (new ResolverTest__Invokable())(...);
         $save       = (new ResolverTest__Invokable())(...);

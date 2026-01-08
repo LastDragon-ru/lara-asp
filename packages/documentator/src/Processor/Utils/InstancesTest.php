@@ -1,10 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Utils;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Utils;
 
-use Illuminate\Contracts\Container\Container;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
@@ -19,8 +18,8 @@ use const PHP_INT_MAX;
 #[CoversClass(Instances::class)]
 final class InstancesTest extends TestCase {
     public function testTags(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $container = Mockery::mock(Container::class);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Desc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -35,8 +34,8 @@ final class InstancesTest extends TestCase {
     }
 
     public function testClasses(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Asc);
+        $container = Mockery::mock(Container::class);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Asc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -62,8 +61,8 @@ final class InstancesTest extends TestCase {
     }
 
     public function testIs(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $container = Mockery::mock(Container::class);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Desc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -84,8 +83,8 @@ final class InstancesTest extends TestCase {
     }
 
     public function testHas(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $container = Mockery::mock(Container::class);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Desc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -111,13 +110,7 @@ final class InstancesTest extends TestCase {
 
     public function testGet(): void {
         $container = Mockery::mock(Container::class);
-        $resolver  = Mockery::mock(ContainerResolver::class);
-        $resolver
-            ->shouldReceive('getInstance')
-            ->once()
-            ->andReturn($container);
-
-        $instances = new InstancesTest__Instances($resolver, SortOrder::Asc);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Asc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -145,13 +138,7 @@ final class InstancesTest extends TestCase {
 
     public function testGetReverse(): void {
         $container = Mockery::mock(Container::class);
-        $resolver  = Mockery::mock(ContainerResolver::class);
-        $resolver
-            ->shouldReceive('getInstance')
-            ->once()
-            ->andReturn($container);
-
-        $instances = new InstancesTest__Instances($resolver, SortOrder::Desc);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Desc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -174,8 +161,8 @@ final class InstancesTest extends TestCase {
     }
 
     public function testAdd(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Asc);
+        $container = Mockery::mock(Container::class);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Asc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -219,8 +206,8 @@ final class InstancesTest extends TestCase {
     }
 
     public function testRemove(): void {
-        $container = Mockery::mock(ContainerResolver::class);
-        $instances = new InstancesTest__Instances($container, SortOrder::Desc);
+        $container = Mockery::mock(Container::class);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Desc);
         $aInstance = new class() extends stdClass {
             // empty
         };
@@ -246,13 +233,7 @@ final class InstancesTest extends TestCase {
 
     public function testReset(): void {
         $container = Mockery::mock(Container::class);
-        $resolver  = Mockery::mock(ContainerResolver::class);
-        $resolver
-            ->shouldReceive('getInstance')
-            ->twice()
-            ->andReturn($container);
-
-        $instances = new InstancesTest__Instances($resolver, SortOrder::Asc);
+        $instances = new InstancesTest__Instances($container, InstancesOrder::Asc);
         $aInstance = new class() {
             // empty
         };

@@ -4,13 +4,13 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use IteratorAggregate;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\HookTask;
-use LastDragon_ru\LaraASP\Documentator\Utils\Instances;
-use LastDragon_ru\LaraASP\Documentator\Utils\SortOrder;
+use LastDragon_ru\LaraASP\Documentator\Processor\Utils\Instances;
+use LastDragon_ru\LaraASP\Documentator\Processor\Utils\InstancesOrder;
 use Override;
 use Traversable;
 use WeakMap;
@@ -39,9 +39,9 @@ class Tasks implements IteratorAggregate {
      */
     private WeakMap $tags;
 
-    public function __construct(ContainerResolver $container) {
+    public function __construct(Container $container) {
         $this->tags      = new WeakMap();
-        $this->instances = new Instances($container, SortOrder::Asc);
+        $this->instances = new Instances($container, InstancesOrder::Asc);
     }
 
     /**

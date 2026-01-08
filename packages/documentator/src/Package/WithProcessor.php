@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -64,7 +64,7 @@ trait WithProcessor {
 
     protected function getProcessorResolver(FileSystem $filesystem): ResolverContract {
         $dispatcher = new Dispatcher(null);
-        $container  = $this->app()->make(ContainerResolver::class);
+        $container  = $this->app()->make(Container::class);
         $callback   = static function (): void {
             // empty
         };
