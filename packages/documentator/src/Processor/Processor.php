@@ -5,8 +5,8 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 use Closure;
 use Exception;
 use LastDragon_ru\GlobMatcher\GlobMatcher;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Adapter;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Events\ProcessBegin;
@@ -27,7 +27,7 @@ class Processor {
     protected readonly Tasks $tasks;
 
     public function __construct(
-        protected readonly ContainerResolver $container,
+        protected readonly Container $container,
         protected readonly Adapter $adapter,
     ) {
         $this->tasks = new Tasks($container);

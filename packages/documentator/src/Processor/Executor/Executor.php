@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\Executor;
 
 use Exception;
 use LastDragon_ru\GlobMatcher\Contracts\Matcher;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Task;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -53,7 +53,7 @@ class Executor {
      * @param iterable<mixed, DirectoryPath|FilePath> $files
      */
     public function __construct(
-        private readonly ContainerResolver $container,
+        private readonly Container $container,
         private readonly Dispatcher $dispatcher,
         private readonly Tasks $tasks,
         private readonly FileSystem $fs,

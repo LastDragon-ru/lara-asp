@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Documentator\Utils;
+namespace LastDragon_ru\LaraASP\Documentator\Processor\Utils;
 
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use UnitEnum;
 use WeakMap;
 
@@ -58,8 +58,8 @@ class Instances {
     private array $persistent = [];
 
     public function __construct(
-        protected readonly ContainerResolver $container,
-        protected readonly SortOrder $order,
+        protected readonly Container $container,
+        protected readonly InstancesOrder $order,
     ) {
         $this->enums = new WeakMap();
     }
@@ -224,7 +224,7 @@ class Instances {
      * @return TInstance
      */
     protected function resolve(string $class): object {
-        $this->resolved[$class] ??= $this->container->getInstance()->make($class);
+        $this->resolved[$class] ??= $this->container->make($class);
 
         return $this->resolved[$class];
     }
@@ -247,7 +247,7 @@ class Instances {
         $b = $this->priorities[$b] ?? null;
         $c = $a <=> $b;
 
-        if ($this->order === SortOrder::Desc) {
+        if ($this->order === InstancesOrder::Desc) {
             $c = -$c;
         }
 

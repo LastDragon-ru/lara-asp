@@ -4,9 +4,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
 use Closure;
 use Exception;
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\LaraASP\Documentator\Package\WithPathComparator;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Event;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver as ResolverContract;
@@ -113,7 +113,7 @@ final class ProcessorTest extends TestCase {
         };
 
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
         $processor->task($mock);
@@ -270,7 +270,7 @@ final class ProcessorTest extends TestCase {
         $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $events    = [];
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -321,7 +321,7 @@ final class ProcessorTest extends TestCase {
         $input     = (new FilePath(self::getTestData()->path('excluded.txt')))->normalized();
         $events    = [];
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -381,7 +381,7 @@ final class ProcessorTest extends TestCase {
             }
         };
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -546,7 +546,7 @@ final class ProcessorTest extends TestCase {
             ],
         ]);
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -627,7 +627,7 @@ final class ProcessorTest extends TestCase {
         $task      = new ProcessorTest__Task(['*' => ['404.html']]);
         $path      = $input->file('a/404.html');
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -647,7 +647,7 @@ final class ProcessorTest extends TestCase {
             'c.txt'  => ['a/a.txt'],
         ]);
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
         $processor->task($task);
@@ -674,7 +674,7 @@ final class ProcessorTest extends TestCase {
             'aa.txt' => ['aa.txt'],
         ]);
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -708,7 +708,7 @@ final class ProcessorTest extends TestCase {
             'excluded.txt' => ['aa.txt'],
         ]);
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -736,7 +736,7 @@ final class ProcessorTest extends TestCase {
             'aa.txt' => ['../a.txt'],
         ]);
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -822,7 +822,7 @@ final class ProcessorTest extends TestCase {
             }
         };
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -864,7 +864,7 @@ final class ProcessorTest extends TestCase {
             }
         };
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -907,7 +907,7 @@ final class ProcessorTest extends TestCase {
             }
         };
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -937,7 +937,7 @@ final class ProcessorTest extends TestCase {
             }
         };
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
 
@@ -1020,7 +1020,7 @@ final class ProcessorTest extends TestCase {
         self::assertNotFalse(file_put_contents($file->path, 'content'));
 
         $processor = new Processor(
-            $this->app()->make(ContainerResolver::class),
+            Mockery::mock(Container::class),
             new ProcessorTest__Adapter(),
         );
         $processor->task($taskA);

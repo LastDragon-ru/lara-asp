@@ -2,8 +2,8 @@
 
 namespace LastDragon_ru\LaraASP\Documentator\Processor;
 
-use LastDragon_ru\LaraASP\Core\Application\ContainerResolver;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
+use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Container;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\File;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\Contracts\Tasks\FileTask;
@@ -24,7 +24,7 @@ use function iterator_to_array;
 final class TasksTest extends TestCase {
     public function testHas(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $tasks      = new Tasks(Mockery::mock(ContainerResolver::class));
+        $tasks      = new Tasks(Mockery::mock(Container::class),);
         $aFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.md')]);
         $bFile      = Mockery::mock(FileImpl::class, [$filesystem, new FilePath('/file.task')]);
 
@@ -45,7 +45,7 @@ final class TasksTest extends TestCase {
 
     public function testGet(): void {
         $filesystem = Mockery::mock(FileSystem::class);
-        $tasks      = new Tasks(Mockery::mock(ContainerResolver::class));
+        $tasks      = new Tasks(Mockery::mock(Container::class),);
         $taskA      = new TasksTest__FileTask();
         $taskB      = new TasksTest__HookTask();
         $taskC      = new TasksTest__Task();
@@ -98,7 +98,7 @@ final class TasksTest extends TestCase {
     }
 
     public function testAdd(): void {
-        $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
+        $tasks = new Tasks(Mockery::mock(Container::class),);
 
         $tasks->add(TasksTest__Task::class);
 
@@ -109,7 +109,7 @@ final class TasksTest extends TestCase {
     }
 
     public function testRemove(): void {
-        $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
+        $tasks = new Tasks(Mockery::mock(Container::class),);
 
         $tasks->add(new TasksTest__FileTask());
         $tasks->add(TasksTest__HookTask::class);
@@ -136,7 +136,7 @@ final class TasksTest extends TestCase {
     }
 
     public function testGetIterator(): void {
-        $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
+        $tasks = new Tasks(Mockery::mock(Container::class),);
 
         $tasks->add(new TasksTest__FileTask(), 200);
         $tasks->add(TasksTest__HookTask::class, 100);
@@ -151,7 +151,7 @@ final class TasksTest extends TestCase {
     }
 
     public function testGlobs(): void {
-        $tasks = new Tasks(Mockery::mock(ContainerResolver::class));
+        $tasks = new Tasks(Mockery::mock(Container::class),);
 
         $tasks->add(new TasksTest__FileTask());
         $tasks->add(TasksTest__Task::class);
