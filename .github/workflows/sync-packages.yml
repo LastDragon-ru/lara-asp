@@ -62,8 +62,20 @@ jobs:
       # How to disable this behaviour?
       - name: Extract commits
         run: |
-          git-filter-repo --source=src --target=package \
-            --subdirectory-filter="${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}"
+          # Package directory can be renamed, so we are collecting all previous
+          # names to preserve the history.
+          NAMES=$( jq '(."extra"."lara-asp"."sync-packages"."${{ matrix.package }}" // []) | unique' "src/composer.json" | jq -c -r '.[]' | tr -d '\r')
+          FILTERS=()
+          FILTERS+=("--subdirectory-filter")
+          FILTERS+=("${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}")
+
+          while IFS= read -r NAME
+          do
+            FILTERS+=("--subdirectory-filter")
+            FILTERS+=("${{ needs.settings.outputs.packages-directory }}/${NAME}")
+          done <<< "${NAMES}"
+
+          git-filter-repo --source=src --target=package "${FILTERS[@]}"
 
       # Before `push --mirror` we need enable track for all branches, or they will
       # not be visible after `git clone` and on the Branches page on GitHub.
@@ -78,7 +90,14 @@ jobs:
               || git branch --track ${i#remotes/origin/} --set-upstream-to=$i
           done
 
-      - name: Push package
-        working-directory: package
-        run: |
-          git push --mirror origin
+#      - name: Push package
+#        working-directory: package
+#        run: |
+#          git push --mirror origin
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.package }}.pkg"
+          path: package
+          retention-days: 1
+          include-hidden-files: true

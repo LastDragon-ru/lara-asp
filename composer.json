@@ -194,6 +194,11 @@
             "ext-fileinfo"
           ]
         }
+      },
+      "sync-packages": {
+        "glob-matcher": [
+          "glob"
+        ]
       }
     },
     "laravel": {
