@@ -92,9 +92,9 @@ jobs:
           echo "version=$(cat $VERSION)" >> $GITHUB_OUTPUT
           cat "$CHANGELOG" >> $GITHUB_STEP_SUMMARY
 
-  packages:
+  delivery:
     if: ${{ !inputs.dry-run }}
-    uses: ./.github/workflows/packages.yml
+    uses: ./.github/workflows/di.yml
     needs:
       - release
     secrets: inherit
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - release
-      - packages
+      - delivery
     steps:
       - name: Summary
         if: ${{ !inputs.dry-run }}

@@ -1,12 +1,8 @@
 name: Sync Packages
 
 on:
-  push:
-    branches:
-      - 'main'
-      - '[0-9]+.x'
-  workflow_call:
-  workflow_dispatch:
+  repository_dispatch:
+    types: [sync-packages]
 
 permissions:
   contents: read
