@@ -15,11 +15,11 @@ body:
         - lara-asp-graphql
         - lara-asp-migrator
         - lara-asp-serializer
+        - lara-asp-spa
         - glob-matcher
         - graphql-printer
         - graphql-printer-testing
         - path
-        - spa
         - testing
         - text-parser
   - type: textarea

@@ -136,19 +136,19 @@ parameters:
 			rawMessage: 'Parameter #3 $path of method LastDragon_ru\LaraASP\Spa\Http\Resources\Resource::mapResourceValue() expects array<string>, array<mixed> given.'
 			identifier: argument.type
 			count: 1
-			path: packages/spa/src/Http/Resources/Resource.php
+			path: packages/lara-asp-spa/src/Http/Resources/Resource.php
 
 		-
 			rawMessage: Cannot access property $id on mixed.
 			identifier: property.nonObject
 			count: 1
-			path: packages/spa/src/Routing/ResolverTest.php
+			path: packages/lara-asp-spa/src/Routing/ResolverTest.php
 
 		-
 			rawMessage: 'Parameter #1 $timezone of method DateTime::setTimezone() expects DateTimeZone, mixed given.'
 			identifier: argument.type
 			count: 1
-			path: packages/spa/src/Validation/Rules/DateTimeRule.php
+			path: packages/lara-asp-spa/src/Validation/Rules/DateTimeRule.php
 
 		-
 			rawMessage: 'Parameter #1 $json of static method LastDragon_ru\LaraASP\Testing\Utils\Args::getJson() expects array<mixed>|bool|float|int|JsonSerializable|SplFileInfo|stdClass|string|null, mixed given.'

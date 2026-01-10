@@ -95,7 +95,7 @@ abstract class Resource extends JsonResource implements SafeResource {
      */
     #[Override]
     public static function collection($resource): AnonymousResourceCollection {
-        // TODO [spa]: I'm definitely not sure that we need to support $preserveKeys
+        // TODO [lara-asp-spa]: I'm definitely not sure that we need to support $preserveKeys
         //      (see parent method) because:
         //      - right now Laravel 8.25.0 doesn't support it without $wrap but
         //        all our resources without it (https://github.com/laravel/framework/issues/30052);

@@ -90,9 +90,9 @@ This package improves standard Laravel migrations to add support for raw SQL fil
 
 [Read more](<packages/lara-asp-migrator/README.md>).
 
-## [(Laravel) SPA Helpers](<packages/spa/README.md>)
+## [(Laravel) SPA Helpers](<packages/lara-asp-spa/README.md>)
 
-[Read more](<packages/spa/README.md>).
+[Read more](<packages/lara-asp-spa/README.md>).
 
 ## [(Laravel) Symfony Serializer](<packages/lara-asp-serializer/README.md>)
 

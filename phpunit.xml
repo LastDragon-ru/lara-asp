@@ -32,9 +32,9 @@
             <directory suffix="Test.php">./packages/lara-asp-formatter/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-formatter/docs</directory>
         </testsuite>
-        <testsuite name="spa">
-            <directory suffix="Test.php">./packages/spa/src</directory>
-            <directory suffix="Test.php">./packages/spa/docs</directory>
+        <testsuite name="lara-asp-spa">
+            <directory suffix="Test.php">./packages/lara-asp-spa/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-spa/docs</directory>
         </testsuite>
         <testsuite name="lara-asp-graphql">
             <directory suffix="Test.php">./packages/lara-asp-graphql/src</directory>
@@ -87,8 +87,8 @@
             <directory suffix=".php">./packages/lara-asp-eloquent/docs</directory>
             <directory suffix=".php">./packages/lara-asp-formatter/src</directory>
             <directory suffix=".php">./packages/lara-asp-formatter/docs</directory>
-            <directory suffix=".php">./packages/spa/src</directory>
-            <directory suffix=".php">./packages/spa/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-spa/src</directory>
+            <directory suffix=".php">./packages/lara-asp-spa/docs</directory>
             <directory suffix=".php">./packages/lara-asp-graphql/src</directory>
             <directory suffix=".php">./packages/lara-asp-graphql/docs</directory>
             <directory suffix=".php">./packages/lara-asp-graphql-testing/src</directory>
@@ -121,8 +121,8 @@
             <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-formatter/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-formatter/docs</directory>
-            <directory suffix="Test.php">./packages/spa/src</directory>
-            <directory suffix="Test.php">./packages/spa/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-spa/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-spa/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-graphql/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-graphql/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-graphql-testing/src</directory>

@@ -127,7 +127,7 @@
       "LastDragon_ru\\Path\\": "packages/path/src/",
       "LastDragon_ru\\TextParser\\": "packages/text-parser/src/",
       "LastDragon_ru\\LaraASP\\Serializer\\": "packages/lara-asp-serializer/src/",
-      "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
+      "LastDragon_ru\\LaraASP\\Spa\\": "packages/lara-asp-spa/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/"
     }
   },
@@ -147,7 +147,7 @@
       "packages/path/docs/",
       "packages/text-parser/docs/",
       "packages/lara-asp-serializer/docs/",
-      "packages/spa/docs/",
+      "packages/lara-asp-spa/docs/",
       "packages/testing/docs/",
       "packages/**/*Test/"
     ],
@@ -166,7 +166,7 @@
       "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
       "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs",
       "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/lara-asp-serializer/docs",
-      "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/spa/docs",
+      "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/lara-asp-spa/docs",
       "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
     }
   },
@@ -222,6 +222,9 @@
         ],
         "lara-asp-serializer": [
           "serializer"
+        ],
+        "lara-asp-spa": [
+          "spa"
         ],
         "text-parser": [
           "diy-parser"
