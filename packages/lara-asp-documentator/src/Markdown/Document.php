@@ -12,7 +12,7 @@ use League\CommonMark\Node\Block\Document as DocumentNode;
 use League\CommonMark\Parser\MarkdownParserInterface;
 use Override;
 
-// todo(documentator): There is no way to convert AST back to Markdown yet
+// todo(lara-asp-documentator): There is no way to convert AST back to Markdown yet
 //      https://github.com/thephpleague/commonmark/issues/419
 
 /**

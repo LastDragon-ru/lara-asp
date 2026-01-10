@@ -9,7 +9,7 @@ body:
       options:
         - lara-asp-core
         - lara-asp-dev
-        - documentator
+        - lara-asp-documentator
         - eloquent
         - formatter
         - glob-matcher

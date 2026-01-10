@@ -11,7 +11,7 @@ use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use Override;
 
 /**
- * todo(documentator): [league/commonmark] [update] Check priorities in {@see FootnoteExtension}.
+ * todo(lara-asp-documentator): [league/commonmark] [update] Check priorities in {@see FootnoteExtension}.
  *
  * @see FootnoteExtension
  * @see FixOrphanedFootnotesAndRefsListener

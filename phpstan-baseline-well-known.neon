@@ -29,7 +29,7 @@ parameters:
         -
             message: "#Calling putenv\\(\\) is forbidden, might overwrite existing variables\\.#"
             paths:
-                - packages/documentator/src/Processor/Tasks/Preprocess/Instructions/IncludeArtisan/Instruction.php
+                - packages/lara-asp-documentator/src/Processor/Tasks/Preprocess/Instructions/IncludeArtisan/Instruction.php
 
         # False positive
         # https://github.com/nunomaduro/larastan/issues/483
@@ -102,7 +102,7 @@ parameters:
         -
             message: '#^Parameter \#2 \$value of static method LastDragon_ru\\LaraASP\\Documentator\\Markdown\\Data\\Data<T>::set\(\) expects T, \(null&T\)\|null given\.$#'
             paths:
-                - packages/documentator/src/Markdown/Data/Data.php
+                - packages/lara-asp-documentator/src/Markdown/Data/Data.php
 
         # (dev) Required for tests
         -

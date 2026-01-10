@@ -54,11 +54,11 @@ This package contains useful utilities and classes.
 
 [Read more](<packages/lara-asp-core/README.md>).
 
-## [(Laravel) Documentator](<packages/documentator/README.md>)
+## [(Laravel) Documentator](<packages/lara-asp-documentator/README.md>)
 
 This package provides various utilities for documentation generation such as Markdown Preprocessor, Requirements Dumper and more.
 
-[Read more](<packages/documentator/README.md>).
+[Read more](<packages/lara-asp-documentator/README.md>).
 
 ## [(Laravel) Eloquent Helpers](<packages/eloquent/README.md>)
 

@@ -59,7 +59,7 @@ class ArtisanSerializer {
         }
 
         if ($option->isNegatable()) {
-            // todo(documentator): Not yet supported by Laravel :( Check in v13
+            // todo(lara-asp-documentator): Not yet supported by Laravel :( Check in v13
         }
 
         if ($option->isArray()) {
