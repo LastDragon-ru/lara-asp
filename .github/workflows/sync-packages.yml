@@ -28,7 +28,7 @@ jobs:
       - name: Detect SSH Key name
         id: secret
         run: |
-          echo "name=$(echo "${{ matrix.package }}" | sed 's/-/_/g')" >> $GITHUB_OUTPUT
+          echo "name=$(echo "PKG_${{ matrix.package }}" | sed 's/-/_/g')" >> $GITHUB_OUTPUT
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh/
