@@ -12,9 +12,9 @@
             <directory suffix="Test.php">./packages/lara-asp-core/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-core/docs</directory>
         </testsuite>
-        <testsuite name="dev">
-            <directory suffix="Test.php">./packages/dev/src</directory>
-            <directory suffix="Test.php">./packages/dev/docs</directory>
+        <testsuite name="lara-asp-dev">
+            <directory suffix="Test.php">./packages/lara-asp-dev/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-dev/docs</directory>
         </testsuite>
         <testsuite name="migrator">
             <directory suffix="Test.php">./packages/migrator/src</directory>
@@ -77,8 +77,8 @@
         <include>
             <directory suffix=".php">./packages/lara-asp-core/src</directory>
             <directory suffix=".php">./packages/lara-asp-core/docs</directory>
-            <directory suffix=".php">./packages/dev/src</directory>
-            <directory suffix=".php">./packages/dev/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-dev/src</directory>
+            <directory suffix=".php">./packages/lara-asp-dev/docs</directory>
             <directory suffix=".php">./packages/migrator/src</directory>
             <directory suffix=".php">./packages/migrator/docs</directory>
             <directory suffix=".php">./packages/testing/src</directory>
@@ -111,8 +111,8 @@
         <exclude>
             <directory suffix="Test.php">./packages/lara-asp-core/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-core/docs</directory>
-            <directory suffix="Test.php">./packages/dev/src</directory>
-            <directory suffix="Test.php">./packages/dev/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-dev/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-dev/docs</directory>
             <directory suffix="Test.php">./packages/migrator/src</directory>
             <directory suffix="Test.php">./packages/migrator/docs</directory>
             <directory suffix="Test.php">./packages/testing/src</directory>

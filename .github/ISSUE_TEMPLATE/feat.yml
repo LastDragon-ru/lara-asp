@@ -8,7 +8,7 @@ body:
       description: "Please choose a package, leave blank if it is general or if you are not sure."
       options:
         - lara-asp-core
-        - dev
+        - lara-asp-dev
         - documentator
         - eloquent
         - formatter

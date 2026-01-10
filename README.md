@@ -106,11 +106,11 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [Read more](<packages/testing/README.md>).
 
-## [Dev 🐝](<packages/dev/README.md>)
+## [Dev 🐝](<packages/lara-asp-dev/README.md>)
 
 Various internal tools and helpers to develop the package itself.
 
-[Read more](<packages/dev/README.md>).
+[Read more](<packages/lara-asp-dev/README.md>).
 
 ## [DIY Parser](<packages/text-parser/README.md>)
 

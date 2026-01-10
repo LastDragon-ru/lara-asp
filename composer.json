@@ -114,7 +114,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "packages/lara-asp-core/src/",
-      "LastDragon_ru\\LaraASP\\Dev\\": "packages/dev/src/",
+      "LastDragon_ru\\LaraASP\\Dev\\": "packages/lara-asp-dev/src/",
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/documentator/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
@@ -134,7 +134,7 @@
   "autoload-dev": {
     "exclude-from-classmap": [
       "packages/lara-asp-core/docs/",
-      "packages/dev/docs/",
+      "packages/lara-asp-dev/docs/",
       "packages/documentator/docs/",
       "packages/eloquent/docs/",
       "packages/formatter/docs/",
@@ -153,7 +153,7 @@
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/lara-asp-core/docs",
-      "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/dev/docs",
+      "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/lara-asp-dev/docs",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/documentator/docs",
       "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
@@ -198,6 +198,9 @@
       "sync-packages": {
         "lara-asp-core": [
           "core"
+        ],
+        "lara-asp-dev": [
+          "dev"
         ],
         "text-parser": [
           "diy-parser"

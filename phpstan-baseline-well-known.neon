@@ -108,4 +108,4 @@ parameters:
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"
             paths:
-                - packages/dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
+                - packages/lara-asp-dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
