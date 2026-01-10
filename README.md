@@ -94,11 +94,11 @@ This package improves standard Laravel migrations to add support for raw SQL fil
 
 [Read more](<packages/spa/README.md>).
 
-## [(Laravel) Symfony Serializer](<packages/serializer/README.md>)
+## [(Laravel) Symfony Serializer](<packages/lara-asp-serializer/README.md>)
 
 This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html) to use it inside Laravel application.
 
-[Read more](<packages/serializer/README.md>).
+[Read more](<packages/lara-asp-serializer/README.md>).
 
 ## [(Laravel) Testing Helpers 🐝](<packages/testing/README.md>)
 

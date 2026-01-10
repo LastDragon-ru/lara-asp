@@ -126,7 +126,7 @@
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/lara-asp-migrator/src/",
       "LastDragon_ru\\Path\\": "packages/path/src/",
       "LastDragon_ru\\TextParser\\": "packages/text-parser/src/",
-      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/serializer/src/",
+      "LastDragon_ru\\LaraASP\\Serializer\\": "packages/lara-asp-serializer/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/spa/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/"
     }
@@ -146,7 +146,7 @@
       "packages/lara-asp-migrator/src/Migrations/MigratorTest/raw/",
       "packages/path/docs/",
       "packages/text-parser/docs/",
-      "packages/serializer/docs/",
+      "packages/lara-asp-serializer/docs/",
       "packages/spa/docs/",
       "packages/testing/docs/",
       "packages/**/*Test/"
@@ -165,7 +165,7 @@
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/lara-asp-migrator/docs",
       "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
       "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs",
-      "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/serializer/docs",
+      "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/lara-asp-serializer/docs",
       "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/spa/docs",
       "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
     }
@@ -219,6 +219,9 @@
         ],
         "lara-asp-migrator": [
           "migrator"
+        ],
+        "lara-asp-serializer": [
+          "serializer"
         ],
         "text-parser": [
           "diy-parser"

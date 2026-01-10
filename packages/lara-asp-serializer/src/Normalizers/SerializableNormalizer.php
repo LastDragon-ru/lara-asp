@@ -141,7 +141,7 @@ class SerializableNormalizer extends AbstractObjectNormalizer {
              * was not added to `$attributes` if `$classOrObject` doesn't have
              * it. But it is required. So we are fixing it here.
              *
-             * todo(serializer): [update] Drop when `symfony/serializer:7.3.1`
+             * todo(lara-asp-serializer): [update] Drop when `symfony/serializer:7.3.1`
              *      will not be supported anymore.
              *
              * @see https://github.com/symfony/symfony/pull/60511

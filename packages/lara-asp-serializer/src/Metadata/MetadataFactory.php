@@ -92,7 +92,7 @@ class MetadataFactory implements ClassMetadataFactoryInterface, PropertyTypeExtr
     #[Override]
     public function getTypes(string $class, string $property, array $context = []): ?array {
         /**
-         * todo(serializer): Should we add types to {@see AttributeMetadata}?
+         * todo(lara-asp-serializer): Should we add types to {@see AttributeMetadata}?
          *      It will allow cache all metadata in one place. Not very actual
          *      now though.
          */

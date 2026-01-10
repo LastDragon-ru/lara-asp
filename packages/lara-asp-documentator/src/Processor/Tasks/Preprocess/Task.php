@@ -62,7 +62,7 @@ use const JSON_THROW_ON_ERROR;
  * * `<instruction>` the instruction name (unknown instructions will be ignored)
  * * `<target>` usually the path to the file or directory, but see the instruction description
  * * `<parameters>` optional JSON string with additional parameters (can be
- *    wrapped by `(...)`, `"..."`, or `'...'`). The [Serializer](../../../../../serializer/README.md)
+ *    wrapped by `(...)`, `"..."`, or `'...'`). The [Serializer](../../../../../lara-asp-serializer/README.md)
  *    package is used for deserialization.
  *
  * ## Limitations

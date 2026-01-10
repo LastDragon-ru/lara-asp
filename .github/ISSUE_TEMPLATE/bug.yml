@@ -14,11 +14,11 @@ body:
         - lara-asp-formatter
         - lara-asp-graphql
         - lara-asp-migrator
+        - lara-asp-serializer
         - glob-matcher
         - graphql-printer
         - graphql-printer-testing
         - path
-        - serializer
         - spa
         - testing
         - text-parser

@@ -52,9 +52,9 @@
             <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/docs</directory>
         </testsuite>
-        <testsuite name="serializer">
-            <directory suffix="Test.php">./packages/serializer/src</directory>
-            <directory suffix="Test.php">./packages/serializer/docs</directory>
+        <testsuite name="lara-asp-serializer">
+            <directory suffix="Test.php">./packages/lara-asp-serializer/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-serializer/docs</directory>
         </testsuite>
         <testsuite name="lara-asp-documentator">
             <directory suffix="Test.php">./packages/lara-asp-documentator/src</directory>
@@ -97,8 +97,8 @@
             <directory suffix=".php">./packages/graphql-printer/docs</directory>
             <directory suffix=".php">./packages/graphql-printer-testing/src</directory>
             <directory suffix=".php">./packages/graphql-printer-testing/docs</directory>
-            <directory suffix=".php">./packages/serializer/src</directory>
-            <directory suffix=".php">./packages/serializer/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-serializer/src</directory>
+            <directory suffix=".php">./packages/lara-asp-serializer/docs</directory>
             <directory suffix=".php">./packages/lara-asp-documentator/src</directory>
             <directory suffix=".php">./packages/lara-asp-documentator/docs</directory>
             <directory suffix=".php">./packages/text-parser/src</directory>
@@ -131,8 +131,8 @@
             <directory suffix="Test.php">./packages/graphql-printer/docs</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/docs</directory>
-            <directory suffix="Test.php">./packages/serializer/src</directory>
-            <directory suffix="Test.php">./packages/serializer/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-serializer/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-serializer/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-documentator/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-documentator/docs</directory>
             <directory suffix="Test.php">./packages/text-parser/src</directory>

@@ -118,19 +118,19 @@ parameters:
 			rawMessage: 'Parameter #2 $typesMapping of class Symfony\Component\Serializer\Mapping\ClassDiscriminatorMapping constructor expects array<string, string>, array given.'
 			identifier: argument.type
 			count: 1
-			path: packages/serializer/src/Metadata/MetadataFactory.php
+			path: packages/lara-asp-serializer/src/Metadata/MetadataFactory.php
 
 		-
 			rawMessage: 'Call to method getName() of internal interface Symfony\Component\Serializer\Mapping\AttributeMetadataInterface from outside its root namespace Symfony.'
 			identifier: method.internalInterface
 			count: 1
-			path: packages/serializer/src/Normalizers/SerializableNormalizer.php
+			path: packages/lara-asp-serializer/src/Normalizers/SerializableNormalizer.php
 
 		-
 			rawMessage: 'Return type of method LastDragon_ru\LaraASP\Serializer\Normalizers\SerializableNormalizer::getAllowedAttributes() has typehint with internal interface Symfony\Component\Serializer\Mapping\AttributeMetadataInterface.'
 			identifier: return.internalInterface
 			count: 1
-			path: packages/serializer/src/Normalizers/SerializableNormalizer.php
+			path: packages/lara-asp-serializer/src/Normalizers/SerializableNormalizer.php
 
 		-
 			rawMessage: 'Parameter #3 $path of method LastDragon_ru\LaraASP\Spa\Http\Resources\Resource::mapResourceValue() expects array<string>, array<mixed> given.'
