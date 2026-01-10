@@ -48,11 +48,11 @@ composer require lastdragon-ru/lara-asp-<package>
 [//]: # (start: preprocess/2814e5e8c6b59bac)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## [(Laravel) Core](<packages/core/README.md>)
+## [(Laravel) Core](<packages/lara-asp-core/README.md>)
 
 This package contains useful utilities and classes.
 
-[Read more](<packages/core/README.md>).
+[Read more](<packages/lara-asp-core/README.md>).
 
 ## [(Laravel) Documentator](<packages/documentator/README.md>)
 

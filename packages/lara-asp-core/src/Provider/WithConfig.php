@@ -83,7 +83,7 @@ trait WithConfig {
                     $package => $resolver::getDefaultConfig(),
                 ]);
             } elseif (is_array($current)) {
-                // todo(core): Remove somewhere in v9 or later.
+                // todo(lara-asp-core): Remove somewhere in v9 or later.
                 trigger_deprecation(
                     Package::Name,
                     '7.0.0',

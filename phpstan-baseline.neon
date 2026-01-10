@@ -10,13 +10,13 @@ parameters:
 			rawMessage: 'Call to an undefined method Mockery\LegacyMockInterface::once().'
 			identifier: method.notFound
 			count: 1
-			path: packages/core/src/Observer/DispatcherTest.php
+			path: packages/lara-asp-core/src/Observer/DispatcherTest.php
 
 		-
 			rawMessage: 'Cannot call method with() on mixed.'
 			identifier: method.nonObject
 			count: 1
-			path: packages/core/src/Observer/DispatcherTest.php
+			path: packages/lara-asp-core/src/Observer/DispatcherTest.php
 
 		-
 			rawMessage: 'Property LastDragon_ru\TextParser\Iterables\BufferedIterable<TValue>::$iterator (Iterator<mixed, TValue>) does not accept (iterable<TValue>&Iterator)|IteratorIterator<mixed, mixed, Traversable<TKey, TValue>>.'

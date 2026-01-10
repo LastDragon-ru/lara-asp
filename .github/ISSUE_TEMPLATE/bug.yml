@@ -7,7 +7,7 @@ body:
       label: Package
       description: "Please choose a package, leave blank if it is general or if you are not sure."
       options:
-        - core
+        - lara-asp-core
         - dev
         - documentator
         - eloquent
