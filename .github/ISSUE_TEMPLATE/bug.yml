@@ -13,10 +13,10 @@ body:
         - lara-asp-eloquent
         - lara-asp-formatter
         - lara-asp-graphql
+        - lara-asp-migrator
         - glob-matcher
         - graphql-printer
         - graphql-printer-testing
-        - migrator
         - path
         - serializer
         - spa

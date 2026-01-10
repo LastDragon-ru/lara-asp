@@ -47,7 +47,7 @@ class SqlSeeder extends GeneratorCommand {
      */
     #[Override]
     protected function makeDirectory($path) {
-        // FIXME [migrator] `make:seeder` hack: would be good to use another
+        // FIXME [lara-asp-migrator] `make:seeder` hack: would be good to use another
         //      way to add file(s) after the command finished.
         $path    = parent::makeDirectory($path);
         $dir     = dirname($path);

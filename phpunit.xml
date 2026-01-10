@@ -16,9 +16,9 @@
             <directory suffix="Test.php">./packages/lara-asp-dev/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-dev/docs</directory>
         </testsuite>
-        <testsuite name="migrator">
-            <directory suffix="Test.php">./packages/migrator/src</directory>
-            <directory suffix="Test.php">./packages/migrator/docs</directory>
+        <testsuite name="lara-asp-migrator">
+            <directory suffix="Test.php">./packages/lara-asp-migrator/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-migrator/docs</directory>
         </testsuite>
         <testsuite name="testing">
             <directory suffix="Test.php">./packages/testing/src</directory>
@@ -79,8 +79,8 @@
             <directory suffix=".php">./packages/lara-asp-core/docs</directory>
             <directory suffix=".php">./packages/lara-asp-dev/src</directory>
             <directory suffix=".php">./packages/lara-asp-dev/docs</directory>
-            <directory suffix=".php">./packages/migrator/src</directory>
-            <directory suffix=".php">./packages/migrator/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-migrator/src</directory>
+            <directory suffix=".php">./packages/lara-asp-migrator/docs</directory>
             <directory suffix=".php">./packages/testing/src</directory>
             <directory suffix=".php">./packages/testing/docs</directory>
             <directory suffix=".php">./packages/lara-asp-eloquent/src</directory>
@@ -113,8 +113,8 @@
             <directory suffix="Test.php">./packages/lara-asp-core/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-dev/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-dev/docs</directory>
-            <directory suffix="Test.php">./packages/migrator/src</directory>
-            <directory suffix="Test.php">./packages/migrator/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-migrator/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-migrator/docs</directory>
             <directory suffix="Test.php">./packages/testing/src</directory>
             <directory suffix="Test.php">./packages/testing/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>

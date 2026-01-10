@@ -84,11 +84,11 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 
 [Read more](<packages/lara-asp-formatter/README.md>).
 
-## [(Laravel) Raw SQL Migrator/Seeder](<packages/migrator/README.md>)
+## [(Laravel) Raw SQL Migrator/Seeder](<packages/lara-asp-migrator/README.md>)
 
 This package improves standard Laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
-[Read more](<packages/migrator/README.md>).
+[Read more](<packages/lara-asp-migrator/README.md>).
 
 ## [(Laravel) SPA Helpers](<packages/spa/README.md>)
 

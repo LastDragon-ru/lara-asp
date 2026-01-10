@@ -11,7 +11,7 @@ use Symfony\Component\Finder\Finder;
 use function array_unique;
 use function is_string;
 
-// todo(migrator): [laravel] [update] \Illuminate\Database\Migrations\Migrator
+// todo(lara-asp-migrator): [laravel] [update] \Illuminate\Database\Migrations\Migrator
 
 /**
  * Extends standard migrator.
